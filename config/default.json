@@ -33,8 +33,8 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "serviceApi": "hearing-service-prod.service.core-compute-prod.internal",
-      "hmcApi": "hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
+      "serviceApi": "http://jurisdiction-hearings-api-prod.service.core-compute-prod.internal",
+      "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"

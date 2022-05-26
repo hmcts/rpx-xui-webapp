@@ -147,6 +147,335 @@ export const partyChannelsRefData = [
   { key: 'notAttending', value_en: 'Not attending', value_cy: '', hintText_EN: 'not attending', hintTextCY: '', order: 5, parentKey: null }
 ];
 
+export const caseTypeRefData = [
+  {
+    category_key: 'caseType',
+    key: 'BBA3-002',
+    value_en: 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM)',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: [
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002EC',
+        value_en: 'ECHR',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CP',
+        value_en: 'CIVIL PENALTIES',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002EX',
+        value_en: 'EX LEGISLATION',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002MO',
+        value_en: 'MOBILITY COMPONENT',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002LE',
+        value_en: 'LATE (EXTENDING BACK)',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CC',
+        value_en: 'CONDITIONS OF ENTITLEMENT - COMPLEX',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002OC',
+        value_en: 'OVERPAYMENT - CAPITAL',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002RA',
+        value_en: 'RATE OF ASSESSMENT/PAYABILITY ISSUES',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002EI',
+        value_en: 'EXPORTABILITY ISSUES',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002OS',
+        value_en: 'OVERPAYMENT - STRAIGHTFORWARD',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002DD',
+        value_en: 'APPEAL DIRECTLY LODGED',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002AA',
+        value_en: 'INVALID',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002LC',
+        value_en: 'DAILY LIVING COMPONENT',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002MD',
+        value_en: 'MOBILITY (DLA)',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002ON',
+        value_en: 'ONE PROJECT',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CE',
+        value_en: 'CONDITIONS OF ENTITLEMENT',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002RC',
+        value_en: 'RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002OX',
+        value_en: 'OVERPAYMENT - COMPLEX',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CD',
+        value_en: 'CARE (DLA)',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002AR',
+        value_en: 'ALTERNATIVE DISPUTE RESOLUTION',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002VW',
+        value_en: 'VERBALLY WITHDRAWN',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CF',
+        value_en: 'CARE/MOBILITY (DLA)',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002GC',
+        value_en: 'GOOD CAUSE',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002ML',
+        value_en: 'DAILY LIVING/MOBILITY',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      }
+    ]
+  },
+];
+
 export const caseFlagsRefData = [
   {
     name: 'Case',
@@ -1016,16 +1345,19 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
-      categoryValue: 'Personal Independence Payment',
+      categoryValue: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'Conditions of Entitlement',
+      categoryValue: 'BBA3-002CC',
+      categoryParent: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'Good cause',
+      categoryValue: 'BBA3-002GC',
+      categoryParent: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'Rate of Assessment / Payability Issues - complex',
+      categoryValue: 'BBA3-002RC',
+      categoryParent: 'BBA3-002',
     },
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
@@ -1393,19 +1725,19 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'Personal Independence Payment',
-      },
-      {
+        categoryValue: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Conditions of Entitlement',
-      },
-      {
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Good cause',
-      },
-      {
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-002',
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
@@ -1598,19 +1930,19 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'Personal Independence Payment',
-      },
-      {
+        categoryValue: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Conditions of Entitlement',
-      },
-      {
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Good cause',
-      },
-      {
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-002',
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
@@ -1703,19 +2035,19 @@ export const initialState = {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'Personal Independence Payment',
-            },
-            {
+              categoryValue: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Conditions of Entitlement',
-            },
-            {
+              categoryValue: 'BBA3-002CC',
+              categoryParent: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Good cause',
-            },
-            {
+              categoryValue: 'BBA3-002GC',
+              categoryParent: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Rate of Assessment / Payability Issues - complex',
+              categoryValue: 'BBA3-002RC',
+              categoryParent: 'BBA3-002',
             }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,
@@ -1881,19 +2213,19 @@ export const initialState = {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'Personal Independence Payment',
-            },
-            {
+              categoryValue: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Conditions of Entitlement',
-            },
-            {
+              categoryValue: 'BBA3-002CC',
+              categoryParent: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Good cause',
-            },
-            {
+              categoryValue: 'BBA3-002GC',
+              categoryParent: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Rate of Assessment / Payability Issues - complex',
+              categoryValue: 'BBA3-002RC',
+              categoryParent: 'BBA3-002',
             }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,

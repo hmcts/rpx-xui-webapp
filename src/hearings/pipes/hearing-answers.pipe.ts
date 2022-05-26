@@ -64,7 +64,10 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new CaseNumberAnswerConverter();
         break;
       case AnswerSource.Type:
-        converter = new TypeAnswerConverter();
+        converter = new TypeAnswerConverter(this.route);
+        break;
+      case AnswerSource.TYPE_FROM_REQUEST:
+        converter = new TypeFromRequestAnswerConverter(this.route);
         break;
       case AnswerSource.STATUS:
         converter = new StatusAnswerConverter();
@@ -83,9 +86,6 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.ERROR_TIME_STAMP:
         converter = new DateRequestFailedAnswerConverter();
-        break;
-      case AnswerSource.TYPE_FROM_REQUEST:
-        converter = new TypeFromRequestAnswerConverter();
         break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagAnswerConverter(this.route);

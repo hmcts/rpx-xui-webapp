@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
 import {
   AbstractAppConfig,
@@ -63,7 +62,7 @@ import { PriorityFieldComponentModule } from '../work-allocation-2/components/pr
     SharedModule,
     OrganisationModule,
     SearchFiltersModule,
-    HttpModule,
+    HttpClientModule,
     MatDialogModule,
     CaseListFiltersModule,
     WorkbasketFiltersModule,

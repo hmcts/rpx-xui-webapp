@@ -11601,11 +11601,6 @@ rx-polling@1.1.0:
   resolved "https://registry.yarnpkg.com/rx-polling/-/rx-polling-1.1.0.tgz#633fc1813e05bb974f4dccd84e5a58b65e5395b1"
   integrity sha512-Y/YBGBewcbx+PXXoEEL4pxa7StHqKJcg1DHNhRIitSoakEZUa5inEEjpjQaksQfr9krsESP9GAdlPZmF31MO3g==
 
-rxjs-compat@^6.4.0:
-  version "6.5.4"
-  resolved "https://registry.yarnpkg.com/rxjs-compat/-/rxjs-compat-6.5.4.tgz#03825692af3fe363e04c43f41ff4113d76bbd305"
-  integrity sha512-rkn+lbOHUQOurdd74J/hjmDsG9nFx0z66fvnbs8M95nrtKvNqCKdk7iZqdY51CGmDemTQk+kUPy4s8HVOHtkfA==
-
 rxjs@6.2.2:
   version "6.2.2"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.2.2.tgz#eb75fa3c186ff5289907d06483a77884586e1cf9"

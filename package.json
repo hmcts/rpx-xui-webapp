@@ -128,7 +128,6 @@
     "p-iteration": "^1.1.7",
     "protractor-screenshot-utils": "^1.0.5",
     "rxjs": "^6.0.0",
-    "rxjs-compat": "^6.4.0",
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
     "striptags": "^3.1.1",

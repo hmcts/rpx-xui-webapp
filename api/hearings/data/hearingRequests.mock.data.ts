@@ -74,19 +74,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -291,21 +291,21 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseInterpreterRequiredFlag: false,
       caseCategories: [
         {
-          categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
-          categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
-          categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
-          categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
-        }],
+        categoryType: CategoryType.CaseType,
+        categoryValue: 'BBA3-002',
+      }, {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      }, {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-002',
+      }, {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-002',
+      }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
       caseSLAStartDate: '2021-11-23T09:00:00.000Z',
@@ -499,19 +499,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -706,19 +706,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -913,19 +913,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1120,19 +1120,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1328,19 +1328,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1535,19 +1535,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1742,19 +1742,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1949,19 +1949,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -2084,19 +2084,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -2219,19 +2219,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -2421,19 +2421,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,

@@ -28,16 +28,19 @@ describe('Hearing Values Reducer', () => {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'Personal Independence Payment',
+              categoryValue: 'BBA3-002',
             }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Conditions of Entitlement',
+              categoryValue: 'BBA3-002CC',
+              categoryParent: 'BBA3-002',
             }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Good cause',
+              categoryValue: 'BBA3-002GC',
+              categoryParent: 'BBA3-002',
             }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Rate of Assessment / Payability Issues - complex',
+              categoryValue: 'BBA3-002RC',
+              categoryParent: 'BBA3-002',
             },
           ],
           caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',

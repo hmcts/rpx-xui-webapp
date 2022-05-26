@@ -22,12 +22,31 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002CC',
+      categoryParent: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002GC',
+      categoryParent: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002RC',
+      categoryParent: 'BBA3-002',
+    },
+    {
+      categoryType: CategoryType.CaseType,
+      categoryValue: 'BBA3-001',
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'BBA3-001AD',
+      categoryParent: 'BBA3-001',
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'BBA3-001CH',
+      categoryParent: 'BBA3-001',
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'BBA3-001HC',
+      categoryParent: 'BBA3-001',
     },
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
@@ -97,7 +116,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         title: 'Miss',
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'faceToFace',
+        preferredHearingChannel: 'INTER',
       },
       unavailabilityRanges: [
         {
@@ -116,7 +135,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         title: '',
         firstName: 'DWP',
         lastName: 'Representative',
-        preferredHearingChannel: 'faceToFace',
+        preferredHearingChannel: 'INTER',
       },
       unavailabilityRanges: [
         {

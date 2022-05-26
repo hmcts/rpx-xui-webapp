@@ -16,7 +16,6 @@ export async function handleTaskGet(path: string, req: EnhancedRequest): Promise
     delete headers['accept'];
     delete headers['Accept'];
     headers['Content-Type'] = 'application/json';
-    console.log(headers, 'check check');
     const response: AxiosResponse = await http.get(path, { headers });
     return response.data;
 }

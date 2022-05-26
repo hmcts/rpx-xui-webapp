@@ -352,7 +352,7 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
 
 export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery [] {
   const elasticQueries = new Array<ElasticSearchQuery>();
-  const chunkSize = 100;
+  const chunkSize = 200;
   for (let i = 0; i < caseIds.length; i += chunkSize) {
     const chunk = caseIds.slice(i, i + chunkSize);
     const elasticQuery = {

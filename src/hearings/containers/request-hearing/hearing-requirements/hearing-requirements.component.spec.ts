@@ -4,9 +4,16 @@ import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {caseFlagsRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
+import {caseFlagsRefData, caseTypeRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
-import {ACTION, CaseFlagType, HMCLocationType, PartyType, UnavailabilityType} from '../../../models/hearings.enum';
+import {
+  ACTION,
+  CaseFlagType,
+  CategoryType,
+  HMCLocationType,
+  PartyType,
+  UnavailabilityType
+} from '../../../models/hearings.enum';
 import {LocationByEPIMMSModel} from '../../../models/location.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {LocationsDataService} from '../../../services/locations-data.service';
@@ -65,6 +72,7 @@ describe('HearingRequirementsComponent', () => {
             snapshot: {
               data: {
                 caseFlags: caseFlagsRefData,
+                caseType: caseTypeRefData,
               },
             },
             fragment: of('point-to-me'),
@@ -167,20 +175,20 @@ describe('HearingRequirementsComponent', () => {
         caseAdditionalSecurityFlag: false,
         caseCategories: [
           {
-            categoryType: 'caseType',
-            categoryValue: 'Personal Independence Payment',
-          },
-          {
-            categoryType: 'caseSubType',
-            categoryValue: 'Conditions of Entitlement',
-          },
-          {
-            categoryType: 'caseSubType',
-            categoryValue: 'Good cause',
-          },
-          {
-            categoryType: 'caseSubType',
-            categoryValue: 'Rate of Assessment / Payability Issues - complex',
+            categoryType: CategoryType.CaseType,
+            categoryValue: 'BBA3-002',
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'BBA3-002CC',
+            categoryParent: 'BBA3-002',
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'BBA3-002GC',
+            categoryParent: 'BBA3-002',
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'BBA3-002RC',
+            categoryParent: 'BBA3-002',
           }
         ],
         caseManagementLocationCode: '196538',

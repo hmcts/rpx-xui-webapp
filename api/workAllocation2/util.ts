@@ -374,7 +374,6 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
     };
     elasticQueries.push(elasticQuery);
   }
-  console.log('elasticQueries', elasticQueries);
   return elasticQueries;
 }
 

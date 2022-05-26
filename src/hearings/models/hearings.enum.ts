@@ -141,8 +141,8 @@ export enum HearingCategory {
 }
 
 export enum HearingChannelEnum {
-  ONPPR = 'onPaper',
-  NotAttending = 'notAttending',
+  ONPPR = 'ONPPRS',
+  NotAttending = 'NA',
 }
 
 export enum HearingDateEnum {

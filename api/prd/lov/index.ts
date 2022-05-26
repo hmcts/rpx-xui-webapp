@@ -21,9 +21,6 @@ export async function getLovRefData(req: EnhancedRequest, res: Response) {
     if (category === 'HearingType') {
       const exuiDefaultData = getLovFromExUI(category);
       res.status(200).send(exuiDefaultData);
-    } else if (category === 'HearingChannel') {
-      const exuiDefaultData = getLovFromExUI(category);
-      res.status(200).send(exuiDefaultData);
     } else {
       const { status, data }: { status: number, data: LovRefDataByServiceModel } = await sendGet(markupPath, req);
       res.status(status).send(data.list_of_values);

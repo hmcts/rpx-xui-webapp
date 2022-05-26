@@ -70,8 +70,8 @@ export enum EXUIDisplayStatusEnum {
 }
 
 export enum HearingChannelEnum {
-  ONPPR = 'onPaper',
-  NotAttending = 'notAttending',
+  ONPPR = 'ONPPRS',
+  NotAttending = 'NA',
 }
 
 export enum HMCLocationType {

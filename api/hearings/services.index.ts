@@ -1,5 +1,4 @@
 import {NextFunction, Response} from 'express';
-import {handlePost} from '../common/mockService';
 import {sendPost} from '../common/crudService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
@@ -18,10 +17,12 @@ const serviceHearingsUrl: string = getConfigValue(SERVICES_HEARINGS_COMPONENT_AP
  * loadServiceHearingValues - get details required to populate the hearing request/amend journey
  */
 export async function loadServiceHearingValues(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const jurisdictionId = req.query.jurisdictionId;
   const reqBody = req.body;
-  const markupPath: string = `${serviceHearingsUrl}/serviceHearingValues`;
+  const servicePath: string = getServicePath(serviceHearingsUrl, jurisdictionId);
+  const markupPath: string = `${servicePath}/serviceHearingValues`;
   try {
-    const {status, data}: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
+    const {status, data}: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

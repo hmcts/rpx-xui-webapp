@@ -3,6 +3,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Action, Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
+import {SessionStorageService} from '../../../app/services';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingValuesActions from '../../../hearings/store/actions/hearing-values.action';
 import {HttpError} from '../../../models/httpError.model';
@@ -16,6 +17,7 @@ export class HearingValuesEffects {
     private readonly actions$: Actions,
     private readonly hearingStore: Store<fromHearingReducers.State>,
     private readonly hearingsService: HearingsService,
+    private readonly sessionStorage: SessionStorageService,
   ) {
   }
 
@@ -24,7 +26,9 @@ export class HearingValuesEffects {
     ofType(hearingValuesActions.LOAD_HEARING_VALUES),
     map((action: hearingValuesActions.LoadHearingValues) => action.payload),
     switchMap(payload => {
-      return this.hearingsService.loadHearingValues(payload).pipe(
+      const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
+      const jurisdictionId = caseInfo && caseInfo.jurisdiction;
+      return this.hearingsService.loadHearingValues(jurisdictionId, payload).pipe(
         map(
           (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
         catchError(error => {

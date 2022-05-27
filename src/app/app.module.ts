@@ -1,63 +1,63 @@
-import { HttpClientModule, HttpClientXsrfModule } from "@angular/common/http";
+import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import {
   APP_INITIALIZER,
   CUSTOM_ELEMENTS_SCHEMA,
   ErrorHandler,
   NgModule,
-} from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ExtraOptions, RouterModule } from "@angular/router";
-import { PaymentLibModule } from "@hmcts/ccpay-web-component";
+} from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import {
   ExuiCommonLibModule,
   FeatureToggleService,
   LaunchDarklyService,
   TimeoutNotificationsService,
-} from "@hmcts/rpx-xui-common-lib";
-import { NgIdleKeepaliveModule } from "@ng-idle/keepalive";
+} from '@hmcts/rpx-xui-common-lib';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
-import { EffectsModule } from "@ngrx/effects";
+import { EffectsModule } from '@ngrx/effects';
 import {
   RouterStateSerializer,
   StoreRouterConnectingModule,
-} from "@ngrx/router-store";
-import { MetaReducer, Store, StoreModule } from "@ngrx/store";
-import { StoreDevtoolsModule } from "@ngrx/store-devtools";
-import { storeFreeze } from "ngrx-store-freeze";
+} from '@ngrx/router-store';
+import { MetaReducer, Store, StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { storeFreeze } from 'ngrx-store-freeze';
 import {
   LoggerModule,
   NGXLogger,
   NGXLoggerHttpService,
   NgxLoggerLevel,
   NGXMapperService,
-} from "ngx-logger";
-import { environment } from "../environments/environment";
+} from 'ngx-logger';
+import { environment } from '../environments/environment';
 import {
   EnvironmentConfig,
   ENVIRONMENT_CONFIG,
-} from "../models/environmentConfig.model";
-import { initApplication } from "./app-initilizer";
+} from '../models/environmentConfig.model';
+import { initApplication } from './app-initilizer';
 // app routes
-import { ROUTES, routingConfiguration } from "./app.routes";
-import { AppComponent } from "./containers/app/app.component";
+import { ROUTES, routingConfiguration } from './app.routes';
+import { AppComponent } from './containers/app/app.component';
 // common provider
-import { ProvidersModule } from "./providers/providers.module";
-import { AcceptTermsService } from "./services/acceptTerms/acceptTerms.service";
-import { CaseShareService } from "./services/case/share-case.service";
-import { DefaultErrorHandler } from "./services/errorHandler/defaultErrorHandler";
+import { ProvidersModule } from './providers/providers.module';
+import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
+import { CaseShareService } from './services/case/share-case.service';
+import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import {
   AbstractAppInsights,
   AppInsightsWrapper,
-} from "./services/logger/appInsightsWrapper";
-import { CryptoWrapper } from "./services/logger/cryptoWrapper";
-import { LoggerService } from "./services/logger/logger.service";
-import { MonitoringService } from "./services/logger/monitoring.service";
-import { SharedModule } from "./shared/shared.module";
-import { effects } from "./store/effects";
+} from './services/logger/appInsightsWrapper';
+import { CryptoWrapper } from './services/logger/cryptoWrapper';
+import { LoggerService } from './services/logger/logger.service';
+import { MonitoringService } from './services/logger/monitoring.service';
+import { SharedModule } from './shared/shared.module';
+import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
-import { CustomSerializer, reducers } from "./store/reducers";
+import { CustomSerializer, reducers } from './store/reducers';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -66,13 +66,8 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
 export function launchDarklyClientIdFactory(
   envConfig: EnvironmentConfig
 ): string {
-  return envConfig.launchDarklyClientId || "";
+  return envConfig.launchDarklyClientId || '';
 }
-
-const routerOptions: ExtraOptions = {
-  scrollPositionRestoration: "enabled",
-  anchorScrolling: "enabled",
-};
 
 @NgModule({
   declarations: [AppComponent],
@@ -85,8 +80,8 @@ const routerOptions: ExtraOptions = {
     BrowserAnimationsModule,
     HttpClientModule,
     HttpClientXsrfModule.withOptions({
-      cookieName: "XSRF-TOKEN",
-      headerName: "X-XSRF-TOKEN",
+      cookieName: 'XSRF-TOKEN',
+      headerName: 'X-XSRF-TOKEN',
     }),
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES, routingConfiguration),
@@ -134,4 +129,4 @@ const routerOptions: ExtraOptions = {
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule {}
+export class AppModule { }

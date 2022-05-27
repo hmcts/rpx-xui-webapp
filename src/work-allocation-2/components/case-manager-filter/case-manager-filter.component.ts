@@ -34,7 +34,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       fields: [
         {
           name: 'jurisdiction',
-          value: ['IA']
+          value: ['IA', 'SSCS']
         },
         {
           name: 'selectLocation',
@@ -177,6 +177,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
         const isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles) : null;
+        debugger;
         const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
         this.filterConfig.cancelSetting.fields.push({
             name: 'role',

@@ -132,7 +132,7 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
 
 export const servicesMap: {[key: string]: string} =  {
   IA: 'Immigration and Asylum',
-  SCSS: 'Social security and child support'
+  SSCS: 'Social security and child support'
 };
 
 export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {

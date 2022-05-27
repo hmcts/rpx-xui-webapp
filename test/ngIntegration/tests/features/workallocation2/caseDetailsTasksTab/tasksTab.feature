@@ -22,8 +22,8 @@ Feature: WA Release 2: Case details Tasks tab
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
         Given I set MOCK case list values
             | case_id          | case_fields.[CASE_REFERENCE] | case_fields_formatted.[CASE_REFERENCE] |
-            | 1234567812345678 | 1234567812345678             | 1234567812345678                       |
-            | 1234567812345679 | 1234567812345679             | 1234567812345679                       |
+            | 18a3d216-case-4e92-a7e3-ca3661e6be80 | 18a3d216-case-4e92-a7e3-ca3661e6be80             | 18a3d216-case-4e92-a7e3-ca3661e6be80                       |
+            | 18a3d216-case-4e92-a7e3-ca3661e6be81 | 18a3d216-case-4e92-a7e3-ca3661e6be81             | 18a3d216-case-4e92-a7e3-ca3661e6be81                       |
         Given I set MOCK caseworkers for service "IA"
             | idamId                               | firstName   | lastName | email                   | roleCategory     |
             | 3db21928-cbbc-4364-bd91-137c7031fe10 | Test 2      | user     | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
@@ -101,7 +101,7 @@ Feature: WA Release 2: Case details Tasks tab
             | Manage       | true                     | link            | Unassign                                               |                                          |
             | Next steps   | true                     |                 | Click link to proceed to next step test link next step |                                          |
             | Next steps   | true                     | link            | test link next step                                    |                                          |
-            | Next steps   | true                     | linkURLContains | test link next step                                    | case/case-details/1234567812345678       |
+            | Next steps   | true                     | linkURLContains | test link next step                                    | case/case-details/18a3d216-case-4e92-a7e3-ca3661e6be80       |
             | Next steps   | true                     | linkURLContains | test link next step                                    | tid=08a3d216-task-4e92-a7e3-ca3661e6be87 |
 
 
@@ -116,9 +116,9 @@ Feature: WA Release 2: Case details Tasks tab
             | Manage       | true                     | link            | Unassign                          |                                                                                     |
             | Next steps   | true                     |                 | Click link to proceed next step 1 |                                                                                     |
             | Next steps   | true                     | link            | next step 2                       |                                                                                     |
-            | Next steps   | true                     | linkURLContains | next step 1                       | case/case-details/1234567812345678                                                  |
-            | Next steps   | true                     | linkURLContains | next step 2                       | case/case-details/1234567812345678/18a3d216-task-4e92-a7e3-ca3661e6be87/testaction2 |
-            | Next steps   | true                     | linkURLContains | next step 3                       | /case/testroute?caseId=1234567812345678                                             |
+            | Next steps   | true                     | linkURLContains | next step 1                       | case/case-details/18a3d216-case-4e92-a7e3-ca3661e6be80                                                  |
+            | Next steps   | true                     | linkURLContains | next step 2                       | case/case-details/18a3d216-case-4e92-a7e3-ca3661e6be80/18a3d216-task-4e92-a7e3-ca3661e6be87/testaction2 |
+            | Next steps   | true                     | linkURLContains | next step 3                       | /case/testroute?caseId=18a3d216-case-4e92-a7e3-ca3661e6be80                                             |
 
 
 

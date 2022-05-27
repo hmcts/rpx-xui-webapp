@@ -2,6 +2,7 @@ import { CaseRolesTableComponent } from '../../role-access/components/case-roles
 import { ExclusionsTableComponent } from '../../role-access/components/exclusions-table/exclusions-table.component';
 import { AllocateARoleLinkComponent } from './allocate-a-role/allocate-a-role-link.component';
 import { AlertComponent } from './case-alert/alert.component';
+import { CaseHearingsListComponent } from './case-hearings-list/case-hearings-list.component';
 import { CaseTaskComponent } from './case-task/case-task.component';
 import { RoleAccessSectionComponent } from './role-access-section/role-access-section.component';
 import { RolesAndAccessComponent } from './roles-and-access/roles-and-access.component';
@@ -15,7 +16,8 @@ export const components: any[] = [
   TaskAlertBannerComponent,
   CaseTaskComponent,
   AllocateARoleLinkComponent,
-  RoleAccessSectionComponent
+  RoleAccessSectionComponent,
+  CaseHearingsListComponent
 ];
 
 export * from './case-alert/alert.component';
@@ -23,3 +25,4 @@ export * from './task-alert-banner/task-alert-banner.component';
 export * from './case-task/case-task.component';
 export * from './allocate-a-role/allocate-a-role-link.component';
 export * from './role-access-section/role-access-section.component';
+export * from './case-hearings-list/case-hearings-list.component';

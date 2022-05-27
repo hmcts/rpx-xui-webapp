@@ -143,6 +143,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       sortParam.sort_by = 'dueDate';
     }
     delete searchRequest.pagination_parameters;
+    delete searchRequest.search_by;
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
@@ -186,7 +187,6 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
         sort_order: 'asc',
       },
     ],
-    search_by: 'caseworker',
   };
   try {
     const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
@@ -231,6 +231,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
            assign_and_complete: true,
          },
       };
+    } else {
+      delete req.body.hasNoAssigneeOnComplete;
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);

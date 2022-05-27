@@ -1,10 +1,10 @@
-import {Response} from 'express';
-import {sendGet} from '../../common/crudService';
-import {getConfigValue} from '../../configuration';
-import {SERVICES_PRD_COMMONDATA_API} from '../../configuration/references';
-import {EnhancedRequest} from '../../lib/models';
-import {ALL_REF_DATA} from "./data/lov.mock.data";
-import {LovRefDataByServiceModel, LovRefDataModel} from './models/lovRefData.model';
+import { Response } from 'express';
+import { sendGet } from '../../common/crudService';
+import { getConfigValue } from '../../configuration';
+import { SERVICES_PRD_COMMONDATA_API } from '../../configuration/references';
+import { EnhancedRequest } from '../../lib/models';
+import { ALL_REF_DATA } from "./data/lov.mock.data";
+import { LovRefDataByServiceModel, LovRefDataModel } from './models/lovRefData.model';
 
 const prdUrl: string = getConfigValue(SERVICES_PRD_COMMONDATA_API);
 
@@ -13,8 +13,8 @@ const prdUrl: string = getConfigValue(SERVICES_PRD_COMMONDATA_API);
  */
 export async function getLovRefData(req: EnhancedRequest, res: Response) {
   // @ts-ignore
-  const { service, category, isChildRequired }  = req.query;
-  const params = new URLSearchParams({service, isChildRequired});
+  const { service, category, isChildRequired } = req.query;
+  const params = new URLSearchParams({ service, isChildRequired });
   const markupPath: string = `${prdUrl}/refdata/commondata/lov/categories/${category}?${params}`;
   try {
     const {status, data}: { status: number, data: LovRefDataByServiceModel } = await sendGet(markupPath, req);

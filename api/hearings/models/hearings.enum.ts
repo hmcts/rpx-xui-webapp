@@ -69,6 +69,11 @@ export enum EXUIDisplayStatusEnum {
   ADJOURNED = 'ADJOURNED',
 }
 
+export enum HearingChannelEnum {
+  ONPPR = 'ONPPRS',
+  NotAttending = 'NA',
+}
+
 export enum HMCLocationType {
   COURT = 'court',
   CLUSTER = 'cluster',

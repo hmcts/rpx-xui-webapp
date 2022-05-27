@@ -27,6 +27,7 @@ export const initialHearingRequestState: HearingRequestStateData = {
       hearingRequester: null,
       leadJudgeContractType: null,
       amendReasonCode: null,
+      hearingChannel: [],
     },
     caseDetails: {
       hmctsServiceCode: null,

@@ -20,4 +20,5 @@ export interface HearingDetailsModel {
   panelRequirements: PanelRequirementsModel;
   hearingIsLinkedFlag?: boolean;
   amendReasonCode: string;
+  hearingChannel: string[];
 }

@@ -1,17 +1,18 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
-import {ACTION, HearingCategory} from '../../../models/hearings.enum';
-import {IndividualDetailsModel} from '../../../models/individualDetails.model';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {PartyDetailsModel} from '../../../models/partyDetails.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {LovRefDataService} from '../../../services/lov-ref-data.service';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ACTION, HearingCategory, HearingChannelEnum } from '../../../models/hearings.enum';
+import { IndividualDetailsModel } from '../../../models/individualDetails.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import { HearingsService } from '../../../services/hearings.service';
+import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-attendance',
@@ -45,7 +46,9 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
   public ngOnInit(): void {
     this.partyChannels$ = this.lovRefDataService.getListOfValues(HearingCategory.HearingChannel,
-      this.serviceHearingValuesModel.hmctsServiceID);
+      this.serviceHearingValuesModel.hmctsServiceID).pipe(
+        map((channels: LovRefDataModel[]) =>
+          channels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR)));
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {
@@ -62,7 +65,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         } as PartyDetailsModel) as FormGroup);
       });
 
-      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees);
+      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     }
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
@@ -100,12 +103,19 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       };
       partyDetails.push(partyDetail);
     });
-
+    let hearingChannel: string[] = this.hearingRequestMainModel.hearingDetails.hearingChannel;
+    const preferredHearingChannelsList: string[] = partyDetails.map(party => party.individualDetails.preferredHearingChannel)
+    if (preferredHearingChannelsList.every(channel => channel === HearingChannelEnum.NotAttending)) {
+      hearingChannel = [HearingChannelEnum.ONPPR];
+    } else {
+      hearingChannel = preferredHearingChannelsList;
+    }
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       partyDetails,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
+        hearingChannel,
         numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
       }
     };
@@ -130,7 +140,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.attendanceFormGroup.controls.estimation.markAsDirty();
     if (!this.attendanceFormGroup.controls.estimation.valid) {
       formValid = false;
-      this.validationErrors.push({id: 'attendance-number', message: 'Enter a valid number of attendees'});
+      this.validationErrors.push({ id: 'attendance-number', message: 'Enter a valid number of attendees' });
     }
 
     this.selectionValid = selectionValid;
@@ -146,8 +156,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       partyType: [party.partyType],
       partyName: [party.partyName],
       partyRole: [party.partyRole],
-      ...individualDetails && ({individualDetails}),
-      ...organisationDetails && ({organisationDetails}),
+      ...individualDetails && ({ individualDetails }),
+      ...organisationDetails && ({ organisationDetails }),
       unavailabilityDOW: [party.unavailabilityDOW],
       unavailabilityRanges: [party.unavailabilityRanges],
     });
@@ -165,12 +175,16 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     return this.fb.group({
       firstName: [individualDetails.firstName],
       lastName: [individualDetails.lastName],
-      preferredHearingChannel: [individualDetails.preferredHearingChannel, Validators.required],
+      preferredHearingChannel: [this.setHearingPreferredChannel(individualDetails), Validators.required],
       interpreterLanguage: [individualDetails.interpreterLanguage],
       reasonableAdjustments: [individualDetails.reasonableAdjustments],
       relatedParties: [individualDetails.relatedParties],
       title: [individualDetails.title],
       vulnerabilityDetails: [individualDetails.vulnerabilityDetails],
     });
+  }
+
+  public setHearingPreferredChannel(individualDetails: IndividualDetailsModel): string {
+    return this.hearingRequestMainModel.hearingDetails.hearingChannel.includes(HearingChannelEnum.ONPPR) ? HearingChannelEnum.NotAttending : individualDetails.preferredHearingChannel;
   }
 }

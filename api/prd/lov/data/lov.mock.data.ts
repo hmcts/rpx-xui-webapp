@@ -321,6 +321,20 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
     child_nodes: null,
     from: 'exui-default',
   },
+  {
+    key: 'onPaper',
+    value_en: 'Paper',
+    value_cy: '',
+    hint_text_en: 'Paper',
+    hint_text_cy: '',
+    lov_order: 6,
+    parent_key: null,
+    category_key: 'HearingChannel',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+    from: 'exui-default',
+  },
 ];
 
 export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [

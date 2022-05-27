@@ -73,9 +73,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
           firstName: party.firstName,
           lastName: party.lastName,
         },
-        organisationDetails: {
-          name: party.organisation
-        },
+        actualOrganisationName: party.organisation,
         actualPartyId: party.partyId,
         didNotAttendFlag: false,
         partyChannelSubType: party.attendanceType,
@@ -169,7 +167,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       lastName: [actualParty.individualDetails.lastName, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter last name')]],
       role: [actualParty.partyRole, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter party role')]],
       attendanceType: [actualParty.partyChannelSubType, [this.validators.mandatory('Enter attendance type')]],
-      organisation: [actualParty.organisationDetails.name],
+      organisation: [actualParty.actualOrganisationName],
       attendeeRepresenting: [actualParty.representedParty, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter attendee representing')]],
       partyId: [actualParty.actualPartyId],
       isPlannedParty: [this.isPlannedParty(actualParty)],

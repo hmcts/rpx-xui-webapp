@@ -1834,9 +1834,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               firstName: 'Bob',
               lastName: 'Jones',
             },
-            organisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'appellant',
@@ -1848,9 +1846,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               firstName: 'Mary',
               lastName: 'Jones',
             },
-            organisationDetails: {
-              name: 'Company B',
-            },
+            actualOrganisationName: 'Company B',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'claimant',
@@ -1862,9 +1858,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               firstName: 'James',
               lastName: 'Gods',
             },
-            organisationDetails: {
-              name: 'Solicitors A',
-            },
+            actualOrganisationName: 'Solicitors A',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'interpreter',

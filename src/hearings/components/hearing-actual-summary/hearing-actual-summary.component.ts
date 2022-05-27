@@ -43,9 +43,7 @@ export class HearingActualSummaryComponent implements OnInit {
             firstName: plannedPartyInfo.individualDetails.firstName,
             lastName: plannedPartyInfo.individualDetails.lastName,
           },
-          organisationDetails: {
-            name: plannedPartyInfo.organisationDetails.name,
-          },
+          actualOrganisationName: plannedPartyInfo.organisationDetails.name,
           didNotAttendFlag: false,
           partyChannelSubType: plannedPartyInfo.partyChannelSubType,
           representedParty: null,

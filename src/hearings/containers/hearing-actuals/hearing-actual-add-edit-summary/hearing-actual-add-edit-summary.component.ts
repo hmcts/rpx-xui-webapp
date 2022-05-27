@@ -156,9 +156,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
             firstName: plannedParty.individualDetails && plannedParty.individualDetails.firstName,
             lastName: plannedParty.individualDetails && plannedParty.individualDetails.lastName,
           },
-          organisationDetails: {
-            name: plannedParty.organisationDetails && plannedParty.organisationDetails.name,
-          },
+          actualOrganisationName: plannedParty.organisationDetails && plannedParty.organisationDetails.name,
           didNotAttendFlag: false,
           partyChannelSubType: plannedParty.partyChannelSubType,
           representedParty: null,

@@ -619,9 +619,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
         firstName: 'Jane',
         lastName: 'Smith',
       },
-      organisationDetails: {
-        name: null,
-      },
+      actualOrganisationName: null,
       didNotAttendFlag: false,
     },
     {
@@ -633,9 +631,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
         firstName: 'DWP',
         lastName: '',
       },
-      organisationDetails: {
-        name: null,
-      },
+      actualOrganisationName: null,
       didNotAttendFlag: false,
     },
     {
@@ -647,9 +643,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
         firstName: 'Thomas',
         lastName: 'Wayne',
       },
-      organisationDetails: {
-        name: null,
-      },
+      actualOrganisationName: null,
       didNotAttendFlag: false,
     },
   ];

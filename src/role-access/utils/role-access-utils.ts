@@ -19,7 +19,7 @@ export const getTitleText = (role: SpecificRole, action: string, roleCategory: s
   if (role && role.name) {
     return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} a ${role.name.toLowerCase()}`;
   } else {
-    return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
+    return roleCategory ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
   }
 };
 
@@ -61,27 +61,25 @@ export const handleError = (error: RoleAccessHttpError, navigator: Navigator, de
   if (error && error.status) {
     switch (error.status) {
       case 401:
-      case 403:
-        {
-          navigator.navigate([REDIRECTS.NotAuthorised]);
-          return;
-        }
+      case 403: {
+        navigator.navigate([REDIRECTS.NotAuthorised]);
+        return;
+      }
       case 400:
       case 500:
-      case 503:
-        {
-          navigator.navigate([REDIRECTS.ServiceDown]);
-          return;
-        }
-      default:
-        {
+      case 503: {
+        navigator.navigate([REDIRECTS.ServiceDown]);
+        return;
+      }
+      default: {
         navigator.navigate([defaultUrl], {
           state: {
             showMessage: true,
             // show message based on error
-            message: { type: InfoMessageType.WARNING, message: error.message }}
-          });
-        }
+            message: { type: InfoMessageType.WARNING, message: error.message }
+          }
+        });
+      }
     }
   }
 };

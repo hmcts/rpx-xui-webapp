@@ -2,8 +2,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
-	AbstractAppConfig, AlertService, AuthService as CCDAuthService, CaseEditWizardGuard, CasesService, CaseUIToolkitModule, CreateCaseFiltersModule, DocumentManagementService, DraftService, HttpErrorService, HttpService, PageValidationService,
-	PlaceholderService, RequestOptionsBuilder, RouterHelperService, SearchFiltersModule, SearchService
+  AbstractAppConfig, AlertService, AuthService as CCDAuthService, CaseEditWizardGuard, CasesService, CaseUIToolkitModule, CreateCaseFiltersModule, DocumentManagementService, DraftService, HttpErrorService, HttpService, PageValidationService,
+  PlaceholderService, RequestOptionsBuilder, RouterHelperService, SearchFiltersModule, SearchService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -83,7 +83,7 @@ describe('Case Filter Component', () => {
   });
 
   xit('should create', () => {
-  //  expect(component).toBeTruthy();
+    //  expect(component).toBeTruthy();
   });
 
 

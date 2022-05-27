@@ -141,6 +141,11 @@ export enum HearingCategory {
   LinkedHearings = 'LinkedHearings',
 }
 
+export enum HearingChannelEnum {
+  ONPPR = 'ONPPRS',
+  NotAttending = 'NA',
+}
+
 export enum HearingDateEnum {
   DisplayTime = 'HH:MM',
   DisplayMonth = 'DD MMMM YYYY',
@@ -215,8 +220,8 @@ export enum HearingDatePriorityConstEnum {
 }
 
 export enum HearingSummaryEnum {
- BackendError = 'There was a system error and your request could not be processed. Please try again.',
- RequestFailedError = 'Something went wrong and your request could not be processed. Contact your service desk quoting all the error details on this screen.'
+  BackendError = 'There was a system error and your request could not be processed. Please try again.',
+  RequestFailedError = 'Something went wrong and your request could not be processed. Contact your service desk quoting all the error details on this screen.'
 }
 
 export enum ACTION {

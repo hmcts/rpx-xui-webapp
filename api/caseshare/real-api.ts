@@ -15,7 +15,7 @@ const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH);
 
 export async function getUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
-    const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=true&status=active`;
+    const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=false&status=active`;
     const {status, data}: {status: number, data: any} = await handleGet(path, req, next);
     const permissions = CASE_SHARE_PERMISSIONS.split(',');
     const users = [...data.users]

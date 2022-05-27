@@ -23,7 +23,7 @@ const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
   const searchTerm = req.query.searchTerm;
-  const serviceIds = req.query.serviceIds;
+  const serviceIds = req.query.serviceIds as string;
   const locationType = req.query.locationType;
   const serviceIdArray = serviceIds.split(',');
   const courtTypeIds = getCourtTypeIdsByService(serviceIdArray);

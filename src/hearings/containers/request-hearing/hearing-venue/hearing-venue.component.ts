@@ -24,7 +24,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public serviceIds: string = '';
   public findLocationFormGroup: FormGroup;
 
-  @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
+  @ViewChild(SearchLocationComponent, { static: false }) public searchLocationComponent: SearchLocationComponent;
   public selectedLocations: LocationByEPIMMSModel[];
   public validationErrors: { id: string, message: string }[] = [];
 

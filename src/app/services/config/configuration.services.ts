@@ -1,12 +1,11 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 
 import * as fromApp from '../../store';
 import {Store, select} from '@ngrx/store';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {ConfigurationModel} from '../../models/configuration.model';
 import {catchError, take} from 'rxjs/operators';
-import {throwError} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 
 /**
  *  Configuration Services responsible for fetching initial config data needed for app to run

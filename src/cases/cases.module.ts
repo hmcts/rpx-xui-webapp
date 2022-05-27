@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
 import {
   AbstractAppConfig,
@@ -36,19 +35,19 @@ import { HearingsModule } from '../hearings/hearings.module';
 import { HearingsPipesModule } from '../hearings/pipes/hearings.pipes.module';
 import { HearingsService } from '../hearings/services/hearings.service';
 import { OrganisationModule } from '../organisation/organisation.module';
+import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
-// from directives
-import * as fromDirectives from './directives';
 // from containers
 import * as fromContainers from './containers';
+// from directives
+import * as fromDirectives from './directives';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
 
 @NgModule({
   imports: [
@@ -56,14 +55,13 @@ import { PriorityFieldComponentModule } from '../work-allocation-2/components/pr
     CaseUIToolkitModule,
     CreateCaseFiltersModule,
     SearchResultModule,
-    HttpClientModule,
     StoreModule.forFeature('cases', reducers),
     EffectsModule.forFeature(effects),
     casesRouting,
     SharedModule,
     OrganisationModule,
     SearchFiltersModule,
-    HttpModule,
+    HttpClientModule,
     MatDialogModule,
     CaseListFiltersModule,
     WorkbasketFiltersModule,

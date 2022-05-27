@@ -145,7 +145,7 @@ describe('AppHeaderComponent', () => {
     it('should allow subscribing to an observable', () => {
       // ensure that the component's subscribe method runs with mock data
       const url = '/tasks/list';
-      const exObservable$ = Observable.of(url);
+      const exObservable$ = of(url);
       expect(component.subscribe(exObservable$)).toBeTruthy();
     });
   });

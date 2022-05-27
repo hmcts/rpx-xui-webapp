@@ -2,12 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
-import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import { LocationModel } from '../../../api/locations/models/location.model';
-
 import { AppUtils } from '../../app/app-utils';
 import { UserDetails, UserRole } from '../../app/models';
 import * as fromRoot from '../../app/store';

@@ -9,7 +9,7 @@ import { CaseNameFieldComponent } from './case-name-field.component';
   template: `<exui-case-name-field [caseName]="caseName" [caseId]="caseId"></exui-case-name-field>`
 })
 class WrapperComponent {
-  @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
+  @ViewChild(CaseNameFieldComponent, {static: false}) public appComponentRef: CaseNameFieldComponent;
   @Input() public caseName: string;
   @Input() public caseId: string;
 }

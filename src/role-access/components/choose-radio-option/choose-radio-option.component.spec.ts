@@ -10,7 +10,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
   template: `<exui-choose-radio-option [optionsList]="optionsList" [title]="title" [caption]="caption"></exui-choose-radio-option>`
 })
 class WrapperComponent {
-  @ViewChild(ChooseRadioOptionComponent) public ref: ChooseRadioOptionComponent;
+  @ViewChild(ChooseRadioOptionComponent, {static: false}) public ref: ChooseRadioOptionComponent;
   @Input() public optionsList: OptionsModel[];
   @Input() public title: RoleAllocationTitleText;
   @Input() public caption: RoleAllocationCaptionText;

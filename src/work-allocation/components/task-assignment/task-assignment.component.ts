@@ -1,14 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import c = require('config');
-
+import { UserInfo } from '../../../app/models/user-details.model';
+import { SessionStorageService } from '../../../app/services';
 import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDisplayName } from '../../pipes';
 import { CaseworkerDataService, LocationDataService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { FilterConstants } from '../constants';
-import { SessionStorageService } from '../../../app/services';
-import { UserInfo } from '../../../app/models/user-details.model';
 
 @Component({
   selector: 'exui-task-assignment',

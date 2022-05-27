@@ -1,8 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { UserDetails } from '../../../../app/models';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import * as fromRoot from '../../../../app/store';

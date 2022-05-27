@@ -15,7 +15,7 @@ import { AvailableTasksFilterComponent } from './available-tasks-filter.componen
   template: `<exui-available-tasks-filter (selectionChanged)="onSelectionChanged($event)"></exui-available-tasks-filter>`
 })
 class WrapperComponent {
-  @ViewChild(AvailableTasksFilterComponent) public appComponentRef: AvailableTasksFilterComponent;
+  @ViewChild(AvailableTasksFilterComponent, {static: false}) public appComponentRef: AvailableTasksFilterComponent;
   public changedEvents: any[] = [];
   public onSelectionChanged(locations: Location[]): void {
     this.changedEvents.push(locations);

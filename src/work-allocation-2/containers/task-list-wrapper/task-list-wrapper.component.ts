@@ -181,9 +181,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions =>
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap(jurisdictions =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
-    );
+    ));
     // similar to case list wrapper changes
     caseworkersByService$.subscribe(caseworkers => {
       this.caseworkers = caseworkers;
@@ -327,7 +327,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
-    this.showSpinner$ = this.loadingService.isLoading;
+    this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     const tasksSearch$ = this.performSearchPagination();
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {

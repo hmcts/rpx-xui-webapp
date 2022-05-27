@@ -456,7 +456,7 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-4.17.8-linked-cases-error-handling"@hmcts/ccd-case-ui-toolkit@4.17.8-linked-cases-error-handling":
+"@hmcts/ccd-case-ui-toolkit@4.17.8-linked-cases-error-handling":
   version "4.17.8-linked-cases-error-handling"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.17.8-linked-cases-error-handling.tgz#df1b33060a7fa93b9facfa852c9c7fe68ca7cb81"
   integrity sha512-JSYaLk1KLLBWLV1DSbYBIePr3ue1gadANCjPcBtJTFqbJDsmSsiXMjBiwE2+w0EROkiN2hIpP5xXaNZTanFCfw==

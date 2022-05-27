@@ -10,9 +10,9 @@ import { FlagDefinition, NavigationItem } from '../../models/theming.model';
 import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
-    selector: 'exui-hmcts-global-header',
-    templateUrl: './hmcts-global-header.component.html',
-    styleUrls: ['./hmcts-global-header.component.scss']
+  selector: 'exui-hmcts-global-header',
+  templateUrl: './hmcts-global-header.component.html',
+  styleUrls: ['./hmcts-global-header.component.scss']
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
@@ -21,7 +21,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
   @Input() public items: NavigationItem[];
   @Input() public logoIsUsed: boolean;
-  @Input() public headerTitle: {name: string; url: string};
+  @Input() public headerTitle: { name: string; url: string };
   @Input() public navigation: UserNavModel;
   @Input() public logo: string;
   @Input() public currentUrl: string;
@@ -80,7 +80,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     });
   }
 
-  private splitNavItems(items: NavigationItem[]): {right: NavigationItem[], left: NavigationItem[]} {
+  private splitNavItems(items: NavigationItem[]): { right: NavigationItem[], left: NavigationItem[] } {
     items = items || [];
     return {
       right: items.filter(item => item.align && item.align === 'right'),
@@ -102,7 +102,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    const flags: {[flag: string]: boolean | string} = {};
+    const flags: { [flag: string]: boolean | string } = {};
     const obs: Observable<boolean>[] = [];
     items.forEach(
       item => (item.flags || []).concat(item.notFlags || []).forEach(
@@ -121,17 +121,17 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       return of(items);
     }
 
-		if (obs.length > 1) {
-			combineLatest([obs[0], obs.slice(1)]).pipe(
-				map(_ => {
-					let i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
-					i = i || [];
-					return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.notFlags.every(flag => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);
-				})	
-			);
-		}
+    if (obs.length > 1) {
+      combineLatest([obs[0], obs.slice(1)]).pipe(
+        map(_ => {
+          let i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
+          i = i || [];
+          return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.notFlags.every(flag => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);
+        })
+      );
+    }
 
-		return obs[0].pipe(
+    return obs[0].pipe(
       map(_ => {
         let i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
         i = i || [];

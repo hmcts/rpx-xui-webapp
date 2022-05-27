@@ -4,26 +4,26 @@ import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material';
 import {
-	AbstractAppConfig,
-	AlertService,
-	AuthService as CCDAuthService,
-	CaseEditWizardGuard,
-	CaseListFiltersModule,
-	CasesService,
-	CaseUIToolkitModule,
-	CreateCaseFiltersModule,
-	DocumentManagementService,
-	DraftService,
-	HttpErrorService,
-	HttpService,
-	LoadingModule,
-	PageValidationService,
-	PlaceholderService,
-	RequestOptionsBuilder,
-	RouterHelperService,
-	SearchFiltersModule,
-	SearchResultModule,
-	WorkbasketFiltersModule
+  AbstractAppConfig,
+  AlertService,
+  AuthService as CCDAuthService,
+  CaseEditWizardGuard,
+  CaseListFiltersModule,
+  CasesService,
+  CaseUIToolkitModule,
+  CreateCaseFiltersModule,
+  DocumentManagementService,
+  DraftService,
+  HttpErrorService,
+  HttpService,
+  LoadingModule,
+  PageValidationService,
+  PlaceholderService,
+  RequestOptionsBuilder,
+  RouterHelperService,
+  SearchFiltersModule,
+  SearchResultModule,
+  WorkbasketFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';

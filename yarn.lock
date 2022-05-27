@@ -26,7 +26,7 @@
     "@angular-devkit/core" "8.3.29"
     rxjs "6.4.0"
 
-"@angular-devkit/build-angular@~0.803.17":
+"@angular-devkit/build-angular@~0.803.29":
   version "0.803.29"
   resolved "https://registry.yarnpkg.com/@angular-devkit/build-angular/-/build-angular-0.803.29.tgz#4cc2ecb7c4ca48389f05d1e05d4708f82c8c7767"
   integrity sha512-XAgfP1gi0rEJ3oVt+8ipvS5RfPNbeK5r2n8Ll2H3xkKjU0p1PN8+S6/0XVBtmMfeQ06SJWEAKFcAYqrxXhVTzw==
@@ -99,7 +99,7 @@
     typescript "3.5.3"
     webpack-sources "1.4.3"
 
-"@angular-devkit/build-webpack@0.803.29", "@angular-devkit/build-webpack@~0.803.17":
+"@angular-devkit/build-webpack@0.803.29", "@angular-devkit/build-webpack@~0.803.29":
   version "0.803.29"
   resolved "https://registry.yarnpkg.com/@angular-devkit/build-webpack/-/build-webpack-0.803.29.tgz#ceaee658f0b71a0fee4f10b574b49e192d333a7c"
   integrity sha512-3dJ3iEGU6AFT8VFTe72T9uNLobfd18Sq5Hz22UCCYji9K3ZyVc/bn5uXVVX+/Yj91MFtXuhOjLj7Z+XDeNy+OQ==

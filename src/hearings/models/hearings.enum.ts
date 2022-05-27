@@ -133,11 +133,11 @@ export enum HearingCategory {
   PanelMemberSpecialism = 'PanelMemberSpecialism',
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   JudgeType = 'JudgeType',
-  CancelHearingReason = 'CancellationReason',
+  CancelHearingReason = 'CaseManagementCancellationReasons',
   EntityRoleCode = 'EntityRoleCode',
-  AdjournHearingActualReason = 'AdjournHearingActualReason',
-  CancelHearingActualReason = 'CancelHearingActualReason',
-  HearingChangeReason = 'HearingChangeReason',
+  ActualPartHeardReasonCodes = 'ActualPartHeardReasonCodes',
+  ActualCancellationReasonCodes = 'ActualCancellationReasonCodes',
+  HearingChangeReason = 'ChangeReasons',
   LinkedHearings = 'LinkedHearings',
 }
 

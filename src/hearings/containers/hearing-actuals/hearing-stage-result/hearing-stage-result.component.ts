@@ -26,8 +26,8 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public hearingResult: HearingResult;
   public caseTitle: string;
   public hearingTypes: LovRefDataModel[];
-  public adjournHearingActualReasons: LovRefDataModel[];
-  public cancelHearingActualReasons: LovRefDataModel[];
+  public actualPartHeardReasonCodes: LovRefDataModel[];
+  public actualCancellationReasonCodes: LovRefDataModel[];
   public hearingActualsMainModel: HearingActualsMainModel;
   public sub: Subscription;
   public submitted = false;
@@ -44,8 +44,8 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     });
 
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
-    this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
-    this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
+    this.actualPartHeardReasonCodes = this.route.snapshot.data.actualPartHeardReasonCodes;
+    this.actualCancellationReasonCodes = this.route.snapshot.data.actualCancellationReasonCodes;
   }
 
   public get hearingResultEnum() {

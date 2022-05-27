@@ -19,6 +19,8 @@ import Task from '../../models/tasks/task.model';
 import { WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { servicesMap } from '../../utils';
+import { select, Store } from '@ngrx/store';
+import * as fromAppStore from '../../../app/store';
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -36,6 +38,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME = 'locations';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
+  public appStoreSub: Subscription;
   public showFilteredText = false;
   public noDefaultLocationMessage = 'Use the work filter to show tasks and cases based on service, work type and location';
   public error: ErrorMessage;
@@ -68,7 +71,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
               private readonly filterService: FilterService,
               private readonly taskService: WorkAllocationTaskService,
               private readonly service: WASupportedJurisdictionsService,
-              private readonly taskTypesService: TaskTypesService) {
+              private readonly taskTypesService: TaskTypesService,
+              private readonly appStore: Store<fromAppStore.State>) {
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
@@ -105,6 +109,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    if (this.appStoreSub && !this.appStoreSub.closed) {
+      this.appStoreSub.unsubscribe();
+    }
+
     if (this.subscription && !this.subscription.closed) {
       this.subscription.unsubscribe();
     }
@@ -224,40 +232,52 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private setUpServicesFilter(services: any[]): void {
-    if (!services.length) {
-      return;
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
+      userDetails => {
+        if (!services.length) {
+          return;
+        }
+        if ( !userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some(p => p.jurisdiction != undefined)) {
+          return;
+        }
+        const filteredServices = _.intersection.apply( _, [
+        userDetails.roleAssignmentInfo
+          .filter(p => p.substantive && p.substantive === 'Y')
+          .map(item => item.jurisdiction)
+          .filter((value, index, self) => self.indexOf(value) === index && value != undefined ),
+        services
+        ]);
+        const field: FilterFieldConfig = {
+        name: 'services',
+        options: [
+          {
+            key: 'services_all',
+            label: 'Select all',
+            selectAll: true
+          },
+          ...filteredServices
+            .sort()
+            .map(service => {
+              return {
+                key: service,
+                label: servicesMap[service] || service
+              };
+            })
+          ],
+          minSelected: 1,
+          maxSelected: null,
+          lineBreakBefore: false,
+          displayMinSelectedError: true,
+          minSelectedError: 'Select a service',
+          title: 'Services',
+          type: 'checkbox-large'
+          };
+        this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
+          name: 'services',
+          value: ['services_all', ...filteredServices]
+        }];
+        this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
+        this.fieldsConfig.fields.push(field);
+      });
     }
-    const field: FilterFieldConfig = {
-      name: 'services',
-      options: [
-        {
-          key: 'services_all',
-          label: 'Select all',
-          selectAll: true
-        },
-        ...services
-          .sort()
-          .map(service => {
-            return {
-              key: service,
-              label: servicesMap[service] || service
-            };
-          })
-      ],
-      minSelected: 1,
-      maxSelected: null,
-      lineBreakBefore: false,
-      displayMinSelectedError: true,
-      minSelectedError: 'Select a service',
-      title: 'Services',
-      type: 'checkbox-large'
-    };
-    this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-      name: 'services',
-      value: ['services_all', ...services]
-    }];
-    this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-    this.fieldsConfig.fields.push(field);
-  }
-
 }

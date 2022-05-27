@@ -7,7 +7,7 @@ import { MatAutocompleteModule } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -25,7 +25,7 @@ import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
   template: `<exui-task-container-assignment></exui-task-container-assignment>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentContainerComponent) public appComponentRef: TaskAssignmentContainerComponent;
+  @ViewChild(TaskAssignmentContainerComponent, {static: false}) public appComponentRef: TaskAssignmentContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -42,7 +42,7 @@ describe('TaskAssignmentContainerComponent1', () => {
   const mockTasks = getMockTasks();
   const mockCaseworkers = getMockCaseworkers();
   const mockWorkAllocationService = {
-    assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
+    assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
   };
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -71,7 +71,7 @@ describe('TaskAssignmentContainerComponent1', () => {
                 ...TaskActionConstants.Reassign
               }
             },
-            params: Observable.of({ task: mockTasks[0] })
+            params: of({ task: mockTasks[0] })
           }
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }

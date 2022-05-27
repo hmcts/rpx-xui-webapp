@@ -33,7 +33,7 @@ import { AllWorkCaseComponent } from './all-work-case.component';
 })
 
 class WrapperComponent {
-  @ViewChild(AllWorkCaseComponent) public appComponentRef: AllWorkCaseComponent;
+  @ViewChild(AllWorkCaseComponent, {static: false}) public appComponentRef: AllWorkCaseComponent;
 }
 
 describe('AllWorkCaseComponent', () => {

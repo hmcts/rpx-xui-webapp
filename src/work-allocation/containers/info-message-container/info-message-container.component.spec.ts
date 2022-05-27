@@ -12,7 +12,7 @@ import { InfoMessageContainerComponent } from './info-message-container.componen
   template: `<exui-info-message-container></exui-info-message-container>`
 })
 class WrapperComponent {
-  @ViewChild(InfoMessageContainerComponent) public appComponentRef: InfoMessageContainerComponent;
+  @ViewChild(InfoMessageContainerComponent, {static: false}) public appComponentRef: InfoMessageContainerComponent;
 }
 
 describe('WorkAllocation', () => {

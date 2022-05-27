@@ -14,7 +14,8 @@ import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/servi
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
@@ -37,7 +38,7 @@ import * as fromCaseList from '../../store/reducers';
   styleUrls: ['case-list.component.scss']
 })
 export class CaseListComponent implements OnInit, OnDestroy {
-  @ViewChild('ccdSearchResult') public ccdSearchResult: SearchResultComponent; // EUI-2906
+  @ViewChild('ccdSearchResult', {static: false}) public ccdSearchResult: SearchResultComponent; // EUI-2906
   public defaults: any;
   public caseListFilterEventsBindings: ActionBindingModel[];
   public fromCasesFeature: any;
@@ -156,10 +157,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
     this.pIsCaseShareVisible$ = combineLatest([
       this.userDetails, this.shareableJurisdictions$, this.jurisdiction$
-    ]).mergeMap(project => {
+    ]).pipe(mergeMap(project => {
       this.cd.detectChanges();
-      return Observable.of(this.caseShareIsVisible(project));
-    });
+      return of(this.caseShareIsVisible(project));
+    }));
 
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));

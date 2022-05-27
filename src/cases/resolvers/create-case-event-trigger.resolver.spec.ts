@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CreateCaseEventTriggerResolver } from './create-case-event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
 import { DRAFT_PREFIX, DRAFT_QUERY_PARAM, createCaseEventTrigger, HttpError, CaseEventTrigger } from '@hmcts/ccd-case-ui-toolkit';
@@ -16,7 +16,7 @@ describe('CreateCaseFieldsResolver', () => {
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(EVENT_TRIGGER_ID, 'Into legacy', 'caseId', true, []);
 
   const DRAFT_ID = DRAFT_PREFIX + '12345';
-  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = Observable.of(EVENT_TRIGGER);
+  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = of(EVENT_TRIGGER);
   const ERROR: HttpError = {
     timestamp: '',
     status: 422,
@@ -150,7 +150,7 @@ describe('CreateCaseFieldsResolver', () => {
   });
 
   it('should create error alert when event trigger cannot be retrieved', done => {
-    casesService.getEventTrigger.and.returnValue(Observable.throwError(ERROR));
+    casesService.getEventTrigger.and.returnValue(throwError(ERROR));
 
     createCaseFieldsResolver
       .resolve(route)

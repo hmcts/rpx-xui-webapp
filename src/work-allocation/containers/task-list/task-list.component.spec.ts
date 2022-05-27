@@ -25,7 +25,7 @@ import { TaskListComponent } from './task-list.component';
       [pagination]="pagination"></exui-task-list>`
 })
 class WrapperComponent {
-  @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
+  @ViewChild(TaskListComponent, {static: false}) public appComponentRef: TaskListComponent;
   @Input() public fields: TaskFieldConfig[];
   @Input() public tasks: Task[];
   @Input() public tasksTotal: number;

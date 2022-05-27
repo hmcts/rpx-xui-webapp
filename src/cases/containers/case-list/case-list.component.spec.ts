@@ -631,7 +631,7 @@ describe('CaseListComponent', () => {
         },
         canShareCases: true
       }));
-      spyOnProperty(component, 'isCaseShareVisible$').and.returnValue(Observable.of(true));
+      spyOnProperty(component, 'isCaseShareVisible$').and.returnValue(of(true));
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share Case');
       expect(component.checkIfButtonDisabled()).toBeTruthy();
@@ -691,7 +691,7 @@ describe('CaseListComponent', () => {
       component.onResultsViewHandler(resultView);
       expect(component.hasResults()).toBeTruthy();
       spyOn(component, 'hasResults').and.returnValue(true);
-      spyOnProperty(component, 'isCaseShareVisible$').and.returnValue(Observable.of(true));
+      spyOnProperty(component, 'isCaseShareVisible$').and.returnValue(of(true));
       fixture.detectChanges();
       const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header')).nativeElement;
       expect(infoHeader.innerHTML).toContain('Why are some cases unselectable?');

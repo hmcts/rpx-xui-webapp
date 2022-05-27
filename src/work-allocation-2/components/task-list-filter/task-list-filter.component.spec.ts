@@ -21,7 +21,7 @@ import { TaskListFilterComponent } from './task-list-filter.component';
     <exui-task-list-filter></exui-task-list-filter>`
 })
 class WrapperComponent {
-  @ViewChild(TaskListFilterComponent) public appComponentRef: TaskListFilterComponent;
+  @ViewChild(TaskListFilterComponent, {static: false}) public appComponentRef: TaskListFilterComponent;
 }
 
 describe('TaskListFilterComponent', () => {

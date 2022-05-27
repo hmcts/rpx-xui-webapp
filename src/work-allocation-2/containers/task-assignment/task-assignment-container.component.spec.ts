@@ -11,7 +11,7 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/se
 import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
@@ -29,7 +29,7 @@ import { TaskAssignmentContainerComponent } from './task-assignment-container.co
     <exui-task-container-assignment></exui-task-container-assignment>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentContainerComponent) public appComponentRef: TaskAssignmentContainerComponent;
+  @ViewChild(TaskAssignmentContainerComponent, {static: false}) public appComponentRef: TaskAssignmentContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -55,7 +55,7 @@ describe('TaskAssignmentContainerComponent2', () => {
   };
   const mockTasks = getMockTasks();
   const mockWorkAllocationService = {
-    assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
+    assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
   };
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
@@ -106,8 +106,8 @@ describe('TaskAssignmentContainerComponent2', () => {
                 taskId: 'task1111111'
               }
             },
-            params: Observable.of({task: mockTasks[0]}),
-            paramMap: Observable.of({selectedPerson: SELECTED_PERSON})
+            params: of({task: mockTasks[0]}),
+            paramMap: of({selectedPerson: SELECTED_PERSON})
           }
         },
         {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},

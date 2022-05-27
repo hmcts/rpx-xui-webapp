@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { SessionStorageService } from '..';
 import { WindowLocationService } from '../window-location/window-location.service';
 import { AuthService } from './auth.service';
@@ -17,7 +18,7 @@ export class AuthGuard implements CanActivate {
   ) { }
 
   public canActivate(): Observable<boolean> {
-    return this.authService.isAuthenticated().map(isAuth => {
+    return this.authService.isAuthenticated().pipe(map(isAuth => {
       if (!isAuth) {
         this.storeRedirectUrl();
         this.authService.loginRedirect();
@@ -27,7 +28,7 @@ export class AuthGuard implements CanActivate {
       this.redirectToStoredUrl();
 
       return true;
-    });
+    }));
   }
 
   private storeRedirectUrl(): void {

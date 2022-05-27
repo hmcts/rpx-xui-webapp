@@ -29,22 +29,22 @@ export const ROUTES: Routes = [
   {
     path: 'cases',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../cases/cases.module#CasesModule'
+    loadChildren: () => import('../cases/cases.module').then(m => m.CasesModule)
   },
   {
     path: 'work',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
+    loadChildren: () => import('../work-allocation-2/work-allocation2.module').then(m => m.WorkAllocationModule2)
   },
   {
     path: 'tasks',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+    loadChildren: () => import('../work-allocation/work-allocation.module').then(m => m.WorkAllocationModule)
   },
   {
     path: 'role-access',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../role-access/role-access.module#RoleAccessModule'
+    loadChildren: () => import('../role-access/role-access.module').then(m => m.RoleAccessModule)
   },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
@@ -62,7 +62,7 @@ export const ROUTES: Routes = [
   {
     path: 'noc',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../noc/noc.module#NocModule'
+    loadChildren: () => import('../noc/noc.module').then(m => m.NocModule)
   },
   {
     path: 'hearings',
@@ -145,7 +145,7 @@ export const ROUTES: Routes = [
   {
     path: 'refunds',
     canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
-    loadChildren: '../refunds/refunds.module#RefundsModule',
+    loadChildren: () => import('../refunds/refunds.module').then(m => m.RefundsModule),
     data: {
       title: 'Refunds',
       needsFeaturesEnabled: ['feature-refunds'],

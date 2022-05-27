@@ -17,8 +17,7 @@ export interface ILoggerService {
     getMessage(message: any): string;
 }
 
-@Injectable()
-
+@Injectable({providedIn: 'root'})
 export class LoggerService implements ILoggerService {
     public COOKIE_KEYS;
     constructor(private readonly monitoringService: MonitoringService,

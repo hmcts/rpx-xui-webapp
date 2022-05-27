@@ -50,6 +50,10 @@ const routerOptions: ExtraOptions = {
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.TRACE,
+      disableConsoleLogging: false
+    }),
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -66,13 +70,9 @@ const routerOptions: ExtraOptions = {
       logOnly: environment.production
     }),
     SharedModule,
-    LoggerModule.forRoot({
-      level: NgxLoggerLevel.TRACE,
-      disableConsoleLogging: false
-    }),
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
-    PaymentLibModule,
+    PaymentLibModule
   ],
   providers: [
     {

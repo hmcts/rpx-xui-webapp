@@ -29,7 +29,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public selectJudgeNameError: string;
   public hearingJudgeFormInfo: { includedJudges: string[], judgeTypes: string[], excludedJudges: string[] };
   public serviceId: string;
-  @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('excludedJudge', { static: false }) public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(protected readonly route: ActivatedRoute,
               private readonly formBuilder: FormBuilder,

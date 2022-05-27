@@ -36,8 +36,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public personalCodejudgeList: JudicialUserModel[] = [];
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   public serviceId: string;
-  @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
-  @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('includedJudge', { static: false }) public includedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('excludedJudge', { static: false }) public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,

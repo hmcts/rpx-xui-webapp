@@ -1,6 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Navigation, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TaskAssignmentPersonNotAuthorisedComponent } from './task-assignment-person-not-authorised.component';
 
@@ -20,7 +20,7 @@ describe('TaskAssignmentPersonNotAuthorised', () => {
 
   beforeEach(() => {
     mockRouter = TestBed.get(Router);
-    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {returnUrl: '/work'}}});
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {returnUrl: '/work'}}} as unknown as Navigation);
     fixture = TestBed.createComponent(TaskAssignmentPersonNotAuthorisedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

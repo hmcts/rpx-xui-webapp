@@ -1,20 +1,20 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
   CaseUIToolkitModule,
   ErrorNotifierService
 } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
-
 import { CaseDetailsHomeComponent } from '..';
 import { reducers } from '../../../app/store';
 import { InfoMessage } from '../../../work-allocation/enums';
 import * as fromFeature from '../../store';
+
 
 describe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;
@@ -75,7 +75,7 @@ describe('CaseDetailsHomeComponent', () => {
 
     beforeEach(() => {
       mockRouter = TestBed.get(Router);
-      spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({extras: { state: { showMessage: true, messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}}});
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({extras: { state: { showMessage: true, messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}}} as unknown as Navigation);
       store = TestBed.get(Store);
       storeDispatchMock = spyOn(store, 'dispatch');
       fixture = TestBed.createComponent(CaseDetailsHomeComponent);

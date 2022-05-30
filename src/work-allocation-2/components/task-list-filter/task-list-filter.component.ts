@@ -63,7 +63,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
-  private hideButton: boolean;
+  public hideButton: boolean;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.

@@ -494,7 +494,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     // const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
 
     let serviceIds = [];
-    let locationIds = [];
+    // let locationIds = [];
     if (services && services.hasOwnProperty('values')) {
       serviceIds = services.values;
     }

@@ -1,11 +1,11 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {ACTION, HearingInstructionsEnum} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { ACTION, HearingInstructionsEnum } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-additional-instructions',
@@ -49,9 +49,14 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        listingComments: this.instructionsForm.value.instructions
+        listingComments: this.instructionsForm.value.instructions,
+        autolistFlag: this.getAutoListFlag()
       }
     };
+  }
+
+  public getAutoListFlag(): boolean {
+    return (this.instructionsForm.value.instructions !== null) ? false : this.hearingRequestMainModel.hearingDetails.autolistFlag;
   }
 
   public isFormValid(): boolean {

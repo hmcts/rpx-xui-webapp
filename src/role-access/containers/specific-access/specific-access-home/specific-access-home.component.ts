@@ -70,7 +70,8 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       jurisdiction: this.task.jurisdiction,
       caseName: this.task.case_name,
       requestCreated: this.role.created,
-      actorId: this.role.actorId
+      actorId: this.role.actorId,
+      accessReason: this.role.notes
       }));
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessReviewStateData => {

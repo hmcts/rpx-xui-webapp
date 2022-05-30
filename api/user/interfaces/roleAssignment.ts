@@ -23,7 +23,13 @@ export interface LocationInfo {
   isCaseAllocator?: boolean;
   caseType?: string;
   substantive?: string;
-  notes?: string;
+  notes?: Note;
+}
+
+export interface Note {
+  userId?: string;
+  time?: Date;
+  comment?: string;
 }
 
 export interface LocationApi {

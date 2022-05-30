@@ -49,7 +49,8 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         jurisdiction: action.payload.jurisdiction,
         caseName: action.payload.caseName,
         requestCreated: action.payload.requestCreated,
-        actorId: action.payload.actorId
+        actorId: action.payload.actorId,
+        accessReason: action.payload.accessReason
       };
     }
     case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_FORM_DATA: {

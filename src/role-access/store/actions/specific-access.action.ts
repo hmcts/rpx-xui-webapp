@@ -26,7 +26,8 @@ export class SetSpecificAccessInitData implements Action {
     jurisdiction: string,
     caseName: string,
     requestCreated: string,
-    actorId: string }) {
+    actorId: string,
+    accessReason: string }) {
   }
 }
 

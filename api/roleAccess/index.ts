@@ -112,7 +112,7 @@ export function mapResponseToCaseRoles(
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes: roleAssignment.attributes && roleAssignment.attributes.notes ? roleAssignment.attributes.notes : 'No reason for case access given'
+    notes: roleAssignment.attributes && roleAssignment.attributes.notes ? roleAssignment.attributes.notes[0].comment : 'No reason for case access given'
   }));
 }
 

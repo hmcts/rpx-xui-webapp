@@ -60,12 +60,8 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessStateData => {
         this.specificAccessStateData = specificAccessStateData;
-        this.initialAccessReason = specificAccessStateData.accessReason;
       }
     );
-    // TODO: this ticket is blocked so mocked with those data to go through, they will be removed and implimented with actual data
-    // when dependency resolved
-    this.setMockData();
     this.reviewOptionControl = new FormControl(this.initialAccessReason ? this.initialAccessReason : '', [Validators.required]);
     this.formGroup = this.fb.group({
       radioSelected: this.reviewOptionControl,
@@ -88,17 +84,6 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
 
   public onChange(): void {
     this.submitted = false;
-  }
-
-  // remove once Access management goes live
-  public setMockData(): void {
-    this.requestAccessDetails = {
-      caseName: 'new name',
-      caseReference: 'Test reference',
-      dateSubmitted: '01-01-2001',
-      requestFrom: 'Test user',
-      reasonForCaseAccess: 'slow Tuesday'
-    };
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent) {

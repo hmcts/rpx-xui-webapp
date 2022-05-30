@@ -3,16 +3,18 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
+import { LocationModel } from 'api/locations/models/location.model';
 import { of } from 'rxjs/internal/observable/of';
-
+import { CaseRoleDetails } from 'src/role-access/models';
 import { metaReducers } from '../../app/app.module';
 import { UserDetails } from '../../app/models';
 import { reducers } from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { AllocateRoleService } from '../../role-access/services';
+import { Caseworker } from '../models/dtos';
 import { CaseworkerDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
-import { LocationModel } from 'api/locations/models/location.model';
+
 
 describe('LocationResolver', () => {
 
@@ -113,7 +115,7 @@ describe('LocationResolver', () => {
 
   it('resolves caseworkers location', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(store, 'pipe').and.returnValue(of(CASE_WORKER));
-    spyOn(caseworkerDataService, 'getAll').and.returnValue(of(CASE_WORKERS));
+    spyOn(caseworkerDataService, 'getAll').and.returnValue(of(CASE_WORKERS as unknown as Caseworker[]));
     service.resolve().subscribe((location: LocationModel) => {
       expect(location.court_name).toEqual(CASE_WORKERS[0].location.locationName);
     });
@@ -121,7 +123,7 @@ describe('LocationResolver', () => {
 
   it('resolves judicialworkers location', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(store, 'pipe').and.returnValue(of(JUDICIAL_WORKER));
-    spyOn(judicialWorkerDataService, 'getCaseRolesUserDetails').and.returnValue(of(JUDICIAL_WORKERS));
+    spyOn(judicialWorkerDataService, 'getCaseRolesUserDetails').and.returnValue(of(JUDICIAL_WORKERS as unknown as CaseRoleDetails[]));
     service.resolve().subscribe((location: LocationModel) => {
       expect(location.court_name).toEqual(JUDICIAL_WORKERS[0].location.locationName);
     });

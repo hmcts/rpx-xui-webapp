@@ -1,14 +1,14 @@
-import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingAdditionalInstructionsComponent} from './hearing-additional-instructions.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingAdditionalInstructionsComponent } from './hearing-additional-instructions.component';
 
 describe('HearingAdditionalInstructionsComponent', () => {
   let component: HearingAdditionalInstructionsComponent;
@@ -44,7 +44,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
   });
 
   it('should check form validity', () => {
-    spyOn(hearingsService, 'navigateAction$');
+    spyOn<HearingsService>(hearingsService, 'navigateAction$' as never);
     component.instructionsForm.controls['instructions'].setValue('instructions');
     component.executeAction(ACTION.CONTINUE);
     expect(component.isFormValid()).toBeTruthy();

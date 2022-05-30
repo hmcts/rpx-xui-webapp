@@ -11,7 +11,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher2 } from '../utils/matchers';
-const { somethingLike,eachLike, iso8601DateTime, term } = Matchers;
+const { somethingLike, eachLike, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_judicial', port: 8000 });
 
 const MockApp = require('../../../../../test/nodeMock/app');

@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { RoleCategory } from '../../../../booking/models';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import {
   Actions,

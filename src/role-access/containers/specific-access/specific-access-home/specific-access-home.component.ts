@@ -2,15 +2,17 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+
+import { Task } from '../../../../work-allocation-2/models/tasks';
+import { specificAccessApprovedVisibilityStates, specificAccessDeniedVisibilityStates, specificAccessDurationVisibilityStates, specificAccessInformationVisibilityStates, specificAccessReviewVisibilityStates } from '../../../constants';
+import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
+import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
+import * as fromFeature from '../../../store';
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { SpecificAccessApprovedComponent } from '../specific-access-approved/specific-access-approved.component';
 import { SpecificAccessInformationComponent } from '../specific-access-information/specific-access-information.component';
 import { SpecificAccessDeniedComponent } from '../specific-access-denied/specific-access-denied.component';
-import { specificAccessApprovedVisibilityStates, specificAccessDeniedVisibilityStates, specificAccessDurationVisibilityStates, specificAccessInformationVisibilityStates, specificAccessReviewVisibilityStates } from '../../../constants';
-import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
-import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
-import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-specific-access-home',
@@ -35,6 +37,9 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
 
   public caseId: string;
 
+  public task: Task;
+  public role: CaseRole;
+
   private specificAccessStateDataSub: Subscription;
   public specificAccessReviewStateData: SpecificAccessStateData;
   public navigationCurrentState: SpecificAccessState;
@@ -55,6 +60,18 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.task = this.route.snapshot.data.taskAndRole.task.task;
+    this.role = this.route.snapshot.data.taskAndRole.role[0];
+    // console.log(this.task, 'and success', this.role);
+    this.store.dispatch(new fromFeature.SetSpecificAccessInitData(
+      {caseId: this.task.case_id,
+      taskId: this.task.id,
+      requestId: this.role.id,
+      jurisdiction: this.task.jurisdiction,
+      caseName: this.task.case_name,
+      requestCreated: this.role.created,
+      actorId: this.role.actorId
+      }));
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessReviewStateData => {
         this.navigationCurrentState = specificAccessReviewStateData.state;

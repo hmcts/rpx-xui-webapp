@@ -8,8 +8,11 @@ export const specificAccessInitialState: SpecificAccessStateData = {
   accessReason: null,
   lastError: null,
   caseId: null,
+  caseName: null,
   taskId: null,
+  actorId: null,
   requestedRole: null,
+  requestCreated: null,
   requestId: null,
   jurisdiction: null,
   roleCategory: null,
@@ -35,6 +38,18 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         ...currentState,
         accessReason: action.payload.accessReason,
         state: action.payload.specificAccessState
+      };
+    }
+    case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA: {
+      return {
+        ...currentState,
+        caseId: action.payload.caseId,
+        taskId: action.payload.taskId,
+        requestId: action.payload.requestId,
+        jurisdiction: action.payload.jurisdiction,
+        caseName: action.payload.caseName,
+        requestCreated: action.payload.requestCreated,
+        actorId: action.payload.actorId
       };
     }
     case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_FORM_DATA: {

@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.17.10-linked-cases-unlink-journey-unlink-cases":
-  version "4.17.10-linked-cases-unlink-journey-unlink-cases"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.17.10-linked-cases-unlink-journey-unlink-cases.tgz#3505c25cfa0e9e583c1c0ab4db25a8c19dd6e0c9"
-  integrity sha512-Do7OS54DIxiht6X+A8DJ2O4ncfBvFpW6jOiR4PJ7XwlkBjatzlm4W9zSXK4Ak1d8EPItRn7TtHrzLoxpGScPRQ==
+"@hmcts/ccd-case-ui-toolkit@4.17.12-linked-cases-unlink-journey-error-page":
+  version "4.17.12-linked-cases-unlink-journey-error-page"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.17.12-linked-cases-unlink-journey-error-page.tgz#839b22296823f82e79e8c755adfcb2d0077c1344"
+  integrity sha512-oMKXOgWpNgFWl3b5AAvu6+Gxh57HjK5xhjAG1Hv0ONGMj5M1E5ubqEHGfFb7cKm/ccAjsypjF6qSYC5rZ975qw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

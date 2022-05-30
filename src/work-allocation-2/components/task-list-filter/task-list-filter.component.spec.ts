@@ -26,7 +26,7 @@ class WrapperComponent {
   @ViewChild(TaskListFilterComponent) public appComponentRef: TaskListFilterComponent;
 }
 
-fdescribe('TaskListFilterComponent', () => {
+describe('TaskListFilterComponent', () => {
   let component: TaskListFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -83,7 +83,7 @@ fdescribe('TaskListFilterComponent', () => {
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks', 'currentTasks$']);
   const locationService = jasmine.createSpyObj('locationService', ['path']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
-  mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+  mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
   mockTaskService.currentTasks$.and.returnValue(of([null]));
   const roleAssignmentInfo = [{
@@ -107,7 +107,7 @@ fdescribe('TaskListFilterComponent', () => {
     fields: [
       {
         id: 'services',
-        value: ['services_all', 'IA']
+        value: ['services_all', 'IA', 'SSCS']
       },
       {
         name: 'locations',
@@ -168,7 +168,6 @@ fdescribe('TaskListFilterComponent', () => {
     component = wrapper.appComponentRef;
     component.persistence = 'local';
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
-    //spyOn(component.appStoreSub, 'unsubscribe');
     mockFilterService.get.and.returnValue(null);
     fixture.detectChanges();
   });
@@ -194,7 +193,6 @@ fdescribe('TaskListFilterComponent', () => {
   });
 
   it('should show types of work filter with all types of work filters selected', () => {
-
     expect(component.fieldsSettings.fields.length).toBe(3);
     const typesOfWorkSelectedFields = component.fieldsSettings.fields[2];
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);

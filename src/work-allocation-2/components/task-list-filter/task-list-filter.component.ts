@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Location as AngularLocation } from '@angular/common';
@@ -63,6 +63,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
+  private hideButton: boolean;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
@@ -81,6 +82,19 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           this.router.getCurrentNavigation().extras.state.location) {
           this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
       }
+      this.router.events.pipe(
+          filter((event) => event instanceof NavigationEnd),
+          map(() => this.route.snapshot),
+          map((activatedRoute: ActivatedRouteSnapshot) => {
+            while (activatedRoute.firstChild) {
+              activatedRoute = activatedRoute.firstChild;
+            }
+            return activatedRoute;
+          })
+        )
+        .subscribe((activatedRouteSnapshot: ActivatedRouteSnapshot) => {
+          this.hideButton = activatedRouteSnapshot.url[0].path && activatedRouteSnapshot.url[0].path.includes('my-access');
+        });
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {

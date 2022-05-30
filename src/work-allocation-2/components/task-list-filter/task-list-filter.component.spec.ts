@@ -11,12 +11,12 @@ import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule, Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-
+import * as fromAppStore from '../../../app/store';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { ALL_LOCATIONS } from '../constants/locations';
 import { TaskListFilterComponent } from './task-list-filter.component';
-import * as fromAppStore from '../../../app/store';
+
 
 @Component({
   template: `

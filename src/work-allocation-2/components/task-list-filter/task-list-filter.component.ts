@@ -9,18 +9,19 @@ import {
   FilterService,
   FilterSetting
 } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
+import * as fromAppStore from '../../../app/store';
 import { Location } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
 import { WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { servicesMap } from '../../utils';
-import { select, Store } from '@ngrx/store';
-import * as fromAppStore from '../../../app/store';
+
+
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -232,6 +233,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private setUpServicesFilter(services: any[]): void {
+    // Available services need to be added to work-allocation-utils.ts -> servicesMap
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
         if (!services.length) {

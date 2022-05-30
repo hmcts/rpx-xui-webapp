@@ -9,7 +9,7 @@ import { $enum as EnumUtil } from 'ts-enum-util';
 
 import { UserDetails } from '../../../../app/models';
 import { ERROR_MESSAGE } from '../../../constants';
-import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../../models/enums';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
@@ -41,6 +41,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   public reviewOptionControl: FormControl;
 
   public specificAccessStateDataSub: Subscription;
+  public specificAccessStateData: SpecificAccessStateData;
 
   public readonly accessReasons: DisplayedAccessReason[];
 
@@ -58,6 +59,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessStateData => {
+        this.specificAccessStateData = specificAccessStateData;
         this.initialAccessReason = specificAccessStateData.accessReason;
       }
     );

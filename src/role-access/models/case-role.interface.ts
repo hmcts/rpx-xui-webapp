@@ -14,6 +14,7 @@ export interface CaseRole {
   actorId: string;
   actions: Action[];
   email: string;
+  created?: string;
 }
 
 export interface Action {

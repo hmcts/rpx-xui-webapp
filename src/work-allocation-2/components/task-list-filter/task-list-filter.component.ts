@@ -36,6 +36,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public static readonly FILTER_NAME = 'myWork';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
+  public allowTypesOfWorkFilter = true;
   public showFilteredText = false;
   public noDefaultLocationMessage = 'Use the work filter to show tasks and cases based on service, work type and location';
   public error: ErrorMessage;
@@ -59,6 +60,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public bookingLocations: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
+  private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
 
@@ -155,6 +157,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
     if (this.errorSubscription && !this.errorSubscription.closed) {
       this.errorSubscription.unsubscribe();
+    }
+
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
     }
   }
 
@@ -254,7 +260,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       options: [
         {
           key: 'types_of_work_all',
-          label: 'Select all',
+          label: 'All work types',
           selectAll: true
         },
         ...typesOfWork
@@ -311,6 +317,31 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
+  }
+
+  /**
+   * Sets the value of the allowTypesOfWorkFilter boolean determined by provided params
+   *
+   * @param url - the url string to check against
+   * @param myCaseUrl - the string to search for in the url
+   */
+  private setAllowTypesOfWorkFilter(url: string, myCasesUrl = 'my-work/my-cases'): void {
+    this.allowTypesOfWorkFilter = !url.includes(myCasesUrl);
+  }
+
+  /**
+   * Toggles the filter state
+   *
+   * @param showTypesOfWorkFilter - used to determine whether the types-of-work filters will be displayed
+   */
+  public onToggleFilter(showTypesOfWorkFilter: boolean): void {
+    this.toggleFilter = !this.toggleFilter;
+    if (this.toggleFilter) {
+      setTimeout(() => {
+        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
+        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+      }, 0);
+    }
   }
 
 }

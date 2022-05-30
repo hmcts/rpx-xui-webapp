@@ -14,7 +14,9 @@
 </div>
 
 <!-- Reset Sorting Button -->
+<div class="reset-button-space">
 <div *ngIf="showResetSortButton" class="reset-sort-button"><button type="button" class="govuk-button hmcts-button--secondary" (click)="onResetSorting()">Reset sorting</button></div>
+</div>
 
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">

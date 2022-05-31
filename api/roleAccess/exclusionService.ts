@@ -106,7 +106,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
-    notes: roleAssignment.attributes.notes,
+    notes: roleAssignment.attributes.notes as string,
   }));
 }
 

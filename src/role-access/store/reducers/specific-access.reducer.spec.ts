@@ -42,11 +42,14 @@ describe('Specific Access Reducer', () => {
           startDate: new Date(),
           endDate: new Date()
         }
-        const specificAccessData: SpecificAccessStateData = {
+        const specificAccessStateData: SpecificAccessStateData = {
           state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
           accessReason: AccessReason.APPROVE_REQUEST,
           typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
           period,
+          caseName: 'Example name',
+          actorId: 'N/A',
+          requestCreated: null,
           caseId: '1594717367271987',
           taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
           requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
@@ -72,9 +75,9 @@ describe('Specific Access Reducer', () => {
             }
           }
         }
-        const action = new fromActions.ApproveSpecificAccessRequest(specificAccessData);
-        const specificAccessState = fromReducer.specificAccessReducer(specificAccessData, action);
-        expect(specificAccessState).toEqual(specificAccessData);
+        const action = new fromActions.ApproveSpecificAccessRequest({specificAccessStateData, period});
+        const specificAccessState = fromReducer.specificAccessReducer(specificAccessStateData, action);
+        expect(specificAccessState).toEqual(specificAccessStateData);
       });
     });
   });

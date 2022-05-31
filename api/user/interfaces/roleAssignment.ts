@@ -24,6 +24,7 @@ export interface LocationInfo {
   caseType?: string;
   substantive?: string;
   notes?: Note;
+  requestedRole?: string;
 }
 
 export interface Note {

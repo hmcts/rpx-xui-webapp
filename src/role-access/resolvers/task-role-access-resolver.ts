@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { EMPTY, forkJoin, Observable } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, mergeMap } from 'rxjs/operators';
 
 import { Task } from '../../work-allocation-2/models/tasks';
 import { WorkAllocationTaskService } from '../../work-allocation-2/services';
@@ -26,7 +26,8 @@ export class TaskRoleAccessResolver implements Resolve<{ task: Task; role: any }
     );
     const role$ = task$.pipe(mergeMap((task) => {
       const thisTask: Task = task.task;
-      return this.allocateRoleService.getCaseAccessRoles(thisTask.case_id, thisTask.jurisdiction, thisTask.case_type_id, assignmentId);}))
+      return this.allocateRoleService.getCaseAccessRoles(thisTask.case_id, thisTask.jurisdiction, thisTask.case_type_id, assignmentId);
+    }))
     return forkJoin({task: task$, role: role$});
   }
 }

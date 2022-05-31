@@ -75,7 +75,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
     if (services.includes(Object.keys(serviceRef)[0])) {
       serviceCodes.push(Object.values(serviceRef)[0] as string);
     }
-  })
+  });
   try {
     let searchResult: any[] = [];
     for (const serviceCode of serviceCodes) {
@@ -112,7 +112,10 @@ export function mapResponseToCaseRoles(
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes: roleAssignment.attributes && roleAssignment.attributes.notes ? roleAssignment.attributes.notes[0].comment : 'No reason for case access given'
+    notes: roleAssignment.attributes && roleAssignment.attributes.notes ?
+     roleAssignment.attributes.notes : 'No reason for case access given',
+    requestedRole: roleAssignment.attributes && roleAssignment.attributes.requestedRole ?
+     roleAssignment.attributes.requestedRole : null,
   }));
 }
 
@@ -239,8 +242,8 @@ export function getLegalAndJudicialRequestPayload(caseId: string,
 }
 
 export function getAccessRolesRequestPayload(caseId: string,
-                                                  jurisdiction: string,
-                                                  caseType: string): CaseRoleRequestPayload {
+                                             jurisdiction: string,
+                                             caseType: string): CaseRoleRequestPayload {
   return {
     queryRequests: [
       {

@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { Task } from '../../../../work-allocation-2/models/tasks';
+import { CaseworkerDataService } from '../../../../work-allocation-2/services';
 import { specificAccessApprovedVisibilityStates, specificAccessDeniedVisibilityStates, specificAccessDurationVisibilityStates, specificAccessInformationVisibilityStates, specificAccessReviewVisibilityStates } from '../../../constants';
 import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
@@ -55,14 +56,11 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {
-    this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?
-      this.route.snapshot.queryParams.caseId : '';
   }
 
   public ngOnInit(): void {
     this.task = this.route.snapshot.data.taskAndRole.task.task;
     this.role = this.route.snapshot.data.taskAndRole.role[0];
-    // console.log(this.task, 'and success', this.role);
     this.store.dispatch(new fromFeature.SetSpecificAccessInitData(
       {caseId: this.task.case_id,
       taskId: this.task.id,
@@ -71,7 +69,9 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       caseName: this.task.case_name,
       requestCreated: this.role.created,
       actorId: this.role.actorId,
-      accessReason: this.role.notes
+      accessReason: this.role.notes,
+      roleCategory: this.role.roleCategory,
+      requestedRole: this.role.requestedRole
       }));
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessReviewStateData => {

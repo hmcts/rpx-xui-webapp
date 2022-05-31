@@ -16,6 +16,7 @@ export interface CaseRole {
   email: string;
   created?: string;
   notes?: string;
+  requestedRole?: string;
 }
 
 export interface Action {

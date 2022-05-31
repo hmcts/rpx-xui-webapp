@@ -40,6 +40,9 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
 // node layer logic for approving specific access request
 export async function approveSpecificAccessRequest(req, res: Response, next: NextFunction): Promise<Response> {
   try {
+    const specificAccessStateData = req.body.specificAccessStateData;
+    specificAccessStateData.period = req.body.period;
+    req.body = specificAccessStateData;
     // create the specific access approval role
     const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
     // 201

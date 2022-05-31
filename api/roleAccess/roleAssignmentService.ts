@@ -55,9 +55,7 @@ export async function getRoleByAssignmentId(req: EnhancedRequest, res: Response,
   }
 }
 
-
 export async function getAllRoles(req: EnhancedRequest): Promise<AxiosResponse<Role[]>> {
-
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/roles`;
   const headers = setHeaders(req);
@@ -66,7 +64,6 @@ export async function getAllRoles(req: EnhancedRequest): Promise<AxiosResponse<R
 }
 
 export async function getRolesByCaseId(req: EnhancedRequest): Promise<AxiosResponse<Role[]>> {
-  const actorId = req.body.assignmentId;
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/roles`;
   const headers = setHeaders(req);

@@ -26,8 +26,10 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
   };
 }
 
-export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+export function toSARoleAssignmentBody(currentUserId: string, specificAccessData: any): any {
   const todayDate = new Date();
+  const allocateRoleData = specificAccessData.specificAccessStateData;
+  const period = specificAccessData.period;
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -48,9 +50,9 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.actorId,
-      beginTime: allocateRoleData.period.startDate,
-      endTime: allocateRoleData.period.endDate
-      ? allocateRoleData.period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
+      beginTime: period.startDate,
+      endTime: period.endDate
+      ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
       notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
       time: "2022-05-10T16:34:18.763Z",
@@ -69,8 +71,8 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.actorId,
-      beginTime: allocateRoleData.period.startDate,
-      endTime: allocateRoleData.period.endDate,
+      beginTime: period.startDate,
+      endTime: period.endDate,
       // TODO: Include notes once we have that information
       notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
       time: "2022-05-10T16:34:18.763Z",

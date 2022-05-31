@@ -40,9 +40,6 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
 // node layer logic for approving specific access request
 export async function approveSpecificAccessRequest(req, res: Response, next: NextFunction): Promise<Response> {
   try {
-    const specificAccessStateData = req.body.specificAccessStateData;
-    specificAccessStateData.period = req.body.period;
-    req.body = specificAccessStateData;
     // create the specific access approval role
     const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
     // 201
@@ -50,7 +47,7 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
       return firstRoleResponse && firstRoleResponse.status
        ? res.status(firstRoleResponse.status).send(firstRoleResponse) : res.status(400);
     }
-    const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.requestId);
+    const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.specificAccessStateData.requestId);
     const rolesToDelete: RoleAssignment[] = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
     if (!deletionResponse || deletionResponse.status !== 204) {
       // delete the roles created previously

@@ -555,8 +555,12 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
   };
 }
 export function getGrantType(roleAssignment: RoleAssignment) {
-  if (roleAssignment.grantType === 'SPECIFIC' || roleAssignment.roleName === 'specific-access-requested') {
-    return 'Specific';
+  if (roleAssignment.grantType === 'SPECIFIC'
+      ||
+      roleAssignment.roleName === 'specific-access-requested'
+      ||
+      roleAssignment.roleName === 'specific-access-denied') {
+      return 'Specific';
   } else if (roleAssignment.grantType) {
     return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
       return second.toUpperCase() + third.toLowerCase();
@@ -568,6 +572,8 @@ export function getGrantType(roleAssignment: RoleAssignment) {
 
 export function getStartDate(roleAssignment: RoleAssignment): Date | string {
   if (roleAssignment.roleName === 'specific-access-requested') {
+    return 'Pending';
+  } else if (roleAssignment.roleName === 'specific-access-denied') {
     return 'Not authorised';
   } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED') && roleAssignment.beginTime) {
     return formatDate(new Date(roleAssignment.beginTime));

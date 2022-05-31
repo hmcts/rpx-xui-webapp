@@ -11,9 +11,7 @@ import {
   SpecificAccessStateData,
   SpecificAccessNavigation,
   SpecificAccessNavigationEvent,
-  SpecificAccessState,
-  TypeOfRole,
-  SpecificRole
+  SpecificAccessState
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services/duration-helper.service';
@@ -31,6 +29,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public static indefiniteDesc = 'Access starts from today and lasts while the case is open.';
   public static sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
 
+  public ERROR_MESSAGE;
   // input bindings
   @Input() public navEvent: SpecificAccessNavigation;
 
@@ -209,17 +208,22 @@ export class SpecificAccessDurationComponent implements OnInit {
         } else {  // display the errors in the UI
           if (!datesValid) {
             if (!dateCheck.isStartDateValid) {
-              this.startDateErrorMessage = { isInvalid: true, messages: ['Invalid Start date']};
+              this.ERROR_MESSAGE = 'Enter an access start date';
+              this.startDateErrorMessage = { isInvalid: true, messages: [this.ERROR_MESSAGE]};
             }
             if (!dateCheck.isEndDateValid) {
-              this.endDateErrorMessage = { isInvalid: true, messages: ['Invalid End date']};
+              this.ERROR_MESSAGE = 'Enter an access end date';
+              this.endDateErrorMessage = { isInvalid: true, messages: [this.ERROR_MESSAGE]};
             }
+            this.formGroup.setErrors({
+              invalid: true
+            });
           } else {
             if (!startDateNotInPast) {
-              this.startDateErrorMessage = { isInvalid: true, messages: ['The access start date must not be in the past']};
+              this.startDateErrorMessage = { isInvalid: true, messages: ['The access start date cannot be in the past']};
             }
             if (!startDateBeforeEndDate) {
-              this.endDateErrorMessage = { isInvalid: true, messages: ['The access end date must be after the access start date']};
+              this.endDateErrorMessage = { isInvalid: true, messages: ['Access start date cannot be later than the access end date']};
             }
           }
         }

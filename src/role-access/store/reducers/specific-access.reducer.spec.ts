@@ -1,7 +1,9 @@
 import { AccessReason, DurationType } from '../../models/enums';
-import { SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
+import { Action, RoleCategory, SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
 import * as fromActions from '../actions/specific-access.action';
 import * as fromReducer from './specific-access.reducer';
+import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions/specific-access.action';
+
 describe('Specific Access Reducer', () => {
 
   describe('Actions', () => {
@@ -78,6 +80,28 @@ describe('Specific Access Reducer', () => {
         const action = new fromActions.ApproveSpecificAccessRequest({specificAccessStateData, period});
         const specificAccessState = fromReducer.specificAccessReducer(specificAccessStateData, action);
         expect(specificAccessState).toEqual(specificAccessStateData);
+      });
+    });
+
+    describe('Set Initial Data action', () => {
+      it('should set correct object', () => {
+        const initialState = fromReducer.specificAccessInitialState;
+        const specificAccessStateData = {
+          state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+          accessReason: null,
+          caseName: 'Example name',
+          actorId: 'N/A',
+          requestCreated: null,
+          caseId: '1594717367271987',
+          taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
+          requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
+          jurisdiction: 'IA',
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          requestedRole: 'specific-access-legal-ops',
+        }
+        const action: SpecificAccessAction = {type: SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA, payload: specificAccessStateData};
+        const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
+        expect(specificAccessState.state).toEqual(SpecificAccessState.SPECIFIC_ACCESS_REVIEW);
       });
     });
   });

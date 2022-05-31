@@ -16,7 +16,7 @@ export class TaskRoleAccessResolver implements Resolve<{ task: Task; role: any }
     private readonly allocateRoleService: AllocateRoleService
   ) {}
 
-  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable< { task: Task; role: any[]; } > {
+  public resolve(route: ActivatedRouteSnapshot): Observable< { task: Task; role: any[]; } > {
     const assignmentId = route.paramMap.get('assignmentId');
     const task$ = this.taskService.getTask(route.paramMap.get('taskId')).pipe(
       catchError(error => {

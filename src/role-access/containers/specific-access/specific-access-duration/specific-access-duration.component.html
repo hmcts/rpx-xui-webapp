@@ -4,6 +4,7 @@
   {{title}}
 </h1>
 <div class="govuk-form-group" [formGroup]="formGroup">
+  <exui-error-message *ngIf="formGroup.errors" [error]="ERROR_MESSAGE"></exui-error-message>
   <fieldset class="govuk-fieldset" [attr.aria-label]="caption">
     <legend class="hidden-legend">{{caption}}</legend>
     <div class="govuk-radios govuk-radios--conditional" data-module="radios">

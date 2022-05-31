@@ -94,6 +94,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         )
         .subscribe((activatedRouteSnapshot: ActivatedRouteSnapshot) => {
           this.hideButton = activatedRouteSnapshot.url[0].path && activatedRouteSnapshot.url[0].path.includes('my-access');
+          if (this.hideButton) {
+            this.onToggleFilter(this.allowTypesOfWorkFilter);
+          }
         });
   }
 

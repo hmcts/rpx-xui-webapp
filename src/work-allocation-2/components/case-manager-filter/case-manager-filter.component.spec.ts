@@ -9,9 +9,9 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 import { CaseManagerFilterComponent } from '..';
 import * as fromStore from '../../../app/store';
-
 import { LocationDataService, WorkAllocationCaseService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
+
 
 @Component({
   template: `
@@ -83,5 +83,4 @@ describe('CaseManagerFilterComponent', () => {
   afterAll(() => {
     component.ngOnDestroy();
   });
-
 });

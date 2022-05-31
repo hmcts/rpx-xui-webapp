@@ -4,15 +4,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-import { PaginationParameter } from '../../models/dtos';
-
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskService, TaskSort } from '../../enums';
+import { PaginationParameter } from '../../models/dtos';
 import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
+
 
 @Component({
   template: `

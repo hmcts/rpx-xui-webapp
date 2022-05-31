@@ -1,9 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs/internal/observable/of';
-
 import { Store } from '@ngrx/store';
+import { of } from 'rxjs/internal/observable/of';
 import { CaseDetailsComponent } from './case-details.component';
+
 
 describe('CaseDetailsComponent', () => {
   let component: CaseDetailsComponent;

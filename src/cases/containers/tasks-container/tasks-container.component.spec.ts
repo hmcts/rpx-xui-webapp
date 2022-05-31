@@ -1,16 +1,15 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation-2/services';
 import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
+
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';

@@ -9,9 +9,9 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 import { TaskManagerFilterComponent } from '..';
 import * as fromStore from '../../../app/store';
-
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
+
 
 @Component({
   template: `

@@ -7,7 +7,6 @@ import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 import { ErrorMessage } from 'src/app/models';
-
 import { ErrorMessageComponent } from '../../../app/components';
 import { SessionStorageService } from '../../../app/services';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
@@ -16,6 +15,7 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { TaskHomeComponent } from './task-home.component';
+
 
 @Component({
   template: `

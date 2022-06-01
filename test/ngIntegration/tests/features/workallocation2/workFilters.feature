@@ -46,19 +46,7 @@ Feature: WA Release 2: My work - Work filters
 
         Then I validate my work filter services container displayed
         Then I validate my work filter location search displayed
-        # Then I validate my work filter services listed
-        # Then I Validate my work filter services selected
-        # Then I validate my work filter locations selected
-
-
-        # When I select service "" in my work filter
-        # When I unselect service "" in my work filter
-        # When I search for location text "" in my work filters
-        # Then I see location search results in my work filter
-        # When I select locations search result "" in my work filter
-        # Then I see location "" selected in my work filter
-        # When I click add location button in my work filter
-
+      
 
 
         When I click work location filter Apply button
@@ -71,6 +59,62 @@ Feature: WA Release 2: My work - Work filters
             | UserType       | Roles                                                            |
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+
+
+    Scenario Outline:  Work filters types for selected sub navigation tabs
+        Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I start MockApp
+        Given I navigate to home page
+        # When I click on primary navigation header "My work"
+        Then I see work filter button displayed
+        Then I validate work filter button text is "Show work filter"
+        # Then I validate work location filter batch and hint labels are not displayed
+        Then I validate location filter is not displayed
+
+        Then I validate work filter button text is "Show work filter"
+        When I click work filter button to "Show" filter
+        Then I validate work filter button text is "Hide work filter"
+        Then I see work filter of type "Services" is displayed
+        Then I see work filter of type "Locations" is displayed
+        Then I see work filter of type "Work types" is displayed
+        When I click work location filter Apply button
+        Then I validate my work filter services container not displayed
+
+        When I navigate to My work sub navigation tab "Available tasks"
+        Then I validate work filter button text is "Show work filter"
+        When I click work filter button to "Show" filter
+        Then I validate work filter button text is "Hide work filter"
+        Then I see work filter of type "Services" is displayed
+        Then I see work filter of type "Locations" is displayed
+        Then I see work filter of type "Work types" is displayed
+        When I click work location filter Apply button
+        Then I validate my work filter services container not displayed
+
+        When I navigate to My work sub navigation tab "My cases"
+        Then I validate work filter button text is "Show work filter"
+        When I click work filter button to "Show" filter
+        Then I validate work filter button text is "Hide work filter"
+        Then I see work filter of type "Services" is displayed
+        Then I see work filter of type "Locations" is displayed
+        Then I see work filter of type "Work types" is not displayed
+        When I click work location filter Apply button
+        Then I validate my work filter services container not displayed
+
+        When I navigate to My work sub navigation tab "My tasks"
+        Then I validate work filter button text is "Show work filter"
+        When I click work filter button to "Show" filter
+        Then I validate work filter button text is "Hide work filter"
+        Then I see work filter of type "Services" is displayed
+        Then I see work filter of type "Locations" is displayed
+        Then I see work filter of type "Work types" is displayed
+        When I click work location filter Apply button
+        Then I validate my work filter services container not displayed
+
+        Examples:
+            | UserType       | Roles                                                            |
+            | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
+# | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+
 
     Scenario Outline:  Work filters mandatory field validations
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"

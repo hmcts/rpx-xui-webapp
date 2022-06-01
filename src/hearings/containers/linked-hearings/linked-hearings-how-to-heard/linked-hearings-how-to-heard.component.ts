@@ -54,7 +54,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.receivedCases = state.hearingLinks && state.hearingLinks.serviceLinkedCases;
-        this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
+        this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseNamePublic : '';
         this.hearingsInGroup = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup;
         this.groupDetails = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.groupDetails;
         this.hearingLinks =  state.hearingLinks;

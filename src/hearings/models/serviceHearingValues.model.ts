@@ -11,8 +11,8 @@ import {VocabularyModel} from './vocabulary.model';
 
 export interface ServiceHearingValuesModel {
   hmctsServiceID: string;
-  hmctsInternalCaseName: string;
-  publicCaseName: string;
+  caseName: string;
+  caseNamePublic: string;
   caseAdditionalSecurityFlag: boolean;
   caseCategories: CaseCategoryModel[];
   caseDeepLink: string;

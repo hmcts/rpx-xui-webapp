@@ -131,23 +131,9 @@ export class SpecificAccessDurationComponent implements OnInit {
     this.resetPreviousErrors();
     const period = this.getPeriod(this.selectedDuration);
     if (period) {
-      const specificAccessMockState: SpecificAccessStateData = {
-      state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
-      accessReason: null,
-      typeOfRole: this.approvalRole,
-      period,
-      // note: adding example details here to reach endpoint without previous access info
-      caseId: '1602148393217531',
-      taskId: '3eb4bf31-d5f1-11ec-a8f0-eef41c565753',
-      requestId: 'd4ae34e6-a265-47f9-a90e-c90bd6ee077d',
-      jurisdiction: 'IA',
-      roleCategory: RoleCategory.CASEWORKER,
-      requestedRole: 'specific-access-legal-ops',
-      person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null}
-      }
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
-          this.store.dispatch(new fromFeature.ApproveSpecificAccessRequest(specificAccessMockState));
+          this.store.dispatch(new fromFeature.ApproveSpecificAccessRequest({specificAccessStateData: this.specificAccessStateData, period}));
           break;
         default:
           throw new Error('Invalid option');

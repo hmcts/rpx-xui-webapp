@@ -20,31 +20,31 @@
               <th scope="row" class="govuk-table__header leftLabel" >
                 Case name
               </th>
-              <td class="govuk-table__cell">{{ requestAccessDetails.caseName }}</td>
+              <td class="govuk-table__cell">{{ specificAccessStateData.caseName }}</td>
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
                 Case reference
               </th>
-              <td class="govuk-table__cell">{{ requestAccessDetails.caseReference }}</td>
+              <td class="govuk-table__cell">{{ specificAccessStateData.caseId | ccdCaseReference }}</td>
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
                 Date submitted
               </th>
-              <td class="govuk-table__cell">{{ requestAccessDetails.dateSubmitted }}</td>
+              <td class="govuk-table__cell">{{ specificAccessStateData.requestCreated | date:'dd/MM/yyyy' }}</td>
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
                 Request from
               </th>
-              <td class="govuk-table__cell">{{ requestAccessDetails.requestFrom }}<br /></td>
+              <td class="govuk-table__cell">{{ requesterName }}</td>
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
                 Reason for case access
               </th>
-              <td class="govuk-table__cell">{{ requestAccessDetails.reasonForCaseAccess }}</td>
+              <td class="govuk-table__cell">{{ specificAccessStateData.accessReason }}</td>
             </tr>
           </tbody>
         </table>

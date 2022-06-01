@@ -47,6 +47,24 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   }
 }
 
+export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const requestPayload = getAccessRolesRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments/query`;
+  const headers = setHeaders(req, release2ContentType);
+  try {
+    const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
+    const finalRoles: CaseRole[] = mapResponseToCaseRoles(
+      response.data.roleAssignmentResponse,
+      req.body.assignmentId,
+      req
+    );
+    return res.status(response.status).send(finalRoles);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function getJudicialUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const userIds = req.body.userIds;
   const services = req.body.services ? req.body.services : userIds;
@@ -57,7 +75,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
     if (services.includes(Object.keys(serviceRef)[0])) {
       serviceCodes.push(Object.values(serviceRef)[0] as string);
     }
-  })
+  });
   try {
     let searchResult: any[] = [];
     for (const serviceCode of serviceCodes) {
@@ -93,6 +111,11 @@ export function mapResponseToCaseRoles(
     roleCategory: mapRoleCategory(roleAssignment.roleCategory),
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
+    created: roleAssignment.created ? roleAssignment.created : null,
+    notes: roleAssignment.attributes && roleAssignment.attributes.notes ?
+     roleAssignment.attributes.notes : 'No reason for case access given',
+    requestedRole: roleAssignment.attributes && roleAssignment.attributes.requestedRole ?
+     roleAssignment.attributes.requestedRole : null,
   }));
 }
 
@@ -192,9 +215,7 @@ export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Respon
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   const body = req.body;
   try {
-    // console.log(body, 'removal role', assignmentId);
     const response = await sendDelete(`${basePath}/${assignmentId}`, body, req);
-    // console.log('role removal response', response);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     return response;
   } catch (e) {
@@ -215,6 +236,23 @@ export function getLegalAndJudicialRequestPayload(caseId: string,
           jurisdiction: [jurisdiction],
         },
         roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL'],
+      },
+    ],
+  };
+}
+
+export function getAccessRolesRequestPayload(caseId: string,
+                                             jurisdiction: string,
+                                             caseType: string): CaseRoleRequestPayload {
+  return {
+    queryRequests: [
+      {
+        attributes: {
+        caseId: [caseId],
+        caseType: [caseType],
+        jurisdiction: [jurisdiction],
+        },
+        roleName: ['specific-access-requested'],
       },
     ],
   };

@@ -17,6 +17,11 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   @Input() public title = 'Request more information';
   @Input() public caption = 'Reject specific access request';
 
+  public caseId: string;
+  public caseName: string;
+  public taskCreated: string;
+  public requesterDetails: string;
+
   public subscription: Subscription;
   public formGroup: FormGroup;
   public infoCtrl: FormControl;

@@ -13,7 +13,7 @@ class WrapperComponent {
   @Input() public error: ErrorMessage;
 }
 
-fdescribe('ErrorMessageComponent', () => {
+describe('ErrorMessageComponent', () => {
   let component: ErrorMessageComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

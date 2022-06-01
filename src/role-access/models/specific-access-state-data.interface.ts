@@ -10,12 +10,15 @@ import { SpecificAccessState } from './specific-access-state.enum';
 export interface SpecificAccessStateData {
   state: SpecificAccessState;
   caseId: string;
+  caseName: string;
   taskId: string;
+  actorId: string;
   jurisdiction: string;
   typeOfRole?: SpecificRole;
   roleCategory: RoleCategory;
   requestedRole: string;
-  accessReason: AccessReason;
+  requestCreated: string;
+  accessReason: string;
   period: Period;
   person: Person;
   requestId: string;

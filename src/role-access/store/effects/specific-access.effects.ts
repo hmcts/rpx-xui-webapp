@@ -14,7 +14,7 @@ export class SpecificAccessEffects {
     .pipe(
       ofType<ApproveSpecificAccessRequest>(SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST),
       mergeMap(
-        (data) => this.allocateRoleService.specificAccessApproval(data.payload)
+        (data) => this.allocateRoleService.specificAccessApproval(data.payload.specificAccessStateData, data.payload.period)
           .pipe(
           map(() => {
               return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED);

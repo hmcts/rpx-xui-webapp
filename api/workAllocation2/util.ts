@@ -540,7 +540,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     case_name: getCaseName(caseDetail),
     case_role: roleAssignment.roleName,
     role: roleAssignment.roleName,
-    endDate: roleAssignment.endTime,
+    endDate: getEndDate(roleAssignment),
     id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,
     jurisdictionId: caseDetail.jurisdiction,
@@ -579,6 +579,15 @@ export function getStartDate(roleAssignment: RoleAssignment): Date | string {
     return formatDate(new Date(roleAssignment.beginTime));
   }
   return roleAssignment.beginTime;
+}
+
+export function getEndDate(roleAssignment: RoleAssignment): Date | string {
+  if (roleAssignment.roleName === 'specific-access-requested' || roleAssignment.roleName === 'specific-access-denied') {
+    return '';
+  } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED') && roleAssignment.endTime) {
+    return formatDate(new Date(roleAssignment.endTime));
+  }
+  return roleAssignment.endTime;
 }
 
 export function formatDate(date: Date) {

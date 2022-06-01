@@ -1,4 +1,4 @@
-import { Actions, AllocateRoleState, AllocateTo, DurationOfRole, RoleCategory } from '../../models';
+import { Actions, AllocateRoleState, AllocateTo, DurationOfRole, Role, RoleCategory } from '../../models';
 import * as fromActions from '../actions/allocate-role.action';
 import * as fromReducer from './allocate-role.reducer';
 
@@ -43,9 +43,17 @@ describe('Allocate Role Reducer', () => {
     });
 
     describe('AllocateRoleSetInitData action', () => {
-      it('should set correct object', () => {
+      it('should go to choose role error if there are no roles', () => {
         const initialState = fromReducer.allocateRoleInitialState;
         const action = new fromActions.AllocateRoleSetInitData({ caseId: '111111', jurisdiction: 'IA', roleCategory: RoleCategory.JUDICIAL });
+        const state = fromReducer.allocateRoleReducer(initialState, action);
+        expect(state.state).toEqual(AllocateRoleState.LOADING_ROLES);
+      });
+
+      it('should go to choose role if there are roles', () => {
+        const mockRoles: Role[] = [{roleId: 'test-role', roleName: 'Test role'}]
+        const initialState = fromReducer.allocateRoleInitialState;
+        const action = new fromActions.LoadRolesComplete({roles: mockRoles});
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.state).toEqual(AllocateRoleState.CHOOSE_ROLE);
       });

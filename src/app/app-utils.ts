@@ -156,6 +156,7 @@ export class AppUtils {
     } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
       return UserRole.LegalOps;
     }
+    // TODO: When we know roles for Admin we can put this in this method
     return null;
   }
 

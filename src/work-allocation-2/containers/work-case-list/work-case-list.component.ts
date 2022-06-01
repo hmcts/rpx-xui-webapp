@@ -28,6 +28,7 @@ export class WorkCaseListComponent implements OnChanges {
   @Input() public pagination: PaginationParameter;
   @Input() public view: string;
   @Input() public showManage = {};
+  @Input() public showResultsSummary: boolean = true;
 
   /**
    * The message to display when there are no cases to display in the list.

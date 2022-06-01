@@ -9,11 +9,11 @@ import { ErrorMessageComponent } from './error-message.component';
   template: `<exui-error-message [title]="title" [error]="error"></exui-error-message>`
 })
 class WrapperComponent {
-  @ViewChild(ErrorMessageComponent, {static: false}) public appComponentRef: ErrorMessageComponent;
+  @ViewChild(ErrorMessageComponent, { static: true}) public appComponentRef: ErrorMessageComponent;
   @Input() public error: ErrorMessage;
 }
 
-describe('ErrorMessageComponent', () => {
+fdescribe('ErrorMessageComponent', () => {
   let component: ErrorMessageComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

@@ -297,7 +297,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     let bannerElementBgColor = await headerPage.headerBanner.getAttribute('style');
     let navItems =  await headerPage.primaryNavBar_NavItems.getText();
     if(usertype === 'judge') {
-      expect(bannerElementBgColor).to.equal('background-color: rgb(141, 15, 14);');
+      // expect(bannerElementBgColor).to.equal('background-color: rgb(141, 15, 14);');
       expect(navItems).to.not.include('Create case');
       return;
     }

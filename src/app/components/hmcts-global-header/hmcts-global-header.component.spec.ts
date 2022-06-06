@@ -2,7 +2,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -32,8 +31,8 @@ describe('HmctsGlobalHeaderComponent', () => {
   let origTimeout: number;
 
   beforeEach(async(() => {
-    origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    // origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     const USERDETAILS = {
       sub: 'Caseworker.ed@mailinator.com',
       uid: '36314153-06c2-400a-8dc3-7d3790660918',
@@ -110,9 +109,9 @@ describe('HmctsGlobalHeaderComponent', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = origTimeout;
-  });
+  // afterEach(() => {
+  //   jasmine.DEFAULT_TIMEOUT_INTERVAL = origTimeout;
+  // });
 
   // 3
   it('should create', () => {
@@ -133,7 +132,7 @@ describe('HmctsGlobalHeaderComponent', () => {
   });
 
   // 2
-  it('splitNavItems', (done: any) => {
+  it('splitNavItems', async() => {
     const USERDETAILS = {
       sub: 'Caseworker.ed@mailinator.com',
       uid: '36314153-06c2-400a-8dc3-7d3790660918',
@@ -180,7 +179,6 @@ describe('HmctsGlobalHeaderComponent', () => {
           href: '',
           active: false
         }]);
-        done();
         return rightItems;
       })
     ).subscribe(items => {
@@ -197,7 +195,6 @@ describe('HmctsGlobalHeaderComponent', () => {
         href: '',
         active: false
       }]);
-      done();
     });
   });
 

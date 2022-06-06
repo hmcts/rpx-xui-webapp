@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { reducers } from '../index';
-import { SearchState, initialSearchState } from '../reducers';
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
-import { getSearchState, searchFilterJurisdiction } from './search.filter.selectors';
+import { initialSearchState, SearchState } from '../reducers';
+import { getSearchState } from './search.filter.selectors';
 
+// Check testing
 describe('Search filter selectors', () => {
   let store: Store<SearchState>;
   beforeEach(() => {
@@ -18,7 +18,8 @@ describe('Search filter selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('getSearchState', () => {
+  // Check testing
+describe('getSearchState', () => {
     it('should return search state', () => {
       let result;
       store.pipe(select(getSearchState)).subscribe(value => {

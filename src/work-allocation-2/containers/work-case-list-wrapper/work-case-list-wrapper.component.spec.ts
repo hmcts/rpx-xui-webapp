@@ -6,7 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
@@ -19,6 +18,8 @@ import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
 
+
+// Check testing
 describe('WorkCaseListWrapperComponent', () => {
   let component: WorkCaseListWrapperComponent;
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
@@ -80,7 +81,8 @@ describe('WorkCaseListWrapperComponent', () => {
     expect(component).toBeDefined();
   });
 
-  describe('onActionHandler()', () => {
+  // Check testing
+describe('onActionHandler()', () => {
     const exampleCase = getMockCases()[0];
     const firstAction = exampleCase.actions[0];
     const secondAction = exampleCase.actions[1];

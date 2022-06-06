@@ -1,10 +1,11 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {LocationByEPIMMSModel} from '../models/location.model';
-import {State} from '../store/reducers';
-import {VenueAnswerConverter} from './venue.answer.converter';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { LocationByEPIMMSModel } from '../models/location.model';
+import { State } from '../store/reducers';
+import { VenueAnswerConverter } from './venue.answer.converter';
 
+// Check testing
 describe('VenueAnswerConverter', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',

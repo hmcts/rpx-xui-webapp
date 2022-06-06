@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FieldType, TaskView } from '../../enums';
+import { FieldConfig } from '../../models/common';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { Task } from './../../models/tasks';
-import { FieldConfig } from '../../models/common';
 import { WorkFieldComponent } from './work-field.component';
 
 @Component({
@@ -15,9 +15,11 @@ class WrapperComponent {
   @Input() public task: Task;
 }
 
+// Check testing
 describe('WorkAllocation', () => {
 
-  describe('WorkFieldComponent', () => {
+  // Check testing
+describe('WorkFieldComponent', () => {
     let component: WorkFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

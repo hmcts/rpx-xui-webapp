@@ -1,9 +1,10 @@
-import {TestBed} from '@angular/core/testing';
-import {select, Store, StoreModule} from '@ngrx/store';
-import {reducers} from '../index';
-import {initialHearingListState, State} from '../reducers';
-import {getHearingList} from './hearing-list.selectors';
+import { TestBed } from '@angular/core/testing';
+import { select, Store, StoreModule } from '@ngrx/store';
+import { reducers } from '../index';
+import { initialHearingListState, State } from '../reducers';
+import { getHearingList } from './hearing-list.selectors';
 
+// Check testing
 describe('Hearing List selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
@@ -17,7 +18,8 @@ describe('Hearing List selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('getHearingList', () => {
+  // Check testing
+describe('getHearingList', () => {
     it('should return hearings navigation state', () => {
       let result;
       store.pipe(select(getHearingList)).subscribe(value => {

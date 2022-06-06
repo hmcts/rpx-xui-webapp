@@ -1,5 +1,6 @@
 import * as fromHearingLinksAction from './hearing-links.action';
 
+// Check testing
 describe('Hearing Links Actions', () => {
 
   it('should reset hearing links', () => {

@@ -3,14 +3,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService, CaseUIToolkitModule,
-  ErrorNotifierService, HttpError, NavigationOrigin
+  ErrorNotifierService, HttpError, LoadingService as CCDLoadingService, NavigationOrigin
 } from '@hmcts/ccd-case-ui-toolkit';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
-import { reducers } from '../../../app/store';
-import { CaseHomeComponent } from '..';
-import * as fromFeature from '../../store';
-import { LoadingService as CCDLoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { CaseHomeComponent } from '..';
+import { reducers } from '../../../app/store';
+import * as fromFeature from '../../store';
 
 describe('CaseHomeComponent', () => {
   let component: CaseHomeComponent;

@@ -1,9 +1,10 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
 import { AdditionalInstructionsAmendedConverter } from './additional-instructions.amended.converter';
 
+// Check testing
 describe('AdditionalInstructionsAmendedConverter', () => {
 
   let additionalInstructionsAmendedConverter: AdditionalInstructionsAmendedConverter;

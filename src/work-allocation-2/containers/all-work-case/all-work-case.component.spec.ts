@@ -7,7 +7,6 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
@@ -17,15 +16,16 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { Case } from '../../models/cases';
 import { Location } from '../../models/dtos';
 import {
-  CaseworkerDataService,
-  LocationDataService,
-  WASupportedJurisdictionsService,
-  WorkAllocationCaseService,
-  WorkAllocationFeatureService
+    CaseworkerDataService,
+    LocationDataService,
+    WASupportedJurisdictionsService,
+    WorkAllocationCaseService,
+    WorkAllocationFeatureService
 } from '../../services';
 import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';
+
 
 @Component({
   template: `
@@ -36,6 +36,7 @@ class WrapperComponent {
   @ViewChild(AllWorkCaseComponent, {static: false}) public appComponentRef: AllWorkCaseComponent;
 }
 
+// Check testing
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
   let wrapper: WrapperComponent;

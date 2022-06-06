@@ -16,11 +16,11 @@ import {
   DraftService,
   HttpErrorService,
   RequestOptionsBuilder,
-  SearchService,
+  SearchService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
-import {combineReducers, StoreModule} from '@ngrx/store';
+import { combineReducers, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';

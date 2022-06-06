@@ -5,9 +5,10 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
 import { initialState } from '../../../hearings/hearing.test.data';
-import { ErrorPageComponent } from './error-page.component';
 import * as fromHearingStore from '../../store';
+import { ErrorPageComponent } from './error-page.component';
 
+// Check testing
 describe('ErrorPageComponent', () => {
   let component: ErrorPageComponent;
   let fixture: ComponentFixture<ErrorPageComponent>;

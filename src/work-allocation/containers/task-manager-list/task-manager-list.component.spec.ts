@@ -2,10 +2,9 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, LoadingModule, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingModule, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-
 import { SessionStorageService } from '../../../app/services';
 import { FilterConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -17,6 +16,7 @@ import { getMockCaseworkers, getMockLocations, getMockTasks } from '../../tests/
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskManagerListComponent } from './task-manager-list.component';
 
+
 @Component({
   template: `<exui-task-manager-list></exui-task-manager-list>`
 })
@@ -24,6 +24,7 @@ class WrapperComponent {
   @ViewChild(TaskManagerListComponent, {static: false}) public appComponentRef: TaskManagerListComponent;
 }
 
+// Check testing
 describe('TaskManagerListComponent', () => {
   let component: TaskManagerListComponent;
   let wrapper: WrapperComponent;

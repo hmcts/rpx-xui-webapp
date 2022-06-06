@@ -6,7 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
@@ -17,6 +16,7 @@ import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
+
 @Component({
   template: `<exui-available-tasks></exui-available-tasks>`
 })
@@ -24,6 +24,7 @@ class WrapperComponent {
   @ViewChild(AvailableTasksComponent, {static: false}) public appComponentRef: AvailableTasksComponent;
 }
 
+// Check testing
 describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
@@ -72,7 +73,8 @@ describe('AvailableTasksComponent', () => {
     fixture.destroy();
   });
 
-  describe('when locations have not been loaded', () => {
+  // Check testing
+describe('when locations have not been loaded', () => {
 
     beforeEach(() => {
       mockLocationService.getLocations.and.returnValue(of(null));
@@ -86,7 +88,8 @@ describe('AvailableTasksComponent', () => {
 
   });
 
-  describe('when locations have been loaded', () => {
+  // Check testing
+describe('when locations have been loaded', () => {
 
     beforeEach(() => {
       mockLocationService.getLocations.and.returnValue(of(mockLocations));
@@ -207,7 +210,8 @@ describe('AvailableTasksComponent', () => {
       expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     });
 
-    describe('claimTask()', () => {
+    // Check testing
+describe('claimTask()', () => {
 
       it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -250,7 +254,8 @@ describe('AvailableTasksComponent', () => {
       });
     });
 
-    describe('claimTaskAndGo()', () => {
+    // Check testing
+describe('claimTaskAndGo()', () => {
 
       it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -288,7 +293,8 @@ describe('AvailableTasksComponent', () => {
       });
     });
 
-    describe('claimTaskErrors()', () => {
+    // Check testing
+describe('claimTaskErrors()', () => {
 
       it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
 
@@ -332,7 +338,8 @@ describe('AvailableTasksComponent', () => {
       // });
     });
 
-    describe('onActionHandler()', () => {
+    // Check testing
+describe('onActionHandler()', () => {
 
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
 

@@ -1,9 +1,10 @@
 import { async } from '@angular/core/testing';
-import { DescribeExclusionComponent } from './describe-exclusion.component';
 import { Validators } from '@angular/forms';
 import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { UpdateDescribeExclusionText } from '../../../store';
+import { DescribeExclusionComponent } from './describe-exclusion.component';
 
+// Check testing
 describe('DescribeExclusionComponent', () => {
   let component: DescribeExclusionComponent;
   let mockStore: any;

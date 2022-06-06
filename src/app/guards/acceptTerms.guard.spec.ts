@@ -1,5 +1,4 @@
 import { of } from 'rxjs';
-import { TermsConditionsService } from '../services/terms-and-conditions/terms-and-conditions.service';
 import { AcceptTermsGuard } from './acceptTerms.guard';
 
 describe('Accept terms guard', () => {

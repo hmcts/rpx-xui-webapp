@@ -2,9 +2,11 @@ import { NocQuestion, NocState } from '../../models';
 import * as fromActions from '../actions/noc.action';
 import * as fromReducer from './noc.reducer';
 
+// Check testing
 describe('Noc Reducer', () => {
 
-  describe('Actions', () => {
+  // Check testing
+describe('Actions', () => {
 
     it('should set correct object', () => {
       const initialState = fromReducer.initialState;
@@ -13,7 +15,8 @@ describe('Noc Reducer', () => {
       expect(state).toBeDefined();
     });
 
-    describe('Change Navigation action', () => {
+    // Check testing
+describe('Change Navigation action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.ChangeNavigation(NocState.QUESTION);
@@ -22,7 +25,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('Reset action', () => {
+    // Check testing
+describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.Reset();
@@ -31,7 +35,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('SetCaseRefValidationFailure action', () => {
+    // Check testing
+describe('SetCaseRefValidationFailure action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetCaseRefValidationFailure();
@@ -40,7 +45,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('SetQuestions action', () => {
+    // Check testing
+describe('SetQuestions action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetQuestions({
@@ -72,7 +78,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('SetCaseRefSubmissionFailure action', () => {
+    // Check testing
+describe('SetCaseRefSubmissionFailure action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetCaseRefSubmissionFailure({
@@ -86,7 +93,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('SetAnswersIncomplete action', () => {
+    // Check testing
+describe('SetAnswersIncomplete action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetAnswersIncomplete();
@@ -95,7 +103,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('CheckAnswers action', () => {
+    // Check testing
+describe('CheckAnswers action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.CheckAnswers([{
@@ -108,7 +117,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('SetAffirmationAgreed action', () => {
+    // Check testing
+describe('SetAffirmationAgreed action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetAffirmationAgreed(true);
@@ -117,7 +127,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('SetSubmissionSuccessApproved action', () => {
+    // Check testing
+describe('SetSubmissionSuccessApproved action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetSubmissionSuccessApproved();
@@ -126,7 +137,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('SetSubmissionSuccessPending action', () => {
+    // Check testing
+describe('SetSubmissionSuccessPending action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetSubmissionSuccessPending();
@@ -135,7 +147,8 @@ describe('Noc Reducer', () => {
       });
     });
 
-    describe('SetSubmissionFailure action', () => {
+    // Check testing
+describe('SetSubmissionFailure action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetSubmissionFailure({
@@ -150,7 +163,8 @@ describe('Noc Reducer', () => {
     });
   });
 
-  describe('Get functions', () => {
+  // Check testing
+describe('Get functions', () => {
     it('should get state properties', () => {
       const nocState = {
         state: NocState.ANSWER_INCOMPLETE
@@ -225,7 +239,8 @@ describe('Noc Reducer', () => {
     });
   });
 
-  describe('Order questions', () => {
+  // Check testing
+describe('Order questions', () => {
     it('should order questions before save to store', () => {
       const nocQuestionsBeforeSort: NocQuestion[] = [{
         case_type_id: 'AAT',

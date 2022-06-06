@@ -4,6 +4,7 @@ import { reducers } from '../index';
 import { initialState, State } from '../reducers';
 import { getNocState } from './noc.selectors';
 
+// Check testing
 describe('Noc selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
@@ -17,7 +18,8 @@ describe('Noc selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('getNocState', () => {
+  // Check testing
+describe('getNocState', () => {
     it('should return noc navigation state', () => {
       let result;
       store.pipe(select(getNocState)).subscribe(value => {

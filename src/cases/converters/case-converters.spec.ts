@@ -4,7 +4,7 @@ import * as converts from '../../cases/converters/case-converter';
 
 describe('case converters', () => {
 
-  it('should convert to share case', () => {
+  it('should convert to share case', async() => {
     const selectedCases = [{
       case_id: '1',
       case_fields: {
@@ -30,7 +30,7 @@ describe('case converters', () => {
     expect(shareCases).toEqual(expectedShareCases);
   });
 
-  it('should convert case title', () => {
+  it('should convert case title', async() => {
     const selectedCases = [{
       case_id: '1',
       case_fields: {
@@ -56,7 +56,7 @@ describe('case converters', () => {
     expect(shareCases).toEqual(expectedShareCases);
   });
 
-  it('should convert to search result view item', () => {
+  it('should convert to search result view item', async() => {
     const sharedCases = [{caseId: '1', caseTitle: '', caseTypeId: 'FinancialRemedyContested'}, {caseId: '2', caseTitle: '', caseTypeId: 'FinancialRemedyContested'}];
     const expectedSearchResultViewItem = [{
       case_id: '1',

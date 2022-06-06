@@ -7,14 +7,14 @@ import { MatAutocompleteModule } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskListComponent } from '../../containers';
 import {
-  NAME_ERROR,
-  TaskAssignmentContainerComponent
+    NAME_ERROR,
+    TaskAssignmentContainerComponent
 } from '../../containers/task-assignment/task-assignment-container.component';
 import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';
@@ -34,6 +34,7 @@ class WrapperComponent {
 })
 class NothingComponent {}
 
+// Check testing
 describe('TaskAssignmentContainerComponent1', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;

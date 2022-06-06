@@ -1,8 +1,5 @@
-import {Pact} from '@pact-foundation/pact'
-import {expect} from 'chai'
-import * as path from 'path'
-import {getIdamUsersByEmail} from '../../pactUtil';
-import * as getPort from "get-port";
+import { expect } from 'chai';
+import { getIdamUsersByEmail } from '../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
 

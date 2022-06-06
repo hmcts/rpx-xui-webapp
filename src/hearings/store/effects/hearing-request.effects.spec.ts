@@ -1,21 +1,22 @@
-import {Location} from '@angular/common';
-import {TestBed} from '@angular/core/testing';
-import {Router} from '@angular/router';
+import { Location } from '@angular/common';
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { HttpError } from '@hmcts/ccd-case-ui-toolkit';
-import {provideMockActions} from '@ngrx/effects/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold, hot} from 'jasmine-marbles';
-import {Observable, of} from 'rxjs';
-import {Go} from '../../../app/store/actions';
-import {hearingRequestMainModel, initialState} from '../../hearing.test.data';
-import {Mode} from '../../models/hearings.enum';
-import {HearingsService} from '../../services/hearings.service';
-import {AbstractPageFlow} from '../../utils/abstract-page-flow';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
+import { Observable, of } from 'rxjs';
+import { Go } from '../../../app/store/actions';
+import { hearingRequestMainModel, initialState } from '../../hearing.test.data';
+import { Mode } from '../../models/hearings.enum';
+import { HearingsService } from '../../services/hearings.service';
+import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
-import {HearingRequestEffects} from './hearing-request.effects';
+import { HearingRequestEffects } from './hearing-request.effects';
 
+// Check testing
 describe('Hearing Request Effects', () => {
   let actions$;
   let effects: HearingRequestEffects;
@@ -61,7 +62,8 @@ describe('Hearing Request Effects', () => {
     store = TestBed.get(Store);
   });
 
-  describe('continueNavigation$', () => {
+  // Check testing
+describe('continueNavigation$', () => {
     it('should navigate to next page if continue on CREATE mode', () => {
       effects.mode = Mode.CREATE;
       pageflowMock.getNextPage.and.returnValue('next');
@@ -94,7 +96,8 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  describe('backNavigation$', () => {
+  // Check testing
+describe('backNavigation$', () => {
     it('should navigate to last page if going back on CREATE mode', () => {
       effects.mode = Mode.CREATE;
       pageflowMock.getLastPage.and.returnValue('last');
@@ -137,7 +140,8 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  describe('loadHearingRequest$', () => {
+  // Check testing
+describe('loadHearingRequest$', () => {
     it('should load hearing requests', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.loadHearingRequest.and.returnValue(of(hearingRequestMainModel));
@@ -152,7 +156,8 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  describe('submitHearingReason$', () => {
+  // Check testing
+describe('submitHearingReason$', () => {
     it('should submit hearing reason', () => {
       const action = new hearingRequestActions.ViewEditSubmitHearingReason(hearingRequestMainModel);
       actions$ = cold('-a', {a: action});
@@ -163,7 +168,8 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  describe('submitHearingRequest$', () => {
+  // Check testing
+describe('submitHearingRequest$', () => {
     it('should submit hearing request', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.submitHearingRequest.and.returnValue(of(hearingRequestMainModel));
@@ -196,7 +202,8 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  describe('ViewEditSubmitHearingRequest$', () => {
+  // Check testing
+describe('ViewEditSubmitHearingRequest$', () => {
     it('should update hearing request', () => {
       hearingsServiceMock.updateHearingRequest.and.returnValue(of(hearingRequestMainModel));
       const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
@@ -227,7 +234,8 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  describe('handleError', () => {
+  // Check testing
+describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = HearingRequestEffects.handleError({
         status: 400,

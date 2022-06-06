@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { getMappedRoleCategory, getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
 import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants';
+import { getMappedRoleCategory, getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
 
 describe('user.utils', () => {
   describe('isCurrentUserCaseAllocator without jurisdiction and location', () => {

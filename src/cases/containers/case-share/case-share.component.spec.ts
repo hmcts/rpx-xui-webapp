@@ -27,7 +27,7 @@ describe('CaseShareComponent', () => {
       }]
   }];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ CaseShareComponent ],

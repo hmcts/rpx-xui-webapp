@@ -1,5 +1,6 @@
 import { YesNoPipe } from './yes-no.pipe';
 
+// Check testing
 describe('YesNoPipe', () => {
   const pipe = new YesNoPipe();
   it('returns undefined if null given', () => {

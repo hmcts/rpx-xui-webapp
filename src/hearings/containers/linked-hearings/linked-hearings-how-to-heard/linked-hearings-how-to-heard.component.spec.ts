@@ -12,6 +12,7 @@ import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
 import { HowLinkedHearingsBeHeardComponent } from './linked-hearings-how-to-heard.component';
 
+// Check testing
 describe('HowLinkedHearingsBeHeardComponent', () => {
   let component: HowLinkedHearingsBeHeardComponent;
   let fixture: ComponentFixture<HowLinkedHearingsBeHeardComponent>;

@@ -4,8 +4,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { CaseShareCompleteComponent } from './case-share-complete.component';
 import * as fromCasesFeature from '../../store';
+import { CaseShareCompleteComponent } from './case-share-complete.component';
 
 describe('CaseShareCompleteComponent', () => {
   let component: CaseShareCompleteComponent;
@@ -23,7 +23,7 @@ describe('CaseShareCompleteComponent', () => {
   }];
   let mockStore: any;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
-  beforeEach(() => {
+  beforeEach(async () => {
 
     mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     mockStore.pipe.and.returnValue(of(SHARED_CASE));

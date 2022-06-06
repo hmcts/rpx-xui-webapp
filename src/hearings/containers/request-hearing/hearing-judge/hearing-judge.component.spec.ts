@@ -9,11 +9,12 @@ import { of } from 'rxjs';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
-import {JudicialUserModel} from '../../../models/judicialUser.model';
+import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
 
+// Check testing
 describe('HearingJudgeComponent', () => {
   let component: HearingJudgeComponent;
   let fixture: ComponentFixture<HearingJudgeComponent>;

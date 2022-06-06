@@ -1,4 +1,4 @@
-import {Entity} from './entity';
+import { Entity } from './entity';
 describe('AppComponent', () => {
 
   it('should create the app', () => {

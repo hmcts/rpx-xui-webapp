@@ -1,8 +1,9 @@
+import { CaseEventTrigger, createCaseEventTrigger, DRAFT_PREFIX, DRAFT_QUERY_PARAM, HttpError } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, of, throwError } from 'rxjs';
 import { CreateCaseEventTriggerResolver } from './create-case-event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
-import { DRAFT_PREFIX, DRAFT_QUERY_PARAM, createCaseEventTrigger, HttpError, CaseEventTrigger } from '@hmcts/ccd-case-ui-toolkit';
 
+// Check testing
 describe('CreateCaseFieldsResolver', () => {
 
   const PARAM_JURISDICTION_ID = CreateCaseEventTriggerResolver.PARAM_JURISDICTION_ID;
@@ -32,7 +33,7 @@ describe('CreateCaseFieldsResolver', () => {
   let alertService: any;
   let route: any;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
     alertService = createSpyObj('alertService', ['error']);
 
@@ -149,7 +150,7 @@ describe('CreateCaseFieldsResolver', () => {
     expect(route.queryParamMap.get).toHaveBeenCalledTimes(2);
   });
 
-  it('should create error alert when event trigger cannot be retrieved', done => {
+  it('should create error alert when event trigger cannot be retrieved', async() => {
     casesService.getEventTrigger.and.returnValue(throwError(ERROR));
 
     createCaseFieldsResolver
@@ -158,7 +159,6 @@ describe('CreateCaseFieldsResolver', () => {
         fail(data);
       }, err => {
         expect(err).toBeTruthy();
-        done();
       });
   });
 });

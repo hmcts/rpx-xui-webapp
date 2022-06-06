@@ -1,7 +1,8 @@
-import {Observable, of} from 'rxjs';
-import {ScreenNavigationModel} from '../models/screenNavigation.model';
-import {PageFlow} from './page-flow';
+import { Observable, of } from 'rxjs';
+import { ScreenNavigationModel } from '../models/screenNavigation.model';
+import { PageFlow } from './page-flow';
 
+// Check testing
 describe('PageFlow', () => {
   let pageFlow: PageFlow;
   const mockRoute = jasmine.createSpyObj('Route', ['navigate']);

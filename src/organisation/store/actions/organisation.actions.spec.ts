@@ -1,11 +1,13 @@
 import { Organisation } from '../../models';
-import { LOAD_ORGANISATION,
-  LOAD_ORGANISATION_FAIL,
-  LOAD_ORGANISATION_SUCCESS,
-  LoadOrganisation,
-  LoadOrganisationFail,
-  LoadOrganisationSuccess } from './organisation.actions';
+import {
+    LoadOrganisation,
+    LoadOrganisationFail,
+    LoadOrganisationSuccess, LOAD_ORGANISATION,
+    LOAD_ORGANISATION_FAIL,
+    LOAD_ORGANISATION_SUCCESS
+} from './organisation.actions';
 
+// Check testing
 describe('Load Organisation', () => {
   it('should create an action', () => {
     const action = new LoadOrganisation();
@@ -13,6 +15,7 @@ describe('Load Organisation', () => {
   });
 });
 
+// Check testing
 describe('LoadOrganisationSuccess', () => {
   it('should create an action', () => {
     const payload: Organisation = {
@@ -33,6 +36,7 @@ describe('LoadOrganisationSuccess', () => {
   });
 });
 
+// Check testing
 describe('LoadOrganisationFail', () => {
   it('should create an action', () => {
     const payload: any = 'fail';

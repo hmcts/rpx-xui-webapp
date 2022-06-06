@@ -2,12 +2,14 @@ import { InfoMessage, InfoMessageType } from '../enums';
 import { InformationMessage } from '../models/comms/infomation-message.model';
 import { InfoMessageCommService } from './info-message-comms.service';
 
+// Check testing
 describe('WorkAllocation: InfoMessageCommService', () => {
 
   /**
    * Helper function to remove all previous messages, and add a new message.
    */
-  describe('nextMessage()', () => {
+  // Check testing
+describe('nextMessage()', () => {
 
     it('Should make a call to removeAllMessages().', () => {
 
@@ -42,7 +44,8 @@ describe('WorkAllocation: InfoMessageCommService', () => {
     });
   });
 
-  describe('removeAllMessages()', () => {
+  // Check testing
+describe('removeAllMessages()', () => {
 
     it('Should remove all the information messages from the message queue.', () => {
 
@@ -63,7 +66,8 @@ describe('WorkAllocation: InfoMessageCommService', () => {
     });
   });
 
-  describe('addMessage()', () => {
+  // Check testing
+describe('addMessage()', () => {
 
     it('Should add an information message into the message queue.', () => {
 
@@ -100,7 +104,8 @@ describe('WorkAllocation: InfoMessageCommService', () => {
     });
   });
 
-  describe('emitMessages()', () => {
+  // Check testing
+describe('emitMessages()', () => {
 
     it('should pass messages to the Subjects next() function, so that any subscribers' +
       'to infoMessageChangeEmitted$ can be updated with the correct information messages.', () => {

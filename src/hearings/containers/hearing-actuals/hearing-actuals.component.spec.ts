@@ -10,6 +10,7 @@ import { HearingsService } from '../../services/hearings.service';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import { HearingActualsComponent } from './hearing-actuals.component';
 
+// Check testing
 describe('RequestHearingComponent', () => {
   let component: HearingActualsComponent;
   let fixture: ComponentFixture<HearingActualsComponent>;

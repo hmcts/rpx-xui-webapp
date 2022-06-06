@@ -2,11 +2,14 @@ import { ExclusionState } from '../../models';
 import * as fromActions from '../actions/exclusion.action';
 import * as fromReducer from './exclusion.reducer';
 
+// Check testing
 describe('Exclusion Reducer', () => {
 
-  describe('Actions', () => {
+  // Check testing
+describe('Actions', () => {
 
-    describe('Change Navigation action', () => {
+    // Check testing
+describe('Change Navigation action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.ChangeNavigation(ExclusionState.CHOOSE_PERSON_ROLE);
@@ -15,7 +18,8 @@ describe('Exclusion Reducer', () => {
       });
     });
 
-    describe('Reset action', () => {
+    // Check testing
+describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.ExclusionReset();

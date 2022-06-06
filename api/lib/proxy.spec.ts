@@ -6,13 +6,13 @@ import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 import { getConfigValue } from '../configuration'
 import {
-  SERVICES_CCD_COMPONENT_API_PATH,
+    SERVICES_CCD_COMPONENT_API_PATH
 } from '../configuration/references'
+import { http } from './http'
+import * as proxy from './proxy'
 
 chai.use(sinonChai)
 
-import {http} from './http'
-import * as proxy from './proxy'
 
 describe('proxy', () => {
 

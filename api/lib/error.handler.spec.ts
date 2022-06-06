@@ -4,11 +4,11 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
+import * as errorHandler from './error.handler'
 import { propsExist } from './objectUtilities'
 
 chai.use(sinonChai)
 
-import * as errorHandler from './error.handler'
 
 describe('errorHandler', () => {
   let next

@@ -1,9 +1,9 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { HealthCheckGuard } from './health-check.guard';
-import { StoreModule, Store } from '@ngrx/store';
-import { HealthCheckService } from '../services/health-check.service';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable, throwError } from 'rxjs';
+import { inject, TestBed } from '@angular/core/testing';
+import { Store, StoreModule } from '@ngrx/store';
+import { of, throwError } from 'rxjs';
+import { HealthCheckService } from '../services/health-check.service';
+import { HealthCheckGuard } from './health-check.guard';
 
 class HttpClientMock {
 

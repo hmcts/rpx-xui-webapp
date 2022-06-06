@@ -9,6 +9,7 @@ import { initialState } from '../hearing.test.data';
 import { LocationsDataService } from '../services/locations-data.service';
 import { CourtLocationsDataResolver } from './court-locations-resolver.resolve';
 
+// Check testing
 describe('CourtLocationsData Resolver', () => {
   let locationsDataService: LocationsDataService;
   const dataRef: LocationModel = {

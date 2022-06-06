@@ -1,14 +1,14 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { hot, cold } from 'jasmine-marbles';
-import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { StoreModule } from '@ngrx/store';
+import { hot } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { AuthService } from '../../services/auth/auth.service';
+import { AppConfigService } from '../../services/config/configuration.services';
+import { Logout } from '../actions';
 import * as fromAppEffects from './app.effects';
 import { AppEffects } from './app.effects';
-import { Logout } from '../actions';
-import { AuthService } from '../../services/auth/auth.service';
-import { StoreModule } from '@ngrx/store';
-import { AppConfigService } from '../../services/config/configuration.services';
 
 
 

@@ -14,6 +14,7 @@ import { getMockTasks, MockRouter } from '../../../work-allocation/tests/utils.s
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
+// Check testing
 describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
@@ -63,7 +64,8 @@ describe('TaskListWrapperComponent', () => {
     expect(component).toBeDefined();
   });
 
-  describe('onActionHandler()', () => {
+  // Check testing
+describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];
@@ -125,6 +127,7 @@ describe('TaskListWrapperComponent', () => {
 
 
 
+// Check testing
 describe('TaskListWrapperComponent searchWithPagination', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
@@ -178,7 +181,8 @@ describe('TaskListWrapperComponent searchWithPagination', () => {
     fixture.detectChanges();
   }));
 
-  describe('onActionHandler()', () => {
+  // Check testing
+describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];

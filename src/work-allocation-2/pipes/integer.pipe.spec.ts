@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { IntegerPipe } from './integer.pipe';
 
+// Check testing
 describe('IntegerPipe', () => {
   const pipe = new IntegerPipe();
   const decimalPipe = new DecimalPipe('en-US');

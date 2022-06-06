@@ -3,10 +3,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { AlertIconClassPipe } from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert-icon-class.pipe';
 import {
-  AlertComponent as CCDAlertComponent,
+  AlertComponent as CCDAlertComponent
 } from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert.component';
-
 import { AlertComponent } from './alert.component';
+
 
 describe('AlertComponent', () => {
   let component: AlertComponent;

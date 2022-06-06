@@ -6,7 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -17,6 +16,8 @@ import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationF
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
+
+// Check testing
 describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
@@ -84,7 +85,8 @@ describe('TaskListWrapperComponent', () => {
     mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   }));
 
-  describe('onActionHandler()', () => {
+  // Check testing
+describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];
@@ -147,7 +149,8 @@ describe('TaskListWrapperComponent', () => {
     });
   });
 
-  describe('onPaginationHandler()', () => {
+  // Check testing
+describe('onPaginationHandler()', () => {
     it('should handle pagination', () => {
       component.pagination = { page_number: 1, page_size: 25 };
       fixture.detectChanges();

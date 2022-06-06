@@ -4,12 +4,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-
+import { FilterConstants } from '../../components/constants';
 import * as dtos from '../../models/dtos';
 import { LocationDataService } from '../../services';
 import { getMockLocations } from '../../tests/utils.spec';
-import { FilterConstants } from '../../components/constants';
 import { AvailableTasksFilterComponent } from './available-tasks-filter.component';
+
 
 @Component({
   template: `<exui-available-tasks-filter (selectionChanged)="onSelectionChanged($event)"></exui-available-tasks-filter>`
@@ -22,6 +22,7 @@ class WrapperComponent {
   }
 }
 
+// Check testing
 describe('AvailableTasksFilterComponent', () => {
   let component: AvailableTasksFilterComponent;
   let wrapper: WrapperComponent;

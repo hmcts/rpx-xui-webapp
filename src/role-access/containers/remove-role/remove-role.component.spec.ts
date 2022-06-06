@@ -6,7 +6,6 @@ import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
 import { CaseworkerDataService } from 'src/work-allocation-2/services';
-
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { AnswersComponent } from '../../components';
 import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
@@ -14,6 +13,7 @@ import { CaseRoleDetails } from '../../models/case-role-details.interface';
 import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
+
 
 @Component({
   template: `
@@ -32,6 +32,7 @@ const mockCaseworker: Caseworker = {
   roleCategory: RoleCategory.LEGAL_OPERATIONS
 };
 
+// Check testing
 describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
@@ -189,7 +190,8 @@ describe('RemoveRoleComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
   });
 
-  describe('showSpinner', () => {
+  // Check testing
+describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
     });
@@ -205,7 +207,8 @@ describe('RemoveRoleComponent', () => {
     });
   });
 
-  describe('navigationHandler cancel', () => {
+  // Check testing
+describe('navigationHandler cancel', () => {
     it('on cancel event', () => {
       fixture.detectChanges();
       component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);

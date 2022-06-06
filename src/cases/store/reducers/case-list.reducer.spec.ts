@@ -1,9 +1,11 @@
-import * as filterCaseList from './case-list.reducer';
-import * as fromCases from '../actions/case-list.action';
 import { SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
+import * as fromCases from '../actions/case-list.action';
+import * as filterCaseList from './case-list.reducer';
 
+// Check testing
 describe('CaseList Filter Reducer', () => {
-  describe('undefined action', () => {
+  // Check testing
+describe('undefined action', () => {
     it('should return the default state', () => {
       const { initialCaselistState } = filterCaseList;
       const action = {} as any;
@@ -12,7 +14,8 @@ describe('CaseList Filter Reducer', () => {
     });
   });
 
-  describe('[CreateCaselist] Apply Caselist Filter', () => {
+  // Check testing
+describe('[CreateCaselist] Apply Caselist Filter', () => {
     it('should set correct object', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.ApplyCaselistFilter({
@@ -69,7 +72,8 @@ describe('CaseList Filter Reducer', () => {
     });
   });
 
-  describe('[CreateCaselist] Apply Caselist Filter for ES', () => {
+  // Check testing
+describe('[CreateCaselist] Apply Caselist Filter for ES', () => {
     it('should set correct object', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.ApplyCaselistFilterForES({
@@ -126,7 +130,8 @@ describe('CaseList Filter Reducer', () => {
     });
   });
 
-  describe('[CreateCaselist] Find caselist pagination metadata success', () => {
+  // Check testing
+describe('[CreateCaselist] Find caselist pagination metadata success', () => {
     it('should set correct object', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.FindCaselistPaginationMetadataSuccess({
@@ -143,7 +148,8 @@ describe('CaseList Filter Reducer', () => {
     });
   });
 
-  describe('[CreateCaselist] Apply Caselist Filter Success', () => {
+  // Check testing
+describe('[CreateCaselist] Apply Caselist Filter Success', () => {
     it('should set correct object', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.ApplyCaselistFilterSuccess(new SearchResultView());
@@ -156,7 +162,8 @@ describe('CaseList Filter Reducer', () => {
     });
   });
 
-  describe('[CreateCaseList] toggle caselist filter success', () => {
+  // Check testing
+describe('[CreateCaseList] toggle caselist filter success', () => {
     it('should set correct object', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.CaseFilterToggleSuccess(true);
@@ -167,7 +174,8 @@ describe('CaseList Filter Reducer', () => {
     });
   });
 
-  describe('[CreateCaseList] toggle caselist filter success', () => {
+  // Check testing
+describe('[CreateCaseList] toggle caselist filter success', () => {
     it('should set correct object', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.CaseListReset();

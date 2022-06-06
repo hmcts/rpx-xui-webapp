@@ -1,13 +1,14 @@
-import { SearchFilterEffects } from './search-filter.effects';
-import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
 import { TestBed } from '@angular/core/testing';
-import { SearchFilterService } from '../../../cases/services';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromSearchFilterEffects from './search-filter.effects';
+import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { ApplySearchFilter, ApplySearchFilterSuccess, ApplySearchFilterFail, ApplySearchFilterForES } from '../actions';
-import { hot, cold } from 'jasmine-marbles';
+import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
+import { SearchFilterService } from '../../../cases/services';
+import { ApplySearchFilter, ApplySearchFilterFail, ApplySearchFilterForES, ApplySearchFilterSuccess } from '../actions';
+import * as fromSearchFilterEffects from './search-filter.effects';
+import { SearchFilterEffects } from './search-filter.effects';
 
+// Check testing
 describe('Pending Organisation Effects', () => {
     let actions$;
     let effects: SearchFilterEffects;
@@ -33,7 +34,8 @@ describe('Pending Organisation Effects', () => {
 
     });
 
-    describe('applySearchFilters$', () => {
+    // Check testing
+describe('applySearchFilters$', () => {
         it('should return a collection', () => {
 
             SearchFilterServiceMock.search.and.returnValue(of(payload));
@@ -45,7 +47,8 @@ describe('Pending Organisation Effects', () => {
         });
     });
 
-    describe('applySearchFilters$ error', () => {
+    // Check testing
+describe('applySearchFilters$ error', () => {
         it('should return a ApplySearchFilterFail', () => {
 
             SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
@@ -57,7 +60,8 @@ describe('Pending Organisation Effects', () => {
         });
     });
 
-    describe('applySearchFiltersForES$', () => {
+    // Check testing
+describe('applySearchFiltersForES$', () => {
         it('should return a collection', () => {
 
             SearchFilterServiceMock.search.and.returnValue(of(payload));
@@ -69,7 +73,8 @@ describe('Pending Organisation Effects', () => {
         });
     });
 
-    describe('applySearchFilterForES$ error', () => {
+    // Check testing
+describe('applySearchFilterForES$ error', () => {
         it('should return a ApplySearchFilterFail', () => {
 
             SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));

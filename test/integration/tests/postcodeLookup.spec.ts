@@ -1,11 +1,12 @@
 import { expect } from 'chai';
 // import mocha from 'mocha';
-import { getXSRFToken } from './utils/authUtil'
-import Request from './utils/request';
+import { getXSRFToken } from './utils/authUtil';
 import { setTestContext } from './utils/helper';
+import Request from './utils/request';
 const config = require('./config/config').config;
 
 
+// Check testing
 describe('CCD Endpoints', () => {
     const userName = config.users[config.testEnv].solicitor.e;
     const password = config.users[config.testEnv].solicitor.sec;

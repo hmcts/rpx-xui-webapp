@@ -1,15 +1,18 @@
 import * as fromHearingRequestAction from './hearing-request.action';
 
+// Check testing
 describe('Hearing Request Actions', () => {
 
-  describe('Reset', () => {
+  // Check testing
+describe('Reset', () => {
     it('should create an action', () => {
       const action = new fromHearingRequestAction.ResetHearingRequest();
       expect(action.type).toBe(fromHearingRequestAction.RESET_HEARING_REQUEST);
     });
   });
 
-  describe('UpdateHearingRequest', () => {
+  // Check testing
+describe('UpdateHearingRequest', () => {
     it('should update hearing request action', () => {
       const payload = {
         requestDetails: null,
@@ -25,7 +28,8 @@ describe('Hearing Request Actions', () => {
     });
   });
 
-  describe('SubmitHearingRequest', () => {
+  // Check testing
+describe('SubmitHearingRequest', () => {
     it('should submit hearing request action', () => {
       const payload = {
         requestDetails: null,
@@ -37,7 +41,8 @@ describe('Hearing Request Actions', () => {
     });
   });
 
-  describe('SubmitHearingRequestFailure', () => {
+  // Check testing
+describe('SubmitHearingRequestFailure', () => {
     it('should submit hearing request failure action', () => {
       const payload = {
         status: 403,
@@ -49,7 +54,8 @@ describe('Hearing Request Actions', () => {
     });
   });
 
-  describe('ResetHearingRequestLastError', () => {
+  // Check testing
+describe('ResetHearingRequestLastError', () => {
     it('should reset hearing request last error action', () => {
       const action = new fromHearingRequestAction.ResetHearingRequestLastError();
       expect(action.type).toBe(fromHearingRequestAction.RESET_HEARING_REQUEST_LAST_ERROR);

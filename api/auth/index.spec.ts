@@ -4,14 +4,14 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-chai.use(sinonChai)
-
-import {getConfigValue} from '../configuration'
+import { getConfigValue } from '../configuration'
 import {
     COOKIES_TOKEN,
-    COOKIES_USER_ID,
+    COOKIES_USER_ID
 } from '../configuration/references'
 import * as auth from './index'
+chai.use(sinonChai)
+
 
 describe('Auth', () => {
 

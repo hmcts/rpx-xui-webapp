@@ -1,6 +1,7 @@
-import {EXUIDisplayStatusEnum} from '../models/hearings.enum';
-import {HearingsBadgePipe} from './hearings-badge.pipe';
+import { EXUIDisplayStatusEnum } from '../models/hearings.enum';
+import { HearingsBadgePipe } from './hearings-badge.pipe';
 
+// Check testing
 describe('HearingsBadgePipe', () => {
 
   let hearingsBadgePipe: HearingsBadgePipe;

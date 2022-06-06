@@ -1,11 +1,12 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {IsHiddenSource} from '../models/hearings.enum';
-import {LocationByEPIMMSModel} from '../models/location.model';
-import {State} from '../store/reducers';
-import {ShowHidePipe} from './show-hide.pipe';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { IsHiddenSource } from '../models/hearings.enum';
+import { LocationByEPIMMSModel } from '../models/location.model';
+import { State } from '../store/reducers';
+import { ShowHidePipe } from './show-hide.pipe';
 
+// Check testing
 describe('ShowHidePipe', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '234850',

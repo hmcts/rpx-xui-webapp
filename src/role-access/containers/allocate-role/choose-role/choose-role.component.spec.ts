@@ -5,20 +5,20 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-
 import { UserRole } from '../../../../app/models';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
 import {
-  Actions,
-  AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateRoleStateData,
-  RoleCategory,
+    Actions,
+    AllocateRoleNavigationEvent,
+    AllocateRoleState,
+    AllocateRoleStateData,
+    RoleCategory
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 import { ChooseRoleComponent } from './choose-role.component';
+
 
 const firstRoleOptions = [{optionId: 'lead-judge', optionValue: 'Lead judge'},
   {optionId: 'hearing-judge', optionValue: 'Hearing judge'}];
@@ -39,6 +39,7 @@ const mockAllocateRoleStateData: AllocateRoleStateData = {
   period: null
 };
 
+// Check testing
 describe('ChooseRoleComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
   const formGroup: FormGroup = new FormGroup({[CHOOSE_A_ROLE]: radioOptionControl});

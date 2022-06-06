@@ -1,15 +1,19 @@
 import * as fromCaseSearch from './case-search.action';
 
+// Check testing
 describe('Case Search Actions', () => {
-  describe('Search Cases filter', () => {
-    describe('Jurisdiction Selected', () => {
+  // Check testing
+describe('Search Cases filter', () => {
+    // Check testing
+describe('Jurisdiction Selected', () => {
       it('should create an action', () => {
         const action = new fromCaseSearch.JurisdictionSelected();
         expect(action.type).toBe(fromCaseSearch.JURISDICTION_SELECTED);
       });
     });
 
-    describe('Applied', () => {
+    // Check testing
+describe('Applied', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseSearch.Applied({});
@@ -20,7 +24,8 @@ describe('Case Search Actions', () => {
       });
     });
 
-    describe('Reset', () => {
+    // Check testing
+describe('Reset', () => {
       it('should create an action', () => {
         const action = new fromCaseSearch.Reset();
 
@@ -30,7 +35,8 @@ describe('Case Search Actions', () => {
       });
     });
 
-    describe('ApplySearchFilter', () => {
+    // Check testing
+describe('ApplySearchFilter', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseSearch.ApplySearchFilter(payload);
@@ -41,7 +47,8 @@ describe('Case Search Actions', () => {
       });
     });
 
-    describe('ApplySearchFilterSuccess', () => {
+    // Check testing
+describe('ApplySearchFilterSuccess', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseSearch.ApplySearchFilterSuccess(payload);
@@ -52,7 +59,8 @@ describe('Case Search Actions', () => {
       });
     });
 
-    describe('ApplySearchFilterFail', () => {
+    // Check testing
+describe('ApplySearchFilterFail', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseSearch.ApplySearchFilterFail(payload);
@@ -63,7 +71,8 @@ describe('Case Search Actions', () => {
       });
     });
 
-    describe('FindSearchPaginationMetadata', () => {
+    // Check testing
+describe('FindSearchPaginationMetadata', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseSearch.FindSearchPaginationMetadata(payload);
@@ -74,7 +83,8 @@ describe('Case Search Actions', () => {
       });
     });
 
-    describe('SearchResultPageChange', () => {
+    // Check testing
+describe('SearchResultPageChange', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseSearch.SearchResultPageChange(payload);
@@ -85,7 +95,8 @@ describe('Case Search Actions', () => {
       });
     });
 
-    describe('FindSearchPaginationMetadataSuccess', () => {
+    // Check testing
+describe('FindSearchPaginationMetadataSuccess', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseSearch.FindSearchPaginationMetadataSuccess(payload);
@@ -96,7 +107,8 @@ describe('Case Search Actions', () => {
       });
     });
 
-    describe('SearchFilterToggle', () => {
+    // Check testing
+describe('SearchFilterToggle', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseSearch.SearchFilterToggle(payload);
@@ -107,7 +119,8 @@ describe('Case Search Actions', () => {
       });
     });
 
-    describe('SearchFilterToggleSuccess', () => {
+    // Check testing
+describe('SearchFilterToggleSuccess', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseSearch.SearchFilterToggleSuccess(payload);

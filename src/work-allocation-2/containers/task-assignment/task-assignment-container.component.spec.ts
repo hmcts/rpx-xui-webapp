@@ -11,8 +11,7 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/se
 import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-
+import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -23,6 +22,7 @@ import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
+
 
 @Component({
   template: `
@@ -40,6 +40,7 @@ class WrapperComponent {
 class NothingComponent {
 }
 
+// Check testing
 describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;

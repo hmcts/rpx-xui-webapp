@@ -1,13 +1,16 @@
-import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
-import {HMCLocationType} from '../../models/hearings.enum';
+import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
+import { HMCLocationType } from '../../models/hearings.enum';
 import * as fromHearingRequestActions from '../actions/hearing-request.action';
 import * as fromHearingRequestReducer from './hearing-request.reducer';
 
+// Check testing
 describe('Hearing Request Reducer', () => {
 
-  describe('Actions', () => {
+  // Check testing
+describe('Actions', () => {
 
-    describe('Reset action', () => {
+    // Check testing
+describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingRequestReducer.initialHearingRequestState;
         const action = new fromHearingRequestActions.ResetHearingRequest();
@@ -16,7 +19,8 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
-    describe('Initialization action', () => {
+    // Check testing
+describe('Initialization action', () => {
       it('should initialize hearing request', () => {
         const initialHearingRequestState: HearingRequestStateData = {
           hearingRequestMainModel: {
@@ -76,7 +80,8 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
-    describe('Update hearing request action', () => {
+    // Check testing
+describe('Update hearing request action', () => {
       it('should update hearing request action and reset hearingInWelshFlag if no Wales location', () => {
         const initialHearingRequestState: HearingRequestStateData = {
           hearingRequestMainModel: {
@@ -139,7 +144,8 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
-    describe('Submit hearing request failure action', () => {
+    // Check testing
+describe('Submit hearing request failure action', () => {
       it('should call error response action', () => {
         const initialHearingRequestState: HearingRequestStateData = {
           hearingRequestMainModel: null,
@@ -155,7 +161,8 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
-    describe('reset hearing actuals last error action', () => {
+    // Check testing
+describe('reset hearing actuals last error action', () => {
       it('should set correct object', () => {
         const initialHearingRequestState: HearingRequestStateData = {
           hearingRequestMainModel: null,
@@ -171,7 +178,8 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
-    describe('Update hearing request failure', () => {
+    // Check testing
+describe('Update hearing request failure', () => {
       it('should call error response action', () => {
         const initialHearingRequestState: HearingRequestStateData = {
           hearingRequestMainModel: null,

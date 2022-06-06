@@ -3,9 +3,12 @@ import { hearingActualsMainModel } from '../../hearing.test.data';
 import * as fromHearingActualsActions from '../actions/hearing-actuals.action';
 import * as fromHearingActualsReducer from './hearing-actuals.reducer';
 
+// Check testing
 describe('Hearing Actuals Reducer', () => {
-  describe('Actions', () => {
-    describe('Reset action', () => {
+  // Check testing
+describe('Actions', () => {
+    // Check testing
+describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingActualsReducer.initialHearingActualsState;
         const action = new fromHearingActualsActions.ResetHearingActuals();
@@ -14,7 +17,8 @@ describe('Hearing Actuals Reducer', () => {
       });
     });
 
-    describe('get service hearing actuals success action', () => {
+    // Check testing
+describe('get service hearing actuals success action', () => {
       it('should set correct object', () => {
         const action = new fromHearingActualsActions.GetHearingActualsSuccess(hearingActualsMainModel);
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(fromHearingActualsReducer.initialHearingActualsState, action);
@@ -22,7 +26,8 @@ describe('Hearing Actuals Reducer', () => {
       });
     });
 
-    describe('submit hearing actuals success action', () => {
+    // Check testing
+describe('submit hearing actuals success action', () => {
       it('should return the correct object', () => {
         const { initialHearingActualsState } = fromHearingActualsReducer;
         const action = new fromHearingActualsActions.SubmitHearingActualsSuccess('1111222233334444');
@@ -50,7 +55,8 @@ describe('Hearing Actuals Reducer', () => {
       });
     });
 
-    describe('reset hearing actuals last error action', () => {
+    // Check testing
+describe('reset hearing actuals last error action', () => {
       it('should set correct object', () => {
         const action = new fromHearingActualsActions.ResetHearingActualsLastError();
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(fromHearingActualsReducer.initialHearingActualsState, action);

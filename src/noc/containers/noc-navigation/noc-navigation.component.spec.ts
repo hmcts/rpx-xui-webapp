@@ -6,6 +6,7 @@ import { NocNavigationEvent } from '../../models';
 import * as fromNocStore from '../../store';
 import { NocNavigationComponent } from './noc-navigation.component';
 
+// Check testing
 describe('NocNavigationComponent', () => {
   let fixture: ComponentFixture<NocNavigationComponent>;
   let component: NocNavigationComponent;
@@ -35,7 +36,8 @@ describe('NocNavigationComponent', () => {
     fixture.detectChanges();
   });
 
-  describe('isVisible', () => {
+  // Check testing
+describe('isVisible', () => {
     it('should determine button visible if correct state', () => {
       const expected = component.isVisible(0, [0, 1, 2, 3]);
       expect(expected).toBeTruthy();
@@ -47,7 +49,8 @@ describe('NocNavigationComponent', () => {
     });
   });
 
-  describe('onEventTrigger', () => {
+  // Check testing
+describe('onEventTrigger', () => {
     it('should emit', () => {
       const backSpy = spyOn(component.eventTrigger, 'emit');
       component.onEventTrigger(NocNavigationEvent.BACK);

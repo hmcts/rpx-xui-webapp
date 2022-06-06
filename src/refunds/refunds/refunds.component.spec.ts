@@ -11,6 +11,7 @@ const userMock = {
   })
 };
 
+// Check testing
 describe('RefundsComponent', () => {
   let component: RefundsComponent;
   let fixture: ComponentFixture<RefundsComponent>;

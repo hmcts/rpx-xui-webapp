@@ -1,18 +1,19 @@
 import { FormControl } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
-
 import { of } from 'rxjs';
 import {
-  Actions,
-  AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateRoleStateData,
-  AllocateTo,
-  DurationOfRole, RoleCategory
+    Actions,
+    AllocateRoleNavigationEvent,
+    AllocateRoleState,
+    AllocateRoleStateData,
+    AllocateTo,
+    DurationOfRole, RoleCategory
 } from '../../../models';
 import { ChoosePersonAndGo } from '../../../store';
 import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person.component';
 
+
+// Check testing
 describe('AllocateRolePersonComponent', () => {
   let component: AllocateRoleSearchPersonComponent;
   let mockStore: any;

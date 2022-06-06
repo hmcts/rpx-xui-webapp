@@ -4,15 +4,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-
-import { WorkCaseListComponent } from './work-case-list.component';
-import { FieldConfig, SortField } from '../../models/common';
+import { ConfigConstants } from '../../components/constants';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { CaseService, SortOrder } from '../../enums';
 import { Case, CaseAction, CaseServiceConfig } from '../../models/cases';
+import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter } from '../../models/dtos';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { getMockCases, MockRouter } from '../../tests/utils.spec';
-import { ConfigConstants } from '../../components/constants';
+import { WorkCaseListComponent } from './work-case-list.component';
+
 
 @Component({
   template: `
@@ -60,6 +60,7 @@ function getCaseService(): CaseServiceConfig {
   };
 }
 
+// Check testing
 describe('CaseListComponent', () => {
   let component: WorkCaseListComponent;
   let wrapper: WrapperComponent;
@@ -407,7 +408,8 @@ describe('CaseListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('startDate');
   });
 
-  describe('act upon deep linking', () => {
+  // Check testing
+describe('act upon deep linking', () => {
     const id = '12345678';
 
     it('should select appropriate case from location hash', () => {
@@ -439,7 +441,8 @@ describe('CaseListComponent', () => {
     });
   });
 
-  describe('generate pagination summary', () => {
+  // Check testing
+describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {

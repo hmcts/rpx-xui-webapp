@@ -12,6 +12,7 @@ import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocHomeComponent } from './noc-home.component';
 
+// Check testing
 describe('NocHomeComponent', () => {
   let fixture: ComponentFixture<NocHomeComponent>;
   let component: NocHomeComponent;
@@ -54,7 +55,8 @@ describe('NocHomeComponent', () => {
     component = fixture.componentInstance;
   });
 
-  describe('onNavEvent', () => {
+  // Check testing
+describe('onNavEvent', () => {
     beforeEach(() => {
       storePipeMock.and.returnValue(of(0));
       fixture.detectChanges();
@@ -139,7 +141,8 @@ describe('NocHomeComponent', () => {
     });
   });
 
-  describe('NocNavigationEvent.CHECK_ANSWERS', () => {
+  // Check testing
+describe('NocNavigationEvent.CHECK_ANSWERS', () => {
     beforeEach(() => {
       component.nocNavigationCurrentState = NocState.CHECK_ANSWERS;
       storePipeMock.and.returnValue(of(6));

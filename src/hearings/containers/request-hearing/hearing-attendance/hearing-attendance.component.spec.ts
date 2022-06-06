@@ -1,17 +1,16 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {LovRefDataService} from '../../../services/lov-ref-data.service';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
-import {HearingAttendanceComponent} from './hearing-attendance.component';
+import { ActivatedRoute } from '@angular/router';
+import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { LovRefDataService } from '../../../services/lov-ref-data.service';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { HearingAttendanceComponent } from './hearing-attendance.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -21,6 +20,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
+// Check testing
 describe('HearingAttendanceComponent', () => {
   let component: HearingAttendanceComponent;
   let fixture: ComponentFixture<HearingAttendanceComponent>;

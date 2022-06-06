@@ -9,6 +9,7 @@ import { OrganisationService } from '../../services';
 import { LoadOrganisation, LoadOrganisationFail, LoadOrganisationSuccess } from '../actions';
 import * as fromOrganisationEffects from './organisation.effects';
 
+// Check testing
 describe('Organisation Effects', () => {
   let actions$;
   let effects: OrganisationEffects;
@@ -41,7 +42,8 @@ describe('Organisation Effects', () => {
 
   });
 
-  describe('loadOrganisation$', () => {
+  // Check testing
+describe('loadOrganisation$', () => {
     it('should return a collection from loadOrganisation$ - LoadOrganisationSuccess', () => {
       const payload = {
         account_number: 'someNumber',
@@ -60,7 +62,8 @@ describe('Organisation Effects', () => {
     });
   });
 
-  describe('loadOrganisation$ error', () => {
+  // Check testing
+describe('loadOrganisation$ error', () => {
     it('should return LoadOrganisationFail', () => {
       organisationServiceMock.fetchOrganisation.and.returnValue(throwError(new Error()));
       const action = new LoadOrganisation();

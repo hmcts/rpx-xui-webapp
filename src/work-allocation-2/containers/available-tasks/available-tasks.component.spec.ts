@@ -1,13 +1,12 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { of, throwError } from 'rxjs';
-
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { AllocateRoleService } from '../../../role-access/services';
@@ -20,6 +19,7 @@ import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsSer
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
+
 
 @Component({
   template: `
@@ -38,6 +38,7 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
+// Check testing
 describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
@@ -188,7 +189,8 @@ describe('AvailableTasksComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
-  describe('claimTask()', () => {
+  // Check testing
+describe('claimTask()', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -231,7 +233,8 @@ describe('AvailableTasksComponent', () => {
     });
   });
 
-  describe('claimTaskAndGo()', () => {
+  // Check testing
+describe('claimTaskAndGo()', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -270,7 +273,8 @@ describe('AvailableTasksComponent', () => {
     });
   });
 
-  describe('claimTaskErrors()', () => {
+  // Check testing
+describe('claimTaskErrors()', () => {
 
     it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
 
@@ -314,7 +318,8 @@ describe('AvailableTasksComponent', () => {
     // });
   });
 
-  describe('onActionHandler()', () => {
+  // Check testing
+describe('onActionHandler()', () => {
     const TASK_ID = '2345678901234567';
     const taskAction: InvokedTaskAction = {
       action: {

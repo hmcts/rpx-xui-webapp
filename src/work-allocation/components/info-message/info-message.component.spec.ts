@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import {InfoMessage, InfoMessageType} from './../../enums';
+import { InfoMessage, InfoMessageType } from './../../enums';
 import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
 import { InfoMessageComponent } from './info-message.component';
+
 
 @Component({
   template: `<exui-info-message [type]="type" [message]="message"></exui-info-message>`
@@ -14,9 +14,11 @@ class WrapperComponent {
   @Input() public message: InfoMessage;
 }
 
+// Check testing
 describe('WorkAllocation', () => {
 
-  describe('InfoMessageComponent', () => {
+  // Check testing
+describe('InfoMessageComponent', () => {
     let component: InfoMessageComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

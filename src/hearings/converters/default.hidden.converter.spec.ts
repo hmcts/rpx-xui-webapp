@@ -1,5 +1,6 @@
-import {DefaultHiddenConverter} from './default.hidden.converter';
+import { DefaultHiddenConverter } from './default.hidden.converter';
 
+// Check testing
 describe('DefaultHiddenConverter', () => {
 
   let defaultHiddenConverter: DefaultHiddenConverter;

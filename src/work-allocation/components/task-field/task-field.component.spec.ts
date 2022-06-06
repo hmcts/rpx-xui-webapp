@@ -1,10 +1,10 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TaskFieldType, TaskView } from './../../enums';
 import { Task, TaskFieldConfig } from './../../models/tasks';
 import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
 import { TaskFieldComponent } from './task-field.component';
+
 
 @Component({
   template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
@@ -15,9 +15,11 @@ class WrapperComponent {
   @Input() public task: Task;
 }
 
+// Check testing
 describe('WorkAllocation', () => {
 
-  describe('TaskFieldComponent', () => {
+  // Check testing
+describe('TaskFieldComponent', () => {
     let component: TaskFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

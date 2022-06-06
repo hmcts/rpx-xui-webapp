@@ -1,14 +1,15 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {inject, TestBed} from '@angular/core/testing';
-import {ActivatedRouteSnapshot} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {CaseFlagReferenceModel} from '../models/caseFlagReference.model';
-import {CaseFlagsRefDataService} from '../services/case-flags-ref-data.service';
-import {CaseFlagsResolver} from './case-flags.resolver';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
+import { ActivatedRouteSnapshot } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
+import { CaseFlagsRefDataService } from '../services/case-flags-ref-data.service';
+import { CaseFlagsResolver } from './case-flags.resolver';
 
+// Check testing
 describe('Case Flags Resolver', () => {
   let caseFlagsRefDataService: CaseFlagsRefDataService;
   const CASE_FLAGS_REF_DATA = {

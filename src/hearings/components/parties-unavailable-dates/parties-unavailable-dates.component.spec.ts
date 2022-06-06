@@ -1,6 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {PartiesUnavailableDatesComponent} from './parties-unavailable-dates.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PartiesUnavailableDatesComponent } from './parties-unavailable-dates.component';
 
+// Check testing
 describe('PartiesUnavailableDatesComponent', () => {
   let component: PartiesUnavailableDatesComponent;
   let fixture: ComponentFixture<PartiesUnavailableDatesComponent>;

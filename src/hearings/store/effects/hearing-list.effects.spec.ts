@@ -1,19 +1,20 @@
-import {TestBed} from '@angular/core/testing';
-import {provideMockActions} from '@ngrx/effects/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold, hot} from 'jasmine-marbles';
-import {of, throwError} from 'rxjs';
+import { TestBed } from '@angular/core/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { of, throwError } from 'rxjs';
 import * as fromHearingStore from '../../../hearings/store';
-import {HttpError} from '../../../models/httpError.model';
-import {HearingDayScheduleModel} from '../../models/hearingDaySchedule.model';
-import {HearingListModel} from '../../models/hearingList.model';
-import {HearingListMainModel} from '../../models/hearingListMain.model';
-import {EXUISectionStatusEnum, HearingListingStatusEnum} from '../../models/hearings.enum';
-import {HearingsService} from '../../services/hearings.service';
+import { HttpError } from '../../../models/httpError.model';
+import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
+import { HearingListModel } from '../../models/hearingList.model';
+import { HearingListMainModel } from '../../models/hearingListMain.model';
+import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/hearings.enum';
+import { HearingsService } from '../../services/hearings.service';
 import * as hearingListActions from '../actions/hearing-list.action';
-import {HearingListEffects} from './hearing-list.effects';
+import { HearingListEffects } from './hearing-list.effects';
 
+// Check testing
 describe('Hearing List Effects', () => {
   let actions$;
   let store: Store<fromHearingStore.State>;
@@ -47,7 +48,8 @@ describe('Hearing List Effects', () => {
 
   });
 
-  describe('loadHearingList$', () => {
+  // Check testing
+describe('loadHearingList$', () => {
     it('should return a response with hearings list', () => {
       const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
         hearingStartDateTime: '2021-05-01T16:00:00.000Z',
@@ -87,7 +89,8 @@ describe('Hearing List Effects', () => {
     });
   });
 
-  describe('handleError', () => {
+  // Check testing
+describe('handleError', () => {
     it('should error when loading all hearings request failure', () => {
       const errorResponse: HttpError = {
         status: 500,

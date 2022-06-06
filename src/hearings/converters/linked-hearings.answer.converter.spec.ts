@@ -7,6 +7,7 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { LinkedHearingsAnswerConverter } from './linked-hearings.answer.converter';
 
+// Check testing
 describe('LinkedHearingsAnswerConverter', () => {
   let converter: AnswerConverter;
   beforeEach(() => {

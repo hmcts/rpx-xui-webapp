@@ -1,10 +1,10 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../models/enums';
 import { OptionsModel } from '../../models/options-model';
 import { ChooseRadioOptionComponent } from './choose-radio-option.component';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   template: `<exui-choose-radio-option [optionsList]="optionsList" [title]="title" [caption]="caption"></exui-choose-radio-option>`
@@ -21,6 +21,7 @@ const mockRoles: OptionsModel[] = [
   { optionId: '2', optionValue: 'Role 2' },
   { optionId: '3', optionValue: 'Role 3' }];
 
+// Check testing
 describe('ChooseRadioOptionComponent', () => {
   const RADIO_OPTION_CONTROL: FormControl = new FormControl('');
   const FORM_GROUP: FormGroup = new FormGroup({['personRole']: RADIO_OPTION_CONTROL});

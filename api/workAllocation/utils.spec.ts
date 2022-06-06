@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-
 import { ActionViews, TASK_ACTIONS } from './constants/actions';
-import { CaseworkerApi, LocationApi, Location, Caseworker } from './interfaces/task';
+import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 import { assignActionsToTasks, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl, preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
+
 
 describe('workAllocation.utils', () => {
 

@@ -1,17 +1,18 @@
 import * as chai from 'chai';
-import {expect} from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import {mockReq, mockRes} from 'sinon-express-mock';
-import {handleCaseWorkerDetails,
-        handleCaseWorkerForLocation,
-        handleCaseWorkerForLocationAndService,
-        handleCaseWorkerForService,
-        handleCaseWorkerGetAll} 
-  from './caseWorkerService';
-
+import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
+import {
+    handleCaseWorkerDetails,
+    handleCaseWorkerForLocation,
+    handleCaseWorkerForLocationAndService,
+    handleCaseWorkerForService,
+    handleCaseWorkerGetAll
+} from './caseWorkerService';
+
 
 chai.use(sinonChai);
 describe('Location Service', () => {

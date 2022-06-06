@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { AlertService, PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
@@ -7,7 +7,6 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { State } from '../../../app/store/reducers';
 import * as converts from '../../converters/case-converter';
@@ -16,9 +15,10 @@ import {
   ApplyCaselistFilterForES,
   CaseFilterToggle,
   FindCaselistPaginationMetadata,
-  SynchronizeStateToStore,
+  SynchronizeStateToStore
 } from '../../store/actions';
 import { CaseListComponent } from './case-list.component';
+
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -37,7 +37,7 @@ describe('CaseListComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue', 'isEnabled']);
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
 
-  beforeEach(async(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       declarations: [CaseListComponent],
       schemas: [NO_ERRORS_SCHEMA],
@@ -73,7 +73,7 @@ describe('CaseListComponent', () => {
 
     fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
-  }));
+  });
 
   describe('ngOnInit()', () => {
     it('should make internal function calls', () => {

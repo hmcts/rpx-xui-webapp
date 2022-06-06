@@ -1,16 +1,17 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormArray, FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of, throwError} from 'rxjs';
-import {initialState} from '../../hearing.test.data';
-import {LovRefDataModel} from '../../models/lovRefData.model';
-import {HearingsService} from '../../services/hearings.service';
-import {CancelHearingComponent} from './cancel-hearing.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of, throwError } from 'rxjs';
+import { initialState } from '../../hearing.test.data';
+import { LovRefDataModel } from '../../models/lovRefData.model';
+import { HearingsService } from '../../services/hearings.service';
+import { CancelHearingComponent } from './cancel-hearing.component';
 
+// Check testing
 describe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
   let fixture: ComponentFixture<CancelHearingComponent>;

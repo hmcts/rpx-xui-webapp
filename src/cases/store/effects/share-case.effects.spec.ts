@@ -10,19 +10,20 @@ import { of } from 'rxjs';
 import { CaseShareService } from '../../../app/services/case/share-case.service';
 import { State } from '../../../app/store/reducers';
 import {
-  AddShareCaseGo,
-  AddShareCases,
-  AssignUsersToCase,
-  AssignUsersToCaseSuccess,
-  LoadShareCase,
-  LoadShareCaseSuccess,
-  LoadUserFromOrgForCase,
-  LoadUserFromOrgForCaseSuccess
+    AddShareCaseGo,
+    AddShareCases,
+    AssignUsersToCase,
+    AssignUsersToCaseSuccess,
+    LoadShareCase,
+    LoadShareCaseSuccess,
+    LoadUserFromOrgForCase,
+    LoadUserFromOrgForCaseSuccess
 } from '../actions';
-import { ShareCaseEffects } from './share-case.effects';
 // tslint:disable-next-line:no-duplicate-imports
 import * as fromShareCaseEffects from './share-case.effects';
+import { ShareCaseEffects } from './share-case.effects';
 
+// Check testing
 describe('Share Case Effects', () => {
   let actions$;
   let effects: ShareCaseEffects;
@@ -57,7 +58,8 @@ describe('Share Case Effects', () => {
     effects = TestBed.get(ShareCaseEffects);
   });
 
-  describe('addShareCases$', () => {
+  // Check testing
+describe('addShareCases$', () => {
     it('should add share case action', () => {
       const action = new AddShareCases({
         sharedCases: [
@@ -76,7 +78,8 @@ describe('Share Case Effects', () => {
     });
   });
 
-  describe('navigateToAddShareCase$', () => {
+  // Check testing
+describe('navigateToAddShareCase$', () => {
     it('should add share case go', () => {
       const payload = {
         path: ['/cases/case-share'],
@@ -93,7 +96,8 @@ describe('Share Case Effects', () => {
     });
   });
 
-  describe('loadShareCases$', () => {
+  // Check testing
+describe('loadShareCases$', () => {
     it('should load share case', () => {
       const requestPayload = [
         {caseId: '1', caseTitle: 'James123'},
@@ -110,7 +114,8 @@ describe('Share Case Effects', () => {
     });
   });
 
-  describe('loadOrgUsers$', () => {
+  // Check testing
+describe('loadOrgUsers$', () => {
     it('should load organisation users', () => {
       const returnPayload = [
         {
@@ -134,7 +139,8 @@ describe('Share Case Effects', () => {
     });
   });
 
-  describe('assignUsersWithCases$', () => {
+  // Check testing
+describe('assignUsersWithCases$', () => {
     it('should assign users with cases', () => {
       const requestPayload = [
         {

@@ -1,15 +1,16 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {hearingStageRefData, initialState} from '../hearing.test.data';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
-import {HearingResponseLengthAnswerConverter} from './hearing-response-length.answer.converter';
+import { of } from 'rxjs';
+import { hearingStageRefData, initialState } from '../hearing.test.data';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
+import { HearingResponseLengthAnswerConverter } from './hearing-response-length.answer.converter';
 
+// Check testing
 describe('HearingResponseLengthAnswerConverter', () => {
 
   let converter: AnswerConverter;

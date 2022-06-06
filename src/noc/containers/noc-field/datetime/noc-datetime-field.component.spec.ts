@@ -1,12 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocDateTimeFieldComponent } from './noc-datetime-field.component';
 
+
+// Check testing
 describe('NocDateTimeFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
   const REGISTER_CONTROL = (control) => {

@@ -1,15 +1,15 @@
 import * as chai from 'chai'
 import { expect } from 'chai'
+import * as log4js from 'log4js'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
-
-chai.use(sinonChai)
-
-import * as log4js from 'log4js'
 import * as log4jui from './log4jui'
 import { leftPad } from './log4jui'
 import { isJUILogger } from './models'
+
+chai.use(sinonChai)
+
 
 describe('log4jui', () => {
     let sandbox

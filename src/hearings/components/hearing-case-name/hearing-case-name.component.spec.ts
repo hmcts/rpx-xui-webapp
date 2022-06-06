@@ -3,6 +3,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../../hearing.test.data';
 import { HearingCaseNameComponent } from './hearing-case-name.component';
 
+// Check testing
 describe('HearingPartiesTitleComponent', () => {
   let component: HearingCaseNameComponent;
   let fixture: ComponentFixture<HearingCaseNameComponent>;

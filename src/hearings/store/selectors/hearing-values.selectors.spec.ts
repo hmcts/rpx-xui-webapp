@@ -4,6 +4,7 @@ import { HearingValuesStateData } from '../../models/hearingValuesStateData';
 import { getHearingValues, reducers } from '../index';
 import { initialHearingValuesState, State } from '../reducers';
 
+// Check testing
 describe('Hearing Values selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
@@ -17,7 +18,8 @@ describe('Hearing Values selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('getHearingValues', () => {
+  // Check testing
+describe('getHearingValues', () => {
     it('should return hearing values state', () => {
       let result: HearingValuesStateData;
       store.pipe(select(getHearingValues)).subscribe(value => {

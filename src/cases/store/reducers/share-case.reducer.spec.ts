@@ -2,8 +2,10 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 import * as fromActions from '../actions/share-case.action';
 import * as fromReducer from './share-case.reducer';
 
+// Check testing
 describe('Share case reducer', () => {
-  describe('Actions', () => {
+  // Check testing
+describe('Actions', () => {
     let initialState;
 
     beforeEach(() => {

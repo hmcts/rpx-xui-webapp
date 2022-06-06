@@ -4,6 +4,7 @@ import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { UpdatePersonExclusion } from '../../../store/actions';
 import { AddExclusionSearchPersonComponent } from './add-exclusion-search-person.component';
 
+// Check testing
 describe('AddExclusionSearchPersonComponent', () => {
   let component: AddExclusionSearchPersonComponent;
   let mockStore: any;

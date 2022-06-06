@@ -1,20 +1,21 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {HearingJudgeNamesListComponent} from '../../../components';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION, MemberType, RadioOptions, RequirementType} from '../../../models/hearings.enum';
-import {JudicialUserModel} from '../../../models/judicialUser.model';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingPanelComponent} from './hearing-panel.component';
+import { of } from 'rxjs';
+import { HearingJudgeNamesListComponent } from '../../../components';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import { JudicialUserModel } from '../../../models/judicialUser.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingPanelComponent } from './hearing-panel.component';
 
+// Check testing
 describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
   let fixture: ComponentFixture<HearingPanelComponent>;

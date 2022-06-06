@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import * as fromStore from '../../../store';
 import { AllocateRoleNavigationComponent } from './allocate-role-navigation.component';
 
+
+// Check testing
 describe('AllocateRoleNavigationComponent', () => {
   let component: AllocateRoleNavigationComponent;
   let fixture: ComponentFixture<AllocateRoleNavigationComponent>;

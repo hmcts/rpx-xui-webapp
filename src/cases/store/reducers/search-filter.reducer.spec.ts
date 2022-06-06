@@ -1,11 +1,13 @@
-import * as fromFilter from './search-filter.reducer';
-import * as fromActions from '../actions/case-search.action';
-import { mockedSearchFilters, mockedSearchFiltersCaseState } from '../../../cases/mock/search-filter.mock';
 import { CaseState, CaseType, Jurisdiction, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
+import { mockedSearchFilters, mockedSearchFiltersCaseState } from '../../../cases/mock/search-filter.mock';
+import * as fromActions from '../actions/case-search.action';
+import * as fromFilter from './search-filter.reducer';
 
+// Check testing
 describe('Search Filter Reducer', () => {
 
-  describe('Actions', () => {
+  // Check testing
+describe('Actions', () => {
 
     it('should set correct object', () => {
       const initialState = fromFilter.initialSearchState;
@@ -29,7 +31,8 @@ describe('Search Filter Reducer', () => {
     });
   });
 
-  describe('Get functions', () => {
+  // Check testing
+describe('Get functions', () => {
     it('should get state properties', () => {
       const initialState = fromFilter.initialSearchState;
       expect(fromFilter.getSearchFilterJurisdiction(initialState)).toEqual(new Jurisdiction());
@@ -40,7 +43,8 @@ describe('Search Filter Reducer', () => {
     });
   });
 
-  describe('RESET action', () => {
+  // Check testing
+describe('RESET action', () => {
     it('should set correct object', () => {
       const initialState = fromFilter.initialSearchState;
       const action = new fromActions.Reset();

@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { CaseReferenceFieldComponent } from './case-reference-field.component';
+
 
 @Component({
   template: `<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>`
@@ -13,9 +13,11 @@ class WrapperComponent {
   @Input() public caseReference: string;
 }
 
+// Check testing
 describe('WorkAllocation', () => {
 
-  describe('CaseReferenceFieldComponent', () => {
+  // Check testing
+describe('CaseReferenceFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_REFERENCE: string = 'Casereference';
 

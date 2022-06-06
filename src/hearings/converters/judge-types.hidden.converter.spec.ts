@@ -1,10 +1,11 @@
-import {cold} from 'jasmine-marbles';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {JudgeTypesHiddenConverter} from './judge-types.hidden.converter';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { JudgeTypesHiddenConverter } from './judge-types.hidden.converter';
 
+// Check testing
 describe('JudgeTypesHiddenConverter', () => {
 
   let judgeTypesHiddenConverter: JudgeTypesHiddenConverter;

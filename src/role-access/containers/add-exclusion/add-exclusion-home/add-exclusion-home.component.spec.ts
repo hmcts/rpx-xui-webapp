@@ -1,7 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -14,6 +13,8 @@ import * as fromFeature from '../../../store';
 import * as fromContainers from '../../add-exclusion';
 import { AddExclusionHomeComponent } from './add-exclusion-home.component';
 
+
+// Check testing
 describe('ExclusionHomeComponent', () => {
   let component: AddExclusionHomeComponent;
   let fixture: ComponentFixture<AddExclusionHomeComponent>;
@@ -83,7 +84,8 @@ describe('ExclusionHomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('Click back button', () => {
+  // Check testing
+describe('Click back button', () => {
     it('on choose person role page click back button', () => {
       component.navigationCurrentState = ExclusionState.CHOOSE_PERSON_ROLE;
       component.navigationHandler(ExclusionNavigationEvent.BACK);
@@ -123,7 +125,8 @@ describe('ExclusionHomeComponent', () => {
     });
   });
 
-  describe('Click continue button', () => {
+  // Check testing
+describe('Click continue button', () => {
     it('on choose exclusion page click continue button', () => {
       component.navigationCurrentState = ExclusionState.CHOOSE_EXCLUSION;
       fixture.detectChanges();
@@ -157,7 +160,8 @@ describe('ExclusionHomeComponent', () => {
     });
   });
 
-  describe('Click confirm exclusion button', () => {
+  // Check testing
+describe('Click confirm exclusion button', () => {
     it('on choose exclusion page click continue button', () => {
       component.navigationCurrentState = ExclusionState.CHECK_ANSWERS;
       fixture.detectChanges();
@@ -174,21 +178,24 @@ describe('ExclusionHomeComponent', () => {
     });
   });
 
-  describe('Click cancel button', () => {
+  // Check testing
+describe('Click cancel button', () => {
     it('should navigate to role and access tab when click cancel button', () => {
       component.navigationHandler(ExclusionNavigationEvent.CANCEL);
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
     });
   });
 
-  describe('Unidentified state', () => {
+  // Check testing
+describe('Unidentified state', () => {
     it('should stop showing spinner and throw error', () => {
       expect(() => {component.navigationHandler(null)}).toThrow(new Error('Invalid exclusion navigation event'));
       expect(component.showSpinner).toBe(false);
     });
   });
 
-  describe('showSpinner', () => {
+  // Check testing
+describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
     });

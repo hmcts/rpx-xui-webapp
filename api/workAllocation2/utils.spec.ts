@@ -4,16 +4,16 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
-
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { Role } from '../roleAccess/models/roleType';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CANCEL, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
+import { Case } from './interfaces/case';
 import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import { Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
-
+import * as util from './util';
 import {
   applySearchFilter,
   assignActionsToTasks,
@@ -45,9 +45,9 @@ import {
   prepareSearchTaskUrl,
   prepareServiceRoleApiRequest
 } from './util';
-import { Case } from './interfaces/case';
 
-import * as util from './util';
+
+
 
 chai.use(sinonChai);
 

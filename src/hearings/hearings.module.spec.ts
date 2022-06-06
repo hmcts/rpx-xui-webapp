@@ -1,5 +1,6 @@
 import { HearingsModule } from './hearings.module';
 
+// Check testing
 describe('HearingsModule', () => {
   let hearingsFeatureModule: HearingsModule;
 

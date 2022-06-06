@@ -9,12 +9,12 @@ import { of } from 'rxjs';
 import { UserRole } from '../../../../app/models';
 import { UtilsModule } from '../../../../noc/containers/noc-field/utils/utils.module';
 import {
-  Actions,
-  AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateTo,
-  DurationOfRole,
-  RoleCategory,
+    Actions,
+    AllocateRoleNavigationEvent,
+    AllocateRoleState,
+    AllocateTo,
+    DurationOfRole,
+    RoleCategory
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromStore from '../../../store';
@@ -25,6 +25,7 @@ const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
       { roleId: '2', roleName: 'Role 2' },
       { roleId: '3', roleName: 'Role 3' }];
 
+// Check testing
 describe('AllocateRoleHomeComponent', () => {
   const USER = {
     sessionTimeout: {
@@ -127,7 +128,8 @@ describe('AllocateRoleHomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('navigationHandler back', () => {
+  // Check testing
+describe('navigationHandler back', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.BACK;
 
     it('on CHOOSE_ALLOCATE_TO page', () => {
@@ -244,7 +246,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
   });
 
-  describe('navigationHandler continue', () => {
+  // Check testing
+describe('navigationHandler continue', () => {
     beforeEach(() => {
       allocateRoleServiceMock.getValidRoles.and.returnValue(of(ROLE_LIST));
     });
@@ -310,7 +313,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
   });
 
-  describe('navigationHandler confirm', () => {
+  // Check testing
+describe('navigationHandler confirm', () => {
     beforeEach(() => {
       allocateRoleServiceMock.getValidRoles.and.returnValue(of(ROLE_LIST));
     });
@@ -332,7 +336,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
   });
 
-  describe('showSpinner', () => {
+  // Check testing
+describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
     });
@@ -364,7 +369,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
   });
 
-  describe('navigationHandler cancel', () => {
+  // Check testing
+describe('navigationHandler cancel', () => {
     beforeEach(() => {
       allocateRoleServiceMock.getValidRoles.and.returnValue(of(ROLE_LIST));
     });

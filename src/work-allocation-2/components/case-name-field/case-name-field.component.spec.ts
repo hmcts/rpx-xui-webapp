@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { CaseNameFieldComponent } from './case-name-field.component';
+
 
 @Component({
   template: `<exui-case-name-field [caseName]="caseName" [caseId]="caseId"></exui-case-name-field>`
@@ -14,9 +14,11 @@ class WrapperComponent {
   @Input() public caseId: string;
 }
 
+// Check testing
 describe('WorkAllocation', () => {
 
-  describe('CaseNameFieldComponent', () => {
+  // Check testing
+describe('CaseNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_NAME: string = 'Casename';
     const CASE_ID: string = 'CaseId';

@@ -1,10 +1,11 @@
-import {cold} from 'jasmine-marbles';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {HearingSpecificDateAmendedConverter} from './hearing-specific-date.amended.converter';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { HearingSpecificDateAmendedConverter } from './hearing-specific-date.amended.converter';
 
+// Check testing
 describe('HearingSpecificDateAmendedConverter', () => {
 
   let hearingSpecificDateAmendedConverter: HearingSpecificDateAmendedConverter;

@@ -8,9 +8,10 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../../../hearing.test.data';
 import { HearingsService } from '../../../services/hearings.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
-
 import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
 
+
+// Check testing
 describe('HearingTimingComponent', () => {
   const hearingsService = jasmine.createSpyObj('HearingsService', ['updateHearingActuals']);
   let store: Store<any>;

@@ -8,6 +8,7 @@ import { NocService } from '../../services';
 import * as nocActions from '../actions/noc.action';
 import { NocEffects } from './noc.effects';
 
+// Check testing
 describe('Noc Effects', () => {
   let actions$;
   let effects: NocEffects;
@@ -33,7 +34,8 @@ describe('Noc Effects', () => {
 
   });
 
-  describe('setCaseReference$', () => {
+  // Check testing
+describe('setCaseReference$', () => {
     it('should return a response', () => {
       const dummy: any = {
         questions: [{
@@ -96,7 +98,8 @@ describe('Noc Effects', () => {
     });
   });
 
-  describe('setAnswers$', () => {
+  // Check testing
+describe('setAnswers$', () => {
     it('should return a response', () => {
 
       const dummy: NocAnswer[] = [{
@@ -147,7 +150,8 @@ describe('Noc Effects', () => {
     });
   });
 
-  describe('submitNoc$', () => {
+  // Check testing
+describe('submitNoc$', () => {
     it('should return SetSubmissionSuccessPending', () => {
 
       const dummy: NocAnswer[] = [{
@@ -207,14 +211,16 @@ describe('Noc Effects', () => {
     });
   });
 
-  describe('handleError', () => {
+  // Check testing
+describe('handleError', () => {
     it('should handle 400', () => {
       const action$ = NocEffects.handleError({status: 400, message: 'error'}, nocActions.SET_CASE_REFERENCE);
       action$.subscribe(action => expect(action).toEqual(new nocActions.SetCaseRefSubmissionFailure({status: 400, message: 'error'})));
     });
   });
 
-  describe('handleError', () => {
+  // Check testing
+describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = NocEffects.handleError({status: 500, message: 'error'}, nocActions.SET_CASE_REFERENCE);
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));

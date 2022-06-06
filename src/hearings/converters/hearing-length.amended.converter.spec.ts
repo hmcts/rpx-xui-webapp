@@ -1,10 +1,11 @@
-import {cold} from 'jasmine-marbles';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
 import { HearingLengthAmendedConverter } from './hearing-length.amended.converter';
 
+// Check testing
 describe('HearingLengthAmendedConverter', () => {
 
   let hearingLengthAmendedConverter: HearingLengthAmendedConverter;

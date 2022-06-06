@@ -1,17 +1,18 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormArray, FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of, throwError} from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of, throwError } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
-import {HearingChangeReasonComponent} from './hearing-change-reason.component';
+import { HearingChangeReasonComponent } from './hearing-change-reason.component';
 
+// Check testing
 describe('HearingChangeReasonComponent', () => {
   let component: HearingChangeReasonComponent;
   let fixture: ComponentFixture<HearingChangeReasonComponent>;

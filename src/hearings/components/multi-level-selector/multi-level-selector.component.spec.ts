@@ -1,8 +1,8 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MultiLevelSelectorComponent} from '..';
-import {ControlTypeEnum} from '../../models/hearings.enum';
-import {LovRefDataModel} from '../../models/lovRefData.model';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MultiLevelSelectorComponent } from '..';
+import { ControlTypeEnum } from '../../models/hearings.enum';
+import { LovRefDataModel } from '../../models/lovRefData.model';
 
 class DataModelConvertor {
   constructor(private fb: FormBuilder) { }
@@ -39,6 +39,7 @@ class DataModelConvertor {
   }
 }
 
+// Check testing
 describe('MultiLevelSelectorComponent', () => {
   let component: MultiLevelSelectorComponent;
   let fixture: ComponentFixture<MultiLevelSelectorComponent>;

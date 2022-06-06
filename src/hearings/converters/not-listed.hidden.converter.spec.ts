@@ -1,11 +1,12 @@
-import {cold} from 'jasmine-marbles';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {LaCaseStatus} from '../models/hearings.enum';
-import {State} from '../store/reducers';
-import {NotListedHiddenConverter} from './not-listed.hidden.converter';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { LaCaseStatus } from '../models/hearings.enum';
+import { State } from '../store/reducers';
+import { NotListedHiddenConverter } from './not-listed.hidden.converter';
 
+// Check testing
 describe('NotListedHiddenConverter', () => {
 
   let notListedHiddenConverter: NotListedHiddenConverter;

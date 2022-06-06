@@ -1,11 +1,12 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {caseFlagsRefData, initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {CaseFlagAnswerConverter} from './case-flag.answer.converter';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { caseFlagsRefData, initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { CaseFlagAnswerConverter } from './case-flag.answer.converter';
 
+// Check testing
 describe('CaseFlagAnswerConverter', () => {
 
   let caseFlagConverter: CaseFlagAnswerConverter;

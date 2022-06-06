@@ -9,6 +9,7 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { State } from '../store';
 import { ParticipantAttendenceAnswerConverter } from './participant-attendence.answer.converter';
 
+// Check testing
 describe('ParticipantAttendenceAnswerConverter', () => {
 
   let converter: ParticipantAttendenceAnswerConverter;

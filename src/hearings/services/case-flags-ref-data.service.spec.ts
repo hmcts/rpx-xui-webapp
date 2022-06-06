@@ -1,8 +1,9 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {inject, TestBed} from '@angular/core/testing';
-import {StoreModule} from '@ngrx/store';
-import {CaseFlagsRefDataService} from './case-flags-ref-data.service';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
+import { StoreModule } from '@ngrx/store';
+import { CaseFlagsRefDataService } from './case-flags-ref-data.service';
 
+// Check testing
 describe('CaseFlagsRefDataService', () => {
 
   beforeEach(() => {
@@ -21,7 +22,8 @@ describe('CaseFlagsRefDataService', () => {
     expect(service).toBeTruthy();
   }));
 
-  describe('getCaseFlagsRefData', () => {
+  // Check testing
+describe('getCaseFlagsRefData', () => {
     it('should get case flags ref data', inject([HttpTestingController, CaseFlagsRefDataService], (httpMock: HttpTestingController, service: CaseFlagsRefDataService) => {
       service.getCaseFlagsRefData('BBA3').subscribe(response => {
         expect(response).toBeNull();

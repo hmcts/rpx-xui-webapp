@@ -6,17 +6,18 @@ import { of } from 'rxjs';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_ALLOCATE_TO } from '../../../constants';
 import {
-  Actions,
-  AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateRoleStateData,
-  AllocateTo,
-  DurationOfRole,
-  RoleCategory
+    Actions,
+    AllocateRoleNavigationEvent,
+    AllocateRoleState,
+    AllocateRoleStateData,
+    AllocateTo,
+    DurationOfRole,
+    RoleCategory
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseAllocateToComponent } from './choose-allocate-to.component';
 
+// Check testing
 describe('ChooseAllocateToComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
   const formGroup: FormGroup = new FormGroup({[CHOOSE_ALLOCATE_TO]: radioOptionControl});

@@ -1,16 +1,17 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState, judgeRefData, judicailUsersRefData} from '../hearing.test.data';
-import {MemberType, RequirementType} from '../models/hearings.enum';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
-import {JudgeNameAnswerConverter} from './judge-name.answer.converter';
+import { of } from 'rxjs';
+import { initialState, judgeRefData, judicailUsersRefData } from '../hearing.test.data';
+import { MemberType, RequirementType } from '../models/hearings.enum';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
+import { JudgeNameAnswerConverter } from './judge-name.answer.converter';
 
+// Check testing
 describe('JudgeNameAnswerConverter', () => {
 
   let converter: AnswerConverter;

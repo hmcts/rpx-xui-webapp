@@ -1,16 +1,17 @@
-import {TestBed} from '@angular/core/testing';
-import {provideMockActions} from '@ngrx/effects/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold, hot} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {Go} from '../../../app/store';
-import {initialState} from '../../hearing.test.data';
-import {CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType} from '../../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
-import {HearingsService} from '../../services/hearings.service';
+import { TestBed } from '@angular/core/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { Go } from '../../../app/store';
+import { initialState } from '../../hearing.test.data';
+import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
+import { HearingsService } from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
-import {HearingValuesEffects} from './hearing-values.effects';
+import { HearingValuesEffects } from './hearing-values.effects';
 
+// Check testing
 describe('Hearing Values Effects', () => {
   let actions$;
   let effects: HearingValuesEffects;
@@ -32,7 +33,8 @@ describe('Hearing Values Effects', () => {
     effects = TestBed.get(HearingValuesEffects);
   });
 
-  describe('loadHearingValue$', () => {
+  // Check testing
+describe('loadHearingValue$', () => {
     const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       hmctsServiceID: 'BBA3',
       caseName: 'Jane Smith vs DWP',
@@ -156,7 +158,8 @@ describe('Hearing Values Effects', () => {
     });
   });
 
-  describe('handleError', () => {
+  // Check testing
+describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = HearingValuesEffects.handleError({
         status: 500,

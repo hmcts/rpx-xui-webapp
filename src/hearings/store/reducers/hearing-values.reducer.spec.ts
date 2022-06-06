@@ -1,12 +1,15 @@
-import {CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType} from '../../models/hearings.enum';
+import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
 import { HearingValuesStateData } from '../../models/hearingValuesStateData';
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
 import * as fromHearingValuesReducer from './hearing-values.reducer';
 
+// Check testing
 describe('Hearing Values Reducer', () => {
-  describe('Actions', () => {
-    describe('Reset action', () => {
+  // Check testing
+describe('Actions', () => {
+    // Check testing
+describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingValuesReducer.initialHearingValuesState;
         const action = new fromHearingValuesActions.ResetHearingValues();
@@ -15,7 +18,8 @@ describe('Hearing Values Reducer', () => {
       });
     });
 
-    describe('Load service hearing values success action', () => {
+    // Check testing
+describe('Load service hearing values success action', () => {
       it('should set correct object', () => {
         const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
           hmctsServiceID: 'BBA3',
@@ -150,7 +154,8 @@ describe('Hearing Values Reducer', () => {
       });
     });
 
-    describe('reset hearing actuals last error action', () => {
+    // Check testing
+describe('reset hearing actuals last error action', () => {
       it('should set correct object', () => {
         const initialHearingValuesState: HearingValuesStateData = {
           serviceHearingValuesModel: null,

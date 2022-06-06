@@ -1,18 +1,17 @@
-import * as chai from 'chai';
-import { expect } from 'chai'
-
-import { PactTestSetup } from '../settings/provider.mock';
+import { expect } from 'chai';
+import * as config from 'config';
 // import { searchTasks } from "../../pactUtil";
-import * as sinon from 'sinon'
-
-import * as config from 'config'
+import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
-import { getSearchTaskOverrides} from '../utils/configOverride';
+import { PactTestSetup } from '../settings/provider.mock';
+import { getSearchTaskOverrides } from '../utils/configOverride';
+import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 
+
+
+
 const { Matchers } = require('@pact-foundation/pact');
-import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search', port: 8000 });
 

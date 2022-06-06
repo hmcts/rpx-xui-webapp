@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { HearingSummaryEnum } from '../../../models/hearings.enum';
 import { HearingRequestFailedSummaryComponent } from './hearing-request-failed-summary.component';
 
+// Check testing
 describe('HearingRequestFailedSummaryComponent', () => {
   let component: HearingRequestFailedSummaryComponent;
   let fixture: ComponentFixture<HearingRequestFailedSummaryComponent>;

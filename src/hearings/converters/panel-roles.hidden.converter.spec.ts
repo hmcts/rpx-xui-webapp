@@ -1,10 +1,11 @@
-import {cold} from 'jasmine-marbles';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {PanelRolesHiddenConverter} from './panel-roles.hidden.converter';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { PanelRolesHiddenConverter } from './panel-roles.hidden.converter';
 
+// Check testing
 describe('PanelRolesHiddenConverter', () => {
 
   let panelRolesHiddenConverter: PanelRolesHiddenConverter;

@@ -1,13 +1,13 @@
 import { expect } from 'chai';
-import {http} from './utils';
-
-import Request from './utils/request';
 import { setTestContext } from './utils/helper';
+import Request from './utils/request';
+
 
 const nodeAppDataModels = require('../../dataModels/nodeApp')
 const testUsers = require('../../e2e/config/appTestConfig');
 const config = require('./config/config').config;
 
+// Check testing
 describe('nodeApp endpoint', () => {
   const userName = config.users[config.testEnv].solicitor.e;
   const password = config.users[config.testEnv].solicitor.sec;

@@ -1,16 +1,17 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UserDetails } from '../../../../app/models';
 import { State } from '../../../../app/store';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { EXCLUSION_OPTION } from '../../../constants';
 import { ExcludeOption, ExclusionNavigationEvent } from '../../../models';
 import { ChooseExclusionComponent } from './choose-exclusion.component';
-import { UserDetails } from '../../../../app/models';
 
+// Check testing
 describe('ChooseExclusionComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
   const formGroup: FormGroup = new FormGroup({[EXCLUSION_OPTION]: radioOptionControl});

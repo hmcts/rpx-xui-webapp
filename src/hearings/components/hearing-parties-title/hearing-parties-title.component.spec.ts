@@ -1,8 +1,9 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {initialState} from '../../hearing.test.data';
-import {HearingPartiesTitleComponent} from './hearing-parties-title.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { initialState } from '../../hearing.test.data';
+import { HearingPartiesTitleComponent } from './hearing-parties-title.component';
 
+// Check testing
 describe('HearingPartiesTitleComponent', () => {
   let component: HearingPartiesTitleComponent;
   let fixture: ComponentFixture<HearingPartiesTitleComponent>;

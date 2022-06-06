@@ -1,12 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, ViewChild } from '@angular/core';
-import { of } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-
-import { getMockInfoMessages } from '../../tests/utils.spec';
-import { InfoMessageCommService } from '../../services';
+import { of } from 'rxjs';
 import { InfoMessageComponent } from '../../components/info-message/info-message.component';
+import { InfoMessageCommService } from '../../services';
+import { getMockInfoMessages } from '../../tests/utils.spec';
 import { InfoMessageContainerComponent } from './info-message-container.component';
+
 
 @Component({
   template: `<exui-info-message-container></exui-info-message-container>`
@@ -15,9 +15,11 @@ class WrapperComponent {
   @ViewChild(InfoMessageContainerComponent, {static: false}) public appComponentRef: InfoMessageContainerComponent;
 }
 
+// Check testing
 describe('WorkAllocation', () => {
 
-  describe('InfoMessageContainerComponent', () => {
+  // Check testing
+describe('InfoMessageContainerComponent', () => {
     let component: InfoMessageContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

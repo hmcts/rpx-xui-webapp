@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
@@ -27,6 +27,7 @@ class WrapperComponent {
   @ViewChild(TaskAssignmentConfirmComponent, {static: false}) public appComponentRef: TaskAssignmentConfirmComponent;
 }
 
+// Check testing
 describe('TaskAssignmentConfirmComponent', () => {
   let component: TaskAssignmentConfirmComponent;
   let wrapper: WrapperComponent;
@@ -274,7 +275,8 @@ describe('TaskAssignmentConfirmComponent', () => {
 });
 
 ['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach(role => {
-  describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
+  // Check testing
+describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
     let component: TaskAssignmentConfirmComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

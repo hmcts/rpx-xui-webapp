@@ -1,13 +1,13 @@
-import 'mocha';
-
 import * as chai from 'chai';
 import { expect } from 'chai';
+import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
 import { http } from '../lib/http';
 import { handleCaseGet, handleCasePost, handleCaseSearch } from './caseService';
+
+
 
 chai.use(sinonChai);
 describe('workAllocation.caseService', () => {

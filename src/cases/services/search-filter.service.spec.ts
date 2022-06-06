@@ -1,15 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import createSpyObj = jasmine.createSpyObj;
-import { SearchFilterService } from './';
-import {
-    SearchService, Jurisdiction, CaseType, CaseState, AbstractAppConfig,
-    HttpService, RequestOptionsBuilder
-} from '@hmcts/ccd-case-ui-toolkit';
 import { FormControl, FormGroup } from '@angular/forms';
-import { JURISDICTION_1, CASE_TYPE_1, CASE_STATE_1 } from '../mock/search-filter.mock';
-import { StoreModule, combineReducers, Store } from '@ngrx/store';
+import { AbstractAppConfig, CaseState, CaseType, HttpService, Jurisdiction, RequestOptionsBuilder, SearchService } from '@hmcts/ccd-case-ui-toolkit';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import * as fromRoot from '../../app/store/reducers';
+import { CASE_STATE_1, CASE_TYPE_1, JURISDICTION_1 } from '../mock/search-filter.mock';
 import * as fromCaseSearchStore from '../store';
+import { SearchFilterService } from './';
+import createSpyObj = jasmine.createSpyObj;
 
 const JURISDICTION: Jurisdiction = JURISDICTION_1;
 
@@ -19,6 +16,7 @@ const CASE_TYPE = CASE_TYPES[0];
 
 const CASE_STATE: CaseState = CASE_STATE_1;
 
+// Check testing
 describe('SearchFilterService', () => {
     let searchFilterService: SearchFilterService;
     const ccdSearchServiceMock = createSpyObj<SearchService>('SearchService', ['search', 'searchCases']);
@@ -177,7 +175,8 @@ describe('SearchFilterService', () => {
 
     });
 
-    describe('findPaginationMetadata', () => {
+    // Check testing
+describe('findPaginationMetadata', () => {
         it('should httpService get call', () => {
 
             const nameControl = new FormControl();

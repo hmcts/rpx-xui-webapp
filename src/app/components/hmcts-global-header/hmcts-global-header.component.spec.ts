@@ -28,11 +28,8 @@ describe('HmctsGlobalHeaderComponent', () => {
     enabledFlag: true,
     disabledFlag: false
   };
-  let origTimeout: number;
 
   beforeEach(async(() => {
-    // origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     const USERDETAILS = {
       sub: 'Caseworker.ed@mailinator.com',
       uid: '36314153-06c2-400a-8dc3-7d3790660918',
@@ -108,10 +105,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     nocStoreSpy = spyOn(component.nocStore, 'dispatch');
     fixture.detectChanges();
   });
-
-  // afterEach(() => {
-  //   jasmine.DEFAULT_TIMEOUT_INTERVAL = origTimeout;
-  // });
 
   // 3
   it('should create', () => {

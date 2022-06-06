@@ -1,13 +1,12 @@
 import { expect } from 'chai';
-import { PactTestSetup } from '../settings/provider.mock';
-import { assignTaskToUser } from "../../pactUtil";
-
-import * as sinon from 'sinon'
-import * as config from 'config'
+import * as config from 'config';
+import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
+import { PactTestSetup } from '../settings/provider.mock';
 import { getSearchTaskOverrides } from '../utils/configOverride';
-import {requireReloaded} from '../utils/moduleUtil';
+import { requireReloaded } from '../utils/moduleUtil';
+
+
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_assign_task_by_id', port: 8000 });

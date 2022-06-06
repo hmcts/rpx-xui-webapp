@@ -3,13 +3,13 @@ import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of } from 'rxjs';
-
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { AnswersComponent } from '../../components/answers/answers.component';
 import { ExclusionNavigationEvent, RoleCategory } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
+
 
 @Component({
   template: `
@@ -28,6 +28,7 @@ const mockCaseworker: Caseworker = {
   roleCategory: RoleCategory.LEGAL_OPERATIONS
 };
 
+// Check testing
 describe('DeleteExclusionComponent', () => {
   let component: DeleteExclusionComponent;
   let wrapper: WrapperComponent;
@@ -115,7 +116,8 @@ describe('DeleteExclusionComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
   });
 
-  describe('showSpinner', () => {
+  // Check testing
+describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
     });
@@ -155,6 +157,7 @@ describe('DeleteExclusionComponent', () => {
   });
 });
 
+// Check testing
 describe('DeleteExclusionComponent with no name', () => {
   let component: DeleteExclusionComponent;
   let wrapper: WrapperComponent;

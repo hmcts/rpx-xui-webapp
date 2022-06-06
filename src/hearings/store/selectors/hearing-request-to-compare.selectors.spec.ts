@@ -1,9 +1,10 @@
-import {TestBed} from '@angular/core/testing';
-import {select, Store, StoreModule} from '@ngrx/store';
-import {reducers} from '../index';
-import {initialHearingRequestState, State} from '../reducers';
-import {getHearingRequestToCompare} from './hearing-request-to-compare.selectors';
+import { TestBed } from '@angular/core/testing';
+import { select, Store, StoreModule } from '@ngrx/store';
+import { reducers } from '../index';
+import { initialHearingRequestState, State } from '../reducers';
+import { getHearingRequestToCompare } from './hearing-request-to-compare.selectors';
 
+// Check testing
 describe('Hearing Request to compare selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
@@ -17,7 +18,8 @@ describe('Hearing Request to compare selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('getHearingRequestToCompare', () => {
+  // Check testing
+describe('getHearingRequestToCompare', () => {
     it('should return hearings request to compare state', () => {
       store.pipe(select(getHearingRequestToCompare)).subscribe(value => {
         expect(value).toEqual(initialHearingRequestState);

@@ -4,12 +4,13 @@ import { cold, hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { Go } from '../../../app/store';
 import * as routeAction from '../../../app/store/index';
-import { Actions as RoleActions, Actions, AllocateRoleState, AllocateTo, DurationOfRole } from '../../models';
+import { Actions, AllocateRoleState, AllocateTo, DurationOfRole } from '../../models';
 import { RoleAllocationMessageText } from '../../models/enums/allocation-text';
 import { AllocateRoleService } from '../../services';
 import * as allocateRoleAction from '../actions/allocate-role.action';
 import { AllocateRoleEffects } from './allocate-role.effects';
 
+// Check testing
 describe('Allocate Role Effects', () => {
   let actions$;
   let effects: AllocateRoleEffects;
@@ -33,7 +34,8 @@ describe('Allocate Role Effects', () => {
 
   });
 
-  describe('confirmAllocation$', () => {
+  // Check testing
+describe('confirmAllocation$', () => {
     it('should return SetSubmissionSuccessPending', () => {
 
       const STATE_DATA = {
@@ -72,7 +74,8 @@ describe('Allocate Role Effects', () => {
     });
   });
 
-  describe('handleError', () => {
+  // Check testing
+describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = AllocateRoleEffects.handleError({status: 500, message: 'error'}, allocateRoleAction.ConfirmAllocation.toString());
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));

@@ -4,9 +4,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-
 import { ExclusionsTableComponent } from './exclusions-table.component';
 
+
+// Check testing
 describe('ExclusionsTableComponent', () => {
   let component: ExclusionsTableComponent;
   let fixture: ComponentFixture<ExclusionsTableComponent>;

@@ -1,9 +1,10 @@
-import {TestBed} from '@angular/core/testing';
-import {select, Store, StoreModule} from '@ngrx/store';
-import {reducers} from '../index';
-import {State} from '../reducers';
-import {getHearingConditions} from './hearing-conditions.selectors';
+import { TestBed } from '@angular/core/testing';
+import { select, Store, StoreModule } from '@ngrx/store';
+import { reducers } from '../index';
+import { State } from '../reducers';
+import { getHearingConditions } from './hearing-conditions.selectors';
 
+// Check testing
 describe('Hearing Conditions selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
@@ -17,7 +18,8 @@ describe('Hearing Conditions selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('getHearingConditions', () => {
+  // Check testing
+describe('getHearingConditions', () => {
     it('should return hearings navigation state', () => {
       let result = null;
       store.pipe(select(getHearingConditions)).subscribe(value => {

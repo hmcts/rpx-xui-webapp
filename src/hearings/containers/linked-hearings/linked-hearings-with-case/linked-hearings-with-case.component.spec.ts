@@ -13,6 +13,7 @@ import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
 import { LinkedHearingsWithCaseComponent } from './linked-hearings-with-case.component';
 
+// Check testing
 describe('LinkedHearingsWithCaseComponent', () => {
   let component: LinkedHearingsWithCaseComponent;
   let fixture: ComponentFixture<LinkedHearingsWithCaseComponent>;

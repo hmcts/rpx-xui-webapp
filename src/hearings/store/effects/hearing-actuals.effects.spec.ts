@@ -10,6 +10,7 @@ import { HearingsService } from '../../services/hearings.service';
 import * as hearingActualsActions from '../actions/hearing-actuals.action';
 import { HearingActualsEffects } from './hearing-actuals.effects';
 
+// Check testing
 describe('Hearing Actuals Effects', () => {
   let actions$;
   let effects: HearingActualsEffects;
@@ -31,7 +32,8 @@ describe('Hearing Actuals Effects', () => {
     effects = TestBed.get(HearingActualsEffects);
   });
 
-  describe('loadHearingActual$', () => {
+  // Check testing
+describe('loadHearingActual$', () => {
     it('should return a response with service hearing actuals', () => {
       hearingsServiceMock.getHearingActuals.and.returnValue(of(hearingActualsMainModel));
       const action = new hearingActualsActions.GetHearingActuals('1111222233334444');
@@ -42,7 +44,8 @@ describe('Hearing Actuals Effects', () => {
     });
   });
 
-  describe('updateHearingActual$', () => {
+  // Check testing
+describe('updateHearingActual$', () => {
     it('should return a response with service hearing actuals', () => {
       hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
       const action = new hearingActualsActions.UpdateHearingActuals({
@@ -56,7 +59,8 @@ describe('Hearing Actuals Effects', () => {
     });
   });
 
-  describe('submitHearingActuals$', () => {
+  // Check testing
+describe('submitHearingActuals$', () => {
     it('should submit hearing actuals', () => {
       hearingsServiceMock.submitHearingActuals.and.returnValue(of(200));
       const action = new hearingActualsActions.SubmitHearingActuals('1111222233334444');
@@ -82,7 +86,8 @@ describe('Hearing Actuals Effects', () => {
     });
   });
 
-  describe('handleError', () => {
+  // Check testing
+describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = HearingActualsEffects.handleError({
         status: 500,

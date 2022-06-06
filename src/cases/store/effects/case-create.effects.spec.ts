@@ -1,14 +1,15 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { hot, cold } from 'jasmine-marbles';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { CaseCreateEffects } from './case-create.effects';
-import { LoggerService } from '../../../app/services/logger/logger.service';
-import { CreateCaseLoaded, ApplyChange, CaseCreateFilterApply, CreateCaseReset } from '../actions/create-case.action';
-import { NewCaseLoadedSuccessfully, CreateCaseGo, Go } from '../../../app/store/actions';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { LoggerService } from '../../../app/services/logger/logger.service';
+import { CreateCaseGo, Go, NewCaseLoadedSuccessfully } from '../../../app/store/actions';
+import { ApplyChange, CaseCreateFilterApply, CreateCaseLoaded, CreateCaseReset } from '../actions/create-case.action';
+import { CaseCreateEffects } from './case-create.effects';
 
+// Check testing
 describe('CaseCreate Effects', () => {
 
   let mockAlertService: any;
@@ -33,7 +34,8 @@ describe('CaseCreate Effects', () => {
 
   });
 
-  describe('applyCreateCase$', () => {
+  // Check testing
+describe('applyCreateCase$', () => {
     it('should apply case action', () => {
 
       const action = new ApplyChange({});
@@ -47,7 +49,8 @@ describe('CaseCreate Effects', () => {
     });
   });
 
-  describe('cancel$', () => {
+  // Check testing
+describe('cancel$', () => {
     it('should cancel case action', () => {
 
       const action = new CreateCaseReset();
@@ -60,7 +63,8 @@ describe('CaseCreate Effects', () => {
     });
   });
 
-  describe('applyCreatedCaseLoaded$', () => {
+  // Check testing
+describe('applyCreatedCaseLoaded$', () => {
     it('should apply load action', () => {
 
       const action = new CreateCaseLoaded({});
@@ -71,7 +75,8 @@ describe('CaseCreate Effects', () => {
     });
   });
 
-  describe('applyChangeCaseCreateFilter$', () => {
+  // Check testing
+describe('applyChangeCaseCreateFilter$', () => {
     it('should apply load action', () => {
 
       const action = new CaseCreateFilterApply({});

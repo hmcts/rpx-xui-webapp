@@ -1,10 +1,10 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Task } from '../../models/tasks';
 import { getMockTasks } from '../../tests/utils.spec';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { DerivedIconFieldComponent } from './derived-icon-field.component';
+
 
 @Component({
   template: `<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>`
@@ -23,9 +23,11 @@ function getTasks(): Task[] {
   return getMockTasks();
 }
 
+// Check testing
 describe('WorkAllocation', () => {
 
-  describe('DerivedIconFieldComponent', () => {
+  // Check testing
+describe('DerivedIconFieldComponent', () => {
     let component: DerivedIconFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

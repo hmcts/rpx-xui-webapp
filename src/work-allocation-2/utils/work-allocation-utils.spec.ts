@@ -1,18 +1,16 @@
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { RoleCategory } from '../../role-access/models';
 import {
-  getLabel,
-  getOptions,
-  getDestinationUrl,
-  getCurrentUserRoleCategory,
-  getRoleCategoryToBeSelectedByDefault,
-  handleFatalErrors,
-  handleTasksFatalErrors,
-  REDIRECTS,
-  treatAsFatal,
-  WILDCARD_SERVICE_DOWN
+    getCurrentUserRoleCategory, getDestinationUrl, getLabel,
+    getOptions, getRoleCategoryToBeSelectedByDefault,
+    handleFatalErrors,
+    handleTasksFatalErrors,
+    REDIRECTS,
+    treatAsFatal,
+    WILDCARD_SERVICE_DOWN
 } from './work-allocation-utils';
 
+// Check testing
 describe('WorkAllocationUtils', () => {
   let mockRouter: any;
   let sessionStorageService: any;

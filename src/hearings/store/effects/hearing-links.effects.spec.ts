@@ -5,15 +5,16 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { Observable, of } from 'rxjs';
-import { HttpError } from '../../../models/httpError.model';
 import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
+import { HttpError } from '../../../models/httpError.model';
 import { GroupLinkType } from '../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../models/linkHearings.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingLinksActions from '../actions/hearing-links.action';
 import { HearingLinksEffects } from './hearing-links.effects';
 
+// Check testing
 describe('Hearing Links Effects', () => {
   let actions$;
   let store: Store<fromHearingStore.State>;
@@ -52,7 +53,8 @@ describe('Hearing Links Effects', () => {
     store = TestBed.get(Store) as Store<fromHearingStore.State>;
   });
 
-  describe('loadServiceLinkedCases$', () => {
+  // Check testing
+describe('loadServiceLinkedCases$', () => {
     it('should return a response with hearings list', () => {
       const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [{
         caseReference: '1111222233334444',
@@ -72,7 +74,8 @@ describe('Hearing Links Effects', () => {
     });
   });
 
-  describe('submitLinkedHearingGroup$', () => {
+  // Check testing
+describe('submitLinkedHearingGroup$', () => {
     it('should submit linked hearing group', () => {
       const linkedHearingGroup = {
         groupDetails: {
@@ -145,7 +148,8 @@ describe('Hearing Links Effects', () => {
     });
   });
 
-  describe('handleError', () => {
+  // Check testing
+describe('handleError', () => {
     it('should handle errors', () => {
       const action$ = HearingLinksEffects.handleError({
         status: 403,

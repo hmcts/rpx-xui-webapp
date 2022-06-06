@@ -1,19 +1,20 @@
 import { async } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-
 import { of } from 'rxjs';
 import { UserRole } from '../../../../app/models';
 import {
-  Actions, AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateRoleStateData,
-  AllocateTo,
-  DurationOfRole,
-  RoleCategory
+    Actions, AllocateRoleNavigationEvent,
+    AllocateRoleState,
+    AllocateRoleStateData,
+    AllocateTo,
+    DurationOfRole,
+    RoleCategory
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseDurationComponent } from './choose-duration.component';
 
+
+// Check testing
 describe('ChooseDurationComponent', () => {
   let component: ChooseDurationComponent;
   let mockStore: any;

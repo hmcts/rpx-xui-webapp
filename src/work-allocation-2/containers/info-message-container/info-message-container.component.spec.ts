@@ -1,11 +1,11 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
-
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessageContainerComponent } from '..';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { InfoMessageContainerComponent } from '..';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+
 
 @Component({
   template: `<exui-info-message-container></exui-info-message-container>`
@@ -14,9 +14,11 @@ class WrapperComponent {
   @ViewChild(InfoMessageContainerComponent, {static: false}) public appComponentRef: InfoMessageContainerComponent;
 }
 
+// Check testing
 describe('WorkAllocation', () => {
 
-  describe('InfoMessageContainerComponent', () => {
+  // Check testing
+describe('InfoMessageContainerComponent', () => {
     let router: Router;
     let component: InfoMessageContainerComponent;
     let wrapper: WrapperComponent;

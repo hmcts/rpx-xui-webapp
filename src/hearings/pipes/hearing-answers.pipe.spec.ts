@@ -1,14 +1,15 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {caseFlagsRefData, hearingPriorityRefData, initialState, partyChannelsRefData} from '../hearing.test.data';
-import {AnswerSource, RadioOptions} from '../models/hearings.enum';
-import {LocationByEPIMMSModel} from '../models/location.model';
-import {LocationsDataService} from '../services/locations-data.service';
-import {State} from '../store/reducers';
-import {HearingAnswersPipe} from './hearing-answers.pipe';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { caseFlagsRefData, hearingPriorityRefData, initialState, partyChannelsRefData } from '../hearing.test.data';
+import { AnswerSource, RadioOptions } from '../models/hearings.enum';
+import { LocationByEPIMMSModel } from '../models/location.model';
+import { LocationsDataService } from '../services/locations-data.service';
+import { State } from '../store/reducers';
+import { HearingAnswersPipe } from './hearing-answers.pipe';
 
+// Check testing
 describe('HearingAnswersPipe', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',

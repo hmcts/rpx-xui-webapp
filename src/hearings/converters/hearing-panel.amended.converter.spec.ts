@@ -10,6 +10,7 @@ import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store';
 import { HearingPanelAmendedConverter } from './hearing-panel.amended.converter';
 
+// Check testing
 describe('HearingPanelAmendedConverter', () => {
 
   let converter: HearingPanelAmendedConverter;

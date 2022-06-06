@@ -2,12 +2,12 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-
+import { SessionStorageService } from '../../../app/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDataService, LocationDataService } from '../../services';
-import { SessionStorageService } from '../../../app/services';
 import { TaskAssignmentComponent } from './task-assignment.component';
+
 
 // Locations.
 const LOCATION_A: Location = { id: 'a', locationName: 'Location A', services: ['a'] };
@@ -63,9 +63,11 @@ class WrapperComponent {
   }
 }
 
+// Check testing
 describe('WorkAllocation', () => {
 
-  describe('TaskAssignmentComponent', () => {
+  // Check testing
+describe('TaskAssignmentComponent', () => {
     let component: TaskAssignmentComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

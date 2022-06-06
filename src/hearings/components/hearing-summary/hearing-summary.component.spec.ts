@@ -1,17 +1,18 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of} from 'rxjs';
-import {caseFlagsRefData, initialState} from '../../hearing.test.data';
-import {HearingConditions} from '../../models/hearingConditions';
-import {Mode} from '../../models/hearings.enum';
-import {HearingsPipesModule} from '../../pipes/hearings.pipes.module';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
+import { caseFlagsRefData, initialState } from '../../hearing.test.data';
+import { HearingConditions } from '../../models/hearingConditions';
+import { Mode } from '../../models/hearings.enum';
+import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../store';
-import {HearingSummaryComponent} from './hearing-summary.component';
+import { HearingSummaryComponent } from './hearing-summary.component';
 
+// Check testing
 describe('HearingSummaryComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'

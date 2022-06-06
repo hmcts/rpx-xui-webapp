@@ -1,10 +1,11 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {AdditionalSecurityAnswerConverter} from './additional-security.answer.converter';
-import {AnswerConverter} from './answer.converter';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { AdditionalSecurityAnswerConverter } from './additional-security.answer.converter';
+import { AnswerConverter } from './answer.converter';
 
+// Check testing
 describe('AdditionalSecurityAnswerConverter', () => {
 
   let converter: AnswerConverter;

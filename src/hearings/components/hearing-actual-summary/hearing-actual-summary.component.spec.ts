@@ -11,6 +11,7 @@ import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
 
+// Check testing
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
   let fixture: ComponentFixture<HearingActualSummaryComponent>;

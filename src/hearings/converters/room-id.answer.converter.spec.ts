@@ -8,6 +8,7 @@ import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { RoomIdAnswerConverter } from './room-id.answer.converter';
 
+// Check testing
 describe('RoomIdAnswerConverter', () => {
 
   let converter: RoomIdAnswerConverter;

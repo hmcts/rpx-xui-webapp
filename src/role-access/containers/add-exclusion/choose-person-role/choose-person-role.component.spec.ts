@@ -17,6 +17,7 @@ const mockRoleOptions = [{ optionId: '1', optionValue: 'Role 1' },
       { optionId: '2', optionValue: 'Role 2' },
       { optionId: '3', optionValue: 'Role 3' }];
 
+// Check testing
 describe('ChoosePersonRoleComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
   const formGroup: FormGroup = new FormGroup({[PERSON_ROLE]: radioOptionControl});

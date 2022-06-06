@@ -3,6 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ViewHearingComponent } from './view-hearing.component';
 
+// Check testing
 describe('ViewHearingComponent', () => {
   let component: ViewHearingComponent;
   let fixture: ComponentFixture<ViewHearingComponent>;

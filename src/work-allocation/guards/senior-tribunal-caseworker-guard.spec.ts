@@ -1,7 +1,8 @@
 import { Router } from '@angular/router';
-import { SeniorTribunalCaseworkerGuard } from './senior-tribunal-caseworker-guard';
 import { UserInfo } from '../../app/models/user-details.model';
+import { SeniorTribunalCaseworkerGuard } from './senior-tribunal-caseworker-guard';
 
+// Check testing
 describe('SeniorTribunalCaseworkerGuard', () => {
     let guard: SeniorTribunalCaseworkerGuard;
     let routerMock: jasmine.SpyObj<Router>;

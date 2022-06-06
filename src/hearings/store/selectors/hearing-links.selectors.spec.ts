@@ -1,8 +1,9 @@
-import {TestBed} from '@angular/core/testing';
-import {select, Store, StoreModule} from '@ngrx/store';
-import {getHearingLinks, reducers} from '../index';
-import {initialHearingLinksState, State} from '../reducers';
+import { TestBed } from '@angular/core/testing';
+import { select, Store, StoreModule } from '@ngrx/store';
+import { getHearingLinks, reducers } from '../index';
+import { initialHearingLinksState, State } from '../reducers';
 
+// Check testing
 describe('Hearing Links selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
@@ -16,7 +17,8 @@ describe('Hearing Links selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('getHearingLinks', () => {
+  // Check testing
+describe('getHearingLinks', () => {
     it('should return hearings links state', () => {
       let result;
       store.pipe(select(getHearingLinks)).subscribe(value => {

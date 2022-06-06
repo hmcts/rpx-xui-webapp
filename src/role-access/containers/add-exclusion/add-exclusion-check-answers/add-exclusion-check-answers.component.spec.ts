@@ -8,6 +8,7 @@ import * as fromFeature from '../../../store';
 import { ConfirmExclusionAction } from '../../../store/actions';
 import { AddExclusionCheckAnswersComponent } from './add-exclusion-check-answers.component';
 
+// Check testing
 describe('AddExclusionCheckAnswersComponent', () => {
   let component: AddExclusionCheckAnswersComponent;
   let fixture: ComponentFixture<AddExclusionCheckAnswersComponent>;
@@ -40,7 +41,8 @@ describe('AddExclusionCheckAnswersComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('navigationHandler()', () => {
+  // Check testing
+describe('navigationHandler()', () => {
     it('should dispatch the confirm exclusion action with an undefined payroll', () => {
       component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION);
       expect(mockStore.dispatch).toHaveBeenCalledWith(new ConfirmExclusionAction(undefined));
@@ -64,7 +66,8 @@ describe('AddExclusionCheckAnswersComponent', () => {
     pipeSubject.next(exclusionStateData);
   };
 
-  describe('onNavigate()', () => {
+  // Check testing
+describe('onNavigate()', () => {
     it('should dispatch a change navigation when called', () => {
       setup(ExcludeOption.EXCLUDE_ANOTHER_PERSON);
       component.onNavigate(ExclusionState.CONFIRM_EXCLUSION);
@@ -72,7 +75,8 @@ describe('AddExclusionCheckAnswersComponent', () => {
     });
   });
 
-  describe('setAnswersFromExclusionStore()', () => {
+  // Check testing
+describe('setAnswersFromExclusionStore()', () => {
 
     it('should set all answers if excluding another person', () => {
       setup(ExcludeOption.EXCLUDE_ANOTHER_PERSON);
@@ -85,7 +89,8 @@ describe('AddExclusionCheckAnswersComponent', () => {
     });
   });
 
-  describe('onDestroy()', () => {
+  // Check testing
+describe('onDestroy()', () => {
     it('should unsubscribe', () => {
       component.storeSubscription = new Observable().subscribe();
       spyOn(component.storeSubscription, 'unsubscribe').and.callThrough();

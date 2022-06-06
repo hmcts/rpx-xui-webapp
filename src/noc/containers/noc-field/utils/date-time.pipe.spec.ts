@@ -1,5 +1,6 @@
 import { DateTimePipe } from './date-time.pipe';
 
+// Check testing
 describe('DateTimePipe', () => {
 
   let dateTimePipe: DateTimePipe;

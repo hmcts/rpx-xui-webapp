@@ -3,6 +3,7 @@ import { select, Store, StoreModule } from '@ngrx/store';
 import { CaseListComponent } from '../../containers';
 import { getShareCaseListState, reducers, State } from '../index';
 
+// Check testing
 describe('Share case selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
@@ -16,7 +17,8 @@ describe('Share case selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('get share case state', () => {
+  // Check testing
+describe('get share case state', () => {
     it('should return search state', () => {
       const caseListComponent = new CaseListComponent(store, null, null, null, null, null, null);
       caseListComponent.selectedCases = [{

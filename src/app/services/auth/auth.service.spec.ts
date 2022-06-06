@@ -1,10 +1,10 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-
+import { of } from 'rxjs';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { AuthService } from './auth.service';
+
 
 describe('AuthService', () => {
 

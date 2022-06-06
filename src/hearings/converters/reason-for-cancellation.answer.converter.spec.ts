@@ -8,6 +8,7 @@ import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { ReasonForCancellationAnswerConverter } from './reason-for-cancellation.answer.converter';
 
+// Check testing
 describe('ReasonForCancellationAnswerConverter', () => {
 
   let converter: ReasonForCancellationAnswerConverter;

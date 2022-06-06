@@ -1,20 +1,20 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {AbstractControl, FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {By} from '@angular/platform-browser';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
-import {LocationByEPIMMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {LocationsDataService} from '../../../services/locations-data.service';
-import {HearingVenueComponent} from './hearing-venue.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AbstractControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { LocationsDataService } from '../../../services/locations-data.service';
+import { HearingVenueComponent } from './hearing-venue.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -47,6 +47,7 @@ class MockLocationSearchContainerComponent {
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
+// Check testing
 describe('HearingVenueComponent', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',

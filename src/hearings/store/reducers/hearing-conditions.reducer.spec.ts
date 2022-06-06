@@ -1,11 +1,14 @@
 import * as fromHearingConditionsActions from '../actions/hearing-conditions.action';
 import * as fromHearingConditionsReducer from './hearing-conditions.reducer';
 
+// Check testing
 describe('Hearing Conditions Reducer', () => {
 
-  describe('Actions', () => {
+  // Check testing
+describe('Actions', () => {
 
-    describe('Reset action', () => {
+    // Check testing
+describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingConditionsReducer.initialHearingConditionsState;
         const action = new fromHearingConditionsActions.ResetHearingConditions();
@@ -13,7 +16,8 @@ describe('Hearing Conditions Reducer', () => {
         expect(hearingsState).toEqual(initialState);
       });
     });
-    describe('Save action', () => {
+    // Check testing
+describe('Save action', () => {
       it('should save hearing conditions', () => {
         const initialState = fromHearingConditionsReducer.initialHearingConditionsState;
         const action = new fromHearingConditionsActions.SaveHearingConditions({region: 'Wales'});

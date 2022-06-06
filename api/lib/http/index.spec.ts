@@ -2,10 +2,10 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinonChai from 'sinon-chai';
+import * as lib from './index';
 
 chai.use(sinonChai);
 
-import * as lib from './index';
 
 describe('lib', () => {
   it('should create an axios instance', () => {

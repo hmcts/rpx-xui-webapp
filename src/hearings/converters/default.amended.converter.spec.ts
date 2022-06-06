@@ -1,5 +1,6 @@
-import {DefaultAmendedConverter} from './default.amended.converter';
+import { DefaultAmendedConverter } from './default.amended.converter';
 
+// Check testing
 describe('DefaultAmendedConverter', () => {
 
   let defaultAmendedConverter: DefaultAmendedConverter;

@@ -1,4 +1,4 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -9,6 +9,7 @@ import { caseFlagsRefData, initialState } from '../../hearing.test.data';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import { ListingInformationSummaryComponent } from './listing-information-summary.component';
 
+// Check testing
 describe('ListingInformationSummaryComponent', () => {
   let component: ListingInformationSummaryComponent;
   let fixture: ComponentFixture<ListingInformationSummaryComponent>;

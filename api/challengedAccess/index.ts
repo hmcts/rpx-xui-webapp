@@ -4,6 +4,7 @@ import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { EnhancedRequest } from 'lib/models';
 import { refreshRoleAssignmentForUser } from '../user';
+// import { createLabellingRole } from '../labellingRole';
 
 export async function challengedAccessRouter(req: EnhancedRequest, resp, next) {
     const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -14,6 +15,10 @@ export async function challengedAccessRouter(req: EnhancedRequest, resp, next) {
     try {
         const response = await http.post(fullPath, req.body, { headers });
         await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+        // const caseId = req.body.requestedRoles[0].attributes['caseId'];
+        // const userId = req.body.requestedRoles[0].actorId;
+        // const roleCategory = req.body.requestedRoles[0].roleCategory;
+        // await createLabellingRole(req, 'specific-access-approved', caseId, userId, userId, 'IA', roleCategory);
         return resp.status(response.status).send(response.data);
     } catch (error) {
         next(error)

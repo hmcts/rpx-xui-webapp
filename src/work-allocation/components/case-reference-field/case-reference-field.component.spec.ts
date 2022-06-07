@@ -9,7 +9,7 @@ import { CaseReferenceFieldComponent } from './case-reference-field.component';
   template: `<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>`
 })
 class WrapperComponent {
-  @ViewChild(CaseReferenceFieldComponent, {static: false}) public appComponentRef: CaseReferenceFieldComponent;
+  @ViewChild(CaseReferenceFieldComponent, {static: true}) public appComponentRef: CaseReferenceFieldComponent;
   @Input() public caseReference: string;
 }
 

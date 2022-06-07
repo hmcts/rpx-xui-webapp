@@ -34,7 +34,7 @@ describe('Hearing List Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -49,7 +49,7 @@ describe('Hearing List Effects', () => {
   });
 
   // Check testing
-describe('loadHearingList$', () => {
+  describe('loadHearingList$', () => {
     it('should return a response with hearings list', () => {
       const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
         hearingStartDateTime: '2021-05-01T16:00:00.000Z',
@@ -83,14 +83,14 @@ describe('loadHearingList$', () => {
       hearingsServiceMock.getAllHearings.and.returnValue(of(HEARINGS_LIST));
       const action = new hearingListActions.LoadAllHearings('1111222233334444');
       const completion = new hearingListActions.LoadAllHearingsSuccess(HEARINGS_LIST);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadHearingList$).toBeObservable(expected);
     });
   });
 
   // Check testing
-describe('handleError', () => {
+  describe('handleError', () => {
     it('should error when loading all hearings request failure', () => {
       const errorResponse: HttpError = {
         status: 500,
@@ -99,8 +99,8 @@ describe('handleError', () => {
       hearingsServiceMock.getAllHearings.and.returnValue(throwError(errorResponse));
       const action = new hearingListActions.LoadAllHearings('h1000000');
       const completion = new hearingListActions.LoadAllHearingsFailure(errorResponse);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadHearingList$).toBeObservable(expected);
     });
   });

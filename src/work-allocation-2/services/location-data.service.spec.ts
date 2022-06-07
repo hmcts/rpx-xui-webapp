@@ -7,7 +7,7 @@ describe('WorkAllocation', () => {
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
 
   // Check testing
-describe('LocationDataService', () => {
+  describe('LocationDataService', () => {
     it('should be Truthy', () => {
       const service = new LocationDataService(mockHttpService, sessionStorageService);
       expect(service).toBeTruthy();

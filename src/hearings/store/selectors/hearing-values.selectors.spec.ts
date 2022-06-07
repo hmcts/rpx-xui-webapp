@@ -19,7 +19,7 @@ describe('Hearing Values selectors', () => {
   });
 
   // Check testing
-describe('getHearingValues', () => {
+  describe('getHearingValues', () => {
     it('should return hearing values state', () => {
       let result: HearingValuesStateData;
       store.pipe(select(getHearingValues)).subscribe(value => {

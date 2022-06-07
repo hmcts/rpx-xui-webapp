@@ -37,7 +37,7 @@ describe('CaseListComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue', 'isEnabled']);
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [CaseListComponent],
       schemas: [NO_ERRORS_SCHEMA],
@@ -408,7 +408,7 @@ describe('CaseListComponent', () => {
     it('should return true when case share available and jurisdiction is shareable', () => {
       const result = [
         { canShareCases: true },
-        [ 'dummy' ],
+        ['dummy'],
         { id: 'dummy' }
       ];
       expect(component.caseShareIsVisible(result)).toBeTruthy();
@@ -417,7 +417,7 @@ describe('CaseListComponent', () => {
     it('should return false when jurisdiction is not shareable.', () => {
       const result = [
         { canShareCases: true },
-        [ 'dummy1' ],
+        ['dummy1'],
         { id: 'dummy' }
       ];
       expect(component.caseShareIsVisible(result)).toBeFalsy();
@@ -435,7 +435,7 @@ describe('CaseListComponent', () => {
     it('should return false when the jurisdiction is shareable but sharing is disabled.', () => {
       const result = [
         { canShareCases: false },
-        [ 'dummy' ],
+        ['dummy'],
         { id: 'dummy' }
       ];
       expect(component.caseShareIsVisible(result)).toBeFalsy();
@@ -492,7 +492,7 @@ describe('CaseListComponent', () => {
         '"jurisdiction": "Probate", ' +
         '"case-type": "GrantOfRepresentation", ' +
         '"case-state": null' +
-      '}');
+        '}');
       component.jurisdictionsBehaviourSubject$.next([{
         id: 'Probate',
         name: 'some name',
@@ -521,7 +521,7 @@ describe('CaseListComponent', () => {
         '"jurisdiction": "Probate", ' +
         '"case-type": "GrantOfRepresentation", ' +
         '"case-state": "BOReadyToIssue"' +
-      '}');
+        '}');
       component.jurisdictionsBehaviourSubject$.next([{
         id: 'Probate',
         name: 'some name',
@@ -549,17 +549,18 @@ describe('CaseListComponent', () => {
     });
 
     it('jurisdiction matches createEvent jurisdiction.', () => {
-      const data = { metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: {id: 'PUBLICLAW'},
-        caseStateGroupFromLS: {id: null},
-        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+      const data = {
+        metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: { id: 'PUBLICLAW' },
+        caseStateGroupFromLS: { id: null },
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
         formGroupFromLS: {
-          '[CASE_REFERENCE]': null,
-          caseLocalAuthority: 'BNS',
-          caseName: null,
-          dateSubmitted: null,
-          evidenceHandled: null,
-          familyManCaseNumber: null
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
+          caseName: null,
+          dateSubmitted: null,
+          evidenceHandled: null,
+          familyManCaseNumber: null
         },
       };
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
@@ -567,34 +568,36 @@ describe('CaseListComponent', () => {
     });
 
     it('case type matches createEvent case type.', () => {
-      const data = { metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: {id: 'PUBLICLAW'},
-        caseStateGroupFromLS: {id: null},
-        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+      const data = {
+        metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: { id: 'PUBLICLAW' },
+        caseStateGroupFromLS: { id: null },
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
         formGroupFromLS: {
-          '[CASE_REFERENCE]': null,
-          caseLocalAuthority: 'BNS',
-          caseName: null,
-          dateSubmitted: null,
-          evidenceHandled: null,
-          familyManCaseNumber: null
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
+          caseName: null,
+          dateSubmitted: null,
+          evidenceHandled: null,
+          familyManCaseNumber: null
         },
       };
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
       expect(event.selected.caseType).toEqual(data.caseTypeGroupFromLS);
     });
     it('form group matches createEvent formgroup.', () => {
-      const data = { metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: {id: 'PUBLICLAW'},
-        caseStateGroupFromLS: {id: null},
-        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+      const data = {
+        metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: { id: 'PUBLICLAW' },
+        caseStateGroupFromLS: { id: null },
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
         formGroupFromLS: {
-          '[CASE_REFERENCE]': null,
-          caseLocalAuthority: 'BNS',
-          caseName: null,
-          dateSubmitted: null,
-          evidenceHandled: null,
-          familyManCaseNumber: null
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
+          caseName: null,
+          dateSubmitted: null,
+          evidenceHandled: null,
+          familyManCaseNumber: null
         },
       };
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
@@ -627,7 +630,7 @@ describe('CaseListComponent', () => {
       spyOnPipeToStore.and.returnValue(of({
         sessionTimeout: {
           idleModalDisplayTime: 1,
-            totalIdleTime: 1,
+          totalIdleTime: 1,
         },
         canShareCases: true
       }));

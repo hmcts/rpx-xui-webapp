@@ -19,7 +19,7 @@ describe('Hearing Request to compare selectors', () => {
   });
 
   // Check testing
-describe('getHearingRequestToCompare', () => {
+  describe('getHearingRequestToCompare', () => {
     it('should return hearings request to compare state', () => {
       store.pipe(select(getHearingRequestToCompare)).subscribe(value => {
         expect(value).toEqual(initialHearingRequestState);

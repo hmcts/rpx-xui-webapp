@@ -25,7 +25,7 @@ import { TaskListComponent } from './task-list.component';
       [pagination]="pagination"></exui-task-list>`
 })
 class WrapperComponent {
-  @ViewChild(TaskListComponent, {static: false}) public appComponentRef: TaskListComponent;
+  @ViewChild(TaskListComponent, { static: false }) public appComponentRef: TaskListComponent;
   @Input() public fields: TaskFieldConfig[];
   @Input() public tasks: Task[];
   @Input() public tasksTotal: number;
@@ -104,11 +104,11 @@ describe('TaskListComponent', () => {
   it('should return the fields as an array with a \'manage\' entry, so that we can' +
     'display the manage column in the table.', async () => {
 
-    const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
-    const fieldsWithManage = [...fields, 'manage'];
+      const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
+      const fieldsWithManage = [...fields, 'manage'];
 
-    expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
-  });
+      expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
+    });
 
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
 
@@ -333,7 +333,7 @@ describe('TaskListComponent', () => {
     expect(component.actionEvent.emit).toHaveBeenCalled();
     let task = firstTask;
     let action = firstAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({task, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ task, action });
 
     // check the emitter had been called and that it gets called with the second invoked task action
     const secondAnchor = element.querySelector(`#action_${secondActionId}`);
@@ -342,7 +342,7 @@ describe('TaskListComponent', () => {
     expect(component.actionEvent.emit).toHaveBeenCalled();
     task = firstTask;
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({task, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ task, action });
 
     // click the second button in order to show the last action anchor
     secondButton.dispatchEvent(new Event('click'));
@@ -355,7 +355,7 @@ describe('TaskListComponent', () => {
     expect(component.actionEvent.emit).toHaveBeenCalled();
     task = secondTask;
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({task, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ task, action });
   });
 
   it('should allow a check to verify whether column sorted.', async () => {
@@ -392,20 +392,20 @@ describe('TaskListComponent', () => {
   });
 
   // Check testing
-describe('act upon deep linking', () => {
+  describe('act upon deep linking', () => {
     const id = '12345678';
 
     it('should select appropriate task from location hash', () => {
       spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;
       const task = { id } as Task;
-      wrapper.tasks = [ task ];
+      wrapper.tasks = [task];
       fixture.detectChanges();
       expect(component.getSelectedTask()).toEqual(task);
       expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall).toBeDefined();
-      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
+      expect(lastNavigateCall.commands).toEqual(['taskList']);
       expect(lastNavigateCall.extras).toEqual({ fragment: `manage_${id}` });
     });
 
@@ -413,19 +413,19 @@ describe('act upon deep linking', () => {
       spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;
       const task = { id: '99999999' } as Task;
-      wrapper.tasks = [ task ];
+      wrapper.tasks = [task];
       fixture.detectChanges();
       expect(component.getSelectedTask()).toBeNull();
       expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall).toBeDefined();
-      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
+      expect(lastNavigateCall.commands).toEqual(['taskList']);
       expect(lastNavigateCall.extras).toBeUndefined();
     });
   });
 
   // Check testing
-describe('generate pagination summary', () => {
+  describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {

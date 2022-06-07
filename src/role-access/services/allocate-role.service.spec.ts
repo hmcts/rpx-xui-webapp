@@ -7,17 +7,21 @@ import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, Duration
 import { CaseRoleDetails } from '../models/case-role-details.interface';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
-  { roleId: '2', roleName: 'Role 2' },
-  { roleId: '3', roleName: 'Role 3' },
-  { roleId: '4', roleName: 'Role 4' }];
+{ roleId: '2', roleName: 'Role 2' },
+{ roleId: '3', roleName: 'Role 3' },
+{ roleId: '4', roleName: 'Role 4' }];
 
-const mockRolesByService = [{service: 'IA',
- roles: [{ roleId: '1', roleName: 'Role 1' },
+const mockRolesByService = [{
+  service: 'IA',
+  roles: [{ roleId: '1', roleName: 'Role 1' },
   { roleId: '2', roleName: 'Role 2' },
-  { roleId: '3', roleName: 'Role 3' }]},
-{service: 'SSCS', roles: {
-  roleId: '4', roleName: 'Role 4'
-}}];
+  { roleId: '3', roleName: 'Role 3' }]
+},
+{
+  service: 'SSCS', roles: {
+    roleId: '4', roleName: 'Role 4'
+  }
+}];
 
 // Check testing
 describe('AllocateRoleService', () => {
@@ -35,7 +39,7 @@ describe('AllocateRoleService', () => {
       expect(roles.length).toBe(4);
       expect(roles).toEqual(mockRoles);
     });
-    expect(mockHttp.post).toHaveBeenCalledWith('/api/role-access/allocate-role/valid-roles', {serviceIds: ['IA']});
+    expect(mockHttp.post).toHaveBeenCalledWith('/api/role-access/allocate-role/valid-roles', { serviceIds: ['IA'] });
   });
 
   it('should be able to set judicial and legal ops roles from session storage', () => {
@@ -47,7 +51,7 @@ describe('AllocateRoleService', () => {
   });
 
   // Check testing
-describe('confirmAllocation', () => {
+  describe('confirmAllocation', () => {
     const STATE_DATA: AllocateRoleStateData = {
       caseId: '111111',
       jurisdiction: 'IA',

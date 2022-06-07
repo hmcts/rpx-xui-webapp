@@ -27,7 +27,7 @@ describe('HearingsService', () => {
   }));
 
   // Check testing
-describe('getAllHearings', () => {
+  describe('getAllHearings', () => {
     it('should get all hearings list', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.getAllHearings('1111222233334444').subscribe(response => {
         expect(response).toBeNull();
@@ -40,7 +40,7 @@ describe('getAllHearings', () => {
   });
 
   // Check testing
-describe('loadHearingValues', () => {
+  describe('loadHearingValues', () => {
     it('should load hearing values', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.loadHearingValues('1111222233334444').subscribe(response => {
         expect(response).toBeNull();
@@ -53,7 +53,7 @@ describe('loadHearingValues', () => {
   });
 
   // Check testing
-describe('loadHearingRequest', () => {
+  describe('loadHearingRequest', () => {
     const payload = 'h100000';
     it('should load hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.loadHearingRequest(payload).subscribe(response => {
@@ -67,7 +67,7 @@ describe('loadHearingRequest', () => {
   });
 
   // Check testing
-describe('submitHearingRequest', () => {
+  describe('submitHearingRequest', () => {
     const payload = {
       requestDetails: null,
       hearingDetails: null,
@@ -85,7 +85,7 @@ describe('submitHearingRequest', () => {
   });
 
   // Check testing
-describe('updateHearingRequest', () => {
+  describe('updateHearingRequest', () => {
     const hearingRequest: HearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest);
     const payload = {
       ...hearingRequest,
@@ -109,7 +109,7 @@ describe('updateHearingRequest', () => {
   });
 
   // Check testing
-describe('cancelHearingRequest', () => {
+  describe('cancelHearingRequest', () => {
     const payload: LovRefDataModel[] = [
       {
         key: 'reasonOne',
@@ -169,7 +169,7 @@ describe('cancelHearingRequest', () => {
   });
 
   // Check testing
-describe('getHearingActuals', () => {
+  describe('getHearingActuals', () => {
     it('should hearing actuals by id', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.getHearingActuals('1111222233334444').subscribe(response => {
         expect(response).toBeNull();
@@ -182,7 +182,7 @@ describe('getHearingActuals', () => {
   });
 
   // Check testing
-describe('updateHearingActuals', () => {
+  describe('updateHearingActuals', () => {
     const payload = {
       hearingOutcome: null,
       actualHearingDays: []
@@ -199,7 +199,7 @@ describe('updateHearingActuals', () => {
   });
 
   // Check testing
-describe('submitHearingActuals', () => {
+  describe('submitHearingActuals', () => {
     it('should submit hearing actuals', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.submitHearingActuals('1111222233334444').subscribe(response => {
         expect(response).toBeNull();
@@ -212,7 +212,7 @@ describe('submitHearingActuals', () => {
   });
 
   // Check testing
-describe('link hearing services', () => {
+  describe('link hearing services', () => {
     it('should call loadServiceLinkedCases', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.loadServiceLinkedCases('1111222233334444', 'h1000000').subscribe(response => {
         expect(response).toBeNull();

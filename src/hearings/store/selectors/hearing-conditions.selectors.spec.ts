@@ -19,7 +19,7 @@ describe('Hearing Conditions selectors', () => {
   });
 
   // Check testing
-describe('getHearingConditions', () => {
+  describe('getHearingConditions', () => {
     it('should return hearings navigation state', () => {
       let result = null;
       store.pipe(select(getHearingConditions)).subscribe(value => {

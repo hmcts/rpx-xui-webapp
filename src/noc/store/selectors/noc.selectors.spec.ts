@@ -19,7 +19,7 @@ describe('Noc selectors', () => {
   });
 
   // Check testing
-describe('getNocState', () => {
+  describe('getNocState', () => {
     it('should return noc navigation state', () => {
       let result;
       store.pipe(select(getNocState)).subscribe(value => {

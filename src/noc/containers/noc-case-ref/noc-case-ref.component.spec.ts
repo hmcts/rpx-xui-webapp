@@ -43,27 +43,27 @@ describe('NocCaseRefComponent', () => {
   });
 
   // Check testing
-describe('onSubmit', () => {
+  describe('onSubmit', () => {
     it('should call navigationHandler', () => {
-        const navigationHandlerSpy = spyOn(component, 'navigationHandler');
-        component.nocNavigationCurrentState = NocState.START;
-        component.navEvent = {
-          event: NocNavigationEvent.CONTINUE,
-          timestamp: 0
-        };
-        component.onSubmit();
-        expect(navigationHandlerSpy).toHaveBeenCalledWith(NocNavigationEvent.CONTINUE);
+      const navigationHandlerSpy = spyOn(component, 'navigationHandler');
+      component.nocNavigationCurrentState = NocState.START;
+      component.navEvent = {
+        event: NocNavigationEvent.CONTINUE,
+        timestamp: 0
+      };
+      component.onSubmit();
+      expect(navigationHandlerSpy).toHaveBeenCalledWith(NocNavigationEvent.CONTINUE);
     });
   });
 
   // Check testing
-describe('navigationHandler', () => {
+  describe('navigationHandler', () => {
     it('should dispatch an action', () => {
 
-        const storeDispatchMock = spyOn(store, 'dispatch');
-        component.navigationHandler(NocNavigationEvent.CONTINUE);
+      const storeDispatchMock = spyOn(store, 'dispatch');
+      component.navigationHandler(NocNavigationEvent.CONTINUE);
 
-        expect(storeDispatchMock).toHaveBeenCalled();
+      expect(storeDispatchMock).toHaveBeenCalled();
     });
 
   });

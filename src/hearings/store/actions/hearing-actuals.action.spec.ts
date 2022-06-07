@@ -14,7 +14,7 @@ describe('Hearing Actuals Actions', () => {
   };
 
   // Check testing
-describe('Reset', () => {
+  describe('Reset', () => {
     it('should create an action', () => {
       const action = new fromHearingActualsAction.ResetHearingActuals();
       expect(action.type).toBe(fromHearingActualsAction.RESET_HEARING_ACTUALS);
@@ -22,16 +22,17 @@ describe('Reset', () => {
   });
 
   // Check testing
-describe('UpdateHearingActuals', () => {
+  describe('UpdateHearingActuals', () => {
     it('should update hearing actuals action', () => {
-      const action = new fromHearingActualsAction.UpdateHearingActuals({ hearingId: '1', hearingActuals: payload.hearingActuals
+      const action = new fromHearingActualsAction.UpdateHearingActuals({
+        hearingId: '1', hearingActuals: payload.hearingActuals
       });
       expect(action.type).toBe(fromHearingActualsAction.UPDATE_HEARING_ACTUALS);
     });
   });
 
   // Check testing
-describe('SubmitHearingActuals', () => {
+  describe('SubmitHearingActuals', () => {
     it('should submit hearing actuals action', () => {
       const action = new fromHearingActualsAction.SubmitHearingActuals('1');
       expect(action.type).toBe(fromHearingActualsAction.SUBMIT_HEARING_ACTUALS);
@@ -55,7 +56,7 @@ describe('SubmitHearingActuals', () => {
   });
 
   // Check testing
-describe('ResetHearingActualsLastError', () => {
+  describe('ResetHearingActualsLastError', () => {
     it('should reset hearing actuals last error action', () => {
       const action = new fromHearingActualsAction.ResetHearingActualsLastError();
       expect(action.type).toBe(fromHearingActualsAction.RESET_HEARING_ACTUALS_LAST_ERROR);

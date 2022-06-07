@@ -230,7 +230,7 @@ describe('MultiLevelSelectorComponent', () => {
     },
   ];
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [MultiLevelSelectorComponent],

@@ -9,7 +9,7 @@ describe('WorkAllocation', () => {
   );
 
   // Check testing
-describe('WorkAllocationFeatureService', () => {
+  describe('WorkAllocationFeatureService', () => {
     it('should be Truthy', () => {
       const service = new WorkAllocationFeatureService(
         mockFeatureToggleService
@@ -18,11 +18,11 @@ describe('WorkAllocationFeatureService', () => {
     });
 
     it('getFeatureName should call getValue', () => {
-        const service = new WorkAllocationFeatureService(
-          mockFeatureToggleService
-        );
-        mockFeatureToggleService.getValue.and.returnValue(of('WAFeature1'));
-        service.getActiveWAFeature().subscribe(activeWAFeature => expect(activeWAFeature).toEqual('WAFeature1'));
-      });
+      const service = new WorkAllocationFeatureService(
+        mockFeatureToggleService
+      );
+      mockFeatureToggleService.getValue.and.returnValue(of('WAFeature1'));
+      service.getActiveWAFeature().subscribe(activeWAFeature => expect(activeWAFeature).toEqual('WAFeature1'));
+    });
   });
 });

@@ -153,7 +153,7 @@ describe('RolesContainerComponent', () => {
     }
   ];
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule],
       providers: [
@@ -229,20 +229,20 @@ describe('RolesContainerComponent', () => {
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
     caseDetails.case_type = {
-        id: '334',
+      id: '334',
+      name: '',
+      description: '',
+      jurisdiction: {
+        id: '',
         name: '',
         description: '',
-        jurisdiction: {
-            id: '',
-            name: '',
-            description: '',
-        },
-        printEnabled: false
+      },
+      printEnabled: false
     }
     component.caseDetails = caseDetails;
-    const caseRoles = [{roleCategory: 'JUDICIAL', actorId: '234'}];
+    const caseRoles = [{ roleCategory: 'JUDICIAL', actorId: '234' }];
     allocateService.getCaseRoles.and.returnValue(of(caseRoles));
-    const caseUserDetails = [{known_as: 'some', idam_id: '234'}];
+    const caseUserDetails = [{ known_as: 'some', idam_id: '234' }];
     allocateService.getCaseRolesUserDetails.and.returnValue(of(caseUserDetails));
     const casefield = {};
     component.loadRoles(casefield);
@@ -256,7 +256,7 @@ describe('RolesContainerComponent', () => {
   it('loadExclusions', () => {
     component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
 
-    const jurisdiction = {value: 'ia'};
+    const jurisdiction = { value: 'ia' };
     const exclusions = [
       {
         actorId: 'ret',
@@ -269,7 +269,7 @@ describe('RolesContainerComponent', () => {
         email: ''
       }
     ];
-    const caseDetails = { case_id: '12344', case_type: {id: '345'}} as CaseView;
+    const caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
     component.caseDetails = caseDetails;
     roleExclusionsService.getCurrentUserRoleExclusions.and.returnValue(of(exclusions));
     component.loadExclusions(jurisdiction);

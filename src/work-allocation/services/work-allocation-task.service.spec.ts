@@ -7,7 +7,7 @@ describe('WorkAllocation', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
   // Check testing
-describe('WorkAllocationTaskService', () => {
+  describe('WorkAllocationTaskService', () => {
     it('should be Truthy', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       expect(service).toBeTruthy();
@@ -27,7 +27,7 @@ describe('WorkAllocationTaskService', () => {
 
     it('assignTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
-      const user = {id: 'id1'};
+      const user = { id: 'id1' };
       service.assignTask('123456', user);
       expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/assign', user);
     });

@@ -18,7 +18,7 @@ describe('HearingPartiesTitleComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingCaseNameComponent);
     component = fixture.componentInstance;
-    
+
     fixture.detectChanges();
   });
 

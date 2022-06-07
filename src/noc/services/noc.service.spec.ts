@@ -23,7 +23,7 @@ describe('NocService', () => {
   }));
 
   // Check testing
-describe('getNoCQuestions', () => {
+  describe('getNoCQuestions', () => {
     it('should get getNoCQuestions', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
       service.getNoCQuestions('123456').subscribe(response => {
         expect(response).toBeNull();
@@ -37,9 +37,9 @@ describe('getNoCQuestions', () => {
   });
 
   // Check testing
-describe('validateNoCAnswers', () => {
+  describe('validateNoCAnswers', () => {
     it('should validateNoCAnswers', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
-      service.validateNoCAnswers({case_id: '123', answers: []}).subscribe(response => {
+      service.validateNoCAnswers({ case_id: '123', answers: [] }).subscribe(response => {
         expect(response).toBeNull();
       });
 
@@ -51,9 +51,9 @@ describe('validateNoCAnswers', () => {
   });
 
   // Check testing
-describe('submitNoCEvent', () => {
+  describe('submitNoCEvent', () => {
     it('should submitNoCEvent', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
-      service.submitNoCEvent({case_id: '123', answers: []}).subscribe(response => {
+      service.submitNoCEvent({ case_id: '123', answers: [] }).subscribe(response => {
         expect(response).toBeNull();
       });
 

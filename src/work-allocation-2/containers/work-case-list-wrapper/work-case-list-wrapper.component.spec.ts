@@ -67,7 +67,7 @@ describe('WorkCaseListWrapperComponent', () => {
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
-    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ))
+    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles))
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
     fixture.detectChanges();
@@ -82,7 +82,7 @@ describe('WorkCaseListWrapperComponent', () => {
   });
 
   // Check testing
-describe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const exampleCase = getMockCases()[0];
     const firstAction = exampleCase.actions[0];
     const secondAction = exampleCase.actions[1];

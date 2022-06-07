@@ -6,7 +6,7 @@ describe('WorkAllocation service', () => {
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
   // Check testing
-describe('CaseworkerDataService', () => {
+  describe('CaseworkerDataService', () => {
     it('should be Truthy', () => {
       const service = new CaseworkerDataService(mockHttpService, mockSessionStorageService);
       expect(service).toBeTruthy();

@@ -3,8 +3,9 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from 
 import { FilterPersistence, SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
+import { AllocateRoleService } from 'src/role-access/services';
 import { AppUtils } from '../../../app/app-utils';
-import { ErrorMessage, UserInfo } from '../../../app/models';
+import { ErrorMessage } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { SortField } from '../../models/common';
 
@@ -35,19 +36,23 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly allocateRoleService: AllocateRoleService
   ) {
   }
 
   public ngOnInit(): void {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      if (userInfo && userInfo.roleCategory && userInfo.roleCategory !== 'ADMIN') {
-        this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
-      }
-      this.subNavigationItems.push({text: 'My access', href: '/work/my-work/my-access', active: false});
-    }
+
+    this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
+    this.subNavigationItems.push({text: 'My access', href: '/work/my-work/my-access', active: false});
+
+    this.allocateRoleService.getSpecificAccessApproved().subscribe( (countOfApproval) => {
+     const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;
+     if ( myAccessNavItem ) {
+      myAccessNavItem.roundel = countOfApproval.count ;
+     }
+    });
+
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.

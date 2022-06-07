@@ -185,6 +185,16 @@ describe('AllocateRoleService', () => {
         expect(response).toEqual(data);
       });
     }));
+
+    it('should get specific access approved', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
+      const approvedCount = {
+        count : 5
+      }
+      mockHttp.post.and.returnValue(of(approvedCount));
+      service.getSpecificAccessApproved().subscribe(response => {
+        expect(response).toEqual({count : 5 });
+      });
+    }));
   });
 });
 

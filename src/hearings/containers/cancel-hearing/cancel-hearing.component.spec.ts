@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,7 +11,6 @@ import { LovRefDataModel } from '../../models/lovRefData.model';
 import { HearingsService } from '../../services/hearings.service';
 import { CancelHearingComponent } from './cancel-hearing.component';
 
-// Check testing
 describe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
   let fixture: ComponentFixture<CancelHearingComponent>;
@@ -64,7 +63,7 @@ describe('CancelHearingComponent', () => {
   let mockHearingService: any;
   let mockStore: any;
 
-  beforeEach(async(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [CancelHearingComponent],
@@ -88,9 +87,7 @@ describe('CancelHearingComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
       .compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CancelHearingComponent);
     component = fixture.componentInstance;
     component.hearingCancelOptions = reasons;

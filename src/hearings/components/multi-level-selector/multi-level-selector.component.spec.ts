@@ -39,7 +39,6 @@ class DataModelConvertor {
   }
 }
 
-// Check testing
 describe('MultiLevelSelectorComponent', () => {
   let component: MultiLevelSelectorComponent;
   let fixture: ComponentFixture<MultiLevelSelectorComponent>;
@@ -231,7 +230,7 @@ describe('MultiLevelSelectorComponent', () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [MultiLevelSelectorComponent],

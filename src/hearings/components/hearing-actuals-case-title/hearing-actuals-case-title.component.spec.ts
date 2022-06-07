@@ -1,21 +1,18 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HearingActualsCaseTitleComponent } from './hearing-actuals-case-title.component';
 
-// Check testing
 describe('HearingActualsCaseTitleComponent', () => {
   let component: HearingActualsCaseTitleComponent;
   let fixture: ComponentFixture<HearingActualsCaseTitleComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsCaseTitleComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(HearingActualsCaseTitleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

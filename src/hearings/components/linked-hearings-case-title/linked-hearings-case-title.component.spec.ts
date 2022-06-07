@@ -1,9 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import { LinkedHearingsCaseTitleComponent } from './linked-hearings-case-title.component';
 
-// Check testing
 describe('LinkedHearingsCaseTitleComponent', () => {
   let component: LinkedHearingsCaseTitleComponent;
   let fixture: ComponentFixture<LinkedHearingsCaseTitleComponent>;
@@ -12,7 +10,6 @@ describe('LinkedHearingsCaseTitleComponent', () => {
     TestBed.configureTestingModule({
       imports: [HearingsPipesModule],
       declarations: [LinkedHearingsCaseTitleComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
   }));

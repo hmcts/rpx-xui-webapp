@@ -1,10 +1,9 @@
 import { HearingsModule } from './hearings.module';
 
-// Check testing
 describe('HearingsModule', () => {
   let hearingsFeatureModule: HearingsModule;
 
-  beforeEach(() => {
+  beforeEach(async() => {
     hearingsFeatureModule = new HearingsModule(null);
   });
 

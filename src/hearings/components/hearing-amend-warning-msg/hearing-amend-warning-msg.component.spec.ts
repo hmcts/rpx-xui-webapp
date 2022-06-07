@@ -3,7 +3,6 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../../hearing.test.data';
 import { HearingAmendWarningMsgComponent } from './hearing-amend-warning-msg.component';
 
-// Check testing
 describe('HearingAmendWarningMsgComponent', () => {
   let component: HearingAmendWarningMsgComponent;
   let fixture: ComponentFixture<HearingAmendWarningMsgComponent>;

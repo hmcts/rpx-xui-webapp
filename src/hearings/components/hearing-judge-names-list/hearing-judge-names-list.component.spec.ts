@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { JudicialUserModel } from '../../models/judicialUser.model';
 import { HearingJudgeNamesListComponent } from './hearing-judge-names-list.component';
 
-// Check testing
 describe('HearingJudgeNamesListComponent', () => {
   let component: HearingJudgeNamesListComponent;
   let fixture: ComponentFixture<HearingJudgeNamesListComponent>;

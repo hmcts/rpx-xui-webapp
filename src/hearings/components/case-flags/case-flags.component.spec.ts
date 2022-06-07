@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CaseFlagsComponent } from './case-flags.component';
 
-// Check testing
 describe('CaseFlagsComponent', () => {
   let component: CaseFlagsComponent;
   let fixture: ComponentFixture<CaseFlagsComponent>;
 
-  beforeEach(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       declarations: [CaseFlagsComponent]
     })

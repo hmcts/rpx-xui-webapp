@@ -8,7 +8,6 @@ import { initialState } from '../../../hearings/hearing.test.data';
 import * as fromHearingStore from '../../store';
 import { ErrorPageComponent } from './error-page.component';
 
-// Check testing
 describe('ErrorPageComponent', () => {
   let component: ErrorPageComponent;
   let fixture: ComponentFixture<ErrorPageComponent>;

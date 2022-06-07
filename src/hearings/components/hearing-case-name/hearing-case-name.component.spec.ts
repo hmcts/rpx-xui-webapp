@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import { initialState } from '../../hearing.test.data';
 import { HearingCaseNameComponent } from './hearing-case-name.component';
 
-// Check testing
 describe('HearingPartiesTitleComponent', () => {
   let component: HearingCaseNameComponent;
   let fixture: ComponentFixture<HearingCaseNameComponent>;
@@ -18,6 +18,7 @@ describe('HearingPartiesTitleComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingCaseNameComponent);
     component = fixture.componentInstance;
+    
     fixture.detectChanges();
   });
 
@@ -30,6 +31,7 @@ describe('HearingPartiesTitleComponent', () => {
   });
 
   it('should destroy subscription', () => {
+    component.serviceValueSub = of().subscribe()
     const unsubscribeSpy = spyOn(component.serviceValueSub, 'unsubscribe');
     component.ngOnDestroy();
     expect(unsubscribeSpy).toHaveBeenCalled();

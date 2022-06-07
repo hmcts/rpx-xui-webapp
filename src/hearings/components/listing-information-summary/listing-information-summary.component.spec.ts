@@ -9,7 +9,6 @@ import { caseFlagsRefData, initialState } from '../../hearing.test.data';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import { ListingInformationSummaryComponent } from './listing-information-summary.component';
 
-// Check testing
 describe('ListingInformationSummaryComponent', () => {
   let component: ListingInformationSummaryComponent;
   let fixture: ComponentFixture<ListingInformationSummaryComponent>;

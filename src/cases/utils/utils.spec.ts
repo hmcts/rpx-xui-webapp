@@ -1,7 +1,6 @@
 import { CaseRoleDetails, RoleCategory } from '../../role-access/models';
 import { Utils } from './utils';
 
-// Check testing
 describe('Utils', () => {
   const caseRolesData: any[] = [
     {

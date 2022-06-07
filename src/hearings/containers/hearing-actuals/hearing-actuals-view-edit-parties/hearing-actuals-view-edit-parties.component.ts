@@ -9,9 +9,11 @@ import {filter, first} from 'rxjs/operators';
 import {
   ActualDayPartyModel,
   HearingActualsMainModel,
-  PlannedDayPartyModel, PlannedHearingDayModel
+  PlannedDayPartyModel,
+  PlannedHearingDayModel
 } from '../../../models/hearingActualsMainModel';
 import {HearingActualsStateData} from '../../../models/hearingActualsStateData.model';
+import {HearingChannelEnum} from '../../../models/hearings.enum';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {LovRefDataService} from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
@@ -106,7 +108,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public ngOnInit(): void {
-    this.partyChannel = this.route.snapshot.data.partyChannel;
+    this.partyChannel = this.route.snapshot.data.partyChannel.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
@@ -135,7 +137,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     }
   }
 
-  private hasActualParties(hearingActualsMainModel: HearingActualsMainModel): boolean {
+  public hasActualParties(hearingActualsMainModel: HearingActualsMainModel): boolean {
     return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[0]
       && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.length > 0;

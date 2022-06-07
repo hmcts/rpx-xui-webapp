@@ -21,10 +21,10 @@ import { TaskManagerListComponent } from './task-manager-list.component';
   template: `<exui-task-manager-list></exui-task-manager-list>`
 })
 class WrapperComponent {
-  @ViewChild(TaskManagerListComponent, {static: false}) public appComponentRef: TaskManagerListComponent;
+  @ViewChild(TaskManagerListComponent, {static: true}) public appComponentRef: TaskManagerListComponent;
 }
 
-fdescribe('TaskManagerListComponent', () => {
+describe('TaskManagerListComponent', () => {
   let component: TaskManagerListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -59,22 +59,26 @@ fdescribe('TaskManagerListComponent', () => {
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }
-      ]
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
+
+    fixture.whenStable();
+    
+    wrapper = fixture.debugElement.componentInstance;
     component = wrapper.appComponentRef;
+
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     mockCaseworkerService.getAll.and.returnValue(of(mockCaseworkers));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     component.isPaginationEnabled$ = of(false);
+
     fixture.detectChanges();
   });
 
   afterEach(() => {
-    fixture.destroy();
     sessionStorage.removeItem(FilterConstants.Session.TaskManager);
   });
 
@@ -197,7 +201,8 @@ fdescribe('TaskManagerListComponent', () => {
     expect(footerRowClass).not.toContain('shown');
   });
 
-  it('should show the footer when there no tasks', () => {
+  it('should show the footer when there no tasks', async() => {
+    fixture.whenStable();
     spyOnProperty(component, 'tasks').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;

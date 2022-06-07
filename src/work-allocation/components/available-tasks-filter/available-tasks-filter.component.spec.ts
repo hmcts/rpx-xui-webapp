@@ -23,7 +23,7 @@ class WrapperComponent {
   }
 }
 
-fdescribe('AvailableTasksFilterComponent', () => {
+describe('AvailableTasksFilterComponent', () => {
   let component: AvailableTasksFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

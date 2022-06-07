@@ -63,9 +63,9 @@ class WrapperComponent {
   }
 }
 
-fdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  fdescribe('TaskAssignmentComponent', () => {
+  describe('TaskAssignmentComponent', () => {
     let component: TaskAssignmentComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

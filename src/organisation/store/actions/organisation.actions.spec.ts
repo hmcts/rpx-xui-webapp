@@ -1,20 +1,20 @@
 import { Organisation } from '../../models';
 import {
-    LoadOrganisation,
-    LoadOrganisationFail,
-    LoadOrganisationSuccess, LOAD_ORGANISATION,
-    LOAD_ORGANISATION_FAIL,
-    LOAD_ORGANISATION_SUCCESS
+  LoadOrganisation,
+  LoadOrganisationFail,
+  LoadOrganisationSuccess, LOAD_ORGANISATION,
+  LOAD_ORGANISATION_FAIL,
+  LOAD_ORGANISATION_SUCCESS
 } from './organisation.actions';
 
-fdescribe('Load Organisation', () => {
+describe('Load Organisation', () => {
   it('should create an action', () => {
     const action = new LoadOrganisation();
     expect({ ...action }).toEqual({ type: LOAD_ORGANISATION });
   });
 });
 
-fdescribe('LoadOrganisationSuccess', () => {
+describe('LoadOrganisationSuccess', () => {
   it('should create an action', () => {
     const payload: Organisation = {
       name: 'a@b.com',
@@ -34,7 +34,7 @@ fdescribe('LoadOrganisationSuccess', () => {
   });
 });
 
-fdescribe('LoadOrganisationFail', () => {
+describe('LoadOrganisationFail', () => {
   it('should create an action', () => {
     const payload: any = 'fail';
     const action = new LoadOrganisationFail(payload);

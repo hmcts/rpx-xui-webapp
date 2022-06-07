@@ -14,7 +14,7 @@ import { getMockTasks, MockRouter } from '../../../work-allocation/tests/utils.s
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
-fdescribe('TaskListWrapperComponent', () => {
+describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
@@ -63,7 +63,7 @@ fdescribe('TaskListWrapperComponent', () => {
     expect(component).toBeDefined();
   });
 
-  fdescribe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];
@@ -125,7 +125,7 @@ fdescribe('TaskListWrapperComponent', () => {
 
 
 
-fdescribe('TaskListWrapperComponent searchWithPagination', () => {
+describe('TaskListWrapperComponent searchWithPagination', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
@@ -178,7 +178,7 @@ fdescribe('TaskListWrapperComponent searchWithPagination', () => {
     fixture.detectChanges();
   }));
 
-  fdescribe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];

@@ -5,7 +5,6 @@ import { LocationByEPIMMSModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { VenueAnswerConverter } from './venue.answer.converter';
 
-// Check testing
 describe('VenueAnswerConverter', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',

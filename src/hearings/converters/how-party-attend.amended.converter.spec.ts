@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { HowPartyAttendAmendedConverter } from './how-party-attend.amended.converter';
 
-// Check testing
 describe('HowPartyAttendAmendedConverter', () => {
 
   let converter: HowPartyAttendAmendedConverter;

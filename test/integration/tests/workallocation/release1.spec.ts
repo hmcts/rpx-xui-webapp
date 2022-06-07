@@ -8,7 +8,6 @@ import TaskRequestBody from '../utils/wa/taskRequestBody';
 
 
 
-// Check testing
 describe('Work allocations MVP', () => {
     const userName = config.users[config.testEnv].solicitor.e;
     const password = config.users[config.testEnv].solicitor.sec;

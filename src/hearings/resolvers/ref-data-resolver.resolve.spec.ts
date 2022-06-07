@@ -12,7 +12,6 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { RefDataResolver } from './ref-data-resolver.resolve';
 
-// Check testing
 describe('Ref Data Resolver', () => {
   let lovRefDataService: LovRefDataService;
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);

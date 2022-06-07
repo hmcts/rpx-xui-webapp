@@ -1,9 +1,7 @@
 import * as fromActions from '../actions/create-case.action';
 import * as fromCases from './create-case.reducer';
 
-// Check testing
 describe('CasesReducer', () => {
-  // Check testing
 describe('undefined action', () => {
     it('should return the default state', () => {
       const { initialState } = fromCases;
@@ -14,8 +12,7 @@ describe('undefined action', () => {
     });
   });
 
-  // Check testing
-describe('CREATE_CASE_APPLY action', () => {
+  describe('CREATE_CASE_APPLY action', () => {
     it('should set correct object', () => {
       const { initialState } = fromCases;
       const action = new fromActions.ApplyChange({status: null, caseId: 1234});
@@ -27,8 +24,7 @@ describe('CREATE_CASE_APPLY action', () => {
     });
   });
 
-  // Check testing
-describe('CREATE_CASE_FILTER_APPLY action', () => {
+  describe('CREATE_CASE_FILTER_APPLY action', () => {
     it('should set correct object', () => {
       const { initialState } = fromCases;
       const action = new fromActions.CaseCreateFilterApply({jurisdiction: 'SSCS'});
@@ -40,8 +36,7 @@ describe('CREATE_CASE_FILTER_APPLY action', () => {
     });
   });
 
-  // Check testing
-describe('CREATE_CASE_RESET action', () => {
+  describe('CREATE_CASE_RESET action', () => {
     it('should reset to init', () => {
       const { initialState } = fromCases;
       const action = new fromActions.CreateCaseReset();

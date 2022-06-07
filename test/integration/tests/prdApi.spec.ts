@@ -7,7 +7,6 @@ import Request from './utils/request';
 
 
 
-// Check testing
 describe('Case share ', () => {
     const userName = config.users[config.testEnv].solicitor.e;
     const password = config.users[config.testEnv].solicitor.sec;

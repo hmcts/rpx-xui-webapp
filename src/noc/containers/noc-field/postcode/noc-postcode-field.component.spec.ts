@@ -7,7 +7,6 @@ import { UtilsModule } from '../utils/utils.module';
 import { NocPostcodeFieldComponent } from './noc-postcode-field.component';
 
 
-// Check testing
 describe('NocPostcodeFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
   const REGISTER_CONTROL = (control) => {

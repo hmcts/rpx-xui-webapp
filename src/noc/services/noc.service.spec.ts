@@ -3,7 +3,6 @@ import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { NocService } from './noc.service';
 
-// Check testing
 describe('NocService', () => {
 
   beforeEach(() => {
@@ -22,7 +21,6 @@ describe('NocService', () => {
     expect(service).toBeTruthy();
   }));
 
-  // Check testing
   describe('getNoCQuestions', () => {
     it('should get getNoCQuestions', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
       service.getNoCQuestions('123456').subscribe(response => {
@@ -36,7 +34,6 @@ describe('NocService', () => {
 
   });
 
-  // Check testing
   describe('validateNoCAnswers', () => {
     it('should validateNoCAnswers', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
       service.validateNoCAnswers({ case_id: '123', answers: [] }).subscribe(response => {
@@ -50,7 +47,6 @@ describe('NocService', () => {
 
   });
 
-  // Check testing
   describe('submitNoCEvent', () => {
     it('should submitNoCEvent', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
       service.submitNoCEvent({ case_id: '123', answers: [] }).subscribe(response => {

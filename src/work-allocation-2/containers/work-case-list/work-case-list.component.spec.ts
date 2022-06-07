@@ -60,7 +60,6 @@ function getCaseService(): CaseServiceConfig {
   };
 }
 
-// Check testing
 describe('CaseListComponent', () => {
   let component: WorkCaseListComponent;
   let wrapper: WrapperComponent;
@@ -408,7 +407,6 @@ describe('CaseListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('startDate');
   });
 
-  // Check testing
   describe('act upon deep linking', () => {
     const id = '12345678';
 
@@ -441,7 +439,6 @@ describe('CaseListComponent', () => {
     });
   });
 
-  // Check testing
   describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 

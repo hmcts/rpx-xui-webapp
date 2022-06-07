@@ -23,7 +23,6 @@ import {
 import * as fromShareCaseEffects from './share-case.effects';
 import { ShareCaseEffects } from './share-case.effects';
 
-// Check testing
 describe('Share Case Effects', () => {
   let actions$;
   let effects: ShareCaseEffects;
@@ -58,7 +57,6 @@ describe('Share Case Effects', () => {
     effects = TestBed.get(ShareCaseEffects);
   });
 
-  // Check testing
   describe('addShareCases$', () => {
     it('should add share case action', () => {
       const action = new AddShareCases({
@@ -78,7 +76,6 @@ describe('Share Case Effects', () => {
     });
   });
 
-  // Check testing
   describe('navigateToAddShareCase$', () => {
     it('should add share case go', () => {
       const payload = {
@@ -96,7 +93,6 @@ describe('Share Case Effects', () => {
     });
   });
 
-  // Check testing
   describe('loadShareCases$', () => {
     it('should load share case', () => {
       const requestPayload = [
@@ -114,7 +110,6 @@ describe('Share Case Effects', () => {
     });
   });
 
-  // Check testing
   describe('loadOrgUsers$', () => {
     it('should load organisation users', () => {
       const returnPayload = [
@@ -139,7 +134,6 @@ describe('Share Case Effects', () => {
     });
   });
 
-  // Check testing
   describe('assignUsersWithCases$', () => {
     it('should assign users with cases', () => {
       const requestPayload = [

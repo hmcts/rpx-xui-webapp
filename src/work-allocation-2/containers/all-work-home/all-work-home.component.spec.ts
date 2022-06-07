@@ -20,7 +20,6 @@ class WrapperComponent {
   @ViewChild(AllWorkHomeComponent, {static: false}) public appComponentRef: AllWorkHomeComponent;
 }
 
-// Check testing
 describe('AllWorkHomeComponent', () => {
   let component: AllWorkHomeComponent;
   let wrapper: WrapperComponent;

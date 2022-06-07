@@ -22,7 +22,6 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-// Check testing
 describe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;

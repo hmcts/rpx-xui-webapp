@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -23,8 +23,7 @@ class WrapperComponent {
   @ViewChild(MyTasksComponent, {static: false}) public appComponentRef: MyTasksComponent;
 }
 
-// Check testing
-describe('MyTasksComponent', () => {
+fdescribe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -37,7 +36,7 @@ describe('MyTasksComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -56,9 +55,7 @@ describe('MyTasksComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -70,6 +67,7 @@ describe('MyTasksComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
+
 
 
   it('should make a call to load tasks using the default search request', () => {

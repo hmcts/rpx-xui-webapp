@@ -14,7 +14,6 @@ const mockCaseworker: Caseworker = {
 const mockName = `${mockCaseworker.firstName} ${mockCaseworker.lastName}`;
 const mockNameWithEmail = `${mockName} - ${mockCaseworker.email}`;
 
-// Check testing
 describe('CaseworkerDisplayName', () => {
   const pipe = new CaseworkerDisplayName();
   it('returns undefined if no caseworker present', () => {

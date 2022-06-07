@@ -12,7 +12,6 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { PanelExclusionAnswerConverter } from './panel-exclusion.answer.converter';
 
-// Check testing
 describe('PanelExclusionAnswerConverter', () => {
 
   let converter: AnswerConverter;

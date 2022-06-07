@@ -7,16 +7,14 @@ import {
     LOAD_ORGANISATION_SUCCESS
 } from './organisation.actions';
 
-// Check testing
-describe('Load Organisation', () => {
+fdescribe('Load Organisation', () => {
   it('should create an action', () => {
     const action = new LoadOrganisation();
     expect({ ...action }).toEqual({ type: LOAD_ORGANISATION });
   });
 });
 
-// Check testing
-describe('LoadOrganisationSuccess', () => {
+fdescribe('LoadOrganisationSuccess', () => {
   it('should create an action', () => {
     const payload: Organisation = {
       name: 'a@b.com',
@@ -36,8 +34,7 @@ describe('LoadOrganisationSuccess', () => {
   });
 });
 
-// Check testing
-describe('LoadOrganisationFail', () => {
+fdescribe('LoadOrganisationFail', () => {
   it('should create an action', () => {
     const payload: any = 'fail';
     const action = new LoadOrganisationFail(payload);

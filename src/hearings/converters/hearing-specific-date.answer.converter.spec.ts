@@ -11,7 +11,6 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingSpecificDateAnswerConverter } from './hearing-specific-date.answer.converter';
 
-// Check testing
 describe('HearingSpecificDateAnswerConverter', () => {
 
   let converter: AnswerConverter;

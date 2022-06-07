@@ -10,7 +10,6 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { HearingActualPartyChannelResolverService } from './hearing-actual-party-channel-resolver.service';
 
-// Check testing
 describe('HearingActualPartyChannelResolverService', () => {
   let lovRefDataService: LovRefDataService;
   const dataRef: LovRefDataModel[] = [];

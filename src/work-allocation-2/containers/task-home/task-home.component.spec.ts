@@ -25,7 +25,6 @@ class WrapperComponent {
   @ViewChild(TaskHomeComponent, {static: false}) public appComponentRef: TaskHomeComponent;
 }
 
-// Check testing
 describe('TaskHomeComponent', () => {
   let component: TaskHomeComponent;
   let wrapper: WrapperComponent;

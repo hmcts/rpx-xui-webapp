@@ -41,7 +41,6 @@ class TaskFieldComponent {
   @Input() public task: Task;
 }
 
-// Check testing
 describe('AllWorkTaskComponent', () => {
   let component: AllWorkTaskComponent;
   let wrapper: WrapperComponent;
@@ -177,8 +176,7 @@ describe('AllWorkTaskComponent', () => {
   { statusCode: 500, routeUrl: '/service-down' },
   { statusCode: 400, routeUrl: '/service-down' },
 ].forEach(scr => {
-  // Check testing
-describe('AllWorkTaskComponent negative cases', () => {
+  describe('AllWorkTaskComponent negative cases', () => {
     let component: AllWorkTaskComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

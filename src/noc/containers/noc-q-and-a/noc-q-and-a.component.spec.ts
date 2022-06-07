@@ -9,7 +9,6 @@ import * as fromNocStore from '../../store';
 import { NocErrorPipe } from '../noc-field/utils';
 import { NocQAndAComponent } from './noc-q-and-a.component';
 
-// Check testing
 describe('NocQAndAComponent', () => {
   const FORM_GROUP = new FormGroup({});
   let store: MockStore<fromNocStore.State>;
@@ -44,7 +43,6 @@ describe('NocQAndAComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // Check testing
   describe('navigationHandler', () => {
     const FORM_GROUP_WITH_ANSWERS = new FormGroup({
       question1: new FormControl('An answer'),

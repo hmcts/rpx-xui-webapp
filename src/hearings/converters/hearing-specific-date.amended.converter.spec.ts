@@ -5,7 +5,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { HearingSpecificDateAmendedConverter } from './hearing-specific-date.amended.converter';
 
-// Check testing
 describe('HearingSpecificDateAmendedConverter', () => {
 
   let hearingSpecificDateAmendedConverter: HearingSpecificDateAmendedConverter;

@@ -3,14 +3,11 @@ import { ServiceLinkedCasesModel } from '../../models/linkHearings.model';
 import * as fromHearingLinksActions from '../actions/hearing-links.action';
 import * as fromHearingLinksReducer from './hearing-links.reducer';
 
-// Check testing
 describe('Hearing Links Reducer', () => {
 
-  // Check testing
-describe('Actions', () => {
+  describe('Actions', () => {
 
-    // Check testing
-describe('Reset action', () => {
+    describe('Reset action', () => {
       it('should reset init state', () => {
         const initialState = fromHearingLinksReducer.initialHearingLinksState;
         const action = new fromHearingLinksActions.ResetHearingLinks();
@@ -19,8 +16,7 @@ describe('Reset action', () => {
       });
     });
 
-    // Check testing
-describe('Load all service linked case success action', () => {
+    describe('Load all service linked case success action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingLinksReducer.initialHearingLinksState;
         const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [{
@@ -38,8 +34,7 @@ describe('Load all service linked case success action', () => {
       });
     });
 
-    // Check testing
-describe('Load all service linked case failure action', () => {
+    describe('Load all service linked case failure action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingLinksReducer.initialHearingLinksState;
         const ERROR = {
@@ -52,8 +47,7 @@ describe('Load all service linked case failure action', () => {
       });
     });
 
-    // Check testing
-describe('Submit linked hearing group failure action', () => {
+    describe('Submit linked hearing group failure action', () => {
       it('should call error response action', () => {
         const initialState: HearingLinksStateData = {
           serviceLinkedCases: [],

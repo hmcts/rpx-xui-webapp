@@ -10,7 +10,6 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingResponseLengthAnswerConverter } from './hearing-response-length.answer.converter';
 
-// Check testing
 describe('HearingResponseLengthAnswerConverter', () => {
 
   let converter: AnswerConverter;

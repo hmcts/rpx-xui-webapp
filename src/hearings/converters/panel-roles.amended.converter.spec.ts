@@ -9,7 +9,6 @@ import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { PanelRolesAmendedConverter } from './panel-roles.amended.converter';
 
-// Check testing
 describe('PanelRolesAmendedConverter', () => {
 
   let converter: PanelRolesAmendedConverter;

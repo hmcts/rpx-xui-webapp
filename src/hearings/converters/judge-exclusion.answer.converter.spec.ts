@@ -12,7 +12,6 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { JudgeExclusionAnswerConverter } from './judge-exclusion.answer.converter';
 
-// Check testing
 describe('JudgeExclusionAnswerConverter', () => {
 
   let converter: AnswerConverter;

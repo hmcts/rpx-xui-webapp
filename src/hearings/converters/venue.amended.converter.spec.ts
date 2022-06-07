@@ -4,7 +4,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { VenueAmendedConverter } from './venue.amended.converter';
 
-// Check testing
 describe('VenueAmendedConverter', () => {
 
   let venueAmendedConverter: VenueAmendedConverter;

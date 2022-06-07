@@ -11,7 +11,6 @@ import { EXCLUSION_OPTION } from '../../../constants';
 import { ExcludeOption, ExclusionNavigationEvent } from '../../../models';
 import { ChooseExclusionComponent } from './choose-exclusion.component';
 
-// Check testing
 describe('ChooseExclusionComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
   const formGroup: FormGroup = new FormGroup({[EXCLUSION_OPTION]: radioOptionControl});

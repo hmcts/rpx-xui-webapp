@@ -9,7 +9,6 @@ import TaskRequestBody from '../utils/wa/taskRequestBody';
 
 const workAllocationDataModels = require( '../../../dataModels/workAllocation');
 
-// Check testing
 describe('Work allocations Release 2: Tasks', () => {
     const userName = config.users[config.testEnv].solicitor.e;
     const password = config.users[config.testEnv].solicitor.sec;

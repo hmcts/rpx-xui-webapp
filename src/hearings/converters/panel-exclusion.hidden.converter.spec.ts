@@ -6,7 +6,6 @@ import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { PanelExclusionHiddenConverter } from './panel-exclusion.hidden.converter';
 
-// Check testing
 describe('PanelExclusionHiddenConverter', () => {
 
   let panelExclusionHiddenConverter: PanelExclusionHiddenConverter;

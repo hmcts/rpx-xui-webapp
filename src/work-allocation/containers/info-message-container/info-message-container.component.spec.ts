@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { InfoMessageComponent } from '../../components/info-message/info-message.component';
@@ -15,18 +15,16 @@ class WrapperComponent {
   @ViewChild(InfoMessageContainerComponent, {static: false}) public appComponentRef: InfoMessageContainerComponent;
 }
 
-// Check testing
-describe('WorkAllocation', () => {
+fdescribe('WorkAllocation', () => {
 
-  // Check testing
-describe('InfoMessageContainerComponent', () => {
+  fdescribe('InfoMessageContainerComponent', () => {
     let component: InfoMessageContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['removeAllMessages']);
 
-    beforeEach(async(() => {
+    beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [
           RouterTestingModule.withRoutes([
@@ -36,9 +34,7 @@ describe('InfoMessageContainerComponent', () => {
         providers: [{provide: InfoMessageCommService, useValue: mockInfoMessageCommService}]
       })
       .compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;

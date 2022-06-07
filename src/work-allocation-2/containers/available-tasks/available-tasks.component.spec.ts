@@ -38,7 +38,6 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
-// Check testing
 describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
@@ -189,7 +188,6 @@ describe('AvailableTasksComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
-  // Check testing
   describe('claimTask()', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
@@ -233,7 +231,6 @@ describe('AvailableTasksComponent', () => {
       });
   });
 
-  // Check testing
   describe('claimTaskAndGo()', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
@@ -273,7 +270,6 @@ describe('AvailableTasksComponent', () => {
       });
   });
 
-  // Check testing
   describe('claimTaskErrors()', () => {
 
     it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
@@ -318,7 +314,6 @@ describe('AvailableTasksComponent', () => {
     // });
   });
 
-  // Check testing
   describe('onActionHandler()', () => {
     const TASK_ID = '2345678901234567';
     const taskAction: InvokedTaskAction = {

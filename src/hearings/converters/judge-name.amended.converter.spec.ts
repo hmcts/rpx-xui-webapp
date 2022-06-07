@@ -6,7 +6,6 @@ import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { JudgeNameAmendedConverter } from './judge-name.amended.converter';
 
-// Check testing
 describe('JudgeNameAmendedConverter', () => {
 
   let judgeNameAmendedConverter: JudgeNameAmendedConverter;

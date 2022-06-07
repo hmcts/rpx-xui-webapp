@@ -2,7 +2,6 @@ import { RoleAccessHttpError, SpecificRole } from '../models';
 import { InfoMessageType } from '../models/enums/info-message-type';
 import { getTitleText, handleError, REDIRECTS } from './role-access-utils';
 
-// Check testing
 describe('WorkAllocationUtils', () => {
   let mockRouter: any;
   const error: RoleAccessHttpError = {

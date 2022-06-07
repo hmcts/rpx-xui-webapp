@@ -19,7 +19,6 @@ import { WorkCaseListComponent } from '../work-case-list/work-case-list.componen
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
 
 
-// Check testing
 describe('WorkCaseListWrapperComponent', () => {
   let component: WorkCaseListWrapperComponent;
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
@@ -81,7 +80,6 @@ describe('WorkCaseListWrapperComponent', () => {
     expect(component).toBeDefined();
   });
 
-  // Check testing
   describe('onActionHandler()', () => {
     const exampleCase = getMockCases()[0];
     const firstAction = exampleCase.actions[0];

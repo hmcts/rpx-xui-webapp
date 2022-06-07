@@ -17,7 +17,6 @@ import {
 import * as fromFeature from '../../../store';
 import { ChooseAllocateToComponent } from './choose-allocate-to.component';
 
-// Check testing
 describe('ChooseAllocateToComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
   const formGroup: FormGroup = new FormGroup({[CHOOSE_ALLOCATE_TO]: radioOptionControl});

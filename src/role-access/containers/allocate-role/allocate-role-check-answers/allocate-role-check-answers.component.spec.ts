@@ -16,7 +16,6 @@ import { ConfirmAllocation } from '../../../store/actions';
 import { AllocateRoleCheckAnswersComponent } from './allocate-role-check-answers.component';
 
 
-// Check testing
 describe('AllocateRoleCheckAnswersComponent', () => {
   let component: AllocateRoleCheckAnswersComponent;
   let fixture: ComponentFixture<AllocateRoleCheckAnswersComponent>;

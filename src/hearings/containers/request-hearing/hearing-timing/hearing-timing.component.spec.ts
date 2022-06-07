@@ -24,7 +24,6 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-// Check testing
 describe('HearingTimingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);

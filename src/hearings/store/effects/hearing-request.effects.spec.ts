@@ -16,7 +16,6 @@ import * as hearingRequestToCompareActions from '../actions/hearing-request-to-c
 import * as hearingRequestActions from '../actions/hearing-request.action';
 import { HearingRequestEffects } from './hearing-request.effects';
 
-// Check testing
 describe('Hearing Request Effects', () => {
   let actions$;
   let effects: HearingRequestEffects;
@@ -62,7 +61,6 @@ describe('Hearing Request Effects', () => {
     store = TestBed.get(Store);
   });
 
-  // Check testing
   describe('continueNavigation$', () => {
     it('should navigate to next page if continue on CREATE mode', () => {
       effects.mode = Mode.CREATE;
@@ -96,7 +94,6 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  // Check testing
   describe('backNavigation$', () => {
     it('should navigate to last page if going back on CREATE mode', () => {
       effects.mode = Mode.CREATE;
@@ -140,7 +137,6 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  // Check testing
   describe('loadHearingRequest$', () => {
     it('should load hearing requests', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
@@ -156,7 +152,6 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  // Check testing
   describe('submitHearingReason$', () => {
     it('should submit hearing reason', () => {
       const action = new hearingRequestActions.ViewEditSubmitHearingReason(hearingRequestMainModel);
@@ -168,7 +163,6 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  // Check testing
   describe('submitHearingRequest$', () => {
     it('should submit hearing request', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
@@ -202,7 +196,6 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  // Check testing
   describe('ViewEditSubmitHearingRequest$', () => {
     it('should update hearing request', () => {
       hearingsServiceMock.updateHearingRequest.and.returnValue(of(hearingRequestMainModel));
@@ -234,7 +227,6 @@ describe('Hearing Request Effects', () => {
     });
   });
 
-  // Check testing
   describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = HearingRequestEffects.handleError({

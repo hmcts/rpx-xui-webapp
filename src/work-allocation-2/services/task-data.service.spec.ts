@@ -1,7 +1,6 @@
 import { of } from 'rxjs/internal/observable/of';
 import { TaskTypesService } from './task-types.service';
 
-// Check testing
 describe('TaskTypesService', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
   mockHttpService.get.and.returnValue(of(null));

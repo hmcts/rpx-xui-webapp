@@ -6,7 +6,6 @@ import { ExclusionNavigationEvent } from '../../../models';
 import * as fromStore from '../../../store';
 import { ExclusionNavigationComponent } from './exclusion-navigation.component';
 
-// Check testing
 describe('ExclusionNavigationComponent', () => {
   let fixture: ComponentFixture<ExclusionNavigationComponent>;
   let component: ExclusionNavigationComponent;
@@ -36,7 +35,6 @@ describe('ExclusionNavigationComponent', () => {
     fixture.detectChanges();
   });
 
-  // Check testing
   describe('isVisible', () => {
     it('should determine button visible if correct state', () => {
       const expected = component.isVisible(0, [0, 1, 2, 3]);
@@ -49,7 +47,6 @@ describe('ExclusionNavigationComponent', () => {
     });
   });
 
-  // Check testing
   describe('onEventTrigger', () => {
     it('should emit', () => {
       const backSpy = spyOn(component.eventTrigger, 'emit');

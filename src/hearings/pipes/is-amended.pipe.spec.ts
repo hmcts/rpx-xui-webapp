@@ -8,7 +8,6 @@ import { AnswerSource, MemberType, RequirementType } from '../models/hearings.en
 import { State } from '../store';
 import { IsAmendedPipe } from './is-amended.pipe';
 
-// Check testing
 describe('IsAmendedPipe', () => {
 
   let isAmendedPipe: IsAmendedPipe;

@@ -3,10 +3,7 @@ import { hearingActualsMainModel } from '../../hearing.test.data';
 import * as fromHearingActualsActions from '../actions/hearing-actuals.action';
 import * as fromHearingActualsReducer from './hearing-actuals.reducer';
 
-// Check testing
-describe('Hearing Actuals Reducer', () => {
-  // Check testing
-describe('Actions', () => {
+describe('Hearing Actuals Reducer', () => {describe('Actions', () => {
     // Check testing
 describe('Reset action', () => {
       it('should set correct object', () => {
@@ -17,8 +14,7 @@ describe('Reset action', () => {
       });
     });
 
-    // Check testing
-describe('get service hearing actuals success action', () => {
+    describe('get service hearing actuals success action', () => {
       it('should set correct object', () => {
         const action = new fromHearingActualsActions.GetHearingActualsSuccess(hearingActualsMainModel);
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(fromHearingActualsReducer.initialHearingActualsState, action);
@@ -26,8 +22,7 @@ describe('get service hearing actuals success action', () => {
       });
     });
 
-    // Check testing
-describe('submit hearing actuals success action', () => {
+    describe('submit hearing actuals success action', () => {
       it('should return the correct object', () => {
         const { initialHearingActualsState } = fromHearingActualsReducer;
         const action = new fromHearingActualsActions.SubmitHearingActualsSuccess('1111222233334444');
@@ -55,8 +50,7 @@ describe('submit hearing actuals success action', () => {
       });
     });
 
-    // Check testing
-describe('reset hearing actuals last error action', () => {
+    describe('reset hearing actuals last error action', () => {
       it('should set correct object', () => {
         const action = new fromHearingActualsActions.ResetHearingActualsLastError();
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(fromHearingActualsReducer.initialHearingActualsState, action);

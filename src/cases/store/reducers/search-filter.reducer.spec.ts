@@ -3,11 +3,9 @@ import { mockedSearchFilters, mockedSearchFiltersCaseState } from '../../../case
 import * as fromActions from '../actions/case-search.action';
 import * as fromFilter from './search-filter.reducer';
 
-// Check testing
 describe('Search Filter Reducer', () => {
 
-  // Check testing
-describe('Actions', () => {
+  describe('Actions', () => {
 
     it('should set correct object', () => {
       const initialState = fromFilter.initialSearchState;
@@ -31,8 +29,7 @@ describe('Actions', () => {
     });
   });
 
-  // Check testing
-describe('Get functions', () => {
+  describe('Get functions', () => {
     it('should get state properties', () => {
       const initialState = fromFilter.initialSearchState;
       expect(fromFilter.getSearchFilterJurisdiction(initialState)).toEqual(new Jurisdiction());
@@ -43,8 +40,7 @@ describe('Get functions', () => {
     });
   });
 
-  // Check testing
-describe('RESET action', () => {
+  describe('RESET action', () => {
     it('should set correct object', () => {
       const initialState = fromFilter.initialSearchState;
       const action = new fromActions.Reset();

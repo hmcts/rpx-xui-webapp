@@ -9,7 +9,6 @@ import CaseRequestBody from '../utils/wa/caseRequestBody';
 
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
-// Check testing
 describe('Work allocation Release 2:  Cases', () => {
     const userName = config.users[config.testEnv].solicitor.e;
     const password = config.users[config.testEnv].solicitor.sec;

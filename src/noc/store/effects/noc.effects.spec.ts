@@ -8,7 +8,6 @@ import { NocService } from '../../services';
 import * as nocActions from '../actions/noc.action';
 import { NocEffects } from './noc.effects';
 
-// Check testing
 describe('Noc Effects', () => {
   let actions$;
   let effects: NocEffects;
@@ -34,7 +33,6 @@ describe('Noc Effects', () => {
 
   });
 
-  // Check testing
   describe('setCaseReference$', () => {
     it('should return a response', () => {
       const dummy: any = {
@@ -98,7 +96,6 @@ describe('Noc Effects', () => {
     });
   });
 
-  // Check testing
   describe('setAnswers$', () => {
     it('should return a response', () => {
 
@@ -150,7 +147,6 @@ describe('Noc Effects', () => {
     });
   });
 
-  // Check testing
   describe('submitNoc$', () => {
     it('should return SetSubmissionSuccessPending', () => {
 
@@ -211,7 +207,6 @@ describe('Noc Effects', () => {
     });
   });
 
-  // Check testing
   describe('handleError', () => {
     it('should handle 400', () => {
       const action$ = NocEffects.handleError({ status: 400, message: 'error' }, nocActions.SET_CASE_REFERENCE);
@@ -219,7 +214,6 @@ describe('Noc Effects', () => {
     });
   });
 
-  // Check testing
   describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = NocEffects.handleError({ status: 500, message: 'error' }, nocActions.SET_CASE_REFERENCE);

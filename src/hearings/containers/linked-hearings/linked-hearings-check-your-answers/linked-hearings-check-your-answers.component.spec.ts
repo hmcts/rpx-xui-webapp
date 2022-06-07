@@ -10,7 +10,6 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
 
-// Check testing
 describe('LinkedHearingsCheckYourAnswersComponent', () => {
   let component: LinkedHearingsCheckYourAnswersComponent;
   let fixture: ComponentFixture<LinkedHearingsCheckYourAnswersComponent>;

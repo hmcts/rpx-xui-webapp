@@ -21,7 +21,6 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-// Check testing
 describe('HearingRequirementsComponent', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',

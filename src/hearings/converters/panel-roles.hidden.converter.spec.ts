@@ -5,7 +5,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { PanelRolesHiddenConverter } from './panel-roles.hidden.converter';
 
-// Check testing
 describe('PanelRolesHiddenConverter', () => {
 
   let panelRolesHiddenConverter: PanelRolesHiddenConverter;

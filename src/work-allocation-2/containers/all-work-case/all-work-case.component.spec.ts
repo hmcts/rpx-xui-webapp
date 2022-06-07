@@ -36,7 +36,6 @@ class WrapperComponent {
   @ViewChild(AllWorkCaseComponent, {static: false}) public appComponentRef: AllWorkCaseComponent;
 }
 
-// Check testing
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
   let wrapper: WrapperComponent;

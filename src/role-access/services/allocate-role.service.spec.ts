@@ -23,7 +23,6 @@ const mockRolesByService = [{
   }
 }];
 
-// Check testing
 describe('AllocateRoleService', () => {
   let roleAssignmentService: AllocateRoleService;
   let sessionStorageService: any;
@@ -50,7 +49,6 @@ describe('AllocateRoleService', () => {
     });
   });
 
-  // Check testing
   describe('confirmAllocation', () => {
     const STATE_DATA: AllocateRoleStateData = {
       caseId: '111111',

@@ -10,7 +10,6 @@ import { HearingLinksStateData } from '../models/hearingLinksStateData.model';
 import * as fromHearingStore from '../store';
 import { LinkedCaseResolver } from './linked-case-resolver.resolve';
 
-// Check testing
 describe('LinkedCaseResolver', () => {
   let store: Store<fromHearingStore.State>;
   const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);

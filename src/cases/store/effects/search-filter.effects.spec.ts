@@ -8,7 +8,6 @@ import { ApplySearchFilter, ApplySearchFilterFail, ApplySearchFilterForES, Apply
 import * as fromSearchFilterEffects from './search-filter.effects';
 import { SearchFilterEffects } from './search-filter.effects';
 
-// Check testing
 describe('Pending Organisation Effects', () => {
   let actions$;
   let effects: SearchFilterEffects;
@@ -34,9 +33,8 @@ describe('Pending Organisation Effects', () => {
 
   });
 
-  // Check testing
-  describe('applySearchFilters$', () => {
-    it('should return a collection', () => {
+    describe('applySearchFilters$', () => {
+        it('should return a collection', () => {
 
       SearchFilterServiceMock.search.and.returnValue(of(payload));
       const action = new ApplySearchFilter({});
@@ -47,9 +45,8 @@ describe('Pending Organisation Effects', () => {
     });
   });
 
-  // Check testing
-  describe('applySearchFilters$ error', () => {
-    it('should return a ApplySearchFilterFail', () => {
+    describe('applySearchFilters$ error', () => {
+        it('should return a ApplySearchFilterFail', () => {
 
       SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
       const action = new ApplySearchFilter({});
@@ -60,9 +57,8 @@ describe('Pending Organisation Effects', () => {
     });
   });
 
-  // Check testing
-  describe('applySearchFiltersForES$', () => {
-    it('should return a collection', () => {
+    describe('applySearchFiltersForES$', () => {
+        it('should return a collection', () => {
 
       SearchFilterServiceMock.search.and.returnValue(of(payload));
       const action = new ApplySearchFilterForES({});
@@ -73,9 +69,8 @@ describe('Pending Organisation Effects', () => {
     });
   });
 
-  // Check testing
-  describe('applySearchFilterForES$ error', () => {
-    it('should return a ApplySearchFilterFail', () => {
+    describe('applySearchFilterForES$ error', () => {
+        it('should return a ApplySearchFilterFail', () => {
 
       SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
       const action = new ApplySearchFilterForES({});

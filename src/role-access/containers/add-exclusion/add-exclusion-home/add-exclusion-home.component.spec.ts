@@ -14,7 +14,6 @@ import * as fromContainers from '../../add-exclusion';
 import { AddExclusionHomeComponent } from './add-exclusion-home.component';
 
 
-// Check testing
 describe('ExclusionHomeComponent', () => {
   let component: AddExclusionHomeComponent;
   let fixture: ComponentFixture<AddExclusionHomeComponent>;
@@ -84,7 +83,6 @@ describe('ExclusionHomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // Check testing
   describe('Click back button', () => {
     it('on choose person role page click back button', () => {
       component.navigationCurrentState = ExclusionState.CHOOSE_PERSON_ROLE;
@@ -125,7 +123,6 @@ describe('ExclusionHomeComponent', () => {
     });
   });
 
-  // Check testing
   describe('Click continue button', () => {
     it('on choose exclusion page click continue button', () => {
       component.navigationCurrentState = ExclusionState.CHOOSE_EXCLUSION;
@@ -160,7 +157,6 @@ describe('ExclusionHomeComponent', () => {
     });
   });
 
-  // Check testing
   describe('Click confirm exclusion button', () => {
     it('on choose exclusion page click continue button', () => {
       component.navigationCurrentState = ExclusionState.CHECK_ANSWERS;
@@ -178,7 +174,6 @@ describe('ExclusionHomeComponent', () => {
     });
   });
 
-  // Check testing
   describe('Click cancel button', () => {
     it('should navigate to role and access tab when click cancel button', () => {
       component.navigationHandler(ExclusionNavigationEvent.CANCEL);
@@ -186,7 +181,6 @@ describe('ExclusionHomeComponent', () => {
     });
   });
 
-  // Check testing
   describe('Unidentified state', () => {
     it('should stop showing spinner and throw error', () => {
       expect(() => { component.navigationHandler(null) }).toThrow(new Error('Invalid exclusion navigation event'));
@@ -194,7 +188,6 @@ describe('ExclusionHomeComponent', () => {
     });
   });
 
-  // Check testing
   describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();

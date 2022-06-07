@@ -6,7 +6,6 @@ import { caseFlagsRefData, initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { CaseFlagAnswerConverter } from './case-flag.answer.converter';
 
-// Check testing
 describe('CaseFlagAnswerConverter', () => {
 
   let caseFlagConverter: CaseFlagAnswerConverter;

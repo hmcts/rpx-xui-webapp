@@ -27,7 +27,6 @@ class WrapperComponent {
   @ViewChild(TaskAssignmentConfirmComponent, {static: false}) public appComponentRef: TaskAssignmentConfirmComponent;
 }
 
-// Check testing
 describe('TaskAssignmentConfirmComponent', () => {
   let component: TaskAssignmentConfirmComponent;
   let wrapper: WrapperComponent;
@@ -275,8 +274,7 @@ describe('TaskAssignmentConfirmComponent', () => {
 });
 
 ['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach(role => {
-  // Check testing
-describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
+  describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
     let component: TaskAssignmentConfirmComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

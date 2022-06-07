@@ -5,7 +5,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { NeedJudgeAmendedConverter } from './need-judge.amended.converter';
 
-// Check testing
 describe('NeedJudgeAmendedConverter', () => {
 
   let needJudgeAmendedConverter: NeedJudgeAmendedConverter;

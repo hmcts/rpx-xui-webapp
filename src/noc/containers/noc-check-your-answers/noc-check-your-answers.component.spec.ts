@@ -8,7 +8,6 @@ import * as fromFeature from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
 
-// Check testing
 describe('NocCheckYourAnswersComponent', () => {
   let store: MockStore<fromFeature.State>;
   let spyOnPipeToStore = jasmine.createSpy();

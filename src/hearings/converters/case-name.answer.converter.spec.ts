@@ -4,7 +4,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { CaseNameAnswerConverter } from './case-name.answer.converter';
 
-// Check testing
 describe('CaseNameAnswerConverter', () => {
 
   let caseNameAnswerConverter: CaseNameAnswerConverter;

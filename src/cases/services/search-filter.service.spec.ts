@@ -16,7 +16,6 @@ const CASE_TYPE = CASE_TYPES[0];
 
 const CASE_STATE: CaseState = CASE_STATE_1;
 
-// Check testing
 describe('SearchFilterService', () => {
     let searchFilterService: SearchFilterService;
     const ccdSearchServiceMock = createSpyObj<SearchService>('SearchService', ['search', 'searchCases']);
@@ -175,7 +174,6 @@ describe('SearchFilterService', () => {
 
     });
 
-    // Check testing
     describe('findPaginationMetadata', () => {
         it('should httpService get call', () => {
 

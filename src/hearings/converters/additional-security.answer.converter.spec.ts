@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { AdditionalSecurityAnswerConverter } from './additional-security.answer.converter';
 import { AnswerConverter } from './answer.converter';
 
-// Check testing
 describe('AdditionalSecurityAnswerConverter', () => {
 
   let converter: AnswerConverter;

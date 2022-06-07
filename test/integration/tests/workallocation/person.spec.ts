@@ -8,7 +8,6 @@ import Request from '../utils/request';
 
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
-// Check testing
 describe('Work allocation Release 2: persons, caseworkers and judicial users', () => {
     const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
     const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;

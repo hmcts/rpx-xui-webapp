@@ -1,7 +1,8 @@
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import * as dtos from '../../models/dtos';
@@ -22,8 +23,7 @@ class WrapperComponent {
   }
 }
 
-// Check testing
-describe('AvailableTasksFilterComponent', () => {
+fdescribe('AvailableTasksFilterComponent', () => {
   let component: AvailableTasksFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -36,7 +36,7 @@ describe('AvailableTasksFilterComponent', () => {
   };
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-  beforeEach(async(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       imports: [
         ExuiCommonLibModule
@@ -44,12 +44,11 @@ describe('AvailableTasksFilterComponent', () => {
       declarations: [ AvailableTasksFilterComponent, WrapperComponent ],
       providers: [
         { provide: LocationDataService, useValue: mockLocationService },
+        SessionStorageService,
         { provide: Router, useValue: mockRouter }
       ]
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -60,30 +59,36 @@ describe('AvailableTasksFilterComponent', () => {
     spyOn(sessionStorage, 'setItem').and.callFake((key, value) => {
       return mocksessionStore[key] = value;
     });
+
+    await fixture.whenStable();
     fixture.detectChanges();
   });
 
-  it('should attempt to load a saved filter from session storage on load', () => {
+  it('should attempt to load a saved filter from session storage on load', async() => {
+    await fixture.whenStable();
     expect(sessionStorage.getItem).toHaveBeenCalledWith(FilterConstants.Session.AvailableTasks);
     expect(component.preselection).toBeDefined();
     expect(component.preselection.length).toEqual(1);
     expect(component.preselection[0].locationName).toEqual(mockLocations[0].locationName);
   });
 
-  it('should have loaded the mock locations', () => {
+  it('should have loaded the mock locations', async() => {
+    await fixture.whenStable();
     expect(mockLocationService.getLocations).toHaveBeenCalled();
     expect(component.locations).toBeDefined();
     expect(component.locations.length).toEqual(mockLocations.length);
   });
 
-  it('should have dispatched an event to right away as we have a preselection', () => {
+  it('should have dispatched an event to right away as we have a preselection', async() => {
+    await fixture.whenStable();
     const length = wrapper.changedEvents.length;
     expect(length).toBeGreaterThan(0);
     expect(wrapper.changedEvents[length - 1].length).toEqual(1);
     expect(wrapper.changedEvents[length - 1][0].locationName).toEqual(mockLocations[0].locationName);
   });
 
-  it('should NOT dispatch a change event when a checkbox is clicked', () => {
+  it('should NOT dispatch a change event when a checkbox is clicked', async() => {
+    await fixture.whenStable();
     const element = fixture.debugElement.nativeElement;
 
     // Record how many change events we've had so far.
@@ -101,7 +106,8 @@ describe('AvailableTasksFilterComponent', () => {
     expect(wrapper.changedEvents.length).toEqual(eventsBeforeSelectAll);
   });
 
-  it('should reset the checkboxes when cancel is clicked', () => {
+  it('should reset the checkboxes when cancel is clicked', async() => {
+    await fixture.whenStable();
     const element = fixture.debugElement.nativeElement;
 
     // Get the selection to start off with.
@@ -128,7 +134,8 @@ describe('AvailableTasksFilterComponent', () => {
     expect(selectionAfterCancel[0].locationName).toEqual(startingSelection[0].locationName);
   });
 
-  it('should ONLY dispatch a change event when apply button is clicked', () => {
+  it('should ONLY dispatch a change event when apply button is clicked', async() => {
+    await fixture.whenStable();
     const element = fixture.debugElement.nativeElement;
 
     // Record how many change events we've had so far.

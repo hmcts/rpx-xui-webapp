@@ -8,7 +8,6 @@ import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { HearingsService } from './hearings.service';
 
-// Check testing
 describe('HearingsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -26,7 +25,6 @@ describe('HearingsService', () => {
     expect(service).toBeTruthy();
   }));
 
-  // Check testing
   describe('getAllHearings', () => {
     it('should get all hearings list', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.getAllHearings('1111222233334444').subscribe(response => {
@@ -39,7 +37,6 @@ describe('HearingsService', () => {
     }));
   });
 
-  // Check testing
   describe('loadHearingValues', () => {
     it('should load hearing values', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.loadHearingValues('1111222233334444').subscribe(response => {
@@ -52,7 +49,6 @@ describe('HearingsService', () => {
     }));
   });
 
-  // Check testing
   describe('loadHearingRequest', () => {
     const payload = 'h100000';
     it('should load hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
@@ -66,7 +62,6 @@ describe('HearingsService', () => {
     }));
   });
 
-  // Check testing
   describe('submitHearingRequest', () => {
     const payload = {
       requestDetails: null,
@@ -84,7 +79,6 @@ describe('HearingsService', () => {
     }));
   });
 
-  // Check testing
   describe('updateHearingRequest', () => {
     const hearingRequest: HearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest);
     const payload = {
@@ -108,7 +102,6 @@ describe('HearingsService', () => {
     }));
   });
 
-  // Check testing
   describe('cancelHearingRequest', () => {
     const payload: LovRefDataModel[] = [
       {
@@ -168,7 +161,6 @@ describe('HearingsService', () => {
     }));
   });
 
-  // Check testing
   describe('getHearingActuals', () => {
     it('should hearing actuals by id', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.getHearingActuals('1111222233334444').subscribe(response => {
@@ -181,7 +173,6 @@ describe('HearingsService', () => {
     }));
   });
 
-  // Check testing
   describe('updateHearingActuals', () => {
     const payload = {
       hearingOutcome: null,
@@ -198,7 +189,6 @@ describe('HearingsService', () => {
     }));
   });
 
-  // Check testing
   describe('submitHearingActuals', () => {
     it('should submit hearing actuals', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.submitHearingActuals('1111222233334444').subscribe(response => {
@@ -211,7 +201,6 @@ describe('HearingsService', () => {
     }));
   });
 
-  // Check testing
   describe('link hearing services', () => {
     it('should call loadServiceLinkedCases', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.loadServiceLinkedCases('1111222233334444', 'h1000000').subscribe(response => {

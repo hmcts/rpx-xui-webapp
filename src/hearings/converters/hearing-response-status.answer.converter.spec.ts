@@ -5,7 +5,6 @@ import { LaCaseStatus } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { HearingResponseStatusAnswerConverter } from './hearing-response-status.answer.converter';
 
-// Check testing
 describe('HearingResponseStageAnswerConverter', () => {
 
   let hearingResponseStatusAnswerConverter: HearingResponseStatusAnswerConverter;

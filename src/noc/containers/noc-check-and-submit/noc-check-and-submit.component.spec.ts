@@ -8,7 +8,6 @@ import { NocAnswer, NocEvent, NocNavigationEvent, NocQuestion } from '../../mode
 import * as fromFeature from '../../store';
 import { NocCheckAndSubmitComponent } from './noc-check-and-submit.component';
 
-// Check testing
 describe('NocCheckAndSubmitComponent', () => {
   let component: NocCheckAndSubmitComponent;
   let fixture: ComponentFixture<NocCheckAndSubmitComponent>;

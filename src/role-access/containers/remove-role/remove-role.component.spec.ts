@@ -32,7 +32,6 @@ const mockCaseworker: Caseworker = {
   roleCategory: RoleCategory.LEGAL_OPERATIONS
 };
 
-// Check testing
 describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
@@ -190,7 +189,6 @@ describe('RemoveRoleComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
   });
 
-  // Check testing
   describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
@@ -207,7 +205,6 @@ describe('RemoveRoleComponent', () => {
     });
   });
 
-  // Check testing
   describe('navigationHandler cancel', () => {
     it('on cancel event', () => {
       fixture.detectChanges();

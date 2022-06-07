@@ -2,10 +2,8 @@ import { HttpParams } from '@angular/common/http';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataService } from './lov-ref-data.service';
 
-// Check testing
 describe('Lov RefData service', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
-  // Check testing
   describe('LovRefDataService', () => {
     it('getForService should make correct api call', () => {
       const service = new LovRefDataService(mockHttpService);

@@ -6,7 +6,6 @@ import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocSubmitSuccessComponent } from './noc-submit-success.component';
 
 
-// Check testing
 describe('NocSubmitSuccessComponent', () => {
   let store: MockStore<fromNocStore.State>;
   let component: NocSubmitSuccessComponent;

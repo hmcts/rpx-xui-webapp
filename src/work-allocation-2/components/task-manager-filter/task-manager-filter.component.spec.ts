@@ -21,7 +21,6 @@ class WrapperComponent {
   @ViewChild(TaskManagerFilterComponent, {static: false}) public appComponentRef: TaskManagerFilterComponent;
 }
 
-// Check testing
 describe('TaskManagerFilterComponent', () => {
   let component: TaskManagerFilterComponent;
   let wrapper: WrapperComponent;

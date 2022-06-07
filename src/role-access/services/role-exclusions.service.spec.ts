@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { RoleExclusionsService } from './role-exclusions.service';
 
-// Check testing
 describe('RoleExclusionsService', () => {
     let roleExclusionsService: RoleExclusionsService;
     let mockHttp: HttpClient;

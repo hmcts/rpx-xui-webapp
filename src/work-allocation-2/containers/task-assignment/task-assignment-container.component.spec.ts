@@ -40,7 +40,6 @@ class WrapperComponent {
 class NothingComponent {
 }
 
-// Check testing
 describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;

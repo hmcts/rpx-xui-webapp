@@ -11,7 +11,6 @@ import * as fromHearingStore from '../../store';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import { RequestHearingComponent } from './request-hearing.component';
 
-// Check testing
 describe('RequestHearingComponent', () => {
   let component: RequestHearingComponent;
   let fixture: ComponentFixture<RequestHearingComponent>;

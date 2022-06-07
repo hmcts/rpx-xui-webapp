@@ -3,7 +3,6 @@ import { HearingActualsMainModel } from '../../models/hearingActualsMainModel';
 import { HMCStatus } from '../../models/hearings.enum';
 import * as fromHearingActualsAction from './hearing-actuals.action';
 
-// Check testing
 describe('Hearing Actuals Actions', () => {
 
   const payload: HearingActualsMainModel = {
@@ -13,7 +12,6 @@ describe('Hearing Actuals Actions', () => {
     caseDetails: null
   };
 
-  // Check testing
   describe('Reset', () => {
     it('should create an action', () => {
       const action = new fromHearingActualsAction.ResetHearingActuals();
@@ -21,7 +19,6 @@ describe('Hearing Actuals Actions', () => {
     });
   });
 
-  // Check testing
   describe('UpdateHearingActuals', () => {
     it('should update hearing actuals action', () => {
       const action = new fromHearingActualsAction.UpdateHearingActuals({
@@ -31,7 +28,6 @@ describe('Hearing Actuals Actions', () => {
     });
   });
 
-  // Check testing
   describe('SubmitHearingActuals', () => {
     it('should submit hearing actuals action', () => {
       const action = new fromHearingActualsAction.SubmitHearingActuals('1');
@@ -55,7 +51,6 @@ describe('Hearing Actuals Actions', () => {
     });
   });
 
-  // Check testing
   describe('ResetHearingActualsLastError', () => {
     it('should reset hearing actuals last error action', () => {
       const action = new fromHearingActualsAction.ResetHearingActualsLastError();

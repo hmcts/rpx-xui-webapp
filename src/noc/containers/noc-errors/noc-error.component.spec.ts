@@ -2,7 +2,6 @@ import { SimpleChange, SimpleChanges } from '@angular/core';
 import { NocNavigationEvent } from '../../models';
 import { NocErrorComponent } from './noc-error.component';
 
-// Check testing
 describe('NocErrorComponent', () => {
     let component: NocErrorComponent;
     let store: any;

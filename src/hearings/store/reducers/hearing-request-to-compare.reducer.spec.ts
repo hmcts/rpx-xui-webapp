@@ -3,14 +3,11 @@ import { HMCLocationType } from '../../models/hearings.enum';
 import * as fromHearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as fromHearingRequestToCompareReducer from './hearing-request-to-compare.reducer';
 
-// Check testing
 describe('Hearing Request To Compare Reducer', () => {
 
-  // Check testing
-describe('Actions', () => {
+  describe('Actions', () => {
 
-    // Check testing
-describe('Initialization action', () => {
+    describe('Initialization action', () => {
       it('should initialize hearing request to compare', () => {
         const initialHearingRequestState: HearingRequestStateData = {
           hearingRequestMainModel: {

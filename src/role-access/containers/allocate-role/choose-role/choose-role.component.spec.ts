@@ -39,7 +39,6 @@ const mockAllocateRoleStateData: AllocateRoleStateData = {
   period: null
 };
 
-// Check testing
 describe('ChooseRoleComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
   const formGroup: FormGroup = new FormGroup({[CHOOSE_A_ROLE]: radioOptionControl});

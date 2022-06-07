@@ -7,7 +7,6 @@ import { UtilsModule } from '../utils/utils.module';
 import { NocPhoneUkFieldComponent } from './noc-phone-uk-field.component';
 
 
-// Check testing
 describe('NocPhoneUkFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
   const REGISTER_CONTROL = (control) => {

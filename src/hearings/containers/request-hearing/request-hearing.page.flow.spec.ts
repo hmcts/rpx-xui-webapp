@@ -11,7 +11,6 @@ class RequestHearingPageFlowSpec extends RequestHearingPageFlow {
   }
 }
 
-// Check testing
 describe('RequestHearingPageFlow', () => {
   const hearingState = {
     hearingList: {

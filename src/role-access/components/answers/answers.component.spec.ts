@@ -9,7 +9,6 @@ class WrapperComponent {
   @ViewChild(AnswersComponent, { static: true }) public ref: AnswersComponent;
 }
 
-// Check testing
 describe('AnswersComponent', () => {
   let component: AnswersComponent;
   let wrapper: WrapperComponent;

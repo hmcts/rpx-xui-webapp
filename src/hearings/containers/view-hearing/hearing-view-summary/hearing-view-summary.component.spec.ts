@@ -2,7 +2,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HearingViewSummaryComponent } from './hearing-view-summary.component';
 
-// Check testing
 describe('HearingViewSummaryComponent', () => {
   let component: HearingViewSummaryComponent;
   let fixture: ComponentFixture<HearingViewSummaryComponent>;

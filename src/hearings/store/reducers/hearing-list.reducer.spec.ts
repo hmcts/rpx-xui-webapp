@@ -5,14 +5,11 @@ import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/he
 import * as fromHearingListActions from '../actions/hearing-list.action';
 import * as fromHearingListReducer from './hearing-list.reducer';
 
-// Check testing
 describe('Hearing List Reducer', () => {
 
-  // Check testing
-describe('Actions', () => {
+  describe('Actions', () => {
 
-    // Check testing
-describe('Reset action', () => {
+    describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingListReducer.initialHearingListState;
         const action = new fromHearingListActions.ResetHearingList();
@@ -21,8 +18,7 @@ describe('Reset action', () => {
       });
     });
 
-    // Check testing
-describe('Load all hearings success action', () => {
+    describe('Load all hearings success action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingListReducer.initialHearingListState;
         const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {

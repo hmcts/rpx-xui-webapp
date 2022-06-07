@@ -9,7 +9,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { CourtLocationAnswerConverter } from './court-location.answer.converter';
 
-// Check testing
 describe('CourtLocationAnswerConverter', () => {
 
   let listedVenueAnswerConverter: CourtLocationAnswerConverter;

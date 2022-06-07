@@ -9,7 +9,6 @@ import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { StageAmendedConverter } from './stage.amended.converter';
 
-// Check testing
 describe('StageAnswerConverter', () => {
 
   let converter: StageAmendedConverter;

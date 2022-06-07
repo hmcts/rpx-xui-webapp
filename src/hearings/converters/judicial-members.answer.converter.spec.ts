@@ -10,7 +10,6 @@ import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store';
 import { JudicialMembersAnswerConverter } from './judicial-members.answer.converter';
 
-// Check testing
 describe('JudicialMembersAnswerConverter', () => {
 
   let converter: JudicialMembersAnswerConverter;

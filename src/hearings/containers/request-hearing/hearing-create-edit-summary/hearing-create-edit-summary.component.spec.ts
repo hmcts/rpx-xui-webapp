@@ -7,7 +7,6 @@ import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingCreateEditSummaryComponent } from './hearing-create-edit-summary.component';
 
-// Check testing
 describe('HearingCreateEditSummaryComponent', () => {
   let component: HearingCreateEditSummaryComponent;
   let fixture: ComponentFixture<HearingCreateEditSummaryComponent>;

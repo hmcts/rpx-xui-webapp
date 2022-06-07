@@ -4,7 +4,6 @@ import { reducers } from '../index';
 import { State } from '../reducers';
 import { getHearingConditions } from './hearing-conditions.selectors';
 
-// Check testing
 describe('Hearing Conditions selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
@@ -18,7 +17,6 @@ describe('Hearing Conditions selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  // Check testing
   describe('getHearingConditions', () => {
     it('should return hearings navigation state', () => {
       let result = null;

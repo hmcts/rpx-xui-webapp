@@ -9,7 +9,6 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingPriorityAnswerConverter } from './hearing-priority.answer.converter';
 
-// Check testing
 describe('HearingPriorityAnswerConverter', () => {
 
   let converter: AnswerConverter;

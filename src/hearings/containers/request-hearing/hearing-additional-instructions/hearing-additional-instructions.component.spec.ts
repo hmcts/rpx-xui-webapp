@@ -10,7 +10,6 @@ import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingAdditionalInstructionsComponent } from './hearing-additional-instructions.component';
 
-// Check testing
 describe('HearingAdditionalInstructionsComponent', () => {
   let component: HearingAdditionalInstructionsComponent;
   let fixture: ComponentFixture<HearingAdditionalInstructionsComponent>;

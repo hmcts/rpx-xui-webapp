@@ -10,7 +10,6 @@ import { HearingsService } from '../../services/hearings.service';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import { LinkedHearingsComponent } from './linked-hearings.component';
 
-// Check testing
 describe('LinkedHearingsComponent', () => {
   let component: LinkedHearingsComponent;
   let fixture: ComponentFixture<LinkedHearingsComponent>;

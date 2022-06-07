@@ -7,6 +7,7 @@ import { confirmAllocateRole,
   getAccessRolesByCaseId,
   getJudicialUsers,
   getRolesByCaseId,
+  getSpecificAccessApproved,
   reallocateRole } from './index';
 import { getPossibleRoles, getRoleByAssignmentId } from './roleAssignmentService';
 
@@ -26,6 +27,8 @@ router.post('/allocate-role/get', getRoleByAssignmentId);
 router.post('/roles/post', getRolesByCaseId);
 router.post('/roles/access-get', getAccessRolesByCaseId);
 router.post('/roles/getJudicialUsers', getJudicialUsers);
+
+router.get('/roles/getSpecificAccessApproved', getSpecificAccessApproved );
 
 router.post('/allocate-role/specific-access-approval', createSpecificAccessApprovalRole);
 

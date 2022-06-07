@@ -12,7 +12,7 @@ import { CaseListEffects } from './case-list.effects';
 describe('Pending Organisation Effects', () => {
     let actions$;
     let effects: CaseListEffects;
-    const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
+    const searchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
         'search'
     ]);
 
@@ -23,7 +23,7 @@ describe('Pending Organisation Effects', () => {
             providers: [
                 {
                     provide: SearchFilterService,
-                    useValue: SearchFilterServiceMock,
+                    useValue: searchFilterServiceMock,
                 },
                 fromCaseListEffects.CaseListEffects,
                 provideMockActions(() => actions$)
@@ -35,10 +35,10 @@ describe('Pending Organisation Effects', () => {
     });
 
     // Check testing
-describe('applyCaselistFilters$', () => {
+    describe('applyCaselistFilters$', () => {
         it('should return a collection', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(of(payload));
+            searchFilterServiceMock.search.and.returnValue(of(payload));
             const action = new ApplyCaselistFilter({});
             const completion = new ApplyCaselistFilterSuccess(payload);
             actions$ = hot('-a', { a: action });
@@ -48,10 +48,10 @@ describe('applyCaselistFilters$', () => {
     });
 
     // Check testing
-describe('applyCaselistFilters$ error', () => {
+    describe('applyCaselistFilters$ error', () => {
         it('should return a ApplyCaselistFilterFail', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
+            searchFilterServiceMock.search.and.returnValue(throwError(new Error()));
             const action = new ApplyCaselistFilter({});
             const completion = new ApplyCaselistFilterFail(new Error());
             actions$ = hot('-a', { a: action });
@@ -61,10 +61,10 @@ describe('applyCaselistFilters$ error', () => {
     });
 
     // Check testing
-describe('applyCaselistFiltersForES$', () => {
+    describe('applyCaselistFiltersForES$', () => {
         it('should return a collection', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(of(payload));
+            searchFilterServiceMock.search.and.returnValue(of(payload));
             const action = new ApplyCaselistFilterForES({});
             const completion = new ApplyCaselistFilterSuccess(payload);
             actions$ = hot('-a', { a: action });
@@ -74,10 +74,10 @@ describe('applyCaselistFiltersForES$', () => {
     });
 
     // Check testing
-describe('applyCaselistFilterForES$ error', () => {
+    describe('applyCaselistFilterForES$ error', () => {
         it('should return a ApplyCaselistFilterFail', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
+            searchFilterServiceMock.search.and.returnValue(throwError(new Error()));
             const action = new ApplyCaselistFilterForES({});
             const completion = new ApplyCaselistFilterFail(new Error());
             actions$ = hot('-a', { a: action });

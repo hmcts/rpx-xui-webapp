@@ -10,80 +10,80 @@ import { SearchFilterEffects } from './search-filter.effects';
 
 // Check testing
 describe('Pending Organisation Effects', () => {
-    let actions$;
-    let effects: SearchFilterEffects;
-    const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
-        'search'
-    ]);
+  let actions$;
+  let effects: SearchFilterEffects;
+  const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
+    'search'
+  ]);
 
-    const payload = mockedSearchFilters;
+  const payload = mockedSearchFilters;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                {
-                    provide: SearchFilterService,
-                    useValue: SearchFilterServiceMock,
-                },
-                fromSearchFilterEffects.SearchFilterEffects,
-                provideMockActions(() => actions$)
-            ]
-        });
-
-        effects = TestBed.get(SearchFilterEffects);
-
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: SearchFilterService,
+          useValue: SearchFilterServiceMock,
+        },
+        fromSearchFilterEffects.SearchFilterEffects,
+        provideMockActions(() => actions$)
+      ]
     });
 
-    // Check testing
-describe('applySearchFilters$', () => {
-        it('should return a collection', () => {
+    effects = TestBed.get(SearchFilterEffects);
 
-            SearchFilterServiceMock.search.and.returnValue(of(payload));
-            const action = new ApplySearchFilter({});
-            const completion = new ApplySearchFilterSuccess(payload);
-            actions$ = hot('-a', { a: action });
-            const expected = cold('-b', { b: completion });
-            expect(effects.applySearchFilters$).toBeObservable(expected);
-        });
+  });
+
+  // Check testing
+  describe('applySearchFilters$', () => {
+    it('should return a collection', () => {
+
+      SearchFilterServiceMock.search.and.returnValue(of(payload));
+      const action = new ApplySearchFilter({});
+      const completion = new ApplySearchFilterSuccess(payload);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.applySearchFilters$).toBeObservable(expected);
     });
+  });
 
-    // Check testing
-describe('applySearchFilters$ error', () => {
-        it('should return a ApplySearchFilterFail', () => {
+  // Check testing
+  describe('applySearchFilters$ error', () => {
+    it('should return a ApplySearchFilterFail', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
-            const action = new ApplySearchFilter({});
-            const completion = new ApplySearchFilterFail(new Error());
-            actions$ = hot('-a', { a: action });
-            const expected = cold('-b', { b: completion });
-            expect(effects.applySearchFilters$).toBeObservable(expected);
-        });
+      SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
+      const action = new ApplySearchFilter({});
+      const completion = new ApplySearchFilterFail(new Error());
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.applySearchFilters$).toBeObservable(expected);
     });
+  });
 
-    // Check testing
-describe('applySearchFiltersForES$', () => {
-        it('should return a collection', () => {
+  // Check testing
+  describe('applySearchFiltersForES$', () => {
+    it('should return a collection', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(of(payload));
-            const action = new ApplySearchFilterForES({});
-            const completion = new ApplySearchFilterSuccess(payload);
-            actions$ = hot('-a', { a: action });
-            const expected = cold('-b', { b: completion });
-            expect(effects.applySearchFiltersForES$).toBeObservable(expected);
-        });
+      SearchFilterServiceMock.search.and.returnValue(of(payload));
+      const action = new ApplySearchFilterForES({});
+      const completion = new ApplySearchFilterSuccess(payload);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.applySearchFiltersForES$).toBeObservable(expected);
     });
+  });
 
-    // Check testing
-describe('applySearchFilterForES$ error', () => {
-        it('should return a ApplySearchFilterFail', () => {
+  // Check testing
+  describe('applySearchFilterForES$ error', () => {
+    it('should return a ApplySearchFilterFail', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
-            const action = new ApplySearchFilterForES({});
-            const completion = new ApplySearchFilterFail(new Error());
-            actions$ = hot('-a', { a: action });
-            const expected = cold('-b', { b: completion });
-            expect(effects.applySearchFiltersForES$).toBeObservable(expected);
-        });
+      SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
+      const action = new ApplySearchFilterForES({});
+      const completion = new ApplySearchFilterFail(new Error());
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.applySearchFiltersForES$).toBeObservable(expected);
     });
+  });
 
 });

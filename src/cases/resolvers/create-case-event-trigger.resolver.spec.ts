@@ -16,7 +16,7 @@ describe('CreateCaseFieldsResolver', () => {
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(EVENT_TRIGGER_ID, 'Into legacy', 'caseId', true, []);
 
-  const DRAFT_ID = DRAFT_PREFIX + '12345';
+  const DRAFT_ID = `${DRAFT_PREFIX}12345`;
   const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = of(EVENT_TRIGGER);
   const ERROR: HttpError = {
     timestamp: '',
@@ -150,7 +150,7 @@ describe('CreateCaseFieldsResolver', () => {
     expect(route.queryParamMap.get).toHaveBeenCalledTimes(2);
   });
 
-  it('should create error alert when event trigger cannot be retrieved', async() => {
+  it('should create error alert when event trigger cannot be retrieved', async () => {
     casesService.getEventTrigger.and.returnValue(throwError(ERROR));
 
     createCaseFieldsResolver

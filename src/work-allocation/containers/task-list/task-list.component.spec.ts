@@ -25,7 +25,7 @@ import { TaskListComponent } from './task-list.component';
       [pagination]="pagination"></exui-task-list>`
 })
 class WrapperComponent {
-  @ViewChild(TaskListComponent, { static: false }) public appComponentRef: TaskListComponent;
+  @ViewChild(TaskListComponent, { static: true }) public appComponentRef: TaskListComponent;
   @Input() public fields: TaskFieldConfig[];
   @Input() public tasks: Task[];
   @Input() public tasksTotal: number;
@@ -60,7 +60,7 @@ function getTaskService(): TaskServiceConfig {
   };
 }
 
-fdescribe('TaskListComponent', () => {
+describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -390,7 +390,7 @@ fdescribe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
   });
 
-  fdescribe('act upon deep linking', () => {
+  describe('act upon deep linking', () => {
     const id = '12345678';
 
     it('should select appropriate task from location hash', () => {
@@ -422,7 +422,7 @@ fdescribe('TaskListComponent', () => {
     });
   });
 
-  fdescribe('generate pagination summary', () => {
+  describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {

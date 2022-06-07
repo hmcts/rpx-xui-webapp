@@ -34,7 +34,7 @@ class WrapperComponent {
 })
 class NothingComponent {}
 
-fdescribe('TaskAssignmentContainerComponent1', () => {
+describe('TaskAssignmentContainerComponent1', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

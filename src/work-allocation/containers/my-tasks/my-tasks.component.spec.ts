@@ -23,7 +23,7 @@ class WrapperComponent {
   @ViewChild(MyTasksComponent, {static: false}) public appComponentRef: MyTasksComponent;
 }
 
-fdescribe('MyTasksComponent', () => {
+describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

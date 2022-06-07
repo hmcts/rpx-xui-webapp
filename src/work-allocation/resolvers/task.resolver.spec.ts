@@ -4,7 +4,7 @@ import { Task } from '../models/tasks';
 import { TaskResolver } from './task.resolver';
 
 
-fdescribe('Task Resolver', () => {
+describe('Task Resolver', () => {
 
     it('resolves on success', () => {
         const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);

@@ -15,9 +15,9 @@ class WrapperComponent {
   @ViewChild(InfoMessageContainerComponent, {static: false}) public appComponentRef: InfoMessageContainerComponent;
 }
 
-fdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  fdescribe('InfoMessageContainerComponent', () => {
+  describe('InfoMessageContainerComponent', () => {
     let component: InfoMessageContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

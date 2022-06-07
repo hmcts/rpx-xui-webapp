@@ -1,8 +1,8 @@
 import * as fromActions from '../actions/organisation.actions';
 import * as fromOrganisation from './organisation.reducer';
 
-fdescribe('OrganisationReducer', () => {
-fdescribe('undefined action', () => {
+describe('OrganisationReducer', () => {
+describe('undefined action', () => {
     it('should return the default state', () => {
       const { initialState } = fromOrganisation;
       const action = {} as any;
@@ -12,7 +12,7 @@ fdescribe('undefined action', () => {
     });
   });
 
-  fdescribe('LOAD_ORGANISATION action', () => {
+  describe('LOAD_ORGANISATION action', () => {
     it('should set loading to true', () => {
       const { initialState } = fromOrganisation;
       const action = new fromActions.LoadOrganisation();
@@ -24,7 +24,7 @@ fdescribe('undefined action', () => {
     });
   });
 
-  fdescribe('LOAD_ORGANISATION action', () => {
+  describe('LOAD_ORGANISATION action', () => {
     it('should return the previous state', () => {
       const { initialState } = fromOrganisation;
       const previousState = { ...initialState, loading: false };

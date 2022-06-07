@@ -24,7 +24,7 @@ class WrapperComponent {
   @ViewChild(AvailableTasksComponent, { static: false }) public appComponentRef: AvailableTasksComponent;
 }
 
-fdescribe('AvailableTasksComponent', () => {
+describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -72,7 +72,7 @@ fdescribe('AvailableTasksComponent', () => {
     fixture.destroy();
   });
 
-  fdescribe('when locations have not been loaded', () => {
+  describe('when locations have not been loaded', () => {
 
     beforeEach(() => {
       mockLocationService.getLocations.and.returnValue(of(null));
@@ -86,7 +86,7 @@ fdescribe('AvailableTasksComponent', () => {
 
   });
 
-  fdescribe('when locations have been loaded', () => {
+  describe('when locations have been loaded', () => {
 
     beforeEach(() => {
       mockLocationService.getLocations.and.returnValue(of(mockLocations));
@@ -207,7 +207,7 @@ fdescribe('AvailableTasksComponent', () => {
       expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     });
 
-    fdescribe('claimTask()', () => {
+    describe('claimTask()', () => {
 
       it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -250,7 +250,7 @@ fdescribe('AvailableTasksComponent', () => {
         });
     });
 
-    fdescribe('claimTaskAndGo()', () => {
+    describe('claimTaskAndGo()', () => {
 
       it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -289,7 +289,7 @@ fdescribe('AvailableTasksComponent', () => {
         });
     });
 
-    fdescribe('claimTaskErrors()', () => {
+    describe('claimTaskErrors()', () => {
 
       it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
 
@@ -333,7 +333,7 @@ fdescribe('AvailableTasksComponent', () => {
       // });
     });
 
-    fdescribe('onActionHandler()', () => {
+    describe('onActionHandler()', () => {
 
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
 

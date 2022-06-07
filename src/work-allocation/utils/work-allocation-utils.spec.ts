@@ -1,6 +1,6 @@
 import { handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './work-allocation-utils';
 
-fdescribe('WorkAllocationUtils', () => {
+describe('WorkAllocationUtils', () => {
   let mockRouter: any;
 
   it('should send back the status if it is 400', () => {

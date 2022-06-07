@@ -19,7 +19,7 @@ describe('Search filter selectors', () => {
   });
 
   // Check testing
-describe('getSearchState', () => {
+  describe('getSearchState', () => {
     it('should return search state', () => {
       let result;
       store.pipe(select(getSearchState)).subscribe(value => {

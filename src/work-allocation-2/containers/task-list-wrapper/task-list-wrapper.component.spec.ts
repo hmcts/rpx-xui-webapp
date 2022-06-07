@@ -86,7 +86,7 @@ describe('TaskListWrapperComponent', () => {
   }));
 
   // Check testing
-describe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];
@@ -104,7 +104,7 @@ describe('onActionHandler()', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = {queryParams: {service: 'IA'}, state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
+      const exampleNavigateCall = { queryParams: { service: 'IA' }, state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
 
@@ -120,7 +120,7 @@ describe('onActionHandler()', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = {queryParams: {service: 'IA'}, state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
+      const exampleNavigateCall = { queryParams: { service: 'IA' }, state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
     it('should go to tasks page on GO', () => {
@@ -150,7 +150,7 @@ describe('onActionHandler()', () => {
   });
 
   // Check testing
-describe('onPaginationHandler()', () => {
+  describe('onPaginationHandler()', () => {
     it('should handle pagination', () => {
       component.pagination = { page_number: 1, page_size: 25 };
       fixture.detectChanges();

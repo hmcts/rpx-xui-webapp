@@ -6,7 +6,7 @@ import { LovRefDataService } from './lov-ref-data.service';
 describe('Lov RefData service', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
   // Check testing
-describe('LovRefDataService', () => {
+  describe('LovRefDataService', () => {
     it('getForService should make correct api call', () => {
       const service = new LovRefDataService(mockHttpService);
       service.getListOfValues(HearingCategory.HearingPriority, 'BBA3', false);

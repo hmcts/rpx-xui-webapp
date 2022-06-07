@@ -21,7 +21,7 @@ describe('Hearing Values Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -34,7 +34,7 @@ describe('Hearing Values Effects', () => {
   });
 
   // Check testing
-describe('loadHearingValue$', () => {
+  describe('loadHearingValue$', () => {
     const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       hmctsServiceID: 'BBA3',
       caseName: 'Jane Smith vs DWP',
@@ -152,20 +152,20 @@ describe('loadHearingValue$', () => {
       hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
       const action = new hearingValuesActions.LoadHearingValues('1111222233334444');
       const completion = new hearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadHearingValue$).toBeObservable(expected);
     });
   });
 
   // Check testing
-describe('handleError', () => {
+  describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = HearingValuesEffects.handleError({
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
 
     it('should handle 4xx related errors', () => {
@@ -173,7 +173,7 @@ describe('handleError', () => {
         status: 403,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

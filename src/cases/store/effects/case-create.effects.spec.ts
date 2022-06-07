@@ -35,7 +35,7 @@ describe('CaseCreate Effects', () => {
   });
 
   // Check testing
-describe('applyCreateCase$', () => {
+  describe('applyCreateCase$', () => {
     it('should apply case action', () => {
 
       const action = new ApplyChange({});
@@ -50,7 +50,7 @@ describe('applyCreateCase$', () => {
   });
 
   // Check testing
-describe('cancel$', () => {
+  describe('cancel$', () => {
     it('should cancel case action', () => {
 
       const action = new CreateCaseReset();
@@ -64,7 +64,7 @@ describe('cancel$', () => {
   });
 
   // Check testing
-describe('applyCreatedCaseLoaded$', () => {
+  describe('applyCreatedCaseLoaded$', () => {
     it('should apply load action', () => {
 
       const action = new CreateCaseLoaded({});
@@ -76,7 +76,7 @@ describe('applyCreatedCaseLoaded$', () => {
   });
 
   // Check testing
-describe('applyChangeCaseCreateFilter$', () => {
+  describe('applyChangeCaseCreateFilter$', () => {
     it('should apply load action', () => {
 
       const action = new CaseCreateFilterApply({});

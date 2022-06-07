@@ -36,7 +36,7 @@ describe('Hearing Links Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: Router,
           useValue: mockRouter,
@@ -54,7 +54,7 @@ describe('Hearing Links Effects', () => {
   });
 
   // Check testing
-describe('loadServiceLinkedCases$', () => {
+  describe('loadServiceLinkedCases$', () => {
     it('should return a response with hearings list', () => {
       const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [{
         caseReference: '1111222233334444',
@@ -66,16 +66,16 @@ describe('loadServiceLinkedCases$', () => {
         reasonsForLink: ['reason3', 'reason4']
       }];
       hearingsServiceMock.loadServiceLinkedCases.and.returnValue(of(SERVICE_LINKED_CASES));
-      const action = new hearingLinksActions.LoadServiceLinkedCases({caseReference: '1111222233334446', hearingId: 'h100000'});
+      const action = new hearingLinksActions.LoadServiceLinkedCases({ caseReference: '1111222233334446', hearingId: 'h100000' });
       const completion = new hearingLinksActions.LoadServiceLinkedCasesSuccess(SERVICE_LINKED_CASES);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadServiceLinkedCases$).toBeObservable(expected);
     });
   });
 
   // Check testing
-describe('submitLinkedHearingGroup$', () => {
+  describe('submitLinkedHearingGroup$', () => {
     it('should submit linked hearing group', () => {
       const linkedHearingGroup = {
         groupDetails: {
@@ -100,13 +100,13 @@ describe('submitLinkedHearingGroup$', () => {
       };
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
-      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(of({hearingGroupRequestId: 'g1000000'}));
-      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId});
-      actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: {hearingGroupRequestId: 'g1000000'}});
+      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(of({ hearingGroupRequestId: 'g1000000' }));
+      const action = new hearingLinksActions.SubmitLinkedHearingGroup({ linkedHearingGroup, caseId, hearingId });
+      actions$ = cold('-a', { a: action });
+      const expected = cold('-b', { b: { hearingGroupRequestId: 'g1000000' } });
       expect(effects.submitLinkedHearingGroup$).toBeObservable(expected);
       expect(hearingsServiceMock.postLinkedHearingGroup).toHaveBeenCalled();
-      expect(mockRouter.navigate).toHaveBeenCalledWith([ '/', 'hearings', 'link', '1111222233334444', 'h100002', 'final-confirmation' ]);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', '1111222233334444', 'h100002', 'final-confirmation']);
     });
 
     it('should error submitting linked hearing group', () => {
@@ -139,9 +139,9 @@ describe('submitLinkedHearingGroup$', () => {
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
       hearingsServiceMock.postLinkedHearingGroup.and.returnValue(Observable.throwError(error));
-      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId});
-      actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: error});
+      const action = new hearingLinksActions.SubmitLinkedHearingGroup({ linkedHearingGroup, caseId, hearingId });
+      actions$ = cold('-a', { a: action });
+      const expected = cold('-b', { b: error });
       expect(effects.submitLinkedHearingGroup$).toBeObservable(expected);
       expect(hearingsServiceMock.postLinkedHearingGroup).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
@@ -149,7 +149,7 @@ describe('submitLinkedHearingGroup$', () => {
   });
 
   // Check testing
-describe('handleError', () => {
+  describe('handleError', () => {
     it('should handle errors', () => {
       const action$ = HearingLinksEffects.handleError({
         status: 403,

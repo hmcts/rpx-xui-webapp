@@ -15,13 +15,13 @@ describe('HearingViewEditSummaryComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
   // Check testing
-describe('getHearingRequestToCompare and getHearingRequest are holding different state', () => {
+  describe('getHearingRequestToCompare and getHearingRequest are holding different state', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent],
         providers: [
-          provideMockStore({initialState}),
-          {provide: HearingsService, useValue: hearingsService},
+          provideMockStore({ initialState }),
+          { provide: HearingsService, useValue: hearingsService },
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
@@ -42,13 +42,13 @@ describe('getHearingRequestToCompare and getHearingRequest are holding different
   })
 
   // Check testing
-describe('getHearingRequestToCompare and getHearingRequest state are same', () => {
+  describe('getHearingRequestToCompare and getHearingRequest state are same', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent],
         providers: [
-          provideMockStore({initialState: {hearings: {}}}),
-          {provide: HearingsService, useValue: hearingsService},
+          provideMockStore({ initialState: { hearings: {} } }),
+          { provide: HearingsService, useValue: hearingsService },
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();

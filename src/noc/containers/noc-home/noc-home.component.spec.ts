@@ -56,7 +56,7 @@ describe('NocHomeComponent', () => {
   });
 
   // Check testing
-describe('onNavEvent', () => {
+  describe('onNavEvent', () => {
     beforeEach(() => {
       storePipeMock.and.returnValue(of(0));
       fixture.detectChanges();
@@ -142,7 +142,7 @@ describe('onNavEvent', () => {
   });
 
   // Check testing
-describe('NocNavigationEvent.CHECK_ANSWERS', () => {
+  describe('NocNavigationEvent.CHECK_ANSWERS', () => {
     beforeEach(() => {
       component.nocNavigationCurrentState = NocState.CHECK_ANSWERS;
       storePipeMock.and.returnValue(of(6));

@@ -5,7 +5,7 @@ import { getShareCaseListState, reducers, State } from '../index';
 
 describe('Share case selectors', () => {
   let store: Store<State>;
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),

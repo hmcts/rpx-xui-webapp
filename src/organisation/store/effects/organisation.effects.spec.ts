@@ -24,16 +24,16 @@ describe('Organisation Effects', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-          {
-            provide: OrganisationService,
-            useValue: organisationServiceMock,
-          },
-          {
-            provide: LoggerService,
-            useValue: mockedLoggerService
-          },
-          fromOrganisationEffects.OrganisationEffects,
-          provideMockActions(() => actions$)
+        {
+          provide: OrganisationService,
+          useValue: organisationServiceMock,
+        },
+        {
+          provide: LoggerService,
+          useValue: mockedLoggerService
+        },
+        fromOrganisationEffects.OrganisationEffects,
+        provideMockActions(() => actions$)
       ]
     });
 
@@ -43,7 +43,7 @@ describe('Organisation Effects', () => {
   });
 
   // Check testing
-describe('loadOrganisation$', () => {
+  describe('loadOrganisation$', () => {
     it('should return a collection from loadOrganisation$ - LoadOrganisationSuccess', () => {
       const payload = {
         account_number: 'someNumber',
@@ -63,7 +63,7 @@ describe('loadOrganisation$', () => {
   });
 
   // Check testing
-describe('loadOrganisation$ error', () => {
+  describe('loadOrganisation$ error', () => {
     it('should return LoadOrganisationFail', () => {
       organisationServiceMock.fetchOrganisation.and.returnValue(throwError(new Error()));
       const action = new LoadOrganisation();

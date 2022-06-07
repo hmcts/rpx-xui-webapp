@@ -6,7 +6,7 @@ describe('HearingConfirmationComponent', () => {
   let component: HearingConfirmationComponent;
   let fixture: ComponentFixture<HearingConfirmationComponent>;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [HearingConfirmationComponent],
       imports: [RouterTestingModule],

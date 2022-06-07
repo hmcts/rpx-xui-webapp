@@ -12,8 +12,8 @@ import { CaseAllocateRoleLinkResolverService } from './case-allocate-role-link-r
 describe('CaseAllocateRoleLinkResolverService', () => {
   let httpClient: HttpClient;
   const routerSpy = jasmine.createSpy('Router');
-  
-  beforeEach(async() => {
+
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([]),
@@ -28,7 +28,7 @@ describe('CaseAllocateRoleLinkResolverService', () => {
     httpClient = TestBed.get(HttpClient) as HttpClient;
   });
 
-  it('should return a value which tells if the user is allowed to see the allocate role link', async() => {
+  it('should return a value which tells if the user is allowed to see the allocate role link', async () => {
     spyOn(httpClient, 'get').and.returnValue(of(true));
     const service: CaseAllocateRoleLinkResolverService = await TestBed.get(CaseAllocateRoleLinkResolverService);
     const activatedRoute = new ActivatedRouteSnapshot();

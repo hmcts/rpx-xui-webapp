@@ -35,7 +35,7 @@ describe('Allocate Role Effects', () => {
   });
 
   // Check testing
-describe('confirmAllocation$', () => {
+  describe('confirmAllocation$', () => {
     it('should return SetSubmissionSuccessPending', () => {
 
       const STATE_DATA = {
@@ -68,22 +68,22 @@ describe('confirmAllocation$', () => {
           }
         }
       });
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.confirmAllocation$).toBeObservable(expected);
     });
   });
 
   // Check testing
-describe('handleError', () => {
+  describe('handleError', () => {
     it('should handle 500', () => {
-      const action$ = AllocateRoleEffects.handleError({status: 500, message: 'error'}, allocateRoleAction.ConfirmAllocation.toString());
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
+      const action$ = AllocateRoleEffects.handleError({ status: 500, message: 'error' }, allocateRoleAction.ConfirmAllocation.toString());
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
     });
 
     it('should handle 422', () => {
-      const action$ = AllocateRoleEffects.handleError({status: 422, message: 'error'}, allocateRoleAction.ConfirmAllocation.toString());
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/role-access/user-not-assignable']})));
+      const action$ = AllocateRoleEffects.handleError({ status: 422, message: 'error' }, allocateRoleAction.ConfirmAllocation.toString());
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/role-access/user-not-assignable'] })));
     });
   });
 

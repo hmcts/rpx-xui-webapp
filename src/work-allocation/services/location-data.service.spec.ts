@@ -5,7 +5,7 @@ describe('WorkAllocation', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
   // Check testing
-describe('LocationDataService', () => {
+  describe('LocationDataService', () => {
     it('should be Truthy', () => {
       const service = new LocationDataService(mockHttpService);
       expect(service).toBeTruthy();

@@ -37,7 +37,7 @@ describe('ExclusionNavigationComponent', () => {
   });
 
   // Check testing
-describe('isVisible', () => {
+  describe('isVisible', () => {
     it('should determine button visible if correct state', () => {
       const expected = component.isVisible(0, [0, 1, 2, 3]);
       expect(expected).toBeTruthy();
@@ -50,7 +50,7 @@ describe('isVisible', () => {
   });
 
   // Check testing
-describe('onEventTrigger', () => {
+  describe('onEventTrigger', () => {
     it('should emit', () => {
       const backSpy = spyOn(component.eventTrigger, 'emit');
       component.onEventTrigger(ExclusionNavigationEvent.BACK);

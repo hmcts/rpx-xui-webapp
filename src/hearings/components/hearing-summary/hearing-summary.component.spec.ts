@@ -20,7 +20,7 @@ describe('HearingSummaryComponent', () => {
   let fixture: ComponentFixture<HearingSummaryComponent>;
   let store: any;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [HearingSummaryComponent],
       imports: [
@@ -28,7 +28,7 @@ describe('HearingSummaryComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: Router,
           useValue: routerMock
@@ -66,7 +66,7 @@ describe('HearingSummaryComponent', () => {
   });
 
   it('should change answer', () => {
-    const mockMouseEvent = { preventDefault: () => {} } as MouseEvent;
+    const mockMouseEvent = { preventDefault: () => { } } as MouseEvent;
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.mode = Mode.CREATE_EDIT;
     component.changeAnswer(mockMouseEvent, 'venue', 'hearing/request/venue');

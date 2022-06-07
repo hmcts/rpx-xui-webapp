@@ -19,7 +19,7 @@ describe('NocQAndAComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocQAndAComponent ],
+      declarations: [NocQAndAComponent],
       imports: [
         ReactiveFormsModule
       ],
@@ -28,7 +28,7 @@ describe('NocQAndAComponent', () => {
         NocErrorPipe
       ]
     })
-    .compileComponents();
+      .compileComponents();
     store = TestBed.get(Store);
     spyOn(store, 'dispatch').and.callThrough();
   }));
@@ -45,7 +45,7 @@ describe('NocQAndAComponent', () => {
   });
 
   // Check testing
-describe('navigationHandler', () => {
+  describe('navigationHandler', () => {
     const FORM_GROUP_WITH_ANSWERS = new FormGroup({
       question1: new FormControl('An answer'),
       question2: new FormControl('Another answer')
@@ -85,7 +85,7 @@ describe('navigationHandler', () => {
       });
       component.setPossibleIncorrectAnswerError();
       Object.keys(component.formGroup.controls).forEach(key => {
-          expect(component.formGroup.controls[key].getError('possibleIncorrectAnswer')).toBeTruthy();
+        expect(component.formGroup.controls[key].getError('possibleIncorrectAnswer')).toBeTruthy();
       });
     });
 

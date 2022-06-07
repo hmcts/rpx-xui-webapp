@@ -20,7 +20,7 @@ import { RemoveRoleComponent } from './remove-role.component';
     <exui-remove-role></exui-remove-role>`
 })
 class WrapperComponent {
-  @ViewChild(RemoveRoleComponent, {static: true}) public appComponentRef: RemoveRoleComponent;
+  @ViewChild(RemoveRoleComponent, { static: true }) public appComponentRef: RemoveRoleComponent;
 }
 
 const mockCaseworker: Caseworker = {
@@ -191,7 +191,7 @@ describe('RemoveRoleComponent', () => {
   });
 
   // Check testing
-describe('showSpinner', () => {
+  describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
     });
@@ -208,7 +208,7 @@ describe('showSpinner', () => {
   });
 
   // Check testing
-describe('navigationHandler cancel', () => {
+  describe('navigationHandler cancel', () => {
     it('on cancel event', () => {
       fixture.detectChanges();
       component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);

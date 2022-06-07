@@ -85,7 +85,7 @@ describe('ExclusionHomeComponent', () => {
   });
 
   // Check testing
-describe('Click back button', () => {
+  describe('Click back button', () => {
     it('on choose person role page click back button', () => {
       component.navigationCurrentState = ExclusionState.CHOOSE_PERSON_ROLE;
       component.navigationHandler(ExclusionNavigationEvent.BACK);
@@ -126,7 +126,7 @@ describe('Click back button', () => {
   });
 
   // Check testing
-describe('Click continue button', () => {
+  describe('Click continue button', () => {
     it('on choose exclusion page click continue button', () => {
       component.navigationCurrentState = ExclusionState.CHOOSE_EXCLUSION;
       fixture.detectChanges();
@@ -161,7 +161,7 @@ describe('Click continue button', () => {
   });
 
   // Check testing
-describe('Click confirm exclusion button', () => {
+  describe('Click confirm exclusion button', () => {
     it('on choose exclusion page click continue button', () => {
       component.navigationCurrentState = ExclusionState.CHECK_ANSWERS;
       fixture.detectChanges();
@@ -173,13 +173,13 @@ describe('Click confirm exclusion button', () => {
     it('on choose exclusion page click continue button state set incorrectly', () => {
       component.navigationCurrentState = ExclusionState.FIND_PERSON;
       fixture.detectChanges();
-      expect(() => {component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION)}).toThrow(new Error('Invalid exclusion state'));
+      expect(() => { component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION) }).toThrow(new Error('Invalid exclusion state'));
       expect(component.showSpinner).toBe(false);
     });
   });
 
   // Check testing
-describe('Click cancel button', () => {
+  describe('Click cancel button', () => {
     it('should navigate to role and access tab when click cancel button', () => {
       component.navigationHandler(ExclusionNavigationEvent.CANCEL);
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
@@ -187,15 +187,15 @@ describe('Click cancel button', () => {
   });
 
   // Check testing
-describe('Unidentified state', () => {
+  describe('Unidentified state', () => {
     it('should stop showing spinner and throw error', () => {
-      expect(() => {component.navigationHandler(null)}).toThrow(new Error('Invalid exclusion navigation event'));
+      expect(() => { component.navigationHandler(null) }).toThrow(new Error('Invalid exclusion navigation event'));
       expect(component.showSpinner).toBe(false);
     });
   });
 
   // Check testing
-describe('showSpinner', () => {
+  describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
     });

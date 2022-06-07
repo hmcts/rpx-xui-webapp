@@ -25,7 +25,7 @@ import { WorkCaseListComponent } from './work-case-list.component';
       [pagination]="pagination"></exui-work-case-list>`
 })
 class WrapperComponent {
-  @ViewChild(WorkCaseListComponent, {static: false}) public appComponentRef: WorkCaseListComponent;
+  @ViewChild(WorkCaseListComponent, { static: false }) public appComponentRef: WorkCaseListComponent;
   @Input() public fields: FieldConfig[];
   @Input() public cases: Case[];
   @Input() public casesTotal: number;
@@ -103,11 +103,11 @@ describe('CaseListComponent', () => {
   it(`should return the fields as an array with a 'manage' entry, so that we can` +
     'display the manage column in the table.', async () => {
 
-    const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'case', 'dueDate'];
-    const fieldsWithManage = [...fields, 'manage'];
+      const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'case', 'dueDate'];
+      const fieldsWithManage = [...fields, 'manage'];
 
-    expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
-  });
+      expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
+    });
 
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
 
@@ -351,7 +351,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     let action = firstAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: firstCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ invokedCase: firstCase, action });
 
     // check the emitter had been called and that it gets called with the second invoked case action
     const secondAnchor = element.querySelector(`#action_${secondActionId}`);
@@ -359,7 +359,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: firstCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ invokedCase: firstCase, action });
 
     // click the second button in order to show the last action anchor
     secondButton.dispatchEvent(new Event('click'));
@@ -371,7 +371,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: secondCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ invokedCase: secondCase, action });
   });
 
   // required no sorting on EUI-4476 so exclude the test
@@ -409,20 +409,20 @@ describe('CaseListComponent', () => {
   });
 
   // Check testing
-describe('act upon deep linking', () => {
+  describe('act upon deep linking', () => {
     const id = '12345678';
 
     it('should select appropriate case from location hash', () => {
       spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`caseList#manage_${id}`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;
       const caseItem = { id } as Case;
-      wrapper.cases = [ caseItem ];
+      wrapper.cases = [caseItem];
       fixture.detectChanges();
       expect(component.getSelectedCase()).toEqual(caseItem);
       expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall).toBeDefined();
-      expect(lastNavigateCall.commands).toEqual([ 'caseList' ]);
+      expect(lastNavigateCall.commands).toEqual(['caseList']);
       expect(lastNavigateCall.extras).toEqual({ fragment: `manage_${id}` });
     });
 
@@ -430,19 +430,19 @@ describe('act upon deep linking', () => {
       spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`caseList#manage_${id}`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;
       const caseItem = { id: '99999999' } as Case;
-      wrapper.cases = [ caseItem ];
+      wrapper.cases = [caseItem];
       fixture.detectChanges();
       expect(component.getSelectedCase()).toBeNull();
       expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall).toBeDefined();
-      expect(lastNavigateCall.commands).toEqual([ 'caseList' ]);
+      expect(lastNavigateCall.commands).toEqual(['caseList']);
       expect(lastNavigateCall.extras).toBeUndefined();
     });
   });
 
   // Check testing
-describe('generate pagination summary', () => {
+  describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {

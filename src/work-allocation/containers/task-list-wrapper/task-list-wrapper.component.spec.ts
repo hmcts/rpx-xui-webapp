@@ -65,7 +65,7 @@ describe('TaskListWrapperComponent', () => {
   });
 
   // Check testing
-describe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];
@@ -182,7 +182,7 @@ describe('TaskListWrapperComponent searchWithPagination', () => {
   }));
 
   // Check testing
-describe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];
@@ -193,7 +193,7 @@ describe('onActionHandler()', () => {
       { statusCode: 500, routeUrl: '/service-down' },
       { statusCode: 400, routeUrl: '/service-down' },
     ].forEach(scr => {
-      it(`pagination search error response on load ${scr.statusCode }`, () => {
+      it(`pagination search error response on load ${scr.statusCode}`, () => {
         mockWorkAllocationService.searchTaskWithPagination.and.returnValue(throwError({ status: scr.statusCode }));
         const navigateSpy = spyOn(router, 'navigate');
         component.onPaginationHandler(1);

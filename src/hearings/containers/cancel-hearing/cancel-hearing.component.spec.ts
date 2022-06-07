@@ -63,12 +63,12 @@ describe('CancelHearingComponent', () => {
   let mockHearingService: any;
   let mockStore: any;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [CancelHearingComponent],
       providers: [
-        {provide: HearingsService, useValue: hearingsService},
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -77,11 +77,11 @@ describe('CancelHearingComponent', () => {
                 hearingCancelOptions: reasons,
               },
             },
-            params: Observable.of({hearingId: HEARING_ID}),
+            params: Observable.of({ hearingId: HEARING_ID }),
           },
         },
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -147,7 +147,7 @@ describe('CancelHearingComponent', () => {
   });
   it('should have a validation error message mapped when cancel hearing DELETE request failed', () => {
     (component.hearingCancelForm.controls.reasons as FormArray).controls
-    .forEach(reason => reason.value.selected = true);
+      .forEach(reason => reason.value.selected = true);
     hearingsService.cancelHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
     component.executeContinue();
     expect(component.validationErrors).not.toBeNull();

@@ -26,7 +26,7 @@ import { TaskActionContainerComponent } from './task-action-container.component'
     <exui-task-action-container></exui-task-action-container>`
 })
 class WrapperComponent {
-  @ViewChild(TaskActionContainerComponent, {static: false}) public appComponentRef: TaskActionContainerComponent;
+  @ViewChild(TaskActionContainerComponent, { static: false }) public appComponentRef: TaskActionContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -41,7 +41,7 @@ class NothingComponent {
 describe('WorkAllocation', () => {
 
   // Check testing
-describe('TaskActionContainerComponent', () => {
+  describe('TaskActionContainerComponent', () => {
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -66,28 +66,28 @@ describe('TaskActionContainerComponent', () => {
           WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
           RouterTestingModule.withRoutes(
             [
-              {path: 'mywork/list', component: NothingComponent}
+              { path: 'mywork/list', component: NothingComponent }
             ]
           )
         ],
         providers: [
-          {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-          {provide: SessionStorageService, useValue: mockSessionStorageService},
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
           {
             provide: ActivatedRoute,
             useValue: {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: {task: mockTasks[0]}, caseworkers: []
+                    task: { task: mockTasks[0] }, caseworkers: []
                   },
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: of({task: mockTasks[0]})
+              params: of({ task: mockTasks[0] })
             }
           },
-          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -96,7 +96,7 @@ describe('TaskActionContainerComponent', () => {
       router = TestBed.get(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
+      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -123,7 +123,7 @@ describe('TaskActionContainerComponent', () => {
     });
 
     it('should return the correct message/state', () => {
-      window.history.pushState({returnUrl: 'case/case-details', keepUrl: true}, '', 'case/case-details');
+      window.history.pushState({ returnUrl: 'case/case-details', keepUrl: true }, '', 'case/case-details');
       const message = {
         type: InfoMessageType.SUCCESS,
         message: InfoMessage.ASSIGNED_TASK
@@ -132,11 +132,11 @@ describe('TaskActionContainerComponent', () => {
       component.returnWithMessage(message, null);
       expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalledWith(message);
       expect(navigateSpy).toHaveBeenCalledWith('case/case-details', {
-      state: {
-        showMessage: true,
-        messageText: InfoMessage.ASSIGNED_TASK,
-        retainMessages: true
-      }
+        state: {
+          showMessage: true,
+          messageText: InfoMessage.ASSIGNED_TASK,
+          retainMessages: true
+        }
       });
     });
 

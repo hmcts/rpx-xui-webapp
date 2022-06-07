@@ -26,7 +26,7 @@ import { AvailableTasksComponent } from './available-tasks.component';
     <exui-available-tasks></exui-available-tasks>`
 })
 class WrapperComponent {
-  @ViewChild(AvailableTasksComponent, {static: false}) public appComponentRef: AvailableTasksComponent;
+  @ViewChild(AvailableTasksComponent, { static: false }) public appComponentRef: AvailableTasksComponent;
 }
 
 const userInfo =
@@ -190,7 +190,7 @@ describe('AvailableTasksComponent', () => {
   });
 
   // Check testing
-describe('claimTask()', () => {
+  describe('claimTask()', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -220,21 +220,21 @@ describe('claimTask()', () => {
     it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
       'a task has been unsuccessful.', () => {
 
-      const errorStatusCode = 400;
+        const errorStatusCode = 400;
 
-      const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
+        const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
 
-      mockTaskService.claimTask.and.returnValue(throwError({ status: errorStatusCode }));
+        mockTaskService.claimTask.and.returnValue(throwError({ status: errorStatusCode }));
 
-      const taskId = '123456';
-      component.claimTask(taskId);
+        const taskId = '123456';
+        component.claimTask(taskId);
 
-      expect(claimTaskErrorsSpy).toHaveBeenCalledWith(errorStatusCode);
-    });
+        expect(claimTaskErrorsSpy).toHaveBeenCalledWith(errorStatusCode);
+      });
   });
 
   // Check testing
-describe('claimTaskAndGo()', () => {
+  describe('claimTaskAndGo()', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -260,21 +260,21 @@ describe('claimTaskAndGo()', () => {
     it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
       'a task has been unsuccessful.', () => {
 
-      const errorStatusCode = 400;
+        const errorStatusCode = 400;
 
-      const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
+        const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
 
-      mockTaskService.claimTask.and.returnValue(throwError({ status: errorStatusCode }));
+        mockTaskService.claimTask.and.returnValue(throwError({ status: errorStatusCode }));
 
-      const firstTask = getMockTasks()[1];
-      component.claimTaskAndGo(firstTask);
+        const firstTask = getMockTasks()[1];
+        component.claimTaskAndGo(firstTask);
 
-      expect(claimTaskErrorsSpy).toHaveBeenCalledWith(errorStatusCode);
-    });
+        expect(claimTaskErrorsSpy).toHaveBeenCalledWith(errorStatusCode);
+      });
   });
 
   // Check testing
-describe('claimTaskErrors()', () => {
+  describe('claimTaskErrors()', () => {
 
     it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
 
@@ -319,7 +319,7 @@ describe('claimTaskErrors()', () => {
   });
 
   // Check testing
-describe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const TASK_ID = '2345678901234567';
     const taskAction: InvokedTaskAction = {
       action: {

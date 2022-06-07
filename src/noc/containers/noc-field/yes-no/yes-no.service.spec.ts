@@ -14,7 +14,7 @@ describe('YesNoService', () => {
   });
 
   // Check testing
-describe(YES, () => {
+  describe(YES, () => {
     it('should return "Yes" when value is `true`', () => {
       expect(yesNoService.format(true)).toBe(YES);
     });
@@ -45,7 +45,7 @@ describe(YES, () => {
   });
 
   // Check testing
-describe(NO, () => {
+  describe(NO, () => {
     it('should return "No" when value is `false`', () => {
       expect(yesNoService.format(false)).toBe(NO);
     });
@@ -72,7 +72,7 @@ describe(NO, () => {
   });
 
   // Check testing
-describe('empty', () => {
+  describe('empty', () => {
     it('should return null when value is undefined', () => {
       expect(yesNoService.format(undefined)).toBe(EMPTY);
     });

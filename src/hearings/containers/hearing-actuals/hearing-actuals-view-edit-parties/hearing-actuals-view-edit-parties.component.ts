@@ -135,7 +135,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   private hasActualParties(hearingActualsMainModel: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
-    return hearingActualsMainModel.hearingActuals.actualHearingDays.length ? hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.some(
+    return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
+    && hearingActualsMainModel.hearingActuals.actualHearingDays.length ? hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.some(
       (actualDayParty: ActualDayPartyModel) => immutablePartyRoles
         .map((partyRole: LovRefDataModel) => partyRole.key)
         .includes(actualDayParty.partyRole)

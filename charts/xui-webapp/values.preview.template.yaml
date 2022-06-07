@@ -22,6 +22,7 @@ nodejs:
      FEATURE_WORKALLOCATION_ENABLED: true
      SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-aat.service.core-compute-aat.internal
      FEATURE_ACCESS_MANAGEMENT_ENABLED: true
+     REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
   keyVaults:
     rpx:
       secrets:

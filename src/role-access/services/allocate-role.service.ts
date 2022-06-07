@@ -75,8 +75,8 @@ export class AllocateRoleService {
     return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/access-get`, {caseId, jurisdiction, caseType, assignmentId});
   }
 
-  public getSpecificAccessApproved(): Observable<any> {
-    return this.http.get<any>(`${AllocateRoleService.roleUrl}/getSpecificAccessApproved`);
+  public getSpecificAccessApproved(): Observable<{count}> {
+    return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getSpecificAccessApproved`);
   }
 
   public getCaseRolesUserDetails(userIds: string[], services: string[]): Observable<CaseRoleDetails[]> {

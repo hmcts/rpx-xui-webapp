@@ -243,7 +243,7 @@ describe('HearingVenueComponent', () => {
     expect(component.selectedLocations.length).toBe(2);
   });
 
-  it('should show error when there is no locations found', async (done) => {
+  it('should show error when there is no locations found', async () => {
     const location = {
       court_venue_id: '100',
       epimms_id: '219164',
@@ -262,12 +262,11 @@ describe('HearingVenueComponent', () => {
     } as LocationByEPIMMSModel;
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     component.addSelection();
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      done();
-      const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary'));
-      expect(errorElement).toBeDefined();
-    });
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary'));
+    expect(errorElement).toBeDefined();
 
     component.selectedLocations = [location];
     component.removeSelection(location);
@@ -275,14 +274,11 @@ describe('HearingVenueComponent', () => {
     expect(component.selectedLocations.length).toEqual(0);
   });
 
-  it('should show summry header', async (done) => {
+  it('should show summry header', async () => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      done();
-      const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary__list'));
-      expect(errorElement).toEqual(null);
-    });
+    await fixture.whenStable();
+    const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary__list'));
+    expect(errorElement).toEqual(null);
   });
 
   it('should reset form control and set it pristine when appendLocation is called', () => {

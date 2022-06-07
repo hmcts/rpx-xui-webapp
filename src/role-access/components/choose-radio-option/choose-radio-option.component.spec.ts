@@ -10,7 +10,7 @@ import { ChooseRadioOptionComponent } from './choose-radio-option.component';
   template: `<exui-choose-radio-option [optionsList]="optionsList" [title]="title" [caption]="caption"></exui-choose-radio-option>`
 })
 class WrapperComponent {
-  @ViewChild(ChooseRadioOptionComponent, {static: false}) public ref: ChooseRadioOptionComponent;
+  @ViewChild(ChooseRadioOptionComponent, { static: true }) public ref: ChooseRadioOptionComponent;
   @Input() public optionsList: OptionsModel[];
   @Input() public title: RoleAllocationTitleText;
   @Input() public caption: RoleAllocationCaptionText;
@@ -24,7 +24,7 @@ const mockRoles: OptionsModel[] = [
 // Check testing
 describe('ChooseRadioOptionComponent', () => {
   const RADIO_OPTION_CONTROL: FormControl = new FormControl('');
-  const FORM_GROUP: FormGroup = new FormGroup({['personRole']: RADIO_OPTION_CONTROL});
+  const FORM_GROUP: FormGroup = new FormGroup({ ['personRole']: RADIO_OPTION_CONTROL });
 
   let component: ChooseRadioOptionComponent;
   let wrapper: WrapperComponent;
@@ -32,7 +32,7 @@ describe('ChooseRadioOptionComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChooseRadioOptionComponent, WrapperComponent ],
+      declarations: [ChooseRadioOptionComponent, WrapperComponent],
       imports: [
         ReactiveFormsModule
       ],

@@ -16,7 +16,7 @@ import { DeleteExclusionComponent } from './delete-exclusion.component';
     <exui-delete-exclusion></exui-delete-exclusion>`
 })
 class WrapperComponent {
-  @ViewChild(DeleteExclusionComponent, {static: false}) public appComponentRef: DeleteExclusionComponent;
+  @ViewChild(DeleteExclusionComponent, { static: true }) public appComponentRef: DeleteExclusionComponent;
 }
 
 const mockCaseworker: Caseworker = {
@@ -117,7 +117,7 @@ describe('DeleteExclusionComponent', () => {
   });
 
   // Check testing
-describe('showSpinner', () => {
+  describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
     });

@@ -20,7 +20,7 @@ import { MyTasksComponent } from './my-tasks.component';
     <exui-my-tasks></exui-my-tasks>`
 })
 class WrapperComponent {
-  @ViewChild(MyTasksComponent, {static: false}) public appComponentRef: MyTasksComponent;
+  @ViewChild(MyTasksComponent, {static: true}) public appComponentRef: MyTasksComponent;
 }
 
 describe('MyTasksComponent', () => {

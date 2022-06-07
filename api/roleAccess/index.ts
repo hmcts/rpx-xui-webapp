@@ -94,9 +94,13 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
 }
 
 export async function getSpecificAccessApproved(req, resp, next) {
+  let count = 0;
   try {
+    if (!req.session || !req.session.roleAssignmentResponse) {
+      return resp.status(401).send({ count });
+    }
     const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
-    const count = currentUserAssignments.filter(roleAssignment => roleAssignment.roleName === 'specific-access-approved').length;
+    count = currentUserAssignments.filter(roleAssignment => roleAssignment.roleName === 'specific-access-approved').length;
     return resp.status(200).send({ count });
   } catch (error) {
     next(error);

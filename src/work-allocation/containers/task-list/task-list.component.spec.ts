@@ -60,8 +60,7 @@ function getTaskService(): TaskServiceConfig {
   };
 }
 
-// Check testing
-describe('TaskListComponent', () => {
+fdescribe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -69,7 +68,7 @@ describe('TaskListComponent', () => {
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  beforeEach((() => {
+  beforeEach(async() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
       imports: [
@@ -99,7 +98,7 @@ describe('TaskListComponent', () => {
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     mockLoadingService.isLoading = of(false);
     fixture.detectChanges();
-  }));
+  });
 
   it('should return the fields as an array with a \'manage\' entry, so that we can' +
     'display the manage column in the table.', async () => {
@@ -391,8 +390,7 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
   });
 
-  // Check testing
-  describe('act upon deep linking', () => {
+  fdescribe('act upon deep linking', () => {
     const id = '12345678';
 
     it('should select appropriate task from location hash', () => {
@@ -424,8 +422,7 @@ describe('TaskListComponent', () => {
     });
   });
 
-  // Check testing
-  describe('generate pagination summary', () => {
+  fdescribe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {

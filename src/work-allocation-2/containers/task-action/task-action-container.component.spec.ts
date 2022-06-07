@@ -37,10 +37,8 @@ class WrapperComponent {
 class NothingComponent {
 }
 
-// Check testing
 describe('WorkAllocation', () => {
 
-  // Check testing
   describe('TaskActionContainerComponent', () => {
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;

@@ -14,7 +14,6 @@ import { HearingsService } from '../../services/hearings.service';
 import * as hearingListActions from '../actions/hearing-list.action';
 import { HearingListEffects } from './hearing-list.effects';
 
-// Check testing
 describe('Hearing List Effects', () => {
   let actions$;
   let store: Store<fromHearingStore.State>;
@@ -48,7 +47,6 @@ describe('Hearing List Effects', () => {
 
   });
 
-  // Check testing
   describe('loadHearingList$', () => {
     it('should return a response with hearings list', () => {
       const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
@@ -89,7 +87,6 @@ describe('Hearing List Effects', () => {
     });
   });
 
-  // Check testing
   describe('handleError', () => {
     it('should error when loading all hearings request failure', () => {
       const errorResponse: HttpError = {

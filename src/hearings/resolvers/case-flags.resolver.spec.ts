@@ -9,7 +9,6 @@ import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
 import { CaseFlagsRefDataService } from '../services/case-flags-ref-data.service';
 import { CaseFlagsResolver } from './case-flags.resolver';
 
-// Check testing
 describe('Case Flags Resolver', () => {
   let caseFlagsRefDataService: CaseFlagsRefDataService;
   const CASE_FLAGS_REF_DATA = {

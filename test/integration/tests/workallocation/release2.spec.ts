@@ -8,7 +8,6 @@ import Request from '../utils/request';
 
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
-// Check testing
 describe('Work allocations Release 2', () => {
     const userName = config.users[config.testEnv].solicitor.e;
     const password = config.users[config.testEnv].solicitor.sec;

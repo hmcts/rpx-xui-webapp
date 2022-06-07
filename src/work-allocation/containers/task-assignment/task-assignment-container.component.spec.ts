@@ -13,8 +13,8 @@ import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskListComponent } from '../../containers';
 import {
-    NAME_ERROR,
-    TaskAssignmentContainerComponent
+  NAME_ERROR,
+  TaskAssignmentContainerComponent
 } from '../../containers/task-assignment/task-assignment-container.component';
 import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';
@@ -34,8 +34,7 @@ class WrapperComponent {
 })
 class NothingComponent {}
 
-// Check testing
-describe('TaskAssignmentContainerComponent1', () => {
+fdescribe('TaskAssignmentContainerComponent1', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -48,7 +47,7 @@ describe('TaskAssignmentContainerComponent1', () => {
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
 
-  beforeEach(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       declarations: [
         TaskAssignmentContainerComponent, WrapperComponent, TaskListComponent, NothingComponent, ErrorMessageComponent,

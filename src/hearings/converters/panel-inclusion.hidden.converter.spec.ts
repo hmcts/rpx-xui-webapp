@@ -7,7 +7,6 @@ import { MemberType } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { PanelInclusionHiddenConverter } from './panel-inclusion.hidden.converter';
 
-// Check testing
 describe('PanelInclusionHiddenConverter', () => {
 
   let panelInclusionHiddenConverter: PanelInclusionHiddenConverter;

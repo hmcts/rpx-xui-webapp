@@ -1,6 +1,5 @@
 import { RefundsModule } from './refunds.module';
 
-// Check testing
 describe('RefundsModule', () => {
   let refundsModule: RefundsModule;
 

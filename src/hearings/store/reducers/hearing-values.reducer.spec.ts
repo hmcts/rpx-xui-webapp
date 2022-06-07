@@ -4,10 +4,7 @@ import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.mod
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
 import * as fromHearingValuesReducer from './hearing-values.reducer';
 
-// Check testing
-describe('Hearing Values Reducer', () => {
-  // Check testing
-describe('Actions', () => {
+describe('Hearing Values Reducer', () => {describe('Actions', () => {
     // Check testing
 describe('Reset action', () => {
       it('should set correct object', () => {
@@ -18,8 +15,7 @@ describe('Reset action', () => {
       });
     });
 
-    // Check testing
-describe('Load service hearing values success action', () => {
+    describe('Load service hearing values success action', () => {
       it('should set correct object', () => {
         const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
           hmctsServiceID: 'BBA3',
@@ -154,8 +150,7 @@ describe('Load service hearing values success action', () => {
       });
     });
 
-    // Check testing
-describe('reset hearing actuals last error action', () => {
+    describe('reset hearing actuals last error action', () => {
       it('should set correct object', () => {
         const initialHearingValuesState: HearingValuesStateData = {
           serviceHearingValuesModel: null,

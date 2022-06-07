@@ -5,7 +5,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { HearingPriorityAmendedConverter } from './hearing-priority.amended.converter';
 
-// Check testing
 describe('HearingPriorityAmendedConverter', () => {
 
   let hearingPriorityAmendedConverter: HearingPriorityAmendedConverter;

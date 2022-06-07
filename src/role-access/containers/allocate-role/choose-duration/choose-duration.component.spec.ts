@@ -14,7 +14,6 @@ import * as fromFeature from '../../../store';
 import { ChooseDurationComponent } from './choose-duration.component';
 
 
-// Check testing
 describe('ChooseDurationComponent', () => {
   let component: ChooseDurationComponent;
   let mockStore: any;

@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NocFillFormOfflineComponent } from './noc-fill-form-offline.component';
 
 
-// Check testing
 describe('NocFillFormOfflineComponent', () => {
   let component: NocFillFormOfflineComponent;
   let fixture: ComponentFixture<NocFillFormOfflineComponent>;

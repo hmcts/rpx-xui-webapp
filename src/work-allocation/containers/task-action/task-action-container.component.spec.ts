@@ -32,11 +32,9 @@ class WrapperComponent {
 })
 class NothingComponent {}
 
-// Check testing
-describe('WorkAllocation', () => {
+fdescribe('WorkAllocation', () => {
 
-  // Check testing
-describe('TaskActionContainerComponent', () => {
+  fdescribe('TaskActionContainerComponent', () => {
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -50,7 +48,7 @@ describe('TaskActionContainerComponent', () => {
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
 
-    beforeEach(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,

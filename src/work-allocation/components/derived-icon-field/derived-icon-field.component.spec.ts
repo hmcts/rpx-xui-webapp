@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Task } from '../../models/tasks';
 import { getMockTasks } from '../../tests/utils.spec';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
@@ -23,24 +23,20 @@ function getTasks(): Task[] {
   return getMockTasks();
 }
 
-// Check testing
-describe('WorkAllocation', () => {
+fdescribe('WorkAllocation', () => {
 
-  // Check testing
-describe('DerivedIconFieldComponent', () => {
+  fdescribe('DerivedIconFieldComponent', () => {
     let component: DerivedIconFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ]
       })
       .compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;

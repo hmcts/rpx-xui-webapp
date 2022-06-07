@@ -25,7 +25,6 @@ const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
 { roleId: '2', roleName: 'Role 2' },
 { roleId: '3', roleName: 'Role 3' }];
 
-// Check testing
 describe('AllocateRoleHomeComponent', () => {
   const USER = {
     sessionTimeout: {
@@ -128,7 +127,6 @@ describe('AllocateRoleHomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // Check testing
   describe('navigationHandler back', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.BACK;
 
@@ -246,7 +244,6 @@ describe('AllocateRoleHomeComponent', () => {
     });
   });
 
-  // Check testing
   describe('navigationHandler continue', () => {
     beforeEach(() => {
       allocateRoleServiceMock.getValidRoles.and.returnValue(of(ROLE_LIST));
@@ -313,7 +310,6 @@ describe('AllocateRoleHomeComponent', () => {
     });
   });
 
-  // Check testing
   describe('navigationHandler confirm', () => {
     beforeEach(() => {
       allocateRoleServiceMock.getValidRoles.and.returnValue(of(ROLE_LIST));
@@ -337,7 +333,6 @@ describe('AllocateRoleHomeComponent', () => {
     });
   });
 
-  // Check testing
   describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
@@ -372,7 +367,6 @@ describe('AllocateRoleHomeComponent', () => {
     });
   });
 
-  // Check testing
   describe('navigationHandler cancel', () => {
     beforeEach(() => {
       allocateRoleServiceMock.getValidRoles.and.returnValue(of(ROLE_LIST));

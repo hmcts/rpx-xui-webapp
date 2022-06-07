@@ -8,7 +8,6 @@ import * as fromFeature from '../../../store';
 import { ConfirmExclusionAction } from '../../../store/actions';
 import { AddExclusionCheckAnswersComponent } from './add-exclusion-check-answers.component';
 
-// Check testing
 describe('AddExclusionCheckAnswersComponent', () => {
   let component: AddExclusionCheckAnswersComponent;
   let fixture: ComponentFixture<AddExclusionCheckAnswersComponent>;
@@ -41,7 +40,6 @@ describe('AddExclusionCheckAnswersComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // Check testing
   describe('navigationHandler()', () => {
     it('should dispatch the confirm exclusion action with an undefined payroll', () => {
       component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION);
@@ -66,7 +64,6 @@ describe('AddExclusionCheckAnswersComponent', () => {
     pipeSubject.next(exclusionStateData);
   };
 
-  // Check testing
   describe('onNavigate()', () => {
     it('should dispatch a change navigation when called', () => {
       setup(ExcludeOption.EXCLUDE_ANOTHER_PERSON);
@@ -75,7 +72,6 @@ describe('AddExclusionCheckAnswersComponent', () => {
     });
   });
 
-  // Check testing
   describe('setAnswersFromExclusionStore()', () => {
 
     it('should set all answers if excluding another person', () => {
@@ -89,7 +85,6 @@ describe('AddExclusionCheckAnswersComponent', () => {
     });
   });
 
-  // Check testing
   describe('onDestroy()', () => {
     it('should unsubscribe', () => {
       component.storeSubscription = new Observable().subscribe();

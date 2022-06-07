@@ -6,7 +6,6 @@ import { LaCaseStatus } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { ListedHiddenConverter } from './listed.hidden.converter';
 
-// Check testing
 describe('ListedHiddenConverter', () => {
 
   let listedHiddenConverter: ListedHiddenConverter;

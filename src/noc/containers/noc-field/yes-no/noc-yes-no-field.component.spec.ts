@@ -8,7 +8,6 @@ import { NocYesNoFieldComponent } from './noc-yes-no-field.component';
 import { YesNoService } from './yes-no.service';
 
 
-// Check testing
 describe('NocYesNoFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
   const REGISTER_CONTROL = (control) => {

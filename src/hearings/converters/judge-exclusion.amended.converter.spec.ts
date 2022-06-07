@@ -6,7 +6,6 @@ import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { JudgeExclusionAmendedConverter } from './judge-exclusion.amended.converter';
 
-// Check testing
 describe('JudgeExclusionAmendedConverter', () => {
 
   let judgeExclusionAmendedConverter: JudgeExclusionAmendedConverter;

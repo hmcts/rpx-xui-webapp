@@ -4,7 +4,6 @@ import { reducers } from '../index';
 import { initialSearchState, SearchState } from '../reducers';
 import { getSearchState } from './search.filter.selectors';
 
-// Check testing
 describe('Search filter selectors', () => {
   let store: Store<SearchState>;
   beforeEach(() => {
@@ -18,7 +17,6 @@ describe('Search filter selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  // Check testing
   describe('getSearchState', () => {
     it('should return search state', () => {
       let result;

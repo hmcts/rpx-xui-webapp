@@ -7,7 +7,6 @@ import { UtilsModule } from '../utils/utils.module';
 import { NocDateFieldComponent } from './noc-date-field.component';
 
 
-// Check testing
 describe('NocDateFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
   const REGISTER_CONTROL = (control) => {

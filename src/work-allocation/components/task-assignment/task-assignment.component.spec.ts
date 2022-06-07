@@ -63,11 +63,9 @@ class WrapperComponent {
   }
 }
 
-// Check testing
-describe('WorkAllocation', () => {
+fdescribe('WorkAllocation', () => {
 
-  // Check testing
-describe('TaskAssignmentComponent', () => {
+  fdescribe('TaskAssignmentComponent', () => {
     let component: TaskAssignmentComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -77,7 +75,7 @@ describe('TaskAssignmentComponent', () => {
     };
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-    beforeEach(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ],

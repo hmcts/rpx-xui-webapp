@@ -4,7 +4,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { LinkedHearingsAmendedConverter } from './linked-hearings.amended.converter';
 
-// Check testing
 describe('LinkedHearingsAmendedConverter', () => {
   let converter: LinkedHearingsAmendedConverter;
 

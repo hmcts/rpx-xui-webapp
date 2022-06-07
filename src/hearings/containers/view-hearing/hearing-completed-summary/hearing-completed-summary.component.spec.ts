@@ -7,7 +7,6 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../../../hearing.test.data';
 import { HearingCompletedSummaryComponent } from './hearing-completed-summary.component';
 
-// Check testing
 describe('HearingCompletedSummaryComponent', () => {
   let component: HearingCompletedSummaryComponent;
   let fixture: ComponentFixture<HearingCompletedSummaryComponent>;

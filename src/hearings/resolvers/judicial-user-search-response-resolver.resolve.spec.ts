@@ -9,7 +9,6 @@ import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import { JudicialUserSearchResponseResolver } from './judicial-user-search-response-resolver.resolve';
 
-// Check testing
 describe('Ref Data Resolver', () => {
   let judicialRefDataService: JudicialRefDataService;
   const dataRef: JudicialUserModel[] = [];

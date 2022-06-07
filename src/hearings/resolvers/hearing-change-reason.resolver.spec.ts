@@ -10,7 +10,6 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { HearingChangeReasonResolver } from './hearing-change-reason.resolver';
 
-// Check testing
 describe('HearingChangeReasonResolver', () => {
   let lovRefDataService: LovRefDataService;
   const dataRef: LovRefDataModel[] = [];

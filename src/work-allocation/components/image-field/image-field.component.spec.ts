@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
 import { ImageFieldComponent } from './image-field.component';
 
@@ -13,24 +13,20 @@ class WrapperComponent {
   @Input() public alt: string;
 }
 
-// Check testing
-describe('WorkAllocation', () => {
+fdescribe('WorkAllocation', () => {
 
-  // Check testing
-describe('ImageFieldComponent', () => {
+  fdescribe('ImageFieldComponent', () => {
     let component: ImageFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ]
       })
       .compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;

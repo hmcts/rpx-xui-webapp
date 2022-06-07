@@ -4,7 +4,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { NeedWelshAnswerConverter } from './need-welsh.answer.converter';
 
-// Check testing
 describe('NeedWelshAnswerConverter', () => {
 
   let needWelshAnswerConverter: NeedWelshAnswerConverter;

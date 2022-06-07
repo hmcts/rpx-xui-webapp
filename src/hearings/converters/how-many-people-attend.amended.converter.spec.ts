@@ -8,7 +8,6 @@ import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { HowManyPeopleAttendAmendedConverter } from './how-many-people-attend.amended.converter';
 
-// Check testing
 describe('HowManyPeopleAttendAmendedConverter', () => {
 
   let converter: HowManyPeopleAttendAmendedConverter;

@@ -8,7 +8,6 @@ import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.
 import { CaseRolesTableComponent } from './case-roles-table.component';
 
 
-// Check testing
 describe('CaseRolesTableComponent', () => {
   let component: CaseRolesTableComponent;
   let fixture: ComponentFixture<CaseRolesTableComponent>;

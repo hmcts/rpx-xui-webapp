@@ -1,26 +1,22 @@
 import * as fromHearingValuesAction from './hearing-values.action';
 
-// Check testing
 describe('Hearing Values Actions', () => {
 
-  // Check testing
-describe('Reset', () => {
+  describe('Reset', () => {
     it('should create an action', () => {
       const action = new fromHearingValuesAction.ResetHearingValues();
       expect(action.type).toBe(fromHearingValuesAction.RESET_HEARING_VALUES);
     });
   });
 
-  // Check testing
-describe('LoadServiceHearingValues', () => {
+  describe('LoadServiceHearingValues', () => {
     it('should load service hearing values', () => {
       const action = new fromHearingValuesAction.LoadHearingValues('1111222233334444');
       expect(action.type).toBe(fromHearingValuesAction.LOAD_HEARING_VALUES);
     });
   });
 
-  // Check testing
-describe('LoadHearingValuesFailure', () => {
+  describe('LoadHearingValuesFailure', () => {
     it('should load hearing values failure action', () => {
       const payload = {
         status: 403,
@@ -32,16 +28,14 @@ describe('LoadHearingValuesFailure', () => {
     });
   });
 
-  // Check testing
-describe('LoadHearingValuesSuccess', () => {
+  describe('LoadHearingValuesSuccess', () => {
     it('should load service hearing values successfully', () => {
       const action = new fromHearingValuesAction.LoadHearingValuesSuccess(null);
       expect(action.type).toBe(fromHearingValuesAction.LOAD_HEARING_VALUES_SUCCESS);
     });
   });
 
-  // Check testing
-describe('ResetHearingValuesLastError', () => {
+  describe('ResetHearingValuesLastError', () => {
     it('should reset hearing values last error action', () => {
       const action = new fromHearingValuesAction.ResetHearingValuesLastError();
       expect(action.type).toBe(fromHearingValuesAction.RESET_HEARING_VAUES_LAST_ERROR);

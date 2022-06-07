@@ -2,10 +2,8 @@ import { Actions, AllocateRoleState, AllocateTo, DurationOfRole, RoleCategory } 
 import * as fromActions from '../actions/allocate-role.action';
 import * as fromReducer from './allocate-role.reducer';
 
-// Check testing
 describe('Allocate Role Reducer', () => {
 
-  // Check testing
   describe('Actions', () => {
     const STATE_DATA = {
       caseId: '111111',
@@ -25,7 +23,6 @@ describe('Allocate Role Reducer', () => {
       expect(state).toBeDefined();
     });
 
-    // Check testing
     describe('Change Navigation action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
@@ -36,7 +33,6 @@ describe('Allocate Role Reducer', () => {
       });
     });
 
-    // Check testing
     describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
@@ -46,7 +42,6 @@ describe('Allocate Role Reducer', () => {
       });
     });
 
-    // Check testing
     describe('AllocateRoleSetInitData action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
@@ -56,7 +51,6 @@ describe('Allocate Role Reducer', () => {
       });
     });
 
-    // Check testing
     describe('AllocateRoleSetInitData action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
@@ -66,7 +60,6 @@ describe('Allocate Role Reducer', () => {
       });
     });
 
-    // Check testing
     describe('ChooseRoleAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
@@ -76,7 +69,6 @@ describe('Allocate Role Reducer', () => {
       });
     });
 
-    // Check testing
     describe('ChooseAllocateToAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
@@ -86,7 +78,6 @@ describe('Allocate Role Reducer', () => {
       });
     });
 
-    // Check testing
     describe('ChoosePersonAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
@@ -100,7 +91,6 @@ describe('Allocate Role Reducer', () => {
       });
     });
 
-    // Check testing
     describe('ChooseDurationAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;

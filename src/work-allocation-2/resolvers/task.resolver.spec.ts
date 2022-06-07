@@ -5,7 +5,6 @@ import { getMockTasks } from '../tests/utils.spec';
 import { TaskResolver } from './task.resolver';
 
 
-// Check testing
 describe('Task Resolver', () => {
 
   it('resolves on success', () => {

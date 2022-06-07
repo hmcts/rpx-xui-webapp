@@ -10,7 +10,6 @@ import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store';
 import { PanelExclusionAmendedConverter } from './panel-exclusion.amended.converter';
 
-// Check testing
 describe('PanelExclusionAmendedConverter', () => {
 
   let converter: PanelExclusionAmendedConverter;

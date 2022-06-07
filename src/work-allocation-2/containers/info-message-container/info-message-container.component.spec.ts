@@ -14,11 +14,9 @@ class WrapperComponent {
   @ViewChild(InfoMessageContainerComponent, {static: false}) public appComponentRef: InfoMessageContainerComponent;
 }
 
-// Check testing
 describe('WorkAllocation', () => {
 
-  // Check testing
-describe('InfoMessageContainerComponent', () => {
+  describe('InfoMessageContainerComponent', () => {
     let router: Router;
     let component: InfoMessageContainerComponent;
     let wrapper: WrapperComponent;

@@ -13,7 +13,6 @@ import { ChoosePersonAndGo } from '../../../store';
 import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person.component';
 
 
-// Check testing
 describe('AllocateRolePersonComponent', () => {
   let component: AllocateRoleSearchPersonComponent;
   let mockStore: any;

@@ -9,7 +9,6 @@ import { RoleCategoryMappingService } from '../../app/services/role-category-map
 import * as fromAppStore from '../../app/store';
 import { HearingsEditGuard } from './hearings-edit-guard';
 
-// Check testing
 describe('HearingsEditGuard', () => {
   const USER_1: UserDetails = {
     canShareCases: true,

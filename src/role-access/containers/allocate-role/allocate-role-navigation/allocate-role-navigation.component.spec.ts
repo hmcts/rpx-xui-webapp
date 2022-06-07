@@ -6,7 +6,6 @@ import * as fromStore from '../../../store';
 import { AllocateRoleNavigationComponent } from './allocate-role-navigation.component';
 
 
-// Check testing
 describe('AllocateRoleNavigationComponent', () => {
   let component: AllocateRoleNavigationComponent;
   let fixture: ComponentFixture<AllocateRoleNavigationComponent>;

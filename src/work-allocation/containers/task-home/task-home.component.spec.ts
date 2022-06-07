@@ -17,15 +17,14 @@ class WrapperComponent {
   @ViewChild(TaskHomeComponent, {static: false}) public appComponentRef: TaskHomeComponent;
 }
 
-// Check testing
-describe('TaskHomeComponent', () => {
+fdescribe('TaskHomeComponent', () => {
   let component: TaskHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
 
-  beforeEach(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,

@@ -14,11 +14,9 @@ class WrapperComponent {
   @Input() public target: string;
 }
 
-// Check testing
 describe('WorkAllocation', () => {
 
-  // Check testing
-describe('UrlFieldComponent', () => {
+  describe('UrlFieldComponent', () => {
     let component: UrlFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

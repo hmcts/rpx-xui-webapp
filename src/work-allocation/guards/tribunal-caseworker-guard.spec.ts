@@ -2,12 +2,11 @@ import { Router } from '@angular/router';
 import { UserInfo } from '../../app/models/user-details.model';
 import { TribunalCaseworkerGuard } from './tribunal-caseworker-guard';
 
-// Check testing
-describe('TribunalCaseworkerGuard', () => {
+fdescribe('TribunalCaseworkerGuard', () => {
     let guard: TribunalCaseworkerGuard;
     let routerMock: jasmine.SpyObj<Router>;
     let sessionStorageService: any;
-    beforeEach(() => {
+    beforeEach(async() => {
         routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
         sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
         guard = new TribunalCaseworkerGuard(routerMock, sessionStorageService);

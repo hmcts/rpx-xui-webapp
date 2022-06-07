@@ -73,7 +73,6 @@ function getTaskService(): TaskServiceConfig {
   };
 }
 
-// Check testing
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
@@ -445,7 +444,6 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('created_date');
   });
 
-  // Check testing
   describe('act upon deep linking', () => {
     const id = '12345678';
 
@@ -478,7 +476,6 @@ describe('TaskListComponent', () => {
     });
   });
 
-  // Check testing
   describe('pagination display state', () => {
     it('should display pagination', async () => {
       component.tasks = getTasks();
@@ -491,7 +488,6 @@ describe('TaskListComponent', () => {
     });
   });
 
-  // Check testing
   describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 

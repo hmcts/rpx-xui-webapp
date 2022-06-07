@@ -17,7 +17,6 @@ class WrapperComponent {
   @ViewChild(MyCasesFilterComponent, {static: false}) public appComponentRef: MyCasesFilterComponent;
 }
 
-// Check testing
 describe('MyCasesFilterComponent', () => {
   let component: MyCasesFilterComponent;
   let wrapper: WrapperComponent;

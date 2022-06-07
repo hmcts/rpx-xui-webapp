@@ -8,7 +8,6 @@ import Request from './utils/request';
 
 
 
-// Check testing
 describe('Evidence Manager Endpoints', () => {
     const userName = config.users[config.testEnv].solicitor.e;
     const password = config.users[config.testEnv].solicitor.sec;

@@ -24,8 +24,7 @@ class WrapperComponent {
   @ViewChild(TaskManagerListComponent, {static: false}) public appComponentRef: TaskManagerListComponent;
 }
 
-// Check testing
-describe('TaskManagerListComponent', () => {
+fdescribe('TaskManagerListComponent', () => {
   let component: TaskManagerListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -41,7 +40,7 @@ describe('TaskManagerListComponent', () => {
   const mockLoadingService: LoadingService = jasmine.createSpyObj<LoadingService>('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
 
-  beforeEach(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,

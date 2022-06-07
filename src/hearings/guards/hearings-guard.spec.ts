@@ -7,7 +7,6 @@ import { SessionStorageService } from '../../app/services';
 import * as fromAppStore from '../../app/store';
 import { HearingsGuard } from './hearings-guard';
 
-// Check testing
 describe('HearingsGuard', () => {
   const USER_1: UserDetails = {
     canShareCases: true,

@@ -1,6 +1,5 @@
 import { YesNoService } from './yes-no.service';
 
-// Check testing
 describe('YesNoService', () => {
 
   const YES = 'Yes';
@@ -13,7 +12,6 @@ describe('YesNoService', () => {
     yesNoService = new YesNoService();
   });
 
-  // Check testing
   describe(YES, () => {
     it('should return "Yes" when value is `true`', () => {
       expect(yesNoService.format(true)).toBe(YES);
@@ -44,7 +42,6 @@ describe('YesNoService', () => {
     });
   });
 
-  // Check testing
   describe(NO, () => {
     it('should return "No" when value is `false`', () => {
       expect(yesNoService.format(false)).toBe(NO);
@@ -71,7 +68,6 @@ describe('YesNoService', () => {
     });
   });
 
-  // Check testing
   describe('empty', () => {
     it('should return null when value is undefined', () => {
       expect(yesNoService.format(undefined)).toBe(EMPTY);

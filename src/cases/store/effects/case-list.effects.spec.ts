@@ -8,7 +8,6 @@ import { ApplyCaselistFilter, ApplyCaselistFilterFail, ApplyCaselistFilterForES,
 import * as fromCaseListEffects from './case-list.effects';
 import { CaseListEffects } from './case-list.effects';
 
-// Check testing
 describe('Pending Organisation Effects', () => {
     let actions$;
     let effects: CaseListEffects;
@@ -34,7 +33,6 @@ describe('Pending Organisation Effects', () => {
 
     });
 
-    // Check testing
     describe('applyCaselistFilters$', () => {
         it('should return a collection', () => {
 
@@ -47,7 +45,6 @@ describe('Pending Organisation Effects', () => {
         });
     });
 
-    // Check testing
     describe('applyCaselistFilters$ error', () => {
         it('should return a ApplyCaselistFilterFail', () => {
 
@@ -60,7 +57,6 @@ describe('Pending Organisation Effects', () => {
         });
     });
 
-    // Check testing
     describe('applyCaselistFiltersForES$', () => {
         it('should return a collection', () => {
 
@@ -73,7 +69,6 @@ describe('Pending Organisation Effects', () => {
         });
     });
 
-    // Check testing
     describe('applyCaselistFilterForES$ error', () => {
         it('should return a ApplyCaselistFilterFail', () => {
 

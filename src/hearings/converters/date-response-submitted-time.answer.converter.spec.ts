@@ -4,7 +4,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { DateResponseSubmittedTimeAnswerConverter } from './date-response-submitted-time.answer.converter';
 
-// Check testing
 describe('DateResponseSubmittedTimeAnswerConverter', () => {
 
   let dateRequestSubmittedTimeAnswerConverter: DateResponseSubmittedTimeAnswerConverter;

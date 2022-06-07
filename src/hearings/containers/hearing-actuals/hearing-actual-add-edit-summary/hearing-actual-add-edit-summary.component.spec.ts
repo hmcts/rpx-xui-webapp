@@ -15,7 +15,6 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
 
-// Check testing
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
   let fixture: ComponentFixture<HearingActualAddEditSummaryComponent>;
@@ -438,7 +437,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 });
 
-// Check testing
 describe('HearingActualAddEditSummaryComponent display actual participants', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);

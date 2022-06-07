@@ -5,7 +5,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { HearingLengthAmendedConverter } from './hearing-length.amended.converter';
 
-// Check testing
 describe('HearingLengthAmendedConverter', () => {
 
   let hearingLengthAmendedConverter: HearingLengthAmendedConverter;

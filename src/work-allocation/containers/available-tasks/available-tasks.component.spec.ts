@@ -24,8 +24,7 @@ class WrapperComponent {
   @ViewChild(AvailableTasksComponent, { static: false }) public appComponentRef: AvailableTasksComponent;
 }
 
-// Check testing
-describe('AvailableTasksComponent', () => {
+fdescribe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -40,7 +39,7 @@ describe('AvailableTasksComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -73,8 +72,7 @@ describe('AvailableTasksComponent', () => {
     fixture.destroy();
   });
 
-  // Check testing
-  describe('when locations have not been loaded', () => {
+  fdescribe('when locations have not been loaded', () => {
 
     beforeEach(() => {
       mockLocationService.getLocations.and.returnValue(of(null));
@@ -88,8 +86,7 @@ describe('AvailableTasksComponent', () => {
 
   });
 
-  // Check testing
-  describe('when locations have been loaded', () => {
+  fdescribe('when locations have been loaded', () => {
 
     beforeEach(() => {
       mockLocationService.getLocations.and.returnValue(of(mockLocations));
@@ -210,8 +207,7 @@ describe('AvailableTasksComponent', () => {
       expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     });
 
-    // Check testing
-    describe('claimTask()', () => {
+    fdescribe('claimTask()', () => {
 
       it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -254,8 +250,7 @@ describe('AvailableTasksComponent', () => {
         });
     });
 
-    // Check testing
-    describe('claimTaskAndGo()', () => {
+    fdescribe('claimTaskAndGo()', () => {
 
       it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
@@ -294,8 +289,7 @@ describe('AvailableTasksComponent', () => {
         });
     });
 
-    // Check testing
-    describe('claimTaskErrors()', () => {
+    fdescribe('claimTaskErrors()', () => {
 
       it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
 
@@ -339,8 +333,7 @@ describe('AvailableTasksComponent', () => {
       // });
     });
 
-    // Check testing
-    describe('onActionHandler()', () => {
+    fdescribe('onActionHandler()', () => {
 
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
 

@@ -9,7 +9,6 @@ import { CreateCaseGo, Go, NewCaseLoadedSuccessfully } from '../../../app/store/
 import { ApplyChange, CaseCreateFilterApply, CreateCaseLoaded, CreateCaseReset } from '../actions/create-case.action';
 import { CaseCreateEffects } from './case-create.effects';
 
-// Check testing
 describe('CaseCreate Effects', () => {
 
   let mockAlertService: any;
@@ -34,7 +33,6 @@ describe('CaseCreate Effects', () => {
 
   });
 
-  // Check testing
   describe('applyCreateCase$', () => {
     it('should apply case action', () => {
 
@@ -49,7 +47,6 @@ describe('CaseCreate Effects', () => {
     });
   });
 
-  // Check testing
   describe('cancel$', () => {
     it('should cancel case action', () => {
 
@@ -63,7 +60,6 @@ describe('CaseCreate Effects', () => {
     });
   });
 
-  // Check testing
   describe('applyCreatedCaseLoaded$', () => {
     it('should apply load action', () => {
 
@@ -75,7 +71,6 @@ describe('CaseCreate Effects', () => {
     });
   });
 
-  // Check testing
   describe('applyChangeCaseCreateFilter$', () => {
     it('should apply load action', () => {
 

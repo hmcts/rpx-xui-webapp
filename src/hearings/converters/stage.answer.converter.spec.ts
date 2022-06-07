@@ -9,7 +9,6 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { StageAnswerConverter } from './stage.answer.converter';
 
-// Check testing
 describe('StageAnswerConverter', () => {
 
   let converter: AnswerConverter;

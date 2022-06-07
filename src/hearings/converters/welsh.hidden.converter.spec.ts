@@ -5,7 +5,6 @@ import { LocationByEPIMMSModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { WelshHiddenConverter } from './welsh.hidden.converter';
 
-// Check testing
 describe('WelshHiddenConverter', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
    epimms_id: '234850',

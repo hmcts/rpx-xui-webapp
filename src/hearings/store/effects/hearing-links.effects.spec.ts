@@ -14,7 +14,6 @@ import { HearingsService } from '../../services/hearings.service';
 import * as hearingLinksActions from '../actions/hearing-links.action';
 import { HearingLinksEffects } from './hearing-links.effects';
 
-// Check testing
 describe('Hearing Links Effects', () => {
   let actions$;
   let store: Store<fromHearingStore.State>;
@@ -53,7 +52,6 @@ describe('Hearing Links Effects', () => {
     store = TestBed.get(Store) as Store<fromHearingStore.State>;
   });
 
-  // Check testing
   describe('loadServiceLinkedCases$', () => {
     it('should return a response with hearings list', () => {
       const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [{
@@ -74,7 +72,6 @@ describe('Hearing Links Effects', () => {
     });
   });
 
-  // Check testing
   describe('submitLinkedHearingGroup$', () => {
     it('should submit linked hearing group', () => {
       const linkedHearingGroup = {
@@ -148,7 +145,6 @@ describe('Hearing Links Effects', () => {
     });
   });
 
-  // Check testing
   describe('handleError', () => {
     it('should handle errors', () => {
       const action$ = HearingLinksEffects.handleError({

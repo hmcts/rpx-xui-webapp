@@ -11,7 +11,6 @@ import { HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingStageResultComponent } from './hearing-stage-result.component';
 
-// Check testing
 describe('HearingStageResultComponent', () => {
   let component: HearingStageResultComponent;
   let fixture: ComponentFixture<HearingStageResultComponent>;

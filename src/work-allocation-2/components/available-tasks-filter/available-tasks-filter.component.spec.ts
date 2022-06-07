@@ -22,7 +22,6 @@ class WrapperComponent {
   }
 }
 
-// Check testing
 describe('AvailableTasksFilterComponent', () => {
   let component: AvailableTasksFilterComponent;
   let wrapper: WrapperComponent;

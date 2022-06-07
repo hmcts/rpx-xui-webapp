@@ -10,7 +10,6 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { NeedJudgeAnswerConverter } from './need-judge.answer.converter';
 
-// Check testing
 describe('NeedJudgeAnswerConverter', () => {
 
   let converter: AnswerConverter;

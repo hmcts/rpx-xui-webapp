@@ -3,7 +3,6 @@ import { Observable, of, throwError } from 'rxjs';
 import { CreateCaseEventTriggerResolver } from './create-case-event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
 
-// Check testing
 describe('CreateCaseFieldsResolver', () => {
 
   const PARAM_JURISDICTION_ID = CreateCaseEventTriggerResolver.PARAM_JURISDICTION_ID;

@@ -7,14 +7,12 @@ import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.component';
 
-// Check testing
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;
   let fixture: ComponentFixture<HearingViewEditSummaryComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-  // Check testing
   describe('getHearingRequestToCompare and getHearingRequest are holding different state', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
@@ -41,7 +39,6 @@ describe('HearingViewEditSummaryComponent', () => {
     });
   })
 
-  // Check testing
   describe('getHearingRequestToCompare and getHearingRequest state are same', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({

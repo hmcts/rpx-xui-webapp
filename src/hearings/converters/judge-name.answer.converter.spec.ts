@@ -11,7 +11,6 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { JudgeNameAnswerConverter } from './judge-name.answer.converter';
 
-// Check testing
 describe('JudgeNameAnswerConverter', () => {
 
   let converter: AnswerConverter;

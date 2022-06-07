@@ -10,7 +10,6 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { JudgeTypesResolverService } from './judge-types-resolver.service';
 
-// Check testing
 describe('JudgeTypesResolverService', () => {
   let lovRefDataService: LovRefDataService;
   const dataRef: LovRefDataModel[] = [];

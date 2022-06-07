@@ -1,8 +1,6 @@
 import * as fromCaseShare from './share-case.action';
 
-// Check testing
 describe('Case Share Actions', () => {
-  // Check testing
 describe('Case Share', () => {
     it('NavigateToShareCase', () => {
       const payload = [];

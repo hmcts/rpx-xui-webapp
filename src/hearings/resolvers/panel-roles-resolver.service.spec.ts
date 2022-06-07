@@ -10,7 +10,6 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { PanelRolesResolverService } from './panel-roles-resolver.service';
 
-// Check testing
 describe('PanelRolesResolverService', () => {
   let lovRefDataService: LovRefDataService;
   const dataRef: LovRefDataModel[] = [];

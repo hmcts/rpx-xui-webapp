@@ -1,9 +1,6 @@
 import * as fromCaseList from './case-list.action';
 
-// Check testing
-describe('Case List Actions', () => {
-  // Check testing
-describe('Case List', () => {
+describe('Case List Actions', () => {describe('Case List', () => {
     // Check testing
 describe('CaseListJurisdictionSelected', () => {
       it('should create an action', () => {
@@ -15,8 +12,7 @@ describe('CaseListJurisdictionSelected', () => {
       });
     });
 
-    // Check testing
-describe('CaseListApplied', () => {
+    describe('CaseListApplied', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseList.CaseListApplied(payload);
@@ -28,8 +24,7 @@ describe('CaseListApplied', () => {
       });
     });
 
-    // Check testing
-describe('CaseListReset', () => {
+    describe('CaseListReset', () => {
       it('should create an action', () => {
         const action = new fromCaseList.CaseListReset();
 
@@ -39,8 +34,7 @@ describe('CaseListReset', () => {
       });
     });
 
-    // Check testing
-describe('CaselistResultPageChange', () => {
+    describe('CaselistResultPageChange', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseList.CaselistResultPageChange(payload);
@@ -52,8 +46,7 @@ describe('CaselistResultPageChange', () => {
       });
     });
 
-    // Check testing
-describe('FindCaselistPaginationMetadataSuccess', () => {
+    describe('FindCaselistPaginationMetadataSuccess', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseList.FindCaselistPaginationMetadataSuccess(payload);
@@ -65,8 +58,7 @@ describe('FindCaselistPaginationMetadataSuccess', () => {
       });
     });
 
-    // Check testing
-describe('ApplyCaselistFilterSuccess', () => {
+    describe('ApplyCaselistFilterSuccess', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseList.ApplyCaselistFilterSuccess(payload);
@@ -78,8 +70,7 @@ describe('ApplyCaselistFilterSuccess', () => {
       });
     });
 
-    // Check testing
-describe('ApplyCaselistFilterFail', () => {
+    describe('ApplyCaselistFilterFail', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseList.ApplyCaselistFilterFail(payload);
@@ -91,8 +82,7 @@ describe('ApplyCaselistFilterFail', () => {
       });
     });
 
-    // Check testing
-describe('CaseFilterToggleSuccess', () => {
+    describe('CaseFilterToggleSuccess', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCaseList.CaseFilterToggleSuccess(payload);

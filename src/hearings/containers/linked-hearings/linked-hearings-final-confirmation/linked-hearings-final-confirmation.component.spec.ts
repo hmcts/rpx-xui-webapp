@@ -6,7 +6,6 @@ import { Observable, of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import { LinkedHearingsFinalConfirmationComponent } from './linked-hearings-final-confirmation.component';
 
-// Check testing
 describe('LinkedHearingsFinalConfirmationComponent', () => {
   let component: LinkedHearingsFinalConfirmationComponent;
   let fixture: ComponentFixture<LinkedHearingsFinalConfirmationComponent>;

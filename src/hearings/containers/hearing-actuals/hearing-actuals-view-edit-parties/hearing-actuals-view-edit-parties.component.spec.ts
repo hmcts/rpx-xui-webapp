@@ -175,7 +175,6 @@ const partyChannel = [
 ];
 
 
-// Check testing
 describe('HearingViewEditSummaryComponent', () => {
   let store: Store<any>;
   let component: HearingActualsViewEditPartiesComponent;
@@ -341,7 +340,6 @@ describe('HearingViewEditSummaryComponent', () => {
   });
 });
 
-// Check testing
 describe('HearingViewEditSummaryComponent add actual participants', () => {
   let component: HearingActualsViewEditPartiesComponent;
   let fixture: ComponentFixture<HearingActualsViewEditPartiesComponent>;

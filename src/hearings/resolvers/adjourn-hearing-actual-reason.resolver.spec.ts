@@ -10,7 +10,6 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { AdjournHearingActualReasonResolver } from './adjourn-hearing-actual-reason.resolver';
 
-// Check testing
 describe('AdjournHearingActualReason Resolver', () => {
   let lovRefDataService: LovRefDataService;
   const dataRef: LovRefDataModel[] = [];

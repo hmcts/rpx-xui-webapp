@@ -9,7 +9,6 @@ import { ChooseRadioOptionComponent } from '../../../role-access/components';
 import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role.component';
 
 
-// Check testing
 describe('TaskAssignmentChooseRoleComponent', () => {
   let component: TaskAssignmentChooseRoleComponent;
   let fixture: ComponentFixture<TaskAssignmentChooseRoleComponent>;

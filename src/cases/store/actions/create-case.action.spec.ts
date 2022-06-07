@@ -1,9 +1,6 @@
 import * as fromCreateCases from './create-case.action';
 
-// Check testing
-describe('Create Cases Actions', () => {
-  // Check testing
-describe('Create Cases', () => {
+describe('Create Cases Actions', () => {describe('Create Cases', () => {
     // Check testing
 describe('Apply Change', () => {
       it('should create an action', () => {
@@ -17,8 +14,7 @@ describe('Apply Change', () => {
       });
     });
 
-    // Check testing
-describe('Reset Change', () => {
+    describe('Reset Change', () => {
       it('should create an action', () => {
         const action = new fromCreateCases.CreateCaseReset();
 
@@ -28,8 +24,7 @@ describe('Reset Change', () => {
       });
     });
 
-    // Check testing
-describe('Case Create Loaded', () => {
+    describe('Case Create Loaded', () => {
       it('should create an action', () => {
         const caseId = 'caseId';
         const action = new fromCreateCases.CreateCaseLoaded(caseId);
@@ -41,8 +36,7 @@ describe('Case Create Loaded', () => {
       });
     });
 
-    // Check testing
-describe('Case Create Filter Apply', () => {
+    describe('Case Create Filter Apply', () => {
       it('should create an action', () => {
         const payload = {jurisdiction: 'SSCS'};
         const action = new fromCreateCases.CaseCreateFilterApply(payload);
@@ -54,8 +48,7 @@ describe('Case Create Filter Apply', () => {
       });
     });
 
-    // Check testing
-describe('Case Create Filter Changed', () => {
+    describe('Case Create Filter Changed', () => {
       it('should create an action', () => {
         const payload = {jurisdiction: 'SSCS'};
         const action = new fromCreateCases.CaseCreateFilterChanged(payload);

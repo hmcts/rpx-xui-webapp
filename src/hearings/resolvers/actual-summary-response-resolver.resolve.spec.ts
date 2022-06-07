@@ -6,7 +6,6 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../hearing.test.data';
 import { ActualSummaryResponseResolver } from './actual-summary-response-resolver.resolve';
 
-// Check testing
 describe('ActualSummaryResponseResolver', () => {
 
   beforeEach(() => {

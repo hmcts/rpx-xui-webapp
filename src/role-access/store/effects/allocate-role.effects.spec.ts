@@ -10,7 +10,6 @@ import { AllocateRoleService } from '../../services';
 import * as allocateRoleAction from '../actions/allocate-role.action';
 import { AllocateRoleEffects } from './allocate-role.effects';
 
-// Check testing
 describe('Allocate Role Effects', () => {
   let actions$;
   let effects: AllocateRoleEffects;
@@ -34,7 +33,6 @@ describe('Allocate Role Effects', () => {
 
   });
 
-  // Check testing
   describe('confirmAllocation$', () => {
     it('should return SetSubmissionSuccessPending', () => {
 
@@ -74,7 +72,6 @@ describe('Allocate Role Effects', () => {
     });
   });
 
-  // Check testing
   describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = AllocateRoleEffects.handleError({ status: 500, message: 'error' }, allocateRoleAction.ConfirmAllocation.toString());

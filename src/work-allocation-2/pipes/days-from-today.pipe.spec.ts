@@ -1,6 +1,5 @@
 import { DaysFromTodayPipe } from './days-from-today.pipe';
 
-// Check testing
 describe('DaysFromTodayPipe', () => {
   beforeEach(() => {
     jasmine.clock().install();

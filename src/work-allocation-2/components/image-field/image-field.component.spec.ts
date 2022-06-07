@@ -13,11 +13,9 @@ class WrapperComponent {
   @Input() public alt: string;
 }
 
-// Check testing
 describe('WorkAllocation', () => {
 
-  // Check testing
-describe('ImageFieldComponent', () => {
+  describe('ImageFieldComponent', () => {
     let component: ImageFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

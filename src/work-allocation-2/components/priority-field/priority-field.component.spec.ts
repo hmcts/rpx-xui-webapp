@@ -3,7 +3,6 @@ import { TaskPriority } from '../../enums';
 import { PriorityFieldComponent } from './priority-field.component';
 
 
-// Check testing
 describe('PriorityFieldComponent', () => {
   let component: PriorityFieldComponent;
   let fixture: ComponentFixture<PriorityFieldComponent>;

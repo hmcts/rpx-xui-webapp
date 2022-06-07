@@ -2,7 +2,6 @@ import { KEY_MODE } from '../models/hearingConditions';
 import { Mode } from '../models/hearings.enum';
 import { HearingsUtils } from './hearings.utils';
 
-// Check testing
 describe('HearingsUtils', () => {
 
   it('should return true if has the right property', () => {

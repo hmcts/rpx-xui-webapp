@@ -12,7 +12,6 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingChangeReasonComponent } from './hearing-change-reason.component';
 
-// Check testing
 describe('HearingChangeReasonComponent', () => {
   let component: HearingChangeReasonComponent;
   let fixture: ComponentFixture<HearingChangeReasonComponent>;

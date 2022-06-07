@@ -11,7 +11,6 @@ import { HearingsService } from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
 import { HearingValuesEffects } from './hearing-values.effects';
 
-// Check testing
 describe('Hearing Values Effects', () => {
   let actions$;
   let effects: HearingValuesEffects;
@@ -33,7 +32,6 @@ describe('Hearing Values Effects', () => {
     effects = TestBed.get(HearingValuesEffects);
   });
 
-  // Check testing
   describe('loadHearingValue$', () => {
     const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       hmctsServiceID: 'BBA3',
@@ -158,7 +156,6 @@ describe('Hearing Values Effects', () => {
     });
   });
 
-  // Check testing
   describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = HearingValuesEffects.handleError({

@@ -4,7 +4,6 @@ import { reducers } from '../index';
 import { initialHearingListState, State } from '../reducers';
 import { getHearingList } from './hearing-list.selectors';
 
-// Check testing
 describe('Hearing List selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
@@ -18,7 +17,6 @@ describe('Hearing List selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  // Check testing
   describe('getHearingList', () => {
     it('should return hearings navigation state', () => {
       let result;

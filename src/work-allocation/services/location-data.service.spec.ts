@@ -1,11 +1,9 @@
 import { LocationDataService } from './location-data.service';
 
-// Check testing
-describe('WorkAllocation', () => {
+fdescribe('WorkAllocation', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
-  // Check testing
-  describe('LocationDataService', () => {
+  fdescribe('LocationDataService', () => {
     it('should be Truthy', () => {
       const service = new LocationDataService(mockHttpService);
       expect(service).toBeTruthy();

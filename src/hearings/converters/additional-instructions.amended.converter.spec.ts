@@ -4,7 +4,6 @@ import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { AdditionalInstructionsAmendedConverter } from './additional-instructions.amended.converter';
 
-// Check testing
 describe('AdditionalInstructionsAmendedConverter', () => {
 
   let additionalInstructionsAmendedConverter: AdditionalInstructionsAmendedConverter;

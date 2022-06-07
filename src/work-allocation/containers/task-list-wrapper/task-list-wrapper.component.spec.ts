@@ -14,8 +14,7 @@ import { getMockTasks, MockRouter } from '../../../work-allocation/tests/utils.s
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
-// Check testing
-describe('TaskListWrapperComponent', () => {
+fdescribe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
@@ -29,7 +28,7 @@ describe('TaskListWrapperComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
   let router: Router;
 
-  beforeEach((() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
@@ -58,14 +57,13 @@ describe('TaskListWrapperComponent', () => {
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
     // mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeDefined();
   });
 
-  // Check testing
-  describe('onActionHandler()', () => {
+  fdescribe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];
@@ -127,8 +125,7 @@ describe('TaskListWrapperComponent', () => {
 
 
 
-// Check testing
-describe('TaskListWrapperComponent searchWithPagination', () => {
+fdescribe('TaskListWrapperComponent searchWithPagination', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
@@ -181,8 +178,7 @@ describe('TaskListWrapperComponent searchWithPagination', () => {
     fixture.detectChanges();
   }));
 
-  // Check testing
-  describe('onActionHandler()', () => {
+  fdescribe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];

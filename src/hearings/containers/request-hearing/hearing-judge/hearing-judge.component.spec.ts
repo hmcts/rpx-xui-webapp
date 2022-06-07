@@ -14,7 +14,6 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
 
-// Check testing
 describe('HearingJudgeComponent', () => {
   let component: HearingJudgeComponent;
   let fixture: ComponentFixture<HearingJudgeComponent>;

@@ -2,7 +2,6 @@ import { caseFlagsRefData, serviceHearingValuesModel } from '../hearing.test.dat
 import { CaseFlagType } from '../models/hearings.enum';
 import { CaseFlagsUtils } from './case-flags.utils';
 
-// Check testing
 describe('CaseFlagsUtils', () => {
 
   it('should return true if has the right property', () => {

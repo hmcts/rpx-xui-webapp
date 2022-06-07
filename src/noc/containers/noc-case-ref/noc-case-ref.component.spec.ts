@@ -9,7 +9,6 @@ import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCaseRefComponent } from './noc-case-ref.component';
 
-// Check testing
 describe('NocCaseRefComponent', () => {
   let fixture: ComponentFixture<NocCaseRefComponent>;
   let component: NocCaseRefComponent;
@@ -42,7 +41,6 @@ describe('NocCaseRefComponent', () => {
     fixture.detectChanges();
   });
 
-  // Check testing
   describe('onSubmit', () => {
     it('should call navigationHandler', () => {
       const navigationHandlerSpy = spyOn(component, 'navigationHandler');
@@ -56,7 +54,6 @@ describe('NocCaseRefComponent', () => {
     });
   });
 
-  // Check testing
   describe('navigationHandler', () => {
     it('should dispatch an action', () => {
 

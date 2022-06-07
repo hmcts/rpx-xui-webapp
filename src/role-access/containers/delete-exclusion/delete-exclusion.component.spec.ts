@@ -28,7 +28,6 @@ const mockCaseworker: Caseworker = {
   roleCategory: RoleCategory.LEGAL_OPERATIONS
 };
 
-// Check testing
 describe('DeleteExclusionComponent', () => {
   let component: DeleteExclusionComponent;
   let wrapper: WrapperComponent;
@@ -116,7 +115,6 @@ describe('DeleteExclusionComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
   });
 
-  // Check testing
   describe('showSpinner', () => {
     it('should default to false', () => {
       expect(component.showSpinner).toBeFalsy();
@@ -157,7 +155,6 @@ describe('DeleteExclusionComponent', () => {
   });
 });
 
-// Check testing
 describe('DeleteExclusionComponent with no name', () => {
   let component: DeleteExclusionComponent;
   let wrapper: WrapperComponent;

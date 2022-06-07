@@ -1,6 +1,5 @@
 import { DefaultAnswerConverter } from './default.answer.converter';
 
-// Check testing
 describe('DefaultAnswerConverter', () => {
 
   let defaultAnswerConverter: DefaultAnswerConverter;

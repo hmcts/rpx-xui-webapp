@@ -6,7 +6,6 @@ import { facilitiesListRefData, initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { AdditionalFacilitiesAnswerConverter } from './additional-facilities.answer.converter';
 
-// Check testing
 describe('AdditionalFacilitiesAnswerConverter', () => {
 
   let converter: AdditionalFacilitiesAnswerConverter;

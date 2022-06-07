@@ -6,7 +6,6 @@ import { LocationByEPIMMSModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { ShowHidePipe } from './show-hide.pipe';
 
-// Check testing
 describe('ShowHidePipe', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '234850',

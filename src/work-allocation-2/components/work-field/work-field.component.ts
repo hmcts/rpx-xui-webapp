@@ -39,4 +39,11 @@ export class WorkFieldComponent {
     return null;
   }
 
+  public getCss(workField): string {
+    if (workField.isNewTask) {
+      return 'govuk-!-font-weight-bold';
+    }
+    return '';
+  }
+
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ListConstants } from '../../components/constants';
@@ -13,7 +13,7 @@ import { Location, PaginationParameter } from '../../models/dtos';
   templateUrl: './work-case-list.component.html',
   styleUrls: ['work-case-list.component.scss']
 })
-export class WorkCaseListComponent implements OnChanges {
+export class WorkCaseListComponent implements OnInit, OnChanges {
 
   /**
    * These are the cases & fields as returned from the WA Api.
@@ -29,6 +29,7 @@ export class WorkCaseListComponent implements OnChanges {
   @Input() public view: string;
   @Input() public showManage = {};
   @Input() public showResultsSummary: boolean = true;
+  @Input() public rowClassConfig: { id: string, class: string } | null;
 
   /**
    * The message to display when there are no cases to display in the list.
@@ -72,6 +73,13 @@ export class WorkCaseListComponent implements OnChanges {
       }
     }
     return null;
+  }
+
+  public ngOnInit(): void {
+    if (this.rowClassConfig) {
+      const element = document.querySelector(this.rowClassConfig.id);
+      if (element) element.classList.add(this.rowClassConfig.class);
+    }
   }
 
   public ngOnChanges(): void {

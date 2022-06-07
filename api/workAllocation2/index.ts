@@ -475,6 +475,8 @@ export async function getMyAccess(req: EnhancedRequest, res: Response, next: Nex
   );
   const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
   const mappedCases = mapCasesFromData(cases, specificRoleAssignments);
+  // let mappedCases = mapCasesFromData(cases, specificRoleAssignments);
+  // if(mappedCases[0]) mappedCases[0].isNewTask = true;
   const result = {
     cases: mappedCases,
     total_records: 0,

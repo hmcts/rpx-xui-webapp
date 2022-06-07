@@ -36,4 +36,5 @@ export interface RoleCaseData {
     hasNewMatters?: string,
     homeOfficeReferenceNumber?: string
   };
+  isNewTask?: boolean;
 }

@@ -176,7 +176,7 @@ describe('SearchFilterService', () => {
     });
 
     // Check testing
-describe('findPaginationMetadata', () => {
+    describe('findPaginationMetadata', () => {
         it('should httpService get call', () => {
 
             const nameControl = new FormControl();

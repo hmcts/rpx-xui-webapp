@@ -28,7 +28,7 @@ describe('TaskListWrapperComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
   let router: Router;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,

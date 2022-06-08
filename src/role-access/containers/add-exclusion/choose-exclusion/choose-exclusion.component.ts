@@ -2,8 +2,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
-import { UserDetails } from '../../../../app/models';
 import { $enum as EnumUtil } from 'ts-enum-util';
+import { UserDetails } from '../../../../app/models';
 import * as fromRoot from '../../../../app/store';
 import { ERROR_MESSAGE, EXCLUSION_OPTION } from '../../../constants';
 import { ExcludeOption, ExclusionNavigationEvent, ExclusionState } from '../../../models';
@@ -48,7 +48,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    const roleAccessState$ = this.store.pipe(select(fromFeature.getRoleAccessState))
+    const roleAccessState$ = this.store.pipe(select(fromFeature.getRoleAccessState));
     this.userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
     combineLatest([roleAccessState$, this.userDetails$]).subscribe(([exclusionStateData, userDetails]: any) => {
       this.exclusionOption = exclusionStateData.exclusionOption;

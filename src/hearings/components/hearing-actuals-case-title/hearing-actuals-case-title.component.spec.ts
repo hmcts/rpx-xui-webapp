@@ -27,5 +27,5 @@ describe('HearingActualsCaseTitleComponent', () => {
     fixture.detectChanges();
     const caseNameEl = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
     expect(caseNameEl.textContent).toContain('Jane Smith vs DWP');
-  })
+  });
 });

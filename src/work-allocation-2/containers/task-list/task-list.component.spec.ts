@@ -185,8 +185,6 @@ xdescribe('TaskListComponent', () => {
 
     // check the emitter had been called and that it gets called with the new field defined which is caseName
     expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('pageSessionKey', '1');
-    expect(component.defaultSortElement.click).toHaveBeenCalled;
-
   });
 
   it('should allow sorting for different columns.', async () => {

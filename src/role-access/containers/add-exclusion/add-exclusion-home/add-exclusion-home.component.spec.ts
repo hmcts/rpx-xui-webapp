@@ -169,7 +169,7 @@ describe('ExclusionHomeComponent', () => {
     it('on choose exclusion page click continue button state set incorrectly', () => {
       component.navigationCurrentState = ExclusionState.FIND_PERSON;
       fixture.detectChanges();
-      expect(() => { component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION) }).toThrow(new Error('Invalid exclusion state'));
+      expect(() => { component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION); }).toThrow(new Error('Invalid exclusion state'));
       expect(component.showSpinner).toBe(false);
     });
   });
@@ -183,7 +183,7 @@ describe('ExclusionHomeComponent', () => {
 
   describe('Unidentified state', () => {
     it('should stop showing spinner and throw error', () => {
-      expect(() => { component.navigationHandler(null) }).toThrow(new Error('Invalid exclusion navigation event'));
+      expect(() => { component.navigationHandler(null); }).toThrow(new Error('Invalid exclusion navigation event'));
       expect(component.showSpinner).toBe(false);
     });
   });

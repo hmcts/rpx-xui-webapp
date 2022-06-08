@@ -1,9 +1,9 @@
-import {Component, OnDestroy} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {ACTION} from '../../models/hearings.enum';
-import {HearingsService} from '../../services/hearings.service';
+import { Component, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { ACTION } from '../../models/hearings.enum';
+import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
-import {AbstractPageFlow} from '../../utils/abstract-page-flow';
+import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 
 @Component({
   selector: 'exui-request-hearing',
@@ -12,10 +12,10 @@ import {AbstractPageFlow} from '../../utils/abstract-page-flow';
 })
 export class RequestHearingComponent implements OnDestroy {
 
-  private static HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary';
-  private static HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary';
-  private static HEARING_CHANGE_REASON = 'hearing-change-reason';
-  private static HEARING_CONFIRMATION = 'hearing-confirmation';
+  private static readonly HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary';
+  private static readonly HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary';
+  private static readonly HEARING_CHANGE_REASON = 'hearing-change-reason';
+  private static readonly HEARING_CONFIRMATION = 'hearing-confirmation';
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly pageFlow: AbstractPageFlow,

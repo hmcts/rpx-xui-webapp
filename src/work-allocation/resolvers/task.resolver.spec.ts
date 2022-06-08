@@ -3,12 +3,11 @@ import { of } from 'rxjs';
 import { Task } from '../models/tasks';
 import { TaskResolver } from './task.resolver';
 
-
 describe('Task Resolver', () => {
 
     it('resolves on success', () => {
         const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);
-        const mockCaseWorkerService = jasmine.createSpyObj('mockCaseWorkerService', ['getAll'])
+        const mockCaseWorkerService = jasmine.createSpyObj('mockCaseWorkerService', ['getAll']);
         mockService.getTask.and.returnValue(of({} as Task));
         mockCaseWorkerService.getAll.and.returnValue(of([]));
         const mockRouter = jasmine.createSpyObj('Router', [ 'navigate' ]);

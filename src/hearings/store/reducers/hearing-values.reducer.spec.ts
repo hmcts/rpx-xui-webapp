@@ -6,152 +6,152 @@ import * as fromHearingValuesReducer from './hearing-values.reducer';
 
 describe('Hearing Values Reducer', () => {describe('Actions', () => {
     // Check testing
-describe('Reset action', () => {
-      it('should set correct object', () => {
+  describe('Reset action', () => {
+    it('should set correct object', () => {
         const initialState = fromHearingValuesReducer.initialHearingValuesState;
         const action = new fromHearingValuesActions.ResetHearingValues();
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
-      });
     });
+  });
 
-    describe('Load service hearing values success action', () => {
-      it('should set correct object', () => {
-        const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
-          hmctsServiceID: 'BBA3',
-          caseName: 'Jane Smith vs DWP',
-          autoListFlag: false,
-          hearingType: 'Final',
-          caseAdditionalSecurityFlag: false,
-          caseCategories: [
+  describe('Load service hearing values success action', () => {
+    it('should set correct object', () => {
+      const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+        hmctsServiceID: 'BBA3',
+        caseName: 'Jane Smith vs DWP',
+        autoListFlag: false,
+        hearingType: 'Final',
+        caseAdditionalSecurityFlag: false,
+        caseCategories: [
+          {
+            categoryType: CategoryType.CaseType,
+            categoryValue: 'Personal Independence Payment',
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'Conditions of Entitlement',
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'Good cause',
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          },
+        ],
+        caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
+        caserestrictedFlag: false,
+        caseManagementLocationCode: '196538',
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+        hearingWindow: {
+          dateRangeStart: '2021-11-23T09:00:00.000Z',
+          dateRangeEnd: '2021-11-30T09:00:00.000Z',
+          firstDateTimeMustBe: '2021-12-01T09:00:00.000Z',
+        },
+        duration: 45,
+        hearingPriorityType: 'standard',
+        numberOfPhysicalAttendees: 2,
+        hearingInWelshFlag: false,
+        hearingLocations: [],
+        facilitiesRequired: [],
+        listingComments: '',
+        hearingRequester: '',
+        privateHearingRequiredFlag: false,
+        panelRequirements: null,
+        leadJudgeContractType: '',
+        judiciary: {
+          roleType: [''],
+          authorisationTypes: [''],
+          authorisationSubType: [''],
+          panelComposition: [{
+            memberType: '',
+            count: 1,
+          }],
+          judiciaryPreferences: [
             {
-              categoryType: CategoryType.CaseType,
-              categoryValue: 'Personal Independence Payment',
-            }, {
-              categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Conditions of Entitlement',
-            }, {
-              categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Good cause',
-            }, {
-              categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Rate of Assessment / Payability Issues - complex',
+              memberID: 'p1000000',
+              memberType: MemberType.JUDGE,
+              requirementType: RequirementType.EXCLUDE,
             },
           ],
-          caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
-          caserestrictedFlag: false,
-          caseManagementLocationCode: '196538',
-          caseSLAStartDate: '2021-05-05T09:00:00.000Z',
-          hearingWindow: {
-            dateRangeStart: '2021-11-23T09:00:00.000Z',
-            dateRangeEnd: '2021-11-30T09:00:00.000Z',
-            firstDateTimeMustBe: '2021-12-01T09:00:00.000Z',
-          },
-          duration: 45,
-          hearingPriorityType: 'standard',
-          numberOfPhysicalAttendees: 2,
-          hearingInWelshFlag: false,
-          hearingLocations: [],
-          facilitiesRequired: [],
-          listingComments: '',
-          hearingRequester: '',
-          privateHearingRequiredFlag: false,
-          panelRequirements: null,
-          leadJudgeContractType: '',
-          judiciary: {
-            roleType: [''],
-            authorisationTypes: [''],
-            authorisationSubType: [''],
-            panelComposition: [{
-              memberType: '',
-              count: 1,
-            }],
-            judiciaryPreferences: [
+          judiciarySpecialisms: [''],
+        },
+        hearingIsLinkedFlag: false,
+        parties: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            unavailabilityRanges: [
               {
-                memberID: 'p1000000',
-                memberType: MemberType.JUDGE,
-                requirementType: RequirementType.EXCLUDE,
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
-            judiciarySpecialisms: [''],
           },
-          hearingIsLinkedFlag: false,
-          parties: [
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
+              },
+            ],
+          }],
+        caseFlags: {
+          flags: [
             {
               partyID: 'P1',
               partyName: 'Jane and Smith',
-              partyType: PartyType.IND,
-              partyRole: 'appellant',
-              unavailabilityRanges: [
-                {
-                  unavailableFromDate: '2021-12-10T09:00:00.000Z',
-                  unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
+              flagId: 'Language Interpreter',
+              flagDescription: 'Spanish interpreter required',
+              flagStatus: 'ACTIVE',
             },
             {
               partyID: 'P2',
               partyName: 'DWP',
-              partyType: PartyType.ORG,
-              partyRole: 'claimant',
-              unavailabilityRanges: [
-                {
-                  unavailableFromDate: '2021-12-20T09:00:00.000Z',
-                  unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY,
-                },
-              ],
-            }],
-          caseFlags: {
-            flags: [
-              {
-                partyID: 'P1',
-                partyName: 'Jane and Smith',
-                flagId: 'Language Interpreter',
-                flagDescription: 'Spanish interpreter required',
-                flagStatus: 'ACTIVE',
-              },
-              {
-                partyID: 'P2',
-                partyName: 'DWP',
-                flagId: 'case flag 1',
-                flagDescription: 'case flag 1 description',
-                flagStatus: 'ACTIVE',
-              },
-            ],
-            flagAmendURL: '/',
-          },
-          screenFlow: [
-          ],
-          vocabulary: [
-            {
-              word1: '',
+              flagId: 'case flag 1',
+              flagDescription: 'case flag 1 description',
+              flagStatus: 'ACTIVE',
             },
           ],
-        };
-        const action = new fromHearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
-        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(fromHearingValuesReducer.initialHearingValuesState, action);
-        expect(hearingsState.serviceHearingValuesModel).toEqual(SERVICE_HEARING_VALUES);
-      });
-
-      it('should call error response action', () => {
-        const initialHearingValuesState: HearingValuesStateData = {
-          serviceHearingValuesModel: null,
-          lastError: {
-            status: 403,
-            errors: null,
-            message: 'Http failure response: 403 Forbidden'
+          flagAmendURL: '/',
+        },
+        screenFlow: [
+        ],
+        vocabulary: [
+          {
+            word1: '',
           },
-        };
-        const action = new fromHearingValuesActions.LoadHearingValuesFailure(initialHearingValuesState.lastError);
-        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);
-        expect(hearingsState).toEqual(initialHearingValuesState);
-      });
+        ],
+      };
+      const action = new fromHearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
+      const hearingsState = fromHearingValuesReducer.hearingValuesReducer(fromHearingValuesReducer.initialHearingValuesState, action);
+      expect(hearingsState.serviceHearingValuesModel).toEqual(SERVICE_HEARING_VALUES);
     });
 
-    describe('reset hearing actuals last error action', () => {
-      it('should set correct object', () => {
+    it('should call error response action', () => {
+      const initialHearingValuesState: HearingValuesStateData = {
+        serviceHearingValuesModel: null,
+        lastError: {
+          status: 403,
+          errors: null,
+          message: 'Http failure response: 403 Forbidden'
+        },
+      };
+      const action = new fromHearingValuesActions.LoadHearingValuesFailure(initialHearingValuesState.lastError);
+      const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);
+      expect(hearingsState).toEqual(initialHearingValuesState);
+    });
+  });
+
+  describe('reset hearing actuals last error action', () => {
+    it('should set correct object', () => {
         const initialHearingValuesState: HearingValuesStateData = {
           serviceHearingValuesModel: null,
           lastError: {

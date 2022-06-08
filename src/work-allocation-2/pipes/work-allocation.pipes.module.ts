@@ -1,8 +1,8 @@
-import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { CaseworkerDisplayName, DaysFromTodayPipe, YesNoPipe } from '.';
 import { IntegerPipe } from './integer.pipe';

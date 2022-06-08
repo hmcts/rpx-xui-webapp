@@ -47,7 +47,7 @@ describe('TaskAssignmentContainerComponent1', () => {
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [
         TaskAssignmentContainerComponent, WrapperComponent, TaskListComponent, NothingComponent, ErrorMessageComponent,

@@ -79,7 +79,7 @@ export class LocationResolver implements Resolve<LocationModel> {
       if (roleJurisdiction && !jurisdictions.includes(roleJurisdiction)) {
         jurisdictions.push(roleJurisdiction);
       }
-    })
+    });
     return this.userRole === UserRole.Judicial ? this.allocateRoleService.getCaseRolesUserDetails([id], jurisdictions) : this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
   }
 

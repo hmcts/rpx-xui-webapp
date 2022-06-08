@@ -5,5 +5,5 @@ import { Component, Input } from '@angular/core';
   templateUrl: './hearing-actuals-case-title.component.html'
 })
 export class HearingActualsCaseTitleComponent {
-  @Input() caseTitle: string;
+  @Input() public caseTitle: string;
 }

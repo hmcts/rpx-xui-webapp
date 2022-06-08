@@ -39,7 +39,7 @@ xdescribe('CaseManagerFilterComponent', () => {
       unsubscribe: () => null
     }
   };
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,

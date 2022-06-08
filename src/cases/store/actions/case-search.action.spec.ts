@@ -1,8 +1,8 @@
 import * as fromCaseSearch from './case-search.action';
 
-describe('Case Search Actions', () => {describe('Search Cases filter', () => {
-    // Check testing
-describe('Jurisdiction Selected', () => {
+describe('Case Search Actions', () => {
+  describe('Search Cases filter', () => {
+    describe('Jurisdiction Selected', () => {
       it('should create an action', () => {
         const action = new fromCaseSearch.JurisdictionSelected();
         expect(action.type).toBe(fromCaseSearch.JURISDICTION_SELECTED);
@@ -117,7 +117,5 @@ describe('Jurisdiction Selected', () => {
         });
       });
     });
-
   });
-
 });

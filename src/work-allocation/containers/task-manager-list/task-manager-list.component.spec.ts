@@ -40,7 +40,7 @@ describe('TaskManagerListComponent', () => {
   const mockLoadingService: LoadingService = jasmine.createSpyObj<LoadingService>('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -64,7 +64,6 @@ describe('TaskManagerListComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
 
     fixture.whenStable();
-    
     wrapper = fixture.debugElement.componentInstance;
     component = wrapper.appComponentRef;
 
@@ -201,7 +200,7 @@ describe('TaskManagerListComponent', () => {
     expect(footerRowClass).not.toContain('shown');
   });
 
-  it('should show the footer when there no tasks', async() => {
+  it('should show the footer when there no tasks', async () => {
     fixture.whenStable();
     spyOnProperty(component, 'tasks').and.returnValue([]);
     fixture.detectChanges();

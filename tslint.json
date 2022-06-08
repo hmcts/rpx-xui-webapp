@@ -69,7 +69,7 @@
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
     "directive-class-suffix": true,
-    "no-attribute-parameter-decorator": true,
+    "no-attribute-decorator": true,
 
     "variable-name": {
       "options": [

@@ -13,10 +13,10 @@ import { ExcludeOption, ExclusionNavigationEvent, ExclusionState, ExclusionState
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 import { AddExclusionCheckAnswersComponent } from '../add-exclusion-check-answers/add-exclusion-check-answers.component';
+import { AddExclusionSearchPersonComponent } from '../add-exclusion-search-person/add-exclusion-search-person.component';
 import { ChooseExclusionComponent } from '../choose-exclusion/choose-exclusion.component';
 import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-role.component';
 import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclusion.component';
-import { AddExclusionSearchPersonComponent } from '../add-exclusion-search-person/add-exclusion-search-person.component';
 
 @Component({
   selector: 'exui-add-exclusion-home',
@@ -41,7 +41,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
 
   private exclusionStateDataSub: Subscription;
 
-  private exclusionStateData: ExclusionStateData;
+  private readonly exclusionStateData: ExclusionStateData;
   public navigationCurrentState: ExclusionState;
   public exclusionOption: ExcludeOption;
   public caseId: string;

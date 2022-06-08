@@ -25,7 +25,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   public jurisdictions: string[];
   private selectedPerson: string = '';
   private selectedRole: string = 'All';
-  private selectedLocation: Location = {
+  private readonly selectedLocation: Location = {
     id: '231596',
     locationName: 'Birmingham',
     services: [],

@@ -33,8 +33,8 @@ describe('Pending Organisation Effects', () => {
 
   });
 
-    describe('applySearchFilters$', () => {
-        it('should return a collection', () => {
+  describe('applySearchFilters$', () => {
+    it('should return a collection', () => {
 
       SearchFilterServiceMock.search.and.returnValue(of(payload));
       const action = new ApplySearchFilter({});
@@ -45,8 +45,8 @@ describe('Pending Organisation Effects', () => {
     });
   });
 
-    describe('applySearchFilters$ error', () => {
-        it('should return a ApplySearchFilterFail', () => {
+  describe('applySearchFilters$ error', () => {
+    it('should return a ApplySearchFilterFail', () => {
 
       SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
       const action = new ApplySearchFilter({});
@@ -57,8 +57,8 @@ describe('Pending Organisation Effects', () => {
     });
   });
 
-    describe('applySearchFiltersForES$', () => {
-        it('should return a collection', () => {
+  describe('applySearchFiltersForES$', () => {
+    it('should return a collection', () => {
 
       SearchFilterServiceMock.search.and.returnValue(of(payload));
       const action = new ApplySearchFilterForES({});
@@ -69,9 +69,8 @@ describe('Pending Organisation Effects', () => {
     });
   });
 
-    describe('applySearchFilterForES$ error', () => {
-        it('should return a ApplySearchFilterFail', () => {
-
+  describe('applySearchFilterForES$ error', () => {
+    it('should return a ApplySearchFilterFail', () => {
       SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
       const action = new ApplySearchFilterForES({});
       const completion = new ApplySearchFilterFail(new Error());

@@ -13,7 +13,7 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
 
   private sub: Subscription;
 
-  public constructor(private store: Store<any>, private readonly route: ActivatedRoute) {
+  public constructor(private readonly store: Store<any>, private readonly route: ActivatedRoute) {
   }
 
   public ngOnInit(): void {

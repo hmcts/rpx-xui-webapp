@@ -100,14 +100,14 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
 export const getAllCaseworkersFromServices = (caseworkersByService: CaseworkersByService[]): Caseworker[] => {
   let allCaseworkers: Caseworker[] = [];
   caseworkersByService.forEach(caseworkerListByService => {
-    allCaseworkers = allCaseworkers.concat(caseworkerListByService.caseworkers)
+    allCaseworkers = allCaseworkers.concat(caseworkerListByService.caseworkers);
   });
   return allCaseworkers;
-}
+};
 
 export const getCaseworkerSessionStorageKeyForServiceId = (serviceId: string): string => {
   return `${serviceId}-caseworkers`;
-}
+};
 
 export const getCaseworkers = (serviceId: string, sessionStorageService: ISessionStorageService): Caseworker[] => {
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
@@ -115,12 +115,12 @@ export const getCaseworkers = (serviceId: string, sessionStorageService: ISessio
   if (value) {
     return JSON.parse(value) as Caseworker[];
   }
-}
+};
 
 export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], sessionStorageService: ISessionStorageService): void => {
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
-}
+};
 
 export const getAssigneeName = (caseworkers: any [], assignee: string): string => {
   if (assignee && caseworkers && caseworkers.some(cw => cw.idamId === assignee)) {
@@ -189,7 +189,7 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
     case RoleCategory.LEGAL_OPERATIONS:
       return PersonRole.CASEWORKER;
     default:
-      throw new Error('Invalid roleCategory ' + roleCategory);
+      throw new Error(`Invalid roleCategory ${roleCategory}`);
   }
 }
 

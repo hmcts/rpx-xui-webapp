@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE } from '../../../templates/hearing-request-failed-summary.template';
 import { HearingSummaryEnum, Mode } from '../../../models/hearings.enum';
+import { HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE } from '../../../templates/hearing-request-failed-summary.template';
 
 @Component({
   selector: 'exui-hearing-request-failed-summary',

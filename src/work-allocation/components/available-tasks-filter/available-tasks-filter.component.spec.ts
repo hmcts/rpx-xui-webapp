@@ -37,7 +37,7 @@ describe('AvailableTasksFilterComponent', () => {
   };
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         ExuiCommonLibModule
@@ -56,7 +56,6 @@ describe('AvailableTasksFilterComponent', () => {
     wrapper = fixture.debugElement.componentInstance;
     component = wrapper.appComponentRef;
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
-    
     mockSessionStorageService.getItem.and.callFake((key) => {
       return mocksessionStore[key];
     });

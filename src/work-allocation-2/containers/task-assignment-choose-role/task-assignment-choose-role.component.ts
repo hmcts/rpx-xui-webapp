@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-import { getOptions } from '../../../work-allocation-2/utils';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
 import { OptionsModel } from '../../../role-access/models/options-model';
+import { getOptions } from '../../../work-allocation-2/utils';
 import { TaskPermission, TaskRole } from '../../models/tasks';
 
 @Component({
@@ -16,7 +16,7 @@ import { TaskPermission, TaskRole } from '../../models/tasks';
 })
 export class TaskAssignmentChooseRoleComponent implements OnInit {
 
-  private static userDetails: string = 'userDetails';
+  private static readonly userDetails: string = 'userDetails';
   public title: string = 'Choose a role type';
   public verb: string = '';
   public caption: string = 'Reassign task';

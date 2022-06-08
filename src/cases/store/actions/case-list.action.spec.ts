@@ -1,8 +1,8 @@
 import * as fromCaseList from './case-list.action';
 
-describe('Case List Actions', () => {describe('Case List', () => {
-    // Check testing
-describe('CaseListJurisdictionSelected', () => {
+describe('Case List Actions', () => {
+  describe('Case List', () => {
+    describe('CaseListJurisdictionSelected', () => {
       it('should create an action', () => {
         const action = new fromCaseList.CaseListJurisdictionSelected();
 

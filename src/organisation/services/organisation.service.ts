@@ -8,7 +8,7 @@ export const ENVIRONMENT = {
 
 @Injectable()
 export class OrganisationService {
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   public fetchOrganisation(): Observable<any> {
    return this.http.get<any>(`${ENVIRONMENT.orgUri}`);

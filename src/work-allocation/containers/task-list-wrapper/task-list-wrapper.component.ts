@@ -1,8 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Caseworker } from 'api/workAllocation/interfaces/task';
-
+import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
@@ -10,11 +13,7 @@ import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../mod
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants } from '../../../app/app.constants';
-import { mergeMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -143,8 +142,9 @@ export class TaskListWrapperComponent implements OnInit {
 
     this.isPaginationEnabled$.subscribe({
       next: (result: boolean) => {
-        if (!result) this.pagination = null;
-        else {
+        if (!result) {
+          this.pagination = null;
+        } else {
           this.pagination = {
             page_number: 1,
             page_size: 25

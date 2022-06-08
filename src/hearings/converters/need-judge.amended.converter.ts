@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { MemberType } from '../models/hearings.enum';
-import {State} from '../store/reducers';
-import {IsAmendedConverter} from './is-amended.converter';
+import { State } from '../store/reducers';
+import { IsAmendedConverter } from './is-amended.converter';
 
 export class NeedJudgeAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
@@ -14,7 +14,7 @@ export class NeedJudgeAmendedConverter implements IsAmendedConverter {
       const objBRoleType = objBPanelRequirements && objBPanelRequirements.roleType && objBPanelRequirements.roleType.length > 0 || null;
       const objAPanelPreferences = objAPanelRequirements && objAPanelRequirements.panelPreferences && objAPanelRequirements.panelPreferences.filter(panel => panel.memberType === MemberType.JUDGE).length > 0 || null;
       const objBPanelPreferences = objBPanelRequirements && objBPanelRequirements.panelPreferences && objBPanelRequirements.panelPreferences.filter(panel => panel.memberType === MemberType.JUDGE).length > 0 || null;
-      return !_.isEqual(objARoleType, objBRoleType) || !_.isEqual(objAPanelPreferences, objBPanelPreferences)
+      return !_.isEqual(objARoleType, objBRoleType) || !_.isEqual(objAPanelPreferences, objBPanelPreferences);
     }));
   }
 }

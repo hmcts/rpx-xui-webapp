@@ -71,7 +71,7 @@ xdescribe('TaskAssignmentConfirmComponent', () => {
           selectedPerson: SELECTED_PERSON
         }
       }
-    }
+    };
     mockRouter.getCurrentNavigation.and.returnValue(navigation);
     mockRouter.url = 'localhost/test',
     TestBed.configureTestingModule({
@@ -302,7 +302,7 @@ xdescribe('TaskAssignmentConfirmComponent', () => {
           selectedPerson: SELECTED_PERSON
         }
       }
-    }
+    };
     mockRouter.getCurrentNavigation.and.returnValue(navigation);
 
     let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;

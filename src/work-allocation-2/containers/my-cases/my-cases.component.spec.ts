@@ -121,5 +121,5 @@ xdescribe('MyCasesComponent', () => {
 // took out action handler test as is handled by wrapper component
   afterEach(() => {
     fixture.destroy();
-  })
+  });
 });

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
+import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
-import { AppUtils } from '../../../app/app-utils';
 
 @Component({
   selector: 'exui-my-cases',

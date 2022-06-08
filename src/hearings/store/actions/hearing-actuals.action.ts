@@ -66,7 +66,7 @@ export class SubmitHearingActualsFailure implements Action {
 }
 
 export class ResetHearingActualsLastError implements Action {
-  public readonly type = RESET_HEARING_ACTUALS_LAST_ERROR
+  public readonly type = RESET_HEARING_ACTUALS_LAST_ERROR;
 }
 
 export type HearingActualsAction =

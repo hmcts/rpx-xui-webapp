@@ -10,6 +10,6 @@ export class LinkedHearingsAnswerConverter implements AnswerConverter {
         const hearingIsLinkedFlag = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingIsLinkedFlag;
         return hearingIsLinkedFlag ? 'Yes' : 'No';
       })
-    )
+    );
   }
 }

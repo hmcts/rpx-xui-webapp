@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-
-import { InfoMessageCommService } from '../../services';
 import { InformationMessage } from '../../models/comms';
+import { InfoMessageCommService } from '../../services';
+
 
 @Component({
   selector: 'exui-info-message-container',

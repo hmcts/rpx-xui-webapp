@@ -3,9 +3,10 @@ import { hearingActualsMainModel } from '../../hearing.test.data';
 import * as fromHearingActualsActions from '../actions/hearing-actuals.action';
 import * as fromHearingActualsReducer from './hearing-actuals.reducer';
 
-describe('Hearing Actuals Reducer', () => {describe('Actions', () => {
+describe('Hearing Actuals Reducer', () => {
+  describe('Actions', () => {
     // Check testing
-describe('Reset action', () => {
+    describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingActualsReducer.initialHearingActualsState;
         const action = new fromHearingActualsActions.ResetHearingActuals();

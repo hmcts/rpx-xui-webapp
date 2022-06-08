@@ -14,6 +14,10 @@ import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { MyCasesComponent } from './my-cases.component';
 
+@Component({
+  template: `<div>Nothing</div>`
+})
+class NothingComponent { }
 @Component({ template: `<exui-my-cases></exui-my-cases>` })
 
 class WrapperComponent {
@@ -41,9 +45,14 @@ describe('MyCasesComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        PaginationModule
+        PaginationModule,
+        RouterTestingModule.withRoutes(
+          [
+            { path: 'service-down', component: NothingComponent },
+          ]
+        )
       ],
-      declarations: [MyCasesComponent, WrapperComponent, WorkCaseListComponent],
+      declarations: [NothingComponent, MyCasesComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
         { provide: WorkAllocationCaseService, useValue: mockCaseService },
         { provide: AlertService, useValue: mockAlertService },

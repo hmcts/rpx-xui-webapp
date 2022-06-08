@@ -14,9 +14,9 @@ class WrapperComponent {
   @Input() public target: string;
 }
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
 
-  describe('UrlFieldComponent', () => {
+  xdescribe('UrlFieldComponent', () => {
     let component: UrlFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

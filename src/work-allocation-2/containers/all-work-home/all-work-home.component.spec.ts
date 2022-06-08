@@ -20,7 +20,7 @@ class WrapperComponent {
   @ViewChild(AllWorkHomeComponent, {static: false}) public appComponentRef: AllWorkHomeComponent;
 }
 
-describe('AllWorkHomeComponent', () => {
+xdescribe('AllWorkHomeComponent', () => {
   let component: AllWorkHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

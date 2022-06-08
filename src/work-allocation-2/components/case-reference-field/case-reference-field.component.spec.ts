@@ -13,9 +13,9 @@ class WrapperComponent {
   @Input() public caseReference: string;
 }
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
 
-  describe('CaseReferenceFieldComponent', () => {
+  xdescribe('CaseReferenceFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_REFERENCE: string = 'Casereference';
 

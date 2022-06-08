@@ -17,7 +17,7 @@ class WrapperComponent {
   @ViewChild(MyCasesFilterComponent, {static: false}) public appComponentRef: MyCasesFilterComponent;
 }
 
-describe('MyCasesFilterComponent', () => {
+xdescribe('MyCasesFilterComponent', () => {
   let component: MyCasesFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

@@ -1,8 +1,8 @@
 import { Task, TaskSearchParameters } from '.';
 import JsonConfig from '../json-config';
 
-describe('WorkAllocation', () => {
-describe('JsonConfig', () => {
+xdescribe('WorkAllocation', () => {
+xdescribe('JsonConfig', () => {
 
     it('should correctly coerce a partial JSON object to a Task', () => {
       const JSON: object = {

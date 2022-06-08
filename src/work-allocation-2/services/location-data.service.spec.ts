@@ -1,11 +1,11 @@
 import { of } from 'rxjs';
 import { LocationDataService } from './location-data.service';
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
 
-  describe('LocationDataService', () => {
+  xdescribe('LocationDataService', () => {
     it('should be Truthy', () => {
       const service = new LocationDataService(mockHttpService, sessionStorageService);
       expect(service).toBeTruthy();

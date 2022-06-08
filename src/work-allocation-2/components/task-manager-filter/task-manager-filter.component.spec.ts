@@ -21,7 +21,7 @@ class WrapperComponent {
   @ViewChild(TaskManagerFilterComponent, {static: false}) public appComponentRef: TaskManagerFilterComponent;
 }
 
-describe('TaskManagerFilterComponent', () => {
+xdescribe('TaskManagerFilterComponent', () => {
   let component: TaskManagerFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

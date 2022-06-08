@@ -16,7 +16,7 @@ import { CaseworkerDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
 
 
-describe('LocationResolver', () => {
+xdescribe('LocationResolver', () => {
 
   let caseworkerDataService: CaseworkerDataService;
   let judicialWorkerDataService: AllocateRoleService;

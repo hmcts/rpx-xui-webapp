@@ -50,9 +50,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   constructor(protected readonly route: ActivatedRoute,
-    public readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService,
-    public readonly locationsDataService: LocationsDataService) {
+              public readonly hearingStore: Store<fromHearingStore.State>,
+              protected readonly hearingsService: HearingsService,
+              public readonly locationsDataService: LocationsDataService) {
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
@@ -73,7 +73,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   /**
-   * TODO: update model base on HMC changes
    * Initializes hearing request from hearing values
    */
   public initializeHearingRequestFromHearingValues(): void {
@@ -103,14 +102,14 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         caseRef: this.hearingListMainModel && this.hearingListMainModel.caseRef || null,
         requestTimeStamp: null,
         hearingID: null,
-        caseDeepLink: "https://manage-cases.platform.net/cases/case-details/1653305282466391", // this.serviceHearingValuesModel.caseDeepLink, // not in the response
-        hmctsInternalCaseName: this.serviceHearingValuesModel.caseName,
-        publicCaseName: this.serviceHearingValuesModel.caseNamePublic,
+        caseDeepLink: this.serviceHearingValuesModel.caseDeepLink,
+        hmctsInternalCaseName: this.serviceHearingValuesModel.hmctsInternalCaseName,
+        publicCaseName: this.serviceHearingValuesModel.publicCaseName,
         caseAdditionalSecurityFlag: this.serviceHearingValuesModel.caseAdditionalSecurityFlag,
         caseCategories: this.serviceHearingValuesModel.caseCategories,
-        caseManagementLocationCode: this.serviceHearingValuesModel.hearingLocations[0].locationId, //this.serviceHearingValuesModel.caseManagementLocationCode,
-        caserestrictedFlag: this.serviceHearingValuesModel.caserestrictedFlag || false,
-        caseSLAStartDate: "2022-11-23T09:00:00.000Z"// this.serviceHearingValuesModel.caseSLAStartDate, // hearing window
+        caseManagementLocationCode: this.serviceHearingValuesModel.caseManagementLocationCode,
+        caserestrictedFlag: this.serviceHearingValuesModel.caserestrictedFlag,
+        caseSLAStartDate: this.serviceHearingValuesModel.caseSLAStartDate,
       },
       partyDetails: combinedParties
     };

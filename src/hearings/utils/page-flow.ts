@@ -32,7 +32,7 @@ export class PageFlow implements AbstractPageFlow {
     combineLatest([this.hearingConditions$, screensNavigations$]).pipe(take(1))
       // @ts-ignore
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
-      const screenModel = screenNavigationModels && screenNavigationModels.find(screenNavigationModel =>
+      const screenModel = screenNavigationModels.find(screenNavigationModel =>
         screenNavigationModel.screenName === this.getCurrentPage());
       if (screenModel) {
         if (!screenModel.conditionKey) {

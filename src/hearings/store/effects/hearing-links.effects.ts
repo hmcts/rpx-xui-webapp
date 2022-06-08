@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { SessionStorageService } from '../../../app/services';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {Action, Store} from '@ngrx/store';
+import {Observable, of} from 'rxjs';
+import {catchError, map, switchMap, tap} from 'rxjs/operators';
+import {SessionStorageService} from '../../../app/services';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as fromHearingReducers from '../../../app/store/reducers';
 import * as hearingLinksActions from '../../../hearings/store/actions/hearing-links.action';
-import { HttpError } from '../../../models/httpError.model';
-import { HearingsService } from '../../services/hearings.service';
+import {HttpError} from '../../../models/httpError.model';
+import {HearingsService} from '../../services/hearings.service';
 
 @Injectable()
 export class HearingLinksEffects {
@@ -23,10 +23,6 @@ export class HearingLinksEffects {
   ) {
   }
 
-  /**
-   * TODO: map returned response
-   * Effect  of hearing links effects
-   */
   @Effect()
   public loadServiceLinkedCases$ = this.actions$.pipe(
     ofType(hearingLinksActions.LOAD_SERVICE_LINKED_CASES),
@@ -35,7 +31,7 @@ export class HearingLinksEffects {
       const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
       const jurisdictionId = caseInfo && caseInfo.jurisdiction;
       return this.hearingsService.loadServiceLinkedCases(jurisdictionId, payload.caseReference, payload.hearingId).pipe(
-        map(response => new hearingLinksActions.LoadServiceLinkedCasesSuccess(response["linkedCases"])),
+        map(response => new hearingLinksActions.LoadServiceLinkedCasesSuccess(response)),
         catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesFailure(error)))
       );
     })
@@ -53,7 +49,7 @@ export class HearingLinksEffects {
     })
   );
 
-  @Effect({ dispatch: false })
+  @Effect({dispatch: false})
   public submitLinkedHearingGroup$ = this.actions$.pipe(
     ofType(hearingLinksActions.SUBMIT_LINKED_HEARING_GROUP),
     map((action: hearingLinksActions.SubmitLinkedHearingGroup) => action.payload),
@@ -74,7 +70,7 @@ export class HearingLinksEffects {
     })
   );
 
-  @Effect({ dispatch: false })
+  @Effect({dispatch: false})
   public manageLinkedHearingGroup$ = this.actions$.pipe(
     ofType(hearingLinksActions.MANAGE_LINKED_HEARING_GROUP),
     map((action: hearingLinksActions.ManageLinkedHearingGroup) => action.payload),
@@ -100,7 +96,7 @@ export class HearingLinksEffects {
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {
-      return of(new fromAppStoreActions.Go({ path: ['/hearings/error'] }));
+      return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));
     }
   }
 }

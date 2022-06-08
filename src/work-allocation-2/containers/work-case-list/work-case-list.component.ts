@@ -13,7 +13,7 @@ import { Location, PaginationParameter } from '../../models/dtos';
   templateUrl: './work-case-list.component.html',
   styleUrls: ['work-case-list.component.scss']
 })
-export class WorkCaseListComponent implements OnInit, OnChanges {
+export class WorkCaseListComponent implements OnChanges {
 
   /**
    * These are the cases & fields as returned from the WA Api.
@@ -73,13 +73,6 @@ export class WorkCaseListComponent implements OnInit, OnChanges {
       }
     }
     return null;
-  }
-
-  public ngOnInit(): void {
-    if (this.rowClassConfig) {
-      const element = document.querySelector(this.rowClassConfig.id);
-      if (element) element.classList.add(this.rowClassConfig.class);
-    }
   }
 
   public ngOnChanges(): void {

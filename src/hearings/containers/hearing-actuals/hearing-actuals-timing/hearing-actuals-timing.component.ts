@@ -18,7 +18,6 @@ import {ValidatorsUtils} from '../../../utils/validators.utils';
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
-  public static TIME_MATCHER = /\d{2}:\d{2}/;
   public formGroup: FormGroup;
   public caseTitle: string;
   public submitted: boolean = false;
@@ -38,13 +37,13 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   private static getStartTime(hearingActuals: HearingActualsMainModel): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime;
-    const actualTime = hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length > 0
+    const actualTime = hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length > 0
       && hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime;
     return actualTime ? HearingActualsTimingComponent.getTime(actualTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
   private static getPauseStartTime(hearingActuals: HearingActualsMainModel): string {
-    const actualTime = hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
+    const actualTime = hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
       && hearingActuals.hearingActuals.actualHearingDays[0] && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes
       && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes.length
       && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0];
@@ -52,7 +51,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   private static getPauseEndTime(hearingActuals: HearingActualsMainModel): string {
-    const actualTime = hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
+    const actualTime = hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
       && hearingActuals.hearingActuals.actualHearingDays[0] && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes
       && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes.length
       && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0];
@@ -61,7 +60,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   private static getEndTime(hearingActuals: HearingActualsMainModel): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime;
-    const actualTime = hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
+    const actualTime = hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
       && hearingActuals.hearingActuals.actualHearingDays[0].hearingEndTime;
     return actualTime ? HearingActualsTimingComponent.getTime(actualTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }

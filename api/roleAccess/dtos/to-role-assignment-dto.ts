@@ -1,6 +1,6 @@
 /* tslint:disable:object-literal-sort-keys */
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
-import { AllocateTo } from '../models/allocate-role.enum';
+import { AllocateTo, RoleCategory } from '../models/allocate-role.enum';
 
 export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
   return {
@@ -80,12 +80,29 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
 }
 
 export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+
+
+  let requestedrole;
+  switch( allocateRoleData.roleCategory){
+    case RoleCategory.JUDICIAL:
+      requestedrole = 'specific-access-judiciary';
+      break;
+    case RoleCategory.LEGAL_OPERATIONS:
+      requestedrole = 'specific-access-legal-ops';
+      break;
+    case RoleCategory.ADMIN:
+      requestedrole = 'specific-access-admin';
+      break;
+    default:
+        break;
+  }
+  debugger;
   return {
     roleRequest: {
       assignerId: currentUserId,
       replaceExisting: true,
       process: 'specific-access',
-      reference: `${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.person.id}`,
+      reference: `${allocateRoleData.caseId}/${requestedrole}/${allocateRoleData.assigneeId}`//'1651226677430150/specific-access-legal-ops/c9f16661-a551-48ae-b255-5372fb63bec3'//`${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.requestId}`,//
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -94,19 +111,19 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       classification: 'PRIVATE',
       attributes: {
         caseId: allocateRoleData.caseId,
-        requestedRole: allocateRoleData.requestedRole,
+        requestedRole: requestedrole//allocateRoleData.requestedRole,//'specific-access-legal-ops'//allocateRoleData.requestedRole
       },
-      roleName: allocateRoleData.typeOfRole.id,
+      roleName: 'specific-access-denied',//allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
-      actorId: allocateRoleData.person.id,
+      actorId: allocateRoleData.assigneeId,
       endTime: new Date(new Date().setDate(new Date().getDate() + 14)),
-      beginTime: new Date(),
+      //beginTime: new Date(),
       notes: [{comment: allocateRoleData.comment,
       time: "2022-05-10T16:34:18.763Z",
-      userId: allocateRoleData.person.id}],
-      originalRequestDate: allocateRoleData.originalRequestDate,
-      originalRequestJustification: allocateRoleData.originalRequestJustification,
+      userId: currentUserId}],
+      // originalRequestDate: allocateRoleData.requestCreated,
+      // originalRequestJustification:  allocateRoleData.originalRequestJustification,
     },
   ],
   };

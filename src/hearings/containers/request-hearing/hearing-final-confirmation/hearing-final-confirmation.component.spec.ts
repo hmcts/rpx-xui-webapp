@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import { HearingFinalConfirmationComponent } from './hearing-final-confirmation.component';
 
@@ -35,7 +35,7 @@ describe('HearingFinalConfirmationComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.sub = new Observable().subscribe();
+    component.sub = of().subscribe();
     spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.sub.unsubscribe).toHaveBeenCalled();

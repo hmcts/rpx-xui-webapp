@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -388,7 +388,7 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.lastErrorSubscription = new Observable().subscribe();
+    component.lastErrorSubscription = of().subscribe();
     spyOn(component.lastErrorSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.lastErrorSubscription.unsubscribe).toHaveBeenCalled();

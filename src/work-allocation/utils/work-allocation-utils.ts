@@ -64,5 +64,5 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
     const assignedCW = caseworkers.filter(cw => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }
-  return null
+  return null;
 };

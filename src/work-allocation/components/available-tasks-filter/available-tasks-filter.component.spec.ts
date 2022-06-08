@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
@@ -48,19 +48,23 @@ describe('AvailableTasksFilterComponent', () => {
         { provide: SessionStorageService, useValue: mockSessionStorageService},
         { provide: Router, useValue: mockRouter }
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WrapperComponent);
-    fixture.whenStable();
+
     wrapper = fixture.debugElement.componentInstance;
     component = wrapper.appComponentRef;
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
+    
     mockSessionStorageService.getItem.and.callFake((key) => {
       return mocksessionStore[key];
     });
     mockSessionStorageService.setItem.and.callFake((key, value) => {
       mocksessionStore[key] = value;
     });
+
+    fixture.whenStable();
 
     fixture.detectChanges();
   });

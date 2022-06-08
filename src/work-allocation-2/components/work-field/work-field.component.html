@@ -1,12 +1,12 @@
 <ng-container *ngIf="config && workField" [ngSwitch]="config.type" class="xui-work-field">
-  <ng-container *ngSwitchCase="fieldType.STRING" >
+  <ng-container *ngSwitchCase="fieldType.STRING">
     {{ workField[config.name] }}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.CASE_REFERENCE_STRING">
     {{ workField[config.name] | ccdCaseReference }}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE_DUE">
-    <xuilib-due-date  [dueDate]="toDate(workField[config.name])"></xuilib-due-date>
+    <xuilib-due-date [dueDate]="toDate(workField[config.name])"></xuilib-due-date>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE_AGE_DAYS">
     {{ workField[config.name] | daysFromToday }}

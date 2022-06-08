@@ -18,6 +18,7 @@ import { MyCasesComponent } from './my-cases.component';
   template: `<div>Nothing</div>`
 })
 class NothingComponent { }
+
 @Component({ template: `<exui-my-cases></exui-my-cases>` })
 
 class WrapperComponent {
@@ -52,7 +53,7 @@ describe('MyCasesComponent', () => {
           ]
         )
       ],
-      declarations: [NothingComponent, MyCasesComponent, WrapperComponent, WorkCaseListComponent],
+      declarations: [MyCasesComponent, WrapperComponent, WorkCaseListComponent, NothingComponent],
       providers: [
         { provide: WorkAllocationCaseService, useValue: mockCaseService },
         { provide: AlertService, useValue: mockAlertService },

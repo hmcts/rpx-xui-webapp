@@ -107,6 +107,41 @@ export async function getSpecificAccessApproved(req, resp, next) {
   }
 }
 
+
+
+export async function deleteLabellingRoleAssignment (req, resp, next) {
+  debugger;
+
+  let deletedRoles: [string] ;
+  try {
+    if (!req.session || !req.session.roleAssignmentResponse) {
+      return resp.status(401);
+    }
+    const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
+    // to test :  'challenged-access-legal-ops'
+    const sAAprrovedRoles = currentUserAssignments.filter(roleAssignment => roleAssignment.attributes
+      && roleAssignment.roleName === 'specific-access-approved'
+      && roleAssignment.attributes.caseId ===  req.params.caseId /*'1576166009739484'*/ ) ;
+
+    if (!sAAprrovedRoles || sAAprrovedRoles.length === 0 ) {
+      return resp.status(204);
+    }
+    sAAprrovedRoles.forEach( role =>
+      {
+        debugger;
+        //role.id is AssignmentID
+        //deleteRoleByCaseAndRoleId called normally like that :  const body = {assigmentId};
+        req.body = { assigmentId:  role.id}
+        deleteRoleByCaseAndRoleId(req, resp, next)
+      }
+    )
+
+    return resp.status(200).send({  });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export function mapResponseToCaseRoles(
   roleAssignments: RoleAssignment[],
   assignmentId: string,

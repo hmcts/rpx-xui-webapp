@@ -3,6 +3,7 @@ import authInterceptor from '../lib/middleware/auth';
 import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
 import { confirmAllocateRole,
   createSpecificAccessApprovalRole,
+  deleteLabellingRoleAssignment,
   deleteRoleByCaseAndRoleId,
   getAccessRolesByCaseId,
   getJudicialUsers,
@@ -29,6 +30,7 @@ router.post('/roles/access-get', getAccessRolesByCaseId);
 router.post('/roles/getJudicialUsers', getJudicialUsers);
 
 router.get('/roles/getSpecificAccessApproved', getSpecificAccessApproved );
+router.delete('/roles/deleteLabellingRoleAssignment/:caseId', deleteLabellingRoleAssignment );
 
 router.post('/allocate-role/specific-access-approval', createSpecificAccessApprovalRole);
 

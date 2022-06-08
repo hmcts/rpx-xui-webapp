@@ -79,6 +79,10 @@ export class AllocateRoleService {
     return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getSpecificAccessApproved`);
   }
 
+  public deleteLabellingRoleAssignment(caseId: string): Observable<any> {
+    return this.http.delete<any>(`${AllocateRoleService.roleUrl}/deleteLabellingRoleAssignment/${caseId}` );
+  }
+
   public getCaseRolesUserDetails(userIds: string[], services: string[]): Observable<CaseRoleDetails[]> {
     if (userIds && userIds.length > 0) {
       return this.http.post<CaseRoleDetails[]>(`${AllocateRoleService.roleUrl}/getJudicialUsers`, {userIds, services});

@@ -14,9 +14,9 @@ class WrapperComponent {
   @Input() public caseId: string;
 }
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
 
-  describe('CaseNameFieldComponent', () => {
+  xdescribe('CaseNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_NAME: string = 'Casename';
     const CASE_ID: string = 'CaseId';

@@ -16,9 +16,9 @@ class WrapperComponent {
   @Input() public task: Task;
 }
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
 
-  describe('TaskFieldComponent', () => {
+  xdescribe('TaskFieldComponent', () => {
     let component: TaskFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

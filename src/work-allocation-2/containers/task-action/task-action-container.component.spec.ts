@@ -37,9 +37,9 @@ class WrapperComponent {
 class NothingComponent {
 }
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
 
-  describe('TaskActionContainerComponent', () => {
+  xdescribe('TaskActionContainerComponent', () => {
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

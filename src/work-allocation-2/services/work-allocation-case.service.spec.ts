@@ -2,10 +2,10 @@ import { ListConstants } from '../components/constants';
 import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
 import { ACTION, WorkAllocationCaseService } from './work-allocation-case.service';
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
-  describe('WorkAllocationCaseService', () => {
+  xdescribe('WorkAllocationCaseService', () => {
     it('should be Truthy', () => {
       const service = new WorkAllocationCaseService(mockHttpService);
       expect(service).toBeTruthy();

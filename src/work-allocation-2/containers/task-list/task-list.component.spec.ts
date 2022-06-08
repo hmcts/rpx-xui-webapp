@@ -73,7 +73,7 @@ function getTaskService(): TaskServiceConfig {
   };
 }
 
-describe('TaskListComponent', () => {
+xdescribe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -444,7 +444,7 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('created_date');
   });
 
-  describe('act upon deep linking', () => {
+  xdescribe('act upon deep linking', () => {
     const id = '12345678';
 
     it('should select appropriate task from location hash', () => {
@@ -476,7 +476,7 @@ describe('TaskListComponent', () => {
     });
   });
 
-  describe('pagination display state', () => {
+  xdescribe('pagination display state', () => {
     it('should display pagination', async () => {
       component.tasks = getTasks();
       expect(component.isPaginationEnabled()).toEqual(true);
@@ -488,7 +488,7 @@ describe('TaskListComponent', () => {
     });
   });
 
-  describe('generate pagination summary', () => {
+  xdescribe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {

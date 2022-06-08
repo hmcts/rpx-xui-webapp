@@ -35,7 +35,7 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
-describe('MyTasksComponent', () => {
+xdescribe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

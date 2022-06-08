@@ -23,9 +23,9 @@ function getTasks(): Task[] {
   return getMockTasks();
 }
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
 
-  describe('DerivedIconFieldComponent', () => {
+  xdescribe('DerivedIconFieldComponent', () => {
     let component: DerivedIconFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

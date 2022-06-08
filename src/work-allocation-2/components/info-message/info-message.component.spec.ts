@@ -14,9 +14,9 @@ class WrapperComponent {
   @Input() public message: InfoMessage;
 }
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
 
-  describe('InfoMessageComponent', () => {
+  xdescribe('InfoMessageComponent', () => {
     let component: InfoMessageComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

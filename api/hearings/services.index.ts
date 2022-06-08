@@ -4,6 +4,7 @@ import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
 import {EnhancedRequest} from '../lib/models';
+import {DEFAULT_SCREEN_FLOW} from "./data/defaultScreenFlow.data";
 import {
   ServiceLinkedCasesModel
 } from './models/linkHearings.model';
@@ -23,7 +24,15 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   const markupPath: string = `${servicePath}/serviceHearingValues`;
   try {
     const {status, data}: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
-    res.status(status).send(data);
+    let dataByDefault = data;
+    // If service don't pass the screenFlow set the default screen flow from ExUI
+    if (!data.screenFlow) {
+      dataByDefault = {
+        ...data,
+        screenFlow: DEFAULT_SCREEN_FLOW,
+      };
+    }
+    res.status(status).send(dataByDefault);
   } catch (error) {
     next(error);
   }

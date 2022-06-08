@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { initialState } from '../../../hearings/hearing.test.data';
 import * as fromHearingStore from '../../store';
 import { ErrorPageComponent } from './error-page.component';
@@ -46,7 +46,7 @@ describe('ErrorPageComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.sub = new Observable().subscribe();
+    component.sub = of().subscribe();
     spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.sub.unsubscribe).toHaveBeenCalled();

@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { mergeMap, switchMap } from 'rxjs/operators';
 
 import { UserInfo } from '../../../app/models';
@@ -56,6 +56,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   };
   private pCasesTotal: number;
   private pUniqueCases: number;
+  public routeEventsSubscription: Subscription;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -150,6 +151,17 @@ export class WorkCaseListWrapperComponent implements OnInit {
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
+    this.router.events.subscribe(routeEvent => {
+      if (routeEvent instanceof NavigationEnd) {
+        const tree = this.router.parseUrl(this.router.url);
+        if (tree.fragment) {
+          const element = document.querySelector('#' + tree.fragment);
+          if (element) {
+            element.scrollIntoView({block: 'center'});
+          }
+        }
+      }
+    })
   }
 
   public setupCaseWorkers(): void {

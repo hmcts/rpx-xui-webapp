@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';

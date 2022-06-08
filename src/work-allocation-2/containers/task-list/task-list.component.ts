@@ -1,7 +1,7 @@
 import { isDefined } from '@angular/compiler/src/util';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
@@ -221,6 +221,7 @@ export class TaskListComponent implements OnChanges {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
       if (this.selectedTask) {
+        this.router.url.concat(`manage_${this.selectedTask.id}`);
         this.router.navigate([basePath], {fragment: `manage_${this.selectedTask.id}`});
       } else {
         this.router.navigate([basePath]);

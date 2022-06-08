@@ -1,13 +1,13 @@
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { RoleCategory } from '../../role-access/models';
 import {
-    getCurrentUserRoleCategory, getDestinationUrl, getLabel,
-    getOptions, getRoleCategoryToBeSelectedByDefault,
-    handleFatalErrors,
-    handleTasksFatalErrors,
-    REDIRECTS,
-    treatAsFatal,
-    WILDCARD_SERVICE_DOWN
+  getCurrentUserRoleCategory, getDestinationUrl, getLabel,
+  getOptions, getRoleCategoryToBeSelectedByDefault,
+  handleFatalErrors,
+  handleTasksFatalErrors,
+  REDIRECTS,
+  treatAsFatal,
+  WILDCARD_SERVICE_DOWN
 } from './work-allocation-utils';
 
 xdescribe('WorkAllocationUtils', () => {
@@ -210,7 +210,7 @@ xdescribe('WorkAllocationUtils', () => {
     try {
       getLabel('some' as RoleCategory);
     } catch (error) {
-      expect(error.message).toContain('Invalid roleCategory')
+      expect(error.message).toContain('Invalid roleCategory');
     }
   });
 

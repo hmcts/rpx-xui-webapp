@@ -9,9 +9,9 @@ import * as organisationActions from '../actions';
 @Injectable()
 export class OrganisationEffects {
   constructor(
-    private actions$: Actions,
-    private organisationService: OrganisationService,
-    private loggerService: LoggerService
+    private readonly actions$: Actions,
+    private readonly organisationService: OrganisationService,
+    private readonly loggerService: LoggerService
   ) { }
 
   @Effect()

@@ -1,6 +1,6 @@
-import {Action} from '@ngrx/store';
-import {HearingListMainModel} from '../../models/hearingListMain.model';
-import {HttpError} from '../../../models/httpError.model';
+import { Action } from '@ngrx/store';
+import { HttpError } from '../../../models/httpError.model';
+import { HearingListMainModel } from '../../models/hearingListMain.model';
 
 export const RESET_HEARING_LIST = '[HEARING LIST] Reset Hearing List';
 export const LOAD_ALL_HEARINGS = '[HEARING LIST] Load All Hearings';
@@ -26,7 +26,7 @@ export class LoadAllHearingsSuccess implements Action {
 }
 
 export class LoadAllHearingsFailure implements Action {
-  public readonly type = LOAD_ALL_HEARINGS_FAILURE
+  public readonly type = LOAD_ALL_HEARINGS_FAILURE;
 
   constructor(public payload: HttpError) {
   }

@@ -1,7 +1,6 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
-
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
@@ -11,14 +10,15 @@ import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
+
 @Component({
   selector: 'exui-all-work-tasks',
   templateUrl: 'all-work-task.component.html',
   styleUrls: ['all-work-task.component.scss']
 })
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
-  private static ALL_TASKS = 'All';
-  private static AVAILABLE_TASKS = 'None / Available tasks';
+  private static readonly ALL_TASKS = 'All';
+  private static readonly AVAILABLE_TASKS = 'None / Available tasks';
   public locations: Location[];
   public waSupportedJurisdictions$: Observable<string[]>;
   public sortedBy: SortField = {
@@ -29,7 +29,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     page_number: 1,
     page_size: 25
   };
-  private selectedLocation: Location = {
+  private readonly selectedLocation: Location = {
     id: '**ALL LOCATIONS**',
     locationName: '',
     services: [],
@@ -79,10 +79,10 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       }
       if (locationParameter) {
         searchParameters.push(locationParameter);
-      };
+      }
       if (taskTypeParameter) {
         searchParameters.push(taskTypeParameter);
-      };
+      }
       return {
         search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],

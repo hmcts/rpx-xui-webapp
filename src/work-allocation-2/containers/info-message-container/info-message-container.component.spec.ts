@@ -44,7 +44,7 @@ xdescribe('WorkAllocation', () => {
 
     xit('should create', () => {
       expect(component).toBeDefined();
-    })
+    });
   });
 
 });

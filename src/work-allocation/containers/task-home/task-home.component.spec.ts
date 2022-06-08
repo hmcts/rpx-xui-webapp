@@ -24,7 +24,7 @@ describe('TaskHomeComponent', () => {
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,

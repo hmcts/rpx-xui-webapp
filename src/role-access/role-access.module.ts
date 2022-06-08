@@ -6,7 +6,6 @@ import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import { CaseworkerDataService } from '../work-allocation-2/services';
@@ -16,6 +15,7 @@ import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
+
 
 @NgModule({
   imports: [
@@ -50,7 +50,7 @@ export class RoleAccessModule {
     RoleAccessModule.forRoot();
   }
 
-  static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders {
     return {
       ngModule: RoleAccessModule,
       providers: []

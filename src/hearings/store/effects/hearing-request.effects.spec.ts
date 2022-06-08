@@ -215,7 +215,7 @@ describe('Hearing Request Effects', () => {
         timestamp: '',
         exception: '',
         path: ''
-      }
+      };
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.updateHearingRequest.and.returnValue(Observable.throwError(error));
       const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);

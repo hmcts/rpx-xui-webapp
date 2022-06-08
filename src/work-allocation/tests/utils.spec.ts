@@ -1,10 +1,9 @@
 import { NavigationExtras } from '@angular/router';
 import { Observable, of } from 'rxjs';
-
-import { Caseworker, Location } from '../models/dtos';
 import { ConfigConstants } from '../components/constants';
 import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../enums';
 import { InformationMessage } from '../models/comms';
+import { Caseworker, Location } from '../models/dtos';
 import { Task, TaskFieldConfig, TaskServiceConfig } from '../models/tasks';
 
 const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: [ 'a' ] };

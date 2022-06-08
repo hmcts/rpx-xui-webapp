@@ -5,11 +5,10 @@ import { of } from 'rxjs/internal/observable/of';
 import { map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
 import { UserInfo, UserRole } from '../../app/models';
-
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
-import { Task } from '../models/tasks';
+import { Task, TaskRole } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
-import { TaskRole } from '../models/tasks';
+
 
 const BASE_URL: string = '/workallocation2/task';
 

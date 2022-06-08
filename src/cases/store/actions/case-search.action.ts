@@ -1,4 +1,4 @@
-import {Action} from '@ngrx/store';
+import { Action } from '@ngrx/store';
 
 export const JURISDICTION_SELECTED = '[CreateSearch] Jurisdiction Selected';
 export const APPLIED = '[CreateSearch] Applied';
@@ -57,7 +57,7 @@ export class FindSearchPaginationMetadataSuccess implements Action {
 }
 
 export class ApplySearchFilterSuccess implements Action {
-  readonly type = APPLY_SEARCH_FILTER_SUCCESS;
+  public readonly type = APPLY_SEARCH_FILTER_SUCCESS;
   constructor(public payload: any) {}
 }
 
@@ -68,12 +68,12 @@ export class ApplySearchFilterFail implements Action {
 }
 
 export class SearchFilterToggle implements Action {
-  readonly type = SEARCH_FILTER_DISPLAY_TOGGLE;
+  public readonly type = SEARCH_FILTER_DISPLAY_TOGGLE;
   constructor(public payload: any) {
   }
 }
 export class SearchFilterToggleSuccess implements Action {
-  readonly type = SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS;
+  public readonly type = SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS;
   constructor(public payload: any) {
   }
 }

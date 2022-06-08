@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
+
 
 const BASE_URL: string = '/workallocation/task';
 export enum ACTION {
@@ -16,7 +16,7 @@ export enum ACTION {
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationTaskService {
-  public static WorkAllocationUrl = 'workallocation2';
+  public static workAllocationUrl = 'workallocation2';
 
   constructor(private readonly http: HttpClient) {}
 

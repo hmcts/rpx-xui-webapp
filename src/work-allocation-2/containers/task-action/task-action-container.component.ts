@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -16,6 +15,7 @@ import { Task, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getAssigneeName, handleFatalErrors } from '../../utils';
+
 
 
 @Component({
@@ -46,7 +46,7 @@ export class TaskActionContainerComponent implements OnInit {
       const url = window.history.state.returnUrl;
       if (window.history.state.keepUrl) {
         return url;
-      };
+      }
       return url.split('/').splice(0, 3).join('/');
     }
     return '/work/my-work/list';
@@ -77,7 +77,7 @@ export class TaskActionContainerComponent implements OnInit {
       if (!this.tasks[0].assigneeName) {
         this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe(judicialDetails => {
           this.tasks[0].assigneeName = judicialDetails[0].known_as;
-        })
+        });
       }
     }
   }
@@ -89,7 +89,7 @@ export class TaskActionContainerComponent implements OnInit {
       const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
       return isJudge;
     }
-    return false
+    return false;
   }
 
   public performAction(): void {
@@ -160,7 +160,7 @@ export class TaskActionContainerComponent implements OnInit {
         state = {
           showMessage: true,
           messageText: message.message
-        }
+        };
       } else {
         this.messageService.nextMessage(message);
       }

@@ -8,7 +8,6 @@ import { filter, map } from 'rxjs/operators';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { AppUtils } from '../../../app/app-utils';
 import * as fromAppStore from '../../../app/store';
-import { Location } from '../../models/dtos';
 
 @Component({
   selector: 'exui-case-manager-filter',
@@ -18,7 +17,7 @@ import { Location } from '../../models/dtos';
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
-  private static FILTER_NAME: string = 'all-work-cases-filter';
+  private static readonly FILTER_NAME: string = 'all-work-cases-filter';
   @Input() public jurisdictions: string[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {

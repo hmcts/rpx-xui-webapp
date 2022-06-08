@@ -161,7 +161,7 @@ xdescribe('AllWorkTaskComponent', () => {
     expect(searchRequest.search_parameters).not.toContain({key: 'person', operator: 'IN', values: []});
     expect(searchRequest.search_parameters).toContain({key: 'role_category', operator: 'IN', values: ['JUDICIAL']});
     // expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'IN', values: ['High']});
-  })
+  });
 
   afterEach(() => {
     fixture.destroy();

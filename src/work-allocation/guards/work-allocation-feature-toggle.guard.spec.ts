@@ -7,7 +7,7 @@ describe('WorkAllocationFeatureToggleGuard', () => {
     let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
     let guard: WorkAllocationFeatureToggleGuard;
     let routerMock: jasmine.SpyObj<Router>;
-    beforeEach(async() => {
+    beforeEach(async () => {
         featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('FeatureToggleService', ['isEnabled', 'getValueOnce']);
         routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
         guard = new WorkAllocationFeatureToggleGuard(featureToggleMock, routerMock);

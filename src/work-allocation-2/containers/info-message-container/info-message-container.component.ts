@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
-
 import { InformationMessage } from '../../models/comms';
+
 
 @Component({
   selector: 'exui-info-message-container',
@@ -14,7 +14,7 @@ export class InfoMessageContainerComponent implements OnInit {
   public infoMessages: InformationMessage[];
   public lastMessage: InformationMessage;
   private currentUrl: string;
-  private excludeUrls = ['#manage', 'role-access'];
+  private readonly excludeUrls = ['#manage', 'role-access'];
 
   constructor(
     private readonly router: Router,

@@ -2,7 +2,7 @@ import * as fromActions from '../actions/organisation.actions';
 import * as fromOrganisation from './organisation.reducer';
 
 describe('OrganisationReducer', () => {
-describe('undefined action', () => {
+  describe('undefined action', () => {
     it('should return the default state', () => {
       const { initialState } = fromOrganisation;
       const action = {} as any;

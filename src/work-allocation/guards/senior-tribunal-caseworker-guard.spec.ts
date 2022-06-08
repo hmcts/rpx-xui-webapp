@@ -6,7 +6,7 @@ describe('SeniorTribunalCaseworkerGuard', () => {
     let guard: SeniorTribunalCaseworkerGuard;
     let routerMock: jasmine.SpyObj<Router>;
     let sessionStorageService: any;
-    beforeEach(async() => {
+    beforeEach(async () => {
         routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
         sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
         guard = new SeniorTribunalCaseworkerGuard(routerMock, sessionStorageService);

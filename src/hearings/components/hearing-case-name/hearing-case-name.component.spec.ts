@@ -31,7 +31,7 @@ describe('HearingPartiesTitleComponent', () => {
   });
 
   it('should destroy subscription', () => {
-    component.serviceValueSub = of().subscribe()
+    component.serviceValueSub = of().subscribe();
     const unsubscribeSpy = spyOn(component.serviceValueSub, 'unsubscribe');
     component.ngOnDestroy();
     expect(unsubscribeSpy).toHaveBeenCalled();

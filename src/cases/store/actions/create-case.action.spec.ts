@@ -1,8 +1,9 @@
 import * as fromCreateCases from './create-case.action';
 
-describe('Create Cases Actions', () => {describe('Create Cases', () => {
+describe('Create Cases Actions', () => {
+  describe('Create Cases', () => {
     // Check testing
-describe('Apply Change', () => {
+    describe('Apply Change', () => {
       it('should create an action', () => {
         const payload = {};
         const action = new fromCreateCases.ApplyChange(payload);

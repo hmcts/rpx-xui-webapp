@@ -1,9 +1,8 @@
-import * as _ from 'lodash';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {State} from '../store/reducers';
-import {IsAmendedConverter} from './is-amended.converter';
 import * as moment from 'moment';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { State } from '../store/reducers';
+import { IsAmendedConverter } from './is-amended.converter';
 
 export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {

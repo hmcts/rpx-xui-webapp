@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { forkJoin, Subscription } from 'rxjs';
 import { HearingListMainModel } from '../../../models/hearingListMain.model';
@@ -104,7 +104,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       });
     });
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
-    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`])
+    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
   }
 
   public onSubmit() {

@@ -29,8 +29,8 @@ export class ExclusionNavigationComponent implements OnInit {
   public exclusionNavigationEvent = ExclusionNavigationEvent;
 
   constructor(
-    private store: Store<fromFeature.State>,
-    private appStore: Store<fromRoot.State>
+    private readonly store: Store<fromFeature.State>,
+    private readonly appStore: Store<fromRoot.State>
   ) {
   }
 

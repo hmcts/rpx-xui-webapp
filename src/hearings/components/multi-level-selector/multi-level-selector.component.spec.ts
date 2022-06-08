@@ -5,7 +5,7 @@ import { ControlTypeEnum } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 
 class DataModelConvertor {
-  constructor(private fb: FormBuilder) { }
+  constructor(private readonly fb: FormBuilder) { }
   public patchValues = (refDataModel: LovRefDataModel) => {
     return this.fb.group({
       key: [refDataModel.key],

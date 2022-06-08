@@ -25,7 +25,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   try {
     const {status, data}: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
     let dataByDefault = data;
-    // If service don't pass the screenFlow set the default screen flow from ExUI
+    // If service don't supply the screenFlow pre-set the default screen flow from ExUI
     if (!data.screenFlow) {
       dataByDefault = {
         ...data,

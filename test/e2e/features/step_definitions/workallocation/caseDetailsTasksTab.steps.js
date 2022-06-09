@@ -103,7 +103,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             } 
         }
         expect(linkToClick !== null, `lnk with text ${attributeLinktext} not found in next steps`).to.be.true;
-        await linkToClick.click();
+        
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await linkToClick.click();
+        });
 
         await BrowserWaits.retryWithActionCallback(async () => {
             await BrowserWaits.waitForElement($('ccd-case-edit-page'));

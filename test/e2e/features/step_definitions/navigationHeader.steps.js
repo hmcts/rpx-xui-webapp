@@ -73,6 +73,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see primary navigation tabs {string} in main header', async function (navigationTabs) {
         await browserWaits.retryWithActionCallback(async () => {
+            await browserUtil.waitForLD(); 
             try{
                 const softAssert = new SoftAssert();
                 const navigationTabsArr = navigationTabs.split(',');
@@ -101,6 +102,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     })
 
     Then('I do not see primary navigation tabs does not exist excluding {string}', async function (displayedTabs,allTabsDatatable) {
+        await browserUtil.waitForLD();
         const tableHashes = allTabsDatatable.hashes();
         const displayedTabArr = [];
         for (const dusplayedTab of displayedTabs.split(",")){
@@ -142,6 +144,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see primary navigation tabs {string} in right side header column', async function (navigationTabs) {
         await browserWaits.retryWithActionCallback(async () => {
+            await browserUtil.waitForLD(); 
             try{
                 const softAssert = new SoftAssert();
                 const navigationTabsArr = navigationTabs.split(',');
@@ -182,7 +185,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate header displayed for user type {string}', async function(userType){
         await browserWaits.retryWithActionCallback(async () => {
-            
+            await browserUtil.waitForLD(); 
             try{
                 await headerPage.validateHeaderDisplayedForUserType(userType);
             }catch(err){

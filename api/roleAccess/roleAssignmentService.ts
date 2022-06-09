@@ -72,15 +72,6 @@ export async function getRolesByCaseId(req: EnhancedRequest): Promise<AxiosRespo
   return response;
 }
 
-export async function getRolesByCaseId(req: EnhancedRequest): Promise<AxiosResponse<Role[]>> {
-  const actorId = req.body.assignmentId;
-  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-  const fullPath = `${basePath}/am/role-assignments/roles`;
-  const headers = setHeaders(req);
-  const response: AxiosResponse<Role[]> = await http.get(fullPath, { headers });
-  return response;
-}
-
 function filterRoleAssignments(): (value: Role, index: number, array: Role[]) => unknown {
   return role => role.substantive && role.patterns.filter(pattern => pattern.roleType.values.includes('CASE')).length > 0;
 }

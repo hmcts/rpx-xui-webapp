@@ -540,7 +540,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     case_name: getCaseName(caseDetail),
     case_role: roleAssignment.roleName,
     role: roleAssignment.roleName,
-    endDate: roleAssignment.endTime,
+    endDate: getEndDate(roleAssignment),
     id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,
     jurisdictionId: caseDetail.jurisdiction,
@@ -555,8 +555,12 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
   };
 }
 export function getGrantType(roleAssignment: RoleAssignment) {
-  if (roleAssignment.grantType === 'SPECIFIC' || roleAssignment.roleName === 'specific-access-requested') {
-    return 'Specific';
+  if (roleAssignment.grantType === 'SPECIFIC'
+      ||
+      roleAssignment.roleName === 'specific-access-requested'
+      ||
+      roleAssignment.roleName === 'specific-access-denied') {
+      return 'Specific';
   } else if (roleAssignment.grantType) {
     return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
       return second.toUpperCase() + third.toLowerCase();
@@ -568,11 +572,22 @@ export function getGrantType(roleAssignment: RoleAssignment) {
 
 export function getStartDate(roleAssignment: RoleAssignment): Date | string {
   if (roleAssignment.roleName === 'specific-access-requested') {
+    return 'Pending';
+  } else if (roleAssignment.roleName === 'specific-access-denied') {
     return 'Not authorised';
   } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED') && roleAssignment.beginTime) {
     return formatDate(new Date(roleAssignment.beginTime));
   }
   return roleAssignment.beginTime;
+}
+
+export function getEndDate(roleAssignment: RoleAssignment): Date | string {
+  if (roleAssignment.roleName === 'specific-access-requested' || roleAssignment.roleName === 'specific-access-denied') {
+    return '';
+  } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED') && roleAssignment.endTime) {
+    return formatDate(new Date(roleAssignment.endTime));
+  }
+  return roleAssignment.endTime;
 }
 
 export function formatDate(date: Date) {

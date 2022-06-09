@@ -29,7 +29,8 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
     }
     case SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST: {
       return {
-        ...currentState
+        ...currentState,
+        period: action.payload.period
       };
     }
     case SpecificAccessActionTypes.CHANGE_NAVIGATION: {
@@ -54,7 +55,10 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         jurisdiction: action.payload.jurisdiction,
         caseName: action.payload.caseName,
         requestCreated: action.payload.requestCreated,
-        actorId: action.payload.actorId
+        actorId: action.payload.actorId,
+        accessReason: action.payload.accessReason,
+        roleCategory: action.payload.roleCategory,
+        requestedRole: action.payload.requestedRole
       };
     }
     case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_FORM_DATA: {

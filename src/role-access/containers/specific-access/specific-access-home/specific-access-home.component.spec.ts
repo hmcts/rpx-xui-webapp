@@ -11,11 +11,13 @@ import { UtilsModule } from '../../../../noc/containers/noc-field/utils/utils.mo
 import * as fromFeature from '../../../store';
 import * as fromContainers from '../../add-exclusion';
 import { SpecificAccessHomeComponent } from './specific-access-home.component';
-import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+import { CaseRole, RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { AccessReason, DurationType } from '../../../models/enums';
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { DurationHelperService } from '../../../services';
+import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
+import { getMockTasks } from 'src/work-allocation-2/tests/utils.spec';
 
 describe('SpecificAccessHomeComponent', () => {
   let component: SpecificAccessHomeComponent;
@@ -25,6 +27,8 @@ describe('SpecificAccessHomeComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'
   ]);
+  const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRolesUserDetails']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getCaseworkersForServices']);
   let mockStore: MockStore<fromFeature.State>;
   let mockFormBuilder: FormBuilder;
   let storeDispatchMock: any;
@@ -32,7 +36,17 @@ describe('SpecificAccessHomeComponent', () => {
     caseId: '111111',
     state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW
   };
-
+  const caseRole: CaseRole = {
+    id: '123456789',
+    name: 'name',
+    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+    location: null,
+    start: '01-01-2000',
+    end: '01-01-2005',
+    actorId: 'person',
+    actions: null,
+    email: 'N/A'
+  }
 
   beforeEach(() => {
     durationHelperService = new DurationHelperService();
@@ -41,7 +55,8 @@ describe('SpecificAccessHomeComponent', () => {
         ReactiveFormsModule,
         UtilsModule,
         RouterTestingModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        PipesModule
       ],
       schemas: [
         NO_ERRORS_SCHEMA
@@ -61,8 +76,13 @@ describe('SpecificAccessHomeComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              queryParams: {
-                caseId: '111111',
+              data: {
+                taskAndRole: {
+                  task: {
+                    task: getMockTasks()[0]
+                  },
+                  role: [caseRole]
+                }
               }
             }
           }
@@ -99,7 +119,7 @@ describe('SpecificAccessHomeComponent', () => {
     });
 
     it('should correctly navigate to the specific access duration page on pressing continue on the specific access review page', () => {
-      component.specificAccessReviewComponent = new SpecificAccessReviewComponent(mockFormBuilder, mockStore);
+      component.specificAccessReviewComponent = new SpecificAccessReviewComponent(mockFormBuilder, mockStore, mockAllocateRoleService, mockCaseworkerDataService);
       component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_REVIEW;
       component.specificAccessReviewComponent.reviewOptionControl = new FormControl('', [Validators.required]);
       component.specificAccessReviewComponent.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);

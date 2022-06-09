@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Location as AngularLocation } from '@angular/common';
@@ -36,6 +36,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public static readonly FILTER_NAME = 'myWork';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
+  public allowTypesOfWorkFilter = true;
   public showFilteredText = false;
   public noDefaultLocationMessage = 'Use the work filter to show tasks and cases based on service, work type and location';
   public error: ErrorMessage;
@@ -59,8 +60,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public bookingLocations: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
+  private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
+  public hideButton: boolean;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
@@ -79,6 +82,26 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           this.router.getCurrentNavigation().extras.state.location) {
           this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
       }
+      this.router.events.pipe(
+          filter((event) => event instanceof NavigationEnd),
+          map(() => this.route.snapshot),
+          map((activatedRoute: ActivatedRouteSnapshot) => {
+            while (activatedRoute.firstChild) {
+              activatedRoute = activatedRoute.firstChild;
+            }
+            return activatedRoute;
+          })
+        )
+        .subscribe((activatedRouteSnapshot: ActivatedRouteSnapshot) => {
+          this.hideButton = activatedRouteSnapshot.url[0].path && activatedRouteSnapshot.url[0].path.includes('my-access');
+          if (this.hideButton) {
+            this.toggleFilter = false;
+            setTimeout(() => {
+              const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
+              (typesOfWorkParentElem as HTMLElement).style.display = 'none';
+            }, 0);
+          }
+        });
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
@@ -155,6 +178,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
     if (this.errorSubscription && !this.errorSubscription.closed) {
       this.errorSubscription.unsubscribe();
+    }
+
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
     }
   }
 
@@ -254,7 +281,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       options: [
         {
           key: 'types_of_work_all',
-          label: 'Select all',
+          label: 'All work types',
           selectAll: true
         },
         ...typesOfWork
@@ -311,6 +338,31 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
+  }
+
+  /**
+   * Sets the value of the allowTypesOfWorkFilter boolean determined by provided params
+   *
+   * @param url - the url string to check against
+   * @param myCaseUrl - the string to search for in the url
+   */
+  private setAllowTypesOfWorkFilter(url: string, myCasesUrl = 'my-work/my-cases'): void {
+    this.allowTypesOfWorkFilter = !url.includes(myCasesUrl);
+  }
+
+  /**
+   * Toggles the filter state
+   *
+   * @param showTypesOfWorkFilter - used to determine whether the types-of-work filters will be displayed
+   */
+  public onToggleFilter(showTypesOfWorkFilter: boolean): void {
+    this.toggleFilter = !this.toggleFilter;
+    if (this.toggleFilter) {
+      setTimeout(() => {
+        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
+        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+      }, 0);
+    }
   }
 
 }

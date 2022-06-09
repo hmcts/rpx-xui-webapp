@@ -8,6 +8,7 @@ import { ExclusionsTableComponent } from '../../../role-access/components/exclus
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
+import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '..';
 import { RolesAndAccessComponent } from './roles-and-access.component';
 
 describe('RolesAndAccessComponent', () => {
@@ -22,6 +23,8 @@ describe('RolesAndAccessComponent', () => {
         CaseRolesTableComponent,
         ShowAllocateLinkDirective,
         ExclusionsTableComponent,
+        RoleAccessSectionComponent,
+        AllocateARoleLinkComponent
       ]
     })
       .compileComponents();
@@ -30,7 +33,7 @@ describe('RolesAndAccessComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RolesAndAccessComponent);
     component = fixture.componentInstance;
-    component.roles = CASEROLES;
+    component.roles = CASEROLES as CaseRole[];
     component.caseDetails = {
       case_id: '1',
       case_type: {

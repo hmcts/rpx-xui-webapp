@@ -51,6 +51,8 @@ const config = {
     password: 'Monday01',
     caseworkerUser:'mahesh_fr_courtadmn@mailinator.com',
     caseworkerPassword: 'London01',
+    probate_username: process.env.PROBATE_EMAIL || 'probaterequesteraat@mailnesia.com',
+    probate_password: process.env.PROBATE_PASSWORD || 'LevelAt12',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
@@ -59,7 +61,41 @@ const config = {
     caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'xui_auto_co_r1@justice.gov.uk' ,
     caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01',
     hrsTesterUser: 'xui.hrs.tester@hmcts.net',
-    hrsTesterPassword: 'Monday01'
+    hrsTesterPassword: 'Monday01',
+    ia_users_credentials: {
+      case_officer: {
+        username: process.env.TEST_CASEOFFICER_USERNAME || 'ia.caseofficer.ccd@gmail.com',
+        password: process.env.TEST_CASEOFFICER_PASSWORD|| 'AldgateT0wer'
+      }, 
+      legal_rep: {
+        username: process.env.TEST_LAW_FIRM_A_USERNAME || 'ia.legalrep.b.ccd@gmail.com',
+        password: process.env.TEST_LAW_FIRM_A_PASSWORD || 'AldgateT0wer'
+      },
+      admin_officer: {
+        username: process.env.TEST_ADMINOFFICER_USERNAME || 'ia.adm1nofficer.ccd@gmail.com',
+        password: process.env.TEST_ADMINOFFICER_PASSWORD || 'AldgateT0wer'
+      },
+      homeoffice_respondent: {
+        username: process.env.TEST_HOMEOFFICE_GENERIC_USERNAME || 'ia.respondentoffice.ccd@gmail.com',
+        password: process.env.TEST_HOMEOFFICE_GENERIC_PASSWORD || 'AldgateT0wer'
+      },
+      homeoffice_apc: {
+        username: process.env.TEST_HOMEOFFICE_APC_USERNAME || 'ia.respondentapc.ccd@gmail.com',
+        password: process.env.TEST_HOMEOFFICE_APC_PASSWORD || 'AldgateT0wer'
+      },
+      homeoffice_larts: {
+        username: process.env.TEST_HOMEOFFICE_LART_USERNAME || 'ia.respondentlarts.ccd@gmail.com',
+        password: process.env.TEST_HOMEOFFICE_LART_PASSWORD || 'AldgateT0wer'
+      },
+      homeoffice_pou: {
+        username: process.env.TEST_HOMEOFFICE_POU_USERNAME || 'ia.respondentpou.ccd@gmail.com',
+        password: process.env.TEST_HOMEOFFICE_POU_PASSWORD || 'AldgateT0wer'
+      },
+      judge: {
+        username: process.env.TEST_JUDICIARY_USERNAME || 'ia.iacjudge.ccd@gmail.com',
+        password: process.env.TEST_JUDICIARY_PASSWORD|| 'AldgateT0wer'
+      }
+    }
 
   },
   directConnect: true,

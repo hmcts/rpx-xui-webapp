@@ -1,4 +1,4 @@
-import { TaskRoleAccessResolver } from "./task-role-access-resolver";
+import { TaskRoleAccessResolver } from './task-role-access-resolver';
 
 export {
   TaskRoleAccessResolver

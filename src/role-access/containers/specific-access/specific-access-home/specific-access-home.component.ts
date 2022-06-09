@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { Task } from '../../../../work-allocation-2/models/tasks';
+import { CaseworkerDataService } from '../../../../work-allocation-2/services';
 import { specificAccessApprovedVisibilityStates, specificAccessDeniedVisibilityStates, specificAccessDurationVisibilityStates, specificAccessInformationVisibilityStates, specificAccessReviewVisibilityStates } from '../../../constants';
 import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
@@ -55,8 +56,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {
-    this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?
-      this.route.snapshot.queryParams.caseId : '';
   }
 
   public ngOnInit(): void {
@@ -69,7 +68,10 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       jurisdiction: this.task.jurisdiction,
       caseName: this.task.case_name,
       requestCreated: this.role.created,
-      actorId: this.role.actorId
+      actorId: this.role.actorId,
+      accessReason: this.role.notes,
+      roleCategory: this.role.roleCategory,
+      requestedRole: this.role.requestedRole
       }));
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessReviewStateData => {

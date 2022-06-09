@@ -46,6 +46,7 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
         finalRoles.push(unknownRole);
       }
     });
+    // TODO: Remove mocked Admin roles after testing
     return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);
@@ -72,6 +73,10 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
 
 export async function getJudicialUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const userIds = req.body.userIds;
+  // Ensures there are no errors when no userIds are provided
+  if (!userIds || userIds.length === 0) {
+    return res.status(200).send([]);
+  }
   const services = req.body.services ? req.body.services : userIds;
   const serviceCodes: string[] = [];
   const serviceRefDataMapping = getServiceRefDataMappingList();
@@ -80,7 +85,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
     if (services.includes(Object.keys(serviceRef)[0])) {
       serviceCodes.push(Object.values(serviceRef)[0] as string);
     }
-  })
+  });
   try {
     let searchResult: any[] = [];
     for (const serviceCode of serviceCodes) {
@@ -117,7 +122,10 @@ export function mapResponseToCaseRoles(
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes: roleAssignment.attributes && roleAssignment.attributes.notes ? roleAssignment.attributes.notes : 'No reason for case access given'
+    notes: roleAssignment.attributes && roleAssignment.attributes.notes ?
+     roleAssignment.attributes.notes : 'No reason for case access given',
+    requestedRole: roleAssignment.attributes && roleAssignment.attributes.requestedRole ?
+     roleAssignment.attributes.requestedRole : null,
   }));
 }
 
@@ -285,8 +293,8 @@ export function getLegalAndJudicialRequestPayload(caseId: string,
 }
 
 export function getAccessRolesRequestPayload(caseId: string,
-                                                  jurisdiction: string,
-                                                  caseType: string): CaseRoleRequestPayload {
+                                             jurisdiction: string,
+                                             caseType: string): CaseRoleRequestPayload {
   return {
     queryRequests: [
       {

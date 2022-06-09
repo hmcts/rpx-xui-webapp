@@ -105,11 +105,14 @@ describe('AllocateRoleService', () => {
         startDate: new Date(),
         endDate: new Date()
       }
-      const specificAccessState: SpecificAccessStateData = {
+      const specificAccessStateData: SpecificAccessStateData = {
         state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
         accessReason: AccessReason.APPROVE_REQUEST,
         typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
         period,
+        actorId: 'N/A',
+        caseName: 'example name',
+        requestCreated: null,
         caseId: '1594717367271987',
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
@@ -135,12 +138,11 @@ describe('AllocateRoleService', () => {
           }
         }
       }
-      service.specificAccessApproval(specificAccessState).subscribe(response => {
+      service.specificAccessApproval(specificAccessStateData, {startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025')}).subscribe(response => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/am/specific-access-approval');
       expect(req.request.method).toEqual('POST');
-      expect(req.request.body.requestId).toEqual('59bedc19-9cc6-4bff-9f58-041c3ba664a0');
       req.flush(null);
     }));
 

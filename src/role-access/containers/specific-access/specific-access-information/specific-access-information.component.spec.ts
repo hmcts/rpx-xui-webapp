@@ -57,11 +57,13 @@ describe('DescribeExclusionComponent', () => {
       requestId: 'eb7b412d-9e8e-4e1e-8e6f-ad540d455945',
       taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
       jurisdiction: 'IA',
+      comment: 'test',
       roleCategory: 'LEGAL_OPERATIONS',
       requestedRole: 'specific-access-legal-operations',
       person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
     }
     it('should correctly navigate on click of back link in the navigation handler', () => {
+      component.specificAccessBody = specificAccessState ;
       component.infoCtrl = new FormControl('');
       mockStore.pipe.and.returnValue(of(specificAccessState));
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);

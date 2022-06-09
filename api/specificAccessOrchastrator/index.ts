@@ -118,55 +118,15 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
     const response = await http.post(url, body, { headers });
     return response;
   } catch (error) {
+    debugger;
     next(error)
     return error;
   }
 }
 
-export async function getOriginalRequestDetails(req: EnhancedRequest, res, next: NextFunction, originalrequestId): Promise<any> {
-  const originalRequest = {
-    originalRequestDate: "2022-05-22T16:34:18.763Z",
-    originalRequestJustification: {
-      roleRequest: {
-        assignerId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-        process: 'specific-access',
-        reference: '1613568559071553/specific-access-legal-operations/db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-        replaceExisting: true,
-      },
-      requestedRoles: [
-        {
-          actorIdType: 'IDAM',
-          actorId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-          roleType: 'CASE',
-          roleName: 'specific-access-requested',
-          classification: 'PRIVATE',
-          roleCategory: 'LEGAL_OPERATIONS',
-          grantType: 'BASIC',
-          beginTime: null,
-          endTime: '2022-06-21T12:34:09.101Z',
-          attributes: [Object],
-          notes: [Array],
-          readOnly: true,
-        },
-      ],
-    },
-  };
-  return new Promise((resolve, reject) => {
-    resolve(
-      { originalRequestDate: originalRequest.originalRequestDate,
-        originalRequestJustification: originalRequest.originalRequestJustification,
-      });
-  });
-}
-
 export async function orchestrationRequestMoreInformation(req: EnhancedRequest, res, next: NextFunction): Promise<Response> {
   try {
-    const originalRequestReponse = await getOriginalRequestDetails(req, res, next, req.body.originalSpecificAccessRequestId);
-    if (!originalRequestReponse || originalRequestReponse.status !== 204) {
-      // will be implimented when actual service integrated
-    }
-    req.body = {...req.body, ...originalRequestReponse }
-
+    debugger;
     const creationOfDenyRoleResponse: AxiosResponse = await createSpecificAccessDenyRole(req, res, next);
     if (!creationOfDenyRoleResponse || creationOfDenyRoleResponse.status !== 201) {
       return creationOfDenyRoleResponse && creationOfDenyRoleResponse.status
@@ -174,14 +134,18 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
     }
     const deletionResponse = await deleteSpecificAccessRequestedRole(req, res, next);
     const rolesToDelete: RoleAssignment[] = creationOfDenyRoleResponse.data.roleAssignmentResponse.requestedRoles;
+    debugger;
     if (!deletionResponse || deletionResponse.status !== 204) {
       return deleteSpecificAccessRoles(req, res, next, deletionResponse, rolesToDelete);
     }
     const taskResponse: AxiosResponse = await postTaskCompletionForAccess(req, res, next);
+    debugger;
     if (!taskResponse || taskResponse.status !== 204) {
       return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
     }
+    debugger;
     return res.send(taskResponse.data).status(taskResponse.status);
+
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;

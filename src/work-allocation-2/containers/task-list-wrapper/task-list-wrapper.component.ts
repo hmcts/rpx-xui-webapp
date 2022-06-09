@@ -152,18 +152,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
-
-    this.router.events.subscribe(routeEvent => {
-      if (routeEvent instanceof NavigationEnd) {
-        const tree = this.router.parseUrl(this.router.url);
-        if (tree.fragment) {
-          const element = document.querySelector('#' + tree.fragment);
-          if (element) {
-            element.scrollIntoView({block: 'center'});
-          }
-        }
-      }
-    })
   }
 
   public ngOnDestroy(): void {

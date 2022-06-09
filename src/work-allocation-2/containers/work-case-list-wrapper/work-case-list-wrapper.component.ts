@@ -151,17 +151,6 @@ export class WorkCaseListWrapperComponent implements OnInit {
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
-    this.router.events.subscribe(routeEvent => {
-      if (routeEvent instanceof NavigationEnd) {
-        const tree = this.router.parseUrl(this.router.url);
-        if (tree.fragment) {
-          const element = document.querySelector('#' + tree.fragment);
-          if (element) {
-            element.scrollIntoView({block: 'center'});
-          }
-        }
-      }
-    })
   }
 
   public setupCaseWorkers(): void {

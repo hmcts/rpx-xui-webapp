@@ -52,6 +52,7 @@ export class TaskListComponent implements OnChanges {
   private selectedTask: Task;
 
   public defaultSortElement: HTMLElement;
+  public newUrl: string;
 
   constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {
   }
@@ -220,12 +221,8 @@ export class TaskListComponent implements OnChanges {
     if (this.addActionsColumn) {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
-      if (this.selectedTask) {
-        this.router.url.concat(`manage_${this.selectedTask.id}`);
-        this.router.navigate([basePath], {fragment: `manage_${this.selectedTask.id}`});
-      } else {
-        this.router.navigate([basePath]);
-      }
+      this.newUrl = this.selectedTask ? `${basePath}#manage_${this.selectedTask.id}` : basePath;
+      window.history.pushState('object', document.title, this.newUrl);
     }
   }
 

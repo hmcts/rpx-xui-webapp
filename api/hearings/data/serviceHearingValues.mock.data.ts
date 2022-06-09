@@ -37,7 +37,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     firstDateTimeMustBe: '',
   },
   duration: 45,
-  hearingPriorityType: 'normal',
+  hearingPriorityType: 'Standard',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [{
@@ -46,7 +46,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   }],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: ['AF-VF'],
-  listingComments: 'Additional instructions for the hearing',
+  listingComments: '',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
   leadJudgeContractType: '',
@@ -70,9 +70,6 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingIsLinkedFlag: false,
   panelRequirements: {
     roleType: [
-      'tj',
-      'dtj',
-      'rtj',
     ],
     panelPreferences: [],
     panelSpecialisms: [

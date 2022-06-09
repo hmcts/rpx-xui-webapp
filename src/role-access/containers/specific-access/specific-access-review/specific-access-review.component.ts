@@ -1,8 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -10,10 +7,12 @@ import { take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
 
 import { UserDetails } from '../../../../app/models';
+import { CaseworkerDataService } from '../../../../work-allocation-2/services';
 import { ERROR_MESSAGE } from '../../../constants';
-import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
+import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../../models/enums';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
+import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -38,6 +37,8 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
 
   public submitted: boolean = false;
 
+  public requesterName: string;
+
   public formGroup: FormGroup;
   public initialAccessReason: AccessReason;
   public reviewOptionControl: FormControl;
@@ -49,7 +50,9 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly store: Store<fromFeature.State>
+    private readonly store: Store<fromFeature.State>,
+    private readonly allocateRoleService: AllocateRoleService,
+    private readonly caseworkerDataService: CaseworkerDataService
   ) {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
@@ -62,12 +65,18 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessStateData => {
         this.specificAccessStateData = specificAccessStateData;
-        this.initialAccessReason = specificAccessStateData.accessReason;
       }
     );
-    // TODO: this ticket is blocked so mocked with those data to go through, they will be removed and implimented with actual data
-    // when dependency resolved
-    this.setMockData();
+    if (this.specificAccessStateData.roleCategory === RoleCategory.JUDICIAL) {
+      this.allocateRoleService.getCaseRolesUserDetails([this.specificAccessStateData.actorId], [this.specificAccessStateData.jurisdiction]).subscribe(
+        (caseRoleUserDetails) => { this.requesterName = caseRoleUserDetails[0].known_as; }
+      );
+    } else {
+      this.caseworkerDataService.getCaseworkersForServices([this.specificAccessStateData.jurisdiction]).subscribe(
+        (caseworkers) => {const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.specificAccessStateData.actorId);
+                          this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`}
+      );
+    }
     this.reviewOptionControl = new FormControl(this.initialAccessReason ? this.initialAccessReason : '', [Validators.required]);
     this.formGroup = this.fb.group({
       radioSelected: this.reviewOptionControl,
@@ -90,17 +99,6 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
 
   public onChange(): void {
     this.submitted = false;
-  }
-
-  // remove once Access management goes live
-  public setMockData(): void {
-    this.requestAccessDetails = {
-      caseName: 'new name',
-      caseReference: 'Test reference',
-      dateSubmitted: '01-01-2001',
-      requestFrom: 'Test user',
-      reasonForCaseAccess: 'slow Tuesday'
-    };
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent) {

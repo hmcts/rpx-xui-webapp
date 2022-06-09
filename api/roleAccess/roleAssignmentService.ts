@@ -6,6 +6,7 @@ import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { AxiosResponse } from 'axios';
 import { Role, RolesByService } from './models/roleType';
+import { mockAdminRefinedRoles } from './roleData.mock';
 
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
@@ -17,8 +18,8 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
         // note: if service obtained, check role either includes service or does not specify service
         const serviceRoles = roles.filter(role =>
           role.roleJurisdiction && (!role.roleJurisdiction.values
-             || (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId))))
-        rolesByService.push({service: serviceId, roles: serviceRoles});
+             || (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId))));
+        rolesByService.push({service: serviceId, roles: serviceRoles.concat(mockAdminRefinedRoles)});
       })
     }
     return res.send(rolesByService).status(200);
@@ -55,9 +56,15 @@ export async function getRoleByAssignmentId(req: EnhancedRequest, res: Response,
   }
 }
 
-
 export async function getAllRoles(req: EnhancedRequest): Promise<AxiosResponse<Role[]>> {
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments/roles`;
+  const headers = setHeaders(req);
+  const response: AxiosResponse<Role[]> = await http.get(fullPath, { headers });
+  return response;
+}
 
+export async function getRolesByCaseId(req: EnhancedRequest): Promise<AxiosResponse<Role[]>> {
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/roles`;
   const headers = setHeaders(req);

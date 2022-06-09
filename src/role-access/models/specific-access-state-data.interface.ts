@@ -16,6 +16,7 @@ export interface SpecificAccessStateData {
   jurisdiction: string;
   assigneeId?: string;
   typeOfRole?: SpecificRole;
+  period: Period;
   roleCategory?: RoleCategory;
   requestedRole?: string;
   requestCreated?: string;

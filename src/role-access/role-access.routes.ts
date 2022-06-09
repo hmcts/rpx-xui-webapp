@@ -15,7 +15,7 @@ export const ROUTES: Routes = [
     path: ':taskId/assignment/:assignmentId',
     resolve: { taskAndRole: TaskRoleAccessResolver},
     children: [
-    { 
+    {
       path: 'specific-access',
       component: SpecificAccessHomeComponent,
       children: [

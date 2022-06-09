@@ -12,7 +12,7 @@ export interface RoleCaseData {
   jurisdictionId?: string;
   location_id: string;
   startDate: Date | string;
-  endDate: Date;
+  endDate: Date | string;
   dateSubmitted?: Date;
   assignee: string;
   state?: string;

@@ -80,8 +80,6 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
 }
 
 export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
-
-
   let requestedrole;
   switch( allocateRoleData.roleCategory){
     case RoleCategory.JUDICIAL:
@@ -96,13 +94,12 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
     default:
         break;
   }
-  debugger;
   return {
     roleRequest: {
       assignerId: currentUserId,
       replaceExisting: true,
       process: 'specific-access',
-      reference: `${allocateRoleData.caseId}/${requestedrole}/${allocateRoleData.assigneeId}`//'1651226677430150/specific-access-legal-ops/c9f16661-a551-48ae-b255-5372fb63bec3'//`${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.requestId}`,//
+      reference: `${allocateRoleData.caseId}/${requestedrole}/${allocateRoleData.assigneeId}`
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -111,19 +108,16 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       classification: 'PRIVATE',
       attributes: {
         caseId: allocateRoleData.caseId,
-        requestedRole: requestedrole//allocateRoleData.requestedRole,//'specific-access-legal-ops'//allocateRoleData.requestedRole
+        requestedRole: requestedrole
       },
-      roleName: 'specific-access-denied',//allocateRoleData.typeOfRole.id,
+      roleName: 'specific-access-denied',
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.assigneeId,
       endTime: new Date(new Date().setDate(new Date().getDate() + 14)),
-      //beginTime: new Date(),
       notes: [{comment: allocateRoleData.comment,
-      time: "2022-05-10T16:34:18.763Z",
+      time: new Date(),
       userId: currentUserId}],
-      // originalRequestDate: allocateRoleData.requestCreated,
-      // originalRequestJustification:  allocateRoleData.originalRequestJustification,
     },
   ],
   };

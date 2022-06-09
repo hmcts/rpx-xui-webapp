@@ -8,6 +8,7 @@ export interface AllocateRoleData {
   assignmentId?: string;
   typeOfRole: SpecificRole;
   requestedRole?: string;
+  requestId?: string;
   allocateTo: AllocateTo;
   personToBeRemoved?: Person;
   person: Person;
@@ -18,5 +19,6 @@ export interface AllocateRoleData {
   jurisdiction?: string;
   comment?: string;
   originalRequestDate?: Date;
+  requestCreated?: Date;
   originalRequestJustification?: RoleRequestPayload;
 }

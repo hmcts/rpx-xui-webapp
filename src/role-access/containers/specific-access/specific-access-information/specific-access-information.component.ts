@@ -29,6 +29,8 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   public error: any = null;
   public controlName = 'infoCtrl';
   public submitted: boolean = true;
+  public specificAccessBody: SpecificAccessStateData;
+  private  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
 
   constructor(public readonly store: Store<fromFeature.State>, private readonly fb: FormBuilder) {
   }
@@ -40,27 +42,27 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
     });
     this.infoCtrl = this.formGroup.get('infoCtrl') as FormControl;
     this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccessState) => {
-      if (specificAccessState.SpecificAccessMoreInformationFormData && specificAccessState.SpecificAccessMoreInformationFormData.InfoText) {
-        this.infoCtrl.setValue(specificAccessState.SpecificAccessMoreInformationFormData.InfoText);
+      if (specificAccessState) {
+        if (specificAccessState.SpecificAccessMoreInformationFormData && specificAccessState.SpecificAccessMoreInformationFormData.InfoText) {
+          this.infoCtrl.setValue(specificAccessState.SpecificAccessMoreInformationFormData.InfoText);
+        }
+        this.specificAccessBody = {
+          accessReason: specificAccessState.accessReason,
+          typeOfRole: this.rejectedRole,
+          caseId: specificAccessState.caseId,
+          requestId: specificAccessState.requestId,
+          taskId: specificAccessState.taskId,
+          jurisdiction: specificAccessState.jurisdiction,
+          assigneeId: specificAccessState.actorId,
+          caseName: specificAccessState.caseName,
+          comment: this.infoCtrl.value,
+          requestCreated: specificAccessState.requestCreated,
+          person: {id: specificAccessState.actorId, name: null, domain: null},
+        }
       }
     });
   }
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
-    const  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
-    const specificAccessMockState: SpecificAccessStateData = {
-      state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
-      accessReason: null,
-      typeOfRole: rejectedRole,
-      comment: this.infoCtrl.value,
-      caseId: '1613568559071553',
-      requestId: 'eb7b412d-9e8e-4e1e-8e6f-ad540d455945',
-      originalSpecificAccessRequestId: '777b412d-9e8e-4e1e-8e6f-ad540d459999',
-      taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
-      jurisdiction: 'IA',
-      roleCategory: RoleCategory.CASEWORKER,
-      requestedRole: 'specific-access-legal-operations',
-      person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null}
-    }
     switch (navEvent) {
       case SpecificAccessNavigationEvent.CONTINUE:
         this.submitted = true;
@@ -68,7 +70,8 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
           this.error = this.getErrorObject();
           return;
         }
-        this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessMockState));
+        this.specificAccessBody.comment =  this.infoCtrl.value;
+        this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(this.specificAccessBody));
         break;
       default:
         throw new Error('Invalid option');

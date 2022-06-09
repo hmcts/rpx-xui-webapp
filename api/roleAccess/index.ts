@@ -162,11 +162,15 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
   try {
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+    req.body.roleCategory = currentUser.roleCategory;
     const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body);
+    console.log(JSON.stringify(roleAssignmentsBody))
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    console.log(response)
     return response;
   } catch (error) {
+    console.log(error)
     next(error);
     return error;
   }
@@ -177,7 +181,7 @@ export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, re
   try {
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const requestId = req.body.requestId;
-  const queryString = `?process=staff-organisational-role-mapping&reference=${requestId}`
+  const queryString = `?process=staff-organisational-role-mapping&reference=${requestId}`;
   const fullPath = `${basePath}/am/role-assignments${queryString}`;
   const headers = setHeaders(req);
   const body = toDenySADletionRequestedRoleBody(requestId);

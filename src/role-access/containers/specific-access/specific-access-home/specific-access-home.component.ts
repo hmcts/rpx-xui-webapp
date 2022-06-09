@@ -62,7 +62,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.task = this.route.snapshot.data.taskAndRole.task.task;
     this.role = this.route.snapshot.data.taskAndRole.role[0];
-    // console.log(this.task, 'and success', this.role);
     this.store.dispatch(new fromFeature.SetSpecificAccessInitData(
       {caseId: this.task.case_id,
       taskId: this.task.id,

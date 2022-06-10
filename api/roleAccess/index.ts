@@ -172,13 +172,10 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     req.body.roleCategory = currentUser.roleCategory;
     const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body);
-    console.log(JSON.stringify(roleAssignmentsBody))
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-    console.log(response)
     return response;
   } catch (error) {
-    console.log(error)
     next(error);
     return error;
   }

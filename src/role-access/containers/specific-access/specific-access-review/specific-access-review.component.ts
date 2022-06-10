@@ -124,19 +124,19 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
           case AccessReason.REJECT_REQUEST:
             const  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
             let specificAccessBody;
-            this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccessState) => {
-              if (specificAccessState) {
+            this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccess) => {
+              if (specificAccess) {
                 specificAccessBody = {
-                  accessReason: specificAccessState.accessReason,
+                  accessReason: specificAccess.accessReason,
                   typeOfRole: rejectedRole,
-                  caseId: specificAccessState.caseId,
-                  requestId: specificAccessState.requestId,
-                  taskId: specificAccessState.taskId,
-                  jurisdiction: specificAccessState.jurisdiction,
-                  assigneeId: specificAccessState.actorId,
-                  caseName: specificAccessState.caseName,
-                  requestCreated: specificAccessState.requestCreated,
-                  person: {id: specificAccessState.actorId, name: null, domain: null},
+                  caseId: specificAccess.caseId,
+                  requestId: specificAccess.requestId,
+                  taskId: specificAccess.taskId,
+                  jurisdiction: specificAccess.jurisdiction,
+                  assigneeId: specificAccess.actorId,
+                  caseName: specificAccess.caseName,
+                  requestCreated: specificAccess.requestCreated,
+                  person: {id: specificAccess.actorId, name: null, domain: null},
                 }
               }
             });

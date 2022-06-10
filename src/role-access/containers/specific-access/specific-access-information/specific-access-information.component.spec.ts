@@ -5,8 +5,8 @@ import { ErrorMessageComponent } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 import { Store, StoreModule } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
-import { SpecificAccessInformationComponent } from './specific-access-information.component';
 import { AccessReason} from '../../../models/enums';
+import { SpecificAccessInformationComponent } from './specific-access-information.component';
 
 describe('DescribeExclusionComponent', () => {
   let component: SpecificAccessInformationComponent;

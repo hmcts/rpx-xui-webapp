@@ -12,7 +12,7 @@ export class AllocateRoleService {
   public static allocateRoleBaseUrl = '/api/role-access/allocate-role';
   public static roleUrl = '/api/role-access/roles';
   public static accessManagementUrl = '/api/am';
-  public static specificAccessUrl = '/api/specific-access-request/request-more-information';
+  public static specificAccessUrl = '/api/specific-access-request';
   public backUrl: string;
   constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) { }
 
@@ -31,7 +31,7 @@ export class AllocateRoleService {
   }
 
   public requestMoreInformation(requestMoreInformationStateData: SpecificAccessStateData): Observable<any> {
-    return this.http.post(`${AllocateRoleService.specificAccessUrl}`, requestMoreInformationStateData);
+    return this.http.post(`${AllocateRoleService.specificAccessUrl}/request-more-information`, requestMoreInformationStateData);
   }
 
   public removeAllocation(assigmentId: string): Observable<any> {

@@ -16,8 +16,8 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 export class AvailableTasksFilterComponent implements OnInit {
 
   // Getting CheckboxListComponent from DOM ensures it will be defined
-  @ViewChild('locationFilter') public locationFilter: CheckboxListComponent<Location>;
-  @ViewChild('filterDetails')
+  @ViewChild('locationFilter', {static: false}) public locationFilter: CheckboxListComponent<Location>;
+  @ViewChild('filterDetails', {static: false})
   public readonly filterDetails: ElementRef<HTMLDetailsElement>;
 
   public get detailsElement(): HTMLDetailsElement {

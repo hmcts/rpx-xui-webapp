@@ -13,5 +13,8 @@
         "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
     },
     "private": true,
-    "dependencies": {}
+    "devDependencies": {
+        "webpack-cli": "^3.3.12",
+        "webpack-node-externals": "^3.0.0"
+    }
 }

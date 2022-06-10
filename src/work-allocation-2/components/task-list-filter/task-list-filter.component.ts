@@ -36,7 +36,7 @@ export const LOCATION_ERROR: ErrorMessage = {
   encapsulation: ViewEncapsulation.None
 })
 export class TaskListFilterComponent implements OnInit, OnDestroy {
-  private static readonly FILTER_NAME = 'locations';
+  private static readonly FILTER_NAME = 'my-work-tasks-filter';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
   public appStoreSub: Subscription;
@@ -173,7 +173,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
   private setUpLocationFilter(): void {
     const field: FilterFieldConfig = {
-      name: TaskListFilterComponent.FILTER_NAME,
+      name: 'locations',
       options: [],
       locationTitle: 'Search for a location by name',
       minSelected: 1,
@@ -185,16 +185,16 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       type: 'find-location',
       enableAddLocationButton: true
     };
-    if (this.route.snapshot.data && this.route.snapshot.data.location) {
-      const location: Location = this.route.snapshot.data.location;
-      if (location) {
-        this.defaultLocations = [location];
+    if (this.route.snapshot.data && this.route.snapshot.data.locations) {
+      const locations: Location[] = this.route.snapshot.data.locations;
+      if (locations) {
+        this.defaultLocations = locations;
       }
     } else {
       this.defaultLocations = [];
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-      name: TaskListFilterComponent.FILTER_NAME,
+      name: 'locations',
       value: this.defaultLocations
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));

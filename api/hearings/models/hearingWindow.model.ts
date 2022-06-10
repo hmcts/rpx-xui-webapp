@@ -1,5 +1,5 @@
 export interface HearingWindowModel {
-  dateRangeStart: string;
-  dateRangeEnd: string;
-  firstDateTimeMustBe: string;
+  dateRangeStart?: string;
+  dateRangeEnd?: string;
+  firstDateTimeMustBe?: string;
 }

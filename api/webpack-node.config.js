@@ -11,9 +11,7 @@ module.exports = {
     optimization: {
         minimize: true,
         minimizer: [
-            new TerserPlugin({
-                sourceMap: true,
-            }),
+            new TerserPlugin(),
         ],
     },
     entry: './server.ts',

@@ -160,7 +160,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public loadCaseWorkersAndLocations() {
-    this.selectedLocationsSubscription = this.filterService.getStream('locations')
+    this.selectedLocationsSubscription = this.filterService.getStream('my-work-tasks-filter')
       .pipe(
         debounceTime(200),
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))

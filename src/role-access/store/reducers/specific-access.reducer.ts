@@ -1,3 +1,4 @@
+import { AccessReason } from '../../../role-access/models/enums';
 import { SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions';
 
@@ -51,7 +52,7 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         caseName: action.payload.caseName,
         requestCreated: action.payload.requestCreated,
         actorId: action.payload.actorId,
-        accessReason: action.payload.accessReason,
+        accessReason: action.payload.accessReason as AccessReason,
         roleCategory: action.payload.roleCategory,
         requestedRole: action.payload.requestedRole
       };

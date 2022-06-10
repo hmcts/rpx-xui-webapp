@@ -1,18 +1,19 @@
-import { getConfigValue } from '../configuration';
-import { setHeaders } from '../lib/proxy';
-import { http } from '../lib/http';
-import { SERVICES_ROLE_ASSIGNMENT_API_PATH, SERVICES_WA_WORKFLOW_API_URL } from '../configuration/references';
-import { EnhancedRequest } from '../lib/models';
-import { v4 as uuidv4 } from 'uuid';
-import { sendDelete } from '../common/crudService';
+import logger from '@pact-foundation/pact-node/src/logger';
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
-import logger from '@pact-foundation/pact-node/src/logger';
-import { postTaskCompletionForAccess } from '../workAllocation2';
-import { createSpecificAccessDenyRole, deleteSpecificAccessRequestedRole } from '../roleAccess/index';
-import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { v4 as uuidv4 } from 'uuid';
+
 import { deleteSpecificAccessRoles, restoreDeletedRole } from '../accessManagement';
+import { sendDelete } from '../common/crudService';
+import { getConfigValue } from '../configuration';
+import { SERVICES_ROLE_ASSIGNMENT_API_PATH, SERVICES_WA_WORKFLOW_API_URL } from '../configuration/references';
+import { http } from '../lib/http';
+import { setHeaders } from '../lib/proxy';
+import { EnhancedRequest } from '../lib/models';
+import { createSpecificAccessDenyRole, deleteSpecificAccessRequestedRole } from '../roleAccess/index';
 import { refreshRoleAssignmentForUser } from '../user';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { postTaskCompletionForAccess } from '../workAllocation2';
 
 export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
   let createAmRoleResponse: AxiosResponse;

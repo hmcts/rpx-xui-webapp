@@ -206,4 +206,7 @@ export class AppConfig extends AbstractAppConfig {
   public getPaymentReturnUrl(): string {
       return this.environmentService.get('paymentReturnUrl');
   }
+  public  getCaseLinkingReasonCommonDataAPIUrl(): string {
+    return this.config.case_linking_reason_code_refdata_api_url;
+  }
 }

@@ -24,19 +24,19 @@ import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclu
   styleUrls: ['./add-exclusion-home.component.scss']
 })
 export class AddExclusionHomeComponent implements OnInit, OnDestroy {
-  @ViewChild('chooseExclusion', {static: false, read: ChooseExclusionComponent})
+  @ViewChild('chooseExclusion', {read: ChooseExclusionComponent})
   public chooseExclusionComponent: ChooseExclusionComponent;
 
-  @ViewChild('choosePersonRole', {static: false, read: ChoosePersonRoleComponent})
+  @ViewChild('choosePersonRole', {read: ChoosePersonRoleComponent})
   public choosePersonRoleComponent: ChoosePersonRoleComponent;
 
-  @ViewChild('findPerson', {static: false, read: AddExclusionSearchPersonComponent})
+  @ViewChild('findPerson', {read: AddExclusionSearchPersonComponent})
   public findPersonComponent: AddExclusionSearchPersonComponent;
 
-  @ViewChild('describeExclusion', {static: false, read: DescribeExclusionComponent})
+  @ViewChild('describeExclusion', {read: DescribeExclusionComponent})
   public describeExclusionComponent: DescribeExclusionComponent;
 
-  @ViewChild('checkAnswers', {static: false, read: AddExclusionCheckAnswersComponent})
+  @ViewChild('checkAnswers', {read: AddExclusionCheckAnswersComponent})
   public checkAnswersComponent: AddExclusionCheckAnswersComponent;
 
   private exclusionStateDataSub: Subscription;

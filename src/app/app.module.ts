@@ -3,7 +3,7 @@ import {
   APP_INITIALIZER,
   CUSTOM_ELEMENTS_SCHEMA,
   ErrorHandler,
-  NgModule,
+  NgModule
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,14 +13,14 @@ import {
   ExuiCommonLibModule,
   FeatureToggleService,
   LaunchDarklyService,
-  TimeoutNotificationsService,
+  TimeoutNotificationsService
 } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
 import { EffectsModule } from '@ngrx/effects';
 import {
   RouterStateSerializer,
-  StoreRouterConnectingModule,
+  StoreRouterConnectingModule
 } from '@ngrx/router-store';
 import { MetaReducer, Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -30,12 +30,12 @@ import {
   NGXLogger,
   NGXLoggerHttpService,
   NgxLoggerLevel,
-  NGXMapperService,
+  NGXMapperService
 } from 'ngx-logger';
 import { environment } from '../environments/environment';
 import {
   EnvironmentConfig,
-  ENVIRONMENT_CONFIG,
+  ENVIRONMENT_CONFIG
 } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 // app routes
@@ -48,7 +48,7 @@ import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import {
   AbstractAppInsights,
-  AppInsightsWrapper,
+  AppInsightsWrapper
 } from './services/logger/appInsightsWrapper';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { LoggerService } from './services/logger/logger.service';

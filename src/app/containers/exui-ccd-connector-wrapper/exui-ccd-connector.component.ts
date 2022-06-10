@@ -6,8 +6,8 @@ import {
   Input,
   OnDestroy
 } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 /**
  * CCD Connector
@@ -25,8 +25,8 @@ import { Store } from '@ngrx/store';
   `
 })
 export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
-  @ContentChild('ccdComponent', {static: false}) ccdComponent;
-  @ContentChild('ccdComponent', {static: false, read: ElementRef}) ccdComponentElementRef: ElementRef;
+  @ContentChild('ccdComponent') ccdComponent;
+  @ContentChild('ccdComponent', {read: ElementRef}) ccdComponentElementRef: ElementRef;
   @Input() eventsBindings;
   @Input() store: Store<any>; // generic store
   @Input() fromFeatureStore: any; // specific feature store

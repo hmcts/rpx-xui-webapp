@@ -75,7 +75,7 @@ export class AppInsightsWrapper implements AbstractAppInsights {
   clearAuthenticatedUserContext() {
     AppInsights.clearAuthenticatedUserContext();
   }
-  downloadAndSetup?(config: Microsoft.ApplicationInsights.IConfig) {
+  downloadAndSetup(config: Microsoft.ApplicationInsights.IConfig) {
     AppInsights.downloadAndSetup(config);
   }
   _onerror(message: string, url: string, lineNumber: number, columnNumber: number, error: Error) {

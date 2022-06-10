@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {HearingJudgeNamesListComponent} from '../../../components';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { HearingJudgeNamesListComponent } from '../../../components';
 import {
   ACTION,
   ControlTypeEnum,
@@ -11,12 +11,12 @@ import {
   RadioOptions,
   RequirementType
 } from '../../../models/hearings.enum';
-import {JudicialUserModel} from '../../../models/judicialUser.model';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {PanelPreferenceModel} from '../../../models/panelPreference.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { JudicialUserModel } from '../../../models/judicialUser.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { PanelPreferenceModel } from '../../../models/panelPreference.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-panel',
@@ -36,8 +36,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public personalCodejudgeList: JudicialUserModel[] = [];
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   public serviceId: string;
-  @ViewChild('includedJudge', { static: false }) public includedJudge: HearingJudgeNamesListComponent;
-  @ViewChild('excludedJudge', { static: false }) public excludedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,

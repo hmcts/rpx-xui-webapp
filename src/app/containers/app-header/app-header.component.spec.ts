@@ -116,7 +116,7 @@ describe('AppHeaderComponent', () => {
       const themeSpy = spyOn(component, 'getApplicationThemeForUser');
 
       const userDetails = {
-        userInfo: ['pui-organisation-manager','caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
       };
       component.setHeaderContent(userDetails);
       expect(themeSpy).toHaveBeenCalled();

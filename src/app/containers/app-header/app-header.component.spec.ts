@@ -110,6 +110,25 @@ describe('AppHeaderComponent', () => {
       expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
+
+    it('should updatee theme app header properties.', () => {
+
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS
+      component.setAppHeaderNavItems(menuItems);
+      expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
+
+    });
+
+    it('should updatee navItems app header properties.', () => {
+
+      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
+      component.setAppHeaderTheme(defaultTheme);
+
+      expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
+      expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
+      expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
+    });
   });
 
   describe('setNavigationEnd()', () => {

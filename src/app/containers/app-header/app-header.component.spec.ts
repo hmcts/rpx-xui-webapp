@@ -111,7 +111,30 @@ describe('AppHeaderComponent', () => {
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
 
-    it('should updatee theme app header properties.', () => {
+
+    it('should set app header content', () => {
+      const themeSpy = spyOn(component, 'getApplicationThemeForUser');
+
+      const userDetails = {
+        userInfo: ['pui-organisation-manager','caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+      };
+      component.setHeaderContent(userDetails);
+      expect(themeSpy).toHaveBeenCalled();
+
+    });
+
+    it('should call userThems on getApplicationThemeForUser', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme');
+
+      const userDetails = {
+        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+      };
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+
+    });
+
+    it('should update theme app header properties.', () => {
 
       const menuItems = AppConstants.DEFAULT_MENU_ITEMS
       component.setAppHeaderNavItems(menuItems);

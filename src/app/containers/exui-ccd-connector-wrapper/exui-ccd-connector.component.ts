@@ -25,8 +25,8 @@ import { Subscription } from 'rxjs';
   `
 })
 export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
-  @ContentChild('ccdComponent', {static: false}) ccdComponent;
-  @ContentChild('ccdComponent', {{static: false}, read: ElementRef}) ccdComponentElementRef: ElementRef;
+  @ContentChild('ccdComponent', { static: false }) ccdComponent;
+  @ContentChild('ccdComponent', {static: false, read: ElementRef}) ccdComponentElementRef: ElementRef;
   @Input() eventsBindings;
   @Input() store: Store<any>; // generic store
   @Input() fromFeatureStore: any; // specific feature store
@@ -34,8 +34,6 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
   dispatcherContainer: { type: string } | {};
-
-  constructor() { }
 
   ngAfterContentInit() {
     if (this.ccdComponent) {

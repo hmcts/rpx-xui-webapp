@@ -118,7 +118,6 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
     const response = await http.post(url, body, { headers });
     return response;
   } catch (error) {
-    debugger;
     next(error)
     return error;
   }
@@ -126,7 +125,6 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
 
 export async function orchestrationRequestMoreInformation(req: EnhancedRequest, res, next: NextFunction): Promise<Response> {
   try {
-    debugger;
     const creationOfDenyRoleResponse: AxiosResponse = await createSpecificAccessDenyRole(req, res, next);
     if (!creationOfDenyRoleResponse || creationOfDenyRoleResponse.status !== 201) {
       return creationOfDenyRoleResponse && creationOfDenyRoleResponse.status
@@ -134,16 +132,13 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
     }
     const deletionResponse = await deleteSpecificAccessRequestedRole(req, res, next);
     const rolesToDelete: RoleAssignment[] = creationOfDenyRoleResponse.data.roleAssignmentResponse.requestedRoles;
-    debugger;
     if (!deletionResponse || deletionResponse.status !== 204) {
       return deleteSpecificAccessRoles(req, res, next, deletionResponse, rolesToDelete);
     }
     const taskResponse: AxiosResponse = await postTaskCompletionForAccess(req, res, next);
-    debugger;
     if (!taskResponse || taskResponse.status !== 204) {
       return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
     }
-    debugger;
     return res.send(taskResponse.data).status(taskResponse.status);
 
   } catch (e) {

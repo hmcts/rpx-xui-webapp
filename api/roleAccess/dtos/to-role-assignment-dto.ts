@@ -83,7 +83,7 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
 
 export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
   let requestedrole;
-  switch( allocateRoleData.roleCategory){
+  switch ( allocateRoleData.roleCategory) {
     case RoleCategory.JUDICIAL:
       requestedrole = 'specific-access-judiciary';
       break;
@@ -101,7 +101,7 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       assignerId: currentUserId,
       replaceExisting: true,
       process: 'specific-access',
-      reference: `${allocateRoleData.caseId}/${requestedrole}/${allocateRoleData.assigneeId}`
+      reference: `${allocateRoleData.caseId}/${requestedrole}/${allocateRoleData.assigneeId}`,
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -110,7 +110,7 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       classification: 'PRIVATE',
       attributes: {
         caseId: allocateRoleData.caseId,
-        requestedRole: requestedrole
+        requestedRole: requestedrole,
       },
       roleName: 'specific-access-denied',
       roleCategory: allocateRoleData.roleCategory,

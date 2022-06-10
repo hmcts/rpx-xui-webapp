@@ -15,7 +15,8 @@ import {
   SERVICES_PAYMENTS_URL,
   SERVICES_REFUNDS_API_URL,
   SERVICES_LOCATION_REF_API_URL,
-  SERVICES_ROLE_ASSIGNMENT_API_PATH
+  SERVICES_ROLE_ASSIGNMENT_API_PATH,
+  SERVICES_COMMONRD_API_URL
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
@@ -138,5 +139,10 @@ export const initProxy = (app: Express) => {
       rewrite: false,
       source: '/refdata/location',
       target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+  });
+  applyProxy(app, {
+    rewrite: false,
+    source: '/refdata/commondata/lov/categories/CaseLinkingReasonCode',
+    target: getConfigValue(SERVICES_COMMONRD_API_URL),
   });
 }

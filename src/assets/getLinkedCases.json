@@ -11,11 +11,11 @@
           "createdDateTime": "2022-02-04T15:00:00.000",
           "reasons": [
             {
-              "reasonCode": "FAMILIAL",
+              "reasonCode": "CLRC016",
               "OtherDescription": ""
             },
             {
-              "reasonCode": "LINKED_HEARING",
+              "reasonCode": "CLRC017",
               "OtherDescription": ""
             }
           ]
@@ -33,7 +33,7 @@
           "createdDateTime": "2021-12-04T15:00:00.000",
           "reasons": [
             {
-              "reasonCode": "Bail",
+              "reasonCode": "CLRC010",
               "OtherDescription": "Judge has an interest"
             }
           ]

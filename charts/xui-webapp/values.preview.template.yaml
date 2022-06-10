@@ -34,6 +34,9 @@ nodejs:
     enabled: false
 redis:
   enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
 idam-pr:
   enabled: true
   redirect_uris:

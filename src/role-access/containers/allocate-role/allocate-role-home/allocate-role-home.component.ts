@@ -25,8 +25,7 @@ import {
   DEFINED_ROLES,
   DurationOfRole,
   RoleCategory,
-  SpecificRole,
-  TypeOfRole
+  SpecificRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
@@ -43,19 +42,19 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
-  @ViewChild('chooseRole', {static: false, read: ChooseRoleComponent})
+  @ViewChild('chooseRole', {read: ChooseRoleComponent})
   public chooseRoleComponent: ChooseRoleComponent;
 
-  @ViewChild('chooseAllocateTo', {static: false, read: ChooseAllocateToComponent})
+  @ViewChild('chooseAllocateTo', {read: ChooseAllocateToComponent})
   public chooseAllocateToComponent: ChooseAllocateToComponent;
 
-  @ViewChild('searchPerson', {static: false, read: AllocateRoleSearchPersonComponent})
+  @ViewChild('searchPerson', {read: AllocateRoleSearchPersonComponent})
   public searchPersonComponent: AllocateRoleSearchPersonComponent;
 
-  @ViewChild('chooseDuration', {static: false, read: ChooseDurationComponent})
+  @ViewChild('chooseDuration', {read: ChooseDurationComponent})
   public chooseDurationComponent: ChooseDurationComponent;
 
-  @ViewChild('checkAnswers', {static: false, read: AllocateRoleCheckAnswersComponent})
+  @ViewChild('checkAnswers', {read: AllocateRoleCheckAnswersComponent})
   public checkAnswersComponent: AllocateRoleCheckAnswersComponent;
 
   public chooseRoleVisibilityStates = chooseRoleVisibilityStates;

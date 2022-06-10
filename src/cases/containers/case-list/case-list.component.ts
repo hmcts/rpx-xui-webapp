@@ -38,7 +38,7 @@ import * as fromCaseList from '../../store/reducers';
   styleUrls: ['case-list.component.scss']
 })
 export class CaseListComponent implements OnInit, OnDestroy {
-  @ViewChild('ccdSearchResult', {static: false}) public ccdSearchResult: SearchResultComponent; // EUI-2906
+  @ViewChild('ccdSearchResult') public ccdSearchResult: SearchResultComponent; // EUI-2906
   public defaults: any;
   public caseListFilterEventsBindings: ActionBindingModel[];
   public fromCasesFeature: any;

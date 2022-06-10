@@ -16,13 +16,13 @@ import { NocQAndAComponent } from '../noc-q-and-a/noc-q-and-a.component';
 })
 export class NocHomeComponent implements OnInit, OnDestroy {
 
-  @ViewChild('nocCaseRef', {static: false, read: NocCaseRefComponent})
+  @ViewChild('nocCaseRef', {read: NocCaseRefComponent})
   public nocCaseRefComponent: NocCaseRefComponent;
 
-  @ViewChild('nocQandA', {static: false, read: NocQAndAComponent})
+  @ViewChild('nocQandA', {read: NocQAndAComponent})
   public nocQandAComponent: NocQAndAComponent;
 
-  @ViewChild('nocCheckAndSubmit', {static: false, read: NocCheckAndSubmitComponent})
+  @ViewChild('nocCheckAndSubmit', {read: NocCheckAndSubmitComponent})
   public nocCheckAndSubmitComponent: NocCheckAndSubmitComponent;
 
   public nocNavigationCurrentState: NocState;

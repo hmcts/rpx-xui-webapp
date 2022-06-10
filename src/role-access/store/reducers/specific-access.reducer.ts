@@ -23,11 +23,6 @@ export const specificAccessInitialState: SpecificAccessStateData = {
 
 export function specificAccessReducer(currentState = specificAccessInitialState, action: SpecificAccessAction): SpecificAccessStateData {
   switch (action.type) {
-    case SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST: {
-      return {
-        ...currentState
-      };
-    }
     case SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST: {
       return {
         ...currentState,

@@ -143,21 +143,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * Set the app header properties, in one function that takes in the application theme.
    */
   public setAppHeaderProperties(applicationTheme: ApplicationTheme, navigationItems: NavigationItem[]): void {
-    this.appHeaderTitle = applicationTheme.appTitle;
-    this.setupActiveNavLink(navigationItems);
-    this.userNav = this.userRoles.length > 0 ? {
-      label: 'Account navigation',
-      items: [{
-        text: 'Sign out',
-        emit: 'sign-out'
-      }]
-    } : {
-      label: 'Account navigation',
-      items: []
-    };
-    this.backgroundColor = applicationTheme.backgroundColor;
-    this.logo = applicationTheme.logo;
-    this.logoIsUsed = applicationTheme.logo !== ApplicationThemeLogo.NONE;
+    this.setAppHeaderNavItems(navigationItems);
+    this.setAppHeaderTheme(applicationTheme);
   }
 
   public setAppHeaderTheme(applicationTheme: ApplicationTheme): void {
@@ -180,7 +167,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public setAppHeaderNavItems(navigationItems: NavigationItem[]): void {
     this.setupActiveNavLink(navigationItems);
   }
-
 
   /**
    * Hide Navigation

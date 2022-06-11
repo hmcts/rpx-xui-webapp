@@ -134,6 +134,17 @@ describe('AppHeaderComponent', () => {
 
     });
 
+    it('should call userThems on getApplicationThemeForUser with no roles', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme');
+
+      const userDetails = {
+        userInfo: []
+      };
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+      expect(component.userNav.items).toEqual([]);
+    });
+
     it('should update theme app header properties.', () => {
 
       const menuItems = AppConstants.DEFAULT_MENU_ITEMS

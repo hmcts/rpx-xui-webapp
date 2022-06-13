@@ -8,21 +8,24 @@ import { SpecificAccessFormData, SpecificAccessMoreInformationForm } from './spe
 import { SpecificAccessState } from './specific-access-state.enum';
 
 export interface SpecificAccessStateData {
-  state: SpecificAccessState;
+  state?: SpecificAccessState;
   caseId: string;
-  caseName: string;
-  taskId: string;
-  actorId: string;
+  actorId?: string;
+  caseName?: string;
+  taskId?: string;
   jurisdiction: string;
+  assigneeId?: string;
   typeOfRole?: SpecificRole;
-  roleCategory: RoleCategory;
-  requestedRole: string;
-  requestCreated: string;
-  accessReason: string;
-  period: Period;
+  roleCategory?: RoleCategory;
+  requestedRole?: string;
+  requestCreated?: string;
+  accessReason: AccessReason;
   person: Person;
   requestId: string;
+  originalSpecificAccessRequestId?: string;
+  period?: Period;
   lastError?: HttpError;
+  comment?: string;
   specificAccessFormData?: SpecificAccessFormData;
   SpecificAccessMoreInformationFormData?: SpecificAccessMoreInformationForm;
 }

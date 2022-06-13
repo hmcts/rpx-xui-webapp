@@ -103,6 +103,24 @@ describe('Specific Access Reducer', () => {
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
         expect(specificAccessState.state).toEqual(SpecificAccessState.SPECIFIC_ACCESS_REVIEW);
       });
+
+      it('should set correct object for RequestMoreInfoSpecificAccessRequest', () => {
+        const specificAccessData: SpecificAccessStateData = {
+          state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+          accessReason: AccessReason.REQUEST_MORE_INFORMATION,
+          typeOfRole: {id: 'specific-access-denied', name: 'specific-access-denied'},
+          caseId: '1613568559071553',
+          requestId: 'eb7b412d-9e8e-4e1e-8e6f-ad540d455945',
+          taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          requestedRole: 'specific-access-legal-operations',
+          person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
+          }
+        const action = new fromActions.RequestMoreInfoSpecificAccessRequest(specificAccessData);
+        const specificAccessState = fromReducer.specificAccessReducer(specificAccessData, action);
+        expect(specificAccessState).toEqual(specificAccessData);
+      });
     });
   });
 

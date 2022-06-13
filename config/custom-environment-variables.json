@@ -89,7 +89,8 @@
     "payments": "SERVICES_PAYMENTS_URL",
     "s2s": "SERVICES_S2S",
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
-    "payment_return_url": "SERVICES_PAYMENT_RETURN_URL"
+    "payment_return_url": "SERVICES_PAYMENT_RETURN_URL",
+    "judicialBookingsApi": "SERVICES_JUDICIAL_BOOKING_API_PATH"
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",

@@ -17,6 +17,7 @@ export async function createLabellingRole(req: EnhancedRequest,
     const headers = setHeaders(req);
     /* tslint:disable:no-string-literal */
     delete headers['accept'];
+    console.log('siva req body', JSON.stringify(body))
     const response = await http.post(fullPath, body, { headers });
     return response;
 }
@@ -29,16 +30,19 @@ export function createBody(roleName: string,
                            roleCategory: string): any {
   return {
       roleRequest: {
+        process: 'specific-access',
         assignerId,
-        replaceExisting: false,
+        reference: `${caseId}/specific-access-legal-ops/${actorId}`,
+        replaceExisting: true,
       },
       requestedRoles: [{
         roleType: 'CASE',
         grantType: 'SPECIFIC',
-        classification: 'PUBLIC',
+        classification: 'PRIVATE',
         attributes: {
           caseId,
           jurisdiction,
+          requestedRole: 'specific-access-legal-ops',
         },
         roleName,
         roleCategory,
@@ -46,6 +50,7 @@ export function createBody(roleName: string,
         actorId,
         beginTime: new Date(),
         endTime: null,
+        readOnly: true,
       }],
     };
 }

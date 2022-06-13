@@ -15,7 +15,7 @@ describe('Specific Access Effects', () => {
   let actions$;
 
   const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', [
-    'specificAccessApproval'
+    'specificAccessApproval', 'requestMoreInfoSpecificAccessRequest'
   ]);
 
   beforeEach(() => {
@@ -77,6 +77,25 @@ describe('Specific Access Effects', () => {
       const action = new specificAccessAction.ApproveSpecificAccessRequest({specificAccessStateData, period: {startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025')}}); actions$ = hot('-a', { a: action });
       effects.approveSpecificAccessRequest$.subscribe(() => {
           expect(allocateRoleServiceMock.specificAccessApproval).toHaveBeenCalled();
+      });
+    });
+    it('should call requestMoreInformation ', () => {
+      const specificAccessState: SpecificAccessStateData = {
+      state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+      accessReason: AccessReason.REQUEST_MORE_INFORMATION,
+      typeOfRole: {id: 'specific-access-denied', name: 'specific-access-denied'},
+      caseId: '1613568559071553',
+      requestId: 'eb7b412d-9e8e-4e1e-8e6f-ad540d455945',
+      taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
+      jurisdiction: 'IA',
+      roleCategory: 'LEGAL_OPERATIONS',
+      requestedRole: 'specific-access-legal-operations',
+      person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
+      }
+      allocateRoleServiceMock.specificAccessApproval.and.returnValue(of({}));
+      const action = new specificAccessAction.RequestMoreInfoSpecificAccessRequest(specificAccessState); actions$ = hot('-a', { a: action });
+      effects.approveSpecificAccessRequest$.subscribe(() => {
+          expect(allocateRoleServiceMock.requestMoreInformation).toHaveBeenCalled();
       });
     });
   });

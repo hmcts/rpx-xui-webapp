@@ -1,13 +1,12 @@
 import { AxiosResponse } from 'axios';
-import { NextFunction, Response } from 'express';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
 import { postTaskCompletionForAccess } from '../workAllocation2';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { bookingResponse, bookings, refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
-import { getConfigValue } from 'configuration';
+import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
+// import { getConfigValue } from 'configuration';
 import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
-import { SERVICES_JUDICIAL_BOOKING_API_PATH } from 'configuration/references';
+// import { SERVICES_JUDICIAL_BOOKING_API_PATH } from 'configuration/references';
 
 export async function getBookings(req, resp: Response, next: NextFunction): Promise<Response> {
   // req.body = {
@@ -20,25 +19,23 @@ export async function getBookings(req, resp: Response, next: NextFunction): Prom
   const basePath = `http://am-judicial-booking-service-demo.service.core-compute-demo.internal`;
   const fullPath = `${basePath}/am/bookings/query`;
   const headers = setHeaders(req);
+  /* tslint:disable:no-string-literal */
   delete headers['accept'];
 
   try {
-    const response = await http.post(fullPath, {
-        "queryRequest" : {
-          "userIds" : [req.body.userId]
-        }
-      }, { headers });
+    const response = await http.post(fullPath, {"queryRequest" : {"userIds" : [req.body.userId]}}, { headers });
     return resp.status(response.status).send(response.data);
   } catch (error) {
       next(error)
   }
 }
 
-export async function createBooking(req, resp: Response, next: NextFunction): Promise<Response> {
+export async function createBooking(req, resp, next): Promise<Response> {
   // const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
   const basePath = `http://am-judicial-booking-service-demo.service.core-compute-demo.internal`;
   const fullPath = `${basePath}/am/bookings`;
   const headers = setHeaders(req);
+  /* tslint:disable:no-string-literal */
   delete headers['accept'];
 
   try {

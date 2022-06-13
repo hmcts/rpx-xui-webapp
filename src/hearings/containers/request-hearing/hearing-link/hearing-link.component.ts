@@ -2,13 +2,10 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { LoadServiceLinkedCases } from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
@@ -17,7 +14,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseId: string;
-  public hearingLinksStateData$: Observable<HearingLinksStateData>;
   public linkedCases: ServiceLinkedCasesModel[];
   public hearingLinkForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
@@ -41,7 +37,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
       hearingLink: ['', Validators.required],
     });
     this.initialiseFromHearingValues();
-    this.hearingStore.dispatch(new LoadServiceLinkedCases({caseReference: this.caseId, hearingId: ''}));
+    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({caseReference: this.caseId, hearingId: ''}));
     this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe(
       hearingLinks => {
         this.linkedCases = hearingLinks.serviceLinkedCases;

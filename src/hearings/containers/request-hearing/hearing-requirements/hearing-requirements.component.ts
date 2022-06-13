@@ -72,6 +72,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.caseTypes = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, this.serviceHearingValuesModel.caseCategories);
   }
 
+  /**
+   * Initializes hearing request from hearing values
+   */
   public initializeHearingRequestFromHearingValues(): void {
     const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
     const hearingRequestMainModel: HearingRequestMainModel = {

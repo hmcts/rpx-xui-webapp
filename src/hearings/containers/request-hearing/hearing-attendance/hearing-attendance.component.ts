@@ -104,7 +104,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       partyDetails.push(partyDetail);
     });
     let hearingChannel: string[] = this.hearingRequestMainModel.hearingDetails.hearingChannel;
-    const preferredHearingChannelsList: string[] = partyDetails.map(party => party.individualDetails.preferredHearingChannel)
+    const preferredHearingChannelsList: string[] = partyDetails.map(party => party.individualDetails.preferredHearingChannel);
     if (preferredHearingChannelsList.every(channel => channel === HearingChannelEnum.NotAttending)) {
       hearingChannel = [HearingChannelEnum.ONPPR];
     } else {
@@ -185,6 +185,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public setHearingPreferredChannel(individualDetails: IndividualDetailsModel): string {
-    return this.hearingRequestMainModel.hearingDetails.hearingChannel.includes(HearingChannelEnum.ONPPR) ? HearingChannelEnum.NotAttending : individualDetails.preferredHearingChannel;
+    return this.hearingRequestMainModel.hearingDetails.hearingChannel && this.hearingRequestMainModel.hearingDetails.hearingChannel.includes(HearingChannelEnum.ONPPR) ? HearingChannelEnum.NotAttending : individualDetails.preferredHearingChannel;
   }
 }

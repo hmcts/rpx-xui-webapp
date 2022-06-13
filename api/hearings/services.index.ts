@@ -1,10 +1,10 @@
 import {NextFunction, Response} from 'express';
-import {handlePost} from '../common/mockService';
 import {sendPost} from '../common/crudService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
 import {EnhancedRequest} from '../lib/models';
+import {DEFAULT_SCREEN_FLOW} from "./data/defaultScreenFlow.data";
 import {
   ServiceLinkedCasesModel
 } from './models/linkHearings.model';
@@ -18,11 +18,21 @@ const serviceHearingsUrl: string = getConfigValue(SERVICES_HEARINGS_COMPONENT_AP
  * loadServiceHearingValues - get details required to populate the hearing request/amend journey
  */
 export async function loadServiceHearingValues(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const jurisdictionId = req.query.jurisdictionId;
   const reqBody = req.body;
-  const markupPath: string = `${serviceHearingsUrl}/serviceHearingValues`;
+  const servicePath: string = getServicePath(serviceHearingsUrl, jurisdictionId);
+  const markupPath: string = `${servicePath}/serviceHearingValues`;
   try {
-    const {status, data}: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
-    res.status(status).send(data);
+    const {status, data}: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
+    let dataByDefault = data;
+    // If service don't supply the screenFlow pre-set the default screen flow from ExUI
+    if (!data.screenFlow) {
+      dataByDefault = {
+        ...data,
+        screenFlow: DEFAULT_SCREEN_FLOW,
+      };
+    }
+    res.status(status).send(dataByDefault);
   } catch (error) {
     next(error);
   }

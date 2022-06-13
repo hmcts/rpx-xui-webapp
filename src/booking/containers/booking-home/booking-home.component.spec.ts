@@ -105,6 +105,7 @@ describe('BookingHomeComponent', () => {
     fixture = TestBed.createComponent(BookingHomeComponent);
     component = fixture.componentInstance;
     component.bookingProcess = {} as BookingProcess;
+    component.userId = '21334a2b-79ce-44eb-9168-2d49a744be9c';
     fixture.detectChanges();
   }));
 

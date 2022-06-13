@@ -4,33 +4,49 @@ import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpec
 import { postTaskCompletionForAccess } from '../workAllocation2';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { bookingResponse, bookings, refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
+import { getConfigValue } from 'configuration';
+import { setHeaders } from '../lib/proxy';
+import { http } from '../lib/http';
+import { SERVICES_JUDICIAL_BOOKING_API_PATH } from 'configuration/references';
 
-export async function getBookings(req, res: Response, next: NextFunction): Promise<Response> {
+export async function getBookings(req, resp: Response, next: NextFunction): Promise<Response> {
+  // req.body = {
+  //   "queryRequest" : {
+  //     "userIds" : [ "21334a2b-79ce-44eb-9168-2d49a744be9c" ]
+  //   }
+  // };
 
-  // Please Uncomment for each scenario for test, This part will not be merged only test puposes for QA
-  // test case 1:
-  // bookings = null
-  // return res.status(404).send('{"errorMessage": "Resource Not found}"');
+  // const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
+  const basePath = `http://am-judicial-booking-service-demo.service.core-compute-demo.internal`;
+  const fullPath = `${basePath}/am/bookings/query`;
+  const headers = setHeaders(req);
+  delete headers['accept'];
 
-  // test case 2:
-  // bookings = null
-  // return res.send(null);
-
-  // test case 3:
-  // bookings = null
-  // return res.status(500).send('{"errorMessage": "Internal Server Error}"');
-
-  // test case 4:
-  // bookings = null
-  // return res.status(401).send('{"errorMessage": "Unauthorized}"');
-  // return res.status(403).send('{"errorMessage": "Forbidden}"');
-
-  // Succesfull Case
-  return res.send(bookings);
+  try {
+    const response = await http.post(fullPath, {
+        "queryRequest" : {
+          "userIds" : [req.body.userId]
+        }
+      }, { headers });
+    return resp.status(response.status).send(response.data);
+  } catch (error) {
+      next(error)
+  }
 }
 
-export async function postBooking(req, res: Response, next: NextFunction): Promise<Response> {
-  return res.send(bookingResponse);
+export async function createBooking(req, resp: Response, next: NextFunction): Promise<Response> {
+  // const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
+  const basePath = `http://am-judicial-booking-service-demo.service.core-compute-demo.internal`;
+  const fullPath = `${basePath}/am/bookings`;
+  const headers = setHeaders(req);
+  delete headers['accept'];
+
+  try {
+    const response = await http.post(fullPath, req.body, { headers });
+    return resp.status(response.status).send(response.data);
+  } catch (error) {
+      next(error)
+  }
 }
 
 export async function refreshRoleAssignments(req, res: Response, next: NextFunction): Promise<Response> {

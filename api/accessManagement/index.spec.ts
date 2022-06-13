@@ -22,12 +22,13 @@ describe('Judicial Booking', () => {
 
     describe('access management', () => {
         it('should return some test bookings', async () => {
+            req.body.userId = "21334a2b-79ce-44eb-9168-2d49a744be9c";
             const response = await accessManagement.getBookings(req, res, null)
             expect(response).to.not.equal(undefined)
         })
 
         it('should return a sample booking response', async () => {
-            const response = await accessManagement.postBooking(req, res, null)
+            const response = await accessManagement.createBooking(req, res, null)
             expect(response).to.not.equal(undefined)
         })
 

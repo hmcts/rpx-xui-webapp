@@ -11,6 +11,7 @@ export enum SpecificAccessActionTypes {
   SET_SPECIFIC_ACCESS_FORM_DATA = '[SPECIFIC ACCESS] Set Specific Access Form Data',
   SET_SPECIFIC_ACCESS_INFO_FORM_DATA = '[SPECIFIC ACCESS] Set Specific Access Info Form Data',
   DECIDE_SPECIFIC_ACCESS_AND_GO = '[SPECIFIC ACCESS] Decide Specific Access And Go',
+  REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST = '[REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST] Request More Info Specific Access Request',
 }
 
 export class ChangeSpecificAccessNavigation implements Action {
@@ -55,6 +56,11 @@ export class SetSpecificAccessInfoFormData implements Action {
   }
 }
 
+export class RequestMoreInfoSpecificAccessRequest implements Action {
+  public readonly type = SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST;
+  constructor(public payload: SpecificAccessStateData) {
+  }
+}
 export class ApproveSpecificAccessRequest implements Action {
   public readonly type = SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST;
   constructor(public payload: {specificAccessStateData: SpecificAccessStateData, period: Period}) {
@@ -70,5 +76,6 @@ export type SpecificAccessAction =
   | SetSpecificAccessInitData
   | SetSpecificAccessFormData
   | ChangeSpecificAccessNavigation
-  | SetSpecificAccessInfoFormData;
+  | SetSpecificAccessInfoFormData
+  | RequestMoreInfoSpecificAccessRequest;
 

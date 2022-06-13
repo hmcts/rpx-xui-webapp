@@ -10,7 +10,12 @@ import { getServiceRefDataMappingList } from '../serviceRefData';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
-import { toRoleAssignmentBody, toSARequestRoleAssignmentBody, toSARoleAssignmentBody } from './dtos/to-role-assignment-dto';
+import {
+  toDenySADletionRequestedRoleBody,
+  toDenySARoleAssignmentBody,
+  toRoleAssignmentBody,
+  toSARequestRoleAssignmentBody,
+  toSARoleAssignmentBody } from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
@@ -100,11 +105,15 @@ export async function getSpecificAccessApproved(req, resp, next) {
       return resp.status(401).send({ count });
     }
     const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
-    count = currentUserAssignments.filter(roleAssignment => roleAssignment.roleName === 'specific-access-approved').length;
+    count = currentUserAssignments.filter(roleAssignment => getNewAccessCount(roleAssignment)).length;
     return resp.status(200).send({ count });
   } catch (error) {
     next(error);
   }
+}
+
+export function getNewAccessCount(roleAssignment: RoleAssignment): boolean {
+  return roleAssignment.roleName === 'specific-access-granted' || roleAssignment.attributes.isNew;
 }
 
 
@@ -207,6 +216,44 @@ export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res
     next(error);
     return error;
   }
+}
+
+// tslint:disable-next-line:max-line-length
+export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+  try {
+    const currentUser = req.session.passport.user.userinfo;
+    const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+    req.body.roleCategory = currentUser.roleCategory;
+    const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body);
+    const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    return response;
+  } catch (error) {
+    next(error);
+    return error;
+  }
+}
+
+// tslint:disable-next-line:max-line-length
+export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+  try {
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const requestId = req.body.requestId;
+  const queryString = `?process=staff-organisational-role-mapping&reference=${requestId}`;
+  const fullPath = `${basePath}/am/role-assignments${queryString}`;
+  const headers = setHeaders(req);
+  const body = toDenySADletionRequestedRoleBody(requestId);
+  /* tslint:disable:no-string-literal */
+  delete headers['accept'];
+  const response = await http.delete(fullPath, {
+    data: body,
+    headers,
+  });
+  return response;
+  } catch (error) {
+    next(error);
+  }
+
 }
 
 // this restores the specific access request role if task completion goes wrong

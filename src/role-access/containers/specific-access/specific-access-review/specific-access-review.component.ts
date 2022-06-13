@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
+import { take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
 
 import { UserDetails } from '../../../../app/models';
@@ -121,7 +122,25 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
             specificAccessState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
             break;
           case AccessReason.REJECT_REQUEST:
-            specificAccessState = SpecificAccessState.SPECIFIC_ACCESS_DENIED;
+            const  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
+            let specificAccessBody;
+            this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccess) => {
+              if (specificAccess) {
+                specificAccessBody = {
+                  accessReason: specificAccess.accessReason,
+                  typeOfRole: rejectedRole,
+                  caseId: specificAccess.caseId,
+                  requestId: specificAccess.requestId,
+                  taskId: specificAccess.taskId,
+                  jurisdiction: specificAccess.jurisdiction,
+                  assigneeId: specificAccess.actorId,
+                  caseName: specificAccess.caseName,
+                  requestCreated: specificAccess.requestCreated,
+                  person: {id: specificAccess.actorId, name: null, domain: null},
+                }
+              }
+            });
+            this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessBody));
             break;
           case AccessReason.REQUEST_MORE_INFORMATION:
             specificAccessState = SpecificAccessState.SPECIFIC_ACCESS_INFORMATION;

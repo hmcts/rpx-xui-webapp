@@ -3,19 +3,13 @@ import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpec
 import { postTaskCompletionForAccess } from '../workAllocation2';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
-// import { getConfigValue } from 'configuration';
 import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { getConfigValue } from '../configuration';
 import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
-// import { SERVICES_JUDICIAL_BOOKING_API_PATH } from 'configuration/references';
 
 export async function getBookings(req, resp, next): Promise<Response> {
-  // req.body = {
-  //   "queryRequest" : {
-  //     "userIds" : [ "21334a2b-79ce-44eb-9168-2d49a744be9c" ]
-  //   }
-  // };
+  // req.body.userId =  "21334a2b-79ce-44eb-9168-2d49a744be9c" ;
 
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
   const fullPath = `${basePath}/am/bookings/query`;

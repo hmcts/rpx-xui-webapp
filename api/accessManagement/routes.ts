@@ -1,5 +1,4 @@
 import * as express from 'express';
-import { RE_ALLOCATE } from 'workAllocation2/constants/actions';
 import { approveSpecificAccessRequest, getBookings, createBooking, refreshRoleAssignments } from '.';
 import authInterceptor from '../lib/middleware/auth';
 

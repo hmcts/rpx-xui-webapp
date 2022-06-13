@@ -6,6 +6,8 @@ import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 // import { getConfigValue } from 'configuration';
 import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
+import { getConfigValue } from '../configuration';
+import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
 // import { SERVICES_JUDICIAL_BOOKING_API_PATH } from 'configuration/references';
 
 export async function getBookings(req, resp, next): Promise<Response> {
@@ -15,8 +17,7 @@ export async function getBookings(req, resp, next): Promise<Response> {
   //   }
   // };
 
-  // const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
-  const basePath = `http://am-judicial-booking-service-demo.service.core-compute-demo.internal`;
+  const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
   const fullPath = `${basePath}/am/bookings/query`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */

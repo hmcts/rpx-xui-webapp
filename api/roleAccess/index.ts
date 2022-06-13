@@ -105,11 +105,15 @@ export async function getSpecificAccessApproved(req, resp, next) {
       return resp.status(401).send({ count });
     }
     const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
-    count = currentUserAssignments.filter(roleAssignment => roleAssignment.roleName === 'specific-access-approved').length;
+    count = currentUserAssignments.filter(roleAssignment => getNewAccessCount(roleAssignment)).length;
     return resp.status(200).send({ count });
   } catch (error) {
     next(error);
   }
+}
+
+export function getNewAccessCount(roleAssignment: RoleAssignment): boolean {
+  return roleAssignment.roleName === 'specific-access-granted' || roleAssignment.attributes.isNew;
 }
 
 export function mapResponseToCaseRoles(

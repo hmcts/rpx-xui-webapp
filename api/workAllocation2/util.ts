@@ -552,6 +552,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     startDate: getStartDate(roleAssignment),
     access: getGrantType(roleAssignment),
     dateSubmitted: roleAssignment.created,
+    isNewTask: roleAssignment.attributes.isNew,
   };
 }
 export function getGrantType(roleAssignment: RoleAssignment) {

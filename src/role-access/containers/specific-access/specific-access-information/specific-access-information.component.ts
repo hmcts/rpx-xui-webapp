@@ -1,9 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -28,6 +29,8 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   public error: any = null;
   public controlName = 'infoCtrl';
   public submitted: boolean = true;
+  public specificAccessBody: SpecificAccessStateData;
+  private  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
 
   constructor(public readonly store: Store<fromFeature.State>, private readonly fb: FormBuilder) {
   }
@@ -39,18 +42,40 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
     });
     this.infoCtrl = this.formGroup.get('infoCtrl') as FormControl;
     this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccessState) => {
-      if (specificAccessState.SpecificAccessMoreInformationFormData && specificAccessState.SpecificAccessMoreInformationFormData.InfoText) {
+      if (specificAccessState) {
+        if (specificAccessState.SpecificAccessMoreInformationFormData && specificAccessState.SpecificAccessMoreInformationFormData.InfoText) {
           this.infoCtrl.setValue(specificAccessState.SpecificAccessMoreInformationFormData.InfoText);
+        }
+        this.specificAccessBody = {
+          accessReason: specificAccessState.accessReason,
+          typeOfRole: this.rejectedRole,
+          caseId: specificAccessState.caseId,
+          requestId: specificAccessState.requestId,
+          taskId: specificAccessState.taskId,
+          jurisdiction: specificAccessState.jurisdiction,
+          assigneeId: specificAccessState.actorId,
+          caseName: specificAccessState.caseName,
+          comment: this.infoCtrl.value,
+          requestCreated: specificAccessState.requestCreated,
+          person: {id: specificAccessState.actorId, name: null, domain: null},
+        }
       }
     });
   }
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
-    this.submitted = true;
-    if (!this.formGroup.valid) {
-      this.error = this.getErrorObject();
-      return;
+    switch (navEvent) {
+      case SpecificAccessNavigationEvent.CONTINUE:
+        this.submitted = true;
+        if (!this.formGroup.valid) {
+          this.error = this.getErrorObject();
+          return;
+        }
+        this.specificAccessBody.comment =  this.infoCtrl.value;
+        this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(this.specificAccessBody));
+        break;
+      default:
+        throw new Error('Invalid option');
     }
-    this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED));
   }
 
   public getRawData(): any {
@@ -63,16 +88,6 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
       description: 'Enter Details',
       fieldId: 'Description'
     };
-  }
-
-  public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
-    switch (navEvent) {
-      case SpecificAccessNavigationEvent.BACK:
-        this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
-        break;
-      default:
-        throw new Error('Not yet implemented');
-    }
   }
 
   public ngOnDestroy() {

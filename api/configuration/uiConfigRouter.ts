@@ -10,6 +10,7 @@ import {
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
+  SERVICES_JUDICIAL_BOOKING_API_PATH,
   SERVICES_PAYMENT_RETURN_URL,
   SERVICES_WA_WORKFLOW_API_URL
 } from './references'
@@ -39,6 +40,7 @@ async function uiConfigurationRouter(req, res) {
     substantiveEnabled: showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED),
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
+    judicialBookingsApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH)
   })
 }
 

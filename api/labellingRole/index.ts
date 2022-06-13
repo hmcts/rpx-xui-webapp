@@ -33,7 +33,7 @@ export function createBody(roleName: string,
         process: 'specific-access',
         assignerId,
         reference: `${caseId}/specific-access-legal-ops/${actorId}`,
-        replaceExisting: true
+        replaceExisting: true,
       },
       requestedRoles: [{
         roleType: 'CASE',

@@ -2,18 +2,25 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BookingNavigationEvent, BookingState } from '../../models';
-
+import { SessionStorageService } from '../../../app/services';
 import { BookingWrapperComponent } from './booking-wrapper.component';
+import session = require('express-session');
 
 describe('BookingWrapperComponent', () => {
   let component: BookingWrapperComponent;
   let fixture: ComponentFixture<BookingWrapperComponent>;
+  let sessionStorageService;
 
   beforeEach(async(() => {
+    sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [BookingWrapperComponent],
       imports: [RouterTestingModule],
+      providers: [
+        { provide: SessionStorageService, useValue: sessionStorageService }
+      ]
     })
       .compileComponents();
   }));
@@ -21,6 +28,8 @@ describe('BookingWrapperComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BookingWrapperComponent);
     component = fixture.componentInstance;
+    let userIdType = 'uid';
+    sessionStorageService.getItem.and.returnValue(`{\"sub\":\"juser8@mailinator.com\",\"${userIdType}\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}`);
     fixture.detectChanges();
   });
 

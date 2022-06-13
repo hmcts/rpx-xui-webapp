@@ -1,4 +1,4 @@
-@ng
+@_ng
 Feature: Case list page
     Background: Start mock app
         Given I set MOCK with user roles

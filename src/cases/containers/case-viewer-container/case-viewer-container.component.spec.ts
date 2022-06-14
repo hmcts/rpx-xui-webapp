@@ -12,6 +12,7 @@ import { Observable, of } from 'rxjs';
 import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AllocateRoleService } from '../../../role-access/services';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -151,6 +152,12 @@ describe('CaseViewerContainerComponent', () => {
     }
   }
 
+  class MockAllocateRoleService {
+    public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
+      return of([]);
+    }
+  }
+
   const initialState: State = {
     routerReducer: null,
     appConfig: {
@@ -225,6 +232,7 @@ describe('CaseViewerContainerComponent', () => {
           }
         },
         {provide: FeatureToggleService, useClass: MockFeatureToggleService},
+        {provide: AllocateRoleService, useClass: MockAllocateRoleService }
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })

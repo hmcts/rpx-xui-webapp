@@ -84,6 +84,10 @@ export class AllocateRoleService {
     return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getSpecificAccessApproved`);
   }
 
+  public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
+    return this.http.post<string[]>(`${AllocateRoleService.roleUrl}/manageLabellingRoleAssignment/${caseId}`, {});
+  }
+
   public getCaseRolesUserDetails(userIds: string[], services: string[]): Observable<CaseRoleDetails[]> {
     if (userIds && userIds.length > 0) {
       return this.http.post<CaseRoleDetails[]>(`${AllocateRoleService.roleUrl}/getJudicialUsers`, {userIds, services});

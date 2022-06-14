@@ -579,7 +579,7 @@ describe('workAllocation.utils', () => {
         }
       ];
 
-      const caseworkersByService = getCaseworkerDataForServices(caseworkerData, serviceCaseworkerData);
+      const caseworkersByService = getCaseworkerDataForServices(caseworkerData, serviceCaseworkerData[0]);
       expect(caseworkersByService[0].service).to.be.equal('IA');
       expect(caseworkersByService[0].caseworkers[0]).to.deep.equal(expectedCaseWorkers[0]);
       expect(caseworkersByService[0].caseworkers[1]).to.deep.equal(expectedCaseWorkers[1]);

@@ -84,8 +84,8 @@ export class AllocateRoleService {
     return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getSpecificAccessApproved`);
   }
 
-  public deleteLabellingRoleAssignment(caseId: string): Observable<string[]> {
-    return this.http.delete<string[]>(`${AllocateRoleService.roleUrl}/deleteLabellingRoleAssignment/${caseId}` );
+  public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
+    return this.http.post<string[]>(`${AllocateRoleService.roleUrl}/manageLabellingRoleAssignment/${caseId}`, {});
   }
 
   public getCaseRolesUserDetails(userIds: string[], services: string[]): Observable<CaseRoleDetails[]> {

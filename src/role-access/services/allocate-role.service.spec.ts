@@ -101,7 +101,7 @@ describe('AllocateRoleService', () => {
     }));
 
     it('should remove labelling role', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
-      service.deleteLabellingRoleAssignment('111111').subscribe(response => {
+      service.manageLabellingRoleAssignment('111111').subscribe(response => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/role-access/roles/deleteLabellingRoleAssignment/111111');

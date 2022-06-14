@@ -598,6 +598,22 @@ describe('CaseHearingsListComponent', () => {
               params: {
                 cid: '1111222233334444'
               },
+              data: {
+                hearingStageOptions: [{
+                  key: 'BBA3-SUB',
+                  value_en: 'Substantive',
+                  value_cy: '',
+                  hint_text_en: 'Substantive',
+                  hint_text_cy: '',
+                  lov_order: 1,
+                  parent_key: null,
+                  category_key: 'HearingType',
+                  parent_category: '',
+                  active_flag: 'Y',
+                  child_nodes: null,
+                  from: 'exui-default'
+                }]
+              }
             }
           }
         },

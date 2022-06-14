@@ -28,7 +28,7 @@
               "caseType": "Benefit_SCSS",
               "reasons": [
                 {
-                  "reasonCode": "bail",
+                  "reasonCode": "CLRC010",
                   "OtherDescription": ""
                 }
               ]
@@ -39,7 +39,7 @@
               "caseType": "Benefit_SCSS",
               "reasons": [
                 {
-                  "reasonCode": "consolidated",
+                  "reasonCode": "CLRC015",
                   "OtherDescription": ""
                 }
               ]
@@ -54,7 +54,7 @@
                   "OtherDescription": ""
                 },
                 {
-                  "reasonCode": "familial",
+                  "reasonCode": "CLRC005",
                   "OtherDescription": ""
                 }
               ]

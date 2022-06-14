@@ -1,14 +1,13 @@
-import { isDefined } from '@angular/compiler/src/util';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
+
 
 @Component({
   selector: 'exui-task-list',
@@ -207,7 +206,7 @@ export class TaskListComponent implements OnChanges {
   public isPaginationEnabled(): boolean {
     return this.pagination &&
       this.enablePagination &&
-      isDefined(this.tasks) &&
+      this.tasks &&
       this.tasks.length > 0;
   }
 

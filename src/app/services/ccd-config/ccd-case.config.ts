@@ -206,4 +206,7 @@ export class AppConfig extends AbstractAppConfig {
   public getPaymentReturnUrl(): string {
       return this.environmentService.get('paymentReturnUrl');
   }
+  public  getRDCommonDataApiUrl(): string {
+    return this.config.rd_common_data_api_url;
+  }
 }

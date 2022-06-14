@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { NextFunction, Response } from 'express';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
 import { postTaskCompletionForAccess } from '../workAllocation2';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
@@ -8,7 +9,7 @@ import { http } from '../lib/http';
 import { getConfigValue } from '../configuration';
 import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
 
-export async function getBookings(req, resp, next): Promise<Response> {
+export async function getBookings(req, resp: Response, next: NextFunction): Promise<Response> {
   // req.body.userId =  "21334a2b-79ce-44eb-9168-2d49a744be9c" ;
 
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
@@ -16,6 +17,8 @@ export async function getBookings(req, resp, next): Promise<Response> {
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
+
+  console.log(headers);
 
   try {
     const response = await http.post(fullPath, {"queryRequest" : {"userIds" : [req.body.userId]}}, { headers });
@@ -25,7 +28,7 @@ export async function getBookings(req, resp, next): Promise<Response> {
   }
 }
 
-export async function createBooking(req, resp, next): Promise<Response> {
+export async function createBooking(req, resp: Response, next: NextFunction): Promise<Response> {
   // const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
   const basePath = `http://am-judicial-booking-service-demo.service.core-compute-demo.internal`;
   const fullPath = `${basePath}/am/bookings`;
@@ -33,20 +36,22 @@ export async function createBooking(req, resp, next): Promise<Response> {
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
 
+  console.log(headers);
+
   try {
-    const response = await http.post(fullPath, req.body, { headers });
+    const response = await http.post(fullPath, {"bookingRequest": req.body }, { headers });
     return resp.status(response.status).send(response.data);
   } catch (error) {
       next(error)
   }
 }
 
-export async function refreshRoleAssignments(req, res, next): Promise<Response> {
+export async function refreshRoleAssignments(req, res: Response, next: NextFunction): Promise<Response> {
   return res.send(refreshRoleAssignmentsSuccess);
 }
 
 // node layer logic for approving specific access request
-export async function approveSpecificAccessRequest(req, res, next): Promise<Response> {
+export async function approveSpecificAccessRequest(req, res: Response, next: NextFunction): Promise<Response> {
   try {
     // create the specific access approval role
     const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
@@ -77,7 +82,7 @@ export async function approveSpecificAccessRequest(req, res, next): Promise<Resp
 
 // attempts to delete
 // tslint:disable-next-line:max-line-length
-export async function deleteSpecificAccessRoles(req, res, next, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
+export async function deleteSpecificAccessRoles(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
   try {
     const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id);
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
@@ -102,7 +107,7 @@ export async function deleteSpecificAccessRoles(req, res, next, previousResponse
 
 // attempts to restore the deleted specific access requested role on task completion failure
 // tslint:disable-next-line:max-line-length
-export async function restoreDeletedRole(req, res, next, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
+export async function restoreDeletedRole(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
   try {
     const restoreResponse = await restoreSpecificAccessRequestRole(req, res, next);
     if (!restoreResponse || restoreResponse.status !== 201) {

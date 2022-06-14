@@ -1,4 +1,4 @@
-@_ng  
+@ng  
 Feature: WA Release 2: My work - Work filters - Uhhappy paths
 
     Background: Mock and browser setup

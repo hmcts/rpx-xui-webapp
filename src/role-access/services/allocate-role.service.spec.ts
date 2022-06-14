@@ -104,8 +104,8 @@ describe('AllocateRoleService', () => {
       service.manageLabellingRoleAssignment('111111').subscribe(response => {
         expect(response).toBeNull();
       });
-      const req = httpMock.expectOne('/api/role-access/roles/deleteLabellingRoleAssignment/111111');
-      expect(req.request.method).toEqual('DELETE');
+      const req = httpMock.expectOne('/api/role-access/roles/manageLabellingRoleAssignment/111111');
+      expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
 

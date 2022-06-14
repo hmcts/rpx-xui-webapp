@@ -31,6 +31,7 @@ export interface ServiceHearingValuesModel {
   listingComments: string;
   hearingRequester: string;
   privateHearingRequiredFlag: boolean;
+  caseInterpreterRequiredFlag: boolean;
   panelRequirements: PanelRequirementsModel;
   leadJudgeContractType: string;
   judiciary: JudiciaryModel;

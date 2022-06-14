@@ -106,6 +106,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         hmctsInternalCaseName: this.serviceHearingValuesModel.hmctsInternalCaseName,
         publicCaseName: this.serviceHearingValuesModel.publicCaseName,
         caseAdditionalSecurityFlag: this.serviceHearingValuesModel.caseAdditionalSecurityFlag,
+        caseInterpreterRequiredFlag: this.serviceHearingValuesModel.caseInterpreterRequiredFlag,
         caseCategories: this.serviceHearingValuesModel.caseCategories,
         caseManagementLocationCode: this.serviceHearingValuesModel.caseManagementLocationCode,
         caserestrictedFlag: this.serviceHearingValuesModel.caserestrictedFlag,

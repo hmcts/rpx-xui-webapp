@@ -1388,6 +1388,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   listingComments: '',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
+  caseInterpreterRequiredFlag: false,
   leadJudgeContractType: '',
   judiciary: {
     roleType: [

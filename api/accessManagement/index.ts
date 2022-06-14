@@ -10,15 +10,11 @@ import { getConfigValue } from '../configuration';
 import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
 
 export async function getBookings(req, resp: Response, next: NextFunction): Promise<Response> {
-  // req.body.userId =  "21334a2b-79ce-44eb-9168-2d49a744be9c" ;
-
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
   const fullPath = `${basePath}/am/bookings/query`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
-
-  console.log(headers);
 
   try {
     const response = await http.post(fullPath, {"queryRequest" : {"userIds" : [req.body.userId]}}, { headers });
@@ -29,14 +25,11 @@ export async function getBookings(req, resp: Response, next: NextFunction): Prom
 }
 
 export async function createBooking(req, resp: Response, next: NextFunction): Promise<Response> {
-  // const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
-  const basePath = `http://am-judicial-booking-service-demo.service.core-compute-demo.internal`;
+  const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
   const fullPath = `${basePath}/am/bookings`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
-
-  console.log(headers);
 
   try {
     const response = await http.post(fullPath, {"bookingRequest": req.body }, { headers });

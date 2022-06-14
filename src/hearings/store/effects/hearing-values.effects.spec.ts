@@ -78,6 +78,7 @@ describe('Hearing Values Effects', () => {
       listingComments: '',
       hearingRequester: '',
       privateHearingRequiredFlag: false,
+      caseInterpreterRequiredFlag: false,
       panelRequirements: null,
       leadJudgeContractType: '',
       judiciary: {

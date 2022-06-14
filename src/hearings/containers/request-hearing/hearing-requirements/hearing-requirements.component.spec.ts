@@ -174,6 +174,7 @@ describe('HearingRequirementsComponent', () => {
         hmctsInternalCaseName: 'Jane vs DWP',
         publicCaseName: 'Jane vs DWP',
         caseAdditionalSecurityFlag: false,
+        caseInterpreterRequiredFlag: false,
         caseCategories: [
           {
             categoryType: CategoryType.CaseType,

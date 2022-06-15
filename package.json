@@ -134,6 +134,10 @@
     "terser-webpack-plugin": "^2.3.5",
     "ts-enum-util": "4.0.2",
     "web-animations-js": "^2.3.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2",
+    "webpack-source-map-support": "^2.0.1",
     "xlsx": "^0.15.4",
     "yarn": "^1.22.18",
     "zone.js": "~0.9.1"
@@ -207,8 +211,8 @@
     "sinon-express-mock": "^2.2.0",
     "sonar-scanner": "^3.1.0",
     "ts-loader": "^6.2.1",
-    "ts-node": "~10.8.1",
-    "tslint": "~5.20.0",
+    "ts-node": "~7.0.0",
+    "tslint": "~5.11.0",
     "typescript": "~3.5.0",
     "underscore": "^1.9.1",
     "uuid": "^8.3.1"

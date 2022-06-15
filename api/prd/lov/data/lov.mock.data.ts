@@ -950,7 +950,7 @@ export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
 
 export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
   {
-    category_key: 'AdditionalFacilities',
+    category_key: 'Facilities',
     key: 'immigrationDetentionCentre',
     value_en: 'Immigration detention centre',
     value_cy: '',
@@ -964,7 +964,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    category_key: 'AdditionalFacilities',
+    category_key: 'Facilities',
     key: 'inCameraCourt',
     value_en: 'In camera court',
     value_cy: '',
@@ -978,7 +978,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    category_key: 'AdditionalFacilities',
+    category_key: 'Facilities',
     key: 'sameSexCourtroom',
     value_en: 'Same-sex courtroom',
     value_cy: '',
@@ -992,7 +992,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    category_key: 'AdditionalFacilities',
+    category_key: 'Facilities',
     key: 'secureDock',
     value_en: 'Secure dock',
     value_cy: '',
@@ -1006,7 +1006,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    category_key: 'AdditionalFacilities',
+    category_key: 'Facilities',
     key: 'witnessScreen',
     value_en: 'Witness Screen',
     value_cy: '',
@@ -1020,7 +1020,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    category_key: 'AdditionalFacilities',
+    category_key: 'Facilities',
     key: 'witnessRoom',
     value_en: 'Witness room',
     value_cy: '',
@@ -1034,7 +1034,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    category_key: 'AdditionalFacilities',
+    category_key: 'Facilities',
     key: 'videoConferencing',
     value_en: 'Video conferencing',
     value_cy: '',
@@ -1048,7 +1048,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    category_key: 'AdditionalFacilities',
+    category_key: 'Facilities',
     key: 'VideoFacility',
     value_en: 'Video facility',
     value_cy: '',
@@ -1062,7 +1062,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    category_key: 'AdditionalFacilities',
+    category_key: 'Facilities',
     key: 'prisonVideoLink',
     value_en: 'Prison Video Link',
     value_cy: '',
@@ -1457,7 +1457,7 @@ export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
     lovDataModel: DEFAULT_CANCEL_HEARING_ACTUAL,
   },
   {
-    categoryKey: 'AdditionalFacilities',
+    categoryKey: 'Facilities',
     lovDataModel: DEFAULT_ADDITIONAL_FACILITIES,
   },
   {

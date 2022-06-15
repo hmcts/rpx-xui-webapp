@@ -2114,6 +2114,8 @@ export const initialState = {
     hearingRequest: {
       hearingRequestMainModel: {
         requestDetails: {
+          hearingRequestID: '1000000',
+          status: 'LISTED',
           timeStamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
         },

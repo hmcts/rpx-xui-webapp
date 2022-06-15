@@ -128,7 +128,7 @@ export enum HearingCategory {
   HearingChannel = 'HearingChannel',
   HearingType = 'HearingType',
   CaseType = 'caseType',
-  AdditionalFacilities = 'AdditionalFacilities',
+  Facilities = 'Facilities',
   PanelMemberType = 'PanelMemberType',
   PanelMemberSpecialism = 'PanelMemberSpecialism',
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',

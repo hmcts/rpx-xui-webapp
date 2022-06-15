@@ -1341,7 +1341,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   publicCaseName: 'Jane vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
-  hearingChannel: [],
+  hearingChannels: [],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
@@ -1388,6 +1388,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   listingComments: '',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
+  caseInterpreterRequiredFlag: false,
   leadJudgeContractType: '',
   judiciary: {
     roleType: [
@@ -1682,7 +1683,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
   hearingDetails: {
     duration: 45,
     hearingType: 'final',
-    hearingChannel: [],
+    hearingChannels: [],
     hearingLocations: [
       {
         locationId: '196538',
@@ -1982,7 +1983,7 @@ export const initialState = {
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
-          hearingChannel: [],
+          hearingChannels: [],
           hearingLocations: [
             {
               locationId: '196538',
@@ -2113,6 +2114,8 @@ export const initialState = {
     hearingRequest: {
       hearingRequestMainModel: {
         requestDetails: {
+          hearingRequestID: '1000000',
+          status: 'LISTED',
           timeStamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
         },
@@ -2160,7 +2163,7 @@ export const initialState = {
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
-          hearingChannel: [],
+          hearingChannels: [],
           hearingLocations: [
             {
               locationId: '196538',

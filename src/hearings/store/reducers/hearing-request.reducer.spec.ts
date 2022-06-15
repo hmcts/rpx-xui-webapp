@@ -27,7 +27,7 @@ describe('Hearing Request Reducer', () => {
             hearingDetails: {
               duration: null,
               hearingType: null,
-              hearingChannel: [],
+              hearingChannels: [],
               hearingLocations: [{
                 locationId: '196538',
                 locationType: HMCLocationType.COURT,
@@ -89,7 +89,7 @@ describe('Hearing Request Reducer', () => {
             hearingDetails: {
               duration: null,
               hearingType: null,
-              hearingChannel: [],
+              hearingChannels: [],
               hearingLocations: [{
                 locationId: '196538',
                 locationType: HMCLocationType.COURT,

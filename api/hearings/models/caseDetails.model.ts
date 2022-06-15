@@ -10,7 +10,7 @@ export interface CaseDetailsModel {
   hmctsInternalCaseName: string;
   publicCaseName: string;
   caseAdditionalSecurityFlag?: boolean;
-  caseInterpreterRequiredFlag?: boolean;
+  caseInterpreterRequiredFlag: boolean;
   caseCategories: CaseCategoryModel[];
   caseManagementLocationCode: string;
   caserestrictedFlag: boolean;

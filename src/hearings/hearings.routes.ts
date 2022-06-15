@@ -253,7 +253,7 @@ export const ROUTES: Routes = [
         },
         component: HearingFacilitiesComponent,
         data: {
-          category: HearingCategory.AdditionalFacilities,
+          category: HearingCategory.Facilities,
           title: 'HMCTS Hearings | Request Hearing | Additional Facilities'
         }
       },

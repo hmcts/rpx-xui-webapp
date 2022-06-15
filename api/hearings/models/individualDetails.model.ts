@@ -12,4 +12,5 @@ export interface IndividualDetailsModel {
   hearingChannelEmail?: string[];
   hearingChannelPhone?: string[];
   relatedParties?: RelatedPartiesModel[];
+  custodyStatus?: string;
 }

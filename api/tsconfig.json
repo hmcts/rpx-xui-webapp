@@ -2,7 +2,6 @@
     "compileOnSave": false,
     "compilerOptions": {
         "outDir": "../dist/rpx-exui/api",
-        "module": "commonjs",
         "target": "es5",
         "types": ["node", "mocha", "rxjs"],
         "baseUrl": ".",

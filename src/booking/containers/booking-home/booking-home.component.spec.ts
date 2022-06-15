@@ -14,39 +14,23 @@ import { BookingHomeComponent } from './booking-home.component';
 
 
 const DUMMY_BOOKINGS: Booking[] = [{
-  userId: 'Dummy User Id',
-  appointmentId: 'Dummy Appointment Id',
-  roleId: 'Dummy Role Id',
-  contract_type_id: 'Dummy Contract Type Id',
-  base_location_id: '101',
-  region_id: 'Dummy Region Id',
-  beginTime: new Date('2021-12-01T09:58:39.930+0000'),
-  endTime: new Date('2022-01-01T09:58:39.930+0000'),
-  created: new Date('2021-12-01T09:58:39.930+0000'),
+  "id":"d9d4f711-1ffe-4a22-a949-7286907422f1",
+  "userId":"7954b105-1014-4504-bb47-602639df24eb",
+  "regionId":"5","locationId":"512401",
+  "created":"2022-06-14T13:25:39Z",
+  "beginTime":"2022-06-14T00:00:00Z",
+  "endTime":"2022-06-20T00:00:00Z",
+  "locationName":"Manchester Tribunal Hearing Centre"
 },
 {
-  userId: 'Dummy User Id',
-  appointmentId: 'Dummy Appointment Id',
-  roleId: 'Dummy Role Id',
-  contract_type_id: 'Dummy Contract Type Id',
-  base_location_id: '101',
-  region_id: 'Dummy Region Id',
-  beginTime: new Date('2021-12-02T09:58:39.930+0000'),
-  endTime: new Date('2022-02-01T09:58:39.930+0000'),
-  created: new Date('2021-12-01T09:58:39.930+0000'),
-},
-{
-  userId: 'Dummy User Id',
-  appointmentId: 'Dummy Appointment Id',
-  roleId: 'Dummy Role Id',
-  contract_type_id: 'Dummy Contract Type Id',
-  base_location_id: '102',
-  region_id: 'Dummy Region Id',
-  beginTime: new Date('2029-01-01T09:58:39.930+0000'),
-  endTime: new Date('2029-03-01T09:58:39.930+0000'),
-  created: new Date('2029-12-01T09:58:39.930+0000'),
+  "id":"0457a99c-b1e3-49a1-9deb-8ab322706981",
+  "userId":"7954b105-1014-4504-bb47-602639df24eb",
+  "regionId":"9","locationId":"366559",
+  "created":"2022-06-14T13:26:27Z",
+  "beginTime":"2022-06-14T00:00:00Z",
+  "endTime":"2022-06-20T00:00:00Z",
+  "locationName":"Glasgow Tribunals Centre"
 }];
-
 
 const DUMMY_LOCATION_NAME: string = 'Some place name';
 
@@ -109,13 +93,13 @@ describe('BookingHomeComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should send back the status if it is 400', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
-    component.NavigationErrorHandler(error, mockRouter);
-    expect(mockRouter.navigate).toHaveBeenCalled();
-  });
+  // it('should send back the status if it is 400', () => {
+  //   mockRouter = {
+  //     navigate: jasmine.createSpy('navigate')
+  //   };
+  //   component.NavigationErrorHandler(error, mockRouter);
+  //   expect(mockRouter.navigate).toHaveBeenCalled();
+  // });
 
   it('should attempt to navigate to the correct error pages', () => {
     mockRouter = {

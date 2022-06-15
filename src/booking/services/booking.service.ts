@@ -8,8 +8,8 @@ export class BookingService {
 
   constructor(private readonly http: HttpClient) { }
 
-  public getBookings(userId: string): Observable<{ bookings: Booking[] }> {
-    return this.http.post<{ bookings: Booking[] }>(`/am/getBookings`, { userId });
+  public getBookings(userId: string): Observable< Booking[]> {
+    return this.http.post<Booking[]>(`/am/getBookings`, { userId });
   }
 
   public getBookingLocation(locationId: string): Observable<any> {

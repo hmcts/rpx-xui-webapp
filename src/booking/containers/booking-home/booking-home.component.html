@@ -32,7 +32,7 @@
                           role="button"
                           class="govuk-button govuk-button--secondary"
                           attr.aria-label="{{booking.locationName}} {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}"
-                          (click)="onExistingBookingSelected(booking.base_location_id)"
+                          (click)="onExistingBookingSelected(booking.locationId)"
                         >
                           Continue
                         </button>

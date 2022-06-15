@@ -211,7 +211,7 @@
     "sinon-express-mock": "^2.2.0",
     "sonar-scanner": "^3.1.0",
     "ts-loader": "^6.2.1",
-    "ts-node": "~7.0.0",
+    "ts-node": "~10.8.1",
     "tslint": "~5.11.0",
     "typescript": "~3.5.0",
     "underscore": "^1.9.1",

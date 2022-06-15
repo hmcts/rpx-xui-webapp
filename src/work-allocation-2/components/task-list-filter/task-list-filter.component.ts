@@ -97,8 +97,13 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           if (this.hideButton) {
             this.toggleFilter = false;
             setTimeout(() => {
-              const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
-              (typesOfWorkParentElem as HTMLElement).style.display = 'none';
+              const typesOfWork = document.getElementById('types-of-work');
+              if (typesOfWork) {
+                const typesOfWorkParentElem = typesOfWork.closest('.contain-classes');
+                if (typesOfWorkParentElem) {
+                  (typesOfWorkParentElem as HTMLElement).style.display = 'none';
+                }
+              }
             }, 0);
           }
         });

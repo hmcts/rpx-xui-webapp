@@ -134,10 +134,6 @@
     "terser-webpack-plugin": "^2.3.5",
     "ts-enum-util": "4.0.2",
     "web-animations-js": "^2.3.2",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
-    "webpack-node-externals": "^1.7.2",
-    "webpack-source-map-support": "^2.0.1",
     "xlsx": "^0.15.4",
     "yarn": "^1.22.18",
     "zone.js": "~0.9.1"
@@ -215,6 +211,10 @@
     "tslint": "~5.11.0",
     "typescript": "~3.5.0",
     "underscore": "^1.9.1",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2",
+    "webpack-source-map-support": "^2.0.1",
     "uuid": "^8.3.1"
   },
   "resolutions": {

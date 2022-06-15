@@ -122,7 +122,7 @@ describe('HearingRequirementsComponent', () => {
       hearingDetails: {
         duration: 45,
         hearingType: 'Final',
-        hearingChannel: [],
+        hearingChannels: [],
         hearingLocations: [
           {
             locationId: '196538',

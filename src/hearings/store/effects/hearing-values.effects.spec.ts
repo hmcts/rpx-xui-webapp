@@ -39,7 +39,7 @@ describe('Hearing Values Effects', () => {
       publicCaseName: 'Jane Smith vs DWP',
       autoListFlag: false,
       hearingType: 'Final',
-      hearingChannel: [],
+      hearingChannels: [],
       caseAdditionalSecurityFlag: false,
       caseCategories: [
         {

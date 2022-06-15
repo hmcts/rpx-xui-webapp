@@ -15,7 +15,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   publicCaseName: 'Jane and Smith vs DWP',
   autoListFlag: false,
   hearingType: 'BBA3-DIR',
-  hearingChannel: [HearingChannelEnum.ONPPR],
+  hearingChannels: [HearingChannelEnum.ONPPR],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,

@@ -1,12 +1,10 @@
 export interface Booking {
+    beginTime: string;
+    endTime: string;
+    created: string;
+    id: string;
+    locationId: string;
+    regionId: string;
     userId: string;
-    appointmentId: string;
-    roleId: string;
-    contract_type_id: string;
-    base_location_id: string;
-    region_id: string;
-    beginTime: Date;
-    endTime: Date;
-    created: Date;
-    locationName?: string;
+    locationName?: string
 }

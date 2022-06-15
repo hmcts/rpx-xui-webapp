@@ -42,7 +42,7 @@ describe('RequestHearingPageFlow', () => {
           hearingPriorityType: '',
           hearingInWelshFlag: true,
           amendReasonCode: null,
-          hearingChannel: [],
+          hearingChannels: [],
         },
         partyDetails: []
       },

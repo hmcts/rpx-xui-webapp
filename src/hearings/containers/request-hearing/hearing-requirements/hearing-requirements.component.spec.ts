@@ -122,7 +122,7 @@ describe('HearingRequirementsComponent', () => {
       hearingDetails: {
         duration: 45,
         hearingType: 'Final',
-        hearingChannel: [],
+        hearingChannels: [],
         hearingLocations: [
           {
             locationId: '196538',
@@ -174,6 +174,7 @@ describe('HearingRequirementsComponent', () => {
         hmctsInternalCaseName: 'Jane vs DWP',
         publicCaseName: 'Jane vs DWP',
         caseAdditionalSecurityFlag: false,
+        caseInterpreterRequiredFlag: false,
         caseCategories: [
           {
             categoryType: CategoryType.CaseType,

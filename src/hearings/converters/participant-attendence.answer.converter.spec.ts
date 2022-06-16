@@ -9,7 +9,7 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { State } from '../store';
 import { ParticipantAttendenceAnswerConverter } from './participant-attendence.answer.converter';
 
-fdescribe('ParticipantAttendenceAnswerConverter', () => {
+describe('ParticipantAttendenceAnswerConverter', () => {
 
   let converter: ParticipantAttendenceAnswerConverter;
   let store: Store<any>;

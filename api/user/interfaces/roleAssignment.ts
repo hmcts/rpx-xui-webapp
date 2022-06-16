@@ -16,6 +16,7 @@ export interface RoleAssignment {
 }
 
 export interface LocationInfo {
+  isNew?: boolean;
   primaryLocation?: string;
   caseId?: string;
   jurisdiction?: string;

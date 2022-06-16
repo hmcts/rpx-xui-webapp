@@ -5,7 +5,8 @@
 <div class="govuk-button-group">
   <button class="govuk-button govuk-!-margin-right-3" type="button"
     *ngIf="isVisible((navigationCurrentState$ | async), continueButtonVisibilityStates)"
-    (click)="onEventTrigger(specificAccessNavigationEvent.CONTINUE)">Continue
+    (click)="onEventTrigger(specificAccessNavigationEvent.CONTINUE)">
+    {{ ( this.navigationCurrentState$ | async)  == 1 ? 'Submit' : 'Continue'  }}
   </button>
   <button class="govuk-button govuk-!-margin-right-3" type="button"
     *ngIf="isVisible((navigationCurrentState$ | async), returnToMyTasksButtonVisibilityStates)"

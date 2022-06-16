@@ -100,6 +100,15 @@ describe('AllocateRoleService', () => {
       req.flush(null);
     }));
 
+    it('should remove labelling role', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
+      service.manageLabellingRoleAssignment('111111').subscribe(response => {
+        expect(response).toBeNull();
+      });
+      const req = httpMock.expectOne('/api/role-access/roles/manageLabellingRoleAssignment/111111');
+      expect(req.request.method).toEqual('POST');
+      req.flush(null);
+    }));
+
     it('should approve specific access request', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
       const period = {
         startDate: new Date(),
@@ -226,6 +235,17 @@ describe('AllocateRoleService', () => {
         expect(response).toEqual(data);
       });
     }));
+
+    it('should get specific access approved', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
+      const approvedCount = {
+        count : 5
+      }
+      mockHttp.post.and.returnValue(of(approvedCount));
+      service.getSpecificAccessApproved().subscribe(response => {
+        expect(response).toEqual({count : 5 });
+      });
+    }));
+
   });
 });
 

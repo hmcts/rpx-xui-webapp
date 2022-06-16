@@ -18,6 +18,7 @@ export class BookingCheckComponent implements OnInit {
 
   @Input() public selectedBookingOption: number;
   @Input() public bookingProcess: BookingProcess;
+  @Input() public userId: string;
 
   @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
@@ -44,6 +45,7 @@ export class BookingCheckComponent implements OnInit {
 
   private submitBooking(): void {
     const payload: BookingRequest = {
+      userId: this.userId,
       locationId: this.bookingProcess.location.epimms_id,
       regionId: this.bookingProcess.location.region_id,
       beginDate: this.bookingProcess.startDate,

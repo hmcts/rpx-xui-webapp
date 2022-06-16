@@ -3,34 +3,51 @@ import { NextFunction, Response } from 'express';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
 import { postTaskCompletionForAccess } from '../workAllocation2';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { bookingResponse, bookings, refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
+import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
+import { setHeaders } from '../lib/proxy';
+import { http } from '../lib/http';
+import { getConfigValue } from '../configuration';
+import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
+import { commonGetFullLocation } from '../workAllocation2/locationService';
 
-export async function getBookings(req, res: Response, next: NextFunction): Promise<Response> {
+export async function getBookings(req, resp: Response, next: NextFunction) {
+  const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
+  const fullPath = `${basePath}/am/bookings/query`;
+  const headers = setHeaders(req);
+  /* tslint:disable:no-string-literal */
+  delete headers['accept'];
 
-  // Please Uncomment for each scenario for test, This part will not be merged only test puposes for QA
-  // test case 1:
-  // bookings = null
-  // return res.status(404).send('{"errorMessage": "Resource Not found}"');
+  try {
+    const bookings = await http.post(fullPath, {"queryRequest" : {"userIds" : [req.body.userId]}}, { headers });
+    const fullLocations = await commonGetFullLocation(req);
 
-  // test case 2:
-  // bookings = null
-  // return res.send(null);
-
-  // test case 3:
-  // bookings = null
-  // return res.status(500).send('{"errorMessage": "Internal Server Error}"');
-
-  // test case 4:
-  // bookings = null
-  // return res.status(401).send('{"errorMessage": "Unauthorized}"');
-  // return res.status(403).send('{"errorMessage": "Forbidden}"');
-
-  // Succesfull Case
-  return res.send(bookings);
+    const bookingAndLocationName = bookings.data.bookings.map(booking => {
+      const locationName = fullLocations.data.court_venues.filter(location =>
+        booking.locationId === location.epimms_id)[0].site_name;
+      return {
+        ...booking,
+        locationName,
+      };
+    });
+    return resp.status(bookings.status).send(bookingAndLocationName);
+  } catch (error) {
+      next(error)
+  }
 }
 
-export async function postBooking(req, res: Response, next: NextFunction): Promise<Response> {
-  return res.send(bookingResponse);
+export async function createBooking(req, resp: Response, next: NextFunction): Promise<Response> {
+  const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
+  const fullPath = `${basePath}/am/bookings`;
+  const headers = setHeaders(req);
+  /* tslint:disable:no-string-literal */
+  delete headers['accept'];
+
+  try {
+    const response = await http.post(fullPath, {"bookingRequest": req.body }, { headers });
+    return resp.status(response.status).send(response.data);
+  } catch (error) {
+      next(error)
+  }
 }
 
 export async function refreshRoleAssignments(req, res: Response, next: NextFunction): Promise<Response> {

@@ -21,13 +21,13 @@ describe('BookingService', () => {
 
   describe('getBookings()', () => {
 
-    it('should make a get call', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
-      service.getBookings().subscribe(response => {
+    it('should make a post call', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
+      service.getBookings('21334a2b-79ce-44eb-9168-2d49a744be9c').subscribe(response => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('/am/bookings');
-      expect(req.request.method).toEqual('GET');
+      const req = httpMock.expectOne('/am/getBookings');
+      expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
   });
@@ -48,11 +48,12 @@ describe('BookingService', () => {
   describe('createBooking()', () => {
 
     it('should make a post to create a booking', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
-      service.createBooking({ locationId: '1', regionId: '1', beginDate: null, endDate: null }).subscribe(response => {
+      service.createBooking({ userId: '21334a2b-79ce-44eb-9168-2d49a744be9c',
+      locationId: '1', regionId: '1', beginDate: null, endDate: null }).subscribe(response => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('/am/booking');
+      const req = httpMock.expectOne('/am/createBooking');
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
 import { postTaskCompletionForAccess } from '../workAllocation2';
@@ -21,19 +21,15 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
     const bookings = await http.post(fullPath, {"queryRequest" : {"userIds" : [req.body.userId]}}, { headers });
     const fullLocations = await commonGetFullLocation(req);
 
-    axios.all([bookings, fullLocations]).then(axios.spread((...response) => {
-      const bookingsResponse = response[0];
-      const fullLocationsResponse = response[1];
-      const bookingAndLocationName = bookingsResponse.data.bookings.map(booking => {
-        const locationName = fullLocationsResponse.data.court_venues.filter(location =>
-          booking.locationId === location.epimms_id)[0].site_name;
-        return {
-          ...booking,
-          locationName,
-        };
-      });
-      return resp.status(bookings.status).send(bookingAndLocationName);
-    }));
+    const bookingAndLocationName = bookings.data.bookings.map(booking => {
+      const locationName = fullLocations.data.court_venues.filter(location =>
+        booking.locationId === location.epimms_id)[0].site_name;
+      return {
+        ...booking,
+        locationName,
+      };
+    });
+    return resp.status(bookings.status).send(bookingAndLocationName);
   } catch (error) {
       next(error)
   }

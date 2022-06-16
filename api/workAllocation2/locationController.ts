@@ -53,11 +53,6 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 export async function getFullLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    console.log("**getFullLocations**");
-
-    // const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
-    // const path: string = prepareGetLocationsUrl(basePath);
-    // const response = await handleLocationGet(path, req);
     const response = await commonGetFullLocation(req);
     res.send(response.data.court_venues).status(response.status);
   } catch (error) {

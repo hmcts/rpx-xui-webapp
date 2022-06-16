@@ -138,7 +138,6 @@ function getNewCaseCount(roleAssignment: RoleAssignment): boolean {
 
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {
   try {
-    debugger;
     if (!req.session || !req.session.roleAssignmentResponse) {
       return resp.status(401);
     }

@@ -246,6 +246,16 @@ describe('AllocateRoleService', () => {
       });
     }));
 
+    it('should get new cases count', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
+      const count = {
+        count : 5
+      }
+      mockHttp.post.and.returnValue(of(count));
+      service.getNewCasesCount().subscribe(response => {
+        expect(response).toEqual({count : 5 });
+      });
+    }));
+
   });
 });
 

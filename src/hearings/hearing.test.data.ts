@@ -1776,14 +1776,14 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     laCaseStatus: LaCaseStatus.AWAITING_LISTING,
     listingStatus: ListingStatus.DRAFT,
     hearingCancellationReason: '123456543',
-    hearingDaySchedule: {
+    hearingDaySchedule: [{
       hearingStartDateTime: '2021-03-12T09:00:00.000Z',
       hearingEndDateTime: '2021-03-12T16:00:00.000Z',
       listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
       hearingVenueId: '815833',
       hearingRoomId: 'room 4',
       hearingJudgeId: 'p1000002',
-      panelMemberIds: ['p1000001'],
+      panelMemberId: 'p1000001',
       attendees: [
         {
           partyID: 'P1',
@@ -1810,7 +1810,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
           },
         },
       ],
-    },
+    }],
   },
 };
 
@@ -2123,14 +2123,14 @@ export const initialState = {
           laCaseStatus: LaCaseStatus.AWAITING_LISTING,
           listingStatus: ListingStatus.FIXED,
           hearingCancellationReason: '',
-          hearingDaySchedule: {
-            hearingStartDateTime: '',
-            hearingEndDateTime: '',
+          hearingDaySchedule: [{
+            hearingStartDateTime: '2022-12-12T09:00:00.000Z',
+            hearingEndDateTime: '2023-12-12T09:00:00.000Z',
             listAssistSessionID: '',
             hearingVenueId: '',
             hearingRoomId: 'room 3',
             hearingJudgeId: 'p1000002',
-            panelMemberIds: ['p1000001'],
+            panelMemberId: 'p1000001',
             attendees: [
               {
                 partyID: 'P1',
@@ -2155,7 +2155,7 @@ export const initialState = {
                 }
               },
             ],
-          }
+          }]
         },
         hearingDetails: {
           duration: 60,

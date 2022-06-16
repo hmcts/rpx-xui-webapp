@@ -35,7 +35,8 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
         hearingRequest.hearingRequestMainModel
         && hearingRequest.hearingRequestMainModel.hearingResponse
         && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
-        && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingVenueId)
+        && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0]
+        && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingVenueId)
     );
   }
 

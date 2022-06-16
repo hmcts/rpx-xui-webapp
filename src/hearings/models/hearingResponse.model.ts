@@ -8,6 +8,6 @@ export interface HearingResponseModel {
   laCaseStatus: LaCaseStatus;
   listingStatus: ListingStatus;
   hearingCancellationReason: string;
-  hearingDaySchedule: HearingDayScheduleModel;
+  hearingDaySchedule: HearingDayScheduleModel[];
   errorTimestamp?: string;
 }

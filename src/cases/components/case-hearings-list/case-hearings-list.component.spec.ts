@@ -451,7 +451,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
 }, {
   hearingID: 'h100010',
@@ -500,7 +500,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
       },
     ],
   }],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED
 }, {
   hearingID: 'h100011',
@@ -549,7 +549,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
       },
     ],
   }],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.ADJOURNED
 }, {
   hearingID: 'h100012',
@@ -564,7 +564,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
 }];
 
@@ -644,8 +644,8 @@ describe('CaseHearingsListComponent', () => {
     expect(heading.nativeElement.innerHTML).toEqual(EXUISectionStatusEnum.UPCOMING);
   });
 
-  it('should hasReadOnlyAction if status is past and cancelled', () => {
-    component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
+  it('should hasReadOnlyAction if status is past or cancelled', () => {
+    component.status = EXUISectionStatusEnum.PAST_OR_CANCELLED;
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.hasReadOnlyAction).toBeTruthy();
@@ -775,9 +775,9 @@ describe('CaseHearingsListComponent', () => {
     expect(addOrEdit9.textContent).toBe('Add or edit');
   });
 
-  it('should show the right action links for PAST_AND_CANCELLED section', () => {
+  it('should show the right action links for PAST_OR_CANCELLED section', () => {
     component.hearingList$ = of(PAST_HEARING_LIST);
-    component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
+    component.status = EXUISectionStatusEnum.PAST_OR_CANCELLED;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
     component.ngOnInit();
     fixture.detectChanges();

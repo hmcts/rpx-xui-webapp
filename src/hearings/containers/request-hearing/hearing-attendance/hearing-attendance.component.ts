@@ -1,18 +1,18 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ACTION, HearingCategory, HearingChannelEnum } from '../../../models/hearings.enum';
-import { IndividualDetailsModel } from '../../../models/individualDetails.model';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { HearingsService } from '../../../services/hearings.service';
-import { LovRefDataService } from '../../../services/lov-ref-data.service';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {ACTION, HearingCategory, HearingChannelEnum} from '../../../models/hearings.enum';
+import {IndividualDetailsModel} from '../../../models/individualDetails.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {PartyDetailsModel} from '../../../models/partyDetails.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {LovRefDataService} from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-attendance',
@@ -38,7 +38,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, route);
     this.attendanceFormGroup = fb.group({
-      estimation: [null, [this.validatorsUtils.numberLargerThanValidator(0)]],
+      estimation: [null, [Validators.pattern(/^\d+$/)]],
       parties: fb.array([])
     });
     this.partiesFormArray = fb.array([]);
@@ -47,8 +47,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public ngOnInit(): void {
     this.partyChannels$ = this.lovRefDataService.getListOfValues(HearingCategory.HearingChannel,
       this.serviceHearingValuesModel.hmctsServiceID).pipe(
-        map((channels: LovRefDataModel[]) =>
-          channels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR)));
+      map((channels: LovRefDataModel[]) =>
+        channels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR)));
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {
@@ -140,7 +140,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.attendanceFormGroup.controls.estimation.markAsDirty();
     if (!this.attendanceFormGroup.controls.estimation.valid) {
       formValid = false;
-      this.validationErrors.push({ id: 'attendance-number', message: 'Enter a valid number of attendees' });
+      this.validationErrors.push({id: 'attendance-number', message: 'Enter a valid number of attendees'});
     }
 
     this.selectionValid = selectionValid;
@@ -156,8 +156,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       partyType: [party.partyType],
       partyName: [party.partyName],
       partyRole: [party.partyRole],
-      ...individualDetails && ({ individualDetails }),
-      ...organisationDetails && ({ organisationDetails }),
+      ...individualDetails && ({individualDetails}),
+      ...organisationDetails && ({organisationDetails}),
       unavailabilityDOW: [party.unavailabilityDOW],
       unavailabilityRanges: [party.unavailabilityRanges],
     });

@@ -2128,7 +2128,7 @@ export const initialState = {
           hearingCancellationReason: '',
           hearingDaySchedule: [{
             hearingStartDateTime: '2022-12-12T09:00:00.000Z',
-            hearingEndDateTime: '2023-12-12T09:00:00.000Z',
+            hearingEndDateTime: '2022-12-12T16:00:00.000Z',
             listAssistSessionID: '',
             hearingVenueId: '',
             hearingRoomId: 'room 3',

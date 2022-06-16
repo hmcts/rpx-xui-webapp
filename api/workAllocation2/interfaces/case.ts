@@ -30,6 +30,7 @@ export interface Case {
   caseCategory: string;
   assigneeName: string;
   name: string;
+  isNewTask?: boolean;
 }
 
 export interface CaseAction {

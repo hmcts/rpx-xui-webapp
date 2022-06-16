@@ -27,7 +27,6 @@ describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  const mockedSessionStorageService = jasmine.createSpyObj('mockedCookieService', ['getItem']);
 
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
@@ -48,13 +47,12 @@ describe('MyTasksComponent', () => {
       ],
       declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService},
-        { provide: AlertService, useValue: mockAlertService},
-        { provide: SessionStorageService, useValue: mockSessionStorageService},
-        { provide: CaseworkerDataService, useValue: mockCaseworkerService},
+        {provide: WorkAllocationTaskService, useValue: mockTaskService},
+        {provide: AlertService, useValue: mockAlertService},
+        {provide: SessionStorageService, useValue: mockSessionStorageService},
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: SessionStorageService, useValue: mockedSessionStorageService}
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
   }));
@@ -69,8 +67,6 @@ describe('MyTasksComponent', () => {
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-    const userIdType = 'uid';
-    mockedSessionStorageService.getItem.and.returnValue(`{\"sub\":\"juser8@mailinator.com\",\"${userIdType}\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}`);
     fixture.detectChanges();
   });
 

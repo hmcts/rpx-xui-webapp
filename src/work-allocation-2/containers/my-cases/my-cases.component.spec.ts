@@ -18,6 +18,7 @@ import { MyCasesComponent } from './my-cases.component';
   template: `<div>Nothing</div>`
 })
 class NothingComponent { }
+
 @Component({ template: `<exui-my-cases></exui-my-cases>` })
 
 class WrapperComponent {
@@ -127,8 +128,7 @@ describe('MyCasesComponent', () => {
     expect(footerCell).toBeDefined();
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
-
-  // took out action handler test as is handled by wrapper component
+// took out action handler test as is handled by wrapper component
   afterEach(() => {
     fixture.destroy();
   })

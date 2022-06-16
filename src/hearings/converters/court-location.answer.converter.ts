@@ -14,7 +14,7 @@ export class CourtLocationAnswerConverter implements AnswerConverter {
 
     return hearingState$.pipe(
       map(() => {
-        return courtLocation[0].site_name;
+        return courtLocation.length && courtLocation[0].site_name;
       })
     );
   }

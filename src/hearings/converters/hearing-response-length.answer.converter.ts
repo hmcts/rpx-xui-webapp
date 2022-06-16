@@ -9,8 +9,9 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map(state => {
-        const startTime = moment(state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime);
-        const endTime = moment(state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime);
+        const hearingSchedule = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0] || null;
+        const startTime = moment(hearingSchedule && hearingSchedule.hearingStartDateTime);
+        const endTime = moment(hearingSchedule && hearingSchedule.hearingEndDateTime);
         const duration = moment.duration(endTime.diff(startTime)).asMinutes();
         if (duration && duration > 0) {
           const hours = Math.floor(duration / 60);

@@ -50,7 +50,6 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     this.allocateRoleService.getSpecificAccessApproved().subscribe( (countOfApproval) => {
      const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;
      if ( myAccessNavItem ) {
-       debugger;
       myAccessNavItem.roundel = countOfApproval.count ;
      }
     });
@@ -58,7 +57,6 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     this.allocateRoleService.getNewCasesCount().subscribe( (countOfApproval) => {
       const myCasesNavItem = this.subNavigationItems.find(nav => nav.text === 'My cases'  ) ;
       if ( myCasesNavItem ) {
-        debugger;
        myCasesNavItem.roundel = countOfApproval.count ;
       }
     });

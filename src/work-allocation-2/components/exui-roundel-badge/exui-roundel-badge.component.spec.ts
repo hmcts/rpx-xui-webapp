@@ -7,8 +7,7 @@ import { RoundelBadgeComponent } from './exui-roundel-badge.component';
 
 
 @Component({
-  // template: `<exui-info-message [type]="type" [message]="message"></exui-info-message>`
-  template:`<exui-roundel-badge [isNew]="isNew" [rowData]="rowData" [field]="field"></exui-roundel-badge>`
+  template: `<exui-roundel-badge [isNew]="isNew" [rowData]="rowData" [field]="field"></exui-roundel-badge>`
 })
 class WrapperComponent {
   @ViewChild(RoundelBadgeComponent) public appComponentRef: RoundelBadgeComponent;
@@ -42,7 +41,5 @@ describe('WorkAllocation', () => {
     it('should create', () => {
       expect(component).toBeTruthy();
     });
-
   });
-
 });

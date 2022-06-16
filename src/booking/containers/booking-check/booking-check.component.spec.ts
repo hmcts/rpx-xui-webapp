@@ -36,6 +36,7 @@ describe('BookingCheckComponent', () => {
     fixture = TestBed.createComponent(BookingCheckComponent);
     component = fixture.componentInstance;
     component.bookingProcess = { location: { court_name: 'London Court' } } as BookingProcess;
+    component.userId = '21334a2b-79ce-44eb-9168-2d49a744be9c';
     fixture.detectChanges();
   }));
 

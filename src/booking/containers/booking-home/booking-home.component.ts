@@ -3,15 +3,13 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { combineLatest, forkJoin, Observable, Subscription, } from 'rxjs';
+import { combineLatest, Observable, of, Subscription, } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { TaskListFilterComponent } from '../../../work-allocation-2/components';
-import { LocationDataService } from '../../../work-allocation-2/services';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
-
 @Component({
   selector: 'exui-booking-home',
   templateUrl: './booking-home.component.html'
@@ -19,13 +17,13 @@ import { BookingService } from '../../services';
 export class BookingHomeComponent implements OnInit, OnDestroy {
 
   @Input() public bookingProcess: BookingProcess;
+  @Input() public userId: string;
   @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
 
   public bookingTypeForm: FormGroup;
   public existingBookings: Booking[];
   private bookings$: Observable<any[]> | any;
-  private locations$: Observable<any>[];
   private combineResult$: Observable<any[]> | any;
   private existingBookingsSubscription: Subscription;
   private refreshAssignmentsSubscription: Subscription;
@@ -33,11 +31,10 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly fb: FormBuilder,
     private readonly bookingService: BookingService,
-    private readonly locationService: LocationDataService,
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService,
     private readonly windowService: WindowService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
   ) { }
 
   public ngOnInit() {
@@ -45,30 +42,23 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
       bookingType: new FormControl(null)
     });
 
-    this.existingBookingsSubscription = this.bookingService.getBookings().subscribe((arr) => {
-      this.locations$ = arr.bookings.map(
-        booking => this.locationService.getSpecificLocations([booking.base_location_id]).pipe(
-          map(location => {
-            return {
-              ...booking,
-              locationName: location[0] && location[0].site_name
-            };
-          }
-          ))
-      );
-
-      this.bookings$ = forkJoin(this.locations$);
-      this.combineResult$ = combineLatest([this.bookings$, this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.booking)]);
-      this.combineResult$.pipe(map(([bookingResults, bookingFeatureToggle]) => {
-        this.existingBookings = bookingResults as any;
-        this.orderByCurrentThenFuture();
-        this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any ).filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings).map(p => p.base_location_id) : null;
-      })).subscribe();
-    },
-    err => {
+    if (this.userId) {
+      this.existingBookingsSubscription = this.bookingService.getBookings(this.userId).subscribe((bookings) => {
+        if (bookings) {
+          this.combineResult$ = combineLatest([of(bookings), this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.booking)]);
+          this.combineResult$.pipe(map(([bookingResults, bookingFeatureToggle]) => {
+            if (bookingResults) {
+              this.existingBookings = bookingResults as any;
+              this.orderByCurrentThenFuture();
+              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any ).filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings).map(p => p.locationId) : null;
+            }
+          })).subscribe();
+        }
+      },
+      err => {
         this.NavigationErrorHandler(err, this.router)
+      });
     }
-    );
   }
 
   public checkIfButtonDisabled(beginTime: Date): boolean {

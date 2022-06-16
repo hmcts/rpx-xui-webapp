@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { LocationDataService } from '../../../work-allocation-2/services';
 import { BookingProcess } from '../../models';
@@ -14,47 +14,30 @@ import { BookingHomeComponent } from './booking-home.component';
 
 
 const DUMMY_BOOKINGS: Booking[] = [{
-  userId: 'Dummy User Id',
-  appointmentId: 'Dummy Appointment Id',
-  roleId: 'Dummy Role Id',
-  contract_type_id: 'Dummy Contract Type Id',
-  base_location_id: '101',
-  region_id: 'Dummy Region Id',
-  beginTime: new Date('2021-12-01T09:58:39.930+0000'),
-  endTime: new Date('2022-01-01T09:58:39.930+0000'),
-  created: new Date('2021-12-01T09:58:39.930+0000'),
+  id: 'd9d4f711-1ffe-4a22-a949-7286907422f1',
+  userId: '7954b105-1014-4504-bb47-602639df24eb',
+  regionId: '5',
+  locationId: '512401',
+  created: '2022-06-14T13:25:39Z',
+  beginTime: '2022-06-14T00:00:00Z',
+  endTime: '2022-06-20T00:00:00Z',
+  locationName: 'Manchester Tribunal Hearing Centre'
 },
 {
-  userId: 'Dummy User Id',
-  appointmentId: 'Dummy Appointment Id',
-  roleId: 'Dummy Role Id',
-  contract_type_id: 'Dummy Contract Type Id',
-  base_location_id: '101',
-  region_id: 'Dummy Region Id',
-  beginTime: new Date('2021-12-02T09:58:39.930+0000'),
-  endTime: new Date('2022-02-01T09:58:39.930+0000'),
-  created: new Date('2021-12-01T09:58:39.930+0000'),
-},
-{
-  userId: 'Dummy User Id',
-  appointmentId: 'Dummy Appointment Id',
-  roleId: 'Dummy Role Id',
-  contract_type_id: 'Dummy Contract Type Id',
-  base_location_id: '102',
-  region_id: 'Dummy Region Id',
-  beginTime: new Date('2029-01-01T09:58:39.930+0000'),
-  endTime: new Date('2029-03-01T09:58:39.930+0000'),
-  created: new Date('2029-12-01T09:58:39.930+0000'),
+  id: '0457a99c-b1e3-49a1-9deb-8ab322706981',
+  userId: '7954b105-1014-4504-bb47-602639df24eb',
+  regionId: '9',
+  locationId: '366559',
+  created: '2022-06-15T13:26:27Z',
+  beginTime: '2022-06-14T00:00:00Z',
+  endTime: '2022-06-20T00:00:00Z',
+  locationName: 'Glasgow Tribunals Centre'
 }];
-
-
-const DUMMY_LOCATION_NAME: string = 'Some place name';
 
 describe('BookingHomeComponent', () => {
   let component: BookingHomeComponent;
   let fixture: ComponentFixture<BookingHomeComponent>;
   const bookingService = jasmine.createSpyObj<BookingService>('BookingService', ['getBookings', 'getBookingLocation', 'refreshRoleAssignments']);
-  const locationService = jasmine.createSpyObj<LocationDataService>('LocationDataService', ['getSpecificLocations']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
   const flags = {
     enabledFlag: true,
@@ -79,10 +62,6 @@ describe('BookingHomeComponent', () => {
           useValue: bookingService
         },
         {
-          provide: LocationDataService,
-          useValue: locationService
-        },
-        {
           provide: WindowService,
           useValue: mockWindowService
         },
@@ -96,19 +75,19 @@ describe('BookingHomeComponent', () => {
     })
     .compileComponents();
 
-    bookingService.getBookings.and.returnValue(of({bookings: DUMMY_BOOKINGS}));
-    locationService.getSpecificLocations.and.returnValue(of([{
-      site_name: DUMMY_LOCATION_NAME
-    }]));
+    bookingService.getBookings.and.returnValue(of(DUMMY_BOOKINGS));
     bookingService.refreshRoleAssignments.and.returnValue(of({}));
 
     fixture = TestBed.createComponent(BookingHomeComponent);
     component = fixture.componentInstance;
     component.bookingProcess = {} as BookingProcess;
+    component.userId = '21334a2b-79ce-44eb-9168-2d49a744be9c';
     fixture.detectChanges();
   }));
 
   it('should send back the status if it is 400', () => {
+    bookingService.getBookings.and.returnValue(throwError({error}));
+    fixture.detectChanges();
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
@@ -157,12 +136,12 @@ describe('BookingHomeComponent', () => {
     const firstItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[1].querySelector('p .govuk-hint');
     const firstItemLocationMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[1].querySelector('p').childNodes[0];
     const secondItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[2].querySelector('p .govuk-hint');
-    const thirdItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[3].querySelector('p .govuk-hint');
+    // const thirdItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[3].querySelector('p .govuk-hint');
     expect(totalItems).toEqual(DUMMY_BOOKINGS.length);
-    expect(firstItemDateMessage.textContent).toContain('01 December 2021 to 01 January 2022');
-    expect(firstItemLocationMessage.textContent).toContain('Some place name');
-    expect(secondItemDateMessage.textContent).toContain('02 December 2021 to 01 February 2022');
-    expect(thirdItemDateMessage.textContent).toContain('01 January 2029 to 01 March 2029');
+    expect(firstItemDateMessage.textContent).toContain('14 June 2022 to 20 June 2022');
+    expect(firstItemLocationMessage.textContent).toContain('Glasgow Tribunals Centre');
+    expect(secondItemDateMessage.textContent).toContain('14 June 2022 to 20 June 2022');
+    // expect(thirdItemDateMessage.textContent).toContain('01 January 2029 to 01 March 2029');
   });
 
   it('should display bookings disabled if future booking, enabled if current booking', () => {
@@ -172,11 +151,11 @@ describe('BookingHomeComponent', () => {
     fixture.detectChanges();
     const firstBookingButton = fixture.debugElement.nativeElement.querySelectorAll('.govuk-button-group button')[0];
     const secondBookingButton = fixture.debugElement.nativeElement.querySelectorAll('.govuk-button-group button')[1];
-    const thirdBookingButton = fixture.debugElement.nativeElement.querySelectorAll('.govuk-button-group button')[2];
+    // const thirdBookingButton = fixture.debugElement.nativeElement.querySelectorAll('.govuk-button-group button')[2];
 
     expect(firstBookingButton.disabled).toBeFalsy();
     expect(secondBookingButton.disabled).toBeFalsy();
-    expect(thirdBookingButton.disabled).toBeTruthy();
+    // expect(thirdBookingButton.disabled).toBeTruthy();
   });
 
   describe('onSelectOption()', () => {
@@ -211,7 +190,7 @@ describe('BookingHomeComponent', () => {
 
     it('should assign locationName', () => {
 
-      expect(component.existingBookings[0].locationName).toEqual('Some place name');
+      expect(component.existingBookings[0].locationName).toEqual('Glasgow Tribunals Centre');
     });
   });
 

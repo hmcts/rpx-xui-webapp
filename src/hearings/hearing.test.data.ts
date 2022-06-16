@@ -2134,6 +2134,7 @@ export const initialState = {
             attendees: [
               {
                 partyID: 'P1',
+                hearingSubChannel: 'inPerson',
                 partyName: 'Jane and Smith',
                 partyType: PartyType.IND,
                 partyRole: 'appellant',
@@ -2145,6 +2146,7 @@ export const initialState = {
               },
               {
                 partyID: 'P2',
+                hearingSubChannel: 'byVideo',
                 partyName: 'DWP',
                 partyType: PartyType.ORG,
                 partyRole: 'claimant',

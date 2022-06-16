@@ -948,6 +948,7 @@ describe('workAllocation.utils', () => {
         attributes: {
           caseId: '123',
           primaryLocation: '001',
+          isNew: true
         },
       },
       {
@@ -959,6 +960,7 @@ describe('workAllocation.utils', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           primaryLocation: '001',
+          isNew: true
         },
       },
       {
@@ -971,6 +973,7 @@ describe('workAllocation.utils', () => {
         attributes: {
           caseId: '456',
           primaryLocation: '001',
+          isNew: true
         },
       },
     ];
@@ -982,6 +985,7 @@ describe('workAllocation.utils', () => {
       case_category: 'Asylum',
       case_type: "Asylum",
       case_role: 'example-role',
+      isNewTask: true,
       jurisdiction: 'IA',
       jurisdictionId: 'IA',
       location_id: '001',
@@ -1000,6 +1004,7 @@ describe('workAllocation.utils', () => {
         case_category: 'Test',
         case_type: 'Test',
         case_role: 'example-role-2',
+        isNewTask: true,
         jurisdiction: 'IA',
         jurisdictionId: 'IA',
         location_id: '001',
@@ -1012,10 +1017,10 @@ describe('workAllocation.utils', () => {
       }
     ];
     it('should return empty list if there is nothing given', () => {
-      expect(mapCasesFromData(null, null)).to.deep.equal([]);
-      expect(mapCasesFromData(null, firstRoleAssignment)).to.deep.equal([]);
-      expect(mapCasesFromData(null, firstRoleAssignment)).to.deep.equal([]);
-      expect(mapCasesFromData(null, null)).to.deep.equal([]);
+      expect(mapCasesFromData([], [])).to.deep.equal([]);
+      expect(mapCasesFromData([], firstRoleAssignment)).to.deep.equal([]);
+      expect(mapCasesFromData([], firstRoleAssignment)).to.deep.equal([]);
+      expect(mapCasesFromData([], [])).to.deep.equal([]);
     });
     it('should return correct case data if role assignment data returned', () => {
       expect(mapCasesFromData(mockCaseData, mockRoleAssignment)).to.deep.equal(expectedRoleCaseData);

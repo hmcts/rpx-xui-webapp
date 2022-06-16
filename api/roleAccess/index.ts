@@ -98,6 +98,44 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
   }
 }
 
+export async function getSpecificAccessApproved(req, resp, next) {
+  let count = 0;
+  try {
+    if (!req.session || !req.session.roleAssignmentResponse) {
+      return resp.status(401).send({ count });
+    }
+    const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
+    count = currentUserAssignments.filter(roleAssignment => getNewAccessCount(roleAssignment)).length;
+    return resp.status(200).send({ count });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export function getNewAccessCount(roleAssignment: RoleAssignment): boolean {
+  return roleAssignment.roleName === 'specific-access-granted' || roleAssignment.attributes.isNew;
+}
+
+export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {
+  try {
+    if (!req.session || !req.session.roleAssignmentResponse) {
+      return resp.status(401);
+    }
+    const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
+    const challengedAccessRequest = currentUserAssignments.find(roleAssignment => roleAssignment.attributes
+      && roleAssignment.attributes.caseId ===  req.params.caseId
+      && roleAssignment.attributes.isNew);
+
+    if (!challengedAccessRequest) {
+      return resp.status(204);
+    }
+    challengedAccessRequest.attributes.isNew = false;
+    return resp.status(200).send({ id: challengedAccessRequest.id });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export function mapResponseToCaseRoles(
   roleAssignments: RoleAssignment[],
   assignmentId: string,

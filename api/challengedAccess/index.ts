@@ -12,6 +12,9 @@ export async function challengedAccessRouter(req: EnhancedRequest, resp, next) {
     /* tslint:disable:no-string-literal */
     delete headers['accept'];
     try {
+        if (req.body.requestedRoles && req.body.requestedRoles[0] && req.body.requestedRoles[0].attributes) {
+            req.body.requestedRoles[0].attributes.isNew = true;
+        }
         const response = await http.post(fullPath, req.body, { headers });
         await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
         return resp.status(response.status).send(response.data);

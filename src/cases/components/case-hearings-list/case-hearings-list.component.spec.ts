@@ -71,7 +71,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -105,7 +105,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -154,7 +154,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -188,7 +188,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -237,7 +237,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -286,7 +286,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -335,7 +335,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -363,7 +363,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -412,7 +412,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -472,7 +472,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',
@@ -521,7 +521,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 11',
     hearingRoomId: 'room 11',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
+    panelMemberId: 'hearingJudgeId1',
     attendees: [
       {
         partyID: 'P1',

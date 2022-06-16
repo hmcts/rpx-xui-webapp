@@ -199,7 +199,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
   it('should transform hearing stage', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
-    const room = 'Jane and Smith - In person\<br\>DWP - By video';
+    const room = 'Jane Smith - In person<br>DWP - By video';
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);
   });

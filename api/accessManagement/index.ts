@@ -27,7 +27,6 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
       const bookingAndLocationName = bookingsResponse.data.bookings.map(booking => {
         const locationName = fullLocationsResponse.data.court_venues.filter(location =>
           booking.locationId === location.epimms_id)[0].site_name;
-
         return {
           ...booking,
           locationName,

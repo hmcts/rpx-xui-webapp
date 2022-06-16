@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { combineLatest, Observable, Subscription, } from 'rxjs';
+import { combineLatest, Observable, of, Subscription, } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
@@ -43,37 +43,21 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     });
 
     if (this.userId) {
-      // this.existingBookingsSubscription = this.bookingService.getBookings(this.userId).subscribe((arr) => {
-      //   console.log("**getbooking**");
-      //   console.log(arr);
-
-      //   this.locations$ = arr.map(booking => {
-      //     console.log("**booking**");
-
-      //     console.log(booking.locationId);
-      //       return this.locationService.getSpecificLocations([booking.locationId]).pipe(
-      //       map(location => {
-      //         console.log("**location**");
-      //         console.log(location);
-
-      //         return {
-      //           ...booking,
-      //           locationName: location[0] && location[0].site_name
-      //         };
-      //       }
-      //   ))});
-
-        this.bookings$ = this.bookingService.getBookings(this.userId);
-        this.combineResult$ = combineLatest([this.bookings$, this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.booking)]);
-        this.combineResult$.pipe(map(([bookingResults, bookingFeatureToggle]) => {
-          this.existingBookings = bookingResults as any;
-          this.orderByCurrentThenFuture();
-          this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any ).filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings).map(p => p.locationId) : null;
-        })).subscribe();
-      // },
-      // err => {
-      //   this.NavigationErrorHandler(err, this.router)
-      // });
+      this.existingBookingsSubscription = this.bookingService.getBookings(this.userId).subscribe((bookings) => {
+        if (bookings) {
+          this.combineResult$ = combineLatest([of(bookings), this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.booking)]);
+          this.combineResult$.pipe(map(([bookingResults, bookingFeatureToggle]) => {
+            if (bookingResults) {
+              this.existingBookings = bookingResults as any;
+              this.orderByCurrentThenFuture();
+              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any ).filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings).map(p => p.locationId) : null;
+            }
+          })).subscribe();
+        }
+      },
+      err => {
+        this.NavigationErrorHandler(err, this.router)
+      });
     }
   }
 

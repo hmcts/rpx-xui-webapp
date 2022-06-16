@@ -39,8 +39,8 @@ describe('HearingResponseLengthAnswerConverter', () => {
 
   it('should transform hearing stage hours', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingStartDateTime = '2021-03-12T09:00:00.000Z';
-    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingEndDateTime = '2021-03-12T10:00:00.000Z';
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime = '2021-03-12T09:00:00.000Z';
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime = '2021-03-12T10:00:00.000Z';
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '1 hour(s)';
     const expected = cold('(b|)', {b: hearingDuration});
@@ -49,8 +49,8 @@ describe('HearingResponseLengthAnswerConverter', () => {
 
   it('should transform hearing stage minutes', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingStartDateTime = '2021-03-12T09:00:00.000Z';
-    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingEndDateTime = '2021-03-12T09:45:00.000Z';
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime = '2021-03-12T09:00:00.000Z';
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime = '2021-03-12T09:45:00.000Z';
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '45 minutes';
     const expected = cold('(b|)', {b: hearingDuration});
@@ -59,8 +59,8 @@ describe('HearingResponseLengthAnswerConverter', () => {
 
   it('should transform hearing stage both hours and minutes', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingStartDateTime = '2021-03-12T09:00:00.000Z';
-    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingEndDateTime = '2021-03-12T10:10:00.000Z';
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime = '2021-03-12T09:00:00.000Z';
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime = '2021-03-12T10:10:00.000Z';
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '1 hour(s) and 10 minute(s)';
     const expected = cold('(b|)', {b: hearingDuration});

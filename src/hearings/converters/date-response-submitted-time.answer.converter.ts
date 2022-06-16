@@ -9,8 +9,8 @@ export class DateResponseSubmittedTimeAnswerConverter implements AnswerConverter
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map(state => {
-        const hearingResponseTime = state.hearingRequest.hearingRequestMainModel.hearingResponse.receivedDateTime;
-        return moment(hearingResponseTime).format(HearingDateEnum.DisplayTime);
+        const hearingStartDateTime = state.hearingRequest.hearingRequestMainModel.hearingResponse.receivedDateTime;
+        return moment(hearingStartDateTime).format(HearingDateEnum.DisplayTime);
       })
     );
   }

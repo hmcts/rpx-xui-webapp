@@ -10,11 +10,11 @@ export class CourtLocationAnswerConverter implements AnswerConverter {
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
-    const courtLocation: LocationModel = this.route.snapshot.data.courtLocation || {};
+    const courtLocation: LocationModel[] = this.route.snapshot.data.courtLocation || [];
 
     return hearingState$.pipe(
       map(() => {
-        return courtLocation.site_name;
+        return courtLocation.length && courtLocation[0].site_name;
       })
     );
   }

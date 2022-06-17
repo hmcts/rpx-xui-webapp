@@ -463,7 +463,7 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
 }
 
 export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment [];
+  const roleAssignments: RoleAssignment [] = req.session.roleAssignmentResponse;
   const specificRoleAssignments = roleAssignments.filter(roleAssignment =>
     roleAssignment.grantType === 'SPECIFIC'
     ||

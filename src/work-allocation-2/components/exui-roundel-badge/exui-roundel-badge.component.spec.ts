@@ -1,24 +1,20 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import {InfoMessage, InfoMessageType} from './../../enums';
 import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
 import { RoundelBadgeComponent } from './exui-roundel-badge.component';
 
 
 @Component({
-  template: `<exui-roundel-badge [isNew]="isNew" [rowData]="rowData" [field]="field"></exui-roundel-badge>`
+  template: `<exui-roundel-badge [isNew]="isNew" [rowData]="rowData" [config]="config"></exui-roundel-badge>`
 })
 class WrapperComponent {
   @ViewChild(RoundelBadgeComponent) public appComponentRef: RoundelBadgeComponent;
   @Input() public isNew: any;
   @Input() public rowData: any;
-  @Input() public field: any;
+  @Input() public config: any;
 }
 
-describe('WorkAllocation', () => {
-
-  describe('InfoMessageComponent', () => {
+describe('Roundel Badge ', () => {
     let component: RoundelBadgeComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -42,4 +38,4 @@ describe('WorkAllocation', () => {
       expect(component).toBeTruthy();
     });
   });
-});
+

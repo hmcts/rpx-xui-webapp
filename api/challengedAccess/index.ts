@@ -6,19 +6,20 @@ import { EnhancedRequest } from 'lib/models';
 import { refreshRoleAssignmentForUser } from '../user';
 
 export async function challengedAccessRouter(req: EnhancedRequest, resp, next) {
-    const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-    const fullPath = `${basePath}/am/role-assignments`;
-    const headers = setHeaders(req);
-    /* tslint:disable:no-string-literal */
-    delete headers['accept'];
     try {
-        if (req.body.requestedRoles && req.body.requestedRoles[0] && req.body.requestedRoles[0].attributes) {
-            req.body.requestedRoles[0].attributes.isNew = true;
-        }
-        const response = await http.post(fullPath, req.body, { headers });
-        await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+        const response = await postChallengedAccess(req);
         return resp.status(response.status).send(response.data);
     } catch (error) {
         next(error)
     }
+}
+export async function postChallengedAccess(req: EnhancedRequest) {
+    const headers = setHeaders(req);
+    /* tslint:disable:no-string-literal */
+    delete headers['accept'];
+    const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+    const fullPath = `${basePath}/am/role-assignments`;
+    const response = await http.post(fullPath, req.body, { headers });
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+    return response;
 }

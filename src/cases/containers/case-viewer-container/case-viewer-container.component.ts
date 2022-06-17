@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {CaseTab, CaseView} from '@hmcts/ccd-case-ui-toolkit';
+import {CaseTab, CaseView, CasesService} from '@hmcts/ccd-case-ui-toolkit';
 import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
 import {combineLatest} from 'rxjs';
@@ -54,7 +54,8 @@ export class CaseViewerContainerComponent implements OnInit {
   constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromRoot.State>,
               private readonly featureToggleService: FeatureToggleService,
-              private readonly allocateRoleService: AllocateRoleService) {
+              private readonly allocateRoleService: AllocateRoleService,
+              private readonly casesService: CasesService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map(userDetails => userDetails.userInfo.roles)
     );
@@ -67,7 +68,8 @@ export class CaseViewerContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
-    this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
+    const challengedAccessRequest = this.casesService.getChallegedAccessPayload(this.caseDetails.case_id, null, false);
+    this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id, challengedAccessRequest).subscribe();
     this.prependedTabs$ = this.prependedCaseViewTabs();
     this.appendedTabs$ = this.appendedCaseViewTabs();
   }

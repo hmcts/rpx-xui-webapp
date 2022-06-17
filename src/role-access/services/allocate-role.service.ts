@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { RoleRequestPayload } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
@@ -84,8 +85,8 @@ export class AllocateRoleService {
     return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getSpecificAccessApproved`);
   }
 
-  public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
-    return this.http.post<string[]>(`${AllocateRoleService.roleUrl}/manageLabellingRoleAssignment/${caseId}`, {});
+  public manageLabellingRoleAssignment(caseId: string, roleRequestPayload: RoleRequestPayload): Observable<string[]> {
+    return this.http.post<string[]>(`${AllocateRoleService.roleUrl}/manageLabellingRoleAssignment/${caseId}`, roleRequestPayload);
   }
 
   public getCaseRolesUserDetails(userIds: string[], services: string[]): Observable<CaseRoleDetails[]> {

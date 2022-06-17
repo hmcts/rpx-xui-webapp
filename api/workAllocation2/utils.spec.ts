@@ -681,7 +681,7 @@ describe('workAllocation.utils', () => {
       startDate: new Date('01-01-2021'),
       endDate: new Date('01-01-2022'),
       assignee: 'person1',
-      role_category: 'LEGAL_OPERATIONS',
+      role_category: 'LEGAL_OPERATIONS'
     },
     {
       id: '3',
@@ -948,7 +948,7 @@ describe('workAllocation.utils', () => {
         attributes: {
           caseId: '123',
           primaryLocation: '001',
-          isNew: true
+          viewStatus: 'pending'
         },
       },
       {
@@ -960,7 +960,7 @@ describe('workAllocation.utils', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           primaryLocation: '001',
-          isNew: true
+          viewStatus: 'pending'
         },
       },
       {
@@ -973,7 +973,7 @@ describe('workAllocation.utils', () => {
         attributes: {
           caseId: '456',
           primaryLocation: '001',
-          isNew: true
+          viewStatus: 'pending'
         },
       },
     ];

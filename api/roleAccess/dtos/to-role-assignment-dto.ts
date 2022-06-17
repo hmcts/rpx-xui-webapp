@@ -15,6 +15,7 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
       attributes: {
         caseId: allocateRoleData.caseId,
         jurisdiction: allocateRoleData.jurisdiction,
+        viewStatus: 'pending',
       },
       roleName: allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,

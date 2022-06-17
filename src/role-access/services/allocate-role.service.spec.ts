@@ -1,5 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
+import { RoleRequestPayload } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AllocateRoleService } from '.';
@@ -101,7 +102,7 @@ describe('AllocateRoleService', () => {
     }));
 
     it('should remove labelling role', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
-      service.manageLabellingRoleAssignment('111111').subscribe(response => {
+      service.manageLabellingRoleAssignment('111111', {} as RoleRequestPayload).subscribe(response => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('/api/role-access/roles/manageLabellingRoleAssignment/111111');
@@ -242,6 +243,16 @@ describe('AllocateRoleService', () => {
       }
       mockHttp.post.and.returnValue(of(approvedCount));
       service.getSpecificAccessApproved().subscribe(response => {
+        expect(response).toEqual({count : 5 });
+      });
+    }));
+
+    it('should get new cases count', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
+      const count = {
+        count : 5
+      }
+      mockHttp.post.and.returnValue(of(count));
+      service.getNewCasesCount().subscribe(response => {
         expect(response).toEqual({count : 5 });
       });
     }));

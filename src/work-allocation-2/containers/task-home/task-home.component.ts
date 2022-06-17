@@ -48,10 +48,17 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     this.subNavigationItems.push({text: 'My access', href: '/work/my-work/my-access', active: false});
 
     this.allocateRoleService.getSpecificAccessApproved().subscribe( (countOfApproval) => {
-     const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;
+     const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access');
      if ( myAccessNavItem ) {
       myAccessNavItem.roundel = countOfApproval.count ;
      }
+    });
+
+    this.allocateRoleService.getNewCasesCount().subscribe( (countOfApproval) => {
+      const myCasesNavItem = this.subNavigationItems.find(nav => nav.text === 'My cases');
+      if ( myCasesNavItem ) {
+       myCasesNavItem.roundel = countOfApproval.count ;
+      }
     });
 
     this.routeSubscription = this.router.events.subscribe(event => {

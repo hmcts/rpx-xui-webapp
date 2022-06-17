@@ -39,23 +39,23 @@ export const hearingStatusMappings: HearingStatusMapping[] = [
     exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLATION_REQUESTED,
   },
   {
-    hmcStatus: HMCStatus.VACATED,
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
-    exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
-  },
-  {
     hmcStatus: HMCStatus.AWAITING_ACTUALS,
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
   },
   {
+    hmcStatus: HMCStatus.VACATED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
+  },
+  {
     hmcStatus: HMCStatus.COMPLETED,
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
   },
   {
     hmcStatus: HMCStatus.ADJOURNED,
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.ADJOURNED,
   },
 ];

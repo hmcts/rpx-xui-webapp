@@ -114,7 +114,9 @@ export async function getSpecificAccessApproved(req, resp, next) {
 }
 
 export function getNewAccessCount(roleAssignment: RoleAssignment): boolean {
-  return roleAssignment.roleName === 'specific-access-granted' || roleAssignment.attributes.viewStatus === 'pending';
+  return roleAssignment.attributes.substantive !== 'Y'
+  &&
+  (roleAssignment.roleName === 'specific-access-granted' || roleAssignment.attributes.viewStatus === 'pending');
 }
 
 export async function getNewCasesCount(req, resp, next) {

@@ -2,11 +2,18 @@
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
 import { AllocateTo, RoleCategory } from '../models/allocate-role.enum';
 
-export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+export function toRoleAssignmentBody(currentUserId: string,
+                                     allocateRoleData: AllocateRoleData,
+                                     process: string,
+                                     reference: string,
+                                     replaceExisting = false,
+                                     viewStatus = 'pending'): any {
   return {
     roleRequest: {
       assignerId: currentUserId,
-      replaceExisting: false,
+      replaceExisting,
+      process,
+      reference,
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -15,7 +22,7 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
       attributes: {
         caseId: allocateRoleData.caseId,
         jurisdiction: allocateRoleData.jurisdiction,
-        viewStatus: 'pending',
+        viewStatus,
       },
       roleName: allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,

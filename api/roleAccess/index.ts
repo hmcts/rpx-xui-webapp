@@ -21,6 +21,8 @@ import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from 
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
 import { getSubstantiveRoles } from './roleAssignmentService';
+import { AllocateTo } from './models/allocate-role.enum';
+import { AllocateRoleData } from './models/allocate-role-state-data.interface';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
@@ -153,6 +155,30 @@ export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: 
     caseRoleAssignments.forEach( async caseRoleAssignment => {
       if (caseRoleAssignment.grantType === 'CHALLENGED') {
         await postChallengedAccess(req);
+      } else {
+        if (caseRoleAssignment.attributes.substantive === 'Y') {
+          const currentUser = req.session.passport.user.userinfo;
+          const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+          const allocateRoleData = {
+            allocateTo: AllocateTo.RESERVE_TO_ME,
+            caseId: caseRoleAssignment.attributes.caseId,
+            jurisdiction: caseRoleAssignment.attributes.jurisdiction,
+            typeOfRole: {
+              id: caseRoleAssignment.roleName,
+              name: null,
+            },
+            roleCategory: caseRoleAssignment.roleCategory,
+            period: {
+              startDate: caseRoleAssignment.beginTime,
+              endDate: caseRoleAssignment.endTime,
+            },
+          } as AllocateRoleData;
+          const reference = `${caseRoleAssignment.attributes.caseId}/${caseRoleAssignment.roleName}/${currentUserId}`;
+          const process = 'specific-access';
+          const roleAssignment = toRoleAssignmentBody(currentUserId, allocateRoleData, process, reference, true, 'viewed');
+          console.log('allocateRoleData', JSON.stringify(roleAssignment))
+          await postRoleAllocation(roleAssignment, req);
+        }
       }
     });
 
@@ -199,15 +225,23 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
     // @ts-ignore
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);
-    const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+    const reference = `${body.caseId}/${body.typeOfRole.id}/${currentUserId}`;
+    const process = 'specific-access';
+    const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body, reference, process);
+    console.log(JSON.stringify(roleAssignmentsBody));
+    const response: AxiosResponse = await postRoleAllocation(roleAssignmentsBody, req);
     const { status, data } = response;
     return res.status(status).send(data);
   } catch (error) {
     next(error);
   }
+}
+
+async function postRoleAllocation(roleAssignmentsBody: any, req: EnhancedRequest) {
+  const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+  const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+  await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+  return response;
 }
 
 // this creates the two specific access approved roles
@@ -296,7 +330,9 @@ export async function reallocateRole(req: EnhancedRequest, res: Response, next: 
       // @ts-ignore
       const currentUser = req.session.passport.user.userinfo;
       const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-      const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);
+      const reference = `${body.caseId}/${body.typeOfRole.id}/${currentUserId}`;
+      const process = 'specific-access';
+      const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body, process, reference);
       const postResponse: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
       await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
       return res.status(postResponse.status).send(postResponse.data);

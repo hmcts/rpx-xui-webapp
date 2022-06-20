@@ -60,7 +60,4 @@ import 'web-animations-js'; // Run `npm install --save web-animations-js`.
  */
 import 'zone.js/dist/zone';
 
-
-import 'reflect-metadata';
-
 (window as any).global = window; // added to prevent issues with some libraries

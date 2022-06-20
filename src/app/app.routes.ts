@@ -20,30 +20,6 @@ export const routingConfiguration: ExtraOptions = {
   scrollPositionRestoration: 'enabled'
 };
 
-export function loadCaseModuleChildren() {
-  return import('../cases/cases.module').then(m => m.CasesModule);
-}
-
-export function loadWorkAllocation2Children() {
-  return import('../work-allocation-2/work-allocation2.module').then(m => m.WorkAllocationModule2);
-}
-
-export function loadWorkAllocationChildren() {
-  return import('../work-allocation/work-allocation.module').then(m => m.WorkAllocationModule);
-}
-
-export function loadRoleAccessChildren() {
-  return import('../role-access/role-access.module').then(m => m.RoleAccessModule);
-}
-
-export function loadNocChildren() {
-  return import('../noc/noc.module').then(m => m.NocModule);
-}
-
-export function loadRefundsChildren() {
-  return import('../refunds/refunds.module').then(m => m.RefundsModule);
-}
-
 export const ROUTES: Routes = [
   {
     path: '',
@@ -53,22 +29,22 @@ export const ROUTES: Routes = [
   {
     path: 'cases',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: loadCaseModuleChildren
+    loadChildren: () => import('../cases/cases.module').then(m => m.CasesModule)
   },
   {
     path: 'work',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: loadWorkAllocation2Children
+    loadChildren: () => import('../work-allocation-2/work-allocation2.module').then(m => m.WorkAllocationModule2)
   },
   {
     path: 'tasks',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: loadWorkAllocationChildren
+    loadChildren: () => import('../work-allocation/work-allocation.module').then(m => m.WorkAllocationModule)
   },
   {
     path: 'role-access',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: loadRoleAccessChildren
+    loadChildren: () => import('../role-access/role-access.module').then(m => m.RoleAccessModule)
   },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
@@ -86,7 +62,7 @@ export const ROUTES: Routes = [
   {
     path: 'noc',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: loadNocChildren
+    loadChildren: () => import('../noc/noc.module').then(m => m.NocModule)
   },
   {
     path: 'hearings',
@@ -169,7 +145,7 @@ export const ROUTES: Routes = [
   {
     path: 'refunds',
     canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
-    loadChildren: loadRefundsChildren,
+    loadChildren: () => import('../refunds/refunds.module').then(m => m.RefundsModule),
     data: {
       title: 'Refunds',
       needsFeaturesEnabled: ['feature-refunds'],

@@ -9,7 +9,7 @@ import {
   FEATURE_HELMET_ENABLED,
   HELMET,
   PROTOCOL,
-  SESSION_SECRET,
+  SESSION_SECRET
 } from './configuration/references';
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
@@ -116,6 +116,6 @@ app.use('/workallocation2', workAllocation2Router);
 app.use('/external', openRoutes);
 app.use('/api', routes);
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));
-// @ts-ignore
+
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);

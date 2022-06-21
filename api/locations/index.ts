@@ -5,7 +5,7 @@ import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { CourtVenue, LocationResponse } from '../workAllocation2/interfaces/location';
+import { CourtVenue } from '../workAllocation2/interfaces/location';
 import { handleLocationGet } from '../workAllocation2/locationService';
 import { prepareGetSpecificLocationUrl } from '../workAllocation2/util';
 import { LocationTypeEnum } from './data/locationType.enum';

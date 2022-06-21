@@ -1,11 +1,33 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Task } from '../../../work-allocation-2/models/tasks';
 
 @Component({
   selector: 'exui-task-alert-banner',
   templateUrl: './task-alert-banner.component.html',
   styleUrls: ['./task-alert-banner.component.scss']
 })
-export class TaskAlertBannerComponent {
+export class TaskAlertBannerComponent implements OnInit  {
+
   @Input() public alertTitle;
   @Input() public alertMessage;
+  @Input() public tasks: Task[] = [];
+  public warnings = [];
+
+  ngOnInit(): void {
+    debugger;
+    console.log(this.tasks);
+    this.tasks.forEach((task)=>
+      {
+        if(task.warning_list && task.warning_list.values && task.warning_list.values.length>0)
+        {
+          task.warning_list.values.forEach(item => this.warnings.push(item));
+          //task.warning_list.values.forEach(item => warnings.push(item));
+        }
+      }
+    )
+     this.warnings = this.warnings.filter((thing, i, arr) => {
+      return arr.indexOf(arr.find(t => t.code === thing.code)) === i;
+    });
+    console.log(this.warnings);
+  }
 }

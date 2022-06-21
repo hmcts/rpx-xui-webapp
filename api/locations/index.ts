@@ -5,7 +5,7 @@ import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { CourtVenue } from '../workAllocation2/interfaces/location';
+import { CourtVenue, LocationResponse } from '../workAllocation2/interfaces/location';
 import { handleLocationGet } from '../workAllocation2/locationService';
 import { prepareGetSpecificLocationUrl } from '../workAllocation2/util';
 import { LocationTypeEnum } from './data/locationType.enum';
@@ -70,8 +70,8 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
       const id = location.id;
       const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
       const path: string = prepareGetSpecificLocationUrl(basePath, id);
-      const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);
-      const filteredResults = response.data.filter(courtVenue =>
+      const response: AxiosResponse<LocationResponse> = await handleLocationGet(path, req);
+      const filteredResults = response.data.court_venues.filter(courtVenue =>
         courtVenue.epimms_id === id.toString()
       );
       const mappedLocationModel = mapCourtVenuesToLocationModels(filteredResults);

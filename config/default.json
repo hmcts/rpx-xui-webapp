@@ -87,7 +87,7 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "waSupportedJurisdictions": ["IA"],
+  "waSupportedJurisdictions": ["IA", "SSCS"],
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [{"IA": "BFA1"}],
   "wildcardSearchFields": {

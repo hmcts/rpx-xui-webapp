@@ -36,7 +36,7 @@ export const ROUTES: Routes = [
         component: TaskHomeComponent,
         canActivate: [ HealthCheckGuard ],
         resolve: {
-          location: LocationResolver
+          locations: LocationResolver
         },
         children: [
           {

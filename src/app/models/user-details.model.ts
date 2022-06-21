@@ -12,6 +12,7 @@ export interface UserInfo {
 export interface RoleAssignmentInfo {
   primaryLocation: string;
   jurisdiction: string;
+  substantive?: string;
   isCaseAllocator: boolean;
   bookable?: boolean;
 }

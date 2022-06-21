@@ -70,6 +70,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
       const id = location.id;
       const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
       const path: string = prepareGetSpecificLocationUrl(basePath, id);
+      // no longer LocationResponse but CourtVenue
       const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);
       const filteredResults = response.data.filter(courtVenue =>
         courtVenue.epimms_id === id.toString()

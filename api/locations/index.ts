@@ -70,8 +70,8 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
       const id = location.id;
       const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
       const path: string = prepareGetSpecificLocationUrl(basePath, id);
-      const response: AxiosResponse<LocationResponse> = await handleLocationGet(path, req);
-      const filteredResults = response.data.court_venues.filter(courtVenue =>
+      const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);
+      const filteredResults = response.data.filter(courtVenue =>
         courtVenue.epimms_id === id.toString()
       );
       const mappedLocationModel = mapCourtVenuesToLocationModels(filteredResults);

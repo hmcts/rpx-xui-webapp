@@ -57,11 +57,11 @@ export class WorkAllocationCaseService {
            [
             {
               code: '123',
-              text: 'this is a warning message 1'
+              text: 'this is a warning message 1.'
             },
             {
               code: '124',
-              text: 'this is a warning message 2'
+              text: 'this is a warning message 2.'
             }
           ];
       })

@@ -19,7 +19,7 @@ describe('TaskAlertBannerComponent', () => {
     fixture.detectChanges();
   });
 
- function getTasks(): Task[] {
+  function getTasks(): Task[] {
     return [
       {
         assignee: null,
@@ -89,7 +89,7 @@ describe('TaskAlertBannerComponent', () => {
     fixture.detectChanges();
     const titleElement = document.getElementById(`alertTitle`) as HTMLElement;
     expect(titleElement.innerText).toBe(component.alertTitle);
-    const messageElement =document.getElementById(`alertMessage`) as HTMLElement;
+    const messageElement = document.getElementById(`alertMessage`) as HTMLElement;
     expect(messageElement.textContent.trim()).toContain('this is a warning message 1');
     expect(messageElement.textContent.trim()).toContain('this is a warning message 2');
     expect(messageElement.textContent.trim()).toContain('this is a warning message 3');

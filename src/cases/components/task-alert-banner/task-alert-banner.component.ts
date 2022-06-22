@@ -14,20 +14,16 @@ export class TaskAlertBannerComponent implements OnInit  {
   public warnings = [];
 
   ngOnInit(): void {
-    debugger;
-    console.log(this.tasks);
     this.tasks.forEach((task)=>
       {
         if(task.warning_list && task.warning_list.values && task.warning_list.values.length>0)
         {
           task.warning_list.values.forEach(item => this.warnings.push(item));
-          //task.warning_list.values.forEach(item => warnings.push(item));
         }
       }
     )
      this.warnings = this.warnings.filter((thing, i, arr) => {
       return arr.indexOf(arr.find(t => t.code === thing.code)) === i;
     });
-    console.log(this.warnings);
   }
 }

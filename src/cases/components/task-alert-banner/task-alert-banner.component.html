@@ -3,9 +3,6 @@
   <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <span id="alertMessage" class="govuk-warning-text__text" >
-      <!-- <span class="govuk-warning-text__assistive">Warning</span> -->
-      <!-- {{alertMessage}} -->
-
       <ng-container *ngFor="let warning of warnings">
           {{ warning.text }} <br>
       </ng-container>

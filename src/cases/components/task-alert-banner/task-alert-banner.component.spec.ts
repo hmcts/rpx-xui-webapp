@@ -35,15 +35,15 @@ describe('TaskAlertBannerComponent', () => {
         taskName: 'Review respondent evidence',
         dueDate: new Date(628021800000),
         warnings: true,
-        warning_list:{
+        warning_list: {
           values: [
             {
-              code: "123",
-              text: "this is a warning message 1"
+              code: '123',
+              text: 'this is a warning message 1'
             },
             {
-              code: "124",
-              text: "this is a warning message 2"
+              code: '124',
+              text: 'this is a warning message 2'
             }
         ]},
         actions: []
@@ -62,15 +62,15 @@ describe('TaskAlertBannerComponent', () => {
         taskName: 'Review appellant case',
         dueDate: new Date(628021800000),
         warnings: true,
-        warning_list:{
+        warning_list: {
           values: [
             {
-              code: "125",
-              text: "this is a warning message 3"
+              code: '125',
+              text: 'this is a warning message 3'
             },
             {
-              code: "124",
-              text: "this is a warning message 2"
+              code: '124',
+              text: 'this is a warning message 2'
             }
         ]},
         actions: [

@@ -15,15 +15,12 @@ export class TaskAlertBannerComponent implements OnInit  {
 
   ngOnInit(): void {
     // accumulate each task's warning_list, get each messages and remove dublicates then show those messages
-    this.tasks.forEach((task)=>
-      {
-        if(task.warning_list && task.warning_list.values && task.warning_list.values.length>0)
-        {
-          task.warning_list.values.forEach(item => this.warnings.push(item));
-        }
+    this.tasks.forEach( (task) => {
+      if ( task.warning_list && task.warning_list.values && task.warning_list.values.length > 0 ) {
+        task.warning_list.values.forEach(item => this.warnings.push(item));
       }
-    )
-     this.warnings = this.warnings.filter((thing, i, arr) => {
+    });
+    this.warnings = this.warnings.filter( (thing, i, arr) => {
       return arr.indexOf(arr.find(t => t.code === thing.code)) === i;
     });
   }

@@ -2127,8 +2127,8 @@ export const initialState = {
           listingStatus: ListingStatus.FIXED,
           hearingCancellationReason: '',
           hearingDaySchedule: [{
-            hearingStartDateTime: '2022-12-12T09:00:00.000Z',
-            hearingEndDateTime: '2022-12-12T16:00:00.000Z',
+            hearingStartDateTime: '2022-07-01T09:00:00.000Z',
+            hearingEndDateTime: '2022-07-01T16:00:00.000Z',
             listAssistSessionID: '',
             hearingVenueId: '',
             hearingRoomId: 'room 3',

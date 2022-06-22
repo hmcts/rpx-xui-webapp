@@ -22,7 +22,7 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
     const fullLocations = await commonGetFullLocation(req);
 
     const bookingAndLocationName = bookings.data.bookings.map(booking => {
-      const locationName = fullLocations.data.court_venues.filter(location =>
+      const locationName = fullLocations.data.filter(location =>
         booking.locationId === location.epimms_id)[0].site_name;
       return {
         ...booking,

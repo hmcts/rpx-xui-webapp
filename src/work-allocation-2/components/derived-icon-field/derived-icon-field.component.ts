@@ -31,8 +31,6 @@ export class DerivedIconFieldComponent {
 
   public message: string;
   public get showIcon(): boolean {
-    //debugger;
-
     if (!this.task || !this.sourceColumn || this.task[this.sourceColumn] !== this.matchValue || !this.task.warning_list) {
       return false;
     }
@@ -40,21 +38,17 @@ export class DerivedIconFieldComponent {
     const distinctMessages =   this.task.warning_list.values.filter((thing, i, arr) => {
       return arr.indexOf(arr.find(t => t.code === thing.code)) === i;
     });
-    //debugger;
 
-    if (!distinctMessages || distinctMessages.length ===0) {
+    if (!distinctMessages || distinctMessages.length === 0) {
       return false;
     }
 
-
-    //if one message left after dublicates removed it should show that message
+    // if one message left after dublicates removed, it should show that message.Otherwise it should show general message
     if ( distinctMessages.length === 1 ) {
       this.message = distinctMessages[0].text;
     } else {
       this.message = 'There are warnings on this task';
     }
-    //if multiple messages left after dublicates removed it should show specific message
-
     return true;
   }
 }

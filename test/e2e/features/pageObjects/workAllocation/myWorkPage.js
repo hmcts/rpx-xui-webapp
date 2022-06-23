@@ -299,6 +299,18 @@ class MyWorkPage extends TaskList {
         throw new Error(`location conating text ${location} is not found in selected location "${actualLocations}"`);
     }
 
+    async clearAllSelectedLocations() {
+        let count = await this.selectedLocations.count();
+
+        while(count > 0){
+            const e = await this.selectedLocations.get(0);
+            await e.click();
+            count = await this.selectedLocations.count(); 
+        }
+                 
+        
+    }
+
 
     async isWorkFilterOfTypeDisplayed(filterType){
 

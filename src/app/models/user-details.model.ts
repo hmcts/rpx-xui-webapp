@@ -15,6 +15,7 @@ export interface RoleAssignmentInfo {
   substantive?: string;
   isCaseAllocator: boolean;
   bookable?: boolean;
+  roleType?: string;
 }
 
 export interface UserDetails {

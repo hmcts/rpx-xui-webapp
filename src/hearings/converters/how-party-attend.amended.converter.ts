@@ -17,7 +17,7 @@ export class HowPartyAttendAmendedConverter implements IsAmendedConverter {
   private getPartyWithChannel(partyDetailsModels: PartyDetailsModel[]): Map<string, string> {
     const partyWithChannel: Map<string, string> = new Map();
     partyDetailsModels.forEach(
-      party => partyWithChannel.set(party.partyName, party.individualDetails.preferredHearingChannel)
+      party => partyWithChannel.set(party.partyID, party.individualDetails.preferredHearingChannel)
     );
     return partyWithChannel;
   }

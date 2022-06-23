@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.13.10-manage-case-flags-display-formatted-flag-details":
-  version "4.13.10-manage-case-flags-display-formatted-flag-details"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.10-manage-case-flags-display-formatted-flag-details.tgz#93d436754da7a2857d5972ac907677e62222d0ab"
-  integrity sha512-8yKzTl6h9o0/mTNHbfkeIs3jpl/EjPottxEm5SzmN3FGNhbPGgDvpVcn/l2CpSRubV/+GFKjjQdpvSCMhIr+JQ==
+"@hmcts/ccd-case-ui-toolkit@4.13.14-manage-case-flags-display-formatted-flag-details":
+  version "4.13.14-manage-case-flags-display-formatted-flag-details"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.14-manage-case-flags-display-formatted-flag-details.tgz#52df15c557c95e91a195fd8bbaa1247a7741708b"
+  integrity sha512-hgjUxx1TWdc4LnLUGZEgyLbw2LFBUWxHWt87aDAzjxayLQ/w6O1lpytAKNwgp3mczYxmPzWgD+kl4JTUw8ts2w==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { GroupLinkType, Mode } from '../../../models/hearings.enum';
 import { GroupDetailsModel, HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
@@ -20,15 +20,12 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public hearingGroupRequestId: string;
   public hearingId: string;
   public caseName: string;
-  public hearingLinksStateData$: Observable<HearingLinksStateData>;
   public receivedCases: ServiceLinkedCasesModel[];
   public selectedLinkedCases: ServiceLinkedCasesModel[];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public validationErrors: { id: string; message: string }[] = [];
   public positionDropdownValues = [];
   public selectedOption: GroupLinkType;
-  public linkTitle: string;
-  public formValid: boolean = true;
   public selectionValid: boolean = true;
   public form: FormGroup;
   public mode: Mode = Mode.LINK_HEARINGS;
@@ -104,7 +101,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
       });
     } else {
       this.receivedCases.forEach((linkedCase) => {
-        this.mapLinkedCase(linkedCase)
+        this.mapLinkedCase(linkedCase);
       });
       this.initiateFormCreation();
     }

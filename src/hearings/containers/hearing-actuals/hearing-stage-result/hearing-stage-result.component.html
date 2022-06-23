@@ -55,7 +55,7 @@
                   </div>
                   <select formControlName="adjournedReason" class="govuk-select" id="adjourned-reason" name="adjournedReason">
                     <option value="" selected>Please select</option>
-                    <option *ngFor="let reason of adjournHearingActualReasons" [ngValue]="reason.key">{{reason.value_en}}</option>
+                    <option *ngFor="let reason of actualPartHeardReasonCodes" [ngValue]="reason.key">{{reason.value_en}}</option>
                   </select>
                 </div>
               </div>
@@ -75,7 +75,7 @@
                   </div>
                   <select formControlName="cancelledReason" class="govuk-select" id="cancelled-reason" name="cancelledReason">
                     <option value="" selected>Please select</option>
-                    <option *ngFor="let reason of cancelHearingActualReasons" [ngValue]="reason.key">{{reason.value_en}}</option>
+                    <option *ngFor="let reason of actualCancellationReasonCodes" [ngValue]="reason.key">{{reason.value_en}}</option>
                   </select>
                 </div>
               </div>

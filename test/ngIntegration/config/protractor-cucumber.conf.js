@@ -11,13 +11,14 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
-const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
-
 if (!process.env['TEST_ENV_URL']){
     process.env['TEST_ENV_URL'] = process.env['TEST_URL']; 
 
 }
 process.env['TEST_URL'] = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
+
+
+const isParallelExecution = argv.parallel ? argv.parallel === "true" : !getBDDTags().includes('@none') ? true : false;
 
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
 

@@ -51,7 +51,7 @@ export enum LaCaseStatus {
 
 export enum EXUISectionStatusEnum {
   UPCOMING = 'Current and upcoming',
-  PAST_AND_CANCELLED = 'Past and cancelled',
+  PAST_OR_CANCELLED = 'Past or cancelled',
 }
 
 export enum EXUIDisplayStatusEnum {
@@ -128,26 +128,26 @@ export enum HearingCategory {
   HearingChannel = 'HearingChannel',
   HearingType = 'HearingType',
   CaseType = 'caseType',
-  AdditionalFacilities = 'AdditionalFacilities',
+  Facilities = 'Facilities',
   PanelMemberType = 'PanelMemberType',
   PanelMemberSpecialism = 'PanelMemberSpecialism',
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   JudgeType = 'JudgeType',
-  CancelHearingReason = 'CancellationReason',
+  CancelHearingReason = 'CaseManagementCancellationReasons',
   EntityRoleCode = 'EntityRoleCode',
-  AdjournHearingActualReason = 'AdjournHearingActualReason',
-  CancelHearingActualReason = 'CancelHearingActualReason',
-  HearingChangeReason = 'HearingChangeReason',
+  ActualPartHeardReasonCodes = 'ActualPartHeardReasonCodes',
+  ActualCancellationReasonCodes = 'ActualCancellationReasonCodes',
+  HearingChangeReason = 'ChangeReasons',
   LinkedHearings = 'LinkedHearings',
 }
 
 export enum HearingChannelEnum {
-  ONPPR = 'onPaper',
-  NotAttending = 'notAttending',
+  ONPPR = 'ONPPRS',
+  NotAttending = 'NA',
 }
 
 export enum HearingDateEnum {
-  DisplayTime = 'HH:MM',
+  DisplayTime = 'HH:mm',
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY',
   RequestFailedDateAndTime = 'DD MMMM YYYY HH:MM:SS',
@@ -187,7 +187,7 @@ export enum HearingLinkedSelectionEnum {
 }
 
 export enum HearingDatePriorityEnum {
-  LengthError = 'Enter a valid hearing length',
+  LengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours',
   LengthMinutesError = 'The minutes entered must be a multiple of 5',
   TotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours',
   PriorityError = 'Select the priority level of the hearing',

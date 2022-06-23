@@ -8,17 +8,17 @@ export const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [
   {
     caseReference: '1546589340228619',
     caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Linked for a hearing'],
+    reasonsForLink: ['CLRC017'],
   },
   {
     caseReference: '1546589642998505',
-    caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
+    caseName: 'Jane vs DWP',
+    reasonsForLink: ['CLRC017', 'CLRC016'],
   },
   {
     caseReference: '1546590083847466',
-    caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+    caseName: 'Smith vs HMRC',
+    reasonsForLink: ['CLRC005', 'CLRC006', 'CLRC017'],
   },
 ];
 

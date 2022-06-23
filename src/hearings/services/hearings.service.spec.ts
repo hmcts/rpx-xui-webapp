@@ -101,11 +101,11 @@ describe('HearingsService', () => {
 
   describe('loadHearingValues', () => {
     it('should load hearing values', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      service.loadHearingValues('1111222233334444').subscribe(response => {
+      service.loadHearingValues('SSCS', '1111222233334444').subscribe(response => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/loadServiceHearingValues');
+      const req = httpMock.expectOne('api/hearings/loadServiceHearingValues?jurisdictionId=SSCS');
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));

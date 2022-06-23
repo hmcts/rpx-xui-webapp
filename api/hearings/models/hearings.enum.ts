@@ -52,7 +52,7 @@ export enum HearingListingStatusEnum {
 
 export enum EXUISectionStatusEnum {
   UPCOMING = 'Current and upcoming',
-  PAST_AND_CANCELLED = 'Past and cancelled',
+  PAST_OR_CANCELLED = 'Past or cancelled',
 }
 
 export enum EXUIDisplayStatusEnum {
@@ -70,8 +70,8 @@ export enum EXUIDisplayStatusEnum {
 }
 
 export enum HearingChannelEnum {
-  ONPPR = 'onPaper',
-  NotAttending = 'notAttending',
+  ONPPR = 'ONPPRS',
+  NotAttending = 'NA',
 }
 
 export enum HMCLocationType {

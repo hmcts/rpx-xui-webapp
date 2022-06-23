@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
@@ -26,15 +27,17 @@ export class CaseHearingsListComponent implements OnInit {
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
+  public hearingStageOptions: LovRefDataModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
+    this.hearingStageOptions = this.activatedRoute.snapshot.data.hearingStageOptions;
   }
 
   public ngOnInit(): void {
-    if (this.status === EXUISectionStatusEnum.PAST_AND_CANCELLED) {
+    if (this.status === EXUISectionStatusEnum.PAST_OR_CANCELLED) {
       this.hasReadOnlyAction = true;
     }
     if (this.status === EXUISectionStatusEnum.UPCOMING) {

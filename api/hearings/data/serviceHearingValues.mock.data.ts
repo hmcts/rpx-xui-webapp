@@ -6,7 +6,6 @@ import {
   MemberType,
   PartyType,
   RequirementType,
-  UnavailabilityType
 } from '../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
@@ -16,39 +15,15 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   publicCaseName: 'Jane and Smith vs DWP',
   autoListFlag: false,
   hearingType: 'BBA3-DIR',
-  hearingChannel: [HearingChannelEnum.ONPPR],
+  hearingChannels: [HearingChannelEnum.ONPPR],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
       categoryValue: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'BBA3-002CC',
+      categoryValue: 'BBA3-002CP',
       categoryParent: 'BBA3-002',
-    }, {
-      categoryType: CategoryType.CaseSubType,
-      categoryValue: 'BBA3-002GC',
-      categoryParent: 'BBA3-002',
-    }, {
-      categoryType: CategoryType.CaseSubType,
-      categoryValue: 'BBA3-002RC',
-      categoryParent: 'BBA3-002',
-    },
-    {
-      categoryType: CategoryType.CaseType,
-      categoryValue: 'BBA3-001',
-    }, {
-      categoryType: CategoryType.CaseSubType,
-      categoryValue: 'BBA3-001AD',
-      categoryParent: 'BBA3-001',
-    }, {
-      categoryType: CategoryType.CaseSubType,
-      categoryValue: 'BBA3-001CH',
-      categoryParent: 'BBA3-001',
-    }, {
-      categoryType: CategoryType.CaseSubType,
-      categoryValue: 'BBA3-001HC',
-      categoryParent: 'BBA3-001',
     },
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
@@ -62,7 +37,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     firstDateTimeMustBe: '',
   },
   duration: 45,
-  hearingPriorityType: 'normal',
+  hearingPriorityType: 'Standard',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [{
@@ -71,9 +46,10 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   }],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: ['AF-VF'],
-  listingComments: 'Additional instructions for the hearing',
+  listingComments: '',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
+  caseInterpreterRequiredFlag: false,
   leadJudgeContractType: '',
   judiciary: {
     roleType: [''],
@@ -95,9 +71,6 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingIsLinkedFlag: false,
   panelRequirements: {
     roleType: [
-      'tj',
-      'dtj',
-      'rtj',
     ],
     panelPreferences: [],
     panelSpecialisms: [
@@ -113,7 +86,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       partyID: 'P1',
       partyType: PartyType.IND,
       partyName: 'Jane and Smith',
-      partyRole: 'appeal',
+      partyRole: 'APP',
       individualDetails: {
         title: 'Miss',
         firstName: 'Jane',
@@ -121,18 +94,13 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         preferredHearingChannel: 'INTER',
       },
       unavailabilityRanges: [
-        {
-          unavailableFromDate: '2021-12-10T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY,
-        },
       ],
     },
     {
       partyID: 'P2',
       partyType: PartyType.IND,
       partyName: 'DWP',
-      partyRole: 'claim',
+      partyRole: 'DEF',
       individualDetails: {
         title: '',
         firstName: 'DWP',
@@ -140,111 +108,10 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         preferredHearingChannel: 'INTER',
       },
       unavailabilityRanges: [
-        {
-          unavailableFromDate: '2021-12-20T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY,
-        },
       ],
     }],
   caseFlags: {
     flags: [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        flagParentId: 'RA0008',
-        flagId: 'RA0042',
-        flagDescription: 'Sign language interpreter required',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        flagParentId: 'RA0032',
-        flagId: 'RA0053',
-        flagDescription: 'Hearing loop required',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        flagParentId: 'RA0002',
-        flagId: 'RA0013',
-        flagDescription: 'Larger font size',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        flagParentId: 'RA0003',
-        flagId: 'RA0016',
-        flagDescription: 'Reading documents for customer',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        flagParentId: 'RA0008',
-        flagId: 'RA0042',
-        flagDescription: 'Sign Language Interpreter',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        flagParentId: 'PF0001',
-        flagId: 'PF0015',
-        flagDescription: 'Language Interpreter',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        flagParentId: 'PF0001',
-        flagId: 'PF0002',
-        flagDescription: 'Vulnerable user',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        flagParentId: 'RA0001',
-        flagId: 'RA0005',
-        flagDescription: 'Physical access and facilities',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        flagParentId: 'PF0001',
-        flagId: 'PF0011',
-        flagDescription: 'Banning order',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        flagParentId: 'CF0001',
-        flagId: 'CF0002',
-        flagDescription: 'Complex Case',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        flagParentId: 'CF0001',
-        flagId: 'CF0006',
-        flagDescription: 'Potential fraud',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        flagParentId: 'CF0001',
-        flagId: 'CF0007',
-        flagDescription: 'Urgent flag',
-        flagStatus: 'ACTIVE',
-      },
     ],
     flagAmendURL: '/flag/amend',
   },

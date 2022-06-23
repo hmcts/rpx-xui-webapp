@@ -23,7 +23,7 @@
         </h1>
         <br>
 
-        <form [formGroup]="form" (submit)="submitForm(form.value, form.valid)">
+        <form [formGroup]="form">
 
           <table class="govuk-table gov-table--middle">
             <thead class="govuk-table__head">
@@ -130,10 +130,9 @@
             Add a participant
           </button>
 
-
           <br><br>
 
-          <button class="govuk-button primary" data-module="govuk-button">
+          <button class="govuk-button primary" data-module="govuk-button" (click)="submitForm(form.value, form.valid)">
             Save and continue
           </button>
 

@@ -39,7 +39,7 @@ describe('Hearing Values Effects', () => {
       publicCaseName: 'Jane Smith vs DWP',
       autoListFlag: false,
       hearingType: 'Final',
-      hearingChannel: [],
+      hearingChannels: [],
       caseAdditionalSecurityFlag: false,
       caseCategories: [
         {
@@ -78,6 +78,7 @@ describe('Hearing Values Effects', () => {
       listingComments: '',
       hearingRequester: '',
       privateHearingRequiredFlag: false,
+      caseInterpreterRequiredFlag: false,
       panelRequirements: null,
       leadJudgeContractType: '',
       judiciary: {

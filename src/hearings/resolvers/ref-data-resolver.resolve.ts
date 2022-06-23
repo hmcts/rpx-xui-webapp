@@ -47,7 +47,10 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
     }
     return this.lovRefDataService.getListOfValues(category, serviceId, isChildRequired).pipe(
       tap((lovData) => {
-        this.sessionStorageService.setItem(sessionKey, JSON.stringify(lovData));
+        // by pass EntityRoleCode and not put it in session storage as it causes inconsistency between request/actual hearing
+        if (category !== HearingCategory.EntityRoleCode) {
+          this.sessionStorageService.setItem(sessionKey, JSON.stringify(lovData));
+        }
       }),
       catchError(() => {
         this.router.navigate(['/hearings/error']);

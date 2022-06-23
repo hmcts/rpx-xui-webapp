@@ -6,10 +6,12 @@ import { IsAmendedPipe } from './is-amended.pipe';
 import { PartyChannelDisplayValuePipe } from './party-channel-display-value.pipe';
 import { PartyRoleDisplayValuePipe } from './party-role-display-value.pipe';
 import { ShowHidePipe } from './show-hide.pipe';
+import { HearingStageDisplayValuePipe } from './stage-display-value.pipe';
 
 @NgModule({
   declarations: [
     HearingsBadgePipe,
+    HearingStageDisplayValuePipe,
     HearingAnswersPipe,
     IsAmendedPipe,
     ShowHidePipe,
@@ -19,6 +21,7 @@ import { ShowHidePipe } from './show-hide.pipe';
   ],
   exports: [
     HearingsBadgePipe,
+    HearingStageDisplayValuePipe,
     HearingAnswersPipe,
     PartyChannelDisplayValuePipe,
     PartyRoleDisplayValuePipe,

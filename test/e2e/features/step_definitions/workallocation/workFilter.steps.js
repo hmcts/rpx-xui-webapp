@@ -212,7 +212,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expectedLocations.push(hash.name);
         } 
         
-
         await BrowserWaits.retryWithActionCallback(async () => {
             const locationResults = await myWorkPage.getWorkFilterLocationSearchResults();
             for (const expectLoc of expectedLocations) {
@@ -220,8 +219,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         });
         
+    });
+
+    Then('I see location search results returned {int} results in my work filter', async function (expectecResults) {
+        
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const locationResults = await myWorkPage.getWorkFilterLocationSearchResults();
+            expect(locationResults.length, "Expected results count does not match").to.equal(expectecResults); 
+        });
 
     });
+
+
 
     When('I select locations search result {string} in my work filter', async function(location){
         await myWorkPage.selectWorkFilterLocationSearchResult(location);
@@ -248,6 +257,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I remove slected location {string} from my work filters', async function(location){
         await myWorkPage.clickSelectedLocationFromWorkFilter(location);
     });
+
+
+    When('I remove all selected locations from my work filters', async function () {
+        await myWorkPage.clearAllSelectedLocations();
+    });
+
     
 });
 

@@ -38,6 +38,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
+    Given('I set MOCK caseworkers for service {string}, base location', async function (service, datatable) {
+        // step definition code here
+        const datatableHashes = datatable.hashes();
+        for (const row of datatableHashes) {
+            workAlloctionMockData.setLocationForCaseWokerInService(service, row.email, row.locationId);
+        }
+    });
+
     Given('I add MOCK judicial user', async function (datatable) {
         const dtHashes = datatable.hashes();
         for (const hash of dtHashes) {

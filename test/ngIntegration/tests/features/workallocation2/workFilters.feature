@@ -26,10 +26,13 @@ Feature: WA Release 2: My work - Work filters
             | 20016 | SSCS Court Newport       |
             | 20017 | SSCS Court North Shields |
             | 20018 | SSCS Court Taylor House  |
-      
+
+
 
         Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
+
+        Given I set MOCK request "/api/locations/getLocations" intercept with reference "workFilterLocationsRequest"
 
     Scenario Outline:  Work filters show hide button and Apply for "<UserType>"
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
@@ -75,9 +78,9 @@ Feature: WA Release 2: My work - Work filters
     Scenario Outline:  Work filters mandatory field validations
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
-        |locationId|locationName|
-        | 20001 | IA Court Aldgate Tower |
-       
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
+
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -117,8 +120,85 @@ Feature: WA Release 2: My work - Work filters
 
 
         Examples:
-            | UserType | Roles                                                         |
+            | UserType       | Roles                                                            |
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            # | Judge    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
+    # | Judge    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
+@test
+    Scenario Outline: Work filters locations based on organisation role and base location
+
+        Given I set MOCK caseworkers for service "IA"
+            | idamId                               | firstName   | lastName | email                   | roleCategory     |
+            | 3db21928-cbbc-4364-bd91-137c7031fe17 | caseworker1 | cw       | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be02 | caseworker2 | cw       | caseworker_user2@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be03 | caseworker3 | cw       | caseworker_user3@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be04 | caseworker4 | cw       | caseworker_user4@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be05 | caseworker5 | cw       | caseworker_user5@gov.uk | LEGAL_OPERATIONS |
+
+        Given I set MOCK caseworkers for service "SSCS"
+            | idamId                               | firstName   | lastName | email                   | roleCategory     |
+            | 3db21928-cbbc-4364-bd91-137c7031fe17 | caseworker1 | cw       | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be06 | caseworker6 | cw       | caseworker_user6@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be07 | caseworker7 | cw       | caseworker_user7@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be08 | caseworker8 | cw       | caseworker_user8@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be09 | caseworker9 | cw       | caseworker_user9@gov.uk | LEGAL_OPERATIONS |
+
+        Given I set MOCK caseworkers for service "CIVIL"
+            | idamId                               | firstName    | lastName | email                    | roleCategory     |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be10 | caseworker10 | cw       | caseworker_user10@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be11 | caseworker11 | cw       | caseworker_user11@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be12 | caseworker12 | cw       | caseworker_user12@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be13 | caseworker13 | cw       | caseworker_user13@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be14 | caseworker14 | cw       | caseworker_user14@gov.uk | LEGAL_OPERATIONS |
+
+        Given I set MOCK caseworkers for service "IA", base location
+            | email                    | locationId        |
+            | caseworker_user1@gov.uk | <IA_baseLocation> |
+
+        Given I set MOCK caseworkers for service "SSCS", base location
+            | email                    | locationId          |
+            | caseworker_user1@gov.uk | <SSCS_baseLocation> |
+
+
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | isCaseAllocator | jurisdiction | substantive |
+            | <IA_is_organisationa_role>  | IA           |Y|
+            | <SSCS_is_organisation_role> | SSCS         |Y|
+
+
+        Given I start MockApp
+        Given I navigate to home page
+        # When I click on primary navigation header "My work"
+        Then I see work filter button displayed
+        Then I validate work filter button text is "Show work filter"
+        # Then I validate work location filter batch and hint labels are not displayed
+        Then I validate location filter is not displayed
+        When I click work filter button to "Show" filter
+        Then I validate work filter button text is "Hide work filter"
+        Then I validate my work filter services container displayed
+        Then I validate my work filter location search displayed
+
+        When I remove all selected locations from my work filters
+       
+        Given I reset reference "workFilterLocationsRequest" value to null
+
+        When I search for location text "Court" in my work filters
+
+        When I wait for reference "workFilterLocationsRequest" value not null
+
+        Then I validate work filter get location request body "workFilterLocationsRequest", user locations
+        |service|locationIds|
+            | IA | <IA_baseLocation> |
+            | SSCS | <SSCS_baseLocation> |
+
+        Then I see location search results returned <resultCount> results in my work filter
+
+
+        Examples:
+            | IA_is_organisationa_role | IA_baseLocation | SSCS_is_organisation_role | SSCS_baseLocation | resultCount |
+            | true                     |                 | true                      |                   | 18          |
+            | false                    | 20001           | false                     | 20010             | 2           |
+            | true | 20001 | faltruese | 20010 | 2 |
 

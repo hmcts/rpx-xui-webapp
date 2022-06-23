@@ -60,6 +60,7 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
     const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
     const attributes = {...roleAssignment.attributes};
     attributes.isCaseAllocator = isCaseAllocator;
+    attributes.roleType = roleAssignment.roleType;
     roleAssignmentInfo.push(attributes);
   });
   return roleAssignmentInfo;

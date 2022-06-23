@@ -14,6 +14,7 @@ export interface RoleAssignmentInfo {
   jurisdiction: string;
   substantive?: string;
   isCaseAllocator: boolean;
+  roleType: string;
 }
 
 export interface UserDetails {

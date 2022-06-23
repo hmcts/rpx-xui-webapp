@@ -41,19 +41,27 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task tab alert banner header is {string}', async function (alertheader) {
-        expect(await caseDetailsTaskTabPage.alertBannerHeading.getText()).includes(alertheader);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.alertBannerHeading.getText()).includes(alertheader);
+        });
     });
 
     Then('I validate task tab alert banner message is {string}', async function (alertMessagee) {
-        expect(await caseDetailsTaskTabPage.alertBannerMessage.getText()).includes(alertMessagee);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.alertBannerMessage.getText()).includes(alertMessagee);
+        });
     });
 
     Then('I validate task tab active tasks container displayed', async function () {
-        expect(await caseDetailsTaskTabPage.activeTasksContainer.isPresent()).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.activeTasksContainer.isPresent()).to.be.true;
+        });
     });
 
     Then('I validate task tab active tasks displayed count {int}', async function (taskCount) {
-        expect(await caseDetailsTaskTabPage.tasks.count()).to.equal(taskCount);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.tasks.count()).to.equal(taskCount);
+        });
     });
 
 

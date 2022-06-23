@@ -19,7 +19,7 @@ describe('Hearing Values Reducer', () => {
       it('should set correct object', () => {
         const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
           hmctsServiceID: 'BBA3',
-          hearingChannel: [],
+          hearingChannels: [],
           hmctsInternalCaseName: 'Jane Smith vs DWP',
           publicCaseName: 'Jane Smith vs DWP',
           autoListFlag: false,
@@ -62,6 +62,7 @@ describe('Hearing Values Reducer', () => {
           listingComments: '',
           hearingRequester: '',
           privateHearingRequiredFlag: false,
+          caseInterpreterRequiredFlag: false,
           panelRequirements: null,
           leadJudgeContractType: '',
           judiciary: {

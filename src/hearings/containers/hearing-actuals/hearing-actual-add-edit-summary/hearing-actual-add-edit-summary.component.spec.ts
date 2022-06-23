@@ -23,7 +23,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  const hearingActualAdjournReasonsRefData = [
+  const actualPartHeardReasonCodes = [
     {
       key: 'postponedDueToExclusions',
       value_en: 'Postponed, due to Exclusions',
@@ -32,7 +32,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 1,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -45,7 +45,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 2,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -58,7 +58,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 3,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -71,7 +71,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 4,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -84,7 +84,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 5,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -97,7 +97,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 6,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -110,7 +110,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 7,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -123,7 +123,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 8,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -136,7 +136,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 9,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -149,7 +149,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 10,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -162,7 +162,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 11,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -175,7 +175,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 12,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -188,7 +188,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 13,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -201,7 +201,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 14,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -214,7 +214,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 15,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -227,7 +227,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 16,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -240,7 +240,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 17,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -253,7 +253,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 18,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -266,7 +266,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_cy: '',
       lov_order: 19,
       parent_key: null,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
@@ -278,7 +278,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       hint_text_en: 'Adjourned, All Elements Adjourned',
       hint_text_cy: '',
       lov_order: 20,
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
@@ -290,7 +290,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       value_cy: '',
       hint_text_en: 'Adjourned, Listed paper case not heard due to lack of time',
       hint_text_cy: '',
-      category_key: 'AdjournHearingActualReason',
+      category_key: 'ActualPartHeardReasonCodes',
       lov_order: 21,
       parent_category: '',
       parent_key: '',
@@ -299,9 +299,9 @@ describe('HearingActualAddEditSummaryComponent', () => {
     },
   ];
 
-  const hearingActualCancelReasonsRefData = [
+  const actualCancellationReasonCodes = [
     {
-      category_key: 'CancelHearingActualReason',
+      category_key: 'ActualCancellationReasonCodes',
       key: 'reasonOne',
       value_en: 'Reason 1',
       value_cy: '',
@@ -314,7 +314,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       child_nodes: null,
     },
     {
-      category_key: 'CancelHearingActualReason',
+      category_key: 'ActualCancellationReasonCodes',
       key: 'reasonTwo',
       value_en: 'Reason 2',
       value_cy: '',
@@ -327,7 +327,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       child_nodes: null,
     },
     {
-      category_key: 'CancelHearingActualReason',
+      category_key: 'ActualCancellationReasonCodes',
       key: 'reasonThree',
       value_en: 'Reason 3',
       value_cy: '',
@@ -396,7 +396,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should return hearing result reason type description for adjourned', () => {
-    component.adjournHearingActualReasons = hearingActualAdjournReasonsRefData;
+    component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
     const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.ADJOURNED;
     hearingOutcome.hearingResultReasonType = 'postponedDueToOtherReasons';
@@ -405,7 +405,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should return hearing result reason type description for cancelled', () => {
-    component.cancelHearingActualReasons = hearingActualCancelReasonsRefData;
+    component.actualCancellationReasonCodes = actualCancellationReasonCodes;
     const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.CANCELLED;
     hearingOutcome.hearingResultReasonType = 'reasonTwo';
@@ -619,9 +619,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
         firstName: 'Jane',
         lastName: 'Smith',
       },
-      organisationDetails: {
-        name: null,
-      },
+      actualOrganisationName: null,
       didNotAttendFlag: false,
     },
     {
@@ -633,9 +631,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
         firstName: 'DWP',
         lastName: '',
       },
-      organisationDetails: {
-        name: null,
-      },
+      actualOrganisationName: null,
       didNotAttendFlag: false,
     },
     {
@@ -647,9 +643,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
         firstName: 'Thomas',
         lastName: 'Wayne',
       },
-      organisationDetails: {
-        name: null,
-      },
+      actualOrganisationName: null,
       didNotAttendFlag: false,
     },
   ];

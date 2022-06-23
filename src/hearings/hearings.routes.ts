@@ -176,7 +176,7 @@ export const ROUTES: Routes = [
         path: 'hearing-actual-add-edit-summary',
         resolve: {
           hearingTypes: RefDataResolver,
-          adjournHearingActualReasons: AdjournHearingActualReasonResolver,
+          actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
           cancelHearingActualReasons: CancelHearingActualReasonResolver
         },
         component: HearingActualAddEditSummaryComponent,
@@ -196,8 +196,8 @@ export const ROUTES: Routes = [
         path: 'hearing-stage-result',
         resolve: {
           hearingTypes: RefDataResolver,
-          adjournHearingActualReasons: AdjournHearingActualReasonResolver,
-          cancelHearingActualReasons: CancelHearingActualReasonResolver
+          actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
+          actualCancellationReasonCodes: CancelHearingActualReasonResolver
         },
         component: HearingStageResultComponent,
         data: {
@@ -253,7 +253,7 @@ export const ROUTES: Routes = [
         },
         component: HearingFacilitiesComponent,
         data: {
-          category: HearingCategory.AdditionalFacilities,
+          category: HearingCategory.Facilities,
           title: 'HMCTS Hearings | Request Hearing | Additional Facilities'
         }
       },

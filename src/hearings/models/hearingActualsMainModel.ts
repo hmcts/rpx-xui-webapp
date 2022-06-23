@@ -11,10 +11,6 @@ export interface ActualIndividualDetailsModel {
   lastName: string;
 }
 
-export interface ActualOrganisationDetailsModel {
-  name: string;
-}
-
 export interface IndividualDetailsModel {
   title: string;
   firstName: string;
@@ -38,7 +34,7 @@ export interface ActualDayPartyModel {
   actualPartyId: string;
   didNotAttendFlag: boolean;
   individualDetails?: ActualIndividualDetailsModel;
-  organisationDetails?: ActualOrganisationDetailsModel;
+  actualOrganisationName?: string;
   partyChannelSubType: string;
   partyRole: string;
   representedParty: string;

@@ -341,6 +341,18 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     expect(component.form.valid).toBeFalsy();
   });
 
+  it('should call getHearingDate from actual or plan model', () => {
+    expect(component.getHearingDate()).toBe('2021-03-12T09:00:00.000Z');
+  });
+
+  it('should call getHearingStartTime from actual or plan model', () => {
+    expect(component.getHearingStartTime()).toBe('2021-03-12T09:00:00.000Z');
+  });
+
+  it('should call getHearingStartTime from actual or plan model', () => {
+    expect(component.getHearingEndTime()).toBe('2021-03-13T10:00:00.000Z');
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

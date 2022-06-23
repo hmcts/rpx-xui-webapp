@@ -2,7 +2,7 @@ import {CaseCategoryModel} from './caseCategory.model';
 import {HearingLocationModel} from './hearingLocation.model';
 import {HearingWindowModel} from './hearingWindow.model';
 import {JudiciaryModel} from './judiciary.model';
-import { PanelRequirementsModel } from './panelRequirements.model';
+import {PanelRequirementsModel} from './panelRequirements.model';
 import {PartyDetailsModel} from './partyDetails.model';
 import {PartyFlagsModel} from './partyFlags.model';
 import {ScreenNavigationModel} from './screenNavigation.model';
@@ -31,6 +31,7 @@ export interface ServiceHearingValuesModel {
   listingComments: string;
   hearingRequester: string;
   privateHearingRequiredFlag: boolean;
+  caseInterpreterRequiredFlag: boolean;
   panelRequirements: PanelRequirementsModel;
   leadJudgeContractType: string;
   judiciary: JudiciaryModel;
@@ -42,5 +43,5 @@ export interface ServiceHearingValuesModel {
   };
   screenFlow: ScreenNavigationModel[];
   vocabulary: VocabularyModel[];
-  hearingChannel: string[];
+  hearingChannels: string[];
 }

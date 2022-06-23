@@ -18,9 +18,9 @@ describe('HearingStageResultComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
 
-  const hearingActualCancelReasonsRefData = [
+  const actualCancellationReasonCodes = [
     {
-      category_key: 'CancelHearingActualReason',
+      category_key: 'ActualCancellationReasonCodes',
       key: 'reasonOne',
       value_en: 'Reason 1',
       value_cy: '',
@@ -33,7 +33,7 @@ describe('HearingStageResultComponent', () => {
       child_nodes: null,
     },
     {
-      category_key: 'CancelHearingActualReason',
+      category_key: 'ActualCancellationReasonCodes',
       key: 'reasonTwo',
       value_en: 'Reason 2',
       value_cy: '',
@@ -46,7 +46,7 @@ describe('HearingStageResultComponent', () => {
       child_nodes: null,
     },
     {
-      category_key: 'CancelHearingActualReason',
+      category_key: 'ActualCancellationReasonCodes',
       key: 'reasonThree',
       value_en: 'Reason 3',
       value_cy: '',
@@ -178,7 +178,7 @@ describe('HearingStageResultComponent', () => {
 
   it('should be able to submit if the form is valid', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.cancelHearingActualReasons = hearingActualCancelReasonsRefData;
+    component.actualCancellationReasonCodes = actualCancellationReasonCodes;
     component.hearingStageResultForm.get('cancelledReason').setValue('reasoneTwo');
     fixture.detectChanges();
     component.hearingResult = HearingResult.CANCELLED;

@@ -17,7 +17,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 45,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -159,14 +159,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.AWAITING_LISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -227,7 +227,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -238,7 +238,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 50,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -291,21 +291,21 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseInterpreterRequiredFlag: false,
       caseCategories: [
         {
-        categoryType: CategoryType.CaseType,
-        categoryValue: 'BBA3-002',
-      }, {
-        categoryType: CategoryType.CaseSubType,
-        categoryValue: 'BBA3-002CC',
-        categoryParent: 'BBA3-002',
-      }, {
-        categoryType: CategoryType.CaseSubType,
-        categoryValue: 'BBA3-002GC',
-        categoryParent: 'BBA3-002',
-      }, {
-        categoryType: CategoryType.CaseSubType,
-        categoryValue: 'BBA3-002RC',
-        categoryParent: 'BBA3-002',
-      }],
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'BBA3-002',
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
+        }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
       caseSLAStartDate: '2021-11-23T09:00:00.000Z',
@@ -377,14 +377,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.AWAITING_LISTING,
       listingStatus: ListingStatus.DRAFT,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -445,7 +445,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -456,7 +456,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 55,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -584,14 +584,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T11:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -652,7 +652,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -663,7 +663,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 60,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -791,14 +791,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.PENDING_RELISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -859,7 +859,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -870,7 +870,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 65,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -998,14 +998,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.AWAITING_LISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -1066,7 +1066,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1077,7 +1077,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1206,14 +1206,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.EXCEPTION,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -1274,7 +1274,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1285,7 +1285,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1413,14 +1413,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -1481,7 +1481,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1492,7 +1492,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1620,14 +1620,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.CASE_CLOSED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -1688,7 +1688,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1699,7 +1699,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1827,14 +1827,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.CANCELLED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -1895,7 +1895,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1906,7 +1906,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1998,14 +1998,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -2030,7 +2030,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             },
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -2041,7 +2041,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -2133,14 +2133,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -2165,7 +2165,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             },
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -2176,7 +2176,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 60,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -2302,14 +2302,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -2368,7 +2368,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   }, {
     requestDetails: {
@@ -2378,7 +2378,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
-      hearingChannel: [],
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -2470,14 +2470,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
         hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
         hearingJudgeId: 'p1000002',
-        panelMemberIds: ['p1000001'],
+        panelMemberId: 'p1000001',
         attendees: [
           {
             partyID: 'P1',
@@ -2502,7 +2502,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             },
           },
         ],
-      },
+      }],
     },
   },
 ];

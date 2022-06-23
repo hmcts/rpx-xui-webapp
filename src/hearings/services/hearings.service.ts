@@ -36,9 +36,16 @@ export class HearingsService {
     return this.http.get<HearingListMainModel>(`api/hearings/getHearings?caseId=${caseId}`);
   }
 
-  public loadHearingValues(caseId: string): Observable<ServiceHearingValuesModel> {
-    return this.http.post<ServiceHearingValuesModel>('api/hearings/loadServiceHearingValues',
+  public loadHearingValues(jurisdictionId: string, caseId: string): Observable<ServiceHearingValuesModel> {
+    return this.http.post<ServiceHearingValuesModel>(`api/hearings/loadServiceHearingValues?jurisdictionId=${jurisdictionId}`,
       { caseReference: caseId });
+  }
+
+  public loadServiceLinkedCases(jurisdictionId: string, caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
+    return this.http.post<ServiceLinkedCasesModel[]>(`api/hearings/loadServiceLinkedCases?jurisdictionId=${jurisdictionId}`, {
+      caseReference,
+      hearingId // could be null, empty string or missing
+    });
   }
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
@@ -78,13 +85,6 @@ export class HearingsService {
 
   public submitHearingActuals(hearingId: string): Observable<HttpResponse<number>> {
     return this.http.post<HttpResponse<number>>(`api/hearings/hearingActualsCompletion/${hearingId}`, null);
-  }
-
-  public loadServiceLinkedCases(jurisdictionId: string, caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
-    return this.http.post<ServiceLinkedCasesModel[]>(`api/hearings/loadServiceLinkedCases?jurisdictionId=${jurisdictionId}`, {
-      caseReference,
-      hearingId // could be null, empty string or missing
-    });
   }
 
   public getLinkedHearingGroup(groupId: string): Observable<LinkedHearingGroupMainModel> {

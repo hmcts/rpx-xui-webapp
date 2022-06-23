@@ -33,8 +33,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public participants: ActualDayPartyModel[] = [];
   public parties: ActualDayPartyModel[] = [];
   public hearingTypes: LovRefDataModel[];
-  public adjournHearingActualReasons: LovRefDataModel[];
-  public cancelHearingActualReasons: LovRefDataModel[];
+  public actualPartHeardReasonCodes: LovRefDataModel[];
+  public actualCancellationReasonCodes: LovRefDataModel[];
   public hearingResult: string;
   public hearingTypeDescription: string;
   public hearingResultReasonTypeDescription: string;
@@ -56,8 +56,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.partyChannels = this.route.snapshot.data.partyChannel;
-    this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
-    this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
+    this.actualPartHeardReasonCodes = this.route.snapshot.data.actualPartHeardReasonCodes;
+    this.actualCancellationReasonCodes = this.route.snapshot.data.actualCancellationReasonCodes;
   }
 
   private static hasActualParties(hearingActuals: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
@@ -119,7 +119,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public getHearingResultReasonTypeDescription(hearingOutcome: HearingOutcomeModel): string {
     const hearingActualReasonsRefData = hearingOutcome.hearingResult === HearingResult.COMPLETED
       ? [] : hearingOutcome.hearingResult === HearingResult.ADJOURNED
-        ? this.adjournHearingActualReasons : this.cancelHearingActualReasons;
+        ? this.actualPartHeardReasonCodes : this.actualCancellationReasonCodes;
 
     const hearingActualReason = hearingActualReasonsRefData && hearingActualReasonsRefData.find(refData => refData.key === hearingOutcome.hearingResultReasonType);
     if (hearingActualReason) {
@@ -156,9 +156,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
             firstName: plannedParty.individualDetails && plannedParty.individualDetails.firstName,
             lastName: plannedParty.individualDetails && plannedParty.individualDetails.lastName,
           },
-          organisationDetails: {
-            name: plannedParty.organisationDetails && plannedParty.organisationDetails.name,
-          },
+          actualOrganisationName: plannedParty.organisationDetails && plannedParty.organisationDetails.name,
           didNotAttendFlag: false,
           partyChannelSubType: plannedParty.partyChannelSubType,
           representedParty: null,

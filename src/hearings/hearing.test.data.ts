@@ -1341,7 +1341,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   publicCaseName: 'Jane vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
-  hearingChannel: [],
+  hearingChannels: [],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
@@ -1388,6 +1388,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   listingComments: '',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
+  caseInterpreterRequiredFlag: false,
   leadJudgeContractType: '',
   judiciary: {
     roleType: [
@@ -1682,7 +1683,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
   hearingDetails: {
     duration: 45,
     hearingType: 'final',
-    hearingChannel: [],
+    hearingChannels: [],
     hearingLocations: [
       {
         locationId: '196538',
@@ -1776,14 +1777,14 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     laCaseStatus: LaCaseStatus.AWAITING_LISTING,
     listingStatus: ListingStatus.DRAFT,
     hearingCancellationReason: '123456543',
-    hearingDaySchedule: {
+    hearingDaySchedule: [{
       hearingStartDateTime: '2021-03-12T09:00:00.000Z',
       hearingEndDateTime: '2021-03-12T16:00:00.000Z',
       listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
       hearingVenueId: '815833',
       hearingRoomId: 'room 4',
       hearingJudgeId: 'p1000002',
-      panelMemberIds: ['p1000001'],
+      panelMemberId: 'p1000001',
       attendees: [
         {
           partyID: 'P1',
@@ -1810,7 +1811,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
           },
         },
       ],
-    },
+    }],
   },
 };
 
@@ -1836,9 +1837,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               firstName: 'Bob',
               lastName: 'Jones',
             },
-            organisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'appellant',
@@ -1850,9 +1849,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               firstName: 'Mary',
               lastName: 'Jones',
             },
-            organisationDetails: {
-              name: 'Company B',
-            },
+            actualOrganisationName: 'Company B',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'claimant',
@@ -1864,9 +1861,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               firstName: 'James',
               lastName: 'Gods',
             },
-            organisationDetails: {
-              name: 'Solicitors A',
-            },
+            actualOrganisationName: 'Solicitors A',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'interpreter',
@@ -1988,7 +1983,7 @@ export const initialState = {
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
-          hearingChannel: [],
+          hearingChannels: [],
           hearingLocations: [
             {
               locationId: '196538',
@@ -2119,6 +2114,8 @@ export const initialState = {
     hearingRequest: {
       hearingRequestMainModel: {
         requestDetails: {
+          hearingRequestID: '1000000',
+          status: 'LISTED',
           timeStamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
         },
@@ -2129,17 +2126,18 @@ export const initialState = {
           laCaseStatus: LaCaseStatus.AWAITING_LISTING,
           listingStatus: ListingStatus.FIXED,
           hearingCancellationReason: '',
-          hearingDaySchedule: {
-            hearingStartDateTime: '',
-            hearingEndDateTime: '',
+          hearingDaySchedule: [{
+            hearingStartDateTime: '2022-12-12T09:00:00.000Z',
+            hearingEndDateTime: '2022-12-12T16:00:00.000Z',
             listAssistSessionID: '',
             hearingVenueId: '',
             hearingRoomId: 'room 3',
             hearingJudgeId: 'p1000002',
-            panelMemberIds: ['p1000001'],
+            panelMemberId: 'p1000001',
             attendees: [
               {
                 partyID: 'P1',
+                hearingSubChannel: 'inPerson',
                 partyName: 'Jane and Smith',
                 partyType: PartyType.IND,
                 partyRole: 'appellant',
@@ -2151,6 +2149,7 @@ export const initialState = {
               },
               {
                 partyID: 'P2',
+                hearingSubChannel: 'byVideo',
                 partyName: 'DWP',
                 partyType: PartyType.ORG,
                 partyRole: 'claimant',
@@ -2161,12 +2160,12 @@ export const initialState = {
                 }
               },
             ],
-          }
+          }]
         },
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
-          hearingChannel: [],
+          hearingChannels: [],
           hearingLocations: [
             {
               locationId: '196538',

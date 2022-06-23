@@ -244,7 +244,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         }
         const filteredServices = _.intersection.apply( _, [
         userDetails.roleAssignmentInfo
-          .filter(p => p.substantive && p.substantive === 'Y')
+          .filter(p => p.roleType && p.roleType === 'ORGANISATION')
           .map(item => item.jurisdiction)
           .filter((value, index, self) => self.indexOf(value) === index && value != undefined ),
         services

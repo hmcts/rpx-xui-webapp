@@ -460,6 +460,7 @@
   version "4.13.17-case-flags-tabular-display-ammendments"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.17-case-flags-tabular-display-ammendments.tgz#2283bf00d49b5edbad048e82ca1cd335ed3d4151"
   integrity sha512-M1CQJn+9fHCLLcqb3+GHKoQLpMSfQYX747cw7o4+HWhfUKCHMJx++LFe3t1VBHvBmj5V1to8MpDOq5ZUX8BRsg==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

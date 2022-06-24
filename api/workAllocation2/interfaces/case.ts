@@ -30,6 +30,7 @@ export interface Case {
   caseCategory: string;
   assigneeName: string;
   name: string;
+  isNew?: boolean;
 }
 
 export interface CaseAction {

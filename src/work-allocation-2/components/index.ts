@@ -3,6 +3,7 @@ import { CaseManagerFilterComponent } from './case-manager-filter/case-manager-f
 import { CaseNameFieldComponent } from './case-name-field/case-name-field.component';
 import { CaseReferenceFieldComponent } from './case-reference-field/case-reference-field.component';
 import { DerivedIconFieldComponent } from './derived-icon-field/derived-icon-field.component';
+import { RoundelBadgeComponent } from './exui-roundel-badge/exui-roundel-badge.component';
 import { ImageFieldComponent } from './image-field/image-field.component';
 import { InfoMessageComponent } from './info-message/info-message.component';
 import { MyCasesFilterComponent } from './my-cases-filter/my-cases-filter.component';
@@ -27,7 +28,8 @@ export const components: any[] = [
   TaskManagerFilterComponent,
   TaskNameFieldComponent,
   UrlFieldComponent,
-  WorkFieldComponent
+  WorkFieldComponent,
+  RoundelBadgeComponent
 ];
 
 export * from './available-tasks-filter/available-tasks-filter.component';

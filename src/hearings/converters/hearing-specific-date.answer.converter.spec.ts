@@ -72,7 +72,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
       firstDateTimeMustBe: null,
     };
     const result$ = converter.transformAnswer(of(STATE));
-    const hearingDateRange = `${RadioOptions.YES}<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>12 December 2022`;
+    const hearingDateRange = `${RadioOptions.YES}<dt class="heading-h3 bottom-0">Earliest hearing date</dt>12 December 2022`;
     const expected = cold('(b|)', {b: hearingDateRange});
     expect(result$).toBeObservable(expected);
   });

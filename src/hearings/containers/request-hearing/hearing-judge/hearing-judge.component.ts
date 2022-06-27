@@ -32,11 +32,11 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(protected readonly route: ActivatedRoute,
-    private readonly formBuilder: FormBuilder,
-    protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService,
-    protected readonly judicialRefDataService: JudicialRefDataService,
-    private readonly validatorsUtils: ValidatorsUtils) {
+              private readonly formBuilder: FormBuilder,
+              protected readonly hearingStore: Store<fromHearingStore.State>,
+              protected readonly hearingsService: HearingsService,
+              protected readonly judicialRefDataService: JudicialRefDataService,
+              private readonly validatorsUtils: ValidatorsUtils) {
     super(hearingStore, hearingsService, route);
     this.hearingJudgeTypes = this.route.snapshot.data.hearingStages;
     this.personalCodejudgeList = this.route.snapshot.data.judicialUsers;

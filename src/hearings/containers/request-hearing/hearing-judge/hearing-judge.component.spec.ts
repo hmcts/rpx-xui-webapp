@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
-import {JudicialUserModel} from '../../../models/judicialUser.model';
+import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
@@ -23,7 +23,7 @@ describe('HearingJudgeComponent', () => {
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
   const judgeTypes: LovRefDataModel[] = [
     {
-      key: 'tj',
+      key: 'Tribunal',
       value_en: 'Tribunal Judge',
       value_cy: '',
       hint_text_en: 'Tribunal',

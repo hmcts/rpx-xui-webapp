@@ -56,22 +56,7 @@ export class WorkAllocationTaskService {
 
   public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<TaskResponse> {
     return this.http.post<any>(`${BASE_URL}`, body).pipe(
-      tap(response => {
-        // this part should not be merged ,it s for QA to test the ticket, it s expected warning properties from API
-        response.tasks[0].warnings = true;
-        response.tasks[0].warning_list.values =
-        [
-          {
-            code: '123',
-            text: 'this is a warning message 1.'
-          },
-          {
-            code: '124',
-            text: 'this is a warning message 2.'
-          }
-        ]
-        return this.currentTasks$.next(response.tasks)
-      }),
+      tap(response => this.currentTasks$.next(response.tasks)),
     );
   }
 

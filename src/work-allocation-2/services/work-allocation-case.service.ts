@@ -49,23 +49,7 @@ export class WorkAllocationCaseService {
   }
 
   public getTasksByCaseId(caseId: string): Observable<Task[]> {
-    // this part should not be merged ,it s for QA to test the ticket.it s expected warning properties from API
-    return this.http.get<Task[]>(`${BASE_URL}/task/${caseId}`).pipe(
-      tap(p => {
-          p[0].warnings = true;
-          p[0].warning_list.values =
-           [
-            {
-              code: '123',
-              text: 'this is a warning message 1.'
-            },
-            {
-              code: '124',
-              text: 'this is a warning message 2.'
-            }
-          ];
-      })
-    );
+    return this.http.get<Task[]>(`${BASE_URL}/task/${caseId}`);
   }
 
   /**

@@ -72,7 +72,7 @@
     "@angular/router": "^7.2.13",
     "@hmcts/ccpay-web-component": "5.0.4",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "4.13.13-case-flags-tab-and-comments",
+    "@hmcts/ccd-case-ui-toolkit": "4.13.9-case-flag-details-persistence-fixes",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.12",
     "@hmcts/nodejs-healthcheck": "^1.7.0",

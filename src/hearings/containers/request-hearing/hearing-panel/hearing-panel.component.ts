@@ -122,7 +122,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   }
 
   public setExtraChildNode() {
-    let refDataWithChildNodes = _.cloneDeep({
+    const refDataWithChildNodes = _.cloneDeep({
       ...this.multiLevelSelections.find((lov) => lov.child_nodes && lov.child_nodes.length > 0)
     });
     this.multiLevelSelections = _.orderBy([...this.multiLevelSelections, ...[refDataWithChildNodes]], ['key']);

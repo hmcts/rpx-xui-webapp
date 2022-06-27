@@ -128,6 +128,13 @@ export function getMockTasks(): Task[] {
       taskName: 'Review respondent evidence',
       dueDate: new Date(628021800000),
       warnings: true,
+      warning_list: {
+        values: [
+          {
+            code: '125',
+            text: 'this is a warning message 3'
+          }
+      ]},
       actions: [
         {
           id: 'actionId1',

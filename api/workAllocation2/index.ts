@@ -453,8 +453,10 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
     if (data.hasOwnProperty(jurisdiction)) {
       for (const caseType in data[jurisdiction]) {
         if (data[jurisdiction].hasOwnProperty(caseType)) {
-          const query = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
-          casePromises.push(searchCasesById(caseType, query, req));
+          const queries = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
+          queries.forEach(query => {
+            casePromises.push(searchCasesById(caseType, query, req));
+          });
         }
       }
     }
@@ -526,7 +528,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
-      const sortedCaseList = mappedCases.sort((a, b) => (a.isNewTask === b.isNewTask) ? 0 : a.isNewTask ? -1 : 1);
+      const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
       result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
     }
     return res.send(result).status(200);

@@ -85,15 +85,18 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
     if (services.includes(Object.keys(serviceRef)[0])) {
       serviceCodes.push(Object.values(serviceRef)[0] as string);
     }
-  });
+  })
+  let searchResult: any[] = [];
   try {
-    let searchResult: any[] = [];
     for (const serviceCode of serviceCodes) {
       const response = await getJudicialUsersFromApi(req, userIds, serviceCode);
       searchResult = response.data ? [...response.data, ...searchResult] : searchResult;
     }
     return res.status(200).send(searchResult);
   } catch (error) {
+    if (error && error.status === 404) {
+      return res.status(200).send(searchResult);
+    }
     next(error);
   }
 }

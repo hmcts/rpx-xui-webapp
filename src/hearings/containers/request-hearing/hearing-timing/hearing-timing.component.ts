@@ -336,7 +336,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     if (this.priorityForm.value.specificDate === RadioOptions.YES) {
       firstDateMustBe = `${moment(Object.values(this.priorityForm.value.firstHearing).join('-'), HearingDateEnum.DefaultFormat).toISOString()}`;
     } else if (this.priorityForm.value.specificDate === RadioOptions.CHOOSE_DATE_RANGE) {
-      startDate = this.priorityForm.value.dateRangeHearing.earliestHearing ?
+      startDate = this.priorityForm.value.dateRangeHearing.earliestHearing
+      && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_day
+      && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_month
+      && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_year ?
         `${moment(Object.values(this.priorityForm.value.dateRangeHearing.earliestHearing).join('-'), HearingDateEnum.DefaultFormat).toISOString()}` : null;
       endDate = this.priorityForm.value.dateRangeHearing.latestHearing
       && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_day

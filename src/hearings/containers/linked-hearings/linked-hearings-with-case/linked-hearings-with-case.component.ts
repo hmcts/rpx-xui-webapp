@@ -89,7 +89,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       hearingStage: hearingInfo.hearingStage,
       isSelected: hearingInfo.isSelected,
       hearingStatus: hearingInfo.hearingStatus,
-      hearingIsLinkedFlag: hearingInfo.hearingIsLinkedFlag
+      hearingIsInLinkedGroup: hearingInfo.hearingIsInLinkedGroup
     })));
   }
 

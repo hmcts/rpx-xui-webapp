@@ -12,7 +12,7 @@ export interface HearingDetailModel {
   hearingStage: string;
   isSelected: boolean;
   hearingStatus: string;
-  hearingIsLinkedFlag: boolean;
+  hearingIsInLinkedGroup: boolean;
 }
 
 export interface LinkedHearingGroupMainModel {

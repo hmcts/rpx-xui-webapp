@@ -126,7 +126,7 @@ export class HearingsService {
                 // tslint:disable-next-line: no-shadowed-variable
                 isSelected: isManageLink ? !!linkedState.linkedHearingGroup.hearingsInGroup.find((hearingInfo: LinkedHearingsDetailModel) => hearingInfo.caseRef === caseInfo.caseReference && hearingInfo.hearingId === hearing.hearingID) : false,
                 hearingStatus: hearing.exuiDisplayStatus,
-                hearingIsLinkedFlag: hearing.hearingIsLinkedFlag
+                hearingIsInLinkedGroup: !!hearing.hearingGroupRequestId
               };
               hearings.push(hearingInfo);
             }

@@ -35,19 +35,19 @@
         <tbody class="govuk-table__body">
           <ng-container formArrayName="hearings">
             <tr class="govuk-table__row" [formGroupName]="pos" *ngFor="let hearing of case.hearings; let pos = index">
-              <td scope="row" class="govuk-table__cell align-middle">{{hearing.hearingStage}}
+              <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">{{hearing.hearingStage}}
                 <span *ngIf="hearing.hearingIsLinkedFlag">
                   &nbsp;&nbsp;
                   <img src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle"
                     alt="Linked">&nbsp;
-                  <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', case.caseReference, 'hearings']" href="javascript:void()">Manage Link</a>
+                  <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', case.caseReference, 'hearings']" href="javascript:void(0)">Manage Link</a>
                 </span>
               </td>
-              <td scope="row" class="govuk-table__cell align-middle">
+              <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
                 <strong class="govuk-tag govuk-tag--grey"
                   [ngClass]="hearing.hearingStatus | hearingsBadge">{{hearing.hearingStatus}}</strong>
               </td>
-              <td class="govuk-table__cell">
+              <td class="govuk-table__cell govuk-table-width-10-percent">
                 <div class="govuk-radios" data-module="govuk-radios">
                   <div class="govuk-radios__item" *ngIf="!hearing.hearingIsLinkedFlag">
                     <input class="govuk-radios__input" id="{{case.caseReference}}{{hearing.hearingId}}" type="radio"

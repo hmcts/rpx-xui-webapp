@@ -13,7 +13,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
 import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
-import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockCases, MockRouter } from '../../tests/utils.spec';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
@@ -23,7 +23,7 @@ xdescribe('WorkCaseListWrapperComponent', () => {
   let component: WorkCaseListWrapperComponent;
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
-  const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
+  const mockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase', 'getMyCases']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
@@ -69,6 +69,7 @@ xdescribe('WorkCaseListWrapperComponent', () => {
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
+    spyOn(mockRouter.events, 'subscribe');
     fixture.detectChanges();
   }));
 

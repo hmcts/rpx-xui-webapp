@@ -104,11 +104,15 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public async setHeaderContent(userDetails) {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
-      const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().pipe(first()).toPromise();
+      // const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().pipe(first()).toPromise();
+      this.getApplicationThemeForUser().subscribe(theme => {
+        this.hideNavigationListener(this.store);
+        this.setAppHeaderTheme(theme);
+      });
       // const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
       this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe(menuItems => {
         this.hideNavigationListener(this.store);
-        this.setAppHeaderProperties(applicationTheme, menuItems);
+        this.setAppHeaderNavItems(menuItems);
       });
 
     }
@@ -139,8 +143,12 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * Set the app header properties, in one function that takes in the application theme.
    */
   public setAppHeaderProperties(applicationTheme: ApplicationTheme, navigationItems: NavigationItem[]): void {
+    this.setAppHeaderNavItems(navigationItems);
+    this.setAppHeaderTheme(applicationTheme);
+  }
+
+  public setAppHeaderTheme(applicationTheme: ApplicationTheme): void {
     this.appHeaderTitle = applicationTheme.appTitle;
-    this.setupActiveNavLink(navigationItems);
     this.userNav = this.userRoles.length > 0 ? {
       label: 'Account navigation',
       items: [{
@@ -154,6 +162,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.backgroundColor = applicationTheme.backgroundColor;
     this.logo = applicationTheme.logo;
     this.logoIsUsed = applicationTheme.logo !== ApplicationThemeLogo.NONE;
+  }
+
+  public setAppHeaderNavItems(navigationItems: NavigationItem[]): void {
+    this.setupActiveNavLink(navigationItems);
   }
 
   /**

@@ -149,6 +149,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
+    data.tasks.forEach(task => {
+      task.next_hearing_date =
+        new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString()
+    });
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
@@ -466,6 +470,10 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       result.unique_cases = getUniqueCasesCount(mappedCases);
       result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
     }
+    result.cases.forEach(item => {
+      item.next_hearing_date =
+        new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString()
+    });
     return res.send(result).status(200);
   } catch (e) {
     console.log(e);

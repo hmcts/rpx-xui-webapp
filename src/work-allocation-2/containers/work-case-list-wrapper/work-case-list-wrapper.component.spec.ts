@@ -85,7 +85,6 @@ describe('WorkCaseListWrapperComponent', () => {
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ))
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
-    spyOn(mockRouter.events, 'subscribe');
     fixture.detectChanges();
   }));
 

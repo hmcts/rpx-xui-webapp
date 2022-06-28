@@ -530,7 +530,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
-      const sortedCaseList = mappedCases.sort((a, b) => (a.isNewTask === b.isNewTask) ? 0 : a.isNewTask ? -1 : 1);
+      const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
       result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
     }
     result.cases.forEach(item => {

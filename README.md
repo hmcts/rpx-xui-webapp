@@ -37,7 +37,7 @@ Run `yarn lint:node` to execute note linting.
 
 Run `yarn test-pact` to run the PACT tests.
 
-Run `yarn pact-stub` to run the PACT stub server.
+Run `yarn pact-stub` to run the PACT stub server. 
 
 # Branches, Environment and Deployment methods used
 # Branches, Environment and Deployment methods used 

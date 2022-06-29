@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.15.0-hearing":
-  version "4.15.0-hearing"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.15.0-hearing.tgz#715750c3576aa6ffb195615ee33b6c3cb2db28f9"
-  integrity sha512-KKaMEjz8293zEAmbKfM3wqJA3BfUPCqjSRHyWWYJG5arL5/6uCRa0P0GEjBFGrCn84DaCmA5dwBr7kGHU/in9w==
+"@hmcts/ccd-case-ui-toolkit@4.18.1-hearings":
+  version "4.18.1-hearings"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.1-hearings.tgz#c7e8b640673525c7e6ec8e26e6545c21671fb8e0"
+  integrity sha512-t2jtSiQwDmI/pBMtgajQDmOUF8p6rCboF9CJ1tALgHBXFlK40KCMaQnTe+K+0BQkIAPVQ6Mvq5yKBZXW9IYrDg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -544,10 +544,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@2.25.4":
-  version "2.25.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.4.tgz#f4fc79741fbf6bbbe395a1149b90f4f27df998ea"
-  integrity sha512-QEMEPJOcLPdzVtmTDiQmaZH9plhBha8UPJrpoOV3BSIpC26LaBoSMfQLBKpVp26VWKngCb6F4Uv/hxRFeMUvJw==
+"@hmcts/rpx-xui-node-lib@2.25.12":
+  version "2.25.12"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.12.tgz#c1e72789e186e2fd1d4d71b599b17f18724d2988"
+  integrity sha512-E2FjuV9BwSiAYVMw2l1VfClD8aoKskC33u6zFcc/hUoM7scFKSzr1VzV6uHm0y6GG/2sHpckbz2eV7zswf5Bnw==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.21.1"

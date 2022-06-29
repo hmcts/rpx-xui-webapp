@@ -460,6 +460,7 @@
   version "4.13.22-manage-case-flags-display-case-level-case-flags"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.22-manage-case-flags-display-case-level-case-flags.tgz#2347c3413321920c6615fc565aa707ee5db933fc"
   integrity sha512-6GHtLq93G5KtmLCXonrHvR26rgK8z+MjQ1eFYRsEMbKVkibWOVsxGih/XDKBfFBRet4VCNqK14JeIrf9IDcNQw==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

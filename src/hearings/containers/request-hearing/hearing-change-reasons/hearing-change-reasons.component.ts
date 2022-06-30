@@ -10,11 +10,11 @@ import * as fromHearingStore from '../../../store';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
-  selector: 'exui-hearing-change-reason',
-  templateUrl: './hearing-change-reason.component.html',
+  selector: 'exui-hearing-change-reasons',
+  templateUrl: './hearing-change-reasons.component.html',
 })
-export class HearingChangeReasonComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
-  public hearingChangeReason: LovRefDataModel[];
+export class HearingChangeReasonsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+  public hearingChangeReasons: LovRefDataModel[];
   public hearingChangeReasonForm: FormGroup;
   public errors: { id: string, message: string }[] = [];
   public selectionValid: boolean = true;
@@ -38,12 +38,12 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
         }];
       }
     });
-    this.hearingChangeReason = this.route.snapshot.data.hearingChangeReason;
+    this.hearingChangeReasons = this.route.snapshot.data.hearingChangeReason;
     this.initForm();
   }
 
   public get getReasonsTypeFormArray(): FormArray {
-    return this.formBuilder.array(this.hearingChangeReason.map(val => this.formBuilder.group({
+    return this.formBuilder.array(this.hearingChangeReasons.map(val => this.formBuilder.group({
       key: [val.key],
       value_en: [val.value_en],
       value_cy: [val.value_cy],
@@ -66,14 +66,20 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
       return true;
     }
     this.selectionValid = true;
+		(this.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(x => {
+			console.log('X', x.value);
+		});
     const isReasons = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls
       .filter(reason => reason.value.selected === true).length > 0;
+    console.log('IS REASONS', isReasons);
     if (!isReasons) {
       this.errors = [{
         id: `hearing-option-container`, message: HearingChangeReasonMessages.NOT_SELECTED_A_REASON
       }];
       this.selectionValid = false;
     }
+    console.log('ERRORS', this.errors);
+    console.log('SELECTION VALID', this.selectionValid);
     return this.selectionValid;
   }
 
@@ -93,34 +99,23 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
   }
 
   public prepareHearingRequestData(): void {
-    const reasons: string[] = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.map(
-      control => control.value.key
-    );
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        amendReasonCode: reasons[0],
-      }
+        amendReasonCodes: this.getChosenReasons(),
+      }     
     };
   }
 
-  public getChosenReasons(): LovRefDataModel[] {
-    const mappedReason: LovRefDataModel[] = [];
+  public getChosenReasons(): string[] {
+    const chosenReasons: string[] = [];
     (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(reason => {
       if (reason.value.selected === true) {
-        mappedReason.push({
-          key: reason.value.key,
-          value_en: reason.value.value_en,
-          value_cy: reason.value.value_cy,
-          hint_text_en: reason.value.hint_text_en,
-          hint_text_cy: reason.value.hint_text_cy,
-          lov_order: reason.value.lov_order,
-          parent_key: reason.value.parent_key,
-        } as LovRefDataModel);
+        chosenReasons.push(reason.value.key);
       }
     });
-    return mappedReason;
+    return chosenReasons;
   }
 
   public ngOnDestroy(): void {

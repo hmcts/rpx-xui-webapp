@@ -86,6 +86,7 @@ fdescribe('HearingChangeReasonsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingChangeReasonsComponent);
     component = fixture.componentInstance;
+    component.hearingChangeReasons = reasons;
     spyOn(component, 'initForm').and.callThrough();
     spyOn(component, 'getChosenReasons').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();
@@ -99,16 +100,12 @@ fdescribe('HearingChangeReasonsComponent', () => {
   });
 
   it('should call methods in oninit', () => {
-    component.hearingChangeReasons = reasons;
     expect(component.initForm).toHaveBeenCalled();
     expect(component.hearingChangeReasons.length).toEqual(reasons.length);
     expect(component.getReasonsTypeFormArray.length).toBeGreaterThan(0);
   });
 
   it('should be true when calling isFormValid reasons selected', () => {
-    const hearingReasons = reasons;
-    hearingReasons[0].selected = true;
-    component.hearingChangeReasons = hearingReasons;
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
       .forEach(reason => reason.value.selected = true);
     const formValid = component.isFormValid(ACTION.CONTINUE);
@@ -116,34 +113,24 @@ fdescribe('HearingChangeReasonsComponent', () => {
   });
 
   it('should be false when calling isFormValid with no reasons selected', () => {
-    const hearingReasons = reasons;
-    hearingReasons[0].selected = false;
-    hearingReasons[1].selected = false;
-    hearingReasons[2].selected = false;
-    component.hearingChangeReasons = hearingReasons;
-		console.log('HEARING CHANGE REASONS', hearingReasons);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
+      .forEach(reason => reason.value.selected = false);
     const formValid = component.isFormValid(ACTION.VIEW_EDIT_SUBMIT);
     expect(formValid).toEqual(false);
   });
 
   it('should not be any validation errors when back button selected', () => {
-    component.hearingChangeReasons = reasons;
     component.isFormValid(ACTION.BACK);
     expect(component.errors.length).toEqual(0);
   });
 
   it('should have a server error message mapped when update request failed', () => {
     hearingsService.updateHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
-    component.hearingChangeReasons = reasons;
     component.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.errors).not.toEqual(null);
   });
 
   it('should prepareHearingRequestData', () => {
-    const hearingReasons = reasons;
-    hearingReasons[0].selected = true;
-    component.hearingChangeReasons = hearingReasons;
-
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
       .forEach(reason => reason.value.selected = true);
     component.prepareHearingRequestData();

@@ -66,20 +66,14 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
       return true;
     }
     this.selectionValid = true;
-		(this.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(x => {
-			console.log('X', x.value);
-		});
     const isReasons = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls
       .filter(reason => reason.value.selected === true).length > 0;
-    console.log('IS REASONS', isReasons);
     if (!isReasons) {
       this.errors = [{
         id: `hearing-option-container`, message: HearingChangeReasonMessages.NOT_SELECTED_A_REASON
       }];
       this.selectionValid = false;
     }
-    console.log('ERRORS', this.errors);
-    console.log('SELECTION VALID', this.selectionValid);
     return this.selectionValid;
   }
 

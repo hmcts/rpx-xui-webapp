@@ -20,38 +20,6 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   const hearingId = 'h100002';
   const hearingGroupRequestId = 'g1000000';
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-  const mockRoute = {
-    snapshot: {
-      params: {
-        caseId: {caseId},
-        hearingId: {hearingId}
-      },
-      data: {
-        mode: Mode.MANAGE_HEARINGS
-      }
-    }
-  };
-  const linkedHearingGroup = {
-    groupDetails: {
-      groupName: 'Group A',
-      groupReason: 'Reason 1',
-      groupLinkType: GroupLinkType.ORDERED,
-      groupComments: 'Comment 1',
-    },
-    hearingsInGroup: [
-      {
-        hearingId: 'h1000001',
-        hearingOrder: 1,
-      },
-      {
-        hearingId: 'h1000003',
-        hearingOrder: 2,
-      },
-      {
-        hearingId: 'h1000005',
-        hearingOrder: 3,
-      }],
-  };
   const source: ServiceLinkedCasesModel[] = [
     {
       caseReference: '4652724902696213',
@@ -91,6 +59,40 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       }]
     }
   ];
+  const mockRoute = {
+    snapshot: {
+      params: {
+        caseId: {caseId},
+        hearingId: {hearingId}
+      },
+      data: {
+        mode: Mode.MANAGE_HEARINGS,
+        linkedCase: { serviceLinkedCases: source }
+      }
+    }
+  };
+  const linkedHearingGroup = {
+    groupDetails: {
+      groupName: 'Group A',
+      groupReason: 'Reason 1',
+      groupLinkType: GroupLinkType.ORDERED,
+      groupComments: 'Comment 1',
+    },
+    hearingsInGroup: [
+      {
+        hearingId: 'h1000001',
+        hearingOrder: 1,
+      },
+      {
+        hearingId: 'h1000003',
+        hearingOrder: 2,
+      },
+      {
+        hearingId: 'h1000005',
+        hearingOrder: 3,
+      }],
+  };
+
   const linkedCases = [
     {
       caseReference: '4652724902696213',

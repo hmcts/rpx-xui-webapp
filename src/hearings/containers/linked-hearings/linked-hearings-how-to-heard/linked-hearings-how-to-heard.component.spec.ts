@@ -69,7 +69,45 @@ const mockResponse: ServiceLinkedCasesModel[] = [
     ],
   },
 ];
-
+const source: ServiceLinkedCasesModel[] = [
+  {
+    caseReference: '4652724902696213',
+    caseName: 'Smith vs Peterson',
+    reasonsForLink: [
+      'Linked for a hearing'
+    ]
+  },
+  {
+    caseReference: '5283819672542864',
+    caseName: 'Smith vs Peterson',
+    reasonsForLink: [
+      'Linked for a hearing',
+      'Progressed as part of lead case'
+    ]
+  },
+  {
+    caseReference: '8254902572336147',
+    caseName: 'Smith vs Peterson',
+    reasonsForLink: [
+      'Familial',
+      'Guardian',
+      'Linked for a hearing'
+    ],
+    hearings: [{
+      hearingId: 'h100010',
+      hearingStage: HMCStatus.UPDATE_REQUESTED,
+      isSelected: false,
+      hearingStatus: HMCStatus.AWAITING_LISTING,
+      hearingIsInLinkedGroup: false
+    }, {
+      hearingId: 'h100012',
+      hearingStage: HMCStatus.UPDATE_REQUESTED,
+      isSelected: false,
+      hearingStatus: HMCStatus.AWAITING_LISTING,
+      hearingIsInLinkedGroup: false
+    }]
+  }
+];
 const hearingLinksMock = {
   ...mockLinkedHearingGroup,
   ...mockResponse
@@ -196,7 +234,8 @@ function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterS
         useValue: {
           snapshot: {
             data: {
-              mode: modeOfLinking
+              mode: modeOfLinking,
+              linkedCase: { serviceLinkedCases: source }
             },
             params: {
               caseId: '8254902572336147',

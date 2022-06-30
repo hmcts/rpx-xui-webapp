@@ -174,8 +174,9 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
  * putLinkedHearingGroup - put linked hearing group
  */
 export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const groupId: string = req.query.groupId;
   const reqBody = req.body;
-  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
+  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
     // tslint:disable-next-line:max-line-length
     const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req, next);

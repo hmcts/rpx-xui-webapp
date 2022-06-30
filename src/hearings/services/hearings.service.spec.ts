@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import {initialState} from '../hearing.test.data';
 import {HearingLinksStateData} from '../models/hearingLinksStateData.model';
 import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
-import {HMCStatus} from '../models/hearings.enum';
+import {GroupLinkType, HMCStatus} from '../models/hearings.enum';
 import {LinkedHearingGroupMainModel, ServiceLinkedCasesModel} from '../models/linkHearings.model';
 import {LovRefDataModel} from '../models/lovRefData.model';
 import {HearingsService} from './hearings.service';
@@ -68,7 +68,6 @@ const source: ServiceLinkedCasesModel[] = [
     }]
   }
 ];
-
 
 describe('HearingsService', () => {
   beforeEach(() => {
@@ -295,11 +294,33 @@ describe('HearingsService', () => {
     }));
 
     it('should call putLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      service.putLinkedHearingGroup(null).subscribe(response => {
+      const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
+        groupDetails: {
+          groupComments: 'TBU',
+          groupLinkType: GroupLinkType.ORDERED,
+          groupName: 'TBU',
+          groupReason: '1'
+        },
+        hearingsInGroup: [
+          {
+            hearingId: '2000002012',
+            hearingOrder: 3
+          },
+          {
+            hearingId: '2000002014',
+            hearingOrder: 1
+          },
+          {
+            hearingId: '2000001916',
+            hearingOrder: 2
+          }
+        ]
+      };
+      service.putLinkedHearingGroup('1', linkedHearingGroupMainModel).subscribe(response => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/putLinkedHearingGroup');
+      const req = httpMock.expectOne('api/hearings/putLinkedHearingGroup?groupId=1');
       expect(req.request.method).toEqual('PUT');
       req.flush(null);
     }));

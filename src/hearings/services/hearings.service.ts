@@ -95,8 +95,8 @@ export class HearingsService {
     return this.http.post<LinkedHearingGroupResponseModel>('api/hearings/postLinkedHearingGroup', linkedHearingGroupMainModel);
   }
 
-  public putLinkedHearingGroup(linkedHearingGroupMainModel: LinkedHearingGroupMainModel): Observable<LinkedHearingGroupResponseModel> {
-    return this.http.put<LinkedHearingGroupResponseModel>('api/hearings/putLinkedHearingGroup', linkedHearingGroupMainModel);
+  public putLinkedHearingGroup(groupId: string, linkedHearingGroupMainModel: LinkedHearingGroupMainModel): Observable<LinkedHearingGroupResponseModel> {
+    return this.http.put<LinkedHearingGroupResponseModel>(`api/hearings/putLinkedHearingGroup?groupId=${groupId}`, linkedHearingGroupMainModel);
   }
 
   public deleteLinkedHearingGroup(hearingGroupId: string): Observable<LinkedHearingGroupResponseModel> {

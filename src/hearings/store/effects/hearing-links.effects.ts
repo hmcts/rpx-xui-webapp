@@ -77,7 +77,7 @@ export class HearingLinksEffects {
     switchMap(payload => {
       let apiCall: any;
       if (payload.linkedHearingGroup && payload.linkedHearingGroup.hearingsInGroup && payload.linkedHearingGroup.hearingsInGroup.length > 0) {
-        apiCall = this.hearingsService.putLinkedHearingGroup(payload.linkedHearingGroup);
+        apiCall = this.hearingsService.putLinkedHearingGroup(payload.hearingGroupRequestId, payload.linkedHearingGroup);
       } else {
         apiCall = this.hearingsService.deleteLinkedHearingGroup(payload.hearingGroupRequestId);
       }

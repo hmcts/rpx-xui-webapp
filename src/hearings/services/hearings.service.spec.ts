@@ -24,7 +24,7 @@ const source: ServiceLinkedCasesModel[] = [
         hearingStage: 'Final',
         isSelected: true,
         hearingStatus: 'Awaiting',
-        hearingIsLinkedFlag: false
+        hearingIsInLinkedGroup: false
       }
     ]
   },
@@ -41,7 +41,7 @@ const source: ServiceLinkedCasesModel[] = [
         hearingStage: 'Final',
         isSelected: true,
         hearingStatus: 'Awaiting',
-        hearingIsLinkedFlag: false
+        hearingIsInLinkedGroup: false
       }
     ]
   },
@@ -58,13 +58,13 @@ const source: ServiceLinkedCasesModel[] = [
       hearingStage: HMCStatus.UPDATE_REQUESTED,
       isSelected: false,
       hearingStatus: HMCStatus.AWAITING_LISTING,
-      hearingIsLinkedFlag: false
+      hearingIsInLinkedGroup: false
     }, {
       hearingId: 'h100012',
       hearingStage: HMCStatus.UPDATE_REQUESTED,
       isSelected: false,
       hearingStatus: HMCStatus.AWAITING_LISTING,
-      hearingIsLinkedFlag: false
+      hearingIsInLinkedGroup: false
     }]
   }
 ];
@@ -310,7 +310,12 @@ describe('HearingsService', () => {
         linkedHearingGroup: {} as LinkedHearingGroupMainModel
       };
       const isManageLink: boolean = false;
-      service.getAllCaseInformation(linkedState, isManageLink).subscribe(response => {
+      const currentCase: ServiceLinkedCasesModel = {
+        caseReference: '4652724902696213',
+        caseName: 'test',
+        reasonsForLink: [],
+      };
+      service.getAllCaseInformation(currentCase, linkedState, isManageLink).subscribe(response => {
         expect(response).toBeNull();
       });
       const req = httpMock.expectOne('api/hearings/getHearings?caseId=4652724902696213');
@@ -325,7 +330,12 @@ describe('HearingsService', () => {
         linkedHearingGroup: {} as LinkedHearingGroupMainModel
       };
       const isManageLink: boolean = false;
-      service.getAllCaseInformation(linkedState, isManageLink).subscribe(response => {
+      const currentCase: ServiceLinkedCasesModel = {
+        caseReference: '4652724902696213',
+        caseName: 'test',
+        reasonsForLink: [],
+      };
+      service.getAllCaseInformation(currentCase, linkedState, isManageLink).subscribe(response => {
         expect(response).toBeNull();
       });
     }));

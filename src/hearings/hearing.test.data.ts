@@ -2309,7 +2309,7 @@ export const initialState = {
             hearingStage: HMCStatus.UPDATE_REQUESTED,
             isSelected: true,
             hearingStatus: HMCStatus.AWAITING_LISTING,
-            hearingIsLinkedFlag: false
+            hearingIsInLinkedGroup: false
           }]
         },
         {
@@ -2333,13 +2333,13 @@ export const initialState = {
             hearingStage: HMCStatus.UPDATE_REQUESTED,
             isSelected: true,
             hearingStatus: HMCStatus.AWAITING_LISTING,
-            hearingIsLinkedFlag: false
+            hearingIsInLinkedGroup: false
           }, {
             hearingId: 'h100012',
             hearingStage: HMCStatus.UPDATE_REQUESTED,
             isSelected: false,
             hearingStatus: HMCStatus.AWAITING_LISTING,
-            hearingIsLinkedFlag: false
+            hearingIsInLinkedGroup: false
           }]
         }
       ],

@@ -36,7 +36,7 @@
           <ng-container formArrayName="hearings">
             <tr class="govuk-table__row" [formGroupName]="pos" *ngFor="let hearing of case.hearings; let pos = index">
               <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">{{hearing.hearingStage}}
-                <span *ngIf="hearing.hearingIsLinkedFlag">
+                <span *ngIf="hearing.hearingIsInLinkedGroup">
                   &nbsp;&nbsp;
                   <img src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle"
                     alt="Linked">&nbsp;
@@ -49,7 +49,7 @@
               </td>
               <td class="govuk-table__cell govuk-table-width-10-percent">
                 <div class="govuk-radios" data-module="govuk-radios">
-                  <div class="govuk-radios__item" *ngIf="!hearing.hearingIsLinkedFlag">
+                  <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="{{case.caseReference}}{{hearing.hearingId}}" type="radio"
                       [value]="true" [checked]="getHearingsFormValue(i).controls[pos].get('isSelected').value"
                       (click)="updateLinkedCase(i, pos);" [formControlName]="'isSelected'">

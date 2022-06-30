@@ -37,7 +37,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingStage: 'Final',
           isSelected: true,
           hearingStatus: 'Awaiting',
-          hearingIsLinkedFlag: false
+          hearingIsInLinkedGroup: false
         }
       ]
     },
@@ -54,7 +54,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingStage: 'Final',
           isSelected: true,
           hearingStatus: 'Awaiting',
-          hearingIsLinkedFlag: false
+          hearingIsInLinkedGroup: false
         }
       ]
     },
@@ -71,13 +71,13 @@ describe('LinkedHearingsWithCaseComponent', () => {
         hearingStage: HMCStatus.UPDATE_REQUESTED,
         isSelected: false,
         hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false
+        hearingIsInLinkedGroup: false
       }, {
         hearingId: 'h100012',
         hearingStage: HMCStatus.UPDATE_REQUESTED,
         isSelected: false,
         hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false
+        hearingIsInLinkedGroup: false
       }]
     }
   ];

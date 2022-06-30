@@ -93,7 +93,12 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public ngOnInit(): void {
     this.selectedLinkedCases = [];
     if (this.mode === Mode.MANAGE_HEARINGS) {
-      this.sub = this.hearingsService.getAllCaseInformation(this.hearingLinks, true).subscribe((casesLinkedInfo) => {
+      const currentCase: ServiceLinkedCasesModel = {
+        caseReference: this.caseId,
+        caseName: this.caseName,
+        reasonsForLink: [],
+      };
+      this.sub = this.hearingsService.getAllCaseInformation(currentCase, this.route.snapshot.data.linkedCase, true).subscribe((casesLinkedInfo) => {
         casesLinkedInfo.forEach(linkedCase => {
           this.mapLinkedCase(linkedCase);
         });
@@ -133,10 +138,10 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public onSubmit(): void {
     const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
       groupDetails: {
-        groupComments: '',
+        groupComments: 'TBU',
         groupLinkType: this.selectedOption,
-        groupName: '',
-        groupReason: ''
+        groupName: 'TBU',
+        groupReason: '1' // This is the only value accepted LA
       }, hearingsInGroup: []
     };
     if (this.isFormValid()) {

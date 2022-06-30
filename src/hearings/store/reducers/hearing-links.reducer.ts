@@ -51,7 +51,7 @@ export function hearingLinksReducer(currentState = initialHearingLinksState,
       return {
         ...currentState,
         lastError: null
-      }
+      };
     }
     default: {
       return {

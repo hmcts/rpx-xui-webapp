@@ -62,7 +62,12 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
 
   public ngOnInit(): void {
     if (this.isManageLink) {
-      this.sub = this.hearingsService.getAllCaseInformation(this.hearingLinks, this.isManageLink).subscribe((casesLinkedInfo) => {
+      const currentCase: ServiceLinkedCasesModel = {
+        caseReference: this.caseId,
+        caseName: this.caseName,
+        reasonsForLink: [],
+      };
+      this.sub = this.hearingsService.getAllCaseInformation(currentCase, this.route.snapshot.data.linkedCase, this.isManageLink).subscribe((casesLinkedInfo) => {
         this.setHearingLinkedGroup(casesLinkedInfo);
         this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(casesLinkedInfo));
       });

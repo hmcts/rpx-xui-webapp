@@ -117,6 +117,7 @@ export const ROUTES: Routes = [
   {
     path: 'manage-links/:caseId/:hearingGroupRequestId/:hearingId',
     component: LinkedHearingsComponent,
+    resolve: {linkedCase: LinkedCaseResolver},
     data: {
       mode: Mode.MANAGE_HEARINGS
     },

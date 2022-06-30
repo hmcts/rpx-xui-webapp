@@ -38,7 +38,7 @@ const mockResponse: ServiceLinkedCasesModel[] = [
         hearingStage: HMCStatus.UPDATE_REQUESTED,
         isSelected: true,
         hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false,
+        hearingIsInLinkedGroup: false,
       },
     ],
   },
@@ -57,14 +57,14 @@ const mockResponse: ServiceLinkedCasesModel[] = [
         hearingStage: HMCStatus.UPDATE_REQUESTED,
         isSelected: true,
         hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false,
+        hearingIsInLinkedGroup: false,
       },
       {
         hearingId: 'h100012',
         hearingStage: HMCStatus.UPDATE_REQUESTED,
         isSelected: false,
         hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false,
+        hearingIsInLinkedGroup: false,
       },
     ],
   },
@@ -73,8 +73,7 @@ const mockResponse: ServiceLinkedCasesModel[] = [
 const hearingLinksMock = {
   ...mockLinkedHearingGroup,
   ...mockResponse
-
-}
+};
 
 let component: HowLinkedHearingsBeHeardComponent;
 let fixture: ComponentFixture<HowLinkedHearingsBeHeardComponent>;

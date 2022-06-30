@@ -81,13 +81,13 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
         hearingStage: HMCStatus.UPDATE_REQUESTED,
         isSelected: false,
         hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false
+        hearingIsInLinkedGroup: false
       }, {
         hearingId: 'h100012',
         hearingStage: HMCStatus.UPDATE_REQUESTED,
         isSelected: false,
         hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false
+        hearingIsInLinkedGroup: false
       }]
     }
   ];
@@ -174,7 +174,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       hearingStage: 'Initial hearing',
       isSelected: true,
       hearingStatus: '',
-      hearingIsLinkedFlag: false
+      hearingIsInLinkedGroup: false
     };
     component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;
@@ -187,7 +187,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       hearingStage: 'Initial hearing',
       isSelected: false,
       hearingStatus: '',
-      hearingIsLinkedFlag: false
+      hearingIsInLinkedGroup: false
     };
     component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;

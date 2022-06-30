@@ -107,16 +107,22 @@ export class HearingsService {
     return this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/deleteLinkedHearingGroup', options);
   }
 
-  public getAllCaseInformation(linkedState: HearingLinksStateData, isManageLink: boolean): Observable<ServiceLinkedCasesModel[]> {
-    const receivedCases: ServiceLinkedCasesModel[] = linkedState.serviceLinkedCases || [];
-    const linkedCaseIds: string[] = receivedCases.map((caseDetails: ServiceLinkedCasesModel) => caseDetails.caseReference);
+  public getAllCaseInformation(currentCase: ServiceLinkedCasesModel, linkedState: HearingLinksStateData, isManageLink: boolean): Observable<ServiceLinkedCasesModel[]> {
+    const linkedCases: ServiceLinkedCasesModel[] = linkedState.serviceLinkedCases || [];
+    const linkedCaseIds: string[] = linkedCases.map(aCase => aCase.caseReference);
+    let allCaseIds: string[] = linkedCaseIds;
+    let allCases: ServiceLinkedCasesModel[] = linkedCases;
+    if (!linkedCaseIds.includes(currentCase.caseReference)) {
+      allCaseIds = [currentCase.caseReference, ...linkedCaseIds];
+      allCases = [currentCase, ...linkedCases];
+    }
     const hearingServices = [];
-    linkedCaseIds.forEach(id => {
+    allCaseIds.forEach(id => {
       hearingServices.push(this.getAllHearings(id));
     });
     return forkJoin(hearingServices).pipe(
       map((hearingsList: HearingListMainModel[]) => {
-        return receivedCases.map((caseInfo: ServiceLinkedCasesModel, pos: number) => {
+        return allCases.map((caseInfo: ServiceLinkedCasesModel, pos: number) => {
           const hearings = [] as HearingDetailModel[];
           hearingsList[pos].caseHearings.forEach((hearing) => {
             if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED) {

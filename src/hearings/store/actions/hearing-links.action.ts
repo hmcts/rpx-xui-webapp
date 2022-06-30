@@ -87,7 +87,7 @@ export class ManageLinkedHearingGroupFailure implements Action {
 }
 
 export class ResetLinkedHearingLastError implements Action {
-  public readonly type = RESET_LINKED_HEARING_LAST_ERROR
+  public readonly type = RESET_LINKED_HEARING_LAST_ERROR;
 }
 
 export type HearingLinksAction =

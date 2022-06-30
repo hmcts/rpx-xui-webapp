@@ -101,8 +101,13 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.initForm();
+    const currentCase: ServiceLinkedCasesModel = {
+      caseReference: this.caseId,
+      caseName: this.caseName,
+      reasonsForLink: [],
+    };
     if (!this.isManageLink && !this.isHearingsPreSelected) {
-      this.sub = this.hearingsService.getAllCaseInformation(this.route.snapshot.data.linkedCase, this.isManageLink).subscribe((casesLinkedInfo) => {
+      this.sub = this.hearingsService.getAllCaseInformation(currentCase, this.route.snapshot.data.linkedCase, this.isManageLink).subscribe((casesLinkedInfo) => {
         this.linkedCases = casesLinkedInfo;
         this.initForm();
         this.getHearingsAvailable();

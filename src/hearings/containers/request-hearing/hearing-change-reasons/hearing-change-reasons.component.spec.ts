@@ -10,11 +10,11 @@ import {initialState} from '../../../hearing.test.data';
 import {ACTION} from '../../../models/hearings.enum';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
-import {HearingChangeReasonComponent} from './hearing-change-reason.component';
+import {HearingChangeReasonsComponent} from './hearing-change-reasons.component';
 
-describe('HearingChangeReasonComponent', () => {
-  let component: HearingChangeReasonComponent;
-  let fixture: ComponentFixture<HearingChangeReasonComponent>;
+fdescribe('HearingChangeReasonsComponent', () => {
+  let component: HearingChangeReasonsComponent;
+  let fixture: ComponentFixture<HearingChangeReasonsComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   const reasons: LovRefDataModel[] = [
@@ -28,7 +28,7 @@ describe('HearingChangeReasonComponent', () => {
       category_key: 'ChangeReasons',
       parent_category: '',
       parent_key: '',
-      active_flag: '',
+      active_flag: ''
     },
     {
       key: 'reasonTwo',
@@ -61,7 +61,7 @@ describe('HearingChangeReasonComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
-      declarations: [HearingChangeReasonComponent],
+      declarations: [HearingChangeReasonsComponent],
       providers: [
         {provide: HearingsService, useValue: hearingsService},
         {
@@ -84,9 +84,8 @@ describe('HearingChangeReasonComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HearingChangeReasonComponent);
+    fixture = TestBed.createComponent(HearingChangeReasonsComponent);
     component = fixture.componentInstance;
-    component.hearingChangeReason = reasons;
     spyOn(component, 'initForm').and.callThrough();
     spyOn(component, 'getChosenReasons').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();
@@ -100,12 +99,16 @@ describe('HearingChangeReasonComponent', () => {
   });
 
   it('should call methods in oninit', () => {
+    component.hearingChangeReasons = reasons;
     expect(component.initForm).toHaveBeenCalled();
-    expect(component.hearingChangeReason.length).toEqual(reasons.length);
+    expect(component.hearingChangeReasons.length).toEqual(reasons.length);
     expect(component.getReasonsTypeFormArray.length).toBeGreaterThan(0);
   });
 
   it('should be true when calling isFormValid reasons selected', () => {
+    const hearingReasons = reasons;
+    hearingReasons[0].selected = true;
+    component.hearingChangeReasons = hearingReasons;
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
       .forEach(reason => reason.value.selected = true);
     const formValid = component.isFormValid(ACTION.CONTINUE);
@@ -113,26 +116,38 @@ describe('HearingChangeReasonComponent', () => {
   });
 
   it('should be false when calling isFormValid with no reasons selected', () => {
+    const hearingReasons = reasons;
+    hearingReasons[0].selected = false;
+    hearingReasons[1].selected = false;
+    hearingReasons[2].selected = false;
+    component.hearingChangeReasons = hearingReasons;
+		console.log('HEARING CHANGE REASONS', hearingReasons);
     const formValid = component.isFormValid(ACTION.VIEW_EDIT_SUBMIT);
     expect(formValid).toEqual(false);
   });
 
   it('should not be any validation errors when back button selected', () => {
+    component.hearingChangeReasons = reasons;
     component.isFormValid(ACTION.BACK);
     expect(component.errors.length).toEqual(0);
   });
 
   it('should have a server error message mapped when update request failed', () => {
     hearingsService.updateHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
+    component.hearingChangeReasons = reasons;
     component.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.errors).not.toEqual(null);
   });
 
   it('should prepareHearingRequestData', () => {
+    const hearingReasons = reasons;
+    hearingReasons[0].selected = true;
+    component.hearingChangeReasons = hearingReasons;
+
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
       .forEach(reason => reason.value.selected = true);
     component.prepareHearingRequestData();
-    expect(component.hearingRequestMainModel.hearingDetails.amendReasonCode).toEqual('reasonOne');
+    expect(component.hearingRequestMainModel.hearingDetails.amendReasonCodes).toEqual(['reasonOne', 'reasonTwo', 'reasonThree']);
   });
 
 });

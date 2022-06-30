@@ -49,11 +49,12 @@ export class HearingsService {
   }
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
-    // TODO below logic may change, currently it was confirmed by HMC and stakeholder we will only send the 1st reasonCode to the backend
     const cancellationReasonCodes: string[] = reasons.map(reason => reason.key);
-    const cancellationReasonCode: string = cancellationReasonCodes.length > 0 ? cancellationReasonCodes[0] : '';
+    console.log('CANCELLATION REASON CODES', JSON.stringify(cancellationReasonCodes));
     let httpParams = new HttpParams();
-    httpParams = httpParams.append('cancellationReasonCode', cancellationReasonCode);
+    httpParams = httpParams.append('cancellationReasonCodes', JSON.stringify(cancellationReasonCodes));
+    console.log('HTTP PARAMS', httpParams);
+    debugger;
     return this.http.delete<ResponseDetailsModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
       params: httpParams
     });
@@ -72,6 +73,8 @@ export class HearingsService {
       params: new HttpParams()
         .set('hearingId', hearingRequestMainModel.requestDetails.hearingRequestID)
     };
+    console.log('HEARING REQUEST MAIN MODEL', hearingRequestMainModel);
+    debugger;
     return this.http.put<ResponseDetailsModel>(`api/hearings/updateHearingRequest`, hearingRequestMainModel, options);
   }
 

@@ -54,6 +54,13 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
      }
     });
 
+    this.allocateRoleService.getNewCasesCount().subscribe( (countOfApproval) => {
+      const myCasesNavItem = this.subNavigationItems.find(nav => nav.text === 'My cases'  ) ;
+      if ( myCasesNavItem ) {
+       myCasesNavItem.roundel = countOfApproval.count ;
+      }
+    });
+
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.

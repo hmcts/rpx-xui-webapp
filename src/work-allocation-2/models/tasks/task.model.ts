@@ -16,7 +16,7 @@ export default interface Task {
   warnings?: boolean;
   derivedIcon?: string;
   jurisdiction?: string;
-  isNewTask?: boolean;
+  isNew?: boolean;
 }
 
 export interface TaskResponse {

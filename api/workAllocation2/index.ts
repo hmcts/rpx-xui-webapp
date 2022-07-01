@@ -593,3 +593,23 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     next(error);
   }
 }
+
+export async function getTaskNames(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const taskNames = [{
+    taskName: 'Review the appeal',
+    taskId: 12334,
+  },
+  {
+    taskName: 'Follow-up extended direction',
+    taskId: 1345,
+  },
+  {
+    taskName: 'Follow-up extended direction',
+    taskId: 1456,
+  },
+  {
+    taskName: 'Review Addendum Evidence',
+    taskID: 1678
+  }];
+  return res.send(taskNames).status(200);
+}

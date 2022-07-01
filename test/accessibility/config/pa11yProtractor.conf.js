@@ -42,24 +42,30 @@ exports.config = {
         timeout: 180000
     },
     beforeLaunch() {
+        console.log("Before launch : isParallelExecution " + isParallelExecution);
         if (isParallelExecution) {
             MockApp.setServerPort(3001);
             MockApp.init();
             MockApp.startServer();
+            console.log("Before launch : mock started on 3001 ");
         }
     },
 
     async onPrepare() {
         MockApp.init();
+        console.log("On prepare : Mock init");
+        console.log("On prepare : isParallelExecution" + isParallelExecution);
         if (isParallelExecution) {
             MockApp.getNextAvailableClientPort().then(res => {
                 MockApp.setServerPort(res.data.port); 
                 MockApp.startServer();
+                console.log("On prepare : parallel mock started" + res.data.port);
 
             });
         } else {
             MockApp.setServerPort(3001);
             await MockApp.startServer();
+            console.log("On prepare : mock started on 3001" );
         }
     },
     onComplete() {

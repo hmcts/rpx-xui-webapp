@@ -609,7 +609,7 @@ export async function getTaskNames(req: EnhancedRequest, res: Response, next: Ne
   },
   {
     taskName: 'Review Addendum Evidence',
-    taskID: 1678
+    taskID: 1678,
   }];
   return res.send(taskNames).status(200);
 }

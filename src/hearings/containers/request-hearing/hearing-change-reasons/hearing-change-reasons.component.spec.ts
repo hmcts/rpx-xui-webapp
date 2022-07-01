@@ -12,7 +12,7 @@ import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingChangeReasonsComponent} from './hearing-change-reasons.component';
 
-fdescribe('HearingChangeReasonsComponent', () => {
+describe('HearingChangeReasonsComponent', () => {
   let component: HearingChangeReasonsComponent;
   let fixture: ComponentFixture<HearingChangeReasonsComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -69,7 +69,7 @@ fdescribe('HearingChangeReasonsComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingChangeReason: reasons,
+                hearingChangeReasons: reasons,
               },
             },
           },

@@ -16,7 +16,7 @@
           </div>
           <div id="hearing-option-container" class="govuk-checkboxes" formArrayName="reasons"
             data-module="govuk-checkboxes">
-            <div class="govuk-checkboxes__item" *ngFor="let reason of hearingChangeReason;index as pos"
+            <div class="govuk-checkboxes__item" *ngFor="let reason of hearingChangeReasons;index as pos"
               [formGroupName]="pos">
               <input class="govuk-checkboxes__input" id="{{reason.key}}" name="pos" type="checkbox"
                 formControlName="selected" [value]="reason.value_en">

@@ -138,7 +138,7 @@ export enum HearingCategory {
   EntityRoleCode = 'EntityRoleCode',
   ActualPartHeardReasonCodes = 'ActualPartHeardReasonCodes',
   ActualCancellationReasonCodes = 'ActualCancellationReasonCodes',
-  HearingChangeReason = 'ChangeReasons',
+  HearingChangeReasons = 'ChangeReasons',
   LinkedHearings = 'LinkedHearings',
 }
 

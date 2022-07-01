@@ -38,7 +38,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
         }];
       }
     });
-    this.hearingChangeReasons = this.route.snapshot.data.hearingChangeReason;
+    this.hearingChangeReasons = this.route.snapshot.data.hearingChangeReasons;
     this.initForm();
   }
 

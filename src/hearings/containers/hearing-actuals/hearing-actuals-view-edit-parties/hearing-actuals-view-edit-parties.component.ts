@@ -1,23 +1,25 @@
-import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ValidationErrors} from '@angular/forms/src/directives/validators';
-import {ActivatedRoute, ParamMap} from '@angular/router';
-import {Store} from '@ngrx/store';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ValidationErrors } from '@angular/forms/src/directives/validators';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import * as moment from 'moment';
-import {combineLatest, Subscription} from 'rxjs';
-import {filter, first} from 'rxjs/operators';
+import { combineLatest, Subscription } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
+import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
 import {
   ActualDayPartyModel,
+  ActualHearingDayModel,
   HearingActualsMainModel,
   PlannedDayPartyModel,
   PlannedHearingDayModel
 } from '../../../models/hearingActualsMainModel';
-import {HearingActualsStateData} from '../../../models/hearingActualsStateData.model';
-import {HearingChannelEnum} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {LovRefDataService} from '../../../services/lov-ref-data.service';
+import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
+import { HearingChannelEnum } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-actuals-view-edit-parties',
@@ -58,6 +60,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
                      private readonly lovRefDataService: LovRefDataService,
                      private readonly route: ActivatedRoute,
                      private readonly renderer: Renderer2,
+                     private readonly router: Router,
   ) {
     this.form = this.fb.group({
       parties: this.fb.array([], [Validators.maxLength(50)]),
@@ -227,7 +230,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       organisation: [null],
       attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
       isPlannedParty: [false]
-    }, {validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.')});
+    }, { validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.') });
   }
 
   public addRow($event: Event): void {
@@ -264,22 +267,20 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     }
     if (valid) {
       const actualParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
-      const hearingActuals = {
-        ...this.hearingActualsMainModel.hearingActuals,
-        actualHearingDays: [
-          {
-            ...this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
-            actualDayParties: actualParties,
-            hearingDate: this.getHearingDate(),
-            hearingEndTime: this.getHearingEndTime(),
-            hearingStartTime: this.getHearingStartTime(),
-          }
-        ],
-      };
-      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-        hearingId: this.id,
-        hearingActuals
-      }));
+      const actualHearingDays: ActualHearingDayModel[] = [
+        {
+          ...this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
+          actualDayParties: actualParties,
+          hearingDate: this.getHearingDate(),
+          hearingEndTime: this.getHearingEndTime(),
+          hearingStartTime: this.getHearingStartTime(),
+        }
+      ];
+      ActualHearingsUtils.isHearingPartiesUpdated = true;
+      this.hearingStore.dispatch(new fromHearingStore.SaveHearingActualsPlannedDays(
+        actualHearingDays
+      ));
+      this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
     }
   }
 
@@ -348,7 +349,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       if (!message) {
         return acc;
       }
-      return [...acc, {id: `participant${index}`, message}];
+      return [...acc, { id: `participant${index}`, message }];
     }, []);
   }
 }

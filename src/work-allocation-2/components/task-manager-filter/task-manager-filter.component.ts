@@ -90,6 +90,23 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
+  private static initTaskNameFilter(): FilterFieldConfig {
+
+    return {
+      name: 'task-name',
+      options: [],
+      minSelected: 1,
+      maxSelected: 1,
+      findLocationField: 'service',
+      enableCondition: 'selectTaskName=search',
+      minSelectedError: 'You must select a task name',
+      maxSelectedError: null,
+      enableAddLocationButton: false,
+      type: 'find-task-name',
+      radioSelectionChange: 'selectTaskName=search'
+    };
+  }
+
   private static initSelectLocationFilter(): FilterFieldConfig {
     return {
       name: 'selectLocation',
@@ -102,6 +119,23 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
       title: 'Location',
+      type: 'radio'
+    };
+  }
+
+  private static initSelectTaskNameFilter(): FilterFieldConfig {
+    return {
+      name: 'selectTaskName',
+      options: [
+        { key: 'task_name_all', label: 'All' },
+        { key: 'unassigned', label: 'Unassigned' },
+        { key: 'search', label: 'Assigned to a person' }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a task name',
+      maxSelectedError: null,
+      title: 'Tasks',
       type: 'radio'
     };
   }
@@ -230,6 +264,9 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
       TaskManagerFilterComponent.initSelectLocationFilter(),
       TaskManagerFilterComponent.initLocationFilter(),
+      TaskManagerFilterComponent.initSelectTaskNameFilter(),
+      // TaskManagerFilterComponent.initRoleTypeFilter(),
+      TaskManagerFilterComponent.initTaskNameFilter(),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(),

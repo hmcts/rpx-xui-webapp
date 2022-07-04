@@ -439,16 +439,29 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should check days validity', () => {
     ActualHearingsUtils.isHearingDaysUpdated = true;
+    ActualHearingsUtils.isHearingPartiesUpdated = false;
     component.onSubmitHearingDetails();
     expect(component.submitted).toBe(true);
     expect(component.hearingTimingResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
   });
 
   it('should check parties validity', () => {
+    ActualHearingsUtils.isHearingDaysUpdated = false;
     ActualHearingsUtils.isHearingPartiesUpdated = true;
     component.onSubmitHearingDetails();
     expect(component.submitted).toBe(true);
     expect(component.hearingPartiesResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
+  });
+
+  it('should save hearings Actuals', () => {
+    ActualHearingsUtils.isHearingDaysUpdated = true;
+    ActualHearingsUtils.isHearingPartiesUpdated = true;
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.saveHearingActuals(false);
+    expect(ActualHearingsUtils.isHearingDaysUpdated).toBe(false);
+    component.saveHearingActuals(true);
+    expect(ActualHearingsUtils.isHearingPartiesUpdated).toBe(false);
+    expect(ActualHearingsUtils.isHearingDaysUpdated).toBe(false);
   });
 
   afterEach(() => {

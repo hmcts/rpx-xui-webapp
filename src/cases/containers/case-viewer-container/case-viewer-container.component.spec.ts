@@ -130,6 +130,8 @@ describe('CaseViewerContainerComponent', () => {
     ]
   };
 
+  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+
   class MockFeatureToggleService implements FeatureToggleService {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
       // @ts-ignore
@@ -183,7 +185,6 @@ describe('CaseViewerContainerComponent', () => {
             'payments',
             'payments-refund',
             'payments-refund-approver',
-            'pui-case-manager',
             'pui-finance-manager',
             'pui-organisation-manager',
             'pui-user-manager'
@@ -226,7 +227,7 @@ describe('CaseViewerContainerComponent', () => {
           }
         },
         {provide: FeatureToggleService, useClass: MockFeatureToggleService},
-        {provide: WASupportedJurisdictionsService, useClass: }
+        {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService}
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })
@@ -235,6 +236,7 @@ describe('CaseViewerContainerComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseViewerContainerComponent);
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
     component = fixture.componentInstance;
     debug = fixture.debugElement;
     fixture.detectChanges();

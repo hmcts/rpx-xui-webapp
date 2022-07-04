@@ -123,24 +123,29 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       name: 'earliestHearingDate',
       hint: '',
       classes: 'govuk-fieldset__legend govuk-fieldset__legend--s',
-      label: 'Earliest hearing date'
+      label: 'Earliest start date'
     };
     this.latestHearingDate = {
       id: 'latestHearingDate',
       name: 'latestHearingDate',
       hint: '',
       classes: 'govuk-fieldset__legend govuk-fieldset__legend--s',
-      label: 'Latest hearing date'
+      label: 'Latest end date'
     };
   }
 
   public initForm(): void {
     this.priorityForm = this.formBuilder.group({
       durationLength: this.formBuilder.group({
-        days: [this.priorityFormInfo.days, ''],
+        days: [this.priorityFormInfo.days, this.validatorsUtils.numberLargerThanValidator(HearingDatePriorityConstEnum.MinDays)],
         hours: [this.priorityFormInfo.hours, [this.validatorsUtils.numberMinMaxValidator(HearingDatePriorityConstEnum.MinHours, HearingDatePriorityConstEnum.MaxHours)]],
         minutes: [this.priorityFormInfo.minutes, [this.validatorsUtils.numberMultipleValidator(HearingDatePriorityConstEnum.MinutesMuliplier)]]
       }, { validator: this.validatorsUtils.minutesValidator(HearingDatePriorityConstEnum.TotalMinMinutes, HearingDatePriorityConstEnum.TotalMaxMinutes, HearingDatePriorityConstEnum.TotalMinutes) }),
+      // durationLength: this.formBuilder.group({
+      //   days: [this.priorityFormInfo.days, this.validatorsUtils.numberLargerThanValidator(HearingDatePriorityConstEnum.MinDays)],
+      //   hours: [this.priorityFormInfo.hours, [this.validatorsUtils.numberMinMaxValidator(HearingDatePriorityConstEnum.MinHours, HearingDatePriorityConstEnum.MaxHours)]],
+      //   minutes: [this.priorityFormInfo.minutes, [this.validatorsUtils.numberMultipleValidator(HearingDatePriorityConstEnum.MinutesMuliplier)]]
+      // }),
       specificDate: [this.checkedHearingAvailability, Validators.required],
       firstHearing: this.formBuilder.group({
         firstHearingDate_day: [this.priorityFormInfo.startDate && this.priorityFormInfo.startDate.getDate()],
@@ -203,16 +208,21 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     const durationLengthFormGroup = this.priorityForm.controls.durationLength;
     if (!durationLengthFormGroup.get('days').valid) {
       this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthError;
-      this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.LengthError });
+      this.validationErrors.push({ id: 'durationdays', message: HearingDatePriorityEnum.LengthError });
     } else if (!durationLengthFormGroup.get('hours').valid) {
-      this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthError;
-      this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.LengthError });
+      console.log(durationLengthFormGroup.get('hours').value);
+      this.hearingLengthErrorValue = isNaN(durationLengthFormGroup.get('hours').value)
+        ? HearingDatePriorityEnum.LengthError
+        : HearingDatePriorityEnum.LengthHoursError;
+      this.validationErrors.push({ id: 'durationhours', message: this.hearingLengthErrorValue });
     } else if (!durationLengthFormGroup.get('minutes').valid) {
-      this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthMinutesError;
-      this.validationErrors.push({ id: 'durationmins', message: HearingDatePriorityEnum.LengthMinutesError });
+      this.hearingLengthErrorValue = isNaN(durationLengthFormGroup.get('minutes').value)
+        ? HearingDatePriorityEnum.LengthError
+        : HearingDatePriorityEnum.LengthMinutesError;
+      this.validationErrors.push({ id: 'durationmins', message: this.hearingLengthErrorValue });
     } else if (!durationLengthFormGroup.valid) {
       this.hearingLengthErrorValue = HearingDatePriorityEnum.TotalLengthError;
-      this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.TotalLengthError });
+      this.validationErrors.push({ id: 'durationdays', message: HearingDatePriorityEnum.TotalLengthError });
     }
   }
 

@@ -39,7 +39,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public firstDateOfHearingError: ErrorMessagesModel;
   public earliestDateOfHearingError: ErrorMessagesModel;
   public latestDateOfHearingError: ErrorMessagesModel;
-  public priorityFormInfo: { hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
+  public priorityFormInfo: { days: string, hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
 
   constructor(private readonly formBuilder: FormBuilder,
               protected readonly route: ActivatedRoute,
@@ -102,6 +102,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     priority = this.hearingRequestMainModel.hearingDetails.hearingPriorityType ?
       this.hearingRequestMainModel.hearingDetails.hearingPriorityType : '';
     this.priorityFormInfo = {
+      days: duration ? `${Math.floor(duration / 60)}` : '',
       hours: duration ? `${Math.floor(duration / 60)}` : '',
       minutes: duration ? `${duration % 60}` : '',
       firstDate, secondDate, priority, startDate
@@ -136,6 +137,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public initForm(): void {
     this.priorityForm = this.formBuilder.group({
       durationLength: this.formBuilder.group({
+        days: [this.priorityFormInfo.days, ''],
         hours: [this.priorityFormInfo.hours, [this.validatorsUtils.numberMinMaxValidator(HearingDatePriorityConstEnum.MinHours, HearingDatePriorityConstEnum.MaxHours)]],
         minutes: [this.priorityFormInfo.minutes, [this.validatorsUtils.numberMultipleValidator(HearingDatePriorityConstEnum.MinutesMuliplier)]]
       }, { validator: this.validatorsUtils.minutesValidator(HearingDatePriorityConstEnum.TotalMinMinutes, HearingDatePriorityConstEnum.TotalMaxMinutes, HearingDatePriorityConstEnum.TotalMinutes) }),
@@ -199,7 +201,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   public showHearingLengthError(): void {
     const durationLengthFormGroup = this.priorityForm.controls.durationLength;
-    if (!durationLengthFormGroup.get('hours').valid) {
+    if (!durationLengthFormGroup.get('days').valid) {
+      this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthError;
+      this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.LengthError });
+    } else if (!durationLengthFormGroup.get('hours').valid) {
       this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthError;
       this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.LengthError });
     } else if (!durationLengthFormGroup.get('minutes').valid) {
@@ -330,7 +335,9 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   }
 
   public prepareHearingRequestData(): void {
-    const duration = Number(this.priorityForm.value.durationLength.hours * 60) + Number(this.priorityForm.value.durationLength.minutes);
+    const duration = Number(this.priorityForm.value.durationLength.days * 6 * 60) +
+      Number(this.priorityForm.value.durationLength.hours * 60) +
+      Number(this.priorityForm.value.durationLength.minutes);
     let firstDate = '';
     let secondDate = '';
     let hearingWindow: HearingWindowModel = {};

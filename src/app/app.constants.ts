@@ -137,3 +137,4 @@ export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
 export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor'];
 export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge'];
 export const SERVICE_OPTIONS_LIST = [{key: 'IA', label: 'Immigration and Asylum'}];
+export const PUI_CASE_MANAGER = 'pui-case-manager';

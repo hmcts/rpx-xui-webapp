@@ -9,6 +9,7 @@ import {map} from 'rxjs/operators';
 import {AppUtils} from '../../../app/app-utils';
 import {AppConstants} from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
+import { WASupportedJurisdictionsService } from '../../../work-allocation-2/services';
 import {FeatureVariation} from '../../models/feature-variation.model';
 import {Utils} from '../../utils/utils';
 
@@ -52,15 +53,17 @@ export class CaseViewerContainerComponent implements OnInit {
 
   constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromRoot.State>,
-              private readonly featureToggleService: FeatureToggleService) {
+              private readonly featureToggleService: FeatureToggleService,
+              private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map(userDetails => userDetails.userInfo.roles)
     );
   }
 
-  private static enablePrependedTabs(feature: string, userRoles: string[]): boolean {
+  private enablePrependedTabs(feature: string, userRoles: string[], supportedServices: string[]): boolean {
+    const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     return feature === CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_2
-      && !!AppUtils.isLegalOpsOrJudicial(userRoles);
+      && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles);
   }
 
   public ngOnInit(): void {
@@ -72,11 +75,12 @@ export class CaseViewerContainerComponent implements OnInit {
   private prependedCaseViewTabs(): Observable<CaseTab[]> {
     return combineLatest([
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_1),
-      this.userRoles$
+      this.userRoles$,
+      this.waService.getWASupportedJurisdictions()
     ]).pipe(
       // @ts-ignore
-      map(([feature, userRoles]: [string, string[]]) =>
-        CaseViewerContainerComponent.enablePrependedTabs(feature, userRoles) ? this.prependedTabs : [])
+      map(([feature, userRoles, supportedServices]: [string, string[]]) =>
+        this.enablePrependedTabs(feature, userRoles, supportedServices) ? this.prependedTabs : [])
     );
   }
 

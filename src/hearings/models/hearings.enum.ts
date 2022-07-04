@@ -188,8 +188,9 @@ export enum HearingLinkedSelectionEnum {
 
 export enum HearingDatePriorityEnum {
   LengthError = 'Enter a valid hearing length',
+  LengthHoursError = 'The hours entered must be between 0 of 6',
   LengthMinutesError = 'The minutes entered must be a multiple of 5',
-  TotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours',
+  TotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours each day',
   PriorityError = 'Select the priority level of the hearing',
   PriorityDateError = 'Select if the hearing needs to take place on a specific date',
   DateRangeError = 'Enter a valid date range for the hearing to take place on',
@@ -211,6 +212,7 @@ export enum HearingErrorMessage {
 }
 
 export enum HearingDatePriorityConstEnum {
+  MinDays = 0,
   MinHours = 0,
   MaxHours = 6,
   TotalMinMinutes = 5,

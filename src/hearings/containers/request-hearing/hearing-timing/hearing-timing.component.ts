@@ -141,11 +141,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         hours: [this.priorityFormInfo.hours, [this.validatorsUtils.numberMinMaxValidator(HearingDatePriorityConstEnum.MinHours, HearingDatePriorityConstEnum.MaxHours)]],
         minutes: [this.priorityFormInfo.minutes, [this.validatorsUtils.numberMultipleValidator(HearingDatePriorityConstEnum.MinutesMuliplier)]]
       }, { validator: this.validatorsUtils.minutesValidator(HearingDatePriorityConstEnum.TotalMinMinutes, HearingDatePriorityConstEnum.TotalMaxMinutes, HearingDatePriorityConstEnum.TotalMinutes) }),
-      // durationLength: this.formBuilder.group({
-      //   days: [this.priorityFormInfo.days, this.validatorsUtils.numberLargerThanValidator(HearingDatePriorityConstEnum.MinDays)],
-      //   hours: [this.priorityFormInfo.hours, [this.validatorsUtils.numberMinMaxValidator(HearingDatePriorityConstEnum.MinHours, HearingDatePriorityConstEnum.MaxHours)]],
-      //   minutes: [this.priorityFormInfo.minutes, [this.validatorsUtils.numberMultipleValidator(HearingDatePriorityConstEnum.MinutesMuliplier)]]
-      // }),
       specificDate: [this.checkedHearingAvailability, Validators.required],
       firstHearing: this.formBuilder.group({
         firstHearingDate_day: [this.priorityFormInfo.startDate && this.priorityFormInfo.startDate.getDate()],
@@ -210,7 +205,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthError;
       this.validationErrors.push({ id: 'durationdays', message: HearingDatePriorityEnum.LengthError });
     } else if (!durationLengthFormGroup.get('hours').valid) {
-      console.log(durationLengthFormGroup.get('hours').value);
       this.hearingLengthErrorValue = isNaN(durationLengthFormGroup.get('hours').value)
         ? HearingDatePriorityEnum.LengthError
         : HearingDatePriorityEnum.LengthHoursError;

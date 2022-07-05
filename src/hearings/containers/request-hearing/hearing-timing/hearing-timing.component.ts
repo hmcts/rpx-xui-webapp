@@ -101,10 +101,20 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     }
     priority = this.hearingRequestMainModel.hearingDetails.hearingPriorityType ?
       this.hearingRequestMainModel.hearingDetails.hearingPriorityType : '';
+
+    let days = 0;
+    let hours = 0;
+    let minutes = 0;
+    if (duration > 0) {
+      minutes = duration % 60;
+      duration = duration - minutes;
+      days = Math.floor((duration / 60) / 6);
+      hours = Math.floor((duration / 60) % 6);
+    }
     this.priorityFormInfo = {
-      days: duration ? `${Math.floor(duration / 60)}` : '',
-      hours: duration ? `${Math.floor(duration / 60)}` : '',
-      minutes: duration ? `${duration % 60}` : '',
+      days: days > 0 ? `${days}` : '',
+      hours: hours > 0 ? `${hours}` : '',
+      minutes: minutes > 0 ? `${minutes}` : '',
       firstDate, secondDate, priority, startDate
     };
   }

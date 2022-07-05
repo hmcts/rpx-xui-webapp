@@ -321,9 +321,9 @@ describe('HearingTimingComponent', () => {
     expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2022-12-12T00:00:00.000Z');
   });
 
-  it('should check date selection format', () => {
+  it('should check date selection format for form data', () => {
     component.checkFormData();
-    expect(component.priorityForm.valid).toBeTruthy();
+    expect(component.priorityForm.valid).toBeFalsy();
   });
 
   it('should check if form is valid', () => {

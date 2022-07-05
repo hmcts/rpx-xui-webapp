@@ -150,9 +150,9 @@ export class AppUtils {
     return isFeatureEnabled ? workAllocationUrl : null;
   }
 
-  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[]): boolean {
+  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[], excludedRoles: string[]): boolean {
     // isWA enabled for this jurisdiction
-    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER);
+    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER) && userRoles.every(userRole => !excludedRoles.includes(userRole));
     // check that userRoles do not have pui-case-manager
   }
 

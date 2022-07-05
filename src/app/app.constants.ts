@@ -8,7 +8,8 @@ const FeatureNames = {
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
   userTypeRoles: 'mc-user-type-roles',
-  mcHearingsFeature: 'mc-hearings-jurisdictions'
+  mcHearingsFeature: 'mc-hearings-jurisdictions',
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs'
 };
 
 const FooterDataNavigation = {

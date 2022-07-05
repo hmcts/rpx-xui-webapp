@@ -60,10 +60,10 @@ export class CaseViewerContainerComponent implements OnInit {
     );
   }
 
-  private enablePrependedTabs(feature: string, userRoles: string[], supportedServices: string[]): boolean {
+  private enablePrependedTabs(feature: string, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     return feature === CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_2
-      && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles);
+      && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
   }
 
   public ngOnInit(): void {
@@ -76,11 +76,12 @@ export class CaseViewerContainerComponent implements OnInit {
     return combineLatest([
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_1),
       this.userRoles$,
-      this.waService.getWASupportedJurisdictions()
+      this.waService.getWASupportedJurisdictions(),
+      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.excludedRolesForCaseTabs, [])
     ]).pipe(
       // @ts-ignore
-      map(([feature, userRoles, supportedServices]: [string, string[]]) =>
-        this.enablePrependedTabs(feature, userRoles, supportedServices) ? this.prependedTabs : [])
+      map(([feature, userRoles, supportedServices, excludedRoles]: [string, string[]]) =>
+        this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : [])
     ).catch(() => this.prependedTabs$ = of([]));
   }
 

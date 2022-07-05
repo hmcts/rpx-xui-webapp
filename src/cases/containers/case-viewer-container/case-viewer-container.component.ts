@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {CaseTab, CaseView} from '@hmcts/ccd-case-ui-toolkit';
 import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
-import {combineLatest} from 'rxjs';
+import {combineLatest, of} from 'rxjs';
 import {Observable} from 'rxjs/Observable';
 import {map} from 'rxjs/operators';
 import {AppUtils} from '../../../app/app-utils';
@@ -81,7 +81,7 @@ export class CaseViewerContainerComponent implements OnInit {
       // @ts-ignore
       map(([feature, userRoles, supportedServices]: [string, string[]]) =>
         this.enablePrependedTabs(feature, userRoles, supportedServices) ? this.prependedTabs : [])
-    );
+    ).catch(() => this.prependedTabs$ = of([]));
   }
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {

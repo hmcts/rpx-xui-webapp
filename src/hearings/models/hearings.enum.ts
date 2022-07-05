@@ -199,6 +199,7 @@ export enum HearingDatePriorityEnum {
   DatePastError = 'The hearing dates cannot be in the past',
   WeekDayError = 'Date range must include a weekday',
   EarliestHearingDateError = 'The earliest hearing date must be before the latest hearing date',
+  NotEnoughDaysInDateRangeError = 'There are not enough days in the date range for the hearing'
 }
 
 export enum HearingStageResultEnum {

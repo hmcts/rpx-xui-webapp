@@ -290,6 +290,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.WeekDayError });
       this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.WeekDayError] };
       this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.WeekDayError] };
+    } else if ((numberOfBusinessDays * 6 * 60) < this.calculateDuration()) {
+      this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.NotEnoughDaysInDateRangeError });
+      this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.NotEnoughDaysInDateRangeError] };
+      this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.NotEnoughDaysInDateRangeError] };
     }
   }
 
@@ -349,9 +353,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   }
 
   public prepareHearingRequestData(): void {
-    const duration = Number(this.priorityForm.value.durationLength.days * 6 * 60) +
-      Number(this.priorityForm.value.durationLength.hours * 60) +
-      Number(this.priorityForm.value.durationLength.minutes);
+    const duration = this.calculateDuration();
     let firstDate = '';
     let secondDate = '';
     let hearingWindow: HearingWindowModel = {};
@@ -378,6 +380,12 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         hearingPriorityType: this.priorityForm.value.priority
       }
     };
+  }
+
+  public calculateDuration(): number {
+    return Number(this.priorityForm.value.durationLength.days * 6 * 60) +
+      Number(this.priorityForm.value.durationLength.hours * 60) +
+      Number(this.priorityForm.value.durationLength.minutes);
   }
 
   public isFormValid(): boolean {

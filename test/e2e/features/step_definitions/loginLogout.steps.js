@@ -112,9 +112,8 @@ defineSupportCode(function ({ Given, When, Then }) {
       CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
       await browser.get(config.config.baseUrl);
       await BrowserWaits.waitForElement(loginPage.signinTitle);
+      expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
     });
-
-    expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
 
   });
 

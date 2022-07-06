@@ -90,6 +90,7 @@ describe('IsAmendedPipe', () => {
         requirementType: RequirementType.EXCLUDE
       }]
     };
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'final';
     const result$ = isAmendedPipe.transform(AnswerSource.PANEL_EXCLUSION, of(STATE));
     const isAmended = true;
     const expected = cold('(b|)', { b: isAmended });
@@ -129,6 +130,7 @@ describe('IsAmendedPipe', () => {
 
   it('should return amended flag false for hearing type', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'final';
     const result$ = isAmendedPipe.transform(AnswerSource.STAGE, of(STATE));
     const isAmended = false;
     const expected = cold('(b|)', { b: isAmended });

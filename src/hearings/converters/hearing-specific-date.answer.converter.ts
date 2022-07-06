@@ -27,8 +27,8 @@ export class HearingSpecificDateAnswerConverter implements AnswerConverter {
       specificDateSelection += latestHearingDate !== HearingDateEnum.InvalidDate ? `<dt class="heading-h3 bottom-0">Latest hearing date</dt>${latestHearingDate}` : '';
     } else if (hearingWindow && hearingWindow.firstDateTimeMustBe) {
       specificDateSelection = RadioOptions.YES;
-      earliestHearingDate = moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DisplayMonth);
-      specificDateSelection += earliestHearingDate !== HearingDateEnum.InvalidDate ? `<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>${earliestHearingDate}` : '';
+      const firstDate = moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DisplayMonth);
+      specificDateSelection += earliestHearingDate !== HearingDateEnum.InvalidDate ? `<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>${firstDate}` : '';
     } else if (hearingWindow) {
       specificDateSelection = RadioOptions.NO;
     }

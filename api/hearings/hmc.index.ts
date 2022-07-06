@@ -71,11 +71,10 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
  */
 export async function cancelHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.query.hearingId;
-  const cancellationReasonCodes = req.query.cancellationReasonCodes;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
 
   try {
-    const reqBody = { cancellationReasonCodes };
+    const reqBody = req.body;
     const {status, data}: { status: number, data: any } = await handleDelete(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {

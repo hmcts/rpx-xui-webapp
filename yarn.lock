@@ -484,13 +484,6 @@
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
-"@hmcts/ccpay-web-component@5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.4.tgz#bca6ed5daf543ee4033ea299b383939f80228b4e"
-  integrity sha512-KVXShRgxkdDITY1ILlzyWpKSUKeCZP/7PiFa62EZ4XYnSRNw2wpIYLayqtgi0CnP2WyhKuSok1oHFOHUF9ErSg==
-  dependencies:
-    tslib "^1.9.0"
-
 "@hmcts/frontend@0.0.39-alpha":
   version "0.0.39-alpha"
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
@@ -544,10 +537,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@2.25.4":
-  version "2.25.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.4.tgz#f4fc79741fbf6bbbe395a1149b90f4f27df998ea"
-  integrity sha512-QEMEPJOcLPdzVtmTDiQmaZH9plhBha8UPJrpoOV3BSIpC26LaBoSMfQLBKpVp26VWKngCb6F4Uv/hxRFeMUvJw==
+"@hmcts/rpx-xui-node-lib@2.25.12":
+  version "2.25.12"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.12.tgz#c1e72789e186e2fd1d4d71b599b17f18724d2988"
+  integrity sha512-E2FjuV9BwSiAYVMw2l1VfClD8aoKskC33u6zFcc/hUoM7scFKSzr1VzV6uHm0y6GG/2sHpckbz2eV7zswf5Bnw==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.21.1"

@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.13.24-manage-case-flags-display-case-level-case-flags":
-  version "4.13.24-manage-case-flags-display-case-level-case-flags"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.24-manage-case-flags-display-case-level-case-flags.tgz#3137a741d63533fa8ed978c377a99a65f4b8fd20"
-  integrity sha512-6fRTrxX48t9HB1Epe1W1b1XtC//uz006iG7r3MphFjMooWwKWGir1bx4LZMpKYyuwevOpV1VSi7WZgTik062XQ==
+"@hmcts/ccd-case-ui-toolkit@4.18.6-case-flags-tag-after-merge-with-release-branch":
+  version "4.18.6-case-flags-tag-after-merge-with-release-branch"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.6-case-flags-tag-after-merge-with-release-branch.tgz#aeb71ca43a8102e7ab558b3b687348e0750800be"
+  integrity sha512-HYVhNjVeMSvTFkS8rrxJTwq7iyX1QXpNQfeVGSDYw09F+68hrMGUefdO1ciWEL8h7DG0aoRNSQVbVKJ/7gbdaQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -483,6 +483,13 @@
     typescript "3.1.1"
     underscore "^1.9.1"
     yargs-parser "18.1.2"
+
+"@hmcts/ccpay-web-component@5.0.4":
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.4.tgz#bca6ed5daf543ee4033ea299b383939f80228b4e"
+  integrity sha512-KVXShRgxkdDITY1ILlzyWpKSUKeCZP/7PiFa62EZ4XYnSRNw2wpIYLayqtgi0CnP2WyhKuSok1oHFOHUF9ErSg==
+  dependencies:
+    tslib "^1.9.0"
 
 "@hmcts/frontend@0.0.39-alpha":
   version "0.0.39-alpha"

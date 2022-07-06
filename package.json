@@ -74,6 +74,7 @@
     "@angular/router": "^7.2.13",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccd-case-ui-toolkit": "4.17.12-EUI-5743-Mandatory-field-validation-in-collection",
+    "@hmcts/ccpay-web-component": "5.0.4",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.12",
     "@hmcts/nodejs-healthcheck": "^1.7.0",

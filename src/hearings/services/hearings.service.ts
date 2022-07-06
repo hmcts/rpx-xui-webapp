@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -50,14 +50,15 @@ export class HearingsService {
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
     const cancellationReasonCodes: string[] = reasons.map(reason => reason.key);
-    console.log('CANCELLATION REASON CODES', JSON.stringify(cancellationReasonCodes));
-    let httpParams = new HttpParams();
-    httpParams = httpParams.append('cancellationReasonCodes', JSON.stringify(cancellationReasonCodes));
-    console.log('HTTP PARAMS', httpParams);
-    debugger;
-    return this.http.delete<ResponseDetailsModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
-      params: httpParams
-    });
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: {
+        cancellationReasonCodes
+      }
+    };
+    return this.http.delete<ResponseDetailsModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`, options);
   }
 
   public loadHearingRequest(hearingId: string): Observable<HearingRequestMainModel> {
@@ -73,8 +74,6 @@ export class HearingsService {
       params: new HttpParams()
         .set('hearingId', hearingRequestMainModel.requestDetails.hearingRequestID)
     };
-    console.log('HEARING REQUEST MAIN MODEL', hearingRequestMainModel);
-    debugger;
     return this.http.put<ResponseDetailsModel>(`api/hearings/updateHearingRequest`, hearingRequestMainModel, options);
   }
 

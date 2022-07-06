@@ -216,7 +216,7 @@ describe('HearingsService', () => {
       httpMock.expectOne((req: HttpRequest<any>) => {
         expect(req.url).toBe('api/hearings/cancelHearings?hearingId=h0002');
         expect(req.method).toBe('DELETE');
-        expect(req.params.get('cancellationReasonCodes')).toEqual(JSON.stringify(cancellationReasonCodes));
+        expect(req.body.cancellationReasonCodes).toEqual(cancellationReasonCodes);
         return true;
       })
         .flush(null);

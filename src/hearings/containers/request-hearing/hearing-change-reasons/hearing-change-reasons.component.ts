@@ -98,7 +98,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         amendReasonCodes: this.getChosenReasons(),
-      }     
+      }
     };
   }
 

@@ -20,6 +20,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   public selectionValid: boolean = true;
   public hearingRequestLastError$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
+  public hearingChangeReasonMessages = HearingChangeReasonMessages;
 
   constructor(protected readonly route: ActivatedRoute,
               protected readonly router: Router,
@@ -75,10 +76,6 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
       this.selectionValid = false;
     }
     return this.selectionValid;
-  }
-
-  public get hearingChangeReasonMessageEnum() {
-    return HearingChangeReasonMessages;
   }
 
   public executeAction(action: ACTION): void {

@@ -137,4 +137,19 @@ describe('HearingChangeReasonsComponent', () => {
     expect(component.hearingRequestMainModel.hearingDetails.amendReasonCodes).toEqual(['reasonOne', 'reasonTwo', 'reasonThree']);
   });
 
+  it('should call unsubscribe', () => {
+    spyOn(component.lastErrorSubscription, 'unsubscribe');
+    component.ngOnDestroy();
+    expect(component.lastErrorSubscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should execute Action', () => {
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
+      .forEach(reason => reason.value.selected = true);    
+    component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
+    expect(component.isFormValid).toHaveBeenCalled();
+    expect(component.errors.length).toBe(0);
+    component.executeAction(ACTION.BACK);
+    expect(component.errors.length).toBe(0);
+  });
 });

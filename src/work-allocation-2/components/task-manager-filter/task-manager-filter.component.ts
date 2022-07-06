@@ -212,7 +212,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
 
   private static initTaskNameFilter(): FilterFieldConfig {
     return {
-      name: 'task-name',
+      name: 'taskName',
       title: 'Task by name',
       options: [],
       minSelected: 1,

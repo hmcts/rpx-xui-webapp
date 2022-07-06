@@ -9,7 +9,7 @@
       <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : !selectionValid}">
         <fieldset class="govuk-fieldset">
           <span *ngIf="!selectionValid" id="change-reason-selection-error" class="govuk-error-message">
-            <span>{{ hearingChangeReasonMessageEnum.SELECT_AT_LEAST_ONE_REASON }}</span>
+            <span>{{ hearingChangeReasonMessages.SELECT_AT_LEAST_ONE_REASON }}</span>
           </span>
           <div class="govuk-hint">
             Select all that apply.

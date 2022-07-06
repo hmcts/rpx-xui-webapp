@@ -145,7 +145,7 @@ describe('HearingChangeReasonsComponent', () => {
 
   it('should execute Action', () => {
     (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach(reason => reason.value.selected = true);    
+      .forEach(reason => reason.value.selected = true);
     component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.isFormValid).toHaveBeenCalled();
     expect(component.errors.length).toBe(0);

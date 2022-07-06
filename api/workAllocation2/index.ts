@@ -139,6 +139,19 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
+    // TEMPORARY CODE: task_name search parameter is not yet enabled by Task API. to be removed
+    let taskName;
+    let taskNameIndex;
+    console.log("**searchRequest.search_parameters**");
+    console.log(searchRequest.search_parameters);
+
+    searchRequest.search_parameters.map((param, index) => {
+      if(param.key === 'task_name') {
+        taskName = param.values[0];
+        searchRequest.search_parameters.splice(index, 1);
+      }
+    });
+    // TEMPERORY CODE: end
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
@@ -154,6 +167,9 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString()
     });
     if (data) {
+      // TEMPORARY CODE: task_name search parameter is not yet enabled by Task API. to be removed
+      if(taskName) data.tasks = data.tasks.filter(task => task.name === taskName);
+      // TEMPERORY CODE: end
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
       returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
@@ -596,6 +612,10 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
 
 export async function getTaskNames(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const taskNames = [{
+    taskName: 'Review Hearing bundle',
+    taskId: 1912,
+  },
+  {
     taskName: 'Review the appeal',
     taskId: 12334,
   },

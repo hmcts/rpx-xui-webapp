@@ -158,7 +158,7 @@ describe('HearingAnswersPipe', () => {
   it('should transform hearing length', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 60;
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_LENGTH, of(STATE));
-    const hearingDuration = '1 hour(s)';
+    const hearingDuration = '1 Hour';
     const expected = cold('(b|)', {b: hearingDuration});
     expect(result$).toBeObservable(expected);
   });
@@ -170,7 +170,7 @@ describe('HearingAnswersPipe', () => {
       firstDateTimeMustBe: '',
     };
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_SPECIFIC_DATE, of(STATE));
-    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<dt class="heading-h3 bottom-0">Earliest start date</dt>12 December 2022<dt class="heading-h3 bottom-0">Latest end date</dt>12 December 2022`;
+    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022`;
     const expected = cold('(b|)', {b: hearingDateRange});
     expect(result$).toBeObservable(expected);
   });

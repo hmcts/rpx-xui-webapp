@@ -3,6 +3,7 @@ import * as fromActions from '../actions';
 
 export const initialHearingLinksState: HearingLinksStateData = {
   serviceLinkedCases: [],
+  serviceLinkedCasesWithHearings: [],
   linkedHearingGroup: null,
   lastError: null
 };
@@ -21,7 +22,14 @@ export function hearingLinksReducer(currentState = initialHearingLinksState,
         serviceLinkedCases: action.payload
       };
     }
-    case fromActions.LOAD_SERVICE_LINKED_CASES_FAILURE: {
+    case fromActions.LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS_SUCCESS: {
+      return {
+        ...currentState,
+        serviceLinkedCasesWithHearings: action.payload
+      };
+    }
+    case fromActions.LOAD_SERVICE_LINKED_CASES_FAILURE:
+    case fromActions.LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS_FAILURE: {
       return {
         ...currentState,
         lastError: action.payload
@@ -60,3 +68,7 @@ export function hearingLinksReducer(currentState = initialHearingLinksState,
     }
   }
 }
+
+export const serviceLinkedCases = (hearingLinksStateData) => hearingLinksStateData.serviceLinkedCases;
+export const serviceLinkedCasesWithHearings = (hearingLinksStateData) => hearingLinksStateData.serviceLinkedCasesWithHearings;
+export const linkedHearingGroup = (hearingLinksStateData) => hearingLinksStateData.linkedHearingGroup;

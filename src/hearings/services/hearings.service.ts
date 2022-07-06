@@ -1,18 +1,15 @@
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
-import { HearingLinksStateData } from '../models/hearingLinksStateData.model';
-import { HearingListMainModel } from '../models/hearingListMain.model';
-import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { ACTION, EXUIDisplayStatusEnum } from '../models/hearings.enum';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
+import {HearingActualsMainModel, HearingActualsModel} from '../models/hearingActualsMainModel';
+import {HearingListMainModel} from '../models/hearingListMain.model';
+import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
+import {ACTION} from '../models/hearings.enum';
 import {
-  HearingDetailModel,
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel,
-  LinkedHearingsDetailModel,
-  ServiceLinkedCasesModel
+  ServiceLinkedCasesModel,
+  ServiceLinkedCasesWithHearingsModel
 } from '../models/linkHearings.model';
 import {LovRefDataModel} from '../models/lovRefData.model';
 import {ResponseDetailsModel} from '../models/requestDetails.model';
@@ -38,12 +35,20 @@ export class HearingsService {
 
   public loadHearingValues(jurisdictionId: string, caseId: string): Observable<ServiceHearingValuesModel> {
     return this.http.post<ServiceHearingValuesModel>(`api/hearings/loadServiceHearingValues?jurisdictionId=${jurisdictionId}`,
-      { caseReference: caseId });
+      {caseReference: caseId});
   }
 
   public loadServiceLinkedCases(jurisdictionId: string, caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
     return this.http.post<ServiceLinkedCasesModel[]>(`api/hearings/loadServiceLinkedCases?jurisdictionId=${jurisdictionId}`, {
       caseReference,
+      hearingId // could be null, empty string or missing
+    });
+  }
+
+  public loadLinkedCasesWithHearings(jurisdictionId: string, caseReference: string, caseName: string, hearingId?: string): Observable<ServiceLinkedCasesWithHearingsModel[]> {
+    return this.http.post<ServiceLinkedCasesWithHearingsModel[]>(`api/hearings/loadLinkedCasesWithHearings?jurisdictionId=${jurisdictionId}`, {
+      caseReference,
+      caseName,
       hearingId // could be null, empty string or missing
     });
   }
@@ -105,44 +110,5 @@ export class HearingsService {
         .set('hearingGroupId', hearingGroupId)
     };
     return this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/deleteLinkedHearingGroup', options);
-  }
-
-  public getAllCaseInformation(currentCase: ServiceLinkedCasesModel, linkedState: HearingLinksStateData, isManageLink: boolean): Observable<ServiceLinkedCasesModel[]> {
-    const linkedCases: ServiceLinkedCasesModel[] = linkedState.serviceLinkedCases || [];
-    const linkedCaseIds: string[] = linkedCases.map(aCase => aCase.caseReference);
-    let allCaseIds: string[] = linkedCaseIds;
-    let allCases: ServiceLinkedCasesModel[] = linkedCases;
-    if (!linkedCaseIds.includes(currentCase.caseReference)) {
-      allCaseIds = [currentCase.caseReference, ...linkedCaseIds];
-      allCases = [currentCase, ...linkedCases];
-    }
-    const hearingServices = [];
-    allCaseIds.forEach(id => {
-      hearingServices.push(this.getAllHearings(id));
-    });
-    return forkJoin(hearingServices).pipe(
-      map((hearingsList: HearingListMainModel[]) => {
-        return allCases.map((caseInfo: ServiceLinkedCasesModel, pos: number) => {
-          const hearings = [] as HearingDetailModel[];
-          hearingsList[pos].caseHearings.forEach((hearing) => {
-            if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED) {
-              const hearingInfo: HearingDetailModel = {
-                hearingId: hearing.hearingID,
-                hearingStage: hearing.hearingType,
-                // tslint:disable-next-line: no-shadowed-variable
-                isSelected: isManageLink ? !!linkedState.linkedHearingGroup.hearingsInGroup.find((hearingInfo: LinkedHearingsDetailModel) => hearingInfo.caseRef === caseInfo.caseReference && hearingInfo.hearingId === hearing.hearingID) : false,
-                hearingStatus: hearing.exuiDisplayStatus,
-                hearingIsInLinkedGroup: !!hearing.hearingGroupRequestId
-              };
-              hearings.push(hearingInfo);
-            }
-          });
-          return {
-            hearings,
-            ...caseInfo
-          };
-        });
-      })
-    );
   }
 }

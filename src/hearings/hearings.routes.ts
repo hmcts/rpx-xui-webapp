@@ -54,7 +54,6 @@ import {HearingStageResolver} from './resolvers/hearing-stage.resolver';
 import {JudgeTypesResolverService} from './resolvers/judge-types-resolver.service';
 import {JudicialUserSearchResolver} from './resolvers/judicial-user-search-resolver.resolve';
 import {JudicialUserSearchResponseResolver} from './resolvers/judicial-user-search-response-resolver.resolve';
-import {LinkedCaseResolver} from './resolvers/linked-case-resolver.resolve';
 import {PanelRolesResolverService} from './resolvers/panel-roles-resolver.service';
 import {PartyChannelsResolverService} from './resolvers/party-channels-resolver.service';
 import {RefDataResolver} from './resolvers/ref-data-resolver.resolve';
@@ -82,7 +81,6 @@ export const ROUTES: Routes = [
     path: 'link/:caseId/:hearingId',
     component: LinkedHearingsComponent,
     canActivate: [HealthCheckGuard, HearingsEditGuard],
-    resolve: {linkedCase: LinkedCaseResolver},
     children: [
       {
         path: '',
@@ -117,7 +115,6 @@ export const ROUTES: Routes = [
   {
     path: 'manage-links/:caseId/:hearingGroupRequestId/:hearingId',
     component: LinkedHearingsComponent,
-    resolve: {linkedCase: LinkedCaseResolver},
     data: {
       mode: Mode.MANAGE_HEARINGS
     },

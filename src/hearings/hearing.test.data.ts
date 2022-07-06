@@ -1,7 +1,7 @@
-import { HearingActualsMainModel } from './models/hearingActualsMainModel';
-import { HearingRequestMainModel } from './models/hearingRequestMain.model';
+import {HearingActualsMainModel} from './models/hearingActualsMainModel';
+import {HearingRequestMainModel} from './models/hearingRequestMain.model';
 import {
-  CategoryType,
+  CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum,
   GroupLinkType,
   HearingListingStatusEnum,
   HearingResult,
@@ -11,10 +11,11 @@ import {
   ListingStatus,
   MemberType,
   PartyType,
-  RequirementType, UnavailabilityType
+  RequirementType,
+  UnavailabilityType
 } from './models/hearings.enum';
-import { JudicialUserModel } from './models/judicialUser.model';
-import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import {JudicialUserModel} from './models/judicialUser.model';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
   {
@@ -141,10 +142,42 @@ export const facilitiesListRefData = [
 ];
 
 export const partyChannelsRefData = [
-  { key: 'inPerson', value_en: 'In person', value_cy: '', hintText_EN: 'in person', hintTextCY: '', order: 1, parentKey: null },
-  { key: 'byPhone', value_en: 'By phone', value_cy: '', hintText_EN: 'By Phone', hintTextCY: '', order: 2, parentKey: null },
-  { key: 'byVideo', value_en: 'By video', value_cy: '', hintText_EN: 'By video', hintTextCY: '', order: 4, parentKey: null },
-  { key: 'notAttending', value_en: 'Not attending', value_cy: '', hintText_EN: 'not attending', hintTextCY: '', order: 5, parentKey: null }
+  {
+    key: 'inPerson',
+    value_en: 'In person',
+    value_cy: '',
+    hintText_EN: 'in person',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null
+  },
+  {
+    key: 'byPhone',
+    value_en: 'By phone',
+    value_cy: '',
+    hintText_EN: 'By Phone',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null
+  },
+  {
+    key: 'byVideo',
+    value_en: 'By video',
+    value_cy: '',
+    hintText_EN: 'By video',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null
+  },
+  {
+    key: 'notAttending',
+    value_en: 'Not attending',
+    value_cy: '',
+    hintText_EN: 'not attending',
+    hintTextCY: '',
+    order: 5,
+    parentKey: null
+  }
 ];
 
 export const caseTypeRefData = [
@@ -1378,10 +1411,10 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     locationId: '196538',
     locationType: HMCLocationType.COURT,
   },
-  {
-    locationId: '234850',
-    locationType: HMCLocationType.COURT,
-  },
+    {
+      locationId: '234850',
+      locationType: HMCLocationType.COURT,
+    },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
@@ -2304,13 +2337,6 @@ export const initialState = {
           reasonsForLink: [
             'Linked for a hearing'
           ],
-          hearings: [{
-            hearingId: 'h100001',
-            hearingStage: HMCStatus.UPDATE_REQUESTED,
-            isSelected: true,
-            hearingStatus: HMCStatus.AWAITING_LISTING,
-            hearingIsInLinkedGroup: false
-          }]
         },
         {
           caseReference: '5283819672542864',
@@ -2328,18 +2354,79 @@ export const initialState = {
             'Guardian',
             'Linked for a hearing'
           ],
-          hearings: [{
-            hearingId: 'h100010',
-            hearingStage: HMCStatus.UPDATE_REQUESTED,
+        }
+      ],
+      serviceLinkedCasesWithHearings: [
+        {
+          caseRef: '4652724902696213',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing'
+          ],
+          caseHearings: [{
+            hearingID: 'h100001',
+            hearingType: 'Substantive',
+            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+            lastResponseReceivedDateTime: '',
+            exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+            exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+            hmcStatus: HMCStatus.HEARING_REQUESTED,
+            responseVersion: 'rv1',
+            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+            listAssistCaseStatus: '',
+            hearingIsLinkedFlag: true,
+            hearingGroupRequestId: null,
+            hearingDaySchedule: [],
             isSelected: true,
-            hearingStatus: HMCStatus.AWAITING_LISTING,
-            hearingIsInLinkedGroup: false
+          }]
+        },
+        {
+          caseRef: '5283819672542864',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing',
+            'Progressed as part of lead case'
+          ],
+          caseHearings: []
+        },
+        {
+          caseRef: '8254902572336147',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Familial',
+            'Guardian',
+            'Linked for a hearing'
+          ],
+          caseHearings: [{
+            hearingID: 'h100010',
+            hearingType: 'Direction Hearings',
+            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+            lastResponseReceivedDateTime: '',
+            exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+            exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+            hmcStatus: HMCStatus.AWAITING_LISTING,
+            responseVersion: 'rv1',
+            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+            listAssistCaseStatus: '',
+            hearingIsLinkedFlag: true,
+            hearingGroupRequestId: null,
+            hearingDaySchedule: [],
+            isSelected: true,
           }, {
-            hearingId: 'h100012',
-            hearingStage: HMCStatus.UPDATE_REQUESTED,
-            isSelected: false,
-            hearingStatus: HMCStatus.AWAITING_LISTING,
-            hearingIsInLinkedGroup: false
+            hearingID: 'h100012',
+            hearingType: 'Chambers Outcome',
+            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+            lastResponseReceivedDateTime: '',
+            exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+            exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+            hmcStatus: HMCStatus.AWAITING_LISTING,
+            responseVersion: 'rv1',
+            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+            listAssistCaseStatus: '',
+            hearingIsLinkedFlag: true,
+            hearingGroupRequestId: null,
+            hearingDaySchedule: [],
+            isSelected: true,
           }]
         }
       ],

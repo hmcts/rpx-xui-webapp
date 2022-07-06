@@ -1,12 +1,19 @@
 import {Action} from '@ngrx/store';
 import {HttpError} from '../../../models/httpError.model';
-import {LinkedHearingGroupMainModel, ServiceLinkedCasesModel} from '../../models/linkHearings.model';
+import {
+  LinkedHearingGroupMainModel,
+  ServiceLinkedCasesModel,
+  ServiceLinkedCasesWithHearingsModel
+} from '../../models/linkHearings.model';
 
 export const RESET_HEARING_LINKS = '[HEARING LINKS] Reset Hearing Links';
 export const LOAD_SERVICE_LINKED_CASES = '[HEARING LINKS] Load Service Linked Cases';
 export const LOAD_SERVICE_LINKED_CASES_SUCCESS = '[HEARING LINKS] Load Service Linked Cases Success';
 export const LOAD_SERVICE_LINKED_CASES_FAILURE = '[HEARING LINKS] Load Service Linked Cases Failure';
 export const LOAD_SERVICE_LINKED_CASES_GROUP_DETAILS = '[HEARING LINKS] Load Service Linked Details Success';
+export const LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS = '[HEARING LINKS] Load Service Linked Cases With Hearings';
+export const LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS_SUCCESS = '[HEARING LINKS] Load Service Linked Cases With Hearings Success';
+export const LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS_FAILURE = '[HEARING LINKS] Load Service Linked Cases With Hearings Failure';
 export const LOAD_LINKED_HEARING_GROUP = '[HEARING LINKS] Load Linked Hearing Group';
 export const LOAD_LINKED_HEARING_GROUP_SUCCESS = '[HEARING LINKS] Load Linked Hearing Group Success';
 export const LOAD_LINKED_HEARING_GROUP_FAILURE = '[HEARING LINKS] Load Linked Hearing Group Failure';
@@ -34,6 +41,24 @@ export class LoadServiceLinkedCasesSuccess implements Action {
 
 export class LoadServiceLinkedCasesFailure implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_FAILURE;
+  constructor(public payload: HttpError) {
+  }
+}
+
+export class LoadServiceLinkedCasesWithHearings implements Action {
+  public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS;
+  constructor(public payload: { caseReference: string, caseName: string, hearingId?: string }) {
+  }
+}
+
+export class LoadServiceLinkedCasesWithHearingsSuccess implements Action {
+  public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS_SUCCESS;
+  constructor(public payload: ServiceLinkedCasesWithHearingsModel[]) {
+  }
+}
+
+export class LoadServiceLinkedCasesWithHearingsFailure implements Action {
+  public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS_FAILURE;
   constructor(public payload: HttpError) {
   }
 }
@@ -96,6 +121,9 @@ export type HearingLinksAction =
   | LoadServiceLinkedCasesSuccess
   | LoadServiceLinkedCasesFailure
   | LoadServiceLinkedCasesGroupDetail
+  | LoadServiceLinkedCasesWithHearings
+  | LoadServiceLinkedCasesWithHearingsSuccess
+  | LoadServiceLinkedCasesWithHearingsFailure
   | LoadLinkedHearingGroup
   | LoadLinkedHearingGroupSuccess
   | LoadLinkedHearingGroupFailure

@@ -18,7 +18,7 @@ export class LinkedHearingsFinalConfirmationComponent implements OnInit {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
-        this.linkedHearingsCount = state.hearingLinks.linkedHearingGroup.hearingsInGroup.length;
+        this.linkedHearingsCount = state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup.length;
       }
     );
   }

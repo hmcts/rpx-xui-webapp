@@ -1,21 +1,21 @@
 import {GroupLinkType} from './hearings.enum';
+import {HearingListModel} from "../../../src/hearings/models/hearingList.model";
 
 export interface ServiceLinkedCasesModel {
   caseReference: string;
   caseName: string;
   reasonsForLink: string[];
-  hearings?: HearingDetailModel[];
 }
 
-export interface HearingDetailModel {
-  hearingId: string;
-  hearingStage: string;
-  isSelected: boolean; //default will be false.
+export interface ServiceLinkedCasesWithHearingsModel {
+  caseRef: string;
+  caseName: string;
+  reasonsForLink: string[];
+  caseHearings?: HearingDetailModel[];
 }
 
-export interface LinkedHearingGroupMainModel {
-  groupDetails: GroupDetailsModel;
-  hearingsInGroup: LinkedHearingsDetailModel[];
+export interface HearingDetailModel extends HearingListModel {
+  isSelected: boolean;
 }
 
 export interface GroupDetailsModel {
@@ -33,4 +33,9 @@ export interface LinkedHearingsDetailModel {
 
 export interface LinkedHearingGroupResponseModel {
   hearingGroupRequestId: string;
+}
+
+export interface LinkedHearingGroupMainModel {
+  groupDetails: GroupDetailsModel;
+  hearingsInGroup: LinkedHearingsDetailModel[];
 }

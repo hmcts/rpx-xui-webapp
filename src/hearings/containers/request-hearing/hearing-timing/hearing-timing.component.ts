@@ -361,7 +361,8 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         ...this.hearingRequestMainModel.hearingDetails,
         duration,
         hearingWindow,
-        hearingPriorityType: this.priorityForm.value.priority
+        hearingPriorityType: this.priorityForm.value.priority,
+        hearingType: this.priorityForm.value.specificDate
       }
     };
   }

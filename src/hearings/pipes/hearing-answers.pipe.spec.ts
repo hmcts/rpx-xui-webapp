@@ -169,6 +169,7 @@ describe('HearingAnswersPipe', () => {
       dateRangeEnd: '2022-12-12T09:00:00.000Z',
       firstDateTimeMustBe: '',
     };
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'Choose a date range';
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_SPECIFIC_DATE, of(STATE));
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<dt class="heading-h3 bottom-0">Earliest hearing date</dt>12 December 2022<dt class="heading-h3 bottom-0">Latest hearing date</dt>12 December 2022`;
     const expected = cold('(b|)', {b: hearingDateRange});

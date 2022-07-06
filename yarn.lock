@@ -460,6 +460,7 @@
   version "4.17.12-EUI-5743-Mandatory-field-validation-in-collection"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.17.12-EUI-5743-Mandatory-field-validation-in-collection.tgz#dfd8a7236922f2f0dfff50b4e136055a276d0bf5"
   integrity sha512-QzNrxftsAN5iXNhHnO7HVBaG9YL+b1JjkxeurCHWR9UOnnRHjF3D+5u6AKIB13Kd4v5W7+nBmnibehfmD/M40w==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -544,10 +545,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@2.25.4":
-  version "2.25.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.4.tgz#f4fc79741fbf6bbbe395a1149b90f4f27df998ea"
-  integrity sha512-QEMEPJOcLPdzVtmTDiQmaZH9plhBha8UPJrpoOV3BSIpC26LaBoSMfQLBKpVp26VWKngCb6F4Uv/hxRFeMUvJw==
+"@hmcts/rpx-xui-node-lib@2.25.12":
+  version "2.25.12"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.12.tgz#c1e72789e186e2fd1d4d71b599b17f18724d2988"
+  integrity sha512-E2FjuV9BwSiAYVMw2l1VfClD8aoKskC33u6zFcc/hUoM7scFKSzr1VzV6uHm0y6GG/2sHpckbz2eV7zswf5Bnw==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.21.1"

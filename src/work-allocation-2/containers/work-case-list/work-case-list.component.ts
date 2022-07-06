@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
@@ -49,6 +50,7 @@ export class WorkCaseListComponent implements OnChanges {
   public displayedColumns: string[];
 
   private selectedCase: Case;
+  public newUrl: string;
 
   constructor(private readonly router: Router) {
   }
@@ -226,11 +228,8 @@ export class WorkCaseListComponent implements OnChanges {
     if (this.addActionsColumn) {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
-      if (this.selectedCase) {
-        this.router.navigate([basePath], {fragment: `manage_${this.selectedCase.id}`});
-      } else {
-        this.router.navigate([basePath]);
-      }
+      this.newUrl = this.selectedCase ? `${basePath}#manage_${this.selectedCase.id}` : basePath;
+      window.history.pushState('object', document.title, this.newUrl);
     }
   }
 

@@ -43,21 +43,23 @@ describe('HearingSpecificDateAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       dateRangeStart: '2022-12-12T09:00:00.000Z',
       dateRangeEnd: '2022-12-12T09:00:00.000Z',
-      firstDateTimeMustBe: null,
+      firstDateTimeMustBe: null
     };
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'Choose a date range';
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<dt class="heading-h3 bottom-0">Earliest hearing date</dt>12 December 2022<dt class="heading-h3 bottom-0">Latest hearing date</dt>12 December 2022`;
     const expected = cold('(b|)', {b: hearingDateRange});
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform hearing choose date range', () => {
+  it('should transform hearing date range', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       dateRangeStart: null,
       dateRangeEnd: null,
       firstDateTimeMustBe: '2022-12-12T09:00:00.000Z',
     };
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'Yes';
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.YES}<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>12 December 2022`;
     const expected = cold('(b|)', {b: hearingDateRange});
@@ -71,6 +73,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
       dateRangeEnd: null,
       firstDateTimeMustBe: null,
     };
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'Yes';
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.YES}<dt class="heading-h3 bottom-0">Earliest hearing date</dt>12 December 2022`;
     const expected = cold('(b|)', {b: hearingDateRange});
@@ -84,6 +87,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
       dateRangeEnd: '2022-12-12T09:00:00.000Z',
       firstDateTimeMustBe: null,
     };
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'Yes';
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.YES}<dt class="heading-h3 bottom-0">Latest hearing date</dt>12 December 2022`;
     const expected = cold('(b|)', {b: hearingDateRange});
@@ -98,6 +102,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
       dateRangeEnd: null,
       firstDateTimeMustBe: null,
     };
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'No';
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = RadioOptions.NO;
     const expected = cold('(b|)', {b: hearingDateRange});

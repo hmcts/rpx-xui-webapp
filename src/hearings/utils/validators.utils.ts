@@ -66,6 +66,19 @@ export class ValidatorsUtils {
     };
   }
 
+  public calcBusinessDays(startDate: moment.Moment, endDate: moment.Moment): number {
+    const day = startDate;
+    let businessDays = 0;
+
+    while (day.isSameOrBefore(endDate, 'day')) {
+      if (day.day() !== 0 && day.day() !== 6) {
+        businessDays++;
+      }
+      day.add(1, 'd');
+    }
+    return businessDays;
+  }
+
   public isWeekendDate(date: moment.Moment): boolean {
     if (date && date.day() === 0 || date.day() === 6) {
       return true;

@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
-import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
+import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingActualsTimingErrorMessages } from '../../../models/hearings.enum';

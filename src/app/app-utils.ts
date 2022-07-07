@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
+import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
 import { Theme, UserTypeRole } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
@@ -148,6 +148,12 @@ export class AppUtils {
 
   public static getFeatureToggledUrl(isFeatureEnabled: boolean, workAllocationUrl: string): string {
     return isFeatureEnabled ? workAllocationUrl : null;
+  }
+
+  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[], excludedRoles: string[]): boolean {
+    // isWA enabled for this jurisdiction
+    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER) && userRoles.every(userRole => !excludedRoles.includes(userRole));
+    // check that userRoles do not have pui-case-manager
   }
 
   public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {

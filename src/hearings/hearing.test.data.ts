@@ -1774,7 +1774,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     listAssistTransactionID: '123456789',
     receivedDateTime: '2021-11-30T09:00:00.000Z',
     responseVersion: 0,
-    laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+    laCaseStatus: LaCaseStatus.PENDING_RELISTING,
     listingStatus: ListingStatus.DRAFT,
     hearingCancellationReason: '123456543',
     hearingDaySchedule: [{
@@ -2123,7 +2123,7 @@ export const initialState = {
           listAssistTransactionID: '',
           responseVersion: 1,
           receivedDateTime: '2021-11-30T09:00:00.000Z',
-          laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+          laCaseStatus: LaCaseStatus.PENDING_RELISTING,
           listingStatus: ListingStatus.FIXED,
           hearingCancellationReason: '',
           hearingDaySchedule: [{

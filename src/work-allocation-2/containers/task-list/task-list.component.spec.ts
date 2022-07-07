@@ -448,22 +448,31 @@ describe('TaskListComponent', () => {
     const id = '12345678';
 
     it('should select appropriate task from location hash', () => {
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
+      const navigateCallsBefore = mockRouter.navigateCalls.length;
       const task = { id } as Task;
       wrapper.tasks = [ task ];
-      component.addActionsColumn = true;
       fixture.detectChanges();
-      component.setSelectedTask(task);
       expect(component.getSelectedTask()).toEqual(task);
-      expect(component.newUrl).toEqual(`bob#manage_${task.id}`);
+      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
+      const lastNavigateCall = mockRouter.navigateCalls.pop();
+      expect(lastNavigateCall).toBeDefined();
+      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
+      expect(lastNavigateCall.extras).toEqual({ fragment: `manage_${id}` });
     });
 
     it('should handle a location hash for a task that does not exist', () => {
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
+      const navigateCallsBefore = mockRouter.navigateCalls.length;
       const task = { id: '99999999' } as Task;
       wrapper.tasks = [ task ];
-      component.addActionsColumn = true;
       fixture.detectChanges();
       expect(component.getSelectedTask()).toBeNull();
-      expect(component.newUrl).toEqual('bob');
+      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
+      const lastNavigateCall = mockRouter.navigateCalls.pop();
+      expect(lastNavigateCall).toBeDefined();
+      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
+      expect(lastNavigateCall.extras).toBeUndefined();
     });
   });
 

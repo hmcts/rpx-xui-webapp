@@ -69,5 +69,5 @@ describe('HearingLinkComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
-  });
+  })
 });

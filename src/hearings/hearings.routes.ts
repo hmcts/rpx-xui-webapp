@@ -16,7 +16,7 @@ import {LinkedHearingsWithCaseComponent} from './containers/linked-hearings/link
 import {LinkedHearingsComponent} from './containers/linked-hearings/linked-hearings.component';
 import {HearingAdditionalInstructionsComponent} from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import {HearingAttendanceComponent} from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
-import {HearingChangeReasonsComponent} from './containers/request-hearing/hearing-change-reasons/hearing-change-reasons.component';
+import {HearingChangeReasonComponent} from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
 import {HearingCreateEditSummaryComponent} from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
 import {HearingFacilitiesComponent} from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
 import {HearingFinalConfirmationComponent} from './containers/request-hearing/hearing-final-confirmation/hearing-final-confirmation.component';
@@ -381,9 +381,9 @@ export const ROUTES: Routes = [
         path: 'hearing-change-reason',
         resolve: {
           hearingTypes: RefDataResolver,
-          hearingChangeReasons: HearingChangeReasonResolver
+          hearingChangeReason: HearingChangeReasonResolver
         },
-        component: HearingChangeReasonsComponent,
+        component: HearingChangeReasonComponent,
         data: {
           title: 'HMCTS Hearings | Amend Hearing | Change reason'
         }

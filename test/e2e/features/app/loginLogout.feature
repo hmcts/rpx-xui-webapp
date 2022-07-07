@@ -40,8 +40,8 @@ Feature: Login
 
     Examples: 
       | Usertype              | mainHeaders                                    |
-      | case_officer          | My work,Case list, Create case |
-      | legal_rep             | Case list, Create case            |
+      | case_officer          | Task list, Task manager,Case list, Create case |
+      | legal_rep             | Task manager,Case list, Create case            |
       | admin_officer         | Case list, Create case                         |
       | homeoffice_respondent | Case list, Create case                         |
       | homeoffice_apc        | Case list, Create case                         |

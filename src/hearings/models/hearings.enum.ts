@@ -13,8 +13,6 @@ export enum HMCStatus {
   UPDATE_SUBMITTED = 'UPDATE_SUBMITTED',
   EXCEPTION = 'EXCEPTION',
   CANCELLATION_REQUESTED = 'CANCELLATION_REQUESTED',
-  CANCELLATION_SUBMITTED = 'CANCELLATION_SUBMITTED',
-  CANCELLED = 'CANCELLED',
   VACATED = 'VACATED',
   AWAITING_ACTUALS = 'AWAITING_ACTUALS',
   COMPLETED = 'COMPLETED',
@@ -53,7 +51,7 @@ export enum LaCaseStatus {
 
 export enum EXUISectionStatusEnum {
   UPCOMING = 'Current and upcoming',
-  PAST_OR_CANCELLED = 'Past or cancelled',
+  PAST_AND_CANCELLED = 'Past and cancelled',
 }
 
 export enum EXUIDisplayStatusEnum {
@@ -65,7 +63,6 @@ export enum EXUIDisplayStatusEnum {
   LISTED = 'LISTED',
   FAILURE = 'REQUEST FAILURE',
   CANCELLATION_REQUESTED = 'CANCELLATION REQUESTED',
-  CANCELLATION_SUBMITTED = 'CANCELLATION REQUESTED',
   VACATED = 'VACATED',
   AWAITING_ACTUALS = 'AWAITING HEARING DETAILS',
   ADJOURNED = 'ADJOURNED',
@@ -140,7 +137,7 @@ export enum HearingCategory {
   EntityRoleCode = 'EntityRoleCode',
   ActualPartHeardReasonCodes = 'ActualPartHeardReasonCodes',
   ActualCancellationReasonCodes = 'ActualCancellationReasonCodes',
-  HearingChangeReasons = 'ChangeReasons',
+  HearingChangeReason = 'ChangeReasons',
   LinkedHearings = 'LinkedHearings',
 }
 
@@ -150,7 +147,7 @@ export enum HearingChannelEnum {
 }
 
 export enum HearingDateEnum {
-  DisplayTime = 'HH:mm',
+  DisplayTime = 'HH:MM',
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY',
   RequestFailedDateAndTime = 'DD MMMM YYYY HH:MM:SS',
@@ -197,7 +194,6 @@ export enum HearingDatePriorityEnum {
   PriorityError = 'Select the priority level of the hearing',
   PriorityDateError = 'Select if the hearing needs to take place on a specific date',
   DateRangeError = 'Enter a valid date range for the hearing to take place on',
-  EitherDateRangeError = 'Enter either earliest hearing date or latest hearing date',
   WeekendError = 'Hearing date cannot be on the weekend',
   InValidHearingDateError = 'Enter a valid hearing date',
   DatePastError = 'The hearing dates cannot be in the past',

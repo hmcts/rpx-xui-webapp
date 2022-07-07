@@ -199,11 +199,7 @@ defineSupportCode(function ({ Given, When, Then }) {
         await BrowserUtil.waitForLD();
         await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
         await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
-        await expect(loginPage.dashboard_header.getText())
-          .to
-          .eventually
-          .contains('Case list');
-
+        
         await BrowserUtil.waitForLD();
       }catch(err){
         await browser.get(config.config.baseUrl);

@@ -547,17 +547,16 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
     }
     // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
-    let count: number = 1 ;
     result.cases.forEach(item => {
-      item.hearing_date = (new Date(new Date().getTime() + 86400000 * count)).toString() ;
-      count = count + 1;
+      item.hearing_date = new Date(+new Date() + Math.random() *
+      (new Date(2022, 6, 20) as any - (new Date() as any) )).toString();
     });
     if ( sorting_parameters &&
         sorting_parameters.some(parameter => parameter.sort_by === 'hearing_date')) {
         if ( sorting_parameters.find(parameter => parameter.sort_by === 'hearing_date').sort_order === 'desc' ) {
-          result.cases = result.cases.sort((a, b) => (a.case_category < b.case_category ? -1 : 1));
+          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) > Date.parse(b.hearing_date) ? -1 : 1));
         } else {
-          result.cases = result.cases.sort((a, b) => (a.case_category > b.case_category ? -1 : 1));
+          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) < Date.parse(b.hearing_date) ? -1 : 1));
         }
     }
     return res.send(result).status(200);

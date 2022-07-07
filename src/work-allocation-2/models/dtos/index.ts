@@ -70,6 +70,7 @@ export interface LocationByEPIMMSModel {
 export interface LocationsByService {
   service?: string;
   serviceCode?: string;
+  bookable?: boolean;
   locations: Location[];
 }
 

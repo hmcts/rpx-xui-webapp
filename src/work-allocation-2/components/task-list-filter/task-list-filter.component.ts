@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { Location as AngularLocation } from '@angular/common';
 import {
+  BookingCheckType,
   FilterConfig,
   FilterError,
   FilterFieldConfig,
@@ -269,13 +270,16 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       displayMinSelectedError: true,
       minSelectedError: 'Search for a location by name',
       type: 'find-location',
-      enableAddLocationButton: true
+      enableAddLocationButton: true,
+      bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
     };
     if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.locations) {
-      const locations: Location[] = this.route.snapshot.data.locations;
+      const newLocations: Location[] = this.route.snapshot.data.locations;
       if (locations) {
-        this.defaultLocations = locations;
+        this.defaultLocations = newLocations;
       }
+    } else {
+      this.defaultLocations = locations;
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: 'locations',
@@ -386,8 +390,11 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.toggleFilter = !this.toggleFilter;
     if (this.toggleFilter) {
       setTimeout(() => {
-        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
-        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+        const typesOfWorkParentElem = document.getElementById('types-of-work') ?
+          document.getElementById('types-of-work').closest('.contain-classes') : null;
+        if (typesOfWorkParentElem) {
+          (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+        }
       }, 0);
     }
   }

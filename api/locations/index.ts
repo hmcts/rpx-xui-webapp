@@ -12,7 +12,6 @@ import { CourtVenue } from '../workAllocation2/interfaces/location';
 import { handleLocationGet } from '../workAllocation2/locationService';
 import { prepareGetSpecificLocationUrl } from '../workAllocation2/util';
 
-
 // const url: string = getConfigValue(SERVICES_PRD_API_URL);
 // TODO: CAM_BOOKING - check this
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
@@ -26,15 +25,18 @@ const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
   const searchTerm = req.body.searchTerm;
-  const serviceIds = req.body.serviceIds;
+  let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
-  const userLocations = req.body.userLocations;
+  const userLocations = req.body.userLocations ? req.body.userLocations : [];
+  const bookingLocations = req.body.bookingLocations;
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
     res.status(200).send([]);
   }
-  const serviceIdArray = serviceIds.split(',');
-  const courtTypeIds = getCourtTypeIdsByService(serviceIdArray);
+  if (typeof serviceIds === 'string') {
+    serviceIds = serviceIds.split(',');
+  }
+  const courtTypeIds = getCourtTypeIdsByService(serviceIds);
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
 
@@ -51,14 +53,28 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     userLocations.forEach(userLocation => {
       const courtTypes = getCourtTypeIdsByService([userLocation.service]);
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
-      results = results.filter(thisResult => !(courtTypes.includes(thisResult.court_type_id))
-       || locationIds.includes(thisResult.epimms_id));
+      if (bookingLocations) {
+        // when we are trying to filter out locations when booking location is present - my work
+        if (userLocation.bookable) {
+          results = filterOutResults(results, bookingLocations, courtTypes);
+        } else {
+          results = filterOutResults(results, locationIds, courtTypes);
+        }
+      } else if (userLocation.bookable) {
+        // when we are filtering for any possible booking location - role needs to be bookable - create booking
+        results = filterOutResults(results, locationIds, courtTypes);
+      }
     })
     res.status(response.status).send(results);
   } catch (error) {
     next(error);
   }
 
+}
+
+export function filterOutResults(locations: LocationModel[], locationIds: string[], courtTypes: string[]): LocationModel[] {
+  return locations.filter(location => !(courtTypes.includes(location.court_type_id))
+            || locationIds.includes(location.epimms_id));
 }
 
 /**

@@ -214,8 +214,8 @@ describe('TaskListFilterComponent', () => {
     component.bookingLocations = ['Location1'];
     locationService.getSpecificLocations.and.returnValue(['Location1']);
     component.ngOnInit();
-    expect(component.defaultLocations).toBe(component.bookingLocations);
-    expect(locationService.getSpecificLocations).toHaveBeenCalledWith(component.defaultLocations);
+    expect(component.defaultLocations).toBe(component.bookingLocations[0]);
+    expect(locationService.getSpecificLocations).toHaveBeenCalledWith([component.defaultLocations]);
   });
 
   afterAll(() => {

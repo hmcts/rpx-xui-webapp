@@ -54,7 +54,7 @@ export async function getFullLocations(req: EnhancedRequest, res: Response, next
 
   try {
     const response = await commonGetFullLocation(req);
-    res.send(response.data).status(response.status);
+    res.send(response.data.court_venues).status(response.status);
   } catch (error) {
     next(error);
   }

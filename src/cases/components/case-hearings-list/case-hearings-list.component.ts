@@ -66,6 +66,12 @@ export class CaseHearingsListComponent implements OnInit {
     return !!hearingGroupRequestId;
   }
 
+  public isAwaitingListingOrUpdateRequestedOrListed(exuiDisplayStatus: EXUIDisplayStatusEnum) {
+    return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING
+      || exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED
+      || exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED;
+  }
+
   public addAndEdit(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
   }

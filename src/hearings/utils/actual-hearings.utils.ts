@@ -1,10 +1,10 @@
+import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { ActualHearingDayModel, HearingActualsMainModel } from '../models/hearingActualsMainModel';
+import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel, PlannedDayPartyModel } from '../models/hearingActualsMainModel';
 
-export abstract class ActualHearingsUtils {
+export class ActualHearingsUtils {
   public static isHearingDaysUpdated: boolean;
   public static isHearingPartiesUpdated: boolean;
-  public static actualHearingDays: ActualHearingDayModel[] = [] as ActualHearingDayModel[];
 
   private static replaceTime(dateTime: string, time: moment.Moment): string {
     return moment(dateTime, 'YYYY-MM-DDTHH:mm:ssZ').set({
@@ -17,7 +17,7 @@ export abstract class ActualHearingsUtils {
     return dateTime ? moment(dateTime).format('YYYY-MM-DD') : null;
   }
 
-  public static setActualHearingDay(hearingActualsMainModel: HearingActualsMainModel, value: any): ActualHearingDayModel[] {
+  public static getActualHearingDay(hearingActualsMainModel: HearingActualsMainModel, value: any): ActualHearingDayModel[] {
     const hearingStartTime = (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 && hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingStartTime)
       || (hearingActualsMainModel.hearingPlanned && hearingActualsMainModel.hearingPlanned.plannedHearingDays
@@ -38,7 +38,7 @@ export abstract class ActualHearingsUtils {
     const isPauseStartTimeValid = moment(pauseStartTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
     let pauseDateTimes = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[0]
-      && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes;
+      && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes || null;
     if (value) {
       let changedPauseStartTime;
       let changedPauseEndTime;
@@ -69,7 +69,7 @@ export abstract class ActualHearingsUtils {
 
     const actualInDay1 = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays[0];
-    this.actualHearingDays = [
+    const actualHearingDays = [
       {
         ...actualInDay1,
         hearingDate,
@@ -78,6 +78,15 @@ export abstract class ActualHearingsUtils {
         pauseDateTimes
       }
     ];
-    return this.actualHearingDays;
+    return actualHearingDays;
+  }
+  public static getActualHearingParties(hearingActualsMainModel: HearingActualsMainModel, parties: ActualDayPartyModel[], participants: ActualDayPartyModel[]): ActualHearingDayModel[] {
+    const actualHearingParties = [
+      {
+        ...hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0],
+        actualDayParties: [...participants, ...parties],
+      }
+    ];
+    return actualHearingParties;
   }
 }

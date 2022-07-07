@@ -457,9 +457,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
     ActualHearingsUtils.isHearingDaysUpdated = true;
     ActualHearingsUtils.isHearingPartiesUpdated = true;
     const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.saveHearingActuals(false);
-    expect(ActualHearingsUtils.isHearingDaysUpdated).toBe(false);
-    component.saveHearingActuals(true);
+    component.saveHearingActualsTiming();
+    component.saveHearingActualsParties();
     expect(ActualHearingsUtils.isHearingPartiesUpdated).toBe(false);
     expect(ActualHearingsUtils.isHearingDaysUpdated).toBe(false);
   });

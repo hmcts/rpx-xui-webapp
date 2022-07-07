@@ -1,6 +1,16 @@
 <a class="govuk-back-link" href="javascript:history.back()">Back</a>
 <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
 </xuilib-hmcts-error-summary>
+<div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" *ngIf="validationErrors.length == 0 && successBanner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Success
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <p class="govuk-body">Details submitted</p>
+  </div>
+</div>
 <xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="error$ | async">
 </xuilib-hmcts-error-summary>
 <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">
@@ -43,7 +53,7 @@
     <div class="govuk-grid-row">
       <h1 class="govuk-heading-m govuk-grid-column-two-thirds">Hearing timings</h1>
       <div class="govuk-body govuk-grid-column-one-third text-right">
-        <a href="javascript:void(0)" (click) = "saveHearingActuals(false)"
+        <a href="javascript:void(0)" (click) = "saveHearingActualsTiming()"
           id="hearing-timing-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
         <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing']" class="govuk-link">Update</a>
       </div>
@@ -80,7 +90,7 @@
     <br>
     <h1 class="govuk-heading-m">Participants</h1>
     <span class="govuk-body align-right">
-      <a href="javascript:void(0)" (click) = "saveHearingActuals(true)"
+      <a href="javascript:void(0)" (click) = "saveHearingActualsParties()"
         id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
       <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties']"
         class="govuk-link">Update</a>

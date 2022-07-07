@@ -46,6 +46,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingStageResultErrorMessage = '';
   public hearingTimingResultErrorMessage = '';
   public hearingPartiesResultErrorMessage = '';
+  public successBanner: boolean = false;
   public submitted = false;
   public sub: Subscription;
   public id: string;
@@ -84,7 +85,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
-        this.actualHearingDay = ActualHearingsUtils.actualHearingDays.length ? ActualHearingsUtils.actualHearingDays[0] : ActualHearingsUtils.setActualHearingDay(this.hearingActualsMainModel, null)[0];
+        this.actualHearingDay = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null)[0];
         this.getActualDayParties(this.hearingActualsMainModel);
         this.hearingTypeDescription = this.hearingOutcome && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
@@ -94,6 +95,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    ActualHearingsUtils.isHearingDaysUpdated = false;
+    ActualHearingsUtils.isHearingPartiesUpdated = false;
     if (this.sub) {
       this.sub.unsubscribe();
     }
@@ -147,15 +150,31 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       ? true : false;
   }
 
-  public saveHearingActuals(isPartiesUpdated: boolean) {
-    if (isPartiesUpdated) {
-      ActualHearingsUtils.isHearingPartiesUpdated = false;
-    } else {
-      ActualHearingsUtils.isHearingDaysUpdated = false;
-    }
+  public saveHearingActualsTiming() {
+    ActualHearingsUtils.isHearingDaysUpdated = false;
+    this.validationErrors = [];
+    this.hearingTimingResultErrorMessage = '';
+    this.successBanner = true;
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: ActualHearingsUtils.actualHearingDays
+      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null)
+    };
+    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+      hearingId: this.id,
+      hearingActuals,
+    }));
+  }
+
+  public saveHearingActualsParties() {
+    this.validationErrors = [];
+    this.hearingPartiesResultErrorMessage = '';
+    ActualHearingsUtils.isHearingPartiesUpdated = false;
+    this.successBanner = true;
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    const hearingActuals = {
+      ...this.hearingActualsMainModel.hearingActuals,
+      actualHearingDays: ActualHearingsUtils.getActualHearingParties(this.hearingActualsMainModel, this.parties, this.participants)
     };
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -199,6 +218,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   private isValid(): boolean {
+    let isValid: boolean = true;
     this.validationErrors = [];
     this.hearingStageResultErrorMessage = '';
     this.hearingTimingResultErrorMessage = '';
@@ -210,7 +230,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       });
       this.hearingTimingResultErrorMessage = HearingActualAddEditSummaryEnum.ConfirmUpdateError;
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return false;
+      isValid = false;
     }
     if (ActualHearingsUtils.isHearingPartiesUpdated || !this.isHearingActualsPartiesAvailable(this.hearingActualsMainModel)) {
       this.validationErrors.push({
@@ -219,7 +239,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       });
       this.hearingPartiesResultErrorMessage = HearingActualAddEditSummaryEnum.ConfirmUpdateError;
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return false;
+      isValid = false;
     }
     if (this.hearingResult === '' || this.hearingResult === null) {
       this.validationErrors.push({
@@ -228,9 +248,9 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       });
       this.hearingStageResultErrorMessage = HearingActualAddEditSummaryEnum.HearingResultError;
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return false;
+      isValid = false;
     }
-    return true;
+    return isValid;
   }
 
   public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
-import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
+import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
 import { HttpError } from '../../../../models/httpError.model';
 import {
   ActualDayPartyModel,

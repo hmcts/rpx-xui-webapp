@@ -38,7 +38,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, route);
     this.attendanceFormGroup = fb.group({
-      estimation: [null, [this.validatorsUtils.numberLargerThanValidator(0)]],
+      estimation: [null, [Validators.pattern(/^\d+$/)]],
       parties: fb.array([])
     });
     this.partiesFormArray = fb.array([]);
@@ -108,7 +108,9 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     if (preferredHearingChannelsList.every(channel => channel === HearingChannelEnum.NotAttending)) {
       hearingChannels = [HearingChannelEnum.ONPPR];
     } else {
-      hearingChannels = preferredHearingChannelsList;
+      hearingChannels = preferredHearingChannelsList.filter((item, pos) =>
+        preferredHearingChannelsList.indexOf(item) === pos
+      );
     }
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,

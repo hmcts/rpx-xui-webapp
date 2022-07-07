@@ -73,6 +73,7 @@
               <tr class="govuk-table__row" *ngIf="!group.get('isPlannedParty').value" [formGroupName]="i"
                   [id]="'participant'+ i">
                 <th scope="row" class="govuk-table__header">
+                  <div [ngClass]="{'table-group-error': submitted && group.hasError('duplicateEntries') && group.getError('duplicateEntries').message}"></div>
                   <input class="govuk-input" formControlName="firstName" type="text" aria-label="First name"
                          maxlength="40"
                          [ngClass]="{'govuk-input--error': highlightRowError(i, 'firstName')}">

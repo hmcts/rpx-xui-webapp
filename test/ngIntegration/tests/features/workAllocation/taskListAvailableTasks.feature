@@ -1,4 +1,4 @@
-@_ng @wa1
+@ng @wa1
 Feature: WA Release 1: Available Tasks Task list
 
     Background: Mock and browser setup

@@ -7,11 +7,10 @@ import {UnavailabilityRangeModel} from './unavailabilityRange.model';
 export interface PartyDetailsModel {
   partyID: string;
   partyType: PartyType;
-  partyName?: string;
+  partyName: string;
   partyRole: string;
   individualDetails?: IndividualDetailsModel;
   organisationDetails?: OrganisationDetailsModel;
   unavailabilityDOW?: UnavailabilityDOWModel[];
   unavailabilityRanges?: UnavailabilityRangeModel[];
-  hearingSubChannel?: string;
 }

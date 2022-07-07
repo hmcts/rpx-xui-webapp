@@ -8,7 +8,7 @@ const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const {getScenarioCookie} = require('../helpers/pa11yUtil');
 
-const isParallelExecution = true;
+const isParallelExecution = argv.parallel ? argv.parallel === "true" : true;
 
 const generateMergedReport = require('../reporter/reportsMerger');
 

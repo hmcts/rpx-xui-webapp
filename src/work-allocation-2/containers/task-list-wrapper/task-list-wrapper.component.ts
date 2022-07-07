@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, Subscription } from 'rxjs';
@@ -45,7 +45,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasks: Task[] = [];
   private selectedLocationsSubscription: Subscription;
   private pTasksTotal: number;
-  public routeEventsSubscription: Subscription;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.

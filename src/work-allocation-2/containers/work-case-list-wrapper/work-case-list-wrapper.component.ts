@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { mergeMap, switchMap } from 'rxjs/operators';
 
 import { UserInfo } from '../../../app/models';
@@ -56,7 +56,6 @@ export class WorkCaseListWrapperComponent implements OnInit {
   };
   private pCasesTotal: number;
   private pUniqueCases: number;
-  public routeEventsSubscription: Subscription;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.

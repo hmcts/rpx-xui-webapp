@@ -163,7 +163,7 @@ describe('HearingRequirementsComponent', () => {
         listingComments: '',
         hearingRequester: '',
         leadJudgeContractType: '',
-        amendReasonCodes: null,
+        amendReasonCode: null,
       },
       caseDetails: {
         hmctsServiceCode: 'BBA3',

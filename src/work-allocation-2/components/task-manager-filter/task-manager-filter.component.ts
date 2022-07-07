@@ -67,7 +67,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
-      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType'],
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl'],
       title: 'Service',
       type: 'select'
     };

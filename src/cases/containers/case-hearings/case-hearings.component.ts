@@ -29,7 +29,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
 
   public pastAndCancelledHearings$: Observable<HearingListViewModel[]>;
-  public pastAndCancelledStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.PAST_OR_CANCELLED;
+  public pastAndCancelledStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.PAST_AND_CANCELLED;
 
   public listedHearings$: Observable<HearingListViewModel[]>;
 
@@ -76,7 +76,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     });
 
     this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
-    this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_OR_CANCELLED);
+    this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED);
     this.listedHearings$ = this.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
 
     this.roleCatSubscription = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).subscribe(

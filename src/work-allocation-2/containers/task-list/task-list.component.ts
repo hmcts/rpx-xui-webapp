@@ -1,7 +1,7 @@
 import { isDefined } from '@angular/compiler/src/util';
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
@@ -52,7 +52,6 @@ export class TaskListComponent implements OnChanges {
   private selectedTask: Task;
 
   public defaultSortElement: HTMLElement;
-  public newUrl: string;
 
   constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {
   }
@@ -221,8 +220,11 @@ export class TaskListComponent implements OnChanges {
     if (this.addActionsColumn) {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
-      this.newUrl = this.selectedTask ? `${basePath}#manage_${this.selectedTask.id}` : basePath;
-      window.history.pushState('object', document.title, this.newUrl);
+      if (this.selectedTask) {
+        this.router.navigate([basePath], {fragment: `manage_${this.selectedTask.id}`});
+      } else {
+        this.router.navigate([basePath]);
+      }
     }
   }
 

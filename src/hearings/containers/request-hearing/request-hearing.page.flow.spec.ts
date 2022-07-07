@@ -41,7 +41,7 @@ describe('RequestHearingPageFlow', () => {
           autolistFlag: false,
           hearingPriorityType: '',
           hearingInWelshFlag: true,
-          amendReasonCodes: null,
+          amendReasonCode: null,
           hearingChannels: [],
         },
         partyDetails: []

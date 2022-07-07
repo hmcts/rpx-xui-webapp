@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -49,16 +49,14 @@ export class HearingsService {
   }
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
+    // TODO below logic may change, currently it was confirmed by HMC and stakeholder we will only send the 1st reasonCode to the backend
     const cancellationReasonCodes: string[] = reasons.map(reason => reason.key);
-    const options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-      body: {
-        cancellationReasonCodes
-      }
-    };
-    return this.http.delete<ResponseDetailsModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`, options);
+    const cancellationReasonCode: string = cancellationReasonCodes.length > 0 ? cancellationReasonCodes[0] : '';
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('cancellationReasonCode', cancellationReasonCode);
+    return this.http.delete<ResponseDetailsModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
+      params: httpParams
+    });
   }
 
   public loadHearingRequest(hearingId: string): Observable<HearingRequestMainModel> {

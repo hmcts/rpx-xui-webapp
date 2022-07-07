@@ -263,6 +263,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     const isLatestHearingDate = chosenLatestDate.isValid();
     const isEarliestDateWeekendDate = this.validatorsUtils.isWeekendDate(chosenEarliestDate);
     const isLatestDateWeekendDate = this.validatorsUtils.isWeekendDate(chosenLatestDate);
+    const numberOfBusinessDays = this.validatorsUtils.calcBusinessDays(chosenEarliestDate, chosenLatestDate);
     if (!isInValidEarliestDate && isPastEarliestDate) {
       this.validationErrors.push({id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.DatePastError});
       this.earliestDateOfHearingError = {isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError]};
@@ -292,7 +293,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.NotEnoughDaysInDateRangeError });
       this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.NotEnoughDaysInDateRangeError] };
       this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.NotEnoughDaysInDateRangeError] };
-		}
+    }
   }
 
   public showHearingDateError(): void {

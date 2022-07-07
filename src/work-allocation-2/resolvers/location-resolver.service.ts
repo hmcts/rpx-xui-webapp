@@ -102,7 +102,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         jurisdictions.push(roleJurisdiction);
       }
     });
-    const testJurisdictions = ['IA', 'SSCS'];
+    const testJurisdictions = ['IA', 'SSCS', 'CIVIL'];
     return this.userRole === UserRole.Judicial ? this.allocateRoleService.getCaseRolesUserDetails([id], testJurisdictions) : this.caseworkerDataService.getCaseworkersForServices(testJurisdictions);
   }
 

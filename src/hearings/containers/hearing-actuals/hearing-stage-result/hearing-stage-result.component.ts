@@ -120,7 +120,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
           hearingType: this.hearingStageResultForm.get('hearingStage').value,
         }
       };
-      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActualsStage({
         hearingId: this.id,
         hearingActuals
       }));

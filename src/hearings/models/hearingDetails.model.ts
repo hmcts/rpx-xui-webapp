@@ -19,6 +19,6 @@ export interface HearingDetailsModel {
   listingComments?: string;
   hearingRequester?: string;
   leadJudgeContractType?: string;
-  amendReasonCode: string;
+  amendReasonCodes: string[];
   hearingChannels: string[];
 }

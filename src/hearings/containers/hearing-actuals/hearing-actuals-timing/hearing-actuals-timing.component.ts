@@ -37,35 +37,60 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   private static getStartTime(hearingActuals: HearingActualsMainModel): string {
-    const updatedActualHearingDays = ActualHearingsUtils.actualHearingDays.length ? ActualHearingsUtils.actualHearingDays : (hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays);
+    const updatedActualHearingDays = (hearingActuals && hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays) || [];
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime;
-    const actualTime = updatedActualHearingDays.length > 0 && updatedActualHearingDays[0].hearingStartTime;
+    let actualTime;
+    if (updatedActualHearingDays.length > 0) {
+      actualTime = updatedActualHearingDays[0].hearingStartTime;
+    } else {
+      actualTime = hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length > 0
+        && hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime;
+    }
     return actualTime ? HearingActualsTimingComponent.getTime(actualTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
   private static getPauseStartTime(hearingActuals: HearingActualsMainModel): string {
-    const updatedActualHearingDays = ActualHearingsUtils.actualHearingDays.length ? ActualHearingsUtils.actualHearingDays : (hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays);
-    const actualTime = updatedActualHearingDays && updatedActualHearingDays.length
-      && updatedActualHearingDays[0] && updatedActualHearingDays[0].pauseDateTimes
-      && updatedActualHearingDays[0].pauseDateTimes.length
-      && updatedActualHearingDays[0].pauseDateTimes[0];
+    const updatedActualHearingDays = (hearingActuals && hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays) || [];
+    let actualTime;
+    if (updatedActualHearingDays.length > 0) {
+      actualTime = updatedActualHearingDays[0] && updatedActualHearingDays[0].pauseDateTimes
+        && updatedActualHearingDays[0].pauseDateTimes.length
+        && updatedActualHearingDays[0].pauseDateTimes[0];
+    } else {
+      actualTime = hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
+        && hearingActuals.hearingActuals.actualHearingDays[0] && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes
+        && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes.length
+        && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0];
+    }
     return actualTime && actualTime.pauseStartTime ? HearingActualsTimingComponent.getTime(actualTime.pauseStartTime) : null;
   }
 
   private static getPauseEndTime(hearingActuals: HearingActualsMainModel): string {
-    const updatedActualHearingDays = ActualHearingsUtils.actualHearingDays.length ? ActualHearingsUtils.actualHearingDays : (hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays);
-    const actualTime = hearingActuals.hearingActuals && updatedActualHearingDays && updatedActualHearingDays.length
-      && updatedActualHearingDays[0] && updatedActualHearingDays[0].pauseDateTimes
-      && updatedActualHearingDays[0].pauseDateTimes.length
-      && updatedActualHearingDays[0].pauseDateTimes[0];
+    const updatedActualHearingDays = (hearingActuals && hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays) || [];
+    let actualTime;
+    if (updatedActualHearingDays.length > 0) {
+      actualTime = updatedActualHearingDays[0] && updatedActualHearingDays[0].pauseDateTimes
+        && updatedActualHearingDays[0].pauseDateTimes.length
+        && updatedActualHearingDays[0].pauseDateTimes[0];
+    } else {
+      actualTime = hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
+        && hearingActuals.hearingActuals.actualHearingDays[0] && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes
+        && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes.length
+        && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0];
+    }
     return actualTime && actualTime.pauseEndTime ? HearingActualsTimingComponent.getTime(actualTime.pauseEndTime) : null;
   }
 
   private static getEndTime(hearingActuals: HearingActualsMainModel): string {
-    const updatedActualHearingDays = ActualHearingsUtils.actualHearingDays.length ? ActualHearingsUtils.actualHearingDays : (hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays);
+    const updatedActualHearingDays = (hearingActuals && hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays) || [];
+    let actualTime;
+    if (updatedActualHearingDays.length > 0) {
+      actualTime = updatedActualHearingDays[0].hearingEndTime;
+    } else {
+      actualTime = hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
+        && hearingActuals.hearingActuals.actualHearingDays[0].hearingEndTime;
+    }
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime;
-    const actualTime = hearingActuals.hearingActuals && updatedActualHearingDays && updatedActualHearingDays.length
-      && updatedActualHearingDays[0].hearingEndTime;
     return actualTime ? HearingActualsTimingComponent.getTime(actualTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
@@ -114,7 +139,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     this.submitted = false;
     ActualHearingsUtils.isHearingDaysUpdated = true;
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingActualsPlannedDays(
-      ActualHearingsUtils.setActualHearingDay(this.hearingActuals, value)
+      ActualHearingsUtils.getActualHearingDay(this.hearingActuals, value)
     ));
     this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
   }

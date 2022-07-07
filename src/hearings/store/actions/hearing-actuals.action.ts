@@ -5,6 +5,7 @@ import { ActualHearingDayModel, HearingActualsMainModel, HearingActualsModel } f
 export const RESET_HEARING_ACTUALS = '[HEARING ACTUALS] Reset Hearing Actuals';
 export const SAVE_HEARING_ACTUALS_PLANNED_DAYS = '[HEARING ACTUALS PLANNED] Save Hearing Actuals Planned Days';
 export const UPDATE_HEARING_ACTUALS = '[HEARING ACTUALS] Update Hearing Actuals';
+export const UPDATE_HEARING_ACTUALS_STAGE = '[HEARING ACTUALS] Update Hearing Actuals Stage';
 export const UPDATE_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Update Hearing Actuals Success';
 export const GET_HEARING_ACTUALS = '[HEARING ACTUALS] Get Hearing Actuals';
 export const GET_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Get Hearing Actuals success';
@@ -40,6 +41,13 @@ export class GetHearingActualsSuccess implements Action {
 
 export class UpdateHearingActuals implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS;
+
+  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {
+  }
+}
+
+export class UpdateHearingActualsStage implements Action {
+  public readonly type = UPDATE_HEARING_ACTUALS_STAGE;
 
   constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {
   }
@@ -83,6 +91,7 @@ export type HearingActualsAction =
   | GetHearingActuals
   | GetHearingActualsSuccess
   | UpdateHearingActuals
+  | UpdateHearingActualsStage
   | UpdateHearingActualsSuccess
   | SubmitHearingActuals
   | SubmitHearingActualsSuccess

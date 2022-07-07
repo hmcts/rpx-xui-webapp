@@ -271,9 +271,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         {
           ...this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
           actualDayParties: actualParties,
-          hearingDate: this.getHearingDate(),
-          hearingEndTime: this.getHearingEndTime(),
-          hearingStartTime: this.getHearingStartTime(),
         }
       ];
       ActualHearingsUtils.isHearingPartiesUpdated = true;
@@ -282,41 +279,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       ));
       this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
     }
-  }
-
-  public getHearingDate(): string {
-    return (this.hearingActualsMainModel.hearingActuals
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingDate)
-      || this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays);
-  }
-
-  public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
-    const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
-    return moment.min(moments).format('YYYY-MM-DD');
-  }
-
-  public getHearingEndTime(): string {
-    return (this.hearingActualsMainModel.hearingActuals
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingEndTime)
-      || (this.hearingActualsMainModel.hearingPlanned
-        && this.hearingActualsMainModel.hearingPlanned.plannedHearingDays
-        && this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.length
-        && this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].plannedEndTime);
-  }
-
-  public getHearingStartTime(): string {
-    return (this.hearingActualsMainModel.hearingActuals
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingStartTime)
-      || (this.hearingActualsMainModel.hearingPlanned
-        && this.hearingActualsMainModel.hearingPlanned.plannedHearingDays
-        && this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.length
-        && this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].plannedStartTime);
   }
 
   public getRole(value: string): string {

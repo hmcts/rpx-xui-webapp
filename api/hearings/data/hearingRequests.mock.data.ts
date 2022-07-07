@@ -58,7 +58,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -276,7 +276,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -483,7 +483,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -690,7 +690,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -897,7 +897,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1104,7 +1104,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1312,7 +1312,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1519,7 +1519,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1726,7 +1726,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1933,7 +1933,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -2068,7 +2068,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -2203,7 +2203,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -2405,7 +2405,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
-      amendReasonCode: 'reasonOne',
+      amendReasonCodes: ['reasonOne'],
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',

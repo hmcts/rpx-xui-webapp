@@ -4,70 +4,13 @@ import {inject, TestBed} from '@angular/core/testing';
 import {StoreModule} from '@ngrx/store';
 import * as _ from 'lodash';
 import {initialState} from '../hearing.test.data';
-import {HearingLinksStateData} from '../models/hearingLinksStateData.model';
 import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
-import {GroupLinkType, HMCStatus} from '../models/hearings.enum';
-import {LinkedHearingGroupMainModel, ServiceLinkedCasesModel} from '../models/linkHearings.model';
+import {
+  GroupLinkType,
+} from '../models/hearings.enum';
+import {LinkedHearingGroupMainModel} from '../models/linkHearings.model';
 import {LovRefDataModel} from '../models/lovRefData.model';
 import {HearingsService} from './hearings.service';
-
-const source: ServiceLinkedCasesModel[] = [
-  {
-    caseReference: '4652724902696213',
-    caseName: 'Smith vs Peterson',
-    reasonsForLink: [
-      'Linked for a hearing'
-    ],
-    hearings: [
-      {
-        hearingId: 'h10001',
-        hearingStage: 'Final',
-        isSelected: true,
-        hearingStatus: 'Awaiting',
-        hearingIsInLinkedGroup: false
-      }
-    ]
-  },
-  {
-    caseReference: '5283819672542864',
-    caseName: 'Smith vs Peterson',
-    reasonsForLink: [
-      'Linked for a hearing',
-      'Progressed as part of lead case'
-    ],
-    hearings: [
-      {
-        hearingId: 'h10001',
-        hearingStage: 'Final',
-        isSelected: true,
-        hearingStatus: 'Awaiting',
-        hearingIsInLinkedGroup: false
-      }
-    ]
-  },
-  {
-    caseReference: '8254902572336147',
-    caseName: 'Smith vs Peterson',
-    reasonsForLink: [
-      'Familial',
-      'Guardian',
-      'Linked for a hearing'
-    ],
-    hearings: [{
-      hearingId: 'h100010',
-      hearingStage: HMCStatus.UPDATE_REQUESTED,
-      isSelected: false,
-      hearingStatus: HMCStatus.AWAITING_LISTING,
-      hearingIsInLinkedGroup: false
-    }, {
-      hearingId: 'h100012',
-      hearingStage: HMCStatus.UPDATE_REQUESTED,
-      isSelected: false,
-      hearingStatus: HMCStatus.AWAITING_LISTING,
-      hearingIsInLinkedGroup: false
-    }]
-  }
-];
 
 describe('HearingsService', () => {
   beforeEach(() => {
@@ -273,6 +216,16 @@ describe('HearingsService', () => {
       req.flush(null);
     }));
 
+    it('should call loadLinkedCasesWithHearings', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.loadLinkedCasesWithHearings('SSCS', '1111222233334444', 'test', 'h1000000').subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/loadLinkedCasesWithHearings?jurisdictionId=SSCS');
+      expect(req.request.method).toEqual('POST');
+      req.flush(null);
+    }));
+
     it('should call getLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.getLinkedHearingGroup('1').subscribe(response => {
         expect(response).toBeNull();
@@ -323,42 +276,6 @@ describe('HearingsService', () => {
       const req = httpMock.expectOne('api/hearings/putLinkedHearingGroup?groupId=1');
       expect(req.request.method).toEqual('PUT');
       req.flush(null);
-    }));
-
-    it('should call getAllCaseInformation', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      const linkedState: HearingLinksStateData = {
-        serviceLinkedCases: source,
-        linkedHearingGroup: {} as LinkedHearingGroupMainModel
-      };
-      const isManageLink: boolean = false;
-      const currentCase: ServiceLinkedCasesModel = {
-        caseReference: '4652724902696213',
-        caseName: 'test',
-        reasonsForLink: [],
-      };
-      service.getAllCaseInformation(currentCase, linkedState, isManageLink).subscribe(response => {
-        expect(response).toBeNull();
-      });
-      const req = httpMock.expectOne('api/hearings/getHearings?caseId=4652724902696213');
-      expect(req.request.method).toEqual('GET');
-      req.flush(null);
-    }));
-
-
-    it('should call getAllCaseInformation', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      const linkedState: HearingLinksStateData = {
-        serviceLinkedCases: null,
-        linkedHearingGroup: {} as LinkedHearingGroupMainModel
-      };
-      const isManageLink: boolean = false;
-      const currentCase: ServiceLinkedCasesModel = {
-        caseReference: '4652724902696213',
-        caseName: 'test',
-        reasonsForLink: [],
-      };
-      service.getAllCaseInformation(currentCase, linkedState, isManageLink).subscribe(response => {
-        expect(response).toBeNull();
-      });
     }));
 
     it('should call deleteLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {

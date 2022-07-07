@@ -137,7 +137,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         if (selectedHearing) {
           linkedHearingGroupMainModel.hearingsInGroup.push({
             hearingId: selectedHearing.hearingID,
-            hearingOrder: formValue.position,
+            hearingOrder: Number(formValue.position),
           });
         }
       });
@@ -178,7 +178,6 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         return false;
       }
     }
-    this.validationErrors = [];
     return true;
   }
 

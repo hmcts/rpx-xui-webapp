@@ -13,13 +13,8 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
   }
 
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
-    const preferredHearingChannelRefData = refData.find(ref => ref.key === party.hearingSubChannel);
-    return preferredHearingChannelRefData && preferredHearingChannelRefData.value_en ? preferredHearingChannelRefData.value_en : party.hearingSubChannel;
-  }
-
-  private static getPartyName(partiesFromServiceValue: PartyDetailsModel[], partyInfo: PartyDetailsModel): string {
-    const partyDetails = partiesFromServiceValue.find(pty => pty.partyID === partyInfo.partyID);
-    return (partyDetails && partyDetails.partyName) || partyInfo.partyID;
+    const preferredHearingChannelRefData = refData.find(ref => ref.key === party.individualDetails.preferredHearingChannel);
+    return preferredHearingChannelRefData && preferredHearingChannelRefData.value_en ? preferredHearingChannelRefData.value_en : '';
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
@@ -27,10 +22,10 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
 
     return hearingState$.pipe(
       map(state => {
-        const partiesFromRequest: PartyDetailsModel[] = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].attendees;
+        const partiesFromRequest: PartyDetailsModel[] = state.hearingRequest.hearingRequestMainModel.partyDetails;
         const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
         return partiesFromRequest.map((partyInfo) => {
-          const name = ParticipantAttendenceAnswerConverter.getPartyName(partiesFromServiceValue, partyInfo);
+          const name = partyInfo.partyName ? partyInfo.partyName : partiesFromServiceValue.find(pty => pty.partyID === partyInfo.partyID).partyName;
           const value = ParticipantAttendenceAnswerConverter.getPartyChannelValue(partyChannels, partyInfo);
           return `${name} - ${value}`;
         }).join('<br>');

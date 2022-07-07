@@ -411,21 +411,31 @@ describe('CaseListComponent', () => {
     const id = '12345678';
 
     it('should select appropriate case from location hash', () => {
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`caseList#manage_${id}`);
+      const navigateCallsBefore = mockRouter.navigateCalls.length;
       const caseItem = { id } as Case;
       wrapper.cases = [ caseItem ];
       fixture.detectChanges();
-      component.setSelectedCase(caseItem);
       expect(component.getSelectedCase()).toEqual(caseItem);
-      expect(component.newUrl).toContain(`bob#manage_${id}`);
+      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
+      const lastNavigateCall = mockRouter.navigateCalls.pop();
+      expect(lastNavigateCall).toBeDefined();
+      expect(lastNavigateCall.commands).toEqual([ 'caseList' ]);
+      expect(lastNavigateCall.extras).toEqual({ fragment: `manage_${id}` });
     });
 
     it('should handle a location hash for a case that does not exist', () => {
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`caseList#manage_${id}`);
+      const navigateCallsBefore = mockRouter.navigateCalls.length;
       const caseItem = { id: '99999999' } as Case;
       wrapper.cases = [ caseItem ];
       fixture.detectChanges();
-      component.setSelectedCase(caseItem);
-      expect(component.getSelectedCase()).toEqual(caseItem);
-      expect(component.newUrl).toEqual(`bob#manage_${caseItem.id}`);
+      expect(component.getSelectedCase()).toBeNull();
+      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
+      const lastNavigateCall = mockRouter.navigateCalls.pop();
+      expect(lastNavigateCall).toBeDefined();
+      expect(lastNavigateCall.commands).toEqual([ 'caseList' ]);
+      expect(lastNavigateCall.extras).toBeUndefined();
     });
   });
 

@@ -19,6 +19,6 @@ export interface HearingDetailsModel {
   leadJudgeContractType?: string;
   panelRequirements: PanelRequirementsModel;
   hearingIsLinkedFlag?: boolean;
-  amendReasonCodes: string[];
+  amendReasonCode: string;
   hearingChannels: string[];
 }

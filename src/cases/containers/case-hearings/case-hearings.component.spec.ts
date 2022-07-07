@@ -38,7 +38,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [],
   };
 
@@ -49,7 +49,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [],
   };
 
@@ -60,7 +60,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [],
   };
 
@@ -71,7 +71,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId2',
-    panelMemberId: 'hearingJudgeId2',
+    panelMemberIds: ['hearingJudgeId2'],
     attendees: [],
   };
 
@@ -82,7 +82,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId3',
-    panelMemberId: 'hearingJudgeId3',
+    panelMemberIds: ['hearingJudgeId3'],
     attendees: [],
   };
 
@@ -93,7 +93,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [],
   };
 
@@ -104,7 +104,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [],
   };
 
@@ -115,7 +115,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [],
   };
 
@@ -126,7 +126,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [],
   };
 
@@ -137,7 +137,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [],
   };
 
@@ -148,7 +148,7 @@ describe('CaseHearingsComponent', () => {
     hearingVenueId: 'venue 11',
     hearingRoomId: 'room 11',
     hearingJudgeId: 'child',
-    panelMemberId: 'child',
+    panelMemberIds: ['child'],
     attendees: [],
   };
 
@@ -277,7 +277,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   };
 
   const CASE_HEARING_9: HearingListModel = {
@@ -292,7 +292,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
   };
 
@@ -308,7 +308,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
   };
 
@@ -325,7 +325,7 @@ describe('CaseHearingsComponent', () => {
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   };
 
   const HEARINGS_LIST: HearingListMainModel = {

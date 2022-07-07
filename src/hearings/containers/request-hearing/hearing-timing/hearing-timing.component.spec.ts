@@ -98,7 +98,7 @@ describe('HearingTimingComponent', () => {
   it('should check initForm', () => {
     component.priorityFormInfo.startDate = new Date('02-03-2021');
     component.initForm();
-    expect(component.firstHearingFormGroup.get('firstHearingDate_day').value).toBeNull();
+    expect(component.firstHearingFormGroup.get('firstHearingDate_day').value).toBe(3);
   });
 
   it('should set checkedHearingAvailability', () => {
@@ -186,7 +186,7 @@ describe('HearingTimingComponent', () => {
     expect(component.checkedHearingAvailability).toBe(RadioOptions.NO);
     component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart = '01-01-2021';
     component.getFormData();
-    expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
+    expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
     component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd = '01-01-2021';
     component.getFormData();
     expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);

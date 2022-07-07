@@ -28,7 +28,7 @@ describe('Hearing List Reducer', () => {
           hearingVenueId: 'venue 1',
           hearingRoomId: 'room 1',
           hearingJudgeId: 'child',
-          panelMemberId: 'child',
+          panelMemberIds: ['child'],
           attendees: [],
         };
         const CASE_HEARING_1: HearingListModel = {

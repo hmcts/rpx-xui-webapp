@@ -187,17 +187,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click task column link {string} at row {int}', async function(colName, rowPos){
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await taskListTable.clickTaskColLink(colName, rowPos);
-        })
+        await taskListTable.clickTaskColLink(colName,rowPos);
     });
 
     When('I click task column link {string} at row {int}, I see case details page', async function (colName, rowPos) {
         
         await BrowserWaits.waitForPageNavigationOnAction(async () => {
-            await BrowserWaits.retryWithActionCallback(async () => {
-                await taskListTable.clickTaskColLink(colName, rowPos);
-            });
+            await taskListTable.clickTaskColLink(colName, rowPos);
         });
 
         await BrowserWaits.retryWithActionCallback(async () => {

@@ -75,15 +75,6 @@ class BrowserUtil{
         
     }
 
-    onLDReceivedLogFeatureValue(name){
-        let togglesToLogs = global.scenarioData['featureToggleToLog']
-        if (!togglesToLogs){
-            global.scenarioData['featureToggleToLog'] = [];
-            togglesToLogs = global.scenarioData['featureToggleToLog'];
-        } 
-        togglesToLogs.push(name)
-    }
-
     async waitForNetworkResponse(url){
         let startTime = new Date();
         let elapsedTime = 0;
@@ -99,7 +90,6 @@ class BrowserUtil{
                     await this.stepWithRetry(async () => global.scenarioData['featureToggles'] = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request')
                     // await browser.sleep(2000);
                     reportLogger.AddMessage("LD response received");
-                    this.logFeatureToggleForScenario();
                     //reportLogger.AddJson(global.scenarioData['featureToggles']);
                     return true;
                 }
@@ -109,23 +99,6 @@ class BrowserUtil{
         reportLogger.AddMessage("LD response not received in 15sec");
 
         return false;
-    }
-
-    logFeatureToggleForScenario(){
-        const ldfeatureToggles = global.scenarioData['featureToggles'];
-        const togglesToLogs = global.scenarioData['featureToggleToLog'];
-        reportLogger.AddMessage(`LOgging scenario features toggle values ${JSON.stringify(togglesToLogs)}`);
-
-        if (!togglesToLogs){
-            return;
-        }
-        const toggleValuesToLog = {};
-        for (let i = 0; i < togglesToLogs.length; i++) {
-            const toggleName = togglesToLogs[i];
-            toggleValuesToLog[toggleName] = ldfeatureToggles[toggleName].value;
-        }
-
-        reportLogger.AddJson(toggleValuesToLog);
     }
 
     async addScreenshot(thisTest, onBrowser){

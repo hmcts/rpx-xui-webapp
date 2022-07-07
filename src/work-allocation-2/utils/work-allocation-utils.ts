@@ -250,13 +250,14 @@ export function addLocationToLocationsByServiceCode(locationsByServices: Locatio
   return locationsByServices;
 }
 
-export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string): LocationsByService[] {
+export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, bookable = false): LocationsByService[] {
   let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.service === service);
   if (!locationsByService) {
-    locationsByServices.push({service, locations: [location]});
+    locationsByServices.push({service, locations: [location], bookable});
   } else {
     const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
-    locationsByService = {service, locations: locationsByService.locations.concat([location])}
+    // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
+    locationsByService = {service, locations: locationsByService.locations.concat([location]), bookable}
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;

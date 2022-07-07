@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Booking, BookingRequest, BookingResponseError, BookingResponseSuccess } from '../models';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class BookingService {
 
   constructor(private readonly http: HttpClient) { }

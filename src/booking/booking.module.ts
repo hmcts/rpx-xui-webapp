@@ -1,5 +1,4 @@
 import * as fromContainers from './containers';
-import * as fromServices from './services';
 
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -12,6 +11,7 @@ import { BookingGuard } from './guards/booking-guard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { LocationDataService } from '../work-allocation-2/services';
+import { BookingService } from './services';
 
 @NgModule({
   imports: [
@@ -31,7 +31,7 @@ import { LocationDataService } from '../work-allocation-2/services';
     AlertService,
     LocationDataService,
     BookingGuard,
-    ...fromServices.services
+    BookingService
   ]
 })
 export class BookingModule { }

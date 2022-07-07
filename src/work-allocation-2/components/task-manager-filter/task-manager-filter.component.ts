@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { BookingCheckType, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
@@ -9,7 +9,6 @@ import { filter, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
-import { Location } from '../../models/dtos';
 import { getRoleCategory } from '../../utils';
 
 @Component({
@@ -86,7 +85,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelectedError: null,
       enableAddLocationButton: false,
       type: 'find-location',
-      radioSelectionChange: 'selectLocation=search'
+      radioSelectionChange: 'selectLocation=search',
+      bookingCheckType: BookingCheckType.NO_CHECK
     };
   }
 

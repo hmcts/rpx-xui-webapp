@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
-import {catchError, map, switchMap, take} from 'rxjs/operators';
-import {JudicialUserModel} from '../models/judicialUser.model';
-import {JudicialRefDataService} from '../services/judicial-ref-data.service';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
+import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { JudicialUserModel } from '../models/judicialUser.model';
+import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
 
 @Injectable({
@@ -33,9 +33,11 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
       map(hearingRequest => {
         let panelMemberIds: string[] = [];
+        let hearingJudgeIds: string[] = [];
         if (hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule) {
-          panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.panelMemberIds || [];
-          panelMemberIds = [...panelMemberIds, hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingJudgeId];
+          panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.map(member => member.panelMemberId).filter(memberId => memberId) || [];
+          hearingJudgeIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.map(judge => judge.hearingJudgeId).filter(judgeId => judgeId) || [];
+          panelMemberIds = [...panelMemberIds, ...hearingJudgeIds];
         }
         return panelMemberIds;
       })

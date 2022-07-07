@@ -340,7 +340,8 @@ export enum HearingResult {
 }
 
 export enum HearingActualAddEditSummaryEnum {
-  HearingResultError = 'Enter a hearing result'
+  HearingResultError = 'Enter a hearing result',
+  ConfirmUpdateError  = 'Confirm or update before continue'
 }
 
 export enum HearingTemplate {

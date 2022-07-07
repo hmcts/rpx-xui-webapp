@@ -65,9 +65,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click work allocation case column link {string} at row {int}', async function (colName, rowPos) {
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await casesListTable.clickCaseColLink(colName, rowPos);
-        });
+        await casesListTable.clickCaseColLink(colName, rowPos);
     });
 
 });

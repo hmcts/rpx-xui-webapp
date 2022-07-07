@@ -10,7 +10,7 @@ dependencies:
     version: 2.4.1
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
   - name: redis
-    version: 16.13.0
+    version: 16.11.3
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
   - name: idam-pr

@@ -23,7 +23,7 @@ import {
   WorkAllocationCaseService,
   WorkAllocationFeatureService
 } from '../../services';
-import { getMockCaseRoles, getMockCases, MockRouter } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';
 
@@ -41,7 +41,7 @@ describe('AllWorkCaseComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
-  const routerMock = new MockRouter();
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);

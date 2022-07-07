@@ -25,7 +25,7 @@ export enum LaCaseStatus {
   LISTED = 'LISTED',
   PENDING_RELISTING = 'PENDING_RELISTING',
   CLOSED = 'CLOSED',
-  EXCEPTION = 'EXCEPTION'
+  EXCEPTION = 'EXCEPTION',
 }
 
 export enum ListingStatus {

@@ -1,4 +1,4 @@
-@fullfunctional
+
 Feature: WA Release 1: : Work allocations task list, Available list and Task manager
 
     Scenario Outline: View tasks, E2E journey of Caseworker-ia-officer user

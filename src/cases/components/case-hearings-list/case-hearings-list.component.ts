@@ -66,7 +66,7 @@ export class CaseHearingsListComponent implements OnInit {
     return !!hearingGroupRequestId;
   }
 
-  public isAwaitingListingOrUpdateRequestedOrListed(exuiDisplayStatus: EXUIDisplayStatusEnum) {
+  public isLinkableStatus(exuiDisplayStatus: EXUIDisplayStatusEnum) {
     return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING
       || exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED
       || exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED;

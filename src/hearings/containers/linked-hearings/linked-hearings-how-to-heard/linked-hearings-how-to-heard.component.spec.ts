@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
+import * as _ from 'lodash';
 import {initialState} from '../../../hearing.test.data';
 import {
   EXUIDisplayStatusEnum,
@@ -28,8 +29,8 @@ const mockLinkedHearingGroup = {
       groupComments: 'Comment 1',
     },
     hearingsInGroup: [
-      {hearingId: 'h1000001', hearingOrder: 2, caseRef: '4652724902696213'},
-      {hearingId: 'h1000002', hearingOrder: 1, caseRef: '8254902572336147'},
+      {hearingId: 'h100010', hearingOrder: 1, caseRef: '4652724902696213'},
+      {hearingId: 'h1000002', hearingOrder: 2, caseRef: '8254902572336147'},
     ],
   },
   lastError: null,
@@ -41,7 +42,7 @@ const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
     reasonsForLink: ['Linked for a hearing'],
     caseHearings: [
       {
-        hearingID: 'h1000001',
+        hearingID: 'h100010',
         hearingType: 'Direction Hearings',
         hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
         lastResponseReceivedDateTime: '',
@@ -115,7 +116,7 @@ const hearingsService = new HearingsService(mockedHttpClient);
 const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
 const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
+fdescribe('Linking - HowLinkedHearingsBeHeardComponent', () => {
 
   beforeEach(async(() => {
     ConfigureTestBedModule(hearingsService, mockRouter, Mode.LINK_HEARINGS);
@@ -199,7 +200,7 @@ describe('Manage Linking - HowLinkedHearingsBeHeardComponent', () => {
     mockStore.pipe.and.returnValue(of(hearingLinksMock));
     fixture.detectChanges();
     component.onSubmit();
-    expect(component.validationErrors.length).toBe(0);
+    expect(component.validationErrors.length).toBe(1);
   });
 
   it('should have a order group preselected', () => {
@@ -218,11 +219,14 @@ describe('Manage Linking - HowLinkedHearingsBeHeardComponent', () => {
 });
 
 function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterService: any, modeOfLinking: Mode) {
+  const STATE = _.cloneDeep(initialState);
+  STATE.hearings.hearingLinks.linkedHearingGroup = mockLinkedHearingGroup.linkedHearingGroup;
+
   TestBed.configureTestingModule({
     declarations: [HowLinkedHearingsBeHeardComponent],
     imports: [ReactiveFormsModule, RouterTestingModule, HearingsPipesModule],
     providers: [
-      provideMockStore({initialState}),
+      provideMockStore({initialState: STATE}),
       {provide: HearingsService, useValue: hearingMockService},
       {provide: Router, useValue: mockRouterService},
       {

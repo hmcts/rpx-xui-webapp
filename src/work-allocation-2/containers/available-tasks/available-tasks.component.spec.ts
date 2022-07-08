@@ -97,6 +97,10 @@ describe('AvailableTasksComponent', () => {
         {
           name: 'types-of-work',
           value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
+        },
+        {
+          name: 'services',
+          value: ['IA', 'CIVIL']
         }
       ]
     };

@@ -23,15 +23,17 @@ const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
   const searchTerm = req.body.searchTerm;
-  const serviceIds = req.body.serviceIds;
+  let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
-  const userLocations = req.body.userLocations;
+  const userLocations = req.body.userLocations ? req.body.userLocations : [];
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
     res.status(200).send([]);
   }
-  const serviceIdArray = serviceIds.split(',');
-  const courtTypeIds = getCourtTypeIdsByService(serviceIdArray);
+  if (typeof serviceIds === 'string') {
+    serviceIds = serviceIds.split(',');
+  }
+  const courtTypeIds = getCourtTypeIdsByService(serviceIds);
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
   // const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}`;

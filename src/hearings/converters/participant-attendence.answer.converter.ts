@@ -22,12 +22,12 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
     return (partyDetails && partyDetails.partyName) || partyInfo.partyID;
   }
 
-  public transformAnswer(hearingState$: Observable<State>): Observable<string> {
+  public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     const partyChannels = this.route.snapshot.data.partyChannels;
 
     return hearingState$.pipe(
       map(state => {
-        const partiesFromRequest: PartyDetailsModel[] = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].attendees;
+        const partiesFromRequest: PartyDetailsModel[] = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index].attendees;
         const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
         return partiesFromRequest.map((partyInfo) => {
           const name = ParticipantAttendenceAnswerConverter.getPartyName(partiesFromServiceValue, partyInfo);

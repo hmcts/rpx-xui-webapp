@@ -9,12 +9,17 @@ export class CourtLocationAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {
   }
 
-  public transformAnswer(hearingState$: Observable<State>): Observable<string> {
-    const courtLocation: LocationModel[] = this.route.snapshot.data.courtLocation || [];
-
+  public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
+    const courtLocations: LocationModel[] = this.route.snapshot.data.courtLocation || [];
     return hearingState$.pipe(
-      map(() => {
-        return courtLocation.length && courtLocation[0].site_name;
+      map(state => {
+        const hearingVenueId = state.hearingRequest.hearingRequestMainModel.hearingResponse
+          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
+          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length
+          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index]
+          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index].hearingVenueId;
+        const courtLocationInfo = courtLocations.find(courtLocation => courtLocation.epimms_id === hearingVenueId);
+        return courtLocationInfo ? courtLocationInfo.site_name : '';
       })
     );
   }

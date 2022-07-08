@@ -116,11 +116,11 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           key: 'None / Available tasks',
-          label: 'None / Available tasks'
+          label: 'Unassigned'
         },
         {
           key: 'Specific person',
-          label: 'Specific person'
+          label: 'Assigned to a person'
         }
       ],
       minSelected: 1,
@@ -130,7 +130,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       changeResetFields: ['person', 'findPersonControl'],
       lineBreakBefore: true,
       findPersonField: 'person',
-      title: 'Person',
+      title: 'Tasks',
       type: 'radio'
     };
   }
@@ -205,7 +205,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a task type',
       maxSelectedError: null,
       lineBreakBefore: true,
-      title: 'Task type',
+      title: 'Tasks by role type',
       type: 'select'
     };
   }

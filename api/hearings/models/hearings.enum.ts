@@ -22,14 +22,10 @@ export enum HMCStatus {
 }
 
 export enum LaCaseStatus {
-  CASE_CREATED = 'Case Created',
-  AWAITING_LISTING = 'Awaiting Listing',
-  LISTED = 'Listed',
-  PENDING_RELISTING = 'Pending Relisting',
-  HEARING_COMPLETED = 'Hearing Completed',
-  CASE_CLOSED = 'Case Closed',
-  CANCELLED = 'Cancelled',
-  EXCEPTION = 'Request failure',
+  LISTED = 'LISTED',
+  PENDING_RELISTING = 'PENDING_RELISTING',
+  CLOSED = 'CLOSED',
+  EXCEPTION = 'EXCEPTION',
 }
 
 export enum ListingStatus {

@@ -42,13 +42,10 @@ export enum ListingStatus {
 }
 
 export enum LaCaseStatus {
-  CASE_CREATED = 'Case Created',
-  AWAITING_LISTING = 'Awaiting Listing',
-  LISTED = 'Listed',
-  PENDING_RELISTING = 'Pending Relisting',
-  HEARING_COMPLETED = 'Hearing Completed',
-  CASE_CLOSED = 'Case Closed',
-  CANCELLED = 'Cancelled',
+  LISTED = 'LISTED',
+  PENDING_RELISTING = 'PENDING_RELISTING',
+  CLOSED = 'CLOSED',
+  EXCEPTION = 'EXCEPTION',
 }
 
 export enum EXUISectionStatusEnum {
@@ -340,7 +337,8 @@ export enum HearingResult {
 }
 
 export enum HearingActualAddEditSummaryEnum {
-  HearingResultError = 'Enter a hearing result'
+  HearingResultError = 'Enter a hearing result',
+  ConfirmUpdateError  = 'Confirm or update before continue'
 }
 
 export enum HearingTemplate {

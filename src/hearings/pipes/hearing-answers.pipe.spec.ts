@@ -2,6 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
 import {cold} from 'jasmine-marbles';
 import {of} from 'rxjs';
+import * as _ from 'lodash';
 import {
   caseFlagsRefData,
   caseTypeRefData,
@@ -61,7 +62,7 @@ describe('HearingAnswersPipe', () => {
     is_case_management_location: '',
     is_hearing_location: ''
   }];
-  const STATE: State = initialState.hearings;
+  const STATE: State = _.cloneDeep(initialState.hearings);
   let hearingAnswersPipe: HearingAnswersPipe;
   let router: any;
   const locationsDataService = jasmine.createSpyObj('LocationsDataService', ['getLocationById']);

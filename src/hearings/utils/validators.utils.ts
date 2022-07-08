@@ -79,6 +79,13 @@ export class ValidatorsUtils {
     return businessDays;
   }
 
+  public isWeekendDate(date: moment.Moment): boolean {
+    if (date && date.day() === 0 || date.day() === 6) {
+      return true;
+    }
+    return false;
+  }
+
   public hearingDateRangeValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const firstDateRangeList = Object.values(control.value[Object.keys(control.value)[0]]);
@@ -90,12 +97,13 @@ export class ValidatorsUtils {
       const firstDate = moment(firstDateRangeList.join('-'), HearingDateEnum.DefaultFormat);
       const secondDate = moment(secondDateRangeList.join('-'), HearingDateEnum.DefaultFormat);
       const isLatestDate = (isValidFirstDate && isValidSecondDate) ? secondDate >= firstDate : (isValidFirstDate || isValidSecondDate);
-      const numberOfBusinessDays = this.calcBusinessDays(firstDate, secondDate);
+      const isEarliestDateWeekendDate = this.isWeekendDate(firstDate);
+      const isLatestDateWeekendDate = this.isWeekendDate(secondDate);
       return (isValidFirstDate || isValidSecondDate) && (firstDateNullLength === 0 || firstDateNullLength === 3) && (secondDateNullLength === 0 || secondDateNullLength === 3) &&
         (firstDate.isValid() || secondDate.isValid()) && isLatestDate &&
         (isValidFirstDate ? (firstDate.isAfter() || firstDate.isSame(new Date(), 'd')) : true) &&
         (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true) &&
-        numberOfBusinessDays !== 0
+        !isEarliestDateWeekendDate && !isLatestDateWeekendDate
         ? null : { isValid: false };
     };
   }

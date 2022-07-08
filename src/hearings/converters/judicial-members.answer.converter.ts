@@ -8,16 +8,17 @@ import { AnswerConverter } from './answer.converter';
 export class JudicialMembersAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) { }
 
-  public transformAnswer(hearingState$: Observable<State>): Observable<string> {
+  public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     const judicialUsersList: JudicialUserModel[] = this.route.snapshot.data.judicialResponseUsers || [];
-
     return hearingState$.pipe(
-      map(() => {
-        const judicialNames: string[] = [];
-        judicialUsersList.forEach(judgeInfo => {
-          judicialNames.push(judgeInfo.knownAs ? judgeInfo.knownAs : judgeInfo.fullName);
-        });
-        return judicialNames.join('<br>');
+      map(state => {
+        const hearingJudgeId = state.hearingRequest.hearingRequestMainModel.hearingResponse
+          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
+          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length
+          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index]
+          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index].hearingJudgeId;
+        const judgeInfo = judicialUsersList.find(judgeInfo => judgeInfo.personalCode === hearingJudgeId);
+        return judgeInfo ? judgeInfo.knownAs : '';
       })
     );
   }

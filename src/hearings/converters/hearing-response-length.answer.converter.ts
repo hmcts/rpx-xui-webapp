@@ -6,10 +6,10 @@ import { AnswerConverter } from './answer.converter';
 
 export class HearingResponseLengthAnswerConverter implements AnswerConverter {
 
-  public transformAnswer(hearingState$: Observable<State>): Observable<string> {
+  public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     return hearingState$.pipe(
       map(state => {
-        const hearingSchedule = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0] || null;
+        const hearingSchedule = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index] || null;
         const startTime = moment(hearingSchedule && hearingSchedule.hearingStartDateTime);
         const endTime = moment(hearingSchedule && hearingSchedule.hearingEndDateTime);
         const duration = moment.duration(endTime.diff(startTime)).asMinutes();

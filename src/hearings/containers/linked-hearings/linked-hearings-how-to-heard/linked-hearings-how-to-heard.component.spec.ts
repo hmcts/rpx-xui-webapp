@@ -116,7 +116,7 @@ const hearingsService = new HearingsService(mockedHttpClient);
 const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
 const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-fdescribe('Linking - HowLinkedHearingsBeHeardComponent', () => {
+describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
 
   beforeEach(async(() => {
     ConfigureTestBedModule(hearingsService, mockRouter, Mode.LINK_HEARINGS);

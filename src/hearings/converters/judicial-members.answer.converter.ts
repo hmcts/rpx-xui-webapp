@@ -17,8 +17,8 @@ export class JudicialMembersAnswerConverter implements AnswerConverter {
           && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length
           && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index]
           && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index].hearingJudgeId;
-        const judgeInfo = judicialUsersList.find(judgeInfo => judgeInfo.personalCode === hearingJudgeId);
-        return judgeInfo ? judgeInfo.knownAs : '';
+        const judicialUserInfo = judicialUsersList.find(judicialUser => judicialUser.personalCode === hearingJudgeId);
+        return judicialUserInfo ? judicialUserInfo.knownAs : '';
       })
     );
   }

@@ -1,7 +1,16 @@
-@ng 
+@ng @test
 Feature: Navigation header tabs
 
     Scenario Outline: Primanry nav headers for user "<roleType>" "<useridentifier>" and roles "<rolesIdentifiers>"
+        Then I Log to report launch darkly feature toggle values
+            | name                  |
+            | mc-menu-items         |
+            | mc-menu-theme         |
+            | MC_Notice_of_Change   |
+            | MC_Work_Allocation    |
+            | mc-user-type-roles    |
+            | feature-global-search |
+            | feature-refunds       |
         Given I set MOCK with user identifer "<useridentifier>" role type "<roleType>" and role identifiers "<rolesIdentifiers>"
         Given I init MockApp
         Given I start MockApp

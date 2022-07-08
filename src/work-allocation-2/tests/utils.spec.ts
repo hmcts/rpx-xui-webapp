@@ -1,4 +1,4 @@
-import { NavigationExtras } from '@angular/router';
+import { NavigationExtras, RouterEvent } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { CaseRoleDetails } from 'src/role-access/models/case-role-details.interface';
 
@@ -128,6 +128,13 @@ export function getMockTasks(): Task[] {
       taskName: 'Review respondent evidence',
       dueDate: new Date(628021800000),
       warnings: true,
+      warning_list: {
+        values: [
+          {
+            code: '125',
+            text: 'this is a warning message 3'
+          }
+      ]},
       actions: [
         {
           id: 'actionId1',
@@ -199,6 +206,8 @@ export function getMockTaskServiceConfig(): TaskServiceConfig {
 }
 
 export class MockRouter {
+  public navigateByUrl = jasmine.createSpy();
+  public events = {subscribe(): Observable<RouterEvent> { return of(null); }}
   private pUrl: string = 'bob';
   public get url(): string {
     return this.pUrl;

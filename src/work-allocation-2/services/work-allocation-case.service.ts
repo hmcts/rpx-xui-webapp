@@ -4,7 +4,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { switchMap} from 'rxjs/operators';
+import { map, switchMap, tap} from 'rxjs/operators';
 import Task from '../models/tasks/task.model';
 
 const BASE_URL: string = '/workallocation2/case';

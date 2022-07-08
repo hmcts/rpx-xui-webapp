@@ -353,24 +353,31 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   return cases;
 }
 
-export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery {
-  return {
-    native_es_query: {
-      query: {
-        terms: {
-          reference: caseIds,
+export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery [] {
+  const elasticQueries = new Array<ElasticSearchQuery>();
+  const chunkSize = 200;
+  for (let i = 0; i < caseIds.length; i += chunkSize) {
+    const chunk = caseIds.slice(i, i + chunkSize);
+    const elasticQuery = {
+      native_es_query: {
+        query: {
+          terms: {
+            reference: chunk,
+          },
         },
+        sort: [
+          // does not seem to allow sorting by case name (attempted both pre and post v6.8 syntax)
+          // this is either because case name not present for all cases or because nested data cannot be sorted in this instance
+          //{ "case_data.caseName": {mode: "max", order: "asc", nested_path: "case_data"}},
+          { id: {order: "asc"} },
+        ],
+        size,
       },
-      sort: [
-        // does not seem to allow sorting by case name (attempted both pre and post v6.8 syntax)
-        // this is either because case name not present for all cases or because nested data cannot be sorted in this instance
-        //{ "case_data.caseName": {mode: "max", order: "asc", nested_path: "case_data"}},
-        { id: {order: "asc"} },
-      ],
-      size,
-    },
-    supplementary_data: ['*'],
-  };
+      supplementary_data: ['*'],
+    };
+    elasticQueries.push(elasticQuery);
+  }
+  return elasticQueries;
 }
 
 export async function getRoleAssignmentsByQuery(query: any, req: express.Request): Promise<any> {

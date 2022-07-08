@@ -904,13 +904,13 @@ describe('workAllocation.utils', () => {
     it('should create a query with at least three case ids', () => {
       const caseIds = [1589185982594513, 1589185060514243, 1589185060514243];
       const result = constructElasticSearchQuery(caseIds, 0, 1000);
-      expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
+      expect(result[0].native_es_query.query.terms).to.deep.equal({reference: caseIds});
     });
 
     it('should create a query with no case ids', () => {
-      const caseIds = [];
+      const caseIds = ['234'];
       const result = constructElasticSearchQuery(caseIds, 0, 1000);
-      expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
+      expect(result[0].native_es_query.query.terms).to.deep.equal({reference: caseIds});
     });
   });
 

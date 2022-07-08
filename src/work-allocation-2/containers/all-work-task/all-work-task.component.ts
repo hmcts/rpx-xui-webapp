@@ -104,14 +104,13 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location: string, service: string, selectPerson: string, person: Person, taskType: string, searchTerm: string }): void {
+  public onSelectionChanged(selection: { location: string, service: string, selectPerson: string, person: Person, taskType: string, taskName: string }): void {
     this.selectedLocation.id = selection.location;
     this.selectedServices = [selection.service];
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
-    this.selectedTaskName = selection.searchTerm;
-    // this.selectedTaskName = 'Review Hearing bundle';
+    this.selectedTaskName = selection.taskName;
     this.onPaginationHandler(1);
   }
 

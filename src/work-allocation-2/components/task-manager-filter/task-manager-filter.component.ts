@@ -67,7 +67,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
-      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType'],
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType', 'findTaskNameControl'],
       title: 'Service',
       type: 'select'
     };
@@ -218,12 +218,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       minSelected: 1,
       maxSelected: 1,
       findLocationField: 'service',
-      enableCondition: 'selectTaskName=search',
       minSelectedError: 'You must select a task name',
       maxSelectedError: null,
-      enableAddLocationButton: false,
+      enableAddTaskNameButton: false,
       type: 'find-task-name',
-      radioSelectionChange: 'selectTaskName=search'
     };
   }
 

@@ -213,7 +213,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'hearingLength',
         answerTitle: 'Length of hearing',
         answerSource: AnswerSource.HEARING_LENGTH,
-        changeLink: '/hearings/request/hearing-timing#durationhours',
+        changeLink: '/hearings/request/hearing-timing#durationdays',
         isAmendedSource: AnswerSource.HEARING_LENGTH,
       },
       {

@@ -169,12 +169,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       .subscribe((f: FilterSetting) => {
         const newLocations = f.fields.find((field) => field.name === 'locations').value;
         const typesOfWork = f.fields.find((field) => field.name === 'types-of-work');
+        const services = f.fields.find((field) => field.name === 'services').value;
         const newWorkTypes = typesOfWork ? typesOfWork.value : [];
         this.resetPagination(this.selectedLocations, newLocations);
         // TODO - restore this line when LocationModel changes to epimms_id
         // this.selectedLocations = (newLocations as unknown as LocationModel[]).map((l) => l.epimms_id);
         this.selectedLocations = (newLocations).map((l) => l.epimms_id);
         this.selectedWorkTypes = newWorkTypes.filter(workType => workType !== 'types_of_work_all');
+        this.selectedServices = services.filter(service => service !== 'services_all');
         if (this.selectedLocations.length) {
           this.doLoad();
         }

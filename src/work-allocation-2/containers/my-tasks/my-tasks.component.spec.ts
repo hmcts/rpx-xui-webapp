@@ -95,6 +95,10 @@ describe('MyTasksComponent', () => {
         {
           name: 'types-of-work',
           value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
+        },
+        {
+          name: 'services',
+          value: ['IA', 'CIVIL']
         }
       ]
     };
@@ -128,7 +132,7 @@ describe('MyTasksComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const exampleLocations = ['location1', 'location2', 'location3'];
     component.selectedLocations = exampleLocations;
-    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[2];
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[3];
     expect(searchParameter.key).toBe('location');
     expect(searchParameter.values).toBe(exampleLocations);
   });
@@ -137,7 +141,7 @@ describe('MyTasksComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
     component.selectedWorkTypes = workTypes;
-    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[3];
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[4];
     expect(searchParameter.key).toBe('work_type');
     expect(searchParameter.values).toBe(workTypes);
   });

@@ -348,16 +348,16 @@ module.exports = mockInstance;
 
 
 const args = minimist(process.argv)
-if (args.standalone){
-    mockInstance.setServerPort(3001);
-    mockInstance.init();
+//if (args.standalone){
+    //mockInstance.setServerPort(3001);
+    //mockInstance.init();
 
-    setUpcaseConfig();
+    //setUpcaseConfig();
     // getDLCaseConfig();
     // collectionDynamicListeventConfig()
     // createCustomCaseDetails();
-    mockInstance.startServer()
-}
+    //mockInstance.startServer()
+//}
 
 function setUpcaseConfig() {
     const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');

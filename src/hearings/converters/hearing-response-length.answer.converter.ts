@@ -12,16 +12,30 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
         const hearingSchedule = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index] || null;
         const startTime = moment(hearingSchedule && hearingSchedule.hearingStartDateTime);
         const endTime = moment(hearingSchedule && hearingSchedule.hearingEndDateTime);
-        const duration = moment.duration(endTime.diff(startTime)).asMinutes();
+        let duration = moment.duration(endTime.diff(startTime)).asMinutes();
+        let days = 0;
+        let hours = 0;
+        let minutes = 0;
         if (duration && duration > 0) {
-          const hours = Math.floor(duration / 60);
-          const minutes = duration % 60;
-          if (hours > 0 && minutes > 0) {
-            return `${hours} hour(s) and ${minutes} minute(s)`;
-          } else if (hours === 0 && minutes > 0) {
-            return `${minutes} minutes`;
-          } else if (hours > 0 && minutes === 0) {
-            return `${hours} hour(s)`;
+          minutes = duration % 60;
+          duration = duration - minutes;
+          days = Math.floor((duration / 60) / 6);
+          hours = Math.floor((duration / 60) % 6);
+          let formattedHearingLength = '';
+          if (days > 0) {
+            const daysLabel = days > 1 ? 'Days' : 'Day';
+            formattedHearingLength = `${days} ${daysLabel}`;
+          }
+          if (hours > 0) {
+            const hoursLabel = hours > 1 ? 'Hours' : 'Hour';
+            formattedHearingLength = formattedHearingLength.length > 0 ? `${formattedHearingLength} ${hours} ${hoursLabel}` : `${hours} ${hoursLabel}`;
+          }
+          if (minutes > 0) {
+            const minutesLabel = 'Minutes';
+            formattedHearingLength = formattedHearingLength.length > 0 ? `${formattedHearingLength} ${minutes} ${minutesLabel}` : `${minutes} ${minutesLabel}`;
+          }
+          if (formattedHearingLength.length > 0) {
+            return formattedHearingLength;
           }
         }
         return '';

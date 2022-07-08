@@ -37,7 +37,7 @@ describe('RoomIdAnswerConverter', () => {
 
   it('should transform hearing stage', () => {
     const STATE: State = initialState.hearings;
-    const result$ = converter.transformAnswer(of(STATE));
+    const result$ = converter.transformAnswer(of(STATE), 0);
     const room = 'room 3';
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);

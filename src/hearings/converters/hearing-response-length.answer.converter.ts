@@ -43,14 +43,14 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
       : days > 1
         ? `${days} Days`
         : `${days} Day`;
-    
+
     const hours = Math.floor((duration / 60) % 6);
     const formattedHours = hours === 0
       ? ''
       : hours > 1
         ? `${hours} Hours`
         : `${hours} Hour`;
-    
+
     return days > 0 && hours > 0
       ? `${formattedDays} ${formattedHours}`
       : days > 0 && hours === 0

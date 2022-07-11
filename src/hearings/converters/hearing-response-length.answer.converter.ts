@@ -19,29 +19,50 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
   }
 
   public calculateFormattedHearingLength(duration: number): string {
-    let days = 0;
-    let hours = 0;
-    let minutes = 0;
     if (duration && duration > 0) {
-      minutes = duration % 60;
+      const minutes = duration % 60;
       duration = duration - minutes;
-      days = Math.floor((duration / 60) / 6);
-      hours = Math.floor((duration / 60) % 6);
-      let formattedHearingLength = '';
-      if (days > 0) {
-        const daysLabel = days > 1 ? 'Days' : 'Day';
-        formattedHearingLength = `${days} ${daysLabel}`;
-      }
-      if (hours > 0) {
-        const hoursLabel = hours > 1 ? 'Hours' : 'Hour';
-        formattedHearingLength = formattedHearingLength.length > 0 ? `${formattedHearingLength} ${hours} ${hoursLabel}` : `${hours} ${hoursLabel}`;
-      }
-      if (minutes > 0) {
-        const minutesLabel = 'Minutes';
-        formattedHearingLength = formattedHearingLength.length > 0 ? `${formattedHearingLength} ${minutes} ${minutesLabel}` : `${minutes} ${minutesLabel}`;
-      }
-      return formattedHearingLength;
+      const formattedDaysAndHours = this.calculateFormattedDaysAndHours(duration);
+      const formattedMinutes = this.calculateFormattedMinutes(minutes);
+
+      return formattedDaysAndHours.length > 0 && formattedMinutes.length > 0
+        ? `${formattedDaysAndHours} ${formattedMinutes}`
+        : formattedDaysAndHours.length > 0 && formattedMinutes.length === 0
+          ? `${formattedDaysAndHours}`
+          : formattedDaysAndHours.length === 0 && formattedMinutes.length > 0
+            ? `${formattedMinutes}`
+            : '';
     }
     return '';
+  }
+
+  public calculateFormattedDaysAndHours(duration: number): string {
+    const days = Math.floor((duration / 60) / 6);
+    const formattedDays = days === 0
+      ? ''
+      : days > 1
+        ? `${days} Days`
+        : `${days} Day`;
+    
+    const hours = Math.floor((duration / 60) % 6);
+    const formattedHours = hours === 0
+      ? ''
+      : hours > 1
+        ? `${hours} Hours`
+        : `${hours} Hour`;
+    
+    return days > 0 && hours > 0
+      ? `${formattedDays} ${formattedHours}`
+      : days > 0 && hours === 0
+        ? `${formattedDays}`
+        : days === 0 && hours > 0
+          ? `${formattedHours}`
+          : '';
+  }
+
+  public calculateFormattedMinutes(minutes: number): string {
+    return minutes > 0
+    ? `${minutes} Minutes`
+    : '';
   }
 }

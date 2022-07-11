@@ -3,9 +3,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import { HearingLinksStateData } from '../../../../hearings/models/hearingLinksStateData.model';
 import { initialState } from '../../../hearing.test.data';
-import { GroupLinkType, HMCStatus, Mode } from '../../../models/hearings.enum';
-import { HearingDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import {
+  EXUIDisplayStatusEnum,
+  EXUISectionStatusEnum,
+  GroupLinkType, HearingListingStatusEnum,
+  HMCStatus,
+  Mode
+} from '../../../models/hearings.enum';
+import {
+  HearingDetailModel,
+  LinkedCaseHearingsResult,
+} from '../../../models/linkHearings.model';
+import { CaseReferencePipe } from '../../../pipes/case-reference.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
@@ -20,14 +31,15 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   const hearingId = 'h100002';
   const hearingGroupRequestId = 'g1000000';
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+
   const mockRoute = {
     snapshot: {
       params: {
-        caseId: {caseId},
-        hearingId: {hearingId}
+        caseId: { caseId },
+        hearingId: { hearingId }
       },
       data: {
-        mode: Mode.MANAGE_HEARINGS
+        mode: Mode.MANAGE_HEARINGS,
       }
     }
   };
@@ -52,63 +64,27 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
         hearingOrder: 3,
       }],
   };
-  const source: ServiceLinkedCasesModel[] = [
+
+  const linkedCases: LinkedCaseHearingsResult[] = [
     {
-      caseReference: '4652724902696213',
+      caseRef: '4652724902696213',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: [
-        'Linked for a hearing'
-      ]
-    },
-    {
-      caseReference: '5283819672542864',
-      caseName: 'Smith vs Peterson',
-      reasonsForLink: [
-        'Linked for a hearing',
-        'Progressed as part of lead case'
-      ]
-    },
-    {
-      caseReference: '8254902572336147',
-      caseName: 'Smith vs Peterson',
-      reasonsForLink: [
-        'Familial',
-        'Guardian',
-        'Linked for a hearing'
-      ],
-      hearings: [{
-        hearingId: 'h100010',
-        hearingStage: HMCStatus.UPDATE_REQUESTED,
-        isSelected: false,
-        hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false
-      }, {
-        hearingId: 'h100012',
-        hearingStage: HMCStatus.UPDATE_REQUESTED,
-        isSelected: false,
-        hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false
-      }]
-    }
-  ];
-  const linkedCases = [
-    {
-      caseReference: '4652724902696213',
-      caseName: 'Smith vs Peterson',
-      hearingStage: 'Initial',
-      position: 2
-    },
-    {
-      caseReference: '5283819672542864',
-      caseName: 'Smith vs Peterson',
-      hearingStage: 'Initial',
+      hearingID: 'h100000',
+      hearingType: 'Initial',
       position: 1
+    },
+    {
+      caseRef: '5283819672542864',
+      caseName: 'Smith vs Peterson',
+      hearingID: 'h100000',
+      hearingType: 'Init',
+      position: 2
     }
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [LinkedHearingsCheckYourAnswersComponent],
+      declarations: [CaseReferencePipe, LinkedHearingsCheckYourAnswersComponent],
       providers: [
         provideMockStore({ initialState }),
         { provide: ActivatedRoute, useValue: mockRoute },
@@ -128,20 +104,10 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set hearing linked group for link hearings', () => {
-    const setDisplayRowSpy = spyOn(component, 'setDisplayRow');
-    const setCancelButtonTextSpy = spyOn(component, 'setCancelButtonText');
-    component.hearingLinks = initialState.hearings.hearingLinks;
-    component.isManageLink = false;
-    component.setHearingLinkedGroup(source);
-    expect(setDisplayRowSpy).toHaveBeenCalledTimes(3);
-    expect(setCancelButtonTextSpy).toHaveBeenCalled();
-  });
-
   it('should verify cancel button text', () => {
     component.isManageLink = true;
     component.isManageJourneyFinalPage = false;
-    component.linkedCases = linkedCases;
+    component.linkedCaseHearingsResults = linkedCases;
     component.setCancelButtonText();
     expect(component.cancelButtonText).toEqual('Return to hearings');
     component.isManageLink = false;
@@ -151,10 +117,10 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
 
   it('should sort display records', () => {
     component.showPositionColumn = true;
-    component.linkedCases = linkedCases;
+    component.linkedCaseHearingsResults = linkedCases;
     component.sortDisplayRecords();
-    expect(component.linkedCases[0].position).toEqual(1);
-    expect(component.linkedCases[1].position).toEqual(2);
+    expect(component.linkedCaseHearingsResults[0].position).toEqual(1);
+    expect(component.linkedCaseHearingsResults[1].position).toEqual(2);
   });
 
   it('should display position column return true', () => {
@@ -170,11 +136,20 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
 
   it('should return valid position', () => {
     const hearing: HearingDetailModel = {
-      hearingId: 'h1000001',
-      hearingStage: 'Initial hearing',
       isSelected: true,
-      hearingStatus: '',
-      hearingIsLinkedFlag: false
+      hearingID: 'h1000001',
+      hearingType: 'Case management hearing',
+      hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+      lastResponseReceivedDateTime: '',
+      exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+      exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+      hmcStatus: HMCStatus.HEARING_REQUESTED,
+      responseVersion: 'rv1',
+      hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+      listAssistCaseStatus: '',
+      hearingIsLinkedFlag: true,
+      hearingGroupRequestId: null,
+      hearingDaySchedule: [],
     };
     component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;
@@ -182,16 +157,25 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   });
 
   it('should return position as null', () => {
-    const hearing = {
-      hearingId: 'h1000002',
-      hearingStage: 'Initial hearing',
-      isSelected: false,
-      hearingStatus: '',
-      hearingIsLinkedFlag: false
+    const hearing: HearingDetailModel = {
+      isSelected: true,
+      hearingID: 'h1000001',
+      hearingType: 'Case management hearing',
+      hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+      lastResponseReceivedDateTime: '',
+      exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+      exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+      hmcStatus: HMCStatus.HEARING_REQUESTED,
+      responseVersion: 'rv1',
+      hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+      listAssistCaseStatus: '',
+      hearingIsLinkedFlag: true,
+      hearingGroupRequestId: null,
+      hearingDaySchedule: [],
     };
     component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;
-    expect(component.getPosition(hearing)).toBeNull();
+    expect(component.getPosition(hearing)).toBe(1);
   });
 
   it('should change call navigate', () => {
@@ -272,6 +256,20 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ManageLinkedHearingGroup({
       linkedHearingGroup: null, hearingGroupRequestId, caseId, hearingId
     })));
+  });
+
+  it('should set Hearing Linked Group', () => {
+    const hearingLinksStateData: HearingLinksStateData = {
+      serviceLinkedCases: [],
+      serviceLinkedCasesWithHearings: [{
+        caseRef: '1111222233334445',
+        caseName: 'Pete Smith',
+        reasonsForLink: ['reason3', 'reason4']
+      }],
+      linkedHearingGroup
+    };
+    component.setHearingLinkedGroup(hearingLinksStateData);
+    expect(component.linkedHearingGroup).toBe(linkedHearingGroup);
   });
 
   afterEach(() => {

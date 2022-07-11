@@ -21,7 +21,7 @@
           <input class="govuk-radios__input" id="heardTogether" formControlName="hearingGroup" name="hearingGroup"
                  type="radio" [value]="groupLinkType.SAME_SLOT" (change)="onOptionSelection(groupLinkType.SAME_SLOT)"
                  [checked]="hasGroupSelected(groupLinkType.SAME_SLOT)">
-          <label class="govuk-label govuk-radios__label" for="together">
+          <label class="govuk-label govuk-radios__label" for="heardTogether">
             Hearings should be heard together
           </label>
         </div>
@@ -29,7 +29,7 @@
           <input class="govuk-radios__input" id="particularOrder" formControlName="hearingGroup" name="hearingGroup"
                  type="radio" [value]="groupLinkType.ORDERED" (change)="onOptionSelection(groupLinkType.ORDERED)"
                  [checked]="hasGroupSelected(groupLinkType.ORDERED)">
-          <label class="govuk-label govuk-radios__label" for="order">
+          <label class="govuk-label govuk-radios__label" for="particularOrder">
             Hearings should be heard in a particular order, but not together
           </label>
           <br/>

@@ -1,4 +1,4 @@
-import { HearingLinksStateData } from '../../models/hearingLinksStateData.model';
+import {HearingLinksStateData} from '../../models/hearingLinksStateData.model';
 import {ServiceLinkedCasesModel} from '../../models/linkHearings.model';
 import * as fromHearingLinksActions from '../actions/hearing-links.action';
 import * as fromHearingLinksReducer from './hearing-links.reducer';
@@ -51,6 +51,7 @@ describe('Hearing Links Reducer', () => {
       it('should call error response action', () => {
         const initialState: HearingLinksStateData = {
           serviceLinkedCases: [],
+          serviceLinkedCasesWithHearings: [],
           linkedHearingGroup: null,
           lastError: {
             status: 403,

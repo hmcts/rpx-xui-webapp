@@ -37,6 +37,16 @@ describe('HearingResponseLengthAnswerConverter', () => {
     converter = new HearingResponseLengthAnswerConverter();
   });
 
+  it('should transform hearing stage days', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime = '2022-07-11T09:00:00.000Z';
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime = '2022-07-13T09:00:00.000Z';
+    const result$ = converter.transformAnswer(of(STATE), 0);
+    const hearingDuration = '8 Days';
+    const expected = cold('(b|)', {b: hearingDuration});
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should transform hearing stage hours', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime = '2021-03-12T09:00:00.000Z';
@@ -63,6 +73,16 @@ describe('HearingResponseLengthAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime = '2021-03-12T10:10:00.000Z';
     const result$ = converter.transformAnswer(of(STATE), 0);
     const hearingDuration = '1 Hour 10 Minutes';
+    const expected = cold('(b|)', {b: hearingDuration});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform hearing stage days, hours and minutes', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime = '2022-07-11T09:00:00.000Z';
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime = '2022-07-14T14:10:00.000Z';
+    const result$ = converter.transformAnswer(of(STATE), 0);
+    const hearingDuration = '12 Days 5 Hours 10 Minutes';
     const expected = cold('(b|)', {b: hearingDuration});
     expect(result$).toBeObservable(expected);
   });

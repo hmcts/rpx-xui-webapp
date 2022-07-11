@@ -16,7 +16,6 @@ export class CourtLocationAnswerConverter implements AnswerConverter {
         const hearingVenueId = state.hearingRequest.hearingRequestMainModel.hearingResponse
           && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
           && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length
-          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index]
           && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index].hearingVenueId;
         const courtLocationInfo = courtLocations.find(courtLocation => courtLocation.epimms_id === hearingVenueId);
         return courtLocationInfo ? courtLocationInfo.site_name : '';

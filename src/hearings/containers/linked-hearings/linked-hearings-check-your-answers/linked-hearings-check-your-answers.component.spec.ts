@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import { HearingLinksStateData } from '../../../../hearings/models/hearingLinksStateData.model';
 import { initialState } from '../../../hearing.test.data';
 import {
   EXUIDisplayStatusEnum,
@@ -15,7 +16,7 @@ import {
   HearingDetailModel,
   LinkedCaseHearingsResult,
 } from '../../../models/linkHearings.model';
-import {CaseReferencePipe} from '../../../pipes/case-reference.pipe';
+import { CaseReferencePipe } from '../../../pipes/case-reference.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
@@ -34,8 +35,8 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   const mockRoute = {
     snapshot: {
       params: {
-        caseId: {caseId},
-        hearingId: {hearingId}
+        caseId: { caseId },
+        hearingId: { hearingId }
       },
       data: {
         mode: Mode.MANAGE_HEARINGS,
@@ -255,6 +256,20 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ManageLinkedHearingGroup({
       linkedHearingGroup: null, hearingGroupRequestId, caseId, hearingId
     })));
+  });
+
+  it('should set Hearing Linked Group', () => {
+    const hearingLinksStateData: HearingLinksStateData = {
+      serviceLinkedCases: [],
+      serviceLinkedCasesWithHearings: [{
+        caseRef: '1111222233334445',
+        caseName: 'Pete Smith',
+        reasonsForLink: ['reason3', 'reason4']
+      }],
+      linkedHearingGroup
+    };
+    component.setHearingLinkedGroup(hearingLinksStateData);
+    expect(component.linkedHearingGroup).toBe(linkedHearingGroup);
   });
 
   afterEach(() => {

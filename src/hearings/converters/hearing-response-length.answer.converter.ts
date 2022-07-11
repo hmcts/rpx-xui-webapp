@@ -40,9 +40,7 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
         const minutesLabel = 'Minutes';
         formattedHearingLength = formattedHearingLength.length > 0 ? `${formattedHearingLength} ${minutes} ${minutesLabel}` : `${minutes} ${minutesLabel}`;
       }
-      if (formattedHearingLength.length > 0) {
-        return formattedHearingLength;
-      }
+      return formattedHearingLength;
     }
     return '';
   }

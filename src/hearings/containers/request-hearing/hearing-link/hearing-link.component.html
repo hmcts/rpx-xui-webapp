@@ -44,10 +44,12 @@
         </tr>
         <tr class="govuk-table__row" *ngFor="let linkedCase of linkedCases">
           <td class="govuk-table__cell">
-            <a href="#" class="govuk-link govuk-link--no-visited-state" style="text-decoration: none;">
+            <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', linkedCase.caseReference]"
+               class="govuk-link govuk-link--no-visited-state"
+               style="text-decoration: none;">
               {{linkedCase.caseName}}
               <br>
-              {{linkedCase.caseReference}}
+              {{linkedCase.caseReference | caseReference}}
             </a>
           </td>
           <td class="govuk-table__cell">{{linkedCase.reasonsForLink}}</td>

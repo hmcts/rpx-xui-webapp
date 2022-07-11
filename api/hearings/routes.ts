@@ -15,6 +15,7 @@ import {
   updateHearingRequest
 } from './hmc.index';
 import {
+  loadLinkedCasesWithHearings,
   loadServiceHearingValues,
   loadServiceLinkedCases
 } from './services.index';
@@ -37,6 +38,7 @@ router.post('/hearingActualsCompletion/:hearingId', submitHearingActuals);
 // ------actual hearing APIs end------
 // ------link hearing APIs start------
 router.post('/loadServiceLinkedCases', loadServiceLinkedCases);
+router.post('/loadLinkedCasesWithHearings', loadLinkedCasesWithHearings);
 router.get('/getLinkedHearingGroup', getLinkedHearingGroup);
 router.post('/postLinkedHearingGroup', postLinkedHearingGroup);
 router.put('/putLinkedHearingGroup', putLinkedHearingGroup);

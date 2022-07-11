@@ -41,8 +41,8 @@ describe('HearingResponseLengthAnswerConverter', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime = '2021-03-12T09:00:00.000Z';
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime = '2021-03-12T10:00:00.000Z';
-    const result$ = converter.transformAnswer(of(STATE));
-    const hearingDuration = '1 hour(s)';
+    const result$ = converter.transformAnswer(of(STATE), 0);
+    const hearingDuration = '1 Hour';
     const expected = cold('(b|)', {b: hearingDuration});
     expect(result$).toBeObservable(expected);
   });
@@ -51,8 +51,8 @@ describe('HearingResponseLengthAnswerConverter', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime = '2021-03-12T09:00:00.000Z';
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime = '2021-03-12T09:45:00.000Z';
-    const result$ = converter.transformAnswer(of(STATE));
-    const hearingDuration = '45 minutes';
+    const result$ = converter.transformAnswer(of(STATE), 0);
+    const hearingDuration = '45 Minutes';
     const expected = cold('(b|)', {b: hearingDuration});
     expect(result$).toBeObservable(expected);
   });
@@ -61,8 +61,8 @@ describe('HearingResponseLengthAnswerConverter', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingStartDateTime = '2021-03-12T09:00:00.000Z';
     STATE.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingEndDateTime = '2021-03-12T10:10:00.000Z';
-    const result$ = converter.transformAnswer(of(STATE));
-    const hearingDuration = '1 hour(s) and 10 minute(s)';
+    const result$ = converter.transformAnswer(of(STATE), 0);
+    const hearingDuration = '1 Hour 10 Minutes';
     const expected = cold('(b|)', {b: hearingDuration});
     expect(result$).toBeObservable(expected);
   });

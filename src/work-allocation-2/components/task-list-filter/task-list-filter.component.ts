@@ -175,8 +175,13 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     //
 
     this.setErrors();
-    // this.subscribeToSelectedLocations();
-    this.toggleFilter = false;
+    this.setAllowTypesOfWorkFilter(this.router.url);
+    this.routeSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.setAllowTypesOfWorkFilter(this.router.url);
+        this.toggleFilter = false;
+      }
+    });
   }
 
   public ngOnDestroy(): void {

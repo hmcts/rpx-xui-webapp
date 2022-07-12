@@ -13,7 +13,7 @@ import { PriorityFieldComponentModule } from './components/priority-field/priori
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
-import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from './services';
+import { CaseworkerDataService, ServiceRefDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from './services';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
@@ -40,7 +40,8 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     AlertService,
     CaseworkerDataService,
     WorkAllocationFeatureService,
-    WASupportedJurisdictionsService
+    WASupportedJurisdictionsService,
+    ServiceRefDataService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

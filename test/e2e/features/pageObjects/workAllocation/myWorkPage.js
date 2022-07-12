@@ -331,6 +331,25 @@ class MyWorkPage extends TaskList {
 
     }
 
+    async isWorkFilterOfTypeDisplayed(filterType){
+
+        const filterTypeNormalized = filterType.toLowerCase().split(' ').join('');
+
+        let filterContainer = null;
+        if (filterTypeNormalized.includes('service')){
+            filterContainer = this.workFilterServicesContainer;
+        } else if (filterTypeNormalized.includes('location')){
+            filterContainer = this.workFiltersLocationsContainer;
+        } else if (filterTypeNormalized.includes('worktype')) {
+            filterContainer = this.workFilterWorkTypesContainer;
+        }else {
+            throw new Error(`${filterType} is not implemented in test. Please check Page object myWorkPage.js`);
+        }
+
+        return (await filterContainer.isPresent()) && (await filterContainer.isDisplayed());
+
+    }
+
 }
 
 module.exports = new MyWorkPage();

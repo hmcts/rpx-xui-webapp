@@ -498,16 +498,16 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     // get 'service' and 'location' filters from search_parameters on request
     const { search_parameters } = req.body.searchRequest;
     const services = search_parameters.find(searchParam => searchParam.key === 'services');
-    // const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
+    const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
 
     let serviceIds = [];
-    // let locationIds = [];
+    let locationIds = [];
     if (services && services.hasOwnProperty('values')) {
       serviceIds = services.values;
     }
-    // if (locations && locations.hasOwnProperty('values')) {
-    //   locationIds = locations.values;
-    // }
+    if (locations && locations.hasOwnProperty('values')) {
+      locationIds = locations.values;
+    }
 
     // filter role assignments by service id(s)
     const filteredRoleAssignments = roleAssignments.filter(roleAssignment =>
@@ -530,8 +530,12 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       unique_cases: 0,
     };
 
-    if (cases.length) {
-      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any) : [];
+    // filter cases by locationIds
+    const caseData = filterByLocationId(result.cases, locationIds);
+    logger.info('results filtered by location id', caseData.length, locationIds);
+
+    if (caseData) {
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
       const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);

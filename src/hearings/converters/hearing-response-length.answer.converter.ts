@@ -2,6 +2,7 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { State } from '../store';
+import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class HearingResponseLengthAnswerConverter implements AnswerConverter {
@@ -9,7 +10,13 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     return hearingState$.pipe(
       map(state => {
-        const hearingSchedule = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index || 0] || null;
+        const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
+        let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
+        if (!hearingDaySchedule) {
+          return '';
+        }
+        hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
+        const hearingSchedule = hearingDaySchedule[index || 0] || null;
         const startTime = moment(hearingSchedule && hearingSchedule.hearingStartDateTime);
         const endTime = moment(hearingSchedule && hearingSchedule.hearingEndDateTime);
         const duration: number = moment.duration(endTime.diff(startTime)).asMinutes();

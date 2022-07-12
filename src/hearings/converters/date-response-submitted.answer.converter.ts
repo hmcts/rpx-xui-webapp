@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HearingDateEnum } from '../models/hearings.enum';
 import { State } from '../store';
+import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class DateResponseSubmittedAnswerConverter implements AnswerConverter {
@@ -10,11 +11,12 @@ export class DateResponseSubmittedAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map(state => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
-        const hearingStartDateTime = hearingResponse
-          && hearingResponse.hearingDaySchedule
-          && hearingResponse.hearingDaySchedule.length
-          && hearingResponse.hearingDaySchedule[index || 0]
-          && hearingResponse.hearingDaySchedule[index || 0].hearingStartDateTime;
+        let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
+        if (!hearingDaySchedule) {
+          return '';
+        }
+        hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
+        const hearingStartDateTime = hearingDaySchedule[index || 0].hearingStartDateTime;
         return hearingStartDateTime ? moment(hearingStartDateTime).format(HearingDateEnum.DisplayMonth) : '';
       })
     );

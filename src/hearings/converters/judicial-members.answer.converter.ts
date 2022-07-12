@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { State } from '../store';
+import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class JudicialMembersAnswerConverter implements AnswerConverter {
@@ -13,11 +14,12 @@ export class JudicialMembersAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map(state => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
-        const hearingJudgeId = hearingResponse
-          && hearingResponse.hearingDaySchedule
-          && hearingResponse.hearingDaySchedule.length
-          && hearingResponse.hearingDaySchedule[index || 0]
-          && hearingResponse.hearingDaySchedule[index || 0].hearingJudgeId;
+        let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
+        if (!hearingDaySchedule) {
+          return '';
+        }
+        hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
+        const hearingJudgeId = hearingDaySchedule[index || 0].hearingJudgeId;
         const judicialUserInfo = judicialUsersList.find(judicialUser => judicialUser.personalCode === hearingJudgeId);
         return judicialUserInfo ? judicialUserInfo.knownAs : '';
       })

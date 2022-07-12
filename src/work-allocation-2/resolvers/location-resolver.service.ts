@@ -27,7 +27,7 @@ import { addLocationToLocationsByService, addLocationToLocationsByServiceCode, g
 export class LocationResolver implements Resolve<LocationModel[]> {
 
   private userRole: string;
-  private serviceRefData: ServiceRefData;
+  private serviceRefData: ServiceRefData[];
 
   constructor(
     private readonly store: Store<fromCaseList.State>,

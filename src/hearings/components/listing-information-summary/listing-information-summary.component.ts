@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { HearingsUtils } from 'src/hearings/utils/hearings.utils';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { AnswerSource, EXUIDisplayStatusEnum, LaCaseStatus } from '../../models/hearings.enum';
 import * as fromHearingStore from '../../store';
@@ -19,7 +20,6 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public caseStatusName: string;
   public serviceValueSub: Subscription;
   public exuiDisplayStatus = EXUIDisplayStatusEnum;
-  public isMultiDayHearing: boolean;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, public readonly route: ActivatedRoute) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
@@ -34,9 +34,8 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
         }
       });
       this.hearingDaySchedule = state.hearingRequest.hearingRequestMainModel.hearingResponse
-          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
-          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule;
-      this.isMultiDayHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.multiDayHearing;
+        && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
+        && HearingsUtils.sortHearingDaySchedule(state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule);
     });
   }
 

@@ -3,7 +3,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatNativeDateModule } from '@angular/material';
-import { RouterModule } from '@angular/router';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
@@ -26,8 +25,7 @@ import { PriorityFieldComponentModule } from './priority-field/priority.module';
     MatFormFieldModule,
     MatNativeDateModule,
     MatInputModule,
-    PriorityFieldComponentModule,
-    RouterModule
+    PriorityFieldComponentModule
   ],
   declarations: [
     ...fromComponents.components,

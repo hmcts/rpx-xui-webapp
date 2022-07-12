@@ -27,7 +27,7 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
 
     return hearingState$.pipe(
       map(state => {
-        const partiesFromRequest: PartyDetailsModel[] = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index].attendees;
+        const partiesFromRequest: PartyDetailsModel[] = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index || 0].attendees;
         const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
         return partiesFromRequest.map((partyInfo) => {
           const name = ParticipantAttendenceAnswerConverter.getPartyName(partiesFromServiceValue, partyInfo);

@@ -12,11 +12,12 @@ export class JudicialMembersAnswerConverter implements AnswerConverter {
     const judicialUsersList: JudicialUserModel[] = this.route.snapshot.data.judicialResponseUsers || [];
     return hearingState$.pipe(
       map(state => {
-        const hearingJudgeId = state.hearingRequest.hearingRequestMainModel.hearingResponse
-          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
-          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length
-          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index]
-          && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[index].hearingJudgeId;
+        const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
+        const hearingJudgeId = hearingResponse
+          && hearingResponse.hearingDaySchedule
+          && hearingResponse.hearingDaySchedule.length
+          && hearingResponse.hearingDaySchedule[index || 0]
+          && hearingResponse.hearingDaySchedule[index || 0].hearingJudgeId;
         const judicialUserInfo = judicialUsersList.find(judicialUser => judicialUser.personalCode === hearingJudgeId);
         return judicialUserInfo ? judicialUserInfo.knownAs : '';
       })

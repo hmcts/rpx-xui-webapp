@@ -19,6 +19,7 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public caseStatusName: string;
   public serviceValueSub: Subscription;
   public exuiDisplayStatus = EXUIDisplayStatusEnum;
+  public isMultiDayHearing: boolean;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, public readonly route: ActivatedRoute) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
@@ -35,8 +36,8 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
       this.hearingDaySchedule = state.hearingRequest.hearingRequestMainModel.hearingResponse
           && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
           && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule;
-    }
-    );
+      this.isMultiDayHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.multiDayHearing;
+    });
   }
 
   public isCaseStatusListed(): boolean {

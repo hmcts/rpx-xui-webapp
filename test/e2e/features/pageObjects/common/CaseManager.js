@@ -84,7 +84,7 @@ class CaseManager {
                     cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again with browser refresh",LOG_LEVELS.Warn);
                     retryOnJurisdiction++;
                     await headerPage.refreshBrowser();
-                    throw new Errro(error); 
+                    throw new Error(error); 
 
                 }
             });

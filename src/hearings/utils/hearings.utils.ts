@@ -1,5 +1,6 @@
 import {HearingConditions} from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
+import * as moment from 'moment';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -11,11 +12,7 @@ export class HearingsUtils {
       return hearingDaySchedule;
     }
     return hearingDaySchedule.slice().sort((schedule1, schedule2) =>
-      schedule1.hearingStartDateTime > schedule2.hearingStartDateTime
-        ? 1
-        : schedule2.hearingStartDateTime > schedule1.hearingStartDateTime
-          ? -1
-          : 0
+      moment.utc(schedule1.hearingStartDateTime).diff(moment.utc(schedule2.hearingStartDateTime))
     );
   }
 }

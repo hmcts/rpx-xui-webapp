@@ -219,7 +219,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       name: 'taskName',
       title: 'Task by name',
       options: [],
-      minSelected: 1,
+      minSelected: 0,
       maxSelected: 1,
       findLocationField: 'service',
       minSelectedError: 'You must select a task name',

@@ -7,6 +7,7 @@ import { RoundelBadgeComponent } from './exui-roundel-badge/exui-roundel-badge.c
 import { ImageFieldComponent } from './image-field/image-field.component';
 import { InfoMessageComponent } from './info-message/info-message.component';
 import { MyCasesFilterComponent } from './my-cases-filter/my-cases-filter.component';
+import { TaskErrorPageComponent } from './task-error-page/task-error-page.component';
 import { TaskFieldComponent } from './task-field/task-field.component';
 import { TaskListFilterComponent } from './task-list-filter/task-list-filter.component';
 import { TaskManagerFilterComponent } from './task-manager-filter/task-manager-filter.component';
@@ -23,6 +24,7 @@ export const components: any[] = [
   ImageFieldComponent,
   InfoMessageComponent,
   MyCasesFilterComponent,
+  TaskErrorPageComponent,
   TaskFieldComponent,
   TaskListFilterComponent,
   TaskManagerFilterComponent,

@@ -24,6 +24,7 @@ import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
 import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
+import { TaskErrorPageComponent } from './components/task-error-page/task-error-page.component';
 
 export const ROUTES: Routes = [
   {
@@ -100,6 +101,13 @@ export const ROUTES: Routes = [
             }
           }
         ]
+      },
+      {
+        path: 'task-error',
+        component: TaskErrorPageComponent,
+        data: {
+          title: 'HMCTS Hearings | System Error'
+        }
       },
       {
         path: ':taskId',

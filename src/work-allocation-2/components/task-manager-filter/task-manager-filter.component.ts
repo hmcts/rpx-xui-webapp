@@ -51,6 +51,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           name: 'selectPerson',
           value: ['All']
         },
+        {
+          name: 'taskName',
+          value: ['']
+        },
       ]
     }
   };

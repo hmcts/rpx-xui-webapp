@@ -4,7 +4,6 @@ import { getConfigValue } from '../configuration';
 import { SERVICES_HMC_HEARINGS_COMPONENT_API } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
-import { HearingDayScheduleModel } from './models/hearingDaySchedule.model';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
@@ -46,29 +45,6 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
 
   try {
     const {status, data}: { status: number, data: HearingRequestMainModel } = await handleGet(markupPath, req, next);
-
-    // TODO: Should be deleted after the QA and Demo of EUI-6094
-    // Added this dummy data for EUI-6094 to display multiple hearing schedule
-    // under Listing Information Summary for QA and Demo
-    if (hearingId === '2000002073') {
-      const hearingDaySchedule: HearingDayScheduleModel = {
-        attendees: [{
-          partyID: '1',
-          hearingSubChannel: 'INTER',
-          partyRole: null,
-          partyType: null,
-        }],
-        hearingEndDateTime: '2022-07-29T13:30:00',
-        hearingJudgeId: '4923393',
-        hearingRoomId: 'Cardiff SSCS - Hearing Room 01',
-        hearingStartDateTime: '2022-07-26T12:30:00',
-        hearingVenueId: '372653',
-        listAssistSessionID: null,
-        panelMemberId: null,
-      }
-      data.hearingResponse.hearingDaySchedule.push(hearingDaySchedule);
-    }
-
     res.status(status).send(data);
   } catch (error) {
     next(error);

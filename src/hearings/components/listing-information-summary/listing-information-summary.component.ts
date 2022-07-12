@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { HearingDayScheduleModel } from 'api/hearings/models/hearingDaySchedule.model';
 import { Observable, Subscription } from 'rxjs';
+import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { AnswerSource, EXUIDisplayStatusEnum, LaCaseStatus } from '../../models/hearings.enum';
 import * as fromHearingStore from '../../store';
 

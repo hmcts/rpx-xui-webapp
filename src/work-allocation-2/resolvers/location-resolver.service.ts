@@ -81,7 +81,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     const locations: Location[] = [];
     const locationServices = new Set<string>();
     // in order to extract location from services we must assume there are multiple workers
-    console.log('doing');
     if (workers && workers.length > 0 && workers[0].idamId) {
       // caseworkers/admin
       const userSpecificWorkers = workers.filter((cw: Caseworker) => cw.idamId === this.userId);

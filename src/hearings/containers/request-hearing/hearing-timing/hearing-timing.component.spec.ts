@@ -24,7 +24,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('HearingTimingComponent', () => {
+fdescribe('HearingTimingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
@@ -220,7 +220,7 @@ describe('HearingTimingComponent', () => {
     durationLengthControls.get('hours').setValue('1');
     durationLengthControls.get('minutes').setValue('3000');
     component.showHearingLengthError();
-    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.TotalLengthError);
+    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
   });
 
   it('should check date selection invalid', () => {
@@ -323,6 +323,7 @@ describe('HearingTimingComponent', () => {
 
   it('should check date selection format for form data', () => {
     component.checkFormData();
+    console.log('COMPONENT PRIORITY FORM VALID', component.priorityForm.valid);
     expect(component.priorityForm.valid).toBeFalsy();
   });
 

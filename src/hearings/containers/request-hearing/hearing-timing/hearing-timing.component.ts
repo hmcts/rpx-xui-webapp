@@ -146,7 +146,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         days: [this.priorityFormInfo.days, this.validatorsUtils.numberLargerThanValidator(HearingDatePriorityConstEnum.MinDays)],
         hours: [this.priorityFormInfo.hours, [this.validatorsUtils.numberMinMaxValidator(HearingDatePriorityConstEnum.MinHours, HearingDatePriorityConstEnum.MaxHours)]],
         minutes: [this.priorityFormInfo.minutes, [this.validatorsUtils.numberMultipleValidator(HearingDatePriorityConstEnum.MinutesMuliplier)]]
-      }, {validator: this.validatorsUtils.minutesValidator(HearingDatePriorityConstEnum.TotalMinMinutes, HearingDatePriorityConstEnum.TotalMaxMinutes, HearingDatePriorityConstEnum.TotalMinutes)}),
+      }, {validator: this.validatorsUtils.hearingLengthValidator()}),
       specificDate: [this.checkedHearingAvailability, Validators.required],
       firstHearing: this.formBuilder.group({
         firstHearingDate_day: [this.priorityFormInfo.firstDate && this.priorityFormInfo.firstDate.getDate()],
@@ -322,6 +322,9 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.firstDateOfHearingError = null;
     this.hearingPriorityError = null;
     this.hearingPriorityDateError = null;
+
+    console.log('this.priorityForm', this.priorityForm.valid);
+
     if (!this.priorityForm.valid) {
       this.showHearingLengthError();
       this.showHearingDateError();

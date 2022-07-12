@@ -27,7 +27,7 @@ export enum ACTION {
 export class WorkAllocationTaskService {
   public currentTasks$: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
 
-  constructor(private readonly http: HttpClient, protected readonly router: Router) {
+  constructor(private readonly http: HttpClient) {
   }
 
   /**
@@ -59,10 +59,6 @@ export class WorkAllocationTaskService {
   public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<any> {
     return this.http.post<any>(`${BASE_URL}`, body).pipe(
       tap(response => this.currentTasks$.next(response.tasks)),
-      catchError(err => {
-        this.router.navigate(['/work/task-error']);
-        return err;
-      }),
     );
   }
 

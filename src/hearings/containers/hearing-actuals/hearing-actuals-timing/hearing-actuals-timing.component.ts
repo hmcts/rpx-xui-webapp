@@ -70,7 +70,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     return moment(dateTime, 'YYYY-MM-DDTHH:mm:ssZ').set({
       hour: time.get('hour'),
       minute: time.get('minute'),
-    }).toISOString();
+    }).format('YYYY-MM-DDTHH:mm:ss');
   }
 
   private static getTime(time: string): string {

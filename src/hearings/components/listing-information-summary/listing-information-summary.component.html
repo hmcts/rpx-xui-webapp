@@ -46,49 +46,49 @@
       </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="!isMultiDayHearing">
+    <div class="govuk-summary-list__row" *ngIf="hearingDaySchedule.length === 1">
       <dt class="govuk-summary-list__key">Hearing date</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="isMultiDayHearing">
+    <div class="govuk-summary-list__row" *ngIf="hearingDaySchedule.length > 1">
       <dt class="govuk-summary-list__key">Hearing dates</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED_MULTI_DAY | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="!isMultiDayHearing">
+    <div class="govuk-summary-list__row" *ngIf="hearingDaySchedule.length === 1">
       <dt class="govuk-summary-list__key">Time</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED_TIME | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="!isMultiDayHearing">
+    <div class="govuk-summary-list__row" *ngIf="hearingDaySchedule.length === 1">
       <dt class="govuk-summary-list__key">Duration</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.HEARING_RESPONSE_LENGTH | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="!isMultiDayHearing">
+    <div class="govuk-summary-list__row" *ngIf="hearingDaySchedule.length === 1">
       <dt class="govuk-summary-list__key">Location</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.COURT_LOCATION | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="!isMultiDayHearing">
+    <div class="govuk-summary-list__row" *ngIf="hearingDaySchedule.length === 1">
       <dt class="govuk-summary-list__key">Room</dt>
       <dd class="govuk-summary-list__value" [innerHtml]="answerSource.ROOM_ID | transformAnswer:hearingState$ | async">
       </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="!isMultiDayHearing">
+    <div class="govuk-summary-list__row" *ngIf="hearingDaySchedule.length === 1">
       <dt class="govuk-summary-list__key">Judicial members</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="!isMultiDayHearing">
+    <div class="govuk-summary-list__row" *ngIf="hearingDaySchedule.length === 1">
       <dt class="govuk-summary-list__key">
         {{isCaseStatusListed() ? 'How participants will attend' : 'Participant attendence'}}
       </dt>
@@ -97,7 +97,7 @@
       <dd class="govuk-summary-list__actions"></dd>
     </div>
   </dl>
-  <div *ngIf="isMultiDayHearing">
+  <div *ngIf="hearingDaySchedule.length > 1">
     <dl class="govuk-summary-list govuk-!-padding-top-3 govuk-!-padding-left-2 govuk-!-margin-bottom-0"
       *ngFor="let schedule of hearingDaySchedule; let i = index">
       <div class="govuk-summary-list__row">

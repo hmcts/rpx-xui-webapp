@@ -121,7 +121,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       if (roleJurisdiction && !this.bookableServices.has(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
         && roleAssignment.bookable === true
         ) {
-        this.bookableServices.add('SSCS');
+        this.bookableServices.add(roleJurisdiction);
       }
     });
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(Array.from(this.bookableServices)));

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
-import { map, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
 import { UserInfo, UserRole } from '../../app/models';
 
@@ -10,6 +10,8 @@ import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
 import { TaskRole } from '../models/tasks';
+import { Router } from '@angular/router';
+
 
 const BASE_URL: string = '/workallocation2/task';
 
@@ -25,7 +27,7 @@ export enum ACTION {
 export class WorkAllocationTaskService {
   public currentTasks$: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
 
-  constructor(private readonly http: HttpClient) {
+  constructor(private readonly http: HttpClient, protected readonly router: Router) {
   }
 
   /**
@@ -54,9 +56,13 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
-  public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<TaskResponse> {
+  public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<any> {
     return this.http.post<any>(`${BASE_URL}`, body).pipe(
       tap(response => this.currentTasks$.next(response.tasks)),
+      catchError(err => {
+        this.router.navigate(['/work/task-error']);
+        return err;
+      }),
     );
   }
 

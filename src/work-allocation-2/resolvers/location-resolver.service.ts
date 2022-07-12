@@ -17,9 +17,11 @@ import { Booking } from '../../booking/models';
 import { BookingService } from '../../booking/services';
 import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
 import { AllocateRoleService } from '../../role-access/services';
+import { ServiceRefData } from '../models/common';
 import { Caseworker, Location, LocationsByService } from '../models/dtos';
 import { CaseworkerDataService } from '../services';
-import { addLocationToLocationsByService, getServiceFromServiceCode, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
+import { ServiceRefDataService } from '../services/service-ref-data.service';
+import { addLocationToLocationsByService, addLocationToLocationsByServiceCode, getServiceFromServiceCode, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   private userRole: string;
   private bookableServices = new Set<string>();
   private userId: string;
+  private serviceRefData: ServiceRefData[];
 
   constructor(
     private readonly store: Store<fromCaseList.State>,
@@ -37,7 +40,8 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     private readonly caseworkerDataService: CaseworkerDataService,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly bookingService: BookingService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly serviceRefDataService: ServiceRefDataService
   ) {
   }
 
@@ -45,6 +49,11 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     return this.userDetails()
       .pipe(
         first(),
+        mergeMap((userDetails: UserDetails) => this.serviceRefDataService.getServiceRefData()
+          .pipe(
+            map((serviceRefData) => this.saveServiceRefData(serviceRefData, userDetails))
+          )
+        ),
         mergeMap((userDetails: UserDetails) => this.getJudicialWorkersOrCaseWorkers(userDetails)
           .pipe(
             map((caseWorkers) => this.extractLocations(caseWorkers)),
@@ -72,6 +81,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     const locations: Location[] = [];
     const locationServices = new Set<string>();
     // in order to extract location from services we must assume there are multiple workers
+    console.log('doing');
     if (workers && workers.length > 0 && workers[0].idamId) {
       // caseworkers/admin
       const userSpecificWorkers = workers.filter((cw: Caseworker) => cw.idamId === this.userId);
@@ -89,7 +99,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         judicialWorkers.forEach(worker => {
           const jAppts = worker.appointments.filter(appt => appt.location !== 'National' && appt.epimms_id && appt.epimms_id !== '');
           jAppts.forEach(jAppt => {
-            const service = getServiceFromServiceCode(jAppt.service_code);
+            const service = getServiceFromServiceCode(jAppt.service_code, this.serviceRefData);
             locationServices.add(service);
             const judicialLocation = {id: jAppt.epimms_id, locationName: jAppt.location, services: [] };
             userLocationsByService = this.bookableServices.has(service) ? addLocationToLocationsByService(userLocationsByService, judicialLocation, service, true) : addLocationToLocationsByService(userLocationsByService, judicialLocation, service);
@@ -141,6 +151,11 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     // Note: currently we do not immediately show booking locations - the only way to automatically show booking locations currently
     // is to navigate via the booking screens. We can add them (if necessary in this)
     return locations;
+  }
+
+  private saveServiceRefData(serviceRefData: any, userDetails: UserDetails): UserDetails {
+    this.serviceRefData = serviceRefData;
+    return userDetails;
   }
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {

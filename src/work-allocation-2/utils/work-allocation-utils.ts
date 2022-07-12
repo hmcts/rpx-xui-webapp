@@ -4,6 +4,7 @@ import { UserInfo } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
+import { ServiceRefData } from '../models/common';
 import { Service, ServiceCode } from '../models/common/service.enum';
 import { Caseworker, CaseworkersByService, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';
@@ -263,13 +264,7 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
   return locationsByServices;
 }
 
-export function getServiceFromServiceCode(serviceCode: string) {
-  switch (serviceCode) {
-    case ServiceCode.IA:
-      return Service.IA;
-    case ServiceCode.SSCS:
-      return Service.SSCS;
-    case ServiceCode.EMPLOYMENT:
-      return Service.EMPLOYMENT;
-  }
+export function getServiceFromServiceCode(serviceCode: string, serviceRefData: ServiceRefData[]): string {
+  const desiredServiceData = serviceRefData.find(serviceData => serviceData.serviceCodes.includes(serviceCode));
+  return desiredServiceData.service;
 }

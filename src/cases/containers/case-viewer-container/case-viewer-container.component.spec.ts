@@ -13,6 +13,7 @@ import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AllocateRoleService } from '../../../role-access/services';
+import { WASupportedJurisdictionsService } from '../../../work-allocation-2/services';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -130,6 +131,8 @@ describe('CaseViewerContainerComponent', () => {
     ]
   };
 
+  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+
   class MockFeatureToggleService implements FeatureToggleService {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
       // @ts-ignore
@@ -189,7 +192,6 @@ describe('CaseViewerContainerComponent', () => {
             'payments',
             'payments-refund',
             'payments-refund-approver',
-            'pui-case-manager',
             'pui-finance-manager',
             'pui-organisation-manager',
             'pui-user-manager'
@@ -232,7 +234,8 @@ describe('CaseViewerContainerComponent', () => {
           }
         },
         {provide: FeatureToggleService, useClass: MockFeatureToggleService},
-        {provide: AllocateRoleService, useClass: MockAllocateRoleService }
+        {provide: AllocateRoleService, useClass: MockAllocateRoleService },
+        {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService}
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })
@@ -241,6 +244,7 @@ describe('CaseViewerContainerComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseViewerContainerComponent);
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
     component = fixture.componentInstance;
     debug = fixture.debugElement;
     fixture.detectChanges();

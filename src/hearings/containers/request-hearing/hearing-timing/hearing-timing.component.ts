@@ -322,9 +322,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.firstDateOfHearingError = null;
     this.hearingPriorityError = null;
     this.hearingPriorityDateError = null;
-
-    console.log('this.priorityForm', this.priorityForm.valid);
-
     if (!this.priorityForm.valid) {
       this.showHearingLengthError();
       this.showHearingDateError();

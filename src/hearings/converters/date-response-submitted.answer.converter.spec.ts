@@ -14,7 +14,7 @@ describe('DateResponseSubmittedAnswerConverter', () => {
 
   it('should transform type from request', () => {
     const STATE: State = initialState.hearings;
-    const result$ = dateRequestSubmittedTimeAnswerConverter.transformAnswer(of(STATE));
+    const result$ = dateRequestSubmittedTimeAnswerConverter.transformAnswer(of(STATE), 0);
     const type = '12 December 2022';
     const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);

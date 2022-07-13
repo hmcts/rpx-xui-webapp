@@ -178,16 +178,16 @@ describe('HearingTimingComponent', () => {
   it('should get getFormData', () => {
     component.hearingRequestMainModel.hearingDetails.duration = 70;
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
-    component.hearingRequestMainModel.hearingDetails.hearingWindow = { dateRangeStart: '', dateRangeEnd: '', firstDateTimeMustBe: '' };
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = null;
     component.getFormData();
     expect(component.priorityFormInfo.hours).toBe('1');
     expect(component.priorityFormInfo.minutes).toBe('10');
     expect(component.priorityFormInfo.priority).toBe('Urgent');
     expect(component.checkedHearingAvailability).toBe(RadioOptions.NO);
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart = '01-01-2021';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {dateRangeStart: '01-01-2021'};
     component.getFormData();
     expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd = '01-01-2021';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = {dateRangeEnd: '01-01-2021'};
     component.getFormData();
     expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
   });

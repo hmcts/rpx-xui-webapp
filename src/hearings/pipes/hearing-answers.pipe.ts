@@ -12,6 +12,7 @@ import { CourtLocationAnswerConverter } from '../converters/court-location.answe
 import { DateRequestFailedAnswerConverter } from '../converters/date-request-failed.answer.converter';
 import { DateRequestSubmittedAnswerConverter } from '../converters/date-request-submitted.answer.converter';
 import { DateResponseReceivedAnswerConverter } from '../converters/date-response-received.answer.converter';
+import { DateResponseSubmittedMultiDayAnswerConverter } from '../converters/date-response-submitted-multi-day.answer.converter';
 import { DateResponseSubmittedTimeAnswerConverter } from '../converters/date-response-submitted-time.answer.converter';
 import { DateResponseSubmittedAnswerConverter } from '../converters/date-response-submitted.answer.converter';
 import { DefaultAnswerConverter } from '../converters/default.answer.converter';
@@ -54,7 +55,7 @@ export class HearingAnswersPipe implements PipeTransform {
               protected readonly locationsDataService: LocationsDataService) {
   }
 
-  public transform(answerSource: AnswerSource, hearingState$: Observable<State>): Observable<string> {
+  public transform(answerSource: AnswerSource, hearingState$: Observable<State>, index: number): Observable<string> {
     let converter: AnswerConverter = new DefaultAnswerConverter();
     switch (answerSource) {
       case AnswerSource.CASE_NAME:
@@ -80,6 +81,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.DATE_RESPONSE_SUBMITTED:
         converter = new DateResponseSubmittedAnswerConverter();
+        break;
+      case AnswerSource.DATE_RESPONSE_SUBMITTED_MULTI_DAY:
+        converter = new DateResponseSubmittedMultiDayAnswerConverter();
         break;
       case AnswerSource.DATE_RESPONSE_RECEIVED:
         converter = new DateResponseReceivedAnswerConverter();
@@ -174,7 +178,7 @@ export class HearingAnswersPipe implements PipeTransform {
       default:
         break;
     }
-    return converter.transformAnswer(hearingState$);
+    return converter.transformAnswer(hearingState$, index);
   }
 
 }

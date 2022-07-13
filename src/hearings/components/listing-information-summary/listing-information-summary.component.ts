@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { HearingsUtils } from '../../utils/hearings.utils';
+import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { AnswerSource, EXUIDisplayStatusEnum, LaCaseStatus } from '../../models/hearings.enum';
 import * as fromHearingStore from '../../store';
 
@@ -12,6 +14,7 @@ import * as fromHearingStore from '../../store';
 })
 export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
+  public hearingDaySchedule: HearingDayScheduleModel[];
   public answerSource = AnswerSource;
   public isListedCaseStatus: boolean;
   public caseStatusName: string;
@@ -30,8 +33,10 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
           this.caseStatusName = caseHearing.exuiDisplayStatus;
         }
       });
-    }
-    );
+      this.hearingDaySchedule = state.hearingRequest.hearingRequestMainModel.hearingResponse
+        && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
+        && HearingsUtils.sortHearingDaySchedule(state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule);
+    });
   }
 
   public isCaseStatusListed(): boolean {

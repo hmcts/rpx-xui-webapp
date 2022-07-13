@@ -6,8 +6,8 @@ import { State } from '../store';
 import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
-export class DateResponseSubmittedAnswerConverter implements AnswerConverter {
-  public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
+export class DateResponseSubmittedMultiDayAnswerConverter implements AnswerConverter {
+  public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map(state => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
@@ -16,10 +16,12 @@ export class DateResponseSubmittedAnswerConverter implements AnswerConverter {
           return '';
         }
         hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
-        const hearingStartDateTime = hearingDaySchedule[index || 0].hearingStartDateTime;
-        return hearingStartDateTime ? moment(hearingStartDateTime).format(HearingDateEnum.DisplayMonth) : '';
+        const hearingStartDateTime = hearingDaySchedule[0].hearingStartDateTime;
+        const hearingEndDateTime = hearingDaySchedule[hearingDaySchedule.length - 1].hearingEndDateTime;
+        return hearingStartDateTime && hearingEndDateTime
+            ? `${moment(hearingStartDateTime).format(HearingDateEnum.DisplayMonth)} - ${moment(hearingEndDateTime).format(HearingDateEnum.DisplayMonth)}`
+            : '';
       })
     );
   }
 }
-

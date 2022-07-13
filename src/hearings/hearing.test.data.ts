@@ -2130,7 +2130,7 @@ export const initialState = {
             hearingStartDateTime: '2022-12-12T09:00:00.000Z',
             hearingEndDateTime: '2022-12-12T16:00:00.000Z',
             listAssistSessionID: '',
-            hearingVenueId: '',
+            hearingVenueId: '815833',
             hearingRoomId: 'room 3',
             hearingJudgeId: 'p1000002',
             panelMemberId: 'p1000001',

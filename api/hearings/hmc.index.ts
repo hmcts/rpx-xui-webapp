@@ -1,15 +1,15 @@
-import {NextFunction, Response} from 'express';
-import {handleDelete, handleGet, handlePost, handlePut, sendPut} from '../common/crudService';
-import {getConfigValue} from '../configuration';
-import {SERVICES_HMC_HEARINGS_COMPONENT_API} from '../configuration/references';
-import {EnhancedRequest} from '../lib/models';
-import {HearingActualsMainModel, HearingActualsModel} from './models/hearingActualsMainModel';
-import {HearingListMainModel} from './models/hearingListMain.model';
-import {HearingRequestMainModel} from './models/hearingRequestMain.model';
-import {hearingStatusMappings} from './models/hearingStatusMappings';
+import { NextFunction, Response } from 'express';
+import { handleDelete, handleGet, handlePost, handlePut, sendPut } from '../common/crudService';
+import { getConfigValue } from '../configuration';
+import { SERVICES_HMC_HEARINGS_COMPONENT_API } from '../configuration/references';
+import { EnhancedRequest } from '../lib/models';
+import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
+import { HearingListMainModel } from './models/hearingListMain.model';
+import { HearingRequestMainModel } from './models/hearingRequestMain.model';
+import { hearingStatusMappings } from './models/hearingStatusMappings';
 import {
   LinkedHearingGroupMainModel,
-  LinkedHearingGroupResponseModel,
+  LinkedHearingGroupResponseModel
 } from './models/linkHearings.model';
 
 const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);

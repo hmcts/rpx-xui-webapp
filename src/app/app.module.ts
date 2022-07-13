@@ -10,9 +10,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import {
+  LoadingService,
+  CookieService,
+  FilterService,
   ExuiCommonLibModule,
   FeatureToggleService,
+  GoogleTagManagerService,
   LaunchDarklyService,
+  RoleService,
   TimeoutNotificationsService
 } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
@@ -125,6 +130,11 @@ export function launchDarklyClientIdFactory(
     CaseShareService,
     { provide: FeatureToggleService, useClass: LaunchDarklyService },
     TimeoutNotificationsService,
+    RoleService,
+    GoogleTagManagerService,
+    CookieService,
+    LoadingService,
+    FilterService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

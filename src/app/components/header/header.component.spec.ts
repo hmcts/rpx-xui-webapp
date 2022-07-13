@@ -4,9 +4,10 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 
-import { HeaderComponent } from './header.component';
-import { HmctsGlobalHeaderComponent } from '../hmcts-global-header/hmcts-global-header.component';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
+import { HmctsGlobalHeaderComponent } from '../hmcts-global-header/hmcts-global-header.component';
+import { HeaderComponent } from './header.component';
 
 describe('Header Component', () => {
     let mockStore: any;
@@ -18,7 +19,7 @@ describe('Header Component', () => {
       TestBed.configureTestingModule({
         declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent],
         imports: [HttpClientModule, RouterTestingModule],
-        providers: [{ provide: Store, useValue: mockStore }]
+        providers: [{ provide: Store, useValue: mockStore, FeatureToggleService }]
       }).compileComponents();
     }));
 

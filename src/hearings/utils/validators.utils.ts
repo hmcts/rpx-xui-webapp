@@ -27,8 +27,8 @@ export class ValidatorsUtils {
 
   public numberLargerThanValidator(greaterThan: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      const inputNumber = Number(control.value);
-      return control.value ? !isNaN(Number(control.value)) && inputNumber >= greaterThan ? null : { isValid: false } : { isValid: false };
+      const inputNumber = Number(control.value) || 0;
+      return !isNaN(Number(control.value)) && inputNumber >= greaterThan ? null : { isValid: false };
     };
   }
 
@@ -46,12 +46,12 @@ export class ValidatorsUtils {
     };
   }
 
-  public minutesValidator(minNumber: number, maxNumber: number, totalNumber: number): ValidatorFn {
+  public hearingLengthValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
+      const days = Number(control.get('days').value) || 0;
       const hours = Number(control.get('hours').value) || 0;
       const minutes = Number(control.get('minutes').value) || 0;
-      const totalMinutes = (hours * 60) + minutes;
-      return totalMinutes >= minNumber && minutes <= maxNumber && totalMinutes <= totalNumber ? null : { isValid: false };
+      return days > 0 || hours > 0 || minutes > 0 ? null : { isValid: false };
     };
   }
 

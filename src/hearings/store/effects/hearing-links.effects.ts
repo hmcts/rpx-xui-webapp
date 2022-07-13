@@ -38,6 +38,20 @@ export class HearingLinksEffects {
   );
 
   @Effect()
+  public loadServiceLinkedCasesWithHearing$ = this.actions$.pipe(
+    ofType(hearingLinksActions.LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS),
+    map((action: hearingLinksActions.LoadServiceLinkedCasesWithHearings) => action.payload),
+    switchMap(payload => {
+      const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
+      const jurisdictionId = caseInfo && caseInfo.jurisdiction;
+      return this.hearingsService.loadLinkedCasesWithHearings(jurisdictionId, payload.caseReference, payload.caseName, payload.hearingId).pipe(
+        map(response => new hearingLinksActions.LoadServiceLinkedCasesWithHearingsSuccess(response)),
+        catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesWithHearingsFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
   public loadLinkedHearingGroup$ = this.actions$.pipe(
     ofType(hearingLinksActions.LOAD_LINKED_HEARING_GROUP),
     map((action: hearingLinksActions.LoadLinkedHearingGroup) => action.payload),
@@ -77,7 +91,7 @@ export class HearingLinksEffects {
     switchMap(payload => {
       let apiCall: any;
       if (payload.linkedHearingGroup && payload.linkedHearingGroup.hearingsInGroup && payload.linkedHearingGroup.hearingsInGroup.length > 0) {
-        apiCall = this.hearingsService.putLinkedHearingGroup(payload.linkedHearingGroup);
+        apiCall = this.hearingsService.putLinkedHearingGroup(payload.hearingGroupRequestId, payload.linkedHearingGroup);
       } else {
         apiCall = this.hearingsService.deleteLinkedHearingGroup(payload.hearingGroupRequestId);
       }

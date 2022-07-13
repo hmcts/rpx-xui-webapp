@@ -9,7 +9,7 @@ import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
 import { GroupLinkType } from '../../models/hearings.enum';
-import { ServiceLinkedCasesModel } from '../../models/linkHearings.model';
+import { ServiceLinkedCasesModel, ServiceLinkedCasesWithHearingsModel } from '../../models/linkHearings.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingLinksActions from '../actions/hearing-links.action';
 import { HearingLinksEffects } from './hearing-links.effects';
@@ -20,7 +20,7 @@ describe('Hearing Links Effects', () => {
   let effects: HearingLinksEffects;
   const hearingGroupRequestId = 'g1000000';
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'loadServiceLinkedCases', 'postLinkedHearingGroup', 'deleteLinkedHearingGroup', 'putLinkedHearingGroup'
+    'loadServiceLinkedCases', 'loadLinkedCasesWithHearings', 'postLinkedHearingGroup', 'deleteLinkedHearingGroup', 'putLinkedHearingGroup'
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const initialState = {
@@ -69,6 +69,26 @@ describe('Hearing Links Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadServiceLinkedCases$).toBeObservable(expected);
+    });
+  });
+
+  describe('loadServiceLinkedCasesWithHearing$', () => {
+    it('should return a response with hearings list', () => {
+      const SERVICE_LINKED_CASES: ServiceLinkedCasesWithHearingsModel[] = [{
+        caseRef: '1111222233334444',
+        caseName: 'Jane Smith',
+        reasonsForLink: ['reason1', 'reason2']
+      }, {
+        caseRef: '1111222233334445',
+        caseName: 'Pete Smith',
+        reasonsForLink: ['reason3', 'reason4']
+      }];
+      hearingsServiceMock.loadLinkedCasesWithHearings.and.returnValue(of(SERVICE_LINKED_CASES));
+      const action = new hearingLinksActions.LoadServiceLinkedCasesWithHearings({ caseReference: '1111222233334446', caseName: 'Pete Smith' });
+      const completion = new hearingLinksActions.LoadServiceLinkedCasesWithHearingsSuccess(SERVICE_LINKED_CASES);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadServiceLinkedCasesWithHearing$).toBeObservable(expected);
     });
   });
 

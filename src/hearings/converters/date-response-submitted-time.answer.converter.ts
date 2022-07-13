@@ -18,7 +18,7 @@ export class DateResponseSubmittedTimeAnswerConverter implements AnswerConverter
         hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
         const hearingStartDateTime = hearingDaySchedule[index || 0].hearingStartDateTime;
         // it is assumed and confirmed from HMC this date time is always utc so we convert it here.
-        return hearingStartDateTime ? moment(hearingStartDateTime).utc().format(HearingDateEnum.DisplayTime) : '';
+        return hearingStartDateTime ? moment.utc(hearingStartDateTime).local().format(HearingDateEnum.DisplayTime) : '';
       })
     );
   }

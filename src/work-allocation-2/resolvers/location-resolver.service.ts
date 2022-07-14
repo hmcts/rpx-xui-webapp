@@ -26,7 +26,7 @@ import { addLocationToLocationsByService, addLocationToLocationsByServiceCode, g
 @Injectable({
   providedIn: 'root'
 })
-// Note: used before my work and booking screen
+// Note: used before my work and booking screens
 export class LocationResolver implements Resolve<LocationModel[]> {
 
   private userRole: string;

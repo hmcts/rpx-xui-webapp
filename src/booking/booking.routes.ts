@@ -1,5 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
+import { LocationResolver } from '../work-allocation-2/resolvers/location-resolver.service';
 import { BookingHomeComponent, BookingWrapperComponent } from './containers';
 import { BookingGuard } from './guards/booking-guard';
 
@@ -12,7 +14,10 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: BookingHomeComponent,
-        // canActivate: [BookingGuard],
+        canActivate: [BookingGuard],
+        resolve: {
+          LocationResolver
+        },
         data: {
           title: 'Booking'
         }

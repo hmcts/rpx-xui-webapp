@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ACTION, HearingCategory, HearingChannelEnum } from '../../../models/hearings.enum';
+import { ACTION, HearingCategory, HearingChannelEnum, RadioOptions } from '../../../models/hearings.enum';
 import { IndividualDetailsModel } from '../../../models/individualDetails.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -23,7 +23,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public attendanceFormGroup: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public hint: string = 'Where known, contact details for remote attendees will be included in the request.';
-  public title: string = ' How will each participant attend the hearing?';
+  public title: string = 'Participant attendance';
   public partiesFormArray: FormArray;
   public formValid: boolean = true;
   public partyChannels$: Observable<LovRefDataModel[]>;
@@ -39,7 +39,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     super(hearingStore, hearingsService, route);
     this.attendanceFormGroup = fb.group({
       estimation: [null, [Validators.pattern(/^\d+$/)]],
-      parties: fb.array([])
+      parties: fb.array([]),
+      paperHearing: [this.hearingRequestMainModel.hearingDetails.hearingChannels && this.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR) ? RadioOptions.YES : RadioOptions.NO],
     });
     this.partiesFormArray = fb.array([]);
   }
@@ -105,7 +106,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     });
     let hearingChannels: string[] = this.hearingRequestMainModel.hearingDetails.hearingChannels;
     const preferredHearingChannelsList: string[] = partyDetails.map(party => party.individualDetails.preferredHearingChannel);
-    if (preferredHearingChannelsList.every(channel => channel === HearingChannelEnum.NotAttending)) {
+    if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
       hearingChannels = [HearingChannelEnum.ONPPR];
     } else {
       hearingChannels = preferredHearingChannelsList.filter((item, pos) =>

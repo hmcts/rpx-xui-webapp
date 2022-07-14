@@ -339,6 +339,10 @@ describe('CaseHearingsComponent', () => {
       hearingList: {
         hearingListMainModel: HEARINGS_LIST
       },
+      hearingValues: {
+        serviceHearingValuesModel: null,
+        lastError: null
+      }
     }
   };
 

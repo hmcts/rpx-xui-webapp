@@ -80,7 +80,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
-        first()
       )
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
@@ -183,6 +182,9 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public getActualDayParties(hearingActualsMainModel: HearingActualsMainModel): void {
+    this.parties = [];
+    this.participants = [];
+
     if (HearingActualAddEditSummaryComponent.hasActualParties(hearingActualsMainModel, this.hearingRoles)) {
       const actualParties: ActualDayPartyModel[] = hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties;
       for (const actualParty of actualParties) {

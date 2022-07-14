@@ -1,4 +1,3 @@
-import { FocusMonitor } from '@angular/cdk/a11y';
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup, ValidatorFn } from '@angular/forms';
 import * as moment from 'moment';
@@ -164,11 +163,11 @@ export class ValidatorsUtils {
 
   public validateLinkedHearings(): ValidatorFn {
     return (formGroup: FormGroup) => {
-      const linkedCases = formGroup.value.linkedCases;
+      const linkedCases = formGroup.value.linkedCasesWithHearings;
       if (linkedCases) {
         let isHearingSelected: boolean;
         linkedCases.forEach((caseInfo) => {
-          if (caseInfo.hearings.find((hearingInfo) => hearingInfo.isSelected !== false)) {
+          if (caseInfo.caseHearings.find((hearingInfo) => !!hearingInfo.isSelected)) {
             isHearingSelected = true;
           }
         });

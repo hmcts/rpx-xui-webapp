@@ -12,7 +12,7 @@ import {
   LinkedHearingGroupResponseModel,
 } from './models/linkHearings.model';
 
-const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
+export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
 
 /**
  * getHearings from case ID
@@ -173,8 +173,9 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
  * putLinkedHearingGroup - put linked hearing group
  */
 export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const groupId: string = req.query.groupId;
   const reqBody = req.body;
-  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
+  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
     // tslint:disable-next-line:max-line-length
     const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req, next);
@@ -188,8 +189,9 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
  * deleteLinkedHearingGroup - delete linked hearing group
  */
 export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const hearingGroupId: string = req.query.hearingGroupId;
   const reqBody = req.body;
-  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
+  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}`;
   try {
     // tslint:disable-next-line:max-line-length
     const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req, next);

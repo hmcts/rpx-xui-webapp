@@ -1,80 +1,113 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
-import { initialState } from '../../../hearing.test.data';
-import { HMCStatus, Mode } from '../../../models/hearings.enum';
-import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
-import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
-import { HearingsService } from '../../../services/hearings.service';
-import { HowLinkedHearingsBeHeardComponent } from './linked-hearings-how-to-heard.component';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import * as _ from 'lodash';
+import {initialState} from '../../../hearing.test.data';
+import {
+  EXUIDisplayStatusEnum,
+  EXUISectionStatusEnum,
+  GroupLinkType,
+  HearingListingStatusEnum,
+  HMCStatus,
+  Mode
+} from '../../../models/hearings.enum';
+import {ServiceLinkedCasesWithHearingsModel} from '../../../models/linkHearings.model';
+import {HearingsPipesModule} from '../../../pipes/hearings.pipes.module';
+import {HearingsService} from '../../../services/hearings.service';
+import {HowLinkedHearingsBeHeardComponent} from './linked-hearings-how-to-heard.component';
 
 const mockLinkedHearingGroup = {
   linkedHearingGroup: {
     groupDetails: {
       groupName: 'Group A',
       groupReason: 'Reason 1',
-      groupLinkType: 'Ordered',
+      groupLinkType: GroupLinkType.ORDERED,
       groupComments: 'Comment 1',
     },
     hearingsInGroup: [
-      { hearingId: 'h100001', hearingOrder: 2, caseRef: '4652724902696213' },
-      { hearingId: 'h100003', hearingOrder: 1, caseRef: '8254902572336147' },
+      {hearingId: 'h100010', hearingOrder: 1, caseRef: '4652724902696213'},
+      {hearingId: 'h1000002', hearingOrder: 2, caseRef: '8254902572336147'},
     ],
   },
   lastError: null,
 };
-const mockResponse: ServiceLinkedCasesModel[] = [
+const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
   {
-    caseReference: '4652724902696213',
+    caseRef: '4652724902696213',
     caseName: 'Smith vs Peterson',
     reasonsForLink: ['Linked for a hearing'],
-    hearings: [
+    caseHearings: [
       {
-        hearingId: 'h100001',
-        hearingStage: HMCStatus.UPDATE_REQUESTED,
+        hearingID: 'h100010',
+        hearingType: 'Direction Hearings',
+        hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+        lastResponseReceivedDateTime: '',
+        exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+        exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+        hmcStatus: HMCStatus.AWAITING_LISTING,
+        responseVersion: 'rv1',
+        hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+        listAssistCaseStatus: '',
+        hearingIsLinkedFlag: true,
+        hearingGroupRequestId: null,
+        hearingDaySchedule: [],
         isSelected: true,
-        hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false,
-      },
+      }
     ],
   },
   {
-    caseReference: '5283819672542864',
+    caseRef: '5283819672542864',
     caseName: 'Smith vs Peterson',
     reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
   },
   {
-    caseReference: '8254902572336147',
+    caseRef: '8254902572336147',
     caseName: 'Smith vs Peterson',
     reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
-    hearings: [
+    caseHearings: [
       {
-        hearingId: 'h100010',
-        hearingStage: HMCStatus.UPDATE_REQUESTED,
+        hearingID: 'h1000002',
+        hearingType: 'Direction Hearings',
+        hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+        lastResponseReceivedDateTime: '',
+        exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+        exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+        hmcStatus: HMCStatus.AWAITING_LISTING,
+        responseVersion: 'rv1',
+        hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+        listAssistCaseStatus: '',
+        hearingIsLinkedFlag: true,
+        hearingGroupRequestId: null,
+        hearingDaySchedule: [],
         isSelected: true,
-        hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false,
-      },
-      {
-        hearingId: 'h100012',
-        hearingStage: HMCStatus.UPDATE_REQUESTED,
-        isSelected: false,
-        hearingStatus: HMCStatus.AWAITING_LISTING,
-        hearingIsLinkedFlag: false,
-      },
+      }, {
+        hearingID: 'h1000003',
+        hearingType: 'Chambers Outcome',
+        hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+        lastResponseReceivedDateTime: '',
+        exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+        exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+        hmcStatus: HMCStatus.AWAITING_LISTING,
+        responseVersion: 'rv1',
+        hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+        listAssistCaseStatus: '',
+        hearingIsLinkedFlag: true,
+        hearingGroupRequestId: null,
+        hearingDaySchedule: [],
+        isSelected: true,
+      }
     ],
   },
 ];
 
 const hearingLinksMock = {
   ...mockLinkedHearingGroup,
-  ...mockResponse
-
-}
+  ...mockLinkedCasesWithHearings
+};
 
 let component: HowLinkedHearingsBeHeardComponent;
 let fixture: ComponentFixture<HowLinkedHearingsBeHeardComponent>;
@@ -100,7 +133,7 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
   });
 
   it('should have validation errors mapped when nothing selected', () => {
-    mockStore.pipe.and.returnValue(of(mockResponse));
+    mockStore.pipe.and.returnValue(of(mockLinkedCasesWithHearings));
     component.onSubmit();
     expect(component.validationErrors.length).toBe(1);
   });
@@ -111,7 +144,7 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
       nativeElement.querySelector('#particularOrder');
     firstRadioButtonElement.click();
     fixture.detectChanges();
-    component.form.patchValue({ hearingGroup: 'particularOrder' });
+    component.form.patchValue({hearingGroup: 'particularOrder'});
     component.onOrderChange(0);
     component.onOrderChange(1);
     expect(component.validationErrors.length).toBe(0);
@@ -128,14 +161,14 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
 
   it('should navigate to previous page', () => {
     component.caseId = '8254902572336147';
-    component.hearingId = 'h100010';
+    component.hearingId = 'h1000002';
     component.onBack();
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       '/',
       'hearings',
       'link',
       '8254902572336147',
-      'h100010',
+      'h1000002',
     ]);
   });
 
@@ -161,17 +194,18 @@ describe('Manage Linking - HowLinkedHearingsBeHeardComponent', () => {
 
   it('should have a same slot group preselected', () => {
     const nativeElement = fixture.debugElement.nativeElement;
-    mockLinkedHearingGroup.linkedHearingGroup.groupDetails.groupLinkType = 'Same Slot';
+    mockLinkedHearingGroup.linkedHearingGroup.groupDetails.groupLinkType = GroupLinkType.SAME_SLOT;
     const firstRadioButtonElement = nativeElement.querySelector('input[name=hearingGroup]:checked');
     expect(firstRadioButtonElement).not.toBeNull();
     mockStore.pipe.and.returnValue(of(hearingLinksMock));
+    fixture.detectChanges();
     component.onSubmit();
-    expect(component.validationErrors.length).toBe(0);
+    expect(component.validationErrors.length).toBe(1);
   });
 
   it('should have a order group preselected', () => {
     const nativeElement = fixture.debugElement.nativeElement;
-    mockLinkedHearingGroup.linkedHearingGroup.groupDetails.groupLinkType = 'Ordered';
+    mockLinkedHearingGroup.linkedHearingGroup.groupDetails.groupLinkType = GroupLinkType.ORDERED;
     const firstRadioButtonElement = nativeElement.querySelector('input[name=hearingGroup]:checked');
     expect(firstRadioButtonElement).not.toBeNull();
     mockStore.pipe.and.returnValue(of(hearingLinksMock));
@@ -185,23 +219,26 @@ describe('Manage Linking - HowLinkedHearingsBeHeardComponent', () => {
 });
 
 function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterService: any, modeOfLinking: Mode) {
+  const STATE = _.cloneDeep(initialState);
+  STATE.hearings.hearingLinks.linkedHearingGroup = mockLinkedHearingGroup.linkedHearingGroup;
+
   TestBed.configureTestingModule({
     declarations: [HowLinkedHearingsBeHeardComponent],
     imports: [ReactiveFormsModule, RouterTestingModule, HearingsPipesModule],
     providers: [
-      provideMockStore({ initialState }),
-      { provide: HearingsService, useValue: hearingMockService },
-      { provide: Router, useValue: mockRouterService },
+      provideMockStore({initialState: STATE}),
+      {provide: HearingsService, useValue: hearingMockService},
+      {provide: Router, useValue: mockRouterService},
       {
         provide: ActivatedRoute,
         useValue: {
           snapshot: {
             data: {
-              mode: modeOfLinking
+              mode: modeOfLinking,
             },
             params: {
               caseId: '8254902572336147',
-              hearingId: 'h100001'
+              hearingId: 'h1000002'
             },
           },
           fragment: of('point-to-me'),

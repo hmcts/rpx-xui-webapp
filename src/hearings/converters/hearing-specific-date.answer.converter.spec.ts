@@ -93,11 +93,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
 
   it('should transform hearing empty date', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
-      dateRangeStart: null,
-      dateRangeEnd: null,
-      firstDateTimeMustBe: null
-    };
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = null;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = RadioOptions.NO;
     const expected = cold('(b|)', {b: hearingDateRange});

@@ -43,12 +43,12 @@
            href="javascript:void(0)"
            (click)="cancelHearing(hearing.hearingID)">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
-      <div *ngIf="hasUpdateAction && !isNonCancellable(hearing.exuiDisplayStatus) && hearing.hearingIsLinkedFlag && !isManageLinksEnabled(hearing.hearingGroupRequestId)" class="div-action">
+      <div *ngIf="hasUpdateAction && !isNonCancellable(hearing.exuiDisplayStatus) && hearing.hearingIsLinkedFlag && !isManageLinksEnabled(hearing.hearingGroupRequestId) && isLinkableStatus(hearing.exuiDisplayStatus)" class="div-action">
         <a id="link-hearing-link-{{hearing.hearingID}}"
            href="javascript:void(0)"
            (click)="linkHearing(hearing.hearingID)">Link hearing</a>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
-      <div *ngIf="hasUpdateAction && !isNonCancellable(hearing.exuiDisplayStatus) && isManageLinksEnabled(hearing.hearingGroupRequestId)" class="div-action">
+      <div *ngIf="hasUpdateAction && !isNonCancellable(hearing.exuiDisplayStatus) && isManageLinksEnabled(hearing.hearingGroupRequestId) && isLinkableStatus(hearing.exuiDisplayStatus)" class="div-action">
         <a id="link-manage-links-{{hearing.hearingID}}"
            href="javascript:void(0)"
            (click)="manageLinks(hearing)">Manage links</a>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -56,7 +56,8 @@
       <div *ngIf="hasReadOnlyAction || isNonCancellable(hearing.exuiDisplayStatus)" class="div-action">
         <a id="link-view-details-{{hearing.hearingID}}"
            href="javascript:void(0)"
-           (click)="viewDetails(hearing)">View details</a></div>
+           (click)="viewDetails(hearing)">View details</a>
+      </div>
     </td>
   </tr>
   </tbody>

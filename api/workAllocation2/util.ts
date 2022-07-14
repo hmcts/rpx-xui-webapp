@@ -92,7 +92,16 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 }
 
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
+  // Assign actions to the tasks on the data from the API.
   if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
+    const sortingParameters = req.body.searchRequest.sorting_parameters;
+    if (sortingParameters && sortingParameters.length > 0) {
+      sortingParameters.forEach( sortParam => {
+        if (sortParam.sort_by === 'hearing_date') {
+          sortParam.sort_by = 'caseName';
+        }
+      });
+    }
     const paginationConfig = req.body.searchRequest.pagination_parameters;
     const pageSize = paginationConfig.page_size;
     const pageNumber = (paginationConfig.page_number - 1) * pageSize;
@@ -612,7 +621,7 @@ export function formatDate(date: Date) {
 export function getAccessType(roleAssignment: RoleAssignment) {
   return roleAssignment.grantType ?
   roleAssignment.grantType.replace(/\w+/g, replacableString => {
-    return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase()
+    return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
   })
   :
   undefined;

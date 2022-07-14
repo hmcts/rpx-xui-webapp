@@ -7,17 +7,17 @@ import {
 export const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [
   {
     caseReference: '1546589340228619',
-    caseName: 'Smith vs Peterson',
+    caseName: 'Jane and Smith vs DWP',
     reasonsForLink: ['CLRC017'],
   },
   {
     caseReference: '1546589642998505',
-    caseName: 'Jane vs DWP',
+    caseName: 'Jane and Smith vs DWP',
     reasonsForLink: ['CLRC017', 'CLRC016'],
   },
   {
-    caseReference: '1546590083847466',
-    caseName: 'Smith vs HMRC',
+    caseReference: '1584618195804035',
+    caseName: 'Jane and Smith vs DWP',
     reasonsForLink: ['CLRC005', 'CLRC006', 'CLRC017'],
   },
 ];

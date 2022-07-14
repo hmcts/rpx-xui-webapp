@@ -65,7 +65,8 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
         results = filterOutResults(results, locationIds, courtTypes);
       }
     })
-    res.status(response.status).send(results);
+    response.data.results = results;
+    res.status(response.status).send(response.data.results);
   } catch (error) {
     next(error);
   }
@@ -107,6 +108,9 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
 
 function getLocationIdsFromLocationList(locations: any): string[] {
   const locationIds: string[] = [];
+  if (!locations) {
+    return [];
+  }
   locations.forEach(location => {
     locationIds.push(location.id.toString());
   });

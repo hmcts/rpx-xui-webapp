@@ -1,94 +1,140 @@
-
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { mockRes } from 'sinon-express-mock';
+import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
-import { EnhancedRequest } from '../lib/models';
-import { getLocations } from '.';
+import { getLocations } from './index';
+import { mockLocations } from './locationTestData.spec';
 
-
-// Mock data , service stub and spy is created and 2 test implimented (Tests need to be finetuned according to expected logic)
 chai.use(sinonChai);
-describe('locations', () => {
+describe('Fee Pay Judge', () => {
+
+  const GET = 'get';
 
   let sandbox: sinon.SinonSandbox;
-  let spy: any;
-  let res: any;
+  let spy: sinon.SinonSpy;
+  const res = mockRes({ status: 200, data: mockLocations });
   let next: any;
-  const SUCCESS_RESPONSE = { status: {}, data: 'ok' };
-  let req = {
-    body: {
-      searchTerm: 'gla',
-      serviceIds: 'IA,SSCS,Divorce',
-      locationType: null ,
-      userLocations: [{service: 'IA', locations: [{id: '1', name: 'Manchester'}, {id: '2', name: 'Birmingham'}]}]
-    }
-  }
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    next = sandbox.spy();
-    res = mockRes(SUCCESS_RESPONSE);
+    next = sandbox.stub();
   });
 
   afterEach(() => {
     sandbox.restore();
   });
 
-    it('should getLocations work properly', async () => {
-    spy = sandbox.stub(http, 'get').resolves({
-      status: 201,
-      data: [
-        {
-          court_type_id: 4,
-          epimms_id: 1
-        },
-        {
-          court_type_id : 23,
-          epimms_id: 2
-        }
+  describe('getLocations', () => {
 
-      ]
-    });
-      const result = [{ court_type_id: 4, epimms_id: 1 }, { court_type_id: 23, epimms_id: 2 }];
-      const response = mockRes();
-      let req = {
+    it('should return the location for user base location based on search term', async () => {
+      spy = sandbox.stub(http, GET).resolves(res);
+      const req = mockReq({
         body: {
-          searchTerm: 'gla',
-          serviceIds: 'IA,SSCS,Divorce',
-          locationType: null ,
-          userLocations: [{service: 'IA', locations: []}]
+          searchTerm: 'Gla',
+          serviceIds: ['IA','CIVIL','SSCS'],
+          locationType: 'hearing',
+          userLocations: [{service: 'IA', locations: [{id: '1234'}]}, {service: 'CIVIL', locations: [{id: '2345'}]}],
+          bookingLocations: ['1234', '2343']
         }
-      }
-      await getLocations(req as EnhancedRequest, response, next);
-      expect(response.send).to.have.been.calledWith(sinon.match(result));
-    });
-
-    it('should getLocations work properly', async () => {
-      spy = sandbox.stub(http, 'get').resolves({
-        status: 201,
-        data: [
-          {
-            court_type_id: 4,
-            epimms_id: 1
-          },
-          {
-            court_type_id : 23,
-            epimms_id: 2
-          }
-        ]
       });
 
-      const result = [{ court_type_id: 4, epimms_id: 1 }, { court_type_id: 23, epimms_id: 2 }];
-      const response = mockRes();
+      const response = mockRes({
+        data: mockLocations,
+      });
 
-      await getLocations(req as EnhancedRequest, response, next);
-      expect(response.send).to.have.been.calledWith(sinon.match(result));
+      try {
+        await getLocations(req, response, next);
+        // should equal 3, two for the two user base locations, one for the SSCS locations
+        expect(response.data.results.length).to.equal(3);
+
+    } catch (err) {
+        console.log(err.stack);
+        throw new Error(err);
+    }
     });
+
+    it('should return all locations if there is no base location', async () => {
+      spy = sandbox.stub(http, GET).resolves(res);
+      const req = mockReq({
+        body: {
+          searchTerm: 'Gla',
+          serviceIds: ['IA','CIVIL','SSCS'],
+          locationType: 'hearing',
+          userLocations: [],
+          bookingLocations: ['1234', '2343']
+        }
+      });
+
+      const response = mockRes({
+        data: mockLocations,
+      });
+
+      try {
+        await getLocations(req, response, next);
+        // expect all locations to be given
+        expect(response.data.results.length).to.equal(mockLocations.length);
+
+    } catch (err) {
+        console.log(err.stack);
+        throw new Error(err);
+    }
+    });
+
+    it('should return the possible locations for bookable filter', async () => {
+      spy = sandbox.stub(http, GET).resolves(res);
+      const req = mockReq({
+        body: {
+          searchTerm: 'Gla',
+          serviceIds: ['IA','CIVIL','SCSS'],
+          locationType: 'hearing',
+          userLocations: [{service: 'IA', bookable: 'true', locations: [{id: '1234'}]}],
+          bookingLocations: null
+        }
+      });
+
+      const response = mockRes({
+        data: mockLocations,
+      });
+
+      try {
+        await getLocations(req, response, next);
+        // should equal 4, only getting base location for IA
+        expect(response.data.results.length).to.equal(4);
+
+    } catch (err) {
+        console.log(err.stack);
+        throw new Error(err);
+    }
+    });
+
+    it('should return the possible when there are bookable and non-bookable locations', async () => {
+      spy = sandbox.stub(http, GET).resolves(res);
+      const req = mockReq({
+        body: {
+          searchTerm: 'Gla',
+          serviceIds: ['IA','CIVIL','SCSS'],
+          locationType: 'hearing',
+          userLocations: [{service: 'IA', bookable: 'true', locations: null}, {service: 'CIVIL', locations: [{id: '2345'}]}],
+          bookingLocations: ['1234']
+        }
+      });
+
+      const response = mockRes({
+        data: mockLocations,
+      });
+
+      try {
+        await getLocations(req, response, next);
+        // should equal 4, only getting base location for IA
+        expect(response.data.results.length).to.equal(3);
+
+    } catch (err) {
+        console.log(err.stack);
+        throw new Error(err);
+    }
+    });
+  });
 });
-// Scenario 1: User searches for Glasgow, 'gla' - no userLocations - user should be able to search all 'gla' locations in all services, e.g. Glastonbury, Glacier bay
-// Scenario 2: User searches for Glasgow, 'gla' - userLocation 'Glasgow' in 'IA' - user should be able to search only Glasgow for IA, 'gla' locations for other services
-// Scenario 3: User searches for Glasgoq, 'gla' - userLocations 'Glastonbury' in 'IA', 'Glacier bay' in 'SSCS' - user should be able to search only for Glastonbury in IA, Glacier bay in SSCS

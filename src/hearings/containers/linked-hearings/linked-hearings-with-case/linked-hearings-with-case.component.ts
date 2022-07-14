@@ -61,9 +61,9 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings;
         this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
         this.initForm();
+        this.getHearingsAvailable();
       }
     );
-    this.getHearingsAvailable();
   }
 
   public get pageMode(): typeof Mode {

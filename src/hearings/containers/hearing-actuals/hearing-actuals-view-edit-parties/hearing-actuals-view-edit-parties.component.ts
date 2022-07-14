@@ -267,16 +267,19 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     }
     if (valid) {
       const actualParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
-      const actualHearingDays: ActualHearingDayModel[] = [
-        {
-          ...this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
-          actualDayParties: actualParties,
-        }
-      ];
-      ActualHearingsUtils.isHearingPartiesUpdated = true;
-      this.hearingStore.dispatch(new fromHearingStore.SaveHearingActualsPlannedDays(
-        actualHearingDays
-      ));
+      const hearingActuals = {
+        ...this.hearingActualsMainModel.hearingActuals,
+        actualHearingDays: [
+          {
+            ...this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
+            actualDayParties: actualParties,
+          }
+        ],
+      };
+      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+        hearingId: this.id,
+        hearingActuals
+      }));
       this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
     }
   }

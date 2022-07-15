@@ -10,8 +10,9 @@ import { confirmAllocateRole,
   getRolesByCaseId,
   getSpecificAccessApproved,
   reallocateRole,
-  getNewCasesCount} from './index';
-import { getPossibleRoles } from './roleAssignmentService';
+  getNewCasesCount
+} from './index';
+import { getPossibleRoles, getRoleByAssignmentId } from './roleAssignmentService';
 
 const router = Router({ mergeParams: true });
 router.use(authInterceptor);
@@ -30,7 +31,6 @@ router.post('/roles/access-get', getAccessRolesByCaseId);
 router.post('/roles/getJudicialUsers', getJudicialUsers);
 
 router.get('/roles/getSpecificAccessApproved', getSpecificAccessApproved );
-router.get('/roles/getNewCasesCount', getNewCasesCount );
 router.post('/roles/manageLabellingRoleAssignment/:caseId', manageLabellingRoleAssignment );
 
 router.post('/allocate-role/specific-access-approval', createSpecificAccessApprovalRole);

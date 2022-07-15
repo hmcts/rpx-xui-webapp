@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
+import { WorkAllocationCaseService } from '../../../work-allocation-2/services';
 @Component({
   selector: 'exui-case-details-home',
   templateUrl: './case-details-home.component.html',
@@ -10,11 +11,14 @@ export class CaseDetailsHomeComponent implements OnInit {
 
   private readonly extras: NavigationExtras;
 
+  private caseTypeId: string;
+
   constructor(
     private readonly alertService: AlertService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly caseService: WorkAllocationCaseService
   ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation) {
@@ -23,6 +27,7 @@ export class CaseDetailsHomeComponent implements OnInit {
   }
 
   public ngOnInit() {
+    console.log('initialising');
     if (this.extras && this.extras.state && this.extras.state.showMessage && this.extras.state.messageText) {
       // EUI-4488 - preserve alerts on initialisation so messages are not removed when first entering page
       this.alertService.setPreserveAlerts(true);
@@ -35,8 +40,13 @@ export class CaseDetailsHomeComponent implements OnInit {
           caseType: data.case.case_type.id,
           jurisdiction: data.case.case_type.jurisdiction.id
         };
+        this.caseTypeId = caseInfo.caseType;
         this.sessionStorageService.setItem('caseInfo', JSON.stringify(caseInfo));
       }
     });
+    this.caseService.getCaseType(this.caseTypeId).subscribe(caseType => {
+      console.log(this.caseTypeId, 'is id');
+      console.log(caseType);
+    })
   }
 }

@@ -40,6 +40,10 @@ export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action
   return `${baseUrl}/task/${taskId}/${action}`;
 }
 
+export function prepareGetCaseTypeUrl(baseUrl: string, caseTypeId: string): string {
+  return `${baseUrl}/data/case-type/${caseTypeId}`;
+}
+
 export function prepareSearchCaseUrl(baseUrl: string, subPath?: string) {
   if (subPath) {
     return `${baseUrl}/${subPath}`;

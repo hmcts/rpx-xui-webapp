@@ -27,6 +27,13 @@ export async function handleCasePost(path: string, payload: any, req: EnhancedRe
   return response;
 }
 
+export async function handleCaseTypeGet(path: string, req: EnhancedRequest): Promise<any> {
+  logger.info('getting case type for', path);
+  const headers = setHeaders(req);
+  const response: AxiosResponse = await http.get(path, { headers });
+  return response.data;
+}
+
 export const filterAllWorkCases = (cases: any[], parameters: SearchTaskParameter[]) => {
   if (!parameters) {
     return cases;

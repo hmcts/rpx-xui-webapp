@@ -55,7 +55,7 @@
         <h1 class="column-label" *ngIf="field.disableSort">{{field.columnLabel}}</h1>
       </th>
       <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
-        <exui-roundel-badge [isNew]="rowData.isNew" [rowData]="rowData" [config]="field"></exui-roundel-badge>
+        <exui-roundel-badge [isNew]="false" [rowData]="rowData" [config]="field"></exui-roundel-badge>
       </td>
     </ng-container>
   </ng-container>

@@ -36,6 +36,7 @@ function HeaderPage() {
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
 
     this.headerAppLogoLink = $('.hmcts-header__logo a');
+    this.headerBanner = $('exui-header header > div');
 
 
     this.navigateToRoute = async function(route){
@@ -114,6 +115,14 @@ function HeaderPage() {
     };
     this.createCase =  function() { 
       return element(by.xpath("//li/a[contains(text(),'Create case')]")) 
+    };
+
+    this.clickRefunds = async function () {
+      let refundsLink = element(by.xpath("//li/a[contains(text(),'Refunds')]"));
+      await BrowserWaits.waitForElementClickable(refundsLink);
+      await refundsLink.click();
+      let searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Refund list']"));
+      await BrowserWaits.waitForElement(searchPageHeader); 
     };
 
     this.taskList = function(){

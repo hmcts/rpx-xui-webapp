@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, DebugElement, ViewChild, inject } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Location as AngularLocation } from '@angular/common';
@@ -195,6 +195,31 @@ describe('TaskListFilterComponent', () => {
     expect(component.defaultLocations).toBe(component.bookingLocations);
     expect(locationService.getSpecificLocations).toHaveBeenCalledWith(component.defaultLocations);
   });
+
+  it('should set allowTypesOfWorkFilter to true by default', () => {
+    expect(component.allowTypesOfWorkFilter).toBe(true);
+  });
+
+  it('should render filter with "Types of work" filter visible', fakeAsync(() => {
+    component.onToggleFilter(true);
+    fixture.detectChanges();
+    tick(500);
+    const typesOfWorkParentDivElem = fixture.debugElement.query(By.css('#types-of-work')).parent;
+    const styles = getComputedStyle(typesOfWorkParentDivElem.nativeElement);
+    const displayProp = styles.getPropertyValue('display');
+    expect(displayProp).toEqual('block');
+  }));
+
+  it('should render filter with "Types of work" filter NOT visible', fakeAsync(() => {
+    component.allowTypesOfWorkFilter = false;
+    component.onToggleFilter(false);
+    fixture.detectChanges();
+    tick(500);
+    const typesOfWorkParentDivElem = fixture.debugElement.query(By.css('#types-of-work')).parent;
+    const styles = getComputedStyle(typesOfWorkParentDivElem.nativeElement);
+    const displayProp = styles.getPropertyValue('display');
+    expect(displayProp).toEqual('none');
+  }));
 
   afterAll(() => {
     component.ngOnDestroy();

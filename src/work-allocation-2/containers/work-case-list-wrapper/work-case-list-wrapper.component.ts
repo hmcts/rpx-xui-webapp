@@ -1,9 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of } from 'rxjs';
-import { mergeMap, switchMap } from 'rxjs/operators';
+import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { Observable, of, Subscription } from 'rxjs';
+import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -28,7 +28,7 @@ import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../..
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
 })
-export class WorkCaseListWrapperComponent implements OnInit {
+export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public specificPage: string = '';
   public caseworkers: Caseworker[] = [];
@@ -45,6 +45,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
   protected allRoles: Role[];
   protected defaultLocation: string = 'all';
   private pCases: Case[];
+  public selectedLocations: string[] = [];
+
   /**
    * Mock CaseServiceConfig.
    */
@@ -57,12 +59,16 @@ export class WorkCaseListWrapperComponent implements OnInit {
   private pCasesTotal: number;
   private pUniqueCases: number;
 
+  // subscriptions
+  private selectedLocationsSubscription: Subscription;
+
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
   constructor(
     protected readonly ref: ChangeDetectorRef,
     protected readonly caseService: WorkAllocationCaseService,
+    protected readonly filterService: FilterService,
     protected readonly router: Router,
     protected readonly infoMessageCommService: InfoMessageCommService,
     protected readonly sessionStorageService: SessionStorageService,
@@ -150,6 +156,26 @@ export class WorkCaseListWrapperComponent implements OnInit {
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
+    this.addSelectedLocationsSubscriber();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.selectedLocationsSubscription) {
+      this.selectedLocationsSubscription.unsubscribe();
+    }
+  }
+
+  public addSelectedLocationsSubscriber() {
+    this.selectedLocationsSubscription = this.filterService.getStream('locations').pipe(
+      debounceTime(200),
+      filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+    ).subscribe((f: FilterSetting) => {
+      const newLocations = f.fields.find((field) => field.name === 'locations').value;
+      this.selectedLocations = (newLocations).map(l => l.epimms_id);
+      if (this.selectedLocations.length) {
+        this.doLoad();
+      }
+    });
   }
 
   public setupCaseWorkers(): void {

@@ -486,8 +486,29 @@ export async function getMyAccess(req: EnhancedRequest, res: Response, next: Nex
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
-    const roleAssignments = req.session.roleAssignmentResponse;
-    const cases = await getCaseIdListFromRoles(roleAssignments as RoleAssignment[], req);
+    const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
+
+    // get 'service' and 'location' filters from search_parameters on request
+    const { search_parameters } = req.body.searchRequest;
+    const services = search_parameters.find(searchParam => searchParam.key === 'services');
+    const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
+
+    let serviceIds = [];
+    let locationIds = [];
+    if (services && services.hasOwnProperty('values')) {
+      serviceIds = services.values;
+    }
+    if (locations && locations.hasOwnProperty('values')) {
+      locationIds = locations.values;
+    }
+
+    // filter role assignments by service id(s)
+    const filteredRoleAssignments = roleAssignments.filter(roleAssignment =>
+      serviceIds.includes(roleAssignment.attributes.jurisdiction)
+    );
+
+    // get cases using either filteredRoleAssignments array or roleAssignments array if no serviceId filters are applied
+    const cases = await getCaseIdListFromRoles(!serviceIds.length ? roleAssignments : filteredRoleAssignments, req);
 
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
@@ -501,9 +522,12 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       total_records: 0,
       unique_cases: 0,
     };
+    // filter cases by locationIds
+    const caseData = filterByLocationId(result.cases, locationIds);
+    logger.info('results filtered by location id', caseData.length, locationIds);
 
-    if (cases.length) {
-      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any) : [];
+    if (caseData) {
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
       result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);

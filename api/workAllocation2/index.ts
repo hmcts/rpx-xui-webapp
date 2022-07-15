@@ -531,7 +531,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
  export async function getCaseType(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getTaskPath: string = prepareGetCaseTypeUrl(baseWorkAllocationTaskUrl, req.params.caseTypeId);
+    const getTaskPath: string = prepareGetCaseTypeUrl(req.params.caseTypeId);
 
     const jsonResponse = await handleCaseTypeGet(getTaskPath, req);
     res.status(200);

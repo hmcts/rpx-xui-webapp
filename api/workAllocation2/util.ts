@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_CCD_DEFINITION_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
@@ -40,8 +40,9 @@ export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action
   return `${baseUrl}/task/${taskId}/${action}`;
 }
 
-export function prepareGetCaseTypeUrl(baseUrl: string, caseTypeId: string): string {
-  return `${baseUrl}/data/case-type/${caseTypeId}`;
+export function prepareGetCaseTypeUrl(caseTypeId: string): string {
+  const url = getConfigValue(SERVICES_CCD_DEFINITION_STORE_API_PATH);
+  return `${url}/data/case-type/${caseTypeId}`;
 }
 
 export function prepareSearchCaseUrl(baseUrl: string, subPath?: string) {

@@ -5,6 +5,7 @@ import {
   getAllCaseWorkers,
   getAllCaseWorkersForLocation,
   getCases,
+  getCaseType,
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService,
   getCaseWorkersFromServices,
@@ -48,6 +49,8 @@ router.use('/task/:taskId/roles', getTaskRoles);
 router.use('/task/:taskId/:action', postTaskAction);
 router.use('/task/:taskId', getTask);
 router.use('/task', searchTask);
+
+router.use('/case/case-type/:caseTypeId', getCaseType);
 
 router.use('/case/task/:caseId', getTasksByCaseId);
 router.use('/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:jurisdiction', getTasksByCaseIdAndEventId);

@@ -82,4 +82,9 @@ export class WorkAllocationCaseService {
     // Make a POST with an empty payload.
     return this.http.post<any>(this.getActionUrl(caseId, action), {});
   }
+
+  public getCaseType(caseTypeId: string): Observable<any> {
+    const url = `${BASE_URL}/case-type/${caseTypeId}`;
+    return this.http.get<any>(url);
+  }
 }

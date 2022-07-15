@@ -56,6 +56,7 @@ import {
   prepareCaseWorkerForLocationAndService,
   prepareCaseWorkerForService,
   prepareCaseWorkerSearchUrl,
+  prepareGetCaseTypeUrl,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
@@ -66,6 +67,7 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
+import { handleCaseTypeGet } from './caseService';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -519,6 +521,22 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);
+    next(error);
+  }
+}
+
+/**
+ * getCaseType
+ */
+ export async function getCaseType(req: EnhancedRequest, res: Response, next: NextFunction) {
+
+  try {
+    const getTaskPath: string = prepareGetCaseTypeUrl(baseWorkAllocationTaskUrl, req.params.caseTypeId);
+
+    const jsonResponse = await handleCaseTypeGet(getTaskPath, req);
+    res.status(200);
+    res.send(jsonResponse);
+  } catch (error) {
     next(error);
   }
 }

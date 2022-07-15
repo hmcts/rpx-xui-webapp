@@ -272,16 +272,37 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given(/^I am logged into Expert UI with Probate user details$/, async function () {
     browser.sleep(MID_DELAY);
-    await loginPage.emailAddress.sendKeys(config.config.params.username);
+    await loginPage.emailAddress.sendKeys(config.config.params.probate_username);
     browser.sleep(MID_DELAY);
-    await loginPage.password.sendKeys(config.config.params.password);
+    await loginPage.password.sendKeys(config.config.params.probate_password);
     await loginPage.clickSignIn();
     browser.sleep(LONG_DELAY);
 
     loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.probate_username, config.config.params.probate_password, this);
+  });
+
+  Given('I am logged into Expert UI as IA {string}', async function (usertype) {
+    browser.sleep(MID_DELAY);
+    await loginPage.emailAddress.sendKeys(config.config.params.ia_users_credentials[usertype].username);
+    browser.sleep(MID_DELAY);
+    await loginPage.password.sendKeys(config.config.params.ia_users_credentials[usertype].password);
+    await loginPage.clickSignIn();
+    browser.sleep(LONG_DELAY);
+    loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.username, config.config.params.password, this);
   });
 
+  Then('I should see the expected banner for IA {string}', async function (usertype) {
+    let bannerElementBgColor = await headerPage.headerBanner.getAttribute('style');
+    let navItems =  await headerPage.primaryNavBar_NavItems.getText();
+    if(usertype === 'judge') {
+      expect(bannerElementBgColor).to.equal('background-color: rgb(141, 15, 14);');
+      expect(navItems).to.not.include('Create case');
+      return;
+    }
+    expect(bannerElementBgColor).to.equal('background-color: rgb(32, 32, 32);');
+});
 
   Given('I am logged into Expert UI caseworker-ia-adm user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password);

@@ -34,7 +34,8 @@ import {
   SERVICES_PRD_LOCATION_API,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH,
+  SERVICES_CCD_DEFINITION_STORE_API_PATH
 } from './references';
 
 /**
@@ -73,6 +74,7 @@ export const applicationConfiguration = () => {
     servicesCcdCaseAssignmentPath: getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH),
     servicesCcdComponentPath: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
     servicesCcdDataStorePath: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
+    servicesCccdDefinitionStorePath: getConfigValue(SERVICES_CCD_DEFINITION_STORE_API_PATH),
     servicesDocumentApiPath: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
     servicesDocumentApiV2Path: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
     servicesEmHrsApiPath: getConfigValue(SERVICES_EM_HRS_API_PATH),

@@ -35,7 +35,8 @@
       "componentApi": "SERVICES_CCD_COMPONENT_API",
       "activityApi": "SERVICES_CCD_ACTIVITY_API",
       "dataApi": "SERVICES_CCD_DATA_STORE_API",
-      "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
+      "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API",
+      "definitionApi": "SERVICES_CCD_DEFINITION_STORE_API"
     },
     "hearings": {
       "serviceApi": "SERVICES_HEARINGS_COMPONENT_API",

@@ -97,6 +97,7 @@ describe('MyAccessComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
+  // once problems resolved for these tests intermittent failures, add this to release 4
   xit('should not show the footer when there are cases', () => {
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');

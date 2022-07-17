@@ -17,9 +17,10 @@ import {
 import { ServiceLinkedCasesWithHearingsModel } from '../../../models/linkHearings.model';
 import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
+import * as fromHearingStore from '../../../store';
 import { LinkedHearingsWithCaseComponent } from './linked-hearings-with-case.component';
 
-describe('LinkedHearingsWithCaseComponent', () => {
+fdescribe('LinkedHearingsWithCaseComponent', () => {
   let component: LinkedHearingsWithCaseComponent;
   let fixture: ComponentFixture<LinkedHearingsWithCaseComponent>;
   let store: any;
@@ -29,6 +30,9 @@ describe('LinkedHearingsWithCaseComponent', () => {
   const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   let mockHearingService: any;
+  const caseId = '1111-2222-3333-4444';
+  const hearingId = 'h100002';
+  const hearingGroupRequestId = 'g1000000';
 
   const serviceLinkedCasesWithNoSelectedHearings: ServiceLinkedCasesWithHearingsModel[] = [
     {
@@ -206,6 +210,17 @@ describe('LinkedHearingsWithCaseComponent', () => {
     fixture.detectChanges();
     component.navigate();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g00101', 'h1000002', 'check-your-answers']);
+  });
+
+  it('should dispatch to store on unlink hearings', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.caseId = caseId;
+    component.hearingId = hearingId;
+    component.hearingGroupRequestId = hearingGroupRequestId;
+    component.onUnlinkHearings();
+    expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ManageLinkedHearingGroup({
+      linkedHearingGroup: null, hearingGroupRequestId, caseId, hearingId
+    })));
   });
 
   afterEach(() => {

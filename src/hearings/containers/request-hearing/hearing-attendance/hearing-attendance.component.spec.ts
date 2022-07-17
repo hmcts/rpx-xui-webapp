@@ -96,11 +96,6 @@ describe('HearingAttendanceComponent', () => {
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
   });
 
-  it('should set Hearing Preferred Channel', () => {
-    const individualDetails: IndividualDetailsModel = { preferredHearingChannel: 'notAttending' } as IndividualDetailsModel;
-    expect(component.setHearingPreferredChannel(individualDetails)).toBe('notAttending');
-  });
-
   afterEach(() => {
     fixture.destroy();
   });

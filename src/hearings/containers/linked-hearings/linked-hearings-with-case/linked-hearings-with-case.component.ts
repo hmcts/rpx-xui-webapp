@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import {
   HearingLinkedSelectionEnum,
   Mode
@@ -12,9 +12,9 @@ import {
   LinkedHearingGroupMainModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../../../models/linkHearings.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-linked-hearings-with-case',
@@ -124,7 +124,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public initForm(): void {
     this.linkHearingForm = this.fb.group({
       linkedCasesWithHearings: this.getCasesFormArray
-    }, {validator: this.validators.validateLinkedHearings()});
+    }, { validator: this.validators.validateLinkedHearings() });
   }
 
   public getHearingsAvailable() {
@@ -145,9 +145,32 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.navigate();
   }
 
+  public onUnlinkHearings(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ManageLinkedHearingGroup({
+      linkedHearingGroup: null,
+      caseId: this.caseId,
+      hearingGroupRequestId: this.hearingGroupRequestId,
+      hearingId: this.hearingId
+    }));
+  }
+
+  public isGetHearingsSelected(): boolean {
+    let isHearingsSelected = false;
+    this.linkHearingForm.value.linkedCasesWithHearings.forEach((caseInfo) => {
+      if (caseInfo.caseHearings && caseInfo.caseHearings.find((hearingInfo) => hearingInfo.isSelected === true)) {
+        isHearingsSelected = true;
+      }
+    });
+    return isHearingsSelected;
+  }
+
   public onSubmit() {
     if (this.isManageLink) {
-      this.saveLinkedHearingInfo();
+      if (this.isGetHearingsSelected()) {
+        this.saveLinkedHearingInfo();
+      } else {
+        this.onUnlinkHearings();
+      }
     } else {
       this.validationErrors = [];
       this.linkedHearingSelectionError = null;
@@ -155,7 +178,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         this.saveLinkedHearingInfo();
       } else {
         this.linkedHearingSelectionError = this.linkedHearingEnum.ValidSelectionError;
-        this.validationErrors.push({id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError});
+        this.validationErrors.push({ id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError });
       }
     }
   }

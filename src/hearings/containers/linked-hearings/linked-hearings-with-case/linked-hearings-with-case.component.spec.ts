@@ -20,7 +20,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { LinkedHearingsWithCaseComponent } from './linked-hearings-with-case.component';
 
-fdescribe('LinkedHearingsWithCaseComponent', () => {
+describe('LinkedHearingsWithCaseComponent', () => {
   let component: LinkedHearingsWithCaseComponent;
   let fixture: ComponentFixture<LinkedHearingsWithCaseComponent>;
   let store: any;

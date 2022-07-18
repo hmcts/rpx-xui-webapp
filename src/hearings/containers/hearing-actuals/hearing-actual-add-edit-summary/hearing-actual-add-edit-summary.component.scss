@@ -9,3 +9,37 @@ span.align-right {
 .text-right {
   text-align: right;
 }
+
+.listing-info {
+  .govuk-summary-list {    
+    // background-color: #f3f2f1;
+    .govuk-summary-list__key {
+      padding: 2px 10px;
+      width: 275px;
+      position: relative;
+      left: 150px;;
+
+    }
+    .govuk-summary-list__value {
+      position: relative;
+      left: 150px;
+    }
+  }
+}
+
+.listing-info {
+  .govuk-summary-list {
+    .govuk-summary-list__key-no-border {
+      @extend .govuk-summary-list__key !optional;
+      border-bottom: none;
+    }
+    .govuk-summary-list__value-no-border {
+      @extend .govuk-summary-list__value !optional;
+      border-bottom: none;
+    }
+    .govuk-summary-list__row_no-border {
+      @extend .govuk-summary-list__row !optional;
+      border-bottom: none;
+    }
+  }
+}

@@ -52,6 +52,7 @@ export interface ActualHearingDayModel {
   hearingEndTime: string;
   pauseDateTimes: PauseDateTimeModel[];
   actualDayParties: ActualDayPartyModel[];
+  notRequired: boolean;
 }
 
 export interface HearingOutcomeModel {

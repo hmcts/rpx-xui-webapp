@@ -5,9 +5,8 @@
 <h1 class="govuk-heading-l" *ngIf="!linkedCases?.length">{{ linkedHearingEnum.NoLinkedCases}}</h1>
 <h1 class="govuk-heading-l" *ngIf="linkedCases?.length">{{ isHearingsAvailable ? linkedHearingEnum.HearingSelection :
   linkedHearingEnum.NoHearingSelection}}</h1>
-<p class="govuk-hint" *ngIf="isManageLink">Hearings may be unavailable due to their status. or if they are already
-  linked to another hearing.<br>Only hearings
-  from cases linked to this case will appear in this list.</p>
+<p class="govuk-hint" *ngIf="linkedCases?.length">Hearings may be unavailable due to their status, or if they are already
+  linked to another hearing.<br>Only hearings from cases linked to this case will appear in this list.</p>
 <div *ngIf="linkedCases && linkedCases.length">
   <form class="form" [formGroup]="linkHearingForm" id="linked-form">
     <div class="govuk-form-group govuk-!-margin-top-5" formArrayName="linkedCasesWithHearings"

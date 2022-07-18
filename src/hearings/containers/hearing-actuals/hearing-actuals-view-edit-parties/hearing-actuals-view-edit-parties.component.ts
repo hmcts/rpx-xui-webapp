@@ -3,16 +3,12 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { ValidationErrors } from '@angular/forms/src/directives/validators';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
-import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
 import {
   ActualDayPartyModel,
-  ActualHearingDayModel,
   HearingActualsMainModel,
   PlannedDayPartyModel,
-  PlannedHearingDayModel
 } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingChannelEnum } from '../../../models/hearings.enum';

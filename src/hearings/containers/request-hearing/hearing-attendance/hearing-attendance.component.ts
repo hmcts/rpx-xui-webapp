@@ -178,16 +178,12 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     return this.fb.group({
       firstName: [individualDetails.firstName],
       lastName: [individualDetails.lastName],
-      preferredHearingChannel: [this.setHearingPreferredChannel(individualDetails), Validators.required],
+      preferredHearingChannel: [individualDetails.preferredHearingChannel, Validators.required],
       interpreterLanguage: [individualDetails.interpreterLanguage],
       reasonableAdjustments: [individualDetails.reasonableAdjustments],
       relatedParties: [individualDetails.relatedParties],
       title: [individualDetails.title],
       vulnerabilityDetails: [individualDetails.vulnerabilityDetails],
     });
-  }
-
-  public setHearingPreferredChannel(individualDetails: IndividualDetailsModel): string {
-    return this.hearingRequestMainModel.hearingDetails.hearingChannels && this.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR) ? HearingChannelEnum.NotAttending : individualDetails.preferredHearingChannel;
   }
 }

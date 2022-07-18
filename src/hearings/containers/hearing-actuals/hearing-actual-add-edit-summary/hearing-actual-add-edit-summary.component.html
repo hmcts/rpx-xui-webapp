@@ -77,7 +77,7 @@
               <a href="javascript:void(0)" (click)="wasThisHearingDayRequiredChange(actualHearingDay)"
                 id="hearing-stage-result-change-link" class="govuk-link">Change</a>
             </dd>
-          </div>        
+          </div>
         </dl>
       </div>
       <div class="govuk-details__text listing-info" *ngIf="!actualHearingDay.notRequired">
@@ -167,6 +167,7 @@
     <div class="govuk-error-message" *ngIf="hearingTimingResultErrorMessage !== ''">
       {{hearingTimingResultErrorMessage}}
     </div>
+
     <br>
     <h2 class="govuk-heading-m">Submit your hearing details</h2>
     <p class="govuk-body">Once you have entered the hearing details, select Submit hearing details.</p>

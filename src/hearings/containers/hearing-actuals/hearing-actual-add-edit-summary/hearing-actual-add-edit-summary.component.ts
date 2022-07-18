@@ -1,24 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
 import * as moment from 'moment';
-import { Observable, Subscription } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
-import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
-import { HttpError } from '../../../../models/httpError.model';
+import {Observable, Subscription} from 'rxjs';
+import {filter} from 'rxjs/operators';
+import {HttpError} from '../../../../models/httpError.model';
 import {
   ActualDayPartyModel,
   ActualHearingDayModel,
   HearingActualsMainModel,
   HearingOutcomeModel,
   PlannedDayPartyModel,
-  PlannedHearingDayModel
 } from '../../../models/hearingActualsMainModel';
-import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { HearingsService } from '../../../services/hearings.service';
+import {HearingActualsStateData} from '../../../models/hearingActualsStateData.model';
+import {ACTION, HearingActualAddEditSummaryEnum, HearingDateEnum, HearingResult} from '../../../models/hearings.enum';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import {ActualHearingsUtils} from '../../../utils/actual-hearings.utils';
 
 @Component({
   selector: 'exui-hearing-actual-add-edit-summary',
@@ -41,7 +40,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingResultReasonTypeDescription: string;
   public validationErrors: { id: string, message: string }[] = [];
   public serverErrors: { id: string, message: string }[] = [
-    { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
+    {id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.'}
   ];
   public hearingStageResultErrorMessage = '';
   public hearingTimingResultErrorMessage = '';
@@ -66,7 +65,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   private static hasActualParties(hearingActuals: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
     return !!hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays
-      && hearingActuals.hearingActuals.actualHearingDays.length && hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties
+    && hearingActuals.hearingActuals.actualHearingDays.length && hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties
       ? hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.some(
         (actualDayParty: ActualDayPartyModel) => immutablePartyRoles
           .map((partyRole: LovRefDataModel) => partyRole.key)
@@ -141,10 +140,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
       ? true : false;
   }
+
   private isHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
     return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 &&
-      hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties &&
-      hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.length > 0
+    hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties &&
+    hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.length > 0
       ? true : false;
   }
 
@@ -153,7 +153,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.validationErrors = [];
     this.hearingTimingResultErrorMessage = '';
     this.successBanner = true;
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
       actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null)
@@ -169,7 +169,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingPartiesResultErrorMessage = '';
     ActualHearingsUtils.isHearingPartiesUpdated = false;
     this.successBanner = true;
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
       actualHearingDays: ActualHearingsUtils.getActualHearingParties(this.hearingActualsMainModel, this.parties, this.participants)
@@ -230,7 +230,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         message: HearingActualAddEditSummaryEnum.ConfirmUpdateError
       });
       this.hearingTimingResultErrorMessage = HearingActualAddEditSummaryEnum.ConfirmUpdateError;
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
       isValid = false;
     }
     if (ActualHearingsUtils.isHearingPartiesUpdated || !this.isHearingActualsPartiesAvailable(this.hearingActualsMainModel)) {
@@ -239,7 +239,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         message: HearingActualAddEditSummaryEnum.ConfirmUpdateError
       });
       this.hearingPartiesResultErrorMessage = HearingActualAddEditSummaryEnum.ConfirmUpdateError;
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
       isValid = false;
     }
     if (this.hearingResult === '' || this.hearingResult === null) {
@@ -248,7 +248,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         message: HearingActualAddEditSummaryEnum.HearingResultError
       });
       this.hearingStageResultErrorMessage = HearingActualAddEditSummaryEnum.HearingResultError;
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
       isValid = false;
     }
     return isValid;
@@ -257,26 +257,28 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public calculateEarliestHearingDate(hearingDays): string {
     const moments: moment.Moment[] = hearingDays.map(d => moment(d.hearingDate));
     if (moments.length > 1) {
-      return moment.min(moments).format('DD MMMM YYYY') +' - '+ moment.max(moments).format('DD MMMM YYYY');
+      return moment.min(moments).format(HearingDateEnum.DisplayMonth) + ' - ' + moment.max(moments).format(HearingDateEnum.DisplayMonth);
     } else {
-      return moment.max(moments).format('DD MMMM YYYY');
+      return moment.max(moments).format(HearingDateEnum.DisplayMonth);
     }
   }
 
   public getPauseStartDateTime(day) {
-    return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime 
-    ? moment(day.pauseDateTimes[0].pauseStartTime).format("HH:mm"): null;
+    return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime
+      ? moment(day.pauseDateTimes[0].pauseStartTime).format(HearingDateEnum.DisplayTime) : null;
   }
+
   public getPauseEndDateTime(day) {
-    return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime 
-    ? moment(day.pauseDateTimes[0].pauseEndTime).format("HH:mm"): null;
+    return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime
+      ? moment(day.pauseDateTimes[0].pauseEndTime).format(HearingDateEnum.DisplayTime) : null;
   }
+
   public getPartiesNames(day): string {
     const arr = day.actualDayParties.map((p) => {
       return {
         name: p.individualDetails.firstName + ' ' + p.individualDetails.lastName
-      }
+      };
     });
-    return "";
+    return '';
   }
 }

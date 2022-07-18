@@ -211,6 +211,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
         hearingDate: '2021-03-12',
         hearingStartTime: '2021-03-12T09:00:00.000Z',
         hearingEndTime: '2021-03-13T10:00:00.000Z',
+        notRequired: false,
         pauseDateTimes: [{
           pauseStartTime: '2021-03-12T10:10:00.000Z',
           pauseEndTime: '2021-03-12T11:15:00.000Z',

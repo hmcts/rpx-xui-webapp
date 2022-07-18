@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel, PlannedDayPartyModel } from '../models/hearingActualsMainModel';
+import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel } from '../models/hearingActualsMainModel';
 
 export class ActualHearingsUtils {
   public static isHearingDaysUpdated: boolean;
@@ -25,7 +24,7 @@ export class ActualHearingsUtils {
             hearingDate: this.getDate(x.plannedStartTime),
             hearingStartTime: x.plannedStartTime,
             hearingEndTime: x.plannedEndTime,
-            pauseDateTimes: [], 
+            pauseDateTimes: [],
             notRequired: false,
             actualDayParties: x.parties.map(p => {
               return {
@@ -36,21 +35,18 @@ export class ActualHearingsUtils {
                 didNotAttendFlag: false,
                 individualDetails: {firstName: p.individualDetails.firstName, lastName: p.individualDetails.lastName},
                 actualOrganisationName: p.organisationDetails ? p.organisationDetails.name : null
-              }
+              };
             })
-          }
+          };
         });
 
     hearingDays = hearingDays.sort((a, b) => {
       return Date.parse(a.hearingDate) === Date.parse(b.hearingDate) ? 0 : Date.parse(a.hearingDate) > Date.parse(b.hearingDate) ? 1 : -1;
     });
 
-    
-
     let pauseDateTimes = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[0]
       && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes || null;
-
 
     const pauseStartTime = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[0]
@@ -70,7 +66,6 @@ export class ActualHearingsUtils {
           && hearingActualsMainModel.hearingPlanned.plannedHearingDays.length > 0 && hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].plannedStartTime);
 
       const hearingDate = this.getDate(hearingStartTime);
-  
       let changedPauseStartTime;
       let changedPauseEndTime;
       const moPauseStartTime = moment(value.pauseStartTime, 'HH:mm');
@@ -96,17 +91,15 @@ export class ActualHearingsUtils {
       } else {
         pauseDateTimes = null;
       }
-      const Item = hearingDays.filter((x) => { return x.hearingDate === hearingDate})[0];
-      Item.pauseDateTimes = pauseDateTimes;
+      const item = hearingDays.filter((x) => { return x.hearingDate === hearingDate})[0];
+      item.pauseDateTimes = pauseDateTimes;
     }
-
     return hearingDays as ActualHearingDayModel[];
 
   }
 
 
   public static getActualHearingDay_old(hearingActualsMainModel: HearingActualsMainModel, value: any): ActualHearingDayModel[] {
-    // this.getActualHearingDay_new(hearingActualsMainModel, value);
     const hearingStartTime = (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 && hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingStartTime)
       || (hearingActualsMainModel.hearingPlanned && hearingActualsMainModel.hearingPlanned.plannedHearingDays

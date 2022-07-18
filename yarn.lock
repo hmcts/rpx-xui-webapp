@@ -460,7 +460,7 @@
   version "4.12.1-EUI-5721-not-displaying-order-document-in-CYA-rc2"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.12.1-EUI-5721-not-displaying-order-document-in-CYA-rc2.tgz#4da686b3dcfe8e369d6e757a5f5908836190432a"
   integrity sha512-BQ15XIC0TQlxk7L+xq8VXXczac8UANt7tQMmmDQfFlOHrG1ZR1EXkDsilZvpLuaQpZPFJ6vvYFpxsKCJ5aDHLQ==
-  dependencies:
+ dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"

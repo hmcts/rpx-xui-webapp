@@ -34,6 +34,6 @@ describe('LinkedHearingsCaseTitleComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component.hearingTitleTextPrefix).toEqual('Manage hearings');
+    expect(component.hearingTitleTextPrefix).toEqual('Manage hearings linked to');
   });
 });

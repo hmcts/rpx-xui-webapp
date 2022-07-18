@@ -168,16 +168,16 @@ describe('Hearing Values Effects', () => {
       const action$ = HearingValuesEffects.handleError({
         status: 500,
         message: 'error'
-      });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
+      }, '1111222233334444');
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/cases/case-details/1111222233334444/hearings']})));
     });
 
     it('should handle 4xx related errors', () => {
       const action$ = HearingValuesEffects.handleError({
         status: 403,
         message: 'error'
-      });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
+      }, '1111222233334444');
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/cases/case-details/1111222233334444/hearings']})));
     });
   });
 });

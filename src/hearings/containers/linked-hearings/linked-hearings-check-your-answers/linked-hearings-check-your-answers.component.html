@@ -3,7 +3,7 @@
 <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName" mode="mode"></exui-linked-hearings-case-title>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l">{{isManageLink && linkedCaseHearingsResults.length > 0 ? 'Linked hearings' :'Check your answers'}}</h1>
+    <h1 class="govuk-heading-l">{{isManageLink && !isManageJourneyFinalPage && linkedCaseHearingsResults.length > 0 ? 'Linked hearings' :'Check your answers'}}</h1>
     <div *ngIf="!isManageLink">
       <h2 class="govuk-heading-m">Linked hearings</h2>
       <span class="govuk-body align-right">

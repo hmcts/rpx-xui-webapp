@@ -75,7 +75,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 
 export function filterOutResults(locations: LocationModel[], locationIds: string[], courtTypes: string[]): LocationModel[] {
   return locations.filter(location => !(courtTypes.includes(location.court_type_id))
-            || locationIds.includes(location.epimms_id));
+            || (locationIds.includes(location.epimms_id) || (!locationIds || locationIds.length === 0)));
 }
 
 /**

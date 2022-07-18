@@ -18,7 +18,7 @@ import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
-describe('HearingActualAddEditSummaryComponent', () => {
+fdescribe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
   let fixture: ComponentFixture<HearingActualAddEditSummaryComponent>;
   let store: any;

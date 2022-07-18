@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel } from '../models/hearingActualsMainModel';
-import { HearingDateEnum } from '../models/hearings.enum';
 
 export class ActualHearingsUtils {
   public static isHearingDaysUpdated: boolean;

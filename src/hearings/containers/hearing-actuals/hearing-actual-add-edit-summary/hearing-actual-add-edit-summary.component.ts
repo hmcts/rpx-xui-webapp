@@ -81,7 +81,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
-        this.actualHearingDays = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel);
+        this.actualHearingDays = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null);
         this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
         this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
@@ -154,7 +154,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel)
+      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null)
     };
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -288,9 +288,4 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       return false;
     }
   }
-
-  public wasThisHearingDayRequiredChange(day) {
-    day.notRequired = !day.notRequired;
-  }
-
 }

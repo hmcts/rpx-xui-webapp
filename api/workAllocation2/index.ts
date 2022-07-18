@@ -165,6 +165,16 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
+      // TEMPORARY CODE: priority_date and  major_priority parameter is not yet enabled by Task API. to be removed
+      let randomDate = new Date(2022, 0, 1);
+      data.tasks = data.tasks.map((task, index) => {
+        randomDate = mockDate(randomDate)
+        task.priority_date = mockDate(randomDate);
+        task.major_priority = randomInt(index, 0, 5000);
+        return task;
+      });
+      // TEMPERORY CODE: end
+
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
       returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
@@ -172,6 +182,25 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.send(returnData);
   } catch (error) {
     next(error);
+  }
+}
+
+function mockDate(start) {
+  let mockDate = new Date(start.valueOf());
+  mockDate.setDate(mockDate.getDate() + 1);
+  return mockDate;
+}
+
+function randomInt(index, min, max) {
+  if(index <= 10) {
+    min = Math.ceil(2000);
+    max = Math.floor(5000);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  if(index > 10) {
+    min = Math.ceil(0);
+    max = Math.floor(2000);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }
 

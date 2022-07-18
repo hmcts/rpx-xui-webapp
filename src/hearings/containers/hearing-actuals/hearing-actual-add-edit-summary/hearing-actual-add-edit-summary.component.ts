@@ -30,7 +30,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsMainModel: HearingActualsMainModel;
   public hearingOutcome: HearingOutcomeModel;
   public hearingRoles: LovRefDataModel[] = [];
-  public actualHearingDay: ActualHearingDayModel;
+  public actualHearingDays: ActualHearingDayModel[];
   public participants: ActualDayPartyModel[] = [];
   public parties: ActualDayPartyModel[] = [];
   public hearingTypes: LovRefDataModel[];
@@ -84,12 +84,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
-        this.actualHearingDay = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null)[0];
-        this.getActualDayParties(this.hearingActualsMainModel);
-        this.hearingTypeDescription = this.hearingOutcome && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
+        this.actualHearingDays = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null);
+        this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
         this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
-        this.hearingDate = this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays);
+        this.hearingDate = this.calculateEarliestHearingDate(this.actualHearingDays);
       });
   }
 
@@ -255,8 +254,29 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return isValid;
   }
 
-  public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
-    const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
-    return moment.min(moments).toISOString();
+  public calculateEarliestHearingDate(hearingDays): string {
+    const moments: moment.Moment[] = hearingDays.map(d => moment(d.hearingDate));
+    if (moments.length > 1) {
+      return moment.min(moments).format('DD MMMM YYYY') +' - '+ moment.max(moments).format('DD MMMM YYYY');
+    } else {
+      return moment.max(moments).format('DD MMMM YYYY');
+    }
+  }
+
+  public getPauseStartDateTime(day) {
+    return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime 
+    ? moment(day.pauseDateTimes[0].pauseStartTime).format("HH:mm"): null;
+  }
+  public getPauseEndDateTime(day) {
+    return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime 
+    ? moment(day.pauseDateTimes[0].pauseEndTime).format("HH:mm"): null;
+  }
+  public getPartiesNames(day): string {
+    const arr = day.actualDayParties.map((p) => {
+      return {
+        name: p.individualDetails.firstName + ' ' + p.individualDetails.lastName
+      }
+    });
+    return "";
   }
 }

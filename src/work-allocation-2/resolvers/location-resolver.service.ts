@@ -30,7 +30,7 @@ import { addLocationToLocationsByService, addLocationToLocationsByServiceCode, g
 export class LocationResolver implements Resolve<LocationModel[]> {
 
   private userRole: string;
-  private bookableServices = new Set<string>();
+  private bookableServices: string[] = [];
   private userId: string;
   private serviceRefData: ServiceRefData[];
 
@@ -88,7 +88,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       userSpecificWorkers.forEach(worker => {
         if (worker && worker.location && worker.location.id) {
           locationServices.add(worker.service);
-          userLocationsByService = this.bookableServices.has(worker.service) ? addLocationToLocationsByService(userLocationsByService, worker.location, worker.service, true) : addLocationToLocationsByService(userLocationsByService, worker.location, worker.service);
+          userLocationsByService = this.bookableServices.includes(worker.service) ? addLocationToLocationsByService(userLocationsByService, worker.location, worker.service, true) : addLocationToLocationsByService(userLocationsByService, worker.location, worker.service);
           locations.push(worker.location);
         }
       })
@@ -102,7 +102,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
             const service = getServiceFromServiceCode(jAppt.service_code, this.serviceRefData);
             locationServices.add(service);
             const judicialLocation = {id: jAppt.epimms_id, locationName: jAppt.location, services: [] };
-            userLocationsByService = this.bookableServices.has(service) ? addLocationToLocationsByService(userLocationsByService, judicialLocation, service, true) : addLocationToLocationsByService(userLocationsByService, judicialLocation, service);
+            userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, judicialLocation, service, true) : addLocationToLocationsByService(userLocationsByService, judicialLocation, service);
             locations.push(judicialLocation);
           })
         })
@@ -128,13 +128,13 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       if (roleJurisdiction && !jurisdictions.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION') {
         jurisdictions.push(roleJurisdiction);
       }
-      if (roleJurisdiction && !this.bookableServices.has(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
+      if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
         && roleAssignment.bookable === true
         ) {
-        this.bookableServices.add(roleJurisdiction);
+        this.bookableServices.push(roleJurisdiction);
       }
     });
-    this.sessionStorageService.setItem('bookableServices', JSON.stringify(Array.from(this.bookableServices)));
+    this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
     return this.userRole === UserRole.Judicial ? this.allocateRoleService.getCaseRolesUserDetails([this.userId], jurisdictions) : this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
   }
 

@@ -15,8 +15,10 @@ import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
 import { AllocateRoleService } from '../../role-access/services';
+import { ServiceRefData } from '../models/common';
 import { Caseworker, Location, LocationsByService } from '../models/dtos';
 import { CaseworkerDataService } from '../services';
+import { ServiceRefDataService } from '../services/service-ref-data.service';
 import { addLocationToLocationsByService, addLocationToLocationsByServiceCode, getServiceFromServiceCode, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
 @Injectable({
@@ -25,6 +27,7 @@ import { addLocationToLocationsByService, addLocationToLocationsByServiceCode, g
 export class LocationResolver implements Resolve<LocationModel[]> {
 
   private userRole: string;
+  private serviceRefData: ServiceRefData[];
 
   constructor(
     private readonly store: Store<fromCaseList.State>,
@@ -32,7 +35,8 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     private readonly http: HttpClient,
     private readonly caseworkerDataService: CaseworkerDataService,
     private readonly allocateRoleService: AllocateRoleService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly serviceRefDataService: ServiceRefDataService
   ) {
   }
 
@@ -40,6 +44,11 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     return this.userDetails()
       .pipe(
         first(),
+        mergeMap((userDetails: UserDetails) => this.serviceRefDataService.getServiceRefData()
+          .pipe(
+            map((serviceRefData) => this.saveServiceRefData(serviceRefData, userDetails))
+          )
+        ),
         mergeMap((userDetails: UserDetails) => this.getJudicialWorkersOrCaseWorkers(userDetails)
           .pipe(
             map((caseWorkers) => this.extractLocations(userDetails, caseWorkers)),
@@ -62,6 +71,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     let userLocationsByService: LocationsByService[] = [];
     const locations: Location[] = [];
     // in order to extract location from services we must assume there are multiple workers
+    console.log('doing');
     if (workers && workers.length > 0 && workers[0].idamId) {
       // caseworkers/admin
       const userSpecificWorkers = workers.filter((cw: Caseworker) => cw.idamId === id);
@@ -80,7 +90,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         judicialWorkers.forEach(worker => {
           const jAppts = worker.appointments.filter(appt => appt.location !== 'National' && appt.epimms_id && appt.epimms_id !== '');
           jAppts.forEach(jAppt => {
-            const service = getServiceFromServiceCode(jAppt.service_code);
+            const service = getServiceFromServiceCode(jAppt.service_code, this.serviceRefData);
             userLocationsByService = addLocationToLocationsByService(userLocationsByService, jAppt, service);
             locations.push({id: jAppt.epimms_id, locationName: jAppt.location, services: [] });
           })
@@ -104,6 +114,11 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     });
     const testJurisdictions = ['IA', 'SSCS', 'CIVIL'];
     return this.userRole === UserRole.Judicial ? this.allocateRoleService.getCaseRolesUserDetails([id], testJurisdictions) : this.caseworkerDataService.getCaseworkersForServices(testJurisdictions);
+  }
+
+  private saveServiceRefData(serviceRefData: any, userDetails: UserDetails): UserDetails {
+    this.serviceRefData = serviceRefData;
+    return userDetails;
   }
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {

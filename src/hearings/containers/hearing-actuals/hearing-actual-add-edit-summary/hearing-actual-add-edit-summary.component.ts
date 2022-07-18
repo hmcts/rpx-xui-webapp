@@ -3,8 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
-import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
+import { filter } from 'rxjs/operators';
 import { HttpError } from '../../../../models/httpError.model';
 import {
   ActualDayPartyModel,
@@ -19,6 +18,7 @@ import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../..
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 
 @Component({
   selector: 'exui-hearing-actual-add-edit-summary',
@@ -142,6 +142,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
       ? true : false;
   }
+
   private isHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
     return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 &&
       hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties &&

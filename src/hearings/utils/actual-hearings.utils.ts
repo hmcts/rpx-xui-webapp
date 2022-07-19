@@ -17,7 +17,6 @@ export class ActualHearingsUtils {
   }
 
   public static getActualHearingDay(hearingActualsMainModel: HearingActualsMainModel, value: any): ActualHearingDayModel[] {
-
     let hearingDays = hearingActualsMainModel.hearingPlanned && hearingActualsMainModel.hearingPlanned.plannedHearingDays
         && hearingActualsMainModel.hearingPlanned.plannedHearingDays.length > 0 && hearingActualsMainModel.hearingPlanned.plannedHearingDays.map(x => {
           return {

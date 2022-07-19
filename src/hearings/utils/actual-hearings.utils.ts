@@ -70,16 +70,13 @@ export class ActualHearingsUtils {
           }
         });
         hearingDays = arr;
-        
       }
-
     }
     if (hearingDays && hearingDays.length > 0) {
       hearingDays = hearingDays.sort((a, b) => {
         return Date.parse(a.hearingDate) === Date.parse(b.hearingDate) ? 0 : Date.parse(a.hearingDate) > Date.parse(b.hearingDate) ? 1 : -1;
       });
     }
-
     return hearingDays as ActualHearingDayModel[];
   }
 

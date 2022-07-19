@@ -339,6 +339,13 @@ module.exports = {
         '/api/role-access/allocate-role/valid-roles': (req, res) => {
             res.send(workAllocationMockData.getRoles(req.body.serviceIds));
         },
+        '/api/locations/getLocationsById': (req, res) => {
+            res.send(workAllocationMockData.getLocationsByIds(req.body.locations));
+        },
+
+        '/api/locations/getLocations':(req,res) => {
+            res.send(workAllocationMockData.getLocations(req.body)); 
+        }
     }
    
 }

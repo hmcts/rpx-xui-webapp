@@ -17,9 +17,8 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
       serviceIds.forEach(serviceId => {
         // note: if service obtained, check role either includes service or does not specify service
         const serviceRoles = roles.filter(role =>
-          role.roleJurisdiction && (!role.roleJurisdiction.values
-             || (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId))));
-        rolesByService.push({service: serviceId, roles: serviceRoles.concat(mockAdminRefinedRoles)});
+          role.roleJurisdiction && (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)))
+        rolesByService.push({service: serviceId, roles: serviceRoles});
       })
     }
     return res.send(rolesByService).status(200);

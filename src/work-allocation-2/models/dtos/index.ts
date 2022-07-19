@@ -43,6 +43,12 @@ export interface Location extends LocationSummary {
   services: string[];
 }
 
+export interface LocationsByService {
+  service?: string;
+  serviceCode?: string;
+  locations: Location[];
+}
+
 export interface CaseSearchParameter {
   ccdId?: string;
   eventId?: string;

@@ -6,7 +6,6 @@ import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { AxiosResponse } from 'axios';
 import { Role, RolesByService } from './models/roleType';
-import { mockAdminRefinedRoles } from './roleData.mock';
 
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {

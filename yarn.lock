@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.11-task-name-filter":
-  version "1.7.11-task-name-filter"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.11-task-name-filter.tgz#8d76bda35dd16bf056668155f5ea2cdb25f98c5f"
-  integrity sha512-qUkR4kKPL+9GTk5rVMa5JR3XfeGupMGrn1W24l2M9tW9RCHkUIOwFquUW5GVP+DU4qvXjcxHGFsFvGWmgeXBTQ==
+"@hmcts/rpx-xui-common-lib@1.7.13-task-name-filter":
+  version "1.7.13-task-name-filter"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.13-task-name-filter.tgz#4a23b4301adcea2f9d628dafe1a42c6ea2edf0ea"
+  integrity sha512-GzYf7pW3twQ0ZuhXLcEj8Q1lSBmfT3Sk00MAjRFkCrkuGlAzwmnMXVp8KHFuP0DlVoLNhA4+Mq0A6qjevBrjbw==
   dependencies:
     tslib "^1.9.0"
 

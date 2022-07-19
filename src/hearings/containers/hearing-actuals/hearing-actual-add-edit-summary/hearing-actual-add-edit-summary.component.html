@@ -139,19 +139,17 @@
             <dd class="govuk-summary-list__value">{{getPartiesAttendenceMethod(actualHearingDay)}}</dd>
             <dd class="govuk-summary-list__actions"></dd>
           </div>
-          <!-- <div *ngIf="actualHearingDay.actualDayParties" > -->
-            <div class="govuk-summary-list__row" *ngFor="let party of actualHearingDay.actualDayParties; let i = index;">
-              <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
-              <dd class="govuk-summary-list__value">
-                Role: {{party.partyRole}}<br>
-                First name: {{party.individualDetails.firstName}}<br>
-                Last name: {{party.individualDetails.lastName}}<br>
-                Organisation: {{party.actualOrganisationName}}<br>
-                Attendee method: {{party.partyChannelSubType}} <br>
-                Attendee representing: {{getRepresentingAttendee(party.representedParty)}}<br>
-              </dd>
-            </div>
-          <!-- </div> -->
+          <div class="govuk-summary-list__row" *ngFor="let party of actualHearingDay.actualDayParties; let i = index;">
+            <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
+            <dd class="govuk-summary-list__value">
+              Role: {{party.partyRole}}<br>
+              First name: {{party.individualDetails.firstName}}<br>
+              Last name: {{party.individualDetails.lastName}}<br>
+              Organisation: {{party.actualOrganisationName}}<br>
+              Attendee method: {{party.partyChannelSubType}} <br>
+              Attendee representing: {{getRepresentingAttendee(party.representedParty)}}<br>
+            </dd>
+          </div>
         </dl>
       </div>
     </details>

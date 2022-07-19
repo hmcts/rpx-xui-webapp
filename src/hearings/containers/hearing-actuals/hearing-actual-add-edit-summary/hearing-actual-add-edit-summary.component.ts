@@ -83,7 +83,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
-        this.actualHearingDays = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null);
+        this.actualHearingDays = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel);
         this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
         this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
@@ -156,7 +156,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null)
+      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel)
     };
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -294,17 +294,5 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public saveWasThisHearingDayRequired(day) {
-    let theDay = this.actualHearingDays.find(d => d.hearingDate === day.hearingDate);
-    if (theDay) {
-      theDay.notRequired = !theDay.notRequired;
-      const hearingActuals = {
-        ...this.hearingActualsMainModel.hearingActuals,
-        actualHearingDays: this.actualHearingDays
-      };
-      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-        hearingId: this.id,
-        hearingActuals: hearingActuals,
-      }));
-    }
   }
 }

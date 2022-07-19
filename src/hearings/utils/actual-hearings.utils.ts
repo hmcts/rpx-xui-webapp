@@ -1,12 +1,13 @@
 import * as moment from 'moment';
-import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel } from '../models/hearingActualsMainModel';
+import {ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel} from '../models/hearingActualsMainModel';
+import {HearingDateEnum} from '../models/hearings.enum';
 
 export class ActualHearingsUtils {
   public static isHearingDaysUpdated: boolean;
   public static isHearingPartiesUpdated: boolean;
 
   private static replaceTime(dateTime: string, time: moment.Moment): string {
-    return moment(dateTime, 'YYYY-MM-DDTHH:mm:ssZ').set({
+    return moment(dateTime, HearingDateEnum.DateAndTimeInZoneZ).set({
       hour: time.get('hour'),
       minute: time.get('minute'),
     }).toISOString();
@@ -18,26 +19,26 @@ export class ActualHearingsUtils {
 
   public static getActualHearingDay(hearingActualsMainModel: HearingActualsMainModel, value: any): ActualHearingDayModel[] {
     let hearingDays = hearingActualsMainModel.hearingPlanned && hearingActualsMainModel.hearingPlanned.plannedHearingDays
-        && hearingActualsMainModel.hearingPlanned.plannedHearingDays.length > 0 && hearingActualsMainModel.hearingPlanned.plannedHearingDays.map(x => {
-          return {
-            hearingDate: this.getDate(x.plannedStartTime),
-            hearingStartTime: x.plannedStartTime,
-            hearingEndTime: x.plannedEndTime,
-            pauseDateTimes: [],
-            notRequired: false,
-            actualDayParties: x.parties.map(p => {
-              return {
-                actualPartyId: p.partyID,
-                partyRole: p.partyRole,
-                partyChannelSubType: p.partyChannelSubType,
-                representedParty: '',
-                didNotAttendFlag: false,
-                individualDetails: {firstName: p.individualDetails.firstName, lastName: p.individualDetails.lastName},
-                actualOrganisationName: p.organisationDetails ? p.organisationDetails.name : null
-              };
-            })
-          };
-        });
+      && hearingActualsMainModel.hearingPlanned.plannedHearingDays.length > 0 && hearingActualsMainModel.hearingPlanned.plannedHearingDays.map(x => {
+        return {
+          hearingDate: this.getDate(x.plannedStartTime),
+          hearingStartTime: x.plannedStartTime,
+          hearingEndTime: x.plannedEndTime,
+          pauseDateTimes: [],
+          notRequired: false,
+          actualDayParties: x.parties.map(p => {
+            return {
+              actualPartyId: p.partyID,
+              partyRole: p.partyRole,
+              partyChannelSubType: p.partyChannelSubType,
+              representedParty: '',
+              didNotAttendFlag: false,
+              individualDetails: {firstName: p.individualDetails.firstName, lastName: p.individualDetails.lastName},
+              actualOrganisationName: p.organisationDetails ? p.organisationDetails.name : null
+            };
+          })
+        };
+      });
 
     hearingDays = hearingDays.sort((a, b) => {
       return Date.parse(a.hearingDate) === Date.parse(b.hearingDate) ? 0 : Date.parse(a.hearingDate) > Date.parse(b.hearingDate) ? 1 : -1;
@@ -57,7 +58,7 @@ export class ActualHearingsUtils {
       && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes.length
       && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes[0] && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes[0].pauseEndTime;
 
-    const isPauseStartTimeValid = moment(pauseStartTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
+    const isPauseStartTimeValid = moment(pauseStartTime, HearingDateEnum.DateAndTimeInZoneZ, true).isValid();
     if (value) {
       const hearingStartTime = (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
         && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 && hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingStartTime)
@@ -67,14 +68,14 @@ export class ActualHearingsUtils {
       const hearingDate = this.getDate(hearingStartTime);
       let changedPauseStartTime;
       let changedPauseEndTime;
-      const moPauseStartTime = moment(value.pauseStartTime, 'HH:mm');
-      const moPauseEndTime = moment(value.pauseEndTime, 'HH:mm');
+      const moPauseStartTime = moment(value.pauseStartTime, HearingDateEnum.DisplayTime);
+      const moPauseEndTime = moment(value.pauseEndTime, HearingDateEnum.DisplayTime);
       if (isPauseStartTimeValid) {
         changedPauseStartTime = this.replaceTime(pauseStartTime, moPauseStartTime);
       } else {
         changedPauseStartTime = this.replaceTime(hearingDate, moPauseStartTime);
       }
-      const isPauseEndTimeValid = moment(pauseEndTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
+      const isPauseEndTimeValid = moment(pauseEndTime, HearingDateEnum.DateAndTimeInZoneZ, true).isValid();
       if (isPauseEndTimeValid) {
         changedPauseEndTime = this.replaceTime(pauseEndTime, moPauseEndTime);
       } else {
@@ -90,84 +91,20 @@ export class ActualHearingsUtils {
       } else {
         pauseDateTimes = null;
       }
-      const item = hearingDays.filter((x) => { return x.hearingDate === hearingDate})[0];
+      const item = hearingDays.filter((x) => {
+        return x.hearingDate === hearingDate;
+      })[0];
       item.pauseDateTimes = pauseDateTimes;
     }
     return hearingDays as ActualHearingDayModel[];
-
   }
 
-
-  public static getActualHearingDay_old(hearingActualsMainModel: HearingActualsMainModel, value: any): ActualHearingDayModel[] {
-    const hearingStartTime = (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 && hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingStartTime)
-      || (hearingActualsMainModel.hearingPlanned && hearingActualsMainModel.hearingPlanned.plannedHearingDays
-        && hearingActualsMainModel.hearingPlanned.plannedHearingDays.length > 0 && hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].plannedStartTime);
-    const hearingEndTime = (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 && hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingEndTime)
-      || (hearingActualsMainModel.hearingPlanned && hearingActualsMainModel.hearingPlanned.plannedHearingDays
-        && hearingActualsMainModel.hearingPlanned.plannedHearingDays.length > 0 && hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].plannedEndTime);
-    const pauseStartTime = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[0]
-      && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes.length
-      && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes[0] && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes[0].pauseStartTime;
-    const pauseEndTime = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[0]
-      && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes.length
-      && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes[0] && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes[0].pauseEndTime;
-    const hearingDate = this.getDate(hearingStartTime);
-    const isPauseStartTimeValid = moment(pauseStartTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
-    let pauseDateTimes = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[0]
-      && hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes || null;
-    if (value) {
-      let changedPauseStartTime;
-      let changedPauseEndTime;
-      const moPauseStartTime = moment(value.pauseStartTime, 'HH:mm');
-      const moPauseEndTime = moment(value.pauseEndTime, 'HH:mm');
-      if (isPauseStartTimeValid) {
-        changedPauseStartTime = this.replaceTime(pauseStartTime, moPauseStartTime);
-      } else {
-        changedPauseStartTime = this.replaceTime(hearingDate, moPauseStartTime);
-      }
-      const isPauseEndTimeValid = moment(pauseEndTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
-      if (isPauseEndTimeValid) {
-        changedPauseEndTime = this.replaceTime(pauseEndTime, moPauseEndTime);
-      } else {
-        changedPauseEndTime = this.replaceTime(hearingDate, moPauseEndTime);
-      }
-      if (value.pauseStartTime && value.pauseEndTime) {
-        pauseDateTimes = [
-          {
-            pauseStartTime: changedPauseStartTime,
-            pauseEndTime: changedPauseEndTime
-          }
-        ];
-      } else {
-        pauseDateTimes = null;
-      }
-    }
-
-    const actualInDay1 = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays[0];
-    const actualHearingDays = [
-      {
-        ...actualInDay1,
-        hearingDate,
-        hearingStartTime: value ? this.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')) : hearingStartTime,
-        hearingEndTime: value ? this.replaceTime(hearingEndTime, moment(value.hearingEndTime, 'HH:mm')) : hearingEndTime,
-        pauseDateTimes
-      }
-    ];
-    return actualHearingDays;
-  }
   public static getActualHearingParties(hearingActualsMainModel: HearingActualsMainModel, parties: ActualDayPartyModel[], participants: ActualDayPartyModel[]): ActualHearingDayModel[] {
-    const actualHearingParties = [
+    return [
       {
         ...hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0],
         actualDayParties: [...participants, ...parties],
       }
     ];
-    return actualHearingParties;
   }
 }

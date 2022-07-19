@@ -1863,6 +1863,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         hearingStartTime: '2021-03-12T09:00:00.000Z',
         hearingEndTime: '2021-03-13T10:00:00.000Z',
         pauseDateTimes: [],
+        notRequired: false,
         actualDayParties: [
           {
             actualPartyId: '1',

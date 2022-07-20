@@ -11,6 +11,7 @@ import { TaskPriority } from './task-priority';
 import { TaskService } from './task-service';
 import { TaskSort } from './task-sort';
 import { TaskView } from './task-view';
+import { PriorityLimits } from './priority-limits';
 
 export {
   AssignHintText,
@@ -25,5 +26,6 @@ export {
   TaskService,
   TaskSort,
   TaskPriority,
-  TaskView
+  TaskView,
+  PriorityLimits
 };

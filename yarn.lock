@@ -1230,10 +1230,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.7":
-  version "4.18.7"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.7.tgz#abdfaeb4262118b7cb52503b43b67e3d4b71e5f9"
-  integrity sha512-D8tHXH5CaGFEsoEmAp0e+ONs7ySkW6KsAYAP2o8pRxVVddOAY/gwccBFUENHJ5ZB+2i8ig4dfWkDJCEOCEaQ+A==
+"@hmcts/ccd-case-ui-toolkit@4.18.0-EUI-5696-upload-error-fix":
+  version "4.18.0-EUI-5696-upload-error-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.0-EUI-5696-upload-error-fix.tgz#52c634e40ba42a5f5a2e6714234f1fd8b238337f"
+  integrity sha512-0zmXoHQgwv/Lm+nN7QQq8F4TAeMD3vD8WLen20qvHpOfMkoXbod7vpnGokXCJF5WDE/tpjJP+9gS4/jY5fpd6w==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -1254,6 +1254,8 @@
     moment-timezone "^0.5.31"
     npm-registry-fetch "^4.0.5"
     rx-polling "1.1.0"
+    rxjs "^6.3.3"
+    rxjs-compat "^6.3.3"
     typescript "3.1.1"
     underscore "^1.9.1"
     yargs-parser "18.1.2"
@@ -13643,7 +13645,7 @@ rx-polling@1.1.0:
   resolved "https://registry.yarnpkg.com/rx-polling/-/rx-polling-1.1.0.tgz#633fc1813e05bb974f4dccd84e5a58b65e5395b1"
   integrity sha512-Y/YBGBewcbx+PXXoEEL4pxa7StHqKJcg1DHNhRIitSoakEZUa5inEEjpjQaksQfr9krsESP9GAdlPZmF31MO3g==
 
-rxjs-compat@^6.6.7:
+rxjs-compat@^6.3.3, rxjs-compat@^6.6.7:
   version "6.6.7"
   resolved "https://registry.yarnpkg.com/rxjs-compat/-/rxjs-compat-6.6.7.tgz#6eb4ef75c0a58ea672854a701ccc8d49f41e69cb"
   integrity sha512-szN4fK+TqBPOFBcBcsR0g2cmTTUF/vaFEOZNuSdfU8/pGFnNmmn2u8SystYXG1QMrjOPBc6XTKHMVfENDf6hHw==
@@ -13662,7 +13664,7 @@ rxjs@6.4.0:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@^6.4.0, rxjs@^6.5.3, rxjs@~6.6.0:
+rxjs@^6.3.3, rxjs@^6.4.0, rxjs@^6.5.3, rxjs@~6.6.0:
   version "6.6.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==

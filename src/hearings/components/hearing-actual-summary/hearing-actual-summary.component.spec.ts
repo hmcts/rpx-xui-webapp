@@ -212,11 +212,6 @@ describe('HearingActualSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check getChannelInfo', () => {
-    expect(component.getChannelInfo('inPerson')).toEqual({ channel: 'In person', subChannel: '' });
-    expect(component.getChannelInfo('video-teams')).toEqual({ channel: 'By video', subChannel: 'Video - Teams' });
-  });
-
   afterEach(() => {
     fixture.destroy();
   });

@@ -250,6 +250,20 @@ describe('SpecificAccessDurationComponent', () => {
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
     });
 
+    it('should display required date messages', () => {
+      component.startDateDayCtrl = new FormControl(null);
+      component.startDateMonthCtrl = new FormControl(null);
+      component.startDateYearCtrl = new FormControl(null);
+
+      component.endDateDayCtrl = new FormControl(null);
+      component.endDateMonthCtrl = new FormControl(null);
+      component.endDateYearCtrl = new FormControl(null);
+
+      component.getPeriod(DurationType.ANOTHER_PERIOD);
+      expect(component.startDateErrorMessage).toEqual({ isInvalid : true, messages: ['Enter an access start date'] });
+      expect(component.endDateErrorMessage).toEqual({ isInvalid : true, messages: ['Enter an access end date'] });
+    });
+
     it('should display invalid date messages', () => {
       component.startDateDayCtrl = new FormControl(99);
       component.startDateMonthCtrl = new FormControl(99);

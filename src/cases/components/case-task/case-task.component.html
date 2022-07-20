@@ -9,7 +9,7 @@
             <span class="row-padding">Priority</span>
         </dt>
         <dd class="govuk-summary-list__value">
-            <exui-priority-field [dueDate]="toDate(task.due_date)">
+            <exui-priority-field [date]="toDate(task.dueDate)" [majorPriority]="task.major_priority">
             </exui-priority-field>
         </dd>
     </div>

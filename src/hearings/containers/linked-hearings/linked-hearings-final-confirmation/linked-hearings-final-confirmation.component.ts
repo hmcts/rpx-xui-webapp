@@ -25,7 +25,7 @@ export class LinkedHearingsFinalConfirmationComponent implements OnInit {
 
   public ngOnInit(): void {
     if (!this.linkedHearingsCount) {
-      this.heading = 'All links are now unlinked';
+      this.heading = 'All hearings are now unlinked';
       return;
     }
     switch (this.linkedHearingsCount) {

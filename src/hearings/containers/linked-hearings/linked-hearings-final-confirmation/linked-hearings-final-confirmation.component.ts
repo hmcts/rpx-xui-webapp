@@ -24,10 +24,11 @@ export class LinkedHearingsFinalConfirmationComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    if (!this.linkedHearingsCount) {
+      this.heading = 'All links are now unlinked';
+      return;
+    }
     switch (this.linkedHearingsCount) {
-      case 0:
-        this.heading = 'All links to other hearings removed';
-        break;
       case 1:
         this.heading = `${this.linkedHearingsCount} hearing is now linked`;
         break;

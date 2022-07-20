@@ -1,6 +1,7 @@
 <a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">Back</a>
-<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
+<xuilib-hmcts-error-summary [errorMessages]="errors" [header]="'There is a problem'" *ngIf="errors && errors.length">
 </xuilib-hmcts-error-summary>
+
 <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"></exui-linked-hearings-case-title>
 <h1 class="govuk-heading-l" *ngIf="!linkedCases?.length">{{ linkedHearingEnum.NoLinkedCases}}</h1>
 <h1 class="govuk-heading-l" *ngIf="linkedCases?.length">{{ isHearingsAvailable ? linkedHearingEnum.HearingSelection :

@@ -168,9 +168,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type | Priority |
-            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
+            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
 
     Scenario: "Judicial" Tasks filters state
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
@@ -277,9 +277,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type |
-            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
+            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
 
     Scenario: "Caseworker" Cases filters state
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "task-supervisor,case-allocator,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
@@ -377,7 +377,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | role         | <Role_Type>    |
         Examples:
             | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                  | person_id                            | Role_Type |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)  | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)  | 1231                                 | Judicial  |
             | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
 
     Scenario Outline: "Judicial" Case filter selection, with role type <Role_Type>
@@ -438,5 +438,5 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | role         | <Role_Type>    |
         Examples:
             | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                  | person_id                            | Role_Type |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)  | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)  | 1231                                 | Judicial  |
             | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |

@@ -12,6 +12,7 @@ import { Task } from '../../../work-allocation-2/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation-2/services';
 import { handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
+import { PriorityLimits } from '../../../work-allocation-2/enums';
 
 @Component({
   selector: 'exui-case-task',
@@ -29,6 +30,7 @@ export class CaseTaskComponent implements OnInit {
   ];
   public manageOptions: {id: string, title: string }[];
   public isUserJudicial: boolean;
+  public isTaskUrgent: boolean;
   private pTask: Task;
 
   constructor(private readonly alertService: AlertService,
@@ -49,6 +51,7 @@ export class CaseTaskComponent implements OnInit {
   public set task(value: Task) {
     value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
     this.pTask = value;
+    this.isTaskUrgent = this.pTask.major_priority === PriorityLimits.Urgent? true: false;
   }
 
   @Input() public caseworkers: Caseworker[] = [];

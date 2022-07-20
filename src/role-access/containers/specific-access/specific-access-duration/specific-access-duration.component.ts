@@ -4,6 +4,7 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
+import { ERROR_MESSAGE } from '../../../constants';
 
 import {
   DurationTypeDescription,
@@ -29,7 +30,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public static indefiniteDesc = 'Access starts from today and lasts while the case is open.';
   public static sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
 
-  public ERROR_MESSAGE;
+  public ERROR_MESSAGE = ERROR_MESSAGE;
   // input bindings
   @Input() public navEvent: SpecificAccessNavigation;
 
@@ -207,13 +208,21 @@ export class SpecificAccessDurationComponent implements OnInit {
           };
         } else {  // display the errors in the UI
           if (!datesValid) {
-            if (!dateCheck.isStartDateValid) {
-              this.ERROR_MESSAGE = 'Enter an access start date';
-              this.startDateErrorMessage = { isInvalid: true, messages: [this.ERROR_MESSAGE]};
+            if (!dateCheck.isStartDateGiven) {
+              this.ERROR_MESSAGE.description = 'Enter an access start date';
+              this.startDateErrorMessage = { isInvalid: true, messages: [this.ERROR_MESSAGE.description]};
+            } else if (!dateCheck.isStartDateValid) {
+              this.ERROR_MESSAGE.description = 'Enter a valid access start date';
+              this.startDateErrorMessage = { isInvalid: true, messages: [this.ERROR_MESSAGE.description]};
             }
-            if (!dateCheck.isEndDateValid) {
-              this.ERROR_MESSAGE = 'Enter an access end date';
-              this.endDateErrorMessage = { isInvalid: true, messages: [this.ERROR_MESSAGE]};
+            if (!dateCheck.isEndDateGiven) {
+              const endError = 'Enter an access end date'
+              this.ERROR_MESSAGE.description = dateCheck.isStartDateGiven ? endError : 'Enter access start dates';
+              this.endDateErrorMessage = { isInvalid: true, messages: [endError]};
+            } else if (!dateCheck.isEndDateValid) {
+              const endError = 'Enter a valid access end date';
+              this.ERROR_MESSAGE.description = !dateCheck.isStartDateValid ? 'Enter valid access start and end dates' : endError;
+              this.endDateErrorMessage = { isInvalid: true, messages: [endError]};
             }
             this.formGroup.setErrors({
               invalid: true

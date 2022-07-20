@@ -260,8 +260,8 @@ describe('SpecificAccessDurationComponent', () => {
       component.endDateYearCtrl = new FormControl(2025);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.startDateErrorMessage).toEqual({ isInvalid : true, messages: ['Enter an access start date'] });
-      expect(component.endDateErrorMessage).toEqual({ isInvalid : true, messages: ['Enter an access end date'] });
+      expect(component.startDateErrorMessage).toEqual({ isInvalid : true, messages: ['Enter a valid access start date'] });
+      expect(component.endDateErrorMessage).toEqual({ isInvalid : true, messages: ['Enter a valid access end date'] });
     });
 
     it('should display start date in past error message', () => {

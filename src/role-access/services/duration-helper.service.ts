@@ -56,6 +56,9 @@ export class DurationHelperService {
    * @return string representation of number
    */
   public formatString(n: number): string {
+    if (!n) {
+      return null;
+    }
     if (n < 0) {
       throw new Error('Invalid value provided');
     }
@@ -72,9 +75,13 @@ export class DurationHelperService {
     startDate: string,
     endDate: string
   ): CheckDatesResult {
+    const isStartDateGiven = !!startDate;
+    const isEndDateGiven = !!endDate;
     const isStartDateValid = moment(startDate, this.dateFormat, true).isValid();
     const isEndDateValid = moment(endDate, this.dateFormat, true).isValid();
     return {
+      isStartDateGiven,
+      isEndDateGiven,
       isStartDateValid,
       isEndDateValid
     }
@@ -94,7 +101,10 @@ export class DurationHelperService {
   ): string {
     const dayStart = this.formatString(dayControl.value);
     const monthStart = this.formatString(monthControl.value);
-    const yearStart = yearControl.value;
+    const yearStart = yearControl.value ? yearControl.value : null;
+    if (!dayStart && !monthStart && !yearStart) {
+      return null;
+    }
     const dateStr = `${yearStart}-${monthStart}-${dayStart}`;
     return dateStr;
   }

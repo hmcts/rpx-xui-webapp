@@ -103,8 +103,8 @@ describe('DurationHelperService', () => {
       const month2 = new FormControl('7');
       const year2 = new FormControl('');
 
-      expect(durationHelperService.convertDateControlsToString(day, month, year)).toEqual('-0-0');
-      expect(durationHelperService.convertDateControlsToString(day2, month2, year2)).toEqual('-07-07');
+      expect(durationHelperService.convertDateControlsToString(day, month, year)).toEqual(null);
+      expect(durationHelperService.convertDateControlsToString(day2, month2, year2)).toEqual('null-07-07');
     });
 
     it('should return extract values for provided form controls', () => {

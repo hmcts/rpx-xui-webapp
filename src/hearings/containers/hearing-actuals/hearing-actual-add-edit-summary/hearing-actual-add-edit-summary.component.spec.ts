@@ -468,17 +468,17 @@ describe('HearingActualAddEditSummaryComponent', () => {
   it('should calculate calculate earliest hearing date', () => {
     const s = component.calculateEarliestHearingDate(component.actualHearingDays);
     expect(s).toBe('14 March 2021');
-  })
+  });
 
   it('should calculate return first and last hearing date as string', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
     const day = hearingDays[0];
-    day.hearingDate = moment(day.hearingDate).add(1, 'days').format("DD MMMM YYYY");
+    day.hearingDate = moment(day.hearingDate).add(1, 'days').format('DD MMMM YYYY');
     hearingDays.push(day);
     const s = component.calculateEarliestHearingDate(hearingDays);
     expect(s).toBe('15 March 2021 - 15 March 2021');
-  })
+  });
 
   afterEach(() => {
     fixture.destroy();

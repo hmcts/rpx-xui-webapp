@@ -347,7 +347,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   const hearingRoles = [
     {
       category_key: 'EntityRoleCode',
-      key: 'APEL',
+      key: 'appellant',
       value_en: 'Appellant',
       value_cy: '',
       hint_text_en: '',
@@ -360,7 +360,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
     },
     {
       category_key: 'EntityRoleCode',
-      key: 'APIN',
+      key: 'claimant',
       value_en: 'Appointee',
       value_cy: '',
       hint_text_en: '',
@@ -373,7 +373,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
     },
     {
       category_key: 'EntityRoleCode',
-      key: 'JOPA',
+      key: 'interpreter',
       value_en: 'Joint Party',
       value_cy: '',
       hint_text_en: '',
@@ -524,6 +524,14 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const s = component.calculateEarliestHearingDate(hearingDays);
     expect(s).toBe('15 March 2021 - 15 March 2021');
   });
+
+  it('should extract actual day parties', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    component.hearingRoles = hearingRoles;
+    component.getActualDayParties(mainModel);
+    expect(component.parties).toBeDefined();
+    expect(component.participants).toBeDefined();
+  })
 
   afterEach(() => {
     fixture.destroy();

@@ -1,5 +1,5 @@
-import { hearingActualsMainModel } from '../hearing.test.data';
 import { ActualHearingsUtils } from './actual-hearings.utils';
+import { hearingActualsMainModel } from '../hearing.test.data';
 import * as _ from 'lodash';
 
 describe('ActualHearingsUtils', () => {
@@ -19,12 +19,12 @@ describe('ActualHearingsUtils', () => {
     mainModel.hearingPlanned.plannedHearingDays.push(obj1);
     const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
     expect(hearingDays).toBeDefined();
-  })
+  });
 
   it('should return hearing days when hearingActuals are available', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
     expect(hearingDays).toBeDefined();
-  })
+  });
 
 });

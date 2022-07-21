@@ -11,9 +11,8 @@ export class ActualHearingsUtils {
   }
 
   private static extractActualsFromPlannedDays(hearingActualsMainModel) {
-    
-    const hearingDays = hearingActualsMainModel.hearingPlanned.plannedHearingDays.map((plannedDay) => {
 
+    const hearingDays = hearingActualsMainModel.hearingPlanned.plannedHearingDays.map((plannedDay) => {
       const existing = (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && 
       hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 )
       ? hearingActualsMainModel.hearingActuals.actualHearingDays.find((item) => Date.parse(item.hearingDate) === Date.parse(plannedDay.plannedStartTime))

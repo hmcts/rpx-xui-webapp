@@ -519,10 +519,12 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
     const day = hearingDays[0];
-    day.hearingDate = moment(day.hearingDate).add(1, 'days').format('DD MMMM YYYY');
-    hearingDays.push(day);
+    const obj1 = Object.assign({}, day, {hearingDate: '2021-03-13'});
+    const obj2 = Object.assign({}, day, {hearingDate: '2021-03-15'});
+    hearingDays.push(obj1);
+    hearingDays.push(obj2);
     const s = component.calculateEarliestHearingDate(hearingDays);
-    expect(s).toBe('15 March 2021 - 15 March 2021');
+    expect(s).toBe('13 March 2021 - 15 March 2021');
   });
 
   it('should extract actual day parties', () => {

@@ -344,6 +344,49 @@ describe('HearingActualAddEditSummaryComponent', () => {
     },
   ];
 
+  const hearingRoles = [
+    {
+      category_key:'EntityRoleCode',
+      key:'APEL',
+      value_en:'Appellant',
+      value_cy:'',
+      hint_text_en:'',
+      hint_text_cy:'',
+      lov_order:null,
+      parent_category:'Applicant',
+      parent_key:'APPL',
+      active_flag:'Y',
+      child_nodes:null
+    },
+    {
+      category_key:'EntityRoleCode',
+      key:'APIN',
+      value_en:'Appointee',
+      value_cy:'',
+      hint_text_en:'',
+      hint_text_cy:'',
+      lov_order:null,
+      parent_category:'Support',
+      parent_key:'SUPP',
+      active_flag:'Y',
+      child_nodes:null
+    },
+    {
+      category_key:'EntityRoleCode',
+      key:'JOPA',
+      value_en:'Joint Party',
+      value_cy:'',
+      hint_text_en:'',
+      hint_text_cy:'',
+      lov_order:null,
+      parent_category:'Applicant',
+      parent_key:'APPL',
+      active_flag:'Y',
+      child_nodes:null
+    }
+  ];
+  const HEARING_ID = 'h00001';
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
@@ -360,6 +403,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
     fixture = TestBed.createComponent(HearingActualAddEditSummaryComponent);
     store = TestBed.get(Store);
     component = fixture.componentInstance;
+    component.hearingRoles = hearingRoles;
     fixture.detectChanges();
   });
 

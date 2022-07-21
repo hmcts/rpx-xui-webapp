@@ -255,7 +255,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public calculateEarliestHearingDate(hearingDays): string {
     const moments: moment.Moment[] = hearingDays.map(d => moment(d.hearingDate));
     if (moments.length > 1) {
-      return moment.min(moments).format(HearingDateEnum.DisplayMonth) + ' - ' + moment.max(moments).format(HearingDateEnum.DisplayMonth);
+      return `${moment.min(moments).format('DD MMMM YYYY')} - ${moment.max(moments).format('DD MMMM YYYY')}`;
     } else {
       return moment.max(moments).format(HearingDateEnum.DisplayMonth);
     }
@@ -284,13 +284,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public getStatusLabel(day): boolean {
     if (this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
       && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0) {
-      const isActualDay = this.hearingActualsMainModel.hearingActuals.actualHearingDays.find(d => d.hearingDate === day.hearingDate);
+      const isActualDay = this.hearingActualsMainModel.hearingActuals.actualHearingDays.find(d => Date.parse(d.hearingDate) === Date.parse(day.hearingDate));
       return !!isActualDay;
     } else {
       return false;
     }
   }
 
-  public saveWasThisHearingDayRequired(day) {
-  }
 }

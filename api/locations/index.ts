@@ -8,8 +8,8 @@ import { EnhancedRequest } from '../lib/models';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
+import { handleLocationGet } from '../workAllocation/locationService';
 import { CourtVenue } from '../workAllocation2/interfaces/location';
-import { handleLocationGet } from '../workAllocation2/locationService';
 import { prepareGetSpecificLocationUrl } from '../workAllocation2/util';
 
 // const url: string = getConfigValue(SERVICES_PRD_API_URL);

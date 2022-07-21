@@ -311,7 +311,6 @@ class MyWorkPage extends TaskList {
         
     }
 
-
     async isWorkFilterOfTypeDisplayed(filterType){
 
         const filterTypeNormalized = filterType.toLowerCase().split(' ').join('');

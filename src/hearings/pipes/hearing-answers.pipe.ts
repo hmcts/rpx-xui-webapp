@@ -22,6 +22,7 @@ import { HearingPriorityAnswerConverter } from '../converters/hearing-priority.a
 import { HearingResponseLengthAnswerConverter } from '../converters/hearing-response-length.answer.converter';
 import { HearingResponseStatusAnswerConverter } from '../converters/hearing-response-status.answer.converter';
 import { HearingSpecificDateAnswerConverter } from '../converters/hearing-specific-date.answer.converter';
+import { IsPaperHearingAnswerConverter } from '../converters/is-paper-hearing.answer.converter';
 import { JudgeExclusionAnswerConverter } from '../converters/judge-exclusion.answer.converter';
 import { JudgeNameAnswerConverter } from '../converters/judge-name.answer.converter';
 import { JudgeTypesAnswerConverter } from '../converters/judge-types.answer.converter';
@@ -108,6 +109,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.HOW_ATTENDANT:
         converter = new PartyChannelsAnswerConverter(this.route);
+        break;
+      case AnswerSource.IS_PAPER_HEARING:
+        converter = new IsPaperHearingAnswerConverter();
         break;
       case AnswerSource.PARTICIPANT_ATTENDENCE:
         converter = new ParticipantAttendenceAnswerConverter(this.route);

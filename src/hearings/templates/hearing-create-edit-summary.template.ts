@@ -62,18 +62,26 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Attendance</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
     answers: [
+      {
+        id: 'paperHearing',
+        answerTitle: 'Will this be a paper hearing?',
+        answerSource: AnswerSource.IS_PAPER_HEARING,
+        changeLink: '/hearings/request/hearing-attendance#paperHearingYes',
+      },
       {
         id: 'howAttendant',
         answerTitle: 'How will each party attend the hearing?',
         answerSource: AnswerSource.HOW_ATTENDANT,
+        isHiddenSource: IsHiddenSource.PAPER_HEARING,
         changeLink: '/hearings/request/hearing-attendance#partyChannel0',
       },
       {
         id: 'attendantPersonAmount',
         answerTitle: 'How many people will attend the hearing in person?',
         answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
+        isHiddenSource: IsHiddenSource.PAPER_HEARING,
         changeLink: '/hearings/request/hearing-attendance#attendance-number',
       },
     ],

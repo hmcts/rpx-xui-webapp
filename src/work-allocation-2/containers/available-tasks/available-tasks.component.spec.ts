@@ -17,7 +17,7 @@ import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
-import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
+import { getMockLocations, getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
@@ -42,14 +42,13 @@ describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  let router: Router;
 
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask', 'searchTask']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
-  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockRouter = new MockRouter();
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getCaseworkersForServices']);
@@ -98,6 +97,10 @@ describe('AvailableTasksComponent', () => {
         {
           name: 'types-of-work',
           value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
+        },
+        {
+          name: 'services',
+          value: ['IA', 'CIVIL']
         }
       ]
     };
@@ -109,7 +112,7 @@ describe('AvailableTasksComponent', () => {
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
-    router = TestBed.get(Router);
+    spyOn(mockRouter, 'navigate');
     fixture.detectChanges();
   });
 

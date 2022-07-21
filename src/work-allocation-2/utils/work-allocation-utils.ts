@@ -4,7 +4,9 @@ import { UserInfo } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
-import { Caseworker, CaseworkersByService } from '../models/dtos';
+import { ServiceRefData } from '../models/common';
+import { Service, ServiceCode } from '../models/common/service.enum';
+import { Caseworker, CaseworkersByService, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';
 
 interface Navigator {
@@ -100,7 +102,7 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
 export const getAllCaseworkersFromServices = (caseworkersByService: CaseworkersByService[]): Caseworker[] => {
   let allCaseworkers: Caseworker[] = [];
   caseworkersByService.forEach(caseworkerListByService => {
-    allCaseworkers = allCaseworkers.concat(caseworkerListByService.caseworkers)
+    allCaseworkers = allCaseworkers.concat(caseworkerListByService.caseworkers);
   });
   return allCaseworkers;
 }
@@ -132,7 +134,7 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
 
 export const servicesMap: {[key: string]: string} =  {
   IA: 'Immigration and Asylum',
-  SCSS: 'Social security and child support'
+  SSCS: 'Social security and child support'
 };
 
 export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
@@ -235,4 +237,33 @@ export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorag
     return userInfo.roleCategory as RoleCategory;
   }
   return null;
+}
+
+export function addLocationToLocationsByServiceCode(locationsByServices: LocationsByService[], location: any, service_code: string): LocationsByService[] {
+  let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.serviceCode === service_code);
+  if (!locationsByService) {
+    locationsByServices.push({serviceCode: service_code, locations: [location]});
+  } else {
+    const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.serviceCode !== service_code);
+    locationsByService = {serviceCode: service_code, locations: locationsByService.locations.concat([location])}
+    locationsByServices = finalDataWithoutService.concat([locationsByService]);
+  }
+  return locationsByServices;
+}
+
+export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string): LocationsByService[] {
+  let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.service === service);
+  if (!locationsByService) {
+    locationsByServices.push({service, locations: [location]});
+  } else {
+    const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
+    locationsByService = {service, locations: locationsByService.locations.concat([location])}
+    locationsByServices = finalDataWithoutService.concat([locationsByService]);
+  }
+  return locationsByServices;
+}
+
+export function getServiceFromServiceCode(serviceCode: string, serviceRefData: ServiceRefData[]): string {
+  const desiredServiceData = serviceRefData.find(serviceData => serviceData.serviceCodes.includes(serviceCode));
+  return desiredServiceData.service;
 }

@@ -25,8 +25,10 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
   const serviceRefDataMapping = getServiceRefDataMappingList();
   // add the service refernces in order to search by service
   serviceRefDataMapping.forEach(serviceRef => {
-    if (services.includes(Object.keys(serviceRef)[0])) {
-      serviceCodes.push(Object.values(serviceRef)[0] as string);
+    if (services.includes(serviceRef.service)) {
+      serviceRef.serviceCodes.forEach(serviceRefserviceCodes => {
+        serviceCodes.push(serviceRefserviceCodes)
+      });
     }
   });
   let searchResult: any = [];
@@ -34,8 +36,8 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
     try {
       const headers = setHeaders(req);
       for (const serviceCode of serviceCodes) {
-        const response
-         = await http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users/search`, { searchString, serviceCode }, { headers });
+        const body = { searchString, serviceCode };
+        const response = await http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users/search`, body, { headers });
         searchResult = response.data ? [...response.data, ...searchResult] : searchResult;
       }
       searchResult = searchResult.map((s: any) => ({ ...s, name: s.fullName, email: s.emailId, id: s.idamId }));

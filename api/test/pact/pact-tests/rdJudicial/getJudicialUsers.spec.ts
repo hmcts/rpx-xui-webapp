@@ -179,7 +179,7 @@ function getDumyJudgeUserDetails(){
                     "jurisdiction": somethingLike("Authorisation Tribunals"),
                     "ticket_description": somethingLike("Social Security and Child Support"),
                     "ticket_code": somethingLike("357"),
-                    "service_code": eachLike("BBA3"),
+                    "service_codes": [],
                     "start_date": somethingLike("2013-12-05T00:00"),
                     "end_date": term(DateTimeMatcher2('2022-03-04T10:11:00.619526'))
                 }

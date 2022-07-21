@@ -10,16 +10,19 @@ import {
   FilterService,
   FilterSetting
 } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
+import * as fromAppStore from '../../../app/store';
 import { Location } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
 import { WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { servicesMap } from '../../utils';
+
+
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -34,10 +37,11 @@ export const LOCATION_ERROR: ErrorMessage = {
   encapsulation: ViewEncapsulation.None
 })
 export class TaskListFilterComponent implements OnInit, OnDestroy {
-  private static readonly FILTER_NAME = 'locations';
+  private static readonly FILTER_NAME = 'my-work-tasks-filter';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
   public allowTypesOfWorkFilter = true;
+  public appStoreSub: Subscription;
   public showFilteredText = false;
   public noDefaultLocationMessage = 'Use the work filter to show tasks and cases based on service, work type and location';
   public error: ErrorMessage;
@@ -72,7 +76,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
               private readonly filterService: FilterService,
               private readonly taskService: WorkAllocationTaskService,
               private readonly service: WASupportedJurisdictionsService,
-              private readonly taskTypesService: TaskTypesService) {
+              private readonly taskTypesService: TaskTypesService,
+              private readonly appStore: Store<fromAppStore.State>) {
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
@@ -117,6 +122,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    if (this.appStoreSub && !this.appStoreSub.closed) {
+      this.appStoreSub.unsubscribe();
+    }
+
     if (this.subscription && !this.subscription.closed) {
       this.subscription.unsubscribe();
     }
@@ -180,7 +189,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
   private setUpLocationFilter(): void {
     const field: FilterFieldConfig = {
-      name: TaskListFilterComponent.FILTER_NAME,
+      name: 'locations',
       options: [],
       locationTitle: 'Search for a location by name',
       minSelected: 1,
@@ -192,16 +201,16 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       type: 'find-location',
       enableAddLocationButton: true
     };
-    if (this.route.snapshot.data && this.route.snapshot.data.location) {
-      const location: Location = this.route.snapshot.data.location;
-      if (location) {
-        this.defaultLocations = [location];
+    if (this.route.snapshot.data && this.route.snapshot.data.locations) {
+      const locations: Location[] = this.route.snapshot.data.locations;
+      if (locations) {
+        this.defaultLocations = locations;
       }
     } else {
       this.defaultLocations = [];
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-      name: TaskListFilterComponent.FILTER_NAME,
+      name: 'locations',
       value: this.defaultLocations
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
@@ -240,41 +249,55 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private setUpServicesFilter(services: any[]): void {
-    if (!services.length) {
-      return;
+    // Available services need to be added to work-allocation-utils.ts -> servicesMap
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
+      userDetails => {
+        if (!services.length) {
+          return;
+        }
+        if ( !userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some(p => p.jurisdiction != undefined)) {
+          return;
+        }
+        const filteredServices = _.intersection.apply( _, [
+        userDetails.roleAssignmentInfo
+          .filter(p => p.roleType && p.roleType === 'ORGANISATION')
+          .map(item => item.jurisdiction)
+          .filter((value, index, self) => self.indexOf(value) === index && value != undefined ),
+        services
+        ]);
+        const field: FilterFieldConfig = {
+        name: 'services',
+        options: [
+          {
+            key: 'services_all',
+            label: 'Select all',
+            selectAll: true
+          },
+          ...filteredServices
+            .sort()
+            .map(service => {
+              return {
+                key: service,
+                label: servicesMap[service] || service
+              };
+            })
+          ],
+          minSelected: 1,
+          maxSelected: null,
+          lineBreakBefore: false,
+          displayMinSelectedError: true,
+          minSelectedError: 'Select a service',
+          title: 'Services',
+          type: 'checkbox-large'
+          };
+        this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
+          name: 'services',
+          value: ['services_all', ...filteredServices]
+        }];
+        this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
+        this.fieldsConfig.fields.push(field);
+      });
     }
-    const field: FilterFieldConfig = {
-      name: 'services',
-      options: [
-        {
-          key: 'services_all',
-          label: 'Select all',
-          selectAll: true
-        },
-        ...services
-          .sort()
-          .map(service => {
-            return {
-              key: service,
-              label: servicesMap[service] || service
-            };
-          })
-      ],
-      minSelected: 1,
-      maxSelected: null,
-      lineBreakBefore: false,
-      displayMinSelectedError: true,
-      minSelectedError: 'Select a service',
-      title: 'Services',
-      type: 'checkbox-large'
-    };
-    this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-      name: 'services',
-      value: ['services_all', ...services]
-    }];
-    this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-    this.fieldsConfig.fields.push(field);
-  }
 
   /**
    * Sets the value of the allowTypesOfWorkFilter boolean determined by provided params

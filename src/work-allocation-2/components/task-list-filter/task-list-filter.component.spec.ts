@@ -8,13 +8,15 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-
+import * as fromAppStore from '../../../app/store';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { ALL_LOCATIONS } from '../constants/locations';
 import { TaskListFilterComponent } from './task-list-filter.component';
+
 
 @Component({
   template: `
@@ -81,15 +83,31 @@ describe('TaskListFilterComponent', () => {
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks', 'currentTasks$']);
   const locationService = jasmine.createSpyObj('locationService', ['path']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
-  mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+  mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
   mockTaskService.currentTasks$.and.returnValue(of([null]));
+  const roleAssignmentInfo = [{
+    id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
+    actorIdType: 'IDAM',
+    actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
+    roleType: 'CASE',
+    roleName: 'SOME_ROLE',
+    classification: 'PUBLIC',
+    grantType: 'STANDARD',
+    roleCategory: 'LEGAL_OPERATIONS',
+    readOnly: false,
+    created: new Date(2021, 9, 8),
+    attributes: {
+      primaryLocation: '231596',
+      jurisdiction: 'IA'
+    }
+  }];
   const filterSettings = {
     id: 'locations',
     fields: [
       {
         id: 'services',
-        value: ['services_all', 'IA']
+        value: ['services_all', 'IA', 'SSCS']
       },
       {
         name: 'locations',
@@ -111,7 +129,10 @@ describe('TaskListFilterComponent', () => {
       unsubscribe: () => null
     }
   };
+  let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
   beforeEach(() => {
+    storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
+    storeMock.pipe.and.returnValue(of(roleAssignmentInfo));
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -123,6 +144,7 @@ describe('TaskListFilterComponent', () => {
       ],
       declarations: [TaskListFilterComponent, WrapperComponent],
       providers: [
+        provideMockStore(),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -171,7 +193,6 @@ describe('TaskListFilterComponent', () => {
   });
 
   it('should show types of work filter with all types of work filters selected', () => {
-
     expect(component.fieldsSettings.fields.length).toBe(3);
     const typesOfWorkSelectedFields = component.fieldsSettings.fields[2];
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);

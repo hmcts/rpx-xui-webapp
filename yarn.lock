@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.14.1":
-  version "4.14.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.14.1.tgz#738965afe43886faa03f116df25645be3df6c5ca"
-  integrity sha512-0qrWpIFPc4aRwyWDUf7KfJZ/mU/Taxggz9aDScaobT2ab/4/zBKC4SkDoE+F7JXh6kNwyl4sdAz59a7PIssFDg==
+"@hmcts/ccd-case-ui-toolkit@4.18.6":
+  version "4.18.6"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.6.tgz#8d0d5a184ffb78b8777b054ddcc8ab452c8865e3"
+  integrity sha512-ews3NPECoxbRNTUC8kTSuYaqcRbZPRu6Wdwlb2H8ICT6LKxavlKys/V7h9kNpH56AXWB+GG3d6J5ZAa4+YQAjQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -537,17 +537,17 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.3-user-list-performance-pagination":
-  version "1.7.3-user-list-performance-pagination"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.3-user-list-performance-pagination.tgz#ba80a0a7fffd54f5c5f5471d4dd20352075e8d3c"
-  integrity sha512-pGvkQ5ZQ8FSXMunBT3bQYSaJoOEU2nskZHVuiodKUfExVIBfoZesdZfWu0AATSbLZwTJvYBF5elVOtHjIQ7tCA==
+"@hmcts/rpx-xui-common-lib@1.7.9-filter-non-base-location":
+  version "1.7.9-filter-non-base-location"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.9-filter-non-base-location.tgz#9730674a504b2ca0215c2971cc0d68bbd95d292e"
+  integrity sha512-oSbFcOJ8wq/xlkLs1wLx/sniPuUgJBwfu5DyVCwPi8pAiyByMAgVUWsybJKaSBLzza+exFfEFv7Tu2gLodsabQ==
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@2.25.4":
-  version "2.25.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.4.tgz#f4fc79741fbf6bbbe395a1149b90f4f27df998ea"
-  integrity sha512-QEMEPJOcLPdzVtmTDiQmaZH9plhBha8UPJrpoOV3BSIpC26LaBoSMfQLBKpVp26VWKngCb6F4Uv/hxRFeMUvJw==
+"@hmcts/rpx-xui-node-lib@2.25.12":
+  version "2.25.12"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.12.tgz#c1e72789e186e2fd1d4d71b599b17f18724d2988"
+  integrity sha512-E2FjuV9BwSiAYVMw2l1VfClD8aoKskC33u6zFcc/hUoM7scFKSzr1VzV6uHm0y6GG/2sHpckbz2eV7zswf5Bnw==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.21.1"

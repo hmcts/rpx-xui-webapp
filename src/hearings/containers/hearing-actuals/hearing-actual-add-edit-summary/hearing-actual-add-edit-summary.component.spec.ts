@@ -15,6 +15,8 @@ import { PartyRoleDisplayValuePipe } from '../../../pipes/party-role-display-val
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
+import * as _ from 'lodash';
+import * as moment from 'moment';
 
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
@@ -462,6 +464,21 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(ActualHearingsUtils.isHearingPartiesUpdated).toBe(false);
     expect(ActualHearingsUtils.isHearingDaysUpdated).toBe(false);
   });
+
+  it('should calculate calculate earliest hearing date', () => {
+    const s = component.calculateEarliestHearingDate(component.actualHearingDays);
+    expect(s).toBe('14 March 2021');
+  })
+
+  it('should calculate return first and last hearing date as string', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
+    const day = hearingDays[0];
+    day.hearingDate = moment(day.hearingDate).add(1, 'days').format("DD MMMM YYYY");
+    hearingDays.push(day);
+    const s = component.calculateEarliestHearingDate(hearingDays);
+    expect(s).toBe('15 March 2021 - 15 March 2021');
+  })
 
   afterEach(() => {
     fixture.destroy();

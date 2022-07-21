@@ -1942,6 +1942,40 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
           },
         ],
       },
+      {
+        plannedStartTime: '2021-03-14T09:00:00.000Z',
+        plannedEndTime: '2021-03-14T10:00:00.000Z',
+        parties: [
+          {
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jo',
+              lastName: 'Blogg',
+            },
+            organisationDetails: {
+              cftOrganisationID: '54321',
+              name: 'Company A',
+            },
+            partyID: '1',
+            partyRole: 'interpreter',
+            partyChannelSubType: 'appellant',
+          },
+          {
+            individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: '',
+            },
+            organisationDetails: {
+              cftOrganisationID: 'ogd1',
+              name: 'DWP',
+            },
+            partyID: '2',
+            partyRole: 'interpreter',
+            partyChannelSubType: 'claimant',
+          },
+        ],
+      },
     ],
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,

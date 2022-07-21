@@ -41,13 +41,11 @@ export class ActualHearingsUtils {
           })
         }
       });
-      hearingDays = arr;
-
+      hearingDays = arr.filter(a => a !== undefined);
     } else {
-
       if (hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0) {
-        const arr = hearingActualsMainModel.hearingPlanned.plannedHearingDays.forEach((plannedDay) => {
-          const existing = hearingActualsMainModel.hearingActuals.actualHearingDays.find( item => item.hearingDate === this.getDate(plannedDay.plannedStartTime));
+        const arr = hearingActualsMainModel.hearingPlanned.plannedHearingDays.map((plannedDay) => {
+          const existing = hearingActualsMainModel.hearingActuals.actualHearingDays.find( item => Date.parse(item.hearingDate) === Date.parse(plannedDay.plannedStartTime));
           if (!existing) {
             return {
               hearingDate: this.getDate(plannedDay.plannedStartTime),
@@ -69,7 +67,7 @@ export class ActualHearingsUtils {
             }
           }
         });
-        hearingDays = arr;
+        hearingDays = arr.filter(a => a !== undefined);
       }
     }
     if (hearingDays && hearingDays.length > 0) {

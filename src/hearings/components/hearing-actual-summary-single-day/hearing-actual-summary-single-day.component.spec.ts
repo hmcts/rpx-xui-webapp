@@ -1,21 +1,16 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary-single-day.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
-import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
+import { hearingActualsMainModel } from '../../hearing.test.data';
 
-describe('HearingActualSummaryComponent', () => {
-  let component: HearingActualSummaryComponent;
-  let fixture: ComponentFixture<HearingActualSummaryComponent>;
+
+describe('HearingActualSummarySingleDayComponent', () => {
+  let component: HearingActualSummarySingleDayComponent;
+  let fixture: ComponentFixture<HearingActualSummarySingleDayComponent>;
   let router: Router;
-  let mockStore: any;
   const partyChannels: LovRefDataModel[] = [
     {
       key: 'inPerson',
@@ -179,11 +174,9 @@ describe('HearingActualSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule,
-        HttpClientTestingModule],
-      declarations: [HearingActualSummaryComponent],
+      imports: [RouterTestingModule],
+      declarations: [HearingActualSummarySingleDayComponent],
       providers: [
-        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -196,20 +189,23 @@ describe('HearingActualSummaryComponent', () => {
           }
         },
       ],
-      schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
-    mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
-    fixture = TestBed.createComponent(HearingActualSummaryComponent);
+    fixture = TestBed.createComponent(HearingActualSummarySingleDayComponent);
     component = fixture.componentInstance;
-    component.hearingActualsMainModel = hearingActualsMainModel;
+    component.actualHearingDay = hearingActualsMainModel.hearingActuals.actualHearingDays[0];
+    component.plannedHearingDay = hearingActualsMainModel.hearingPlanned.plannedHearingDays[0];
     router = TestBed.get(Router);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should check getChannelInfo', () => {
+    expect(component.getChannelInfo('inPerson')).toEqual({ channel: 'In person', subChannel: '' });
+    expect(component.getChannelInfo('video-teams')).toEqual({ channel: 'By video', subChannel: 'Video - Teams' });
   });
 
   afterEach(() => {

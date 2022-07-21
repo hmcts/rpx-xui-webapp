@@ -1,4 +1,4 @@
-@ng  @wa2 @wa
+@ng  @wa2 @wa @test
 Feature: WA Release 2: All work > Cases
 
     Background: Mock and browser setup
@@ -18,6 +18,7 @@ Feature: WA Release 2: All work > Cases
             | Role          |
             | Location      |
             | Person        |
+            |Hearing date|
 
         Then I validate work allocation table columns are links
             | ColumnHeader |

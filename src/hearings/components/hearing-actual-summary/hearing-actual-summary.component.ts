@@ -69,7 +69,7 @@ export class HearingActualSummaryComponent implements OnInit {
   }
 
   public getChannelInfo(channelType: string): { channel: string; subChannel: string; } {
-    let channelInfo: { channel: string; subChannel: string; };
+    let channelInfo = { channel: '', subChannel: ''};
     this.partyChannels.forEach(channel => {
       if (channel.child_nodes && channel.child_nodes.length) {
         channel.child_nodes.forEach(subChannel => {

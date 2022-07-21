@@ -34,7 +34,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       fields: [
         {
           name: 'jurisdiction',
-          value: ['IA']
+          value: ['IA', 'SSCS']
         },
         {
           name: 'selectLocation',

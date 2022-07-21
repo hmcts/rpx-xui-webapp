@@ -307,21 +307,23 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
   }
   const roleResponse = await getAllRoles(req); // get the roles from the endpoint
   const roles: Role[] = roleResponse.data;
-
   const payloads: CaseworkerPayload[] = prepareServiceRoleApiRequest(newJurisdictions, roles);
   const data: ServiceCaseworkerData[] = await handleCaseWorkersForServicesPost(roleApiPath, payloads, req);
-  const userIds = getUserIdsFromJurisdictionRoleResponse(data);
-  if (userIds.length === 0) {
+  const userIdsByJurisdiction = getUserIdsFromJurisdictionRoleResponse(data);
+  if (userIdsByJurisdiction.length === 0) {
     return sessionCaseworkersByService;
   }
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
-  const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
-
-  const caseWorkerReferenceData = getCaseworkerDataForServices(userResponse.data, data);
-  // note have to merge any new service caseworker data for full session as well as services specified in params
+  const fullCaseworkerByServiceInfo = [];
+  const userResponse = await handlePostCaseWorkersRefData(userUrl, userIdsByJurisdiction, req);
+  userResponse.forEach(userList => {
+    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction = userList.jurisdiction);
+    const caseWorkerReferenceData = getCaseworkerDataForServices(userList.data, jurisdictionData);
+    // note have to merge any new service caseworker data for full session as well as services specified in params
+    fullCaseworkerByServiceInfo.push(caseWorkerReferenceData);
+  })
   req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
-    [...req.session.caseworkersByService, ...caseWorkerReferenceData] : caseWorkerReferenceData;
-  const fullCaseworkerByServiceInfo = [...caseWorkerReferenceData, ...sessionCaseworkersByService];
+      [...req.session.caseworkersByService, ...fullCaseworkerByServiceInfo] : fullCaseworkerByServiceInfo;
   return fullCaseworkerByServiceInfo;
 }
 
@@ -431,8 +433,10 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
     if (data.hasOwnProperty(jurisdiction)) {
       for (const caseType in data[jurisdiction]) {
         if (data[jurisdiction].hasOwnProperty(caseType)) {
-          const query = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
-          casePromises.push(searchCasesById(caseType, query, req));
+          const queries = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
+          queries.forEach(query => {
+            casePromises.push(searchCasesById(caseType, query, req));
+          });
         }
       }
     }

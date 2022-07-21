@@ -62,6 +62,12 @@ export function prepareGetLocationsUrl(baseUrl: string, serviceCode: string = 'B
   return `${baseUrl}/refdata/location/court-venues/services?service_code=${serviceCode}`;
 }
 
+// note: this function was created in order to get specific eppims id but spans services so not useful
+// however could still be used for another process
+export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string): string {
+  return `${baseUrl}/refdata/location/court-venues?epimms_id=${epimmsId}`;
+}
+
 export function prepareRoleApiUrl(baseUrl: string) {
   return `${baseUrl}/am/role-assignments/query`;
 }
@@ -169,22 +175,19 @@ export function getSessionCaseworkerInfo(serviceIds: string[], caseworkersByServ
   return [servicesNotInSession, caseworkersInSession];
 }
 
-export function getCaseworkerDataForServices(caseWorkerData: CaseworkerApi[], roleAssignmentsByService: ServiceCaseworkerData[]):
- CaseworkersByService[] {
-  const allNewCaseworkersByService: CaseworkersByService[] = [];
-  roleAssignmentsByService.forEach(roleAssignmentByService => {
-    const roleAssignmentResponse = roleAssignmentByService.data.roleAssignmentResponse;
-    const caseworkersByCurrentService: CaseworkersByService = {service: roleAssignmentByService.jurisdiction, caseworkers: []};
-    if (roleAssignmentResponse && roleAssignmentResponse.length > 0) {
-      const caseworkers = mapCaseworkerData(caseWorkerData, roleAssignmentResponse);
-      caseworkersByCurrentService.caseworkers = caseworkers;
-    }
-    allNewCaseworkersByService.push(caseworkersByCurrentService);
-  });
-  return allNewCaseworkersByService;
+export function getCaseworkerDataForServices(caseWorkerData: CaseworkerApi[], roleAssignmentByService: ServiceCaseworkerData):
+ CaseworkersByService {
+  const roleAssignmentResponse = roleAssignmentByService.data.roleAssignmentResponse;
+  const caseworkersByCurrentService: CaseworkersByService = {service: roleAssignmentByService.jurisdiction, caseworkers: []};
+  if (roleAssignmentResponse && roleAssignmentResponse.length > 0) {
+    const caseworkers = mapCaseworkerData(caseWorkerData, roleAssignmentResponse, roleAssignmentByService.jurisdiction);
+    caseworkersByCurrentService.caseworkers = caseworkers;
+  }
+  return caseworkersByCurrentService;
 }
 
-export function mapCaseworkerData(caseWorkerData: CaseworkerApi[], roleAssignments: RoleAssignment[]): Caseworker[] {
+export function
+  mapCaseworkerData(caseWorkerData: CaseworkerApi[], roleAssignments: RoleAssignment[], jurisdiction?: string): Caseworker[] {
   const caseworkers: Caseworker[] = [];
   if (caseWorkerData) {
     caseWorkerData.forEach((caseWorkerApi: CaseworkerApi) => {
@@ -195,6 +198,7 @@ export function mapCaseworkerData(caseWorkerData: CaseworkerApi[], roleAssignmen
         lastName: caseWorkerApi.last_name,
         location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
         roleCategory: getRoleCategory(roleAssignments, caseWorkerApi),
+        service: jurisdiction ? jurisdiction : null,
       };
       caseworkers.push(thisCaseWorker);
     });
@@ -350,24 +354,31 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   return cases;
 }
 
-export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery {
-  return {
-    native_es_query: {
-      query: {
-        terms: {
-          reference: caseIds,
+export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery [] {
+  const elasticQueries = new Array<ElasticSearchQuery>();
+  const chunkSize = 200;
+  for (let i = 0; i < caseIds.length; i += chunkSize) {
+    const chunk = caseIds.slice(i, i + chunkSize);
+    const elasticQuery = {
+      native_es_query: {
+        query: {
+          terms: {
+            reference: chunk,
+          },
         },
+        sort: [
+          // does not seem to allow sorting by case name (attempted both pre and post v6.8 syntax)
+          // this is either because case name not present for all cases or because nested data cannot be sorted in this instance
+          //{ "case_data.caseName": {mode: "max", order: "asc", nested_path: "case_data"}},
+          { id: {order: "asc"} },
+        ],
+        size,
       },
-      sort: [
-        // does not seem to allow sorting by case name (attempted both pre and post v6.8 syntax)
-        // this is either because case name not present for all cases or because nested data cannot be sorted in this instance
-        //{ "case_data.caseName": {mode: "max", order: "asc", nested_path: "case_data"}},
-        { id: {order: "asc"} },
-      ],
-      size,
-    },
-    supplementary_data: ['*'],
-  };
+      supplementary_data: ['*'],
+    };
+    elasticQueries.push(elasticQuery);
+  }
+  return elasticQueries;
 }
 
 export async function getRoleAssignmentsByQuery(query: any, req: express.Request): Promise<any> {

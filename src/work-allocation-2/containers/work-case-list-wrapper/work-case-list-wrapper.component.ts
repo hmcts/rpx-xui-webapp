@@ -58,6 +58,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   };
   private pCasesTotal: number;
   private pUniqueCases: number;
+  public routeEventsSubscription: Subscription;
 
   // subscriptions
   private selectedLocationsSubscription: Subscription;

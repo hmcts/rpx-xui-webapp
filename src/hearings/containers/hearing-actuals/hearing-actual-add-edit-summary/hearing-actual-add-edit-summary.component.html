@@ -19,12 +19,11 @@
 
 <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">
   <div class="govuk-grid-column-two-thirds">
-    <span class="govuk-caption-l"></span>
-    <h1 class="govuk-heading-l">Hearing details</h1>
+    <h1 class="govuk-heading-m">Hearing details</h1>
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          <h1 class="govuk-heading-l">Hearing date</h1>
+          <h1 class="govuk-heading-m">Hearing date</h1>
         </dt>
         <dd class="govuk-summary-list__value">{{hearingDate}}</dd>
       </div>
@@ -57,7 +56,7 @@
 </div>
 
 <div class="govuk-grid-column-two-thirds">
-  <div *ngIf="actualHearingDays">
+  <ng-container *ngIf="actualHearingDays">
     <details *ngFor="let actualHearingDay of actualHearingDays" class="govuk-details" data-module="govuk-details">
       <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">
@@ -78,82 +77,91 @@
               <a href="javascript:void(0)" (click)="wasThisHearingDayRequiredChange(actualHearingDay)"
                 id="hearing-stage-result-change-link" class="govuk-link">Change</a>
             </dd>
-          </div>
-          <div class="govuk-summary-list__row_no-border">
-            <dt class="govuk-summary-list__key-no-border">&nbsp;</dt>
-            <dd class="govuk-summary-list__value-no-border"></dd>
-            <dd class="govuk-summary-list__actions"></dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="!actualHearingDay.notRequired">
-            <dt class="govuk-summary-list__key">Hearing timings</dt>
-            <dd class="govuk-summary-list__value"></dd>
-            <dd class="govuk-summary-list__actions">
-              <a href="javascript:void(0)" (click)="saveHearingActualsTiming()" id="hearing-timing-result-confirm-link"
-                class="govuk-link">Confirm</a>&nbsp;
-              <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing']" class="govuk-link">Update</a>
-            </dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="!actualHearingDay.notRequired">
-            <dt class="govuk-summary-list__key">Start time</dt>
-            <dd class="govuk-summary-list__value">{{actualHearingDay.hearingStartTime | date: "HH:mm"}}</dd>
-            <dd class="govuk-summary-list__actions"></dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="!actualHearingDay.notRequired">
-            <dt class="govuk-summary-list__key">Finish time</dt>
-            <dd class="govuk-summary-list__value">{{actualHearingDay.hearingEndTime | date: "HH:mm"}}</dd>
-            <dd class="govuk-summary-list__actions"></dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="!actualHearingDay.notRequired">
-            <dt class="govuk-summary-list__key">Pause time</dt>
-            <dd class="govuk-summary-list__value">{{getPauseStartDateTime(actualHearingDay)}}</dd>
-            <dd class="govuk-summary-list__actions"></dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="!actualHearingDay.notRequired">
-            <dt class="govuk-summary-list__key">Resume time</dt>
-            <dd class="govuk-summary-list__value">{{getPauseEndDateTime(actualHearingDay)}}</dd>
-            <dd class="govuk-summary-list__actions"></dd>
-          </div>
-          <div class="govuk-summary-list__row_no-border" *ngIf="!actualHearingDay.notRequired">
-            <dt class="govuk-summary-list__key-no-border">&nbsp;</dt>
-            <dd class="govuk-summary-list__value-no-border"></dd>
-            <dd class="govuk-summary-list__actions"></dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="!actualHearingDay.notRequired">
-            <dt class="govuk-summary-list__key">Participants</dt>
-            <dd class="govuk-summary-list__value"></dd>
-            <dd class="govuk-summary-list__actions">
-              <a href="javascript:void(0)" (click)="saveHearingActualsParties()"
-                id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
-              <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties']"
-                class="govuk-link">Update</a>
-            </dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="!actualHearingDay.notRequired">
-            <dt class="govuk-summary-list__key">Names</dt>
-            <dd class="govuk-summary-list__value">{{getPartiesNames(actualHearingDay)}}</dd>
-            <dd class="govuk-summary-list__actions"></dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="!actualHearingDay.notRequired">
-            <dt class="govuk-summary-list__key">How participants will attend</dt>
-            <dd class="govuk-summary-list__value">{{getPartiesAttendenceMethod(actualHearingDay)}}</dd>
-            <dd class="govuk-summary-list__actions"></dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngFor="let party of actualHearingDay.actualDayParties; let i = index;">
-            <dt class="govuk-summary-list__key" *ngIf="!actualHearingDay.notRequired">Attendee {{i + 1}}</dt>
-            <dd class="govuk-summary-list__value" *ngIf="!actualHearingDay.notRequired">
-              Role: {{party.partyRole}}<br>
-              First name: {{party.individualDetails.firstName}}<br>
-              Last name: {{party.individualDetails.lastName}}<br>
-              Organisation: {{party.actualOrganisationName}}<br>
-              Attendance Type: {{party.partyChannelSubType}} <br>
-              Attendance representing: {{getRepresentingAttendee(party.representedParty)}}<br>
-            </dd>
-          </div>
+          </div>        
         </dl>
       </div>
+      <div class="govuk-details__text listing-info" *ngIf="!actualHearingDay.notRequired">
+        <ng-container [ngTemplateOutlet]="listingContent" [ngTemplateOutletContext]="{ $implicit: actualHearingDay }"></ng-container>
+      </div>
     </details>
-  </div>
+  </ng-container>
 </div>
+
+<ng-template #listingContent let-actualHearingDay>
+  <dl class="govuk-summary-list govuk-!-margin-bottom-0 govuk-!-padding-right-2">
+    <div class="govuk-summary-list__row" >
+      <dt class="govuk-summary-list__key">Hearing timings</dt>
+      <dd class="govuk-summary-list__value"></dd>
+      <dd class="govuk-summary-list__actions">
+        <a href="javascript:void(0)" (click)="saveHearingActualsTiming()" id="hearing-timing-result-confirm-link"
+          class="govuk-link">Confirm</a>&nbsp;
+        <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing']" class="govuk-link">Update</a>
+      </dd>
+    </div>
+    <div class="govuk-summary-list__row_no-border">
+      <dt class="govuk-summary-list__key-no-border">&nbsp;</dt>
+      <dd class="govuk-summary-list__value-no-border"></dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Start time</dt>
+      <dd class="govuk-summary-list__value">{{actualHearingDay.hearingStartTime | date: "HH:mm"}}</dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Finish time</dt>
+      <dd class="govuk-summary-list__value">{{actualHearingDay.hearingEndTime | date: "HH:mm"}}</dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Pause time</dt>
+      <dd class="govuk-summary-list__value">{{getPauseStartDateTime(actualHearingDay)}}</dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Resume time</dt>
+      <dd class="govuk-summary-list__value">{{getPauseEndDateTime(actualHearingDay)}}</dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row_no-border">
+      <dt class="govuk-summary-list__key-no-border">&nbsp;</dt>
+      <dd class="govuk-summary-list__value-no-border"></dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Participants</dt>
+      <dd class="govuk-summary-list__value"></dd>
+      <dd class="govuk-summary-list__actions">
+        <a href="javascript:void(0)" (click)="saveHearingActualsParties()"
+          id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
+        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties']"
+          class="govuk-link">Update</a>
+      </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Names</dt>
+      <dd class="govuk-summary-list__value">{{getPartiesNames(actualHearingDay)}}</dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">How participants will attend</dt>
+      <dd class="govuk-summary-list__value">{{getPartiesAttendenceMethod(actualHearingDay)}}</dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row" *ngFor="let party of actualHearingDay.actualDayParties; let i = index;">
+      <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
+      <dd class="govuk-summary-list__value">
+        Role: {{party.partyRole}}<br>
+        First name: {{party.individualDetails.firstName}}<br>
+        Last name: {{party.individualDetails.lastName}}<br>
+        Organisation: {{party.actualOrganisationName}}<br>
+        Attendance Type: {{party.partyChannelSubType}} <br>
+        Attendance representing: {{getRepresentingAttendee(party.representedParty)}}<br>
+      </dd>
+    </div>
+  </dl>
+</ng-template>
+
 <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">
   <div class="govuk-grid-column-two-thirds">
     <div class="govuk-error-message" *ngIf="hearingTimingResultErrorMessage !== ''">

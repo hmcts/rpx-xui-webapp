@@ -533,7 +533,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
     component.getActualDayParties(mainModel);
     expect(component.parties).toBeDefined();
     expect(component.participants).toBeDefined();
-  })
+  });
 
   it('should toggle the not required property of hearing day', () => {
     const day = component.actualHearingDays[0];

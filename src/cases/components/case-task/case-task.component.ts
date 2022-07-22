@@ -51,7 +51,7 @@ export class CaseTaskComponent implements OnInit {
   public set task(value: Task) {
     value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
     this.pTask = value;
-    this.isTaskUrgent = this.pTask.major_priority === PriorityLimits.Urgent? true: false;
+    this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent? true: false;
   }
 
   @Input() public caseworkers: Caseworker[] = [];

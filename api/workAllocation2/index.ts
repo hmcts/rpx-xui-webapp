@@ -192,12 +192,12 @@ function mockDate(start) {
 }
 
 function randomInt(index, min, max) {
-  if(index <= 10) {
+  if(index >= 10) {
     min = Math.ceil(2000);
     max = Math.floor(5000);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-  if(index > 10) {
+  if(index < 10) {
     min = Math.ceil(0);
     max = Math.floor(2000);
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -237,7 +237,21 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const actionedTasks = assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
-    return res.send(actionedTasks).status(status);
+    // TEMPORARY CODE: priority_date and  major_priority parameter is not yet enabled by Task API. to be removed
+    let tasks = actionedTasks;
+    if (data) {
+      let randomDate = new Date(2022, 0, 1);
+      tasks = tasks.map((task, index) => {
+        randomDate = mockDate(randomDate)
+        task.priority_date = mockDate(randomDate);
+        task.major_priority = randomInt(index, 0, 5000);
+        return task;
+      });
+
+    }
+    return res.send(tasks).status(status);
+    // TEMPERORY CODE: end
+    // return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);
   }

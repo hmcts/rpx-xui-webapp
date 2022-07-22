@@ -535,6 +535,14 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(component.participants).toBeDefined();
   })
 
+  it('should toggle the not required property of hearing day', () => {
+    var day = component.actualHearingDays[0];
+    console.log(day);
+    day.notRequired = true;
+    component.wasThisHearingDayRequiredChange(day);
+    expect(day.notRequired).toBeFalsy();
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

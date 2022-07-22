@@ -41,6 +41,7 @@ export class TaskListComponent implements OnChanges {
   @Output() public sortEvent = new EventEmitter<string>();
   @Output() public paginationEvent = new EventEmitter<number>();
   @Output() public actionEvent = new EventEmitter<InvokedTaskAction>();
+  @Output() public resetSortEvent = new EventEmitter();
 
   /**
    * The datasource is an Observable of data to be displayed, as per LLD.
@@ -195,6 +196,7 @@ export class TaskListComponent implements OnChanges {
       this.defaultSortElement = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`) as HTMLElement;
     }
     this.defaultSortElement.click();
+    this.resetSortEvent.emit();
   }
 
   public getFirstResult(): number {

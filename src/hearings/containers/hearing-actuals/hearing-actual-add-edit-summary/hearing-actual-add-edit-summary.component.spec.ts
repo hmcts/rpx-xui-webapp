@@ -6,6 +6,7 @@ import {ActivatedRoute, convertToParamMap} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import {Observable, of} from 'rxjs';
 import {ActualHearingsUtils} from 'src/hearings/utils/actual-hearings.utils';
 import {hearingActualsMainModel, hearingStageRefData, initialState} from '../../../hearing.test.data';
@@ -302,43 +303,134 @@ describe('HearingActualAddEditSummaryComponent', () => {
   const actualCancellationReasonCodes = [
     {
       category_key: 'ActualCancellationReasonCodes',
-      key: 'reasonOne',
-      value_en: 'Reason 1',
+      key: 'withdraw',
+      value_en: 'Withdrawn',
       value_cy: '',
-      hint_text_en: 'Reason 1',
+      hint_text_en: '',
       hint_text_cy: '',
-      lov_order: 1,
+      lov_order: null,
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'ActualCancellationReasonCodes',
-      key: 'reasonTwo',
-      value_en: 'Reason 2',
+      key: 'struck',
+      value_en: 'Struck Out',
       value_cy: '',
-      hint_text_en: 'Reason 2',
+      hint_text_en: '',
       hint_text_cy: '',
-      lov_order: 2,
+      lov_order: null,
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'ActualCancellationReasonCodes',
-      key: 'reasonThree',
-      value_en: 'Reason 3',
+      key: 'unable',
+      value_en: 'Party unable to attend',
       value_cy: '',
-      hint_text_en: 'Reason 3',
+      hint_text_en: '',
       hint_text_cy: '',
-      lov_order: 3,
+      lov_order: null,
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'exclusio',
+      value_en: 'Exclusion',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'incompl',
+      value_en: 'Incomplete Tribunal',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'listerr',
+      value_en: 'Listed in error',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'other',
+      value_en: 'Other',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'notready',
+      value_en: 'No longer ready for hearing',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'notatt',
+      value_en: 'Party did not attend',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'lapsed',
+      value_en: 'Lapsed',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    }
   ];
 
   beforeEach(async(() => {
@@ -388,7 +480,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should return empty string for hearing result reason type completed', () => {
-    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
+    const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.COMPLETED;
     hearingOutcome.hearingResultReasonType = '';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
@@ -396,8 +489,9 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should return hearing result reason type description for adjourned', () => {
+    const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
     component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
-    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.ADJOURNED;
     hearingOutcome.hearingResultReasonType = 'postponedDueToOtherReasons';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
@@ -405,12 +499,13 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should return hearing result reason type description for cancelled', () => {
+    const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
     component.actualCancellationReasonCodes = actualCancellationReasonCodes;
-    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.CANCELLED;
-    hearingOutcome.hearingResultReasonType = 'reasonTwo';
+    hearingOutcome.hearingResultReasonType = 'unable';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
-    expect(description).toEqual('Reason 2');
+    expect(description).toEqual('Party unable to attend');
   });
 
   it('should return correct hearing type from the hearing types', () => {

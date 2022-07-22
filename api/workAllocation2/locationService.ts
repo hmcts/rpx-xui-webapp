@@ -11,6 +11,7 @@ export async function commonGetFullLocation(req: EnhancedRequest) {
   const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
   const path: string = prepareGetLocationsUrl(basePath);
   const response = await handleLocationGet(path, req);
+  return response;
 }
 
 export async function handleLocationGet(fullPath: string, req: EnhancedRequest): Promise<AxiosResponse<CourtVenue[]>> {

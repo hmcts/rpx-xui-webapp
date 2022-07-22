@@ -11,10 +11,9 @@ import {
   HearingActualsMainModel,
   HearingOutcomeModel,
   PlannedDayPartyModel,
-  PlannedHearingDayModel
 } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
+import { ACTION, HearingActualAddEditSummaryEnum, HearingDateEnum, HearingResult } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -30,7 +29,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsMainModel: HearingActualsMainModel;
   public hearingOutcome: HearingOutcomeModel;
   public hearingRoles: LovRefDataModel[] = [];
-  public actualHearingDay: ActualHearingDayModel;
+  public actualHearingDays: ActualHearingDayModel[];
   public participants: ActualDayPartyModel[] = [];
   public parties: ActualDayPartyModel[] = [];
   public hearingTypes: LovRefDataModel[];
@@ -54,9 +53,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public partyChannels: LovRefDataModel[] = [];
   public hearingDate: string;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly hearingsService: HearingsService,
-              private readonly route: ActivatedRoute) {
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.partyChannels = this.route.snapshot.data.partyChannel;
@@ -84,12 +81,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
-        this.actualHearingDay = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null)[0];
-        this.getActualDayParties(this.hearingActualsMainModel);
-        this.hearingTypeDescription = this.hearingOutcome && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
+        this.actualHearingDays = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel);
+        this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
         this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
-        this.hearingDate = this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays);
+        this.hearingDate = this.calculateEarliestHearingDate(this.actualHearingDays);
       });
   }
 
@@ -158,7 +154,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null)
+      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel)
     };
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -256,8 +252,43 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return isValid;
   }
 
-  public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
-    const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
-    return moment.min(moments).toISOString();
+  public calculateEarliestHearingDate(hearingDays): string {
+    const moments: moment.Moment[] = hearingDays.map(d => moment(d.hearingDate));
+    if (moments.length > 1) {
+      return `${moment.min(moments).format('DD MMMM YYYY')} - ${moment.max(moments).format('DD MMMM YYYY')}`;
+    } else {
+      return moment.max(moments).format(HearingDateEnum.DisplayMonth);
+    }
   }
+
+  public getPauseStartDateTime(day) {
+    return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime
+      ? moment(day.pauseDateTimes[0].pauseStartTime).format(HearingDateEnum.DisplayTime) : null;
+  }
+
+  public getPauseEndDateTime(day) {
+    return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime
+      ? moment(day.pauseDateTimes[0].pauseEndTime).format(HearingDateEnum.DisplayTime) : null;
+  }
+
+  public getPartiesNames(day): string {
+    const names = day.actualDayParties.map((p) => p.individualDetails.firstName + ' ' + p.individualDetails.lastName).join(',');
+    return names;
+  }
+
+  public getPartiesAttendenceMethod(day): string {
+    const methods = day.actualDayParties.map(p => p.individualDetails.firstName + ' ' + p.individualDetails.lastName + ': ' + p.partyChannelSubType).join(',');
+    return methods;
+  }
+
+  public getStatusLabel(day): boolean {
+    if (this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
+      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0) {
+      const isActualDay = this.hearingActualsMainModel.hearingActuals.actualHearingDays.find(d => Date.parse(d.hearingDate) === Date.parse(day.hearingDate));
+      return !!isActualDay;
+    } else {
+      return false;
+    }
+  }
+
 }

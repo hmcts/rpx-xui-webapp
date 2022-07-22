@@ -15,6 +15,8 @@ import { PartyRoleDisplayValuePipe } from '../../../pipes/party-role-display-val
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
+import * as _ from 'lodash';
+import * as moment from 'moment';
 
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
@@ -342,6 +344,50 @@ describe('HearingActualAddEditSummaryComponent', () => {
     },
   ];
 
+  const hearingRoles = [
+    {
+      category_key: 'EntityRoleCode',
+      key: 'appellant',
+      value_en: 'Appellant',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Applicant',
+      parent_key: 'APPL',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'claimant',
+      value_en: 'Appointee',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Support',
+      parent_key: 'SUPP',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'interpreter',
+      value_en: 'Joint Party',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Applicant',
+      parent_key: 'APPL',
+      active_flag: 'Y',
+      child_nodes: null
+    }
+  ];
+
+  const HEARING_ID = 'h00001';
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
@@ -358,6 +404,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
     fixture = TestBed.createComponent(HearingActualAddEditSummaryComponent);
     store = TestBed.get(Store);
     component = fixture.componentInstance;
+    component.hearingRoles = hearingRoles;
     fixture.detectChanges();
   });
 
@@ -462,6 +509,31 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(ActualHearingsUtils.isHearingPartiesUpdated).toBe(false);
     expect(ActualHearingsUtils.isHearingDaysUpdated).toBe(false);
   });
+
+  it('should calculate calculate earliest hearing date', () => {
+    const s = component.calculateEarliestHearingDate(component.actualHearingDays);
+    expect(s).toBe('14 March 2021');
+  });
+
+  it('should calculate return first and last hearing date as string', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
+    const day = hearingDays[0];
+    const obj1 = Object.assign({}, day, {hearingDate: '2021-03-13'});
+    const obj2 = Object.assign({}, day, {hearingDate: '2021-03-15'});
+    hearingDays.push(obj1);
+    hearingDays.push(obj2);
+    const s = component.calculateEarliestHearingDate(hearingDays);
+    expect(s).toBe('13 March 2021 - 15 March 2021');
+  });
+
+  it('should extract actual day parties', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    component.hearingRoles = hearingRoles;
+    component.getActualDayParties(mainModel);
+    expect(component.parties).toBeDefined();
+    expect(component.participants).toBeDefined();
+  })
 
   afterEach(() => {
     fixture.destroy();

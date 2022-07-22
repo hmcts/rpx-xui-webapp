@@ -1862,8 +1862,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         hearingDate: '2021-03-12T09:00:00.000Z',
         hearingStartTime: '2021-03-12T09:00:00.000Z',
         hearingEndTime: '2021-03-13T10:00:00.000Z',
-        pauseDateTimes: [],
         notRequired: false,
+        pauseDateTimes: [],
         actualDayParties: [
           {
             actualPartyId: '1',
@@ -1917,6 +1917,40 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               title: 'Miss',
               firstName: 'Bob',
               lastName: 'Jones',
+            },
+            organisationDetails: {
+              cftOrganisationID: '54321',
+              name: 'Company A',
+            },
+            partyID: '1',
+            partyRole: 'interpreter',
+            partyChannelSubType: 'appellant',
+          },
+          {
+            individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: '',
+            },
+            organisationDetails: {
+              cftOrganisationID: 'ogd1',
+              name: 'DWP',
+            },
+            partyID: '2',
+            partyRole: 'interpreter',
+            partyChannelSubType: 'claimant',
+          },
+        ],
+      },
+      {
+        plannedStartTime: '2021-03-14T09:00:00.000Z',
+        plannedEndTime: '2021-03-14T10:00:00.000Z',
+        parties: [
+          {
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jo',
+              lastName: 'Blogg',
             },
             organisationDetails: {
               cftOrganisationID: '54321',

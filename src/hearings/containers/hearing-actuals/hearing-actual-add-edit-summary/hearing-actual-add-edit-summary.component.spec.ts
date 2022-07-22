@@ -427,11 +427,12 @@ fdescribe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return attending representative', () => {
     component.hearingActualsMainModel = hearingActualsMainModel;
-    const attendingRepresentative1 = component.getRepresentingAttendee('1');
+    const hearingDate = '2021-03-12';
+    const attendingRepresentative1 = component.getRepresentingAttendee('1', 'hearingDate');
     expect(attendingRepresentative1).toEqual('Bob Jones');
-    const attendingRepresentative2 = component.getRepresentingAttendee('2');
+    const attendingRepresentative2 = component.getRepresentingAttendee('2', 'hearingDate');
     expect(attendingRepresentative2).toEqual('DWP ');
-    const attendingRepresentative3 = component.getRepresentingAttendee('3');
+    const attendingRepresentative3 = component.getRepresentingAttendee('3', 'hearingDate');
     expect(attendingRepresentative3).toEqual('');
   });
 
@@ -788,11 +789,6 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
     fixture = TestBed.createComponent(HearingActualAddEditSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  xit('should display form with actual parties involved', () => {
-    expect(component.parties.length).toBe(2);
-    expect(component.participants.length).toBe(1);
   });
 
   afterEach(() => {

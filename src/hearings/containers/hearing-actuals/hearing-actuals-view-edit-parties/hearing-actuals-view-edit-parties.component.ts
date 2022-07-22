@@ -6,9 +6,9 @@ import { Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import {
-  ActualDayPartyModel,
+  ActualDayPartyModel, ActualHearingDayModel,
   HearingActualsMainModel,
-  PlannedDayPartyModel,
+  PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingChannelEnum } from '../../../models/hearings.enum';
@@ -16,6 +16,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 
 @Component({
   selector: 'exui-hearing-actuals-view-edit-parties',
@@ -44,6 +45,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   public hearingActualsMainModel: HearingActualsMainModel;
   public caseTitle: string;
   public id: string;
+  private hearingDate: string;
   public submitted: boolean;
   public errors: any[] = [];
   private sub: Subscription;
@@ -116,6 +118,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       )
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');
+        this.hearingDate = params.get('hearingDate');
         this.hearingActualsMainModel = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
         this.caseTitle = this.hearingActualsMainModel.caseDetails.hmctsInternalCaseName;
         this.setUpRoleLists();
@@ -262,16 +265,11 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       return;
     }
     if (valid) {
-      const actualParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
-      const hearingActuals = {
-        ...this.hearingActualsMainModel.hearingActuals,
-        actualHearingDays: [
-          {
-            ...this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
-            actualDayParties: actualParties,
-          }
-        ],
-      };
+      const actualDayParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
+      const hearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
+        this.hearingActualsMainModel, this.hearingDate, { actualDayParties } as ActualHearingDayModel
+      );
+
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
         hearingId: this.id,
         hearingActuals

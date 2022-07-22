@@ -318,6 +318,12 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.loadTasks();
   }
 
+  public onResetSortHandler(): void {
+    this.sortedBy = null;
+    this.sessionStorageService.removeItem(this.sortSessionKey);
+    this.loadTasks();
+  }
+
   public isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {

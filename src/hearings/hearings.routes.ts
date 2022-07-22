@@ -448,8 +448,10 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-cancelled-summary',
+        path: 'hearing-cancelled-summary/:id',
         resolve: {
+          actualSummary: ActualSummaryResponseResolver,
+          cancelHearingActualReasons: CancelHearingActualReasonResolver,
           hearingPriorities: RefDataResolver,
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
@@ -474,6 +476,7 @@ export const ROUTES: Routes = [
           judicialResponseUsers: JudicialUserSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          hearingRoles: HearingActualRoleResolverService,
         },
         component: HearingCompletedSummaryComponent,
         data: {
@@ -489,6 +492,8 @@ export const ROUTES: Routes = [
           judicialResponseUsers: JudicialUserSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          hearingRoles: HearingActualRoleResolverService,
+          adjournReasons: AdjournHearingActualReasonResolver,
         },
         component: HearingCompletedSummaryComponent,
         data: {

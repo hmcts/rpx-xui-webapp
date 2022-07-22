@@ -1,20 +1,19 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
-import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
-import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
-import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
-import { PartyChannelDisplayValuePipe } from '../../../pipes/party-channel-display-value.pipe';
-import { PartyRoleDisplayValuePipe } from '../../../pipes/party-role-display-value.pipe';
-import { HearingsService } from '../../../services/hearings.service';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute, convertToParamMap} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {Observable, of} from 'rxjs';
+import {ActualHearingsUtils} from 'src/hearings/utils/actual-hearings.utils';
+import {hearingActualsMainModel, hearingStageRefData, initialState} from '../../../hearing.test.data';
+import {ACTION, HearingActualAddEditSummaryEnum, HearingResult} from '../../../models/hearings.enum';
+import {ConvertToValuePipe} from '../../../pipes/convert-to-value.pipe';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
+import {HearingActualAddEditSummaryComponent} from './hearing-actual-add-edit-summary.component';
 
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
@@ -344,11 +343,11 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
+      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe],
       imports: [RouterTestingModule],
       providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -676,15 +675,15 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
   ];
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
+      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule,
         HttpClientTestingModule
       ],
       providers: [
-        { provide: HearingsService, useValue: hearingsService },
-        provideMockStore({ initialState: newState }),
+        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({initialState: newState}),
         {
           provide: ActivatedRoute,
           useValue: {

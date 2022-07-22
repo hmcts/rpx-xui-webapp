@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
-import { HearingConditions } from '../../../hearings/models/hearingConditions';
-import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
-import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
+import {Component, Input, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {HearingConditions} from '../../../hearings/models/hearingConditions';
+import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
+import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode} from '../../../hearings/models/hearings.enum';
+import {LovRefDataModel} from '../../../hearings/models/lovRefData.model';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
@@ -85,8 +85,11 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public manageLinks(hearing: HearingListViewModel): void {
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({ caseReference: this.caseId, hearingId: hearing.hearingID }));
-    this.hearingStore.dispatch(new fromHearingStore.LoadLinkedHearingGroup({ groupId: hearing.hearingGroupRequestId }));
+    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({
+      caseReference: this.caseId,
+      hearingId: hearing.hearingID
+    }));
+    this.hearingStore.dispatch(new fromHearingStore.LoadLinkedHearingGroup({groupId: hearing.hearingGroupRequestId}));
     this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
   }
 
@@ -109,7 +112,7 @@ export class CaseHearingsListComponent implements OnInit {
         this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancellation-summary');
         break;
       case EXUIDisplayStatusEnum.CANCELLED:
-        this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancelled-summary');
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-cancelled-summary/${hearing.hearingID}`);
         break;
       case EXUIDisplayStatusEnum.COMPLETED:
         this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-completed-summary/${hearing.hearingID}`);
@@ -130,6 +133,6 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public LoadHearingRequestAndRedirect(hearingID: string, targetURL: string) {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL }));
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({hearingID, targetURL}));
   }
 }

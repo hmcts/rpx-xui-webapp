@@ -14,31 +14,31 @@
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">Hearing stage</dt>
-      <dd class="govuk-summary-list__value">{{hearingActualsMainModel?.hmcStatus}}</dd>
+      <dd class="govuk-summary-list__value">{{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingType | convertToValue : hearingStageOptions}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">Hearing result</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResult}}</dd>
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResult}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isCompleted">
       <dt class="govuk-summary-list__key">Decision type</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultReasonType}}</dd>
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultReasonType}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
       <dt class="govuk-summary-list__key">Adjournment reason</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultReasonType}}</dd>
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultReasonType | convertToValue : adjournReasons}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
       <dt class="govuk-summary-list__key">Adjournment date</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
     </div>
   </dl>
   <br />
@@ -74,13 +74,17 @@
       {{party.individualDetails.lastName}}</h2>
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Role</dt>
+        <dd class="govuk-summary-list__value">{{party.partyRole}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">Attendance type</dt>
         <dd class="govuk-summary-list__value">{{party.partyChannelSubType}}</dd>
       </div>
     </dl>
   </div>
   <br />
-  <div *ngFor="let party of attendies; let i = index">
+  <div *ngFor="let party of attendees; let i = index">
     <h2 class="govuk-heading-s">Attendee {{i+1}}</h2>
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">

@@ -5,8 +5,8 @@ import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
-import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
-import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
+import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
+import { ActualHearingDayModel, HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingActualsTimingErrorMessages } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -18,7 +18,6 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   templateUrl: './hearing-actuals-timing.component.html'
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
-
   public formGroup: FormGroup;
   public caseTitle: string;
   public submitted: boolean = false;
@@ -26,6 +25,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private hearingActuals: HearingActualsMainModel;
   private sub: Subscription;
   private id: string;
+  private hearingDate: string;
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly hearingStore: Store<fromHearingStore.State>,
@@ -89,6 +89,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       )
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');
+        this.hearingDate = params.get('hearingDate');
         this.hearingActuals = state.hearingActualsMainModel;
         this.caseTitle = this.hearingActuals.caseDetails.hmctsInternalCaseName;
         this.formGroup = this.createFormGroup(this.hearingActuals);
@@ -151,25 +152,32 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         }
       ];
     }
-    const actualInDay1 = this.hearingActuals.hearingActuals && this.hearingActuals.hearingActuals.actualHearingDays
-      && this.hearingActuals.hearingActuals.actualHearingDays[0];
-    const hearingActuals = {
-      ...this.hearingActuals.hearingActuals,
-      actualHearingDays: [
-        {
-          ...actualInDay1,
-          hearingDate,
-          hearingStartTime: HearingActualsTimingComponent.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')),
-          hearingEndTime: HearingActualsTimingComponent.replaceTime(hearingEndTime, moment(value.hearingEndTime, 'HH:mm')),
-          pauseDateTimes
-        }
-      ]
-    };
+    // const actualInDay1 = this.hearingActuals.hearingActuals && this.hearingActuals.hearingActuals.actualHearingDays
+    //   && this.hearingActuals.hearingActuals.actualHearingDays[0];
+    // const hearingActuals = {
+    //   ...this.hearingActuals.hearingActuals,
+    //   actualHearingDays: [
+    //     {
+    //       ...actualInDay1,
+    //       hearingDate,
+    //       hearingStartTime: HearingActualsTimingComponent.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')),
+    //       hearingEndTime: HearingActualsTimingComponent.replaceTime(hearingEndTime, moment(value.hearingEndTime, 'HH:mm')),
+    //       pauseDateTimes
+    //     }
+    //   ]
+    // };
 
-    ActualHearingsUtils.isHearingDaysUpdated = true;
+    const updatedTimings = {
+      hearingStartTime: HearingActualsTimingComponent.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')),
+      hearingEndTime: HearingActualsTimingComponent.replaceTime(hearingEndTime, moment(value.hearingEndTime, 'HH:mm')),
+      pauseDateTimes
+    };
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
+    (this.hearingActuals, this.hearingDate, {...updatedTimings} as ActualHearingDayModel);
+
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals,
+      hearingActuals: patchedHearingActuals,
     }));
     this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
   }

@@ -6,11 +6,10 @@ import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HttpError } from '../../../../models/httpError.model';
 import {
-  ActualDayPartyModel,
   ActualHearingDayModel,
   HearingActualsMainModel,
   HearingOutcomeModel,
-  PlannedDayPartyModel,
+  PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { ACTION, HearingActualAddEditSummaryEnum, HearingDateEnum, HearingResult } from '../../../models/hearings.enum';
@@ -30,8 +29,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingOutcome: HearingOutcomeModel;
   public hearingRoles: LovRefDataModel[] = [];
   public actualHearingDays: ActualHearingDayModel[];
-  public participants: ActualDayPartyModel[] = [];
-  public parties: ActualDayPartyModel[] = [];
   public hearingTypes: LovRefDataModel[];
   public actualPartHeardReasonCodes: LovRefDataModel[];
   public actualCancellationReasonCodes: LovRefDataModel[];
@@ -53,22 +50,13 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public partyChannels: LovRefDataModel[] = [];
   public hearingDate: string;
 
+  public hearingDatesAccordion = {} as { [hearingDate: string]: boolean};
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.partyChannels = this.route.snapshot.data.partyChannel;
     this.actualPartHeardReasonCodes = this.route.snapshot.data.actualPartHeardReasonCodes;
     this.actualCancellationReasonCodes = this.route.snapshot.data.actualCancellationReasonCodes;
-  }
-
-  private static hasActualParties(hearingActuals: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
-    return !!hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays
-      && hearingActuals.hearingActuals.actualHearingDays.length && hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties
-      ? hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.some(
-        (actualDayParty: ActualDayPartyModel) => immutablePartyRoles
-          .map((partyRole: LovRefDataModel) => partyRole.key)
-          .includes(actualDayParty.partyRole)
-      ) : false;
   }
 
   public ngOnInit(): void {
@@ -80,11 +68,19 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       )
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
+
+        this.hearingActualsMainModel.hearingActuals.actualHearingDays.forEach((hearingDay) => {
+          const key = hearingDay.hearingDate;
+          if (!this.hearingDatesAccordion.hasOwnProperty(key)) {
+            this.hearingDatesAccordion[key] = false;
+          }
+        });
+
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
-        this.actualHearingDays = ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null);
         this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
-        this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
         this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
+        this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
+        this.actualHearingDays = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel);
         this.hearingDate = this.calculateEarliestHearingDate(this.actualHearingDays);
       });
   }
@@ -108,8 +104,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getRepresentingAttendee(partyId: string): string {
-    const party: PlannedDayPartyModel = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties
+  public getRepresentingAttendee(partyId: string, hearingDate: string): string {
+    const plannedHearingDay = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.find(
+      plannedDay => ActualHearingsUtils.getDate(plannedDay.plannedStartTime) === hearingDate
+    );
+    const party: PlannedDayPartyModel = plannedHearingDay.parties
       .find(x => x.partyID === partyId.toString());
     if (party && party.individualDetails) {
       return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
@@ -146,75 +145,92 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       ? true : false;
   }
 
-  public saveHearingActualsTiming() {
-    ActualHearingsUtils.isHearingDaysUpdated = false;
-    this.validationErrors = [];
-    this.hearingTimingResultErrorMessage = '';
-    this.successBanner = true;
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    const hearingActuals = {
-      ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel, null)
-    };
-    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-      hearingId: this.id,
-      hearingActuals,
-    }));
+    public confirmActualHearingTimeForDay(hearingDay: ActualHearingDayModel) {
+      // ActualHearingsUtils.isHearingDaysUpdated = false;
+      this.validationErrors = [];
+      this.hearingTimingResultErrorMessage = '';
+      this.successBanner = true;
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      const updatedActuals = {
+        hearingDate: hearingDay.hearingDate,
+        hearingStartTime: hearingDay.hearingStartTime,
+        hearingEndTime: hearingDay.hearingEndTime,
+        pauseDateTimes: hearingDay.pauseDateTimes,
+      } as ActualHearingDayModel;
+      const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
+        (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
+
+      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+        hearingId: this.id,
+        hearingActuals: patchedHearingActuals,
+      }));
   }
 
-  public saveHearingActualsParties() {
+  public confirmActualPartiesForDay(hearingDay: ActualHearingDayModel) {
     this.validationErrors = [];
     this.hearingPartiesResultErrorMessage = '';
-    ActualHearingsUtils.isHearingPartiesUpdated = false;
     this.successBanner = true;
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    const hearingActuals = {
-      ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: ActualHearingsUtils.getActualHearingParties(this.hearingActualsMainModel, this.parties, this.participants)
-    };
+
+    const updatedActuals = {
+      actualDayParties: [...hearingDay.actualDayParties]
+    } as ActualHearingDayModel;
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
+      (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals,
+      hearingActuals: patchedHearingActuals,
     }));
   }
 
-  public getActualDayParties(hearingActualsMainModel: HearingActualsMainModel): void {
-    this.parties = [];
-    this.participants = [];
+  public updateWasThisHearingDayRequired(hearingDay: ActualHearingDayModel, notRequired: boolean) {
+    this.validationErrors = [];
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
+    (this.hearingActualsMainModel, hearingDay.hearingDate, { notRequired } as ActualHearingDayModel);
 
-    if (HearingActualAddEditSummaryComponent.hasActualParties(hearingActualsMainModel, this.hearingRoles)) {
-      const actualParties: ActualDayPartyModel[] = hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties;
-      for (const actualParty of actualParties) {
-        if (this.isPlannedParty(actualParty)) {
-          this.parties.push(actualParty);
-        } else {
-          this.participants.push(actualParty);
-        }
-      }
-    } else {
-      const plannedParties: PlannedDayPartyModel[] = hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties;
-      for (const plannedParty of plannedParties) {
-        const actualDayParty: ActualDayPartyModel = {
-          individualDetails: {
-            firstName: plannedParty.individualDetails && plannedParty.individualDetails.firstName,
-            lastName: plannedParty.individualDetails && plannedParty.individualDetails.lastName,
-          },
-          actualOrganisationName: plannedParty.organisationDetails && plannedParty.organisationDetails.name,
-          didNotAttendFlag: false,
-          partyChannelSubType: plannedParty.partyChannelSubType,
-          representedParty: null,
-          actualPartyId: plannedParty.partyID,
-          partyRole: plannedParty.partyRole
-        };
-        this.parties.push(actualDayParty);
-      }
-    }
+    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+      hearingId: this.id,
+      hearingActuals: patchedHearingActuals,
+    }));
   }
 
-  public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {
-    return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties
-      .some(plannedParty => plannedParty.partyID === actualDayParty.actualPartyId);
-  }
+  // public getActualDayParties(hearingActualsMainModel: HearingActualsMainModel): void {
+  //   this.parties = [];
+  //   this.participants = [];
+  //
+  //   if (HearingActualAddEditSummaryComponent.hasActualParties(hearingActualsMainModel, this.hearingRoles)) {
+  //     const actualParties: ActualDayPartyModel[] = hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties;
+  //     for (const actualParty of actualParties) {
+  //       if (this.isPlannedParty(actualParty)) {
+  //         this.parties.push(actualParty);
+  //       } else {
+  //         this.participants.push(actualParty);
+  //       }
+  //     }
+  //   } else {
+  //     const plannedParties: PlannedDayPartyModel[] = hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties;
+  //     for (const plannedParty of plannedParties) {
+  //       const actualDayParty: ActualDayPartyModel = {
+  //         individualDetails: {
+  //           firstName: plannedParty.individualDetails && plannedParty.individualDetails.firstName,
+  //           lastName: plannedParty.individualDetails && plannedParty.individualDetails.lastName,
+  //         },
+  //         actualOrganisationName: plannedParty.organisationDetails && plannedParty.organisationDetails.name,
+  //         didNotAttendFlag: false,
+  //         partyChannelSubType: plannedParty.partyChannelSubType,
+  //         representedParty: null,
+  //         actualPartyId: plannedParty.partyID,
+  //         partyRole: plannedParty.partyRole
+  //       };
+  //       this.parties.push(actualDayParty);
+  //     }
+  //   }
+  // }
+
+  // public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {
+  //   return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties
+  //     .some(plannedParty => plannedParty.partyID === actualDayParty.actualPartyId);
+  // }
 
   private isValid(): boolean {
     let isValid: boolean = true;
@@ -275,8 +291,13 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return day.actualDayParties.map((p) => p.individualDetails.firstName + ' ' + p.individualDetails.lastName).join(',');
   }
 
-  public getPartiesAttendenceMethod(day): string {
-    return day.actualDayParties.map(p => p.individualDetails.firstName + ' ' + p.individualDetails.lastName + ': ' + p.partyChannelSubType).join(',');
+  public getPartiesAttendenceMethod(day): { fullName: string; partyChannelSubType: string }[] {
+    return day.actualDayParties.map(party => {
+      return {
+        fullName: `${party.individualDetails.firstName} ${party.individualDetails.lastName}`,
+        partyChannelSubType: party.partyChannelSubType
+      };
+    });
   }
 
   public getStatusLabel(day): boolean {

@@ -12,13 +12,14 @@ import { CaseRoleDetails } from '../../../role-access/models/case-role-details.i
 import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
-import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
 import { getMockCaseRoles, getMockCases, getMockLocations, MockRouter } from '../../tests/utils.spec';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
 import * as dtos from '../../models/dtos';
 import { JurisdictionsService } from 'src/work-allocation-2/services/juridictions.service';
+import { MyAccessComponent } from '../my-access/my-access.component';
 
 describe('WorkCaseListWrapperComponent', () => {
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
@@ -84,7 +85,6 @@ describe('WorkCaseListWrapperComponent', () => {
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ))
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
-    spyOn(mockRouter.events, 'subscribe');
     fixture.detectChanges();
   }));
 

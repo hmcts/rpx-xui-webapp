@@ -255,7 +255,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public getSortParameter(): SortParameter {
     return {
-      sort_by: this.sortedBy.fieldName,
+      // sort_by: this.sortedBy.fieldName,
+      sort_by: 'priority',
       sort_order: this.sortedBy.order
     };
   }

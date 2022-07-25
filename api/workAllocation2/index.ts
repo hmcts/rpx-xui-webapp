@@ -138,6 +138,13 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
+    let prioritySortParameter;
+    searchRequest.sorting_parameters.find((sort, index) => {
+      if(sort.sort_by === 'priority') {
+        prioritySortParameter = sort;
+        searchRequest.sorting_parameters.splice(index, 1)
+      }
+    });
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
@@ -174,6 +181,15 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         return task;
       });
       // TEMPERORY CODE: end
+      if(prioritySortParameter) {
+        data.tasks.sort((a,b) => {
+          if(prioritySortParameter.sort_order === 'asc') {
+            return a.major_priority > b.major_priority? 1: -1;
+          } else if(prioritySortParameter.sort_order === 'desc') {
+            return b.major_priority > a.major_priority? 1: -1;
+          }
+        });
+      }
 
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves

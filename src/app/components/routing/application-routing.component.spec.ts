@@ -20,7 +20,6 @@ describe('ApplicationRoutingComponent', () => {
     mockStore = jasmine.createSpyObj('store', ['pipe']);
     featureToggleMock.isEnabled.and.returnValue(of(true));
     component = new ApplicationRoutingComponent(router, waFeatureService, mockStore, featureToggleMock);
-    router.url = '/';
   });
 
   it('should create', () => {

@@ -23,12 +23,6 @@
         {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResult}}</dd>
     </div>
 
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isCompleted">
-      <dt class="govuk-summary-list__key">Decision type</dt>
-      <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultReasonType}}</dd>
-    </div>
-
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
       <dt class="govuk-summary-list__key">Adjournment reason</dt>
       <dd class="govuk-summary-list__value">

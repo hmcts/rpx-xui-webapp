@@ -47,6 +47,12 @@ export function hearingLinksReducer(currentState = initialHearingLinksState,
         linkedHearingGroup: action.payload
       };
     }
+    case fromActions.MANAGE_LINKED_HEARING_GROUP: {
+      return {
+        ...currentState,
+        linkedHearingGroup: action.payload.linkedHearingGroup
+      };
+    }
     case fromActions.LOAD_LINKED_HEARING_GROUP_FAILURE:
     case fromActions.SUBMIT_LINKED_HEARING_GROUP_FAILURE:
     case fromActions.MANAGE_LINKED_HEARING_GROUP_FAILURE: {

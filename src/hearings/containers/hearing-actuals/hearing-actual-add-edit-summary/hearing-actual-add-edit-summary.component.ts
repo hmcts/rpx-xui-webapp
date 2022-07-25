@@ -61,7 +61,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.partyChannels = this.route.snapshot.data.partyChannel;
     this.actualPartHeardReasonCodes = this.route.snapshot.data.actualPartHeardReasonCodes;
-    this.actualCancellationReasonCodes = this.route.snapshot.data.actualCancellationReasonCodes;
+    this.actualCancellationReasonCodes = this.route.snapshot.data.cancelHearingActualReasons;
   }
 
   private static hasActualParties(hearingActuals: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
@@ -226,6 +226,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingStageResultErrorMessage = '';
     this.hearingTimingResultErrorMessage = '';
     this.hearingPartiesResultErrorMessage = '';
+    // when hearingResult is cancelled, user doesn't need to fill the hearing timings and participants.
+    if (this.hearingResult === HearingResult.CANCELLED) {
+      return true;
+    }
     if (ActualHearingsUtils.isHearingDaysUpdated || !this.isHearingActualsTimingAvailable(this.hearingActualsMainModel)) {
       this.validationErrors.push({
         id: 'hearing-timing-result-confirm-link',

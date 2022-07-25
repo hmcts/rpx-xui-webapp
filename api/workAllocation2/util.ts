@@ -334,28 +334,36 @@ export async function handlePost(path: string, payload: any, req: EnhancedReques
   return response;
 }
 
-export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[], req: EnhancedRequest): Promise<Case[]> {
+export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[], req: EnhancedRequest): Promise<{cases: Case[], caseIds: string[]}> {
   if (!roleAssignmentList) {
-    return Promise.resolve([]);
+    return {cases: [], caseIds: []};
   }
   const data: CaseDataType = getCaseDataFromRoleAssignments(roleAssignmentList);
+  console.log('data is ', JSON.stringify(data));
 
-  const casePromises: Array<Promise<CaseList>> = getCaseListPromises(data, req);
+  const responses = getCaseListPromises(data, req);
+
+  const casePromises = responses.casePromises;
+  const caseIds = responses.caseIds;
 
   const response = await Promise.all(casePromises.map(reflect));
   const caseResults = response.filter(x => x.status === 'fulfilled' && x.value ).map( x => x.value );
 
   let cases = [];
   caseResults.forEach( caseResult => cases = [...cases, ...caseResult.cases]);
-  return cases;
+  return { cases, caseIds };
 }
 
-export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery [] {
+export function constructElasticSearchQuery(caseIds: any[], page: number, size: number, paginationConfig: PaginationParameter): ElasticSearchQuery [] {
   const elasticQueries = new Array<ElasticSearchQuery>();
   const chunkSize = 200;
-  for (let i = 0; i < caseIds.length; i += chunkSize) {
-    const chunk = caseIds.slice(i, i + chunkSize);
-    const elasticQuery = {
+  console.log('caseIds.length', caseIds.length)
+  console.log(`Size ${size}`, paginationConfig);
+  const start = (paginationConfig.page_number - 1) * paginationConfig.page_size;
+  const end = start + 25;
+  const chunk = caseIds.slice(start, end);
+  console.log('chunk', chunk);
+  const elasticQuery = {
       native_es_query: {
         query: {
           terms: {
@@ -373,7 +381,6 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
       supplementary_data: ['*'],
     };
     elasticQueries.push(elasticQuery);
-  }
   return elasticQueries;
 }
 

@@ -42,7 +42,7 @@ export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action
 
 export function prepareGetCaseTypeUrl(caseTypeId: string): string {
   const url = getConfigValue(SERVICES_CCD_DEFINITION_STORE_API_PATH);
-  return `${url}/data/case-type/${caseTypeId}`;
+  return `${url}/api/data/case-type/${caseTypeId}`;
 }
 
 export function prepareSearchCaseUrl(baseUrl: string, subPath?: string) {

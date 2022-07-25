@@ -264,7 +264,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         sort_order: this.sortedBy.order
       }
     ];
-    }   
+    }
 
     return [{
       sort_by: this.taskServiceConfig.defaultSortFieldName,

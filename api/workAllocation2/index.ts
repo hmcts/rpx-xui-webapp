@@ -26,7 +26,7 @@ import {
   handlePostRoleAssignments,
   handlePostSearch
 } from './caseWorkerService';
-import { ViewType } from './constants/actions';
+import { TaskPermission, ViewType } from './constants/actions';
 import {CaseList} from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
@@ -151,7 +151,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     }
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
      // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
@@ -172,24 +172,12 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-      // TEMPORARY CODE: priority_date and  major_priority parameter is not yet enabled by Task API. to be removed
-      let randomDate = new Date(2022, 0, 1);
-      data.tasks = data.tasks.map((task, index) => {
-        randomDate = mockDate(randomDate)
-        task.priority_date = mockDate(randomDate);
-        task.major_priority = randomInt(index, 0, 5000);
-        return task;
-      });
-      // TEMPERORY CODE: end
-      if(prioritySortParameter) {
-        data.tasks.sort((a,b) => {
-          if(prioritySortParameter.sort_order === 'asc') {
-            return a.major_priority > b.major_priority? 1: -1;
-          } else if(prioritySortParameter.sort_order === 'desc') {
-            return b.major_priority > a.major_priority? 1: -1;
-          }
-        });
-      }
+
+      console.log("**mock task**");
+
+      console.log(mockTaskPrioritisation(data, prioritySortParameter, searchRequest));
+      data = mockTaskPrioritisation(data, prioritySortParameter, searchRequest)
+
 
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
@@ -199,6 +187,109 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   } catch (error) {
     next(error);
   }
+}
+
+
+function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
+  // TEMPORARY CODE: priority_date and  major_priority parameter is not yet enabled by Task API. to be removed
+  let randomDate = new Date(2022, 0, 1);
+  data.tasks = data.tasks.map((task, index) => {
+    randomDate = mockDate(randomDate)
+    task.priority_date = mockDate(randomDate);
+    task.major_priority = randomInt(index, 0, 5000);
+    return task;
+  });
+
+  if(prioritySortParameter) {
+    data.tasks.sort((a,b) => {
+      if(prioritySortParameter.sort_order === 'asc') {
+        return a.major_priority > b.major_priority? 1: -1;
+      } else if(prioritySortParameter.sort_order === 'desc') {
+        return b.major_priority > a.major_priority? 1: -1;
+      }
+    });
+  }
+  console.log("**data tasks**");
+
+  console.log(data.tasks);
+
+  // TEMPERORY CODE: end
+  searchRequest.sorting_parameters.map((sort, index) => {
+      if(sort.sort_by === 'caseName') {
+        if(sort.sort_order === 'asc') {
+          data.tasks.sort((a,b) => {
+            return a.case_name.localeCompare(b.case_name) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        } else if(sort.sort_order === 'desc') {
+          console.log("**here**");
+          data.tasks.sort((a,b) => {
+            return b.case_name.localeCompare(a.case_name) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        }
+      }
+      if(sort.sort_by === 'caseCategory') {
+        if(sort.sort_order === 'asc') {
+          data.tasks.sort((a,b) => {
+            return a.case_category.localeCompare(b.case_category) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        } else if(sort.sort_order === 'desc') {
+          console.log("**here**");
+          data.tasks.sort((a,b) => {
+            return b.case_category.localeCompare(a.case_category) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        }
+      }
+      if(sort.sort_by === 'locationName') {
+        if(sort.sort_order === 'asc') {
+          data.tasks.sort((a,b) => {
+            return a.location_name.localeCompare(b.location_name) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        } else if(sort.sort_order === 'desc') {
+          console.log("**here**");
+          data.tasks.sort((a,b) => {
+            return b.location_name.localeCompare(a.location_name) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        }
+      }
+      if(sort.sort_by === 'taskTitle') {
+        if(sort.sort_order === 'asc') {
+          data.tasks.sort((a,b) => {
+            return a.task_title.localeCompare(b.task_title) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        } else if(sort.sort_order === 'desc') {
+          console.log("**here**");
+          data.tasks.sort((a,b) => {
+            return b.task_title.localeCompare(a.task_title) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        }
+      }
+      if(sort.sort_by === 'dueDate') {
+        if(sort.sort_order === 'asc') {
+          data.tasks.sort((a,b) => {
+            return b.due_date - a.due_date ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        } else if(sort.sort_order === 'desc') {
+          console.log("**here**");
+          data.tasks.sort((a,b) => {
+            return a.due_date - b.due_date ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+          });
+        }
+      }
+  });
+  console.log("**hello**");
+  console.log(data);
+
+  return data;
 }
 
 function mockDate(start) {

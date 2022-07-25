@@ -549,8 +549,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
-      const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
-      result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
+      result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
     }
     // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
     result.cases.forEach(item => {

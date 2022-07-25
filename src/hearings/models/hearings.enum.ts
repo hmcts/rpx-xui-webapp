@@ -180,7 +180,7 @@ export enum HearingJudgeSelectionEnum {
 }
 
 export enum HearingLinkedSelectionEnum {
-  ValidSelectionError = 'You need to select atleast one hearing',
+  ValidSelectionError = 'You need to select at least one hearing',
   HearingSelection = 'Which hearings should be linked?',
   NoHearingSelection = 'There are no hearings available to link to',
   NoLinkedCases = 'No linked Cases',

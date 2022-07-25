@@ -24,7 +24,6 @@ import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
   styleUrls: ['./hearing-actual-add-edit-summary.component.scss']
 })
 export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
-
   public hearingActualsMainModel: HearingActualsMainModel;
   public hearingOutcome: HearingOutcomeModel;
   public hearingRoles: LovRefDataModel[] = [];
@@ -49,12 +48,12 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public error$: Observable<HttpError>;
   public partyChannels: LovRefDataModel[] = [];
   public hearingDate: string;
-
   public hearingDatesAccordion = {} as { [hearingDate: string]: boolean};
+
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
-    this.hearingRoles = this.route.snapshot.data.hearingRole;
+    this.hearingRoles = this.route.snapshot.data.hearingRoles;
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
-    this.partyChannels = this.route.snapshot.data.partyChannel;
+    this.partyChannels = this.route.snapshot.data.partyChannels;
     this.actualPartHeardReasonCodes = this.route.snapshot.data.actualPartHeardReasonCodes;
     this.actualCancellationReasonCodes = this.route.snapshot.data.actualCancellationReasonCodes;
   }
@@ -108,12 +107,17 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     const plannedHearingDay = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.find(
       plannedDay => ActualHearingsUtils.getDate(plannedDay.plannedStartTime) === hearingDate
     );
-    const party: PlannedDayPartyModel = plannedHearingDay.parties
-      .find(x => x.partyID === partyId.toString());
+
+    let party: PlannedDayPartyModel;
+    if (plannedHearingDay) {
+      party = plannedHearingDay.parties.find(x => x.partyID === partyId.toString());
+    }
+
     if (party && party.individualDetails) {
       return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
+    } else {
+      return '';
     }
-    return '';
   }
 
   public getHearingResultReasonTypeDescription(hearingOutcome: HearingOutcomeModel): string {
@@ -133,20 +137,18 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }
 
-  private isHearingActualsTimingAvailable(hearingActualsMainModel: HearingActualsMainModel) {
-    return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
-      ? true : false;
+  private isAllHearingActualsTimingAvailable(hearingActualsMainModel: HearingActualsMainModel) {
+    return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
+      && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
   }
 
   private isHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
     return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 &&
       hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties &&
-      hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.length > 0
-      ? true : false;
+      hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.length > 0;
   }
 
     public confirmActualHearingTimeForDay(hearingDay: ActualHearingDayModel) {
-      // ActualHearingsUtils.isHearingDaysUpdated = false;
       this.validationErrors = [];
       this.hearingTimingResultErrorMessage = '';
       this.successBanner = true;
@@ -177,6 +179,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     } as ActualHearingDayModel;
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
       (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
+
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
       hearingActuals: patchedHearingActuals,
@@ -194,51 +197,13 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     }));
   }
 
-  // public getActualDayParties(hearingActualsMainModel: HearingActualsMainModel): void {
-  //   this.parties = [];
-  //   this.participants = [];
-  //
-  //   if (HearingActualAddEditSummaryComponent.hasActualParties(hearingActualsMainModel, this.hearingRoles)) {
-  //     const actualParties: ActualDayPartyModel[] = hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties;
-  //     for (const actualParty of actualParties) {
-  //       if (this.isPlannedParty(actualParty)) {
-  //         this.parties.push(actualParty);
-  //       } else {
-  //         this.participants.push(actualParty);
-  //       }
-  //     }
-  //   } else {
-  //     const plannedParties: PlannedDayPartyModel[] = hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties;
-  //     for (const plannedParty of plannedParties) {
-  //       const actualDayParty: ActualDayPartyModel = {
-  //         individualDetails: {
-  //           firstName: plannedParty.individualDetails && plannedParty.individualDetails.firstName,
-  //           lastName: plannedParty.individualDetails && plannedParty.individualDetails.lastName,
-  //         },
-  //         actualOrganisationName: plannedParty.organisationDetails && plannedParty.organisationDetails.name,
-  //         didNotAttendFlag: false,
-  //         partyChannelSubType: plannedParty.partyChannelSubType,
-  //         representedParty: null,
-  //         actualPartyId: plannedParty.partyID,
-  //         partyRole: plannedParty.partyRole
-  //       };
-  //       this.parties.push(actualDayParty);
-  //     }
-  //   }
-  // }
-
-  // public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {
-  //   return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties
-  //     .some(plannedParty => plannedParty.partyID === actualDayParty.actualPartyId);
-  // }
-
   private isValid(): boolean {
     let isValid: boolean = true;
     this.validationErrors = [];
     this.hearingStageResultErrorMessage = '';
     this.hearingTimingResultErrorMessage = '';
     this.hearingPartiesResultErrorMessage = '';
-    if (ActualHearingsUtils.isHearingDaysUpdated || !this.isHearingActualsTimingAvailable(this.hearingActualsMainModel)) {
+    if (ActualHearingsUtils.isHearingDaysUpdated || !this.isAllHearingActualsTimingAvailable(this.hearingActualsMainModel)) {
       this.validationErrors.push({
         id: 'hearing-timing-result-confirm-link',
         message: HearingActualAddEditSummaryEnum.ConfirmUpdateError

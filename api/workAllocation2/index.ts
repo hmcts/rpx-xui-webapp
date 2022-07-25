@@ -172,13 +172,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-
-      console.log("**mock task**");
-
-      console.log(mockTaskPrioritisation(data, prioritySortParameter, searchRequest));
       data = mockTaskPrioritisation(data, prioritySortParameter, searchRequest)
-
-
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
       returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
@@ -209,11 +203,7 @@ function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
       }
     });
   }
-  console.log("**data tasks**");
 
-  console.log(data.tasks);
-
-  // TEMPERORY CODE: end
   searchRequest.sorting_parameters.map((sort, index) => {
       if(sort.sort_by === 'caseName') {
         if(sort.sort_order === 'asc') {
@@ -222,7 +212,6 @@ function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
           });
         } else if(sort.sort_order === 'desc') {
-          console.log("**here**");
           data.tasks.sort((a,b) => {
             return b.case_name.localeCompare(a.case_name) ||
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
@@ -236,7 +225,6 @@ function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
           });
         } else if(sort.sort_order === 'desc') {
-          console.log("**here**");
           data.tasks.sort((a,b) => {
             return b.case_category.localeCompare(a.case_category) ||
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
@@ -250,7 +238,6 @@ function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
           });
         } else if(sort.sort_order === 'desc') {
-          console.log("**here**");
           data.tasks.sort((a,b) => {
             return b.location_name.localeCompare(a.location_name) ||
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
@@ -264,7 +251,6 @@ function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
           });
         } else if(sort.sort_order === 'desc') {
-          console.log("**here**");
           data.tasks.sort((a,b) => {
             return b.task_title.localeCompare(a.task_title) ||
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
@@ -278,7 +264,6 @@ function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
           });
         } else if(sort.sort_order === 'desc') {
-          console.log("**here**");
           data.tasks.sort((a,b) => {
             return a.due_date - b.due_date ||
             (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
@@ -286,9 +271,6 @@ function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
         }
       }
   });
-  console.log("**hello**");
-  console.log(data);
-
   return data;
 }
 

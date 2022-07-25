@@ -425,13 +425,16 @@ export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, 
   }
 }
 
-export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): Array<Promise<CaseList>> {
+export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): { casePromises: Promise<CaseList> [], caseIds: string [] } {
   const casePromises: Array<Promise<CaseList>> = [];
+  let caseIds = [];
   for (const jurisdiction in data) {
     if (data.hasOwnProperty(jurisdiction)) {
       for (const caseType in data[jurisdiction]) {
         if (data[jurisdiction].hasOwnProperty(caseType)) {
-          const queries = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
+          const paginationConfig = req.body.searchRequest.pagination_parameters;
+          caseIds = Array.from(data[jurisdiction][caseType]);
+          const queries = constructElasticSearchQuery(caseIds, 0, 10000, paginationConfig);
           queries.forEach(query => {
             casePromises.push(searchCasesById(caseType, query, req));
           });
@@ -439,14 +442,14 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
       }
     }
   }
-  return casePromises;
+  return { casePromises, caseIds};
 }
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
     const roleAssignments = req.session.roleAssignmentResponse;
-    const cases = await getCaseIdListFromRoles(roleAssignments as RoleAssignment[], req);
-
+    const casesResponse = await getCaseIdListFromRoles(roleAssignments as RoleAssignment[], req);
+    const cases = casesResponse.cases;
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
     let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
@@ -493,10 +496,10 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     logger.info('cases query', JSON.stringify(query, null, 2));
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
-    const cases = await getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse, req);
+    const caseResponse = await getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse, req);
 
     const result = {
-      cases,
+      cases: caseResponse.cases,
       total_records: 0,
       unique_cases: 0,
     };
@@ -510,10 +513,10 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
       checkedRoles = getSubstantiveRoles(roleAssignmentResult.roleAssignmentResponse);
     }
     const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, pagination) : [];
-    result.total_records = mappedCases.length;
+    result.total_records = caseResponse.caseIds.length;
     result.unique_cases = getUniqueCasesCount(mappedCases);
-    const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
-    result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    // const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
+    result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

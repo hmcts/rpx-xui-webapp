@@ -133,7 +133,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return {
       service: TaskService.IAC,
       defaultSortDirection: SortOrder.ASC,
-      defaultSortFieldName: this.getDateField('dueDate'),
+      defaultSortFieldName: 'priority',
       fields: this.fields
     };
   }
@@ -248,17 +248,28 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [],
-      sorting_parameters: [this.getSortParameter()],
+      sorting_parameters: this.getSortParameter(),
       pagination_parameters: this.getPaginationParameter()
     };
   }
 
-  public getSortParameter(): SortParameter {
-    return {
-      // sort_by: this.sortedBy.fieldName,
-      sort_by: 'priority',
+  public getSortParameter(): Array<SortParameter> {
+    if (this.sortedBy.fieldName !== 'priority') {
+      return [{
+        sort_by: this.sortedBy.fieldName,
+        sort_order: this.sortedBy.order
+      },
+      {
+        sort_by: this.taskServiceConfig.defaultSortFieldName,
+        sort_order: this.sortedBy.order
+      }
+    ];
+    }   
+
+    return [{
+      sort_by: this.taskServiceConfig.defaultSortFieldName,
       sort_order: this.sortedBy.order
-    };
+    }];
   }
 
   public getPaginationParameter(): PaginationParameter {

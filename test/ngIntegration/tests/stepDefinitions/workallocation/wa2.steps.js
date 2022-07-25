@@ -191,7 +191,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate {string} tasks columns sorting with taskRequest url {string} on page {int} for user type {string}', async function (waPage,taskRequesturl,onPage ,userType,datatable) {
         const softAssert = new SoftAssert();
         const datatableHashes = datatable.hashes();
-        const pageUndertest = waPage.toLowerCase() === "my work" ? myWorkPage : null;
+        let pageUndertest = null;
+
+        switch (waPage.toLowerCase()){
+            case "my work":
+                pageUndertest = myWorkPage;
+                break;
+            case "my work cases":
+                pageUndertest = myWorkPage;
+                pageUndertest.clickSubNavigationTab("My cases"); 
+                break; 
+        }
 
         let sortColumnInRequestParam = null;
         MockApp.addIntercept(taskRequesturl, (req, res, next) => {

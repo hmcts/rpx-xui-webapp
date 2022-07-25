@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: My work to  Available tasks to pagination sorting
 
     Background: Mock and browser setup
@@ -72,6 +72,7 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | Task created  | No         | Yes   | created_date |
             | Due date      | Yes        | No    | dueDate      |
             | Priority      | Yes        | No    | dueDate      |
+            | Hearing date | Yes | Yes | hearing_date |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
@@ -118,7 +119,7 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
         Then I validate tasks count in page 0
         Then I validate task table pagination controls, is displayed state is "false"
         Then I validate WA tasks table footer displayed status is "true"
-        Then I validate WA tasks table footer message is "There are no tasks that match your selection."
+        Then I validate WA tasks table footer message is "There are no available tasks. Use the location filter to view available tasks at other locations."
 
         Examples:
             | UserIdentifier  | UserType | Roles                                           |

@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Location as AngularLocation } from '@angular/common';
 import {
-  BookingCheckType,
   FilterConfig,
   FilterError,
   FilterFieldConfig,
@@ -14,7 +13,6 @@ import { select, Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
-
 import { ErrorMessage } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
 import { Location, LocationByEPIMMSModel } from '../../models/dtos';
@@ -69,7 +67,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
-  public hideButton: boolean;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
@@ -89,31 +86,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           this.router.getCurrentNavigation().extras.state.location) {
           this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
       }
-      this.router.events.pipe(
-          filter((event) => event instanceof NavigationEnd),
-          map(() => this.route.snapshot),
-          map((activatedRoute: ActivatedRouteSnapshot) => {
-            while (activatedRoute.firstChild) {
-              activatedRoute = activatedRoute.firstChild;
-            }
-            return activatedRoute;
-          })
-        )
-        .subscribe((activatedRouteSnapshot: ActivatedRouteSnapshot) => {
-          this.hideButton = activatedRouteSnapshot.url[0].path && activatedRouteSnapshot.url[0].path.includes('my-access');
-          if (this.hideButton) {
-            this.toggleFilter = false;
-            setTimeout(() => {
-              const typesOfWork = document.getElementById('types-of-work');
-              if (typesOfWork) {
-                const typesOfWorkParentElem = typesOfWork.closest('.contain-classes');
-                if (typesOfWorkParentElem) {
-                  (typesOfWorkParentElem as HTMLElement).style.display = 'none';
-                }
-              }
-            }, 0);
-          }
-        });
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
@@ -275,20 +247,19 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       displayMinSelectedError: true,
       minSelectedError: 'Search for a location by name',
       type: 'find-location',
-      enableAddLocationButton: true,
-      bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
+      enableAddLocationButton: true
     };
-    if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.locations) {
-      const newLocations: Location[] = this.route.snapshot.data.locations;
-      if (locations) {
-        this.defaultLocations = newLocations;
+    let baseLocation = null;
+    // if there are no booking locations selected then check for base location for salary judge
+    if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.location) {
+      const location: Location = this.route.snapshot.data.location;
+      if (location) {
+        baseLocation = [location];
       }
-    } else {
-      this.defaultLocations = locations;
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: 'locations',
-      value: this.defaultLocations
+      value: baseLocation ? baseLocation : locations
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
@@ -395,12 +366,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.toggleFilter = !this.toggleFilter;
     if (this.toggleFilter) {
       setTimeout(() => {
-        const typesOfWorkParentElem = document.getElementById('types-of-work') ?
-          document.getElementById('types-of-work').closest('.contain-classes') : null;
-        if (typesOfWorkParentElem) {
-          (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
-        }
+        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
+        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
       }, 0);
     }
   }
+
 }

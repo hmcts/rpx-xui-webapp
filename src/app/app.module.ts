@@ -18,7 +18,8 @@ import {
   GoogleTagManagerService,
   LaunchDarklyService,
   RoleService,
-  TimeoutNotificationsService
+  TimeoutNotificationsService,
+  FeatureToggleGuard
 } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
@@ -134,7 +135,8 @@ export function launchDarklyClientIdFactory(
     GoogleTagManagerService,
     CookieService,
     LoadingService,
-    FilterService
+    FilterService,
+    FeatureToggleGuard
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

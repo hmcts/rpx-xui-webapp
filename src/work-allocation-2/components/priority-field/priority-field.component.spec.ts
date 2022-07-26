@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TaskPriority } from '../../enums';
 import { PriorityFieldComponent } from './priority-field.component';
 
-describe('PriorityFieldComponent', () => {
+fdescribe('PriorityFieldComponent', () => {
   let component: PriorityFieldComponent;
   let fixture: ComponentFixture<PriorityFieldComponent>;
 
@@ -58,6 +58,11 @@ describe('PriorityFieldComponent', () => {
     expect(component.priority).toBe(TaskPriority.HIGH);
 
     component.majorPriority = 4999;
+    fixture.detectChanges();
+    expect(component.priority).toBe(TaskPriority.HIGH);
+
+    component.majorPriority = 5000;
+    component.date = yesterdayDate;
     fixture.detectChanges();
     expect(component.priority).toBe(TaskPriority.HIGH);
 

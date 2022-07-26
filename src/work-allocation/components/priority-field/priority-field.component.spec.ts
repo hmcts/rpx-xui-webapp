@@ -34,7 +34,7 @@ fdescribe('PriorityFieldComponent', () => {
 
   it('should correctly set the priority', () => {
     expect(component.priority).toBe(TaskPriority.LOW);
-    component.date = new Date('2020/01/01');    
+    component.date = new Date('2020/01/01');
     fixture.detectChanges();
     expect(component.priority).toBe(TaskPriority.LOW);
     component.date = new Date();
@@ -65,6 +65,5 @@ fdescribe('PriorityFieldComponent', () => {
     component.date = new Date();
     fixture.detectChanges();
     expect(component.priority).toBe(TaskPriority.MEDIUM);
-    
   });
 });

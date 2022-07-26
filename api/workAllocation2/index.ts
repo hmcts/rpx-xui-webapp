@@ -274,9 +274,9 @@ function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
 }
 
 function mockDate(start) {
-  let mockDate = new Date(start.valueOf());
-  mockDate.setDate(mockDate.getDate() + 1);
-  return mockDate;
+  const mockStartDate = new Date(start.valueOf());
+  mockStartDate.setDate(mockStartDate.getDate() + 1);
+  return mockStartDate;
 }
 
 function randomInt(index, min, max) {

@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { InfoMessage } from '../../../work-allocation/enums';
+import { InfoMessage } from '../../../work-allocation-2/enums';
+import { PriorityLimits } from '../../../work-allocation-2/enums';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -12,7 +13,6 @@ import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation/utils';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
-import { PriorityLimits } from '../../../work-allocation-2/enums';
 
 @Component({
   selector: 'exui-case-task',

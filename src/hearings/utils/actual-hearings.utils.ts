@@ -4,18 +4,10 @@ import {
   HearingActualsMainModel,
   HearingActualsModel
 } from '../models/hearingActualsMainModel';
-import {HearingDateEnum} from '../models/hearings.enum';
 
 export class ActualHearingsUtils {
   public static isHearingDaysUpdated: boolean;
   public static isHearingPartiesUpdated: boolean;
-
-  private static replaceTime(dateTime: string, time: moment.Moment): string {
-    return moment(dateTime, HearingDateEnum.DateAndTimeInZoneZ).set({
-      hour: time.get('hour'),
-      minute: time.get('minute'),
-    }).toISOString();
-  }
 
   public static getDate(dateTime: string): string {
     return dateTime ? moment(dateTime).format('YYYY-MM-DD') : null;

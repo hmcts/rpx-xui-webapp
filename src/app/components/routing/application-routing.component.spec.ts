@@ -3,7 +3,7 @@ import { ApplicationRoutingComponent } from './application-routing.component';
 import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import { TestBed } from '@angular/core/testing';
 
-fdescribe('ApplicationRoutingComponent', () => {
+describe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;
   let router;
   let waFeatureService;

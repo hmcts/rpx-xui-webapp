@@ -1861,7 +1861,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
       {
         hearingDate: '2021-03-12',
         hearingStartTime: '2021-03-12T09:00:00.000Z',
-        hearingEndTime: '2021-03-13T10:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
         pauseDateTimes: [],
         notRequired: false,
         actualDayParties: [
@@ -1902,7 +1902,52 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             representedParty: '1',
           },
         ],
-      }
+      },
+      {
+        hearingDate: '2021-03-14',
+        hearingStartTime: '2021-03-14T09:00:00.000Z',
+        hearingEndTime: '2021-03-14T10:00:00.000Z',
+        pauseDateTimes: [],
+        notRequired: false,
+        actualDayParties: [
+          {
+            actualPartyId: '1',
+            individualDetails: {
+              firstName: 'Bob',
+              lastName: 'Jones',
+            },
+            actualOrganisationName: 'Company A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'appellant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '2',
+            individualDetails: {
+              firstName: 'Mary',
+              lastName: 'Jones',
+            },
+            actualOrganisationName: 'Company B',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'claimant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '3',
+            individualDetails: {
+              firstName: 'James',
+              lastName: 'Gods',
+            },
+            actualOrganisationName: 'Solicitors A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'interpreter',
+            representedParty: '1',
+          },
+        ],
+      },
     ],
   },
   hearingPlanned: {
@@ -1910,7 +1955,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     plannedHearingDays: [
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
-        plannedEndTime: '2021-03-13T10:00:00.000Z',
+        plannedEndTime: '2021-03-12T10:00:00.000Z',
         parties: [
           {
             individualDetails: {

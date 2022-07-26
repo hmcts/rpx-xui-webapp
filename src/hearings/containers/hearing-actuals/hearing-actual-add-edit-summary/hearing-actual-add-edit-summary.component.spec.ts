@@ -6,16 +6,17 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
-import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
 import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
+import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
+import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
 import { PartyChannelDisplayValuePipe } from '../../../pipes/party-channel-display-value.pipe';
 import { PartyRoleDisplayValuePipe } from '../../../pipes/party-role-display-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
-import * as _ from 'lodash';
 
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
@@ -300,7 +301,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
       child_nodes: null,
     },
   ];
-
   const actualCancellationReasonCodes = [
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -342,8 +342,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       child_nodes: null,
     },
   ];
-
-  const partyChannels = [
+  const partyChannel = [
     {
       key: 'inPerson',
       value_en: 'In person',
@@ -457,8 +456,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       parentKey: null,
     },
   ];
-
-  const hearingRoles = [
+  const hearingRole = [
     {
       category_key: 'EntityRoleCode',
       key: 'appellant',
@@ -500,8 +498,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     }
   ];
 
-  const HEARING_ID = 'h00001';
-
   beforeEach((() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
@@ -520,8 +516,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
                 id: '1',
               },
               data: {
-                partyChannels,
-                hearingRoles
+                partyChannel,
+                hearingRole
               },
             },
           },
@@ -616,23 +612,79 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should check days validity', () => {
-    // TODO: check days validity
-
+    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
+    hearingActuals.hearingActuals.actualHearingDays = [
+      {
+        hearingDate: '',
+        hearingStartTime: '',
+        hearingEndTime: '',
+        pauseDateTimes: null,
+        notRequired: false,
+        actualDayParties: [
+          {
+            actualPartyId: '1',
+            individualDetails: {
+              firstName: 'Bob',
+              lastName: 'Jones',
+            },
+            actualOrganisationName: 'Company A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'appellant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '2',
+            individualDetails: {
+              firstName: 'Mary',
+              lastName: 'Jones',
+            },
+            actualOrganisationName: 'Company B',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'claimant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '3',
+            individualDetails: {
+              firstName: 'James',
+              lastName: 'Gods',
+            },
+            actualOrganisationName: 'Solicitors A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'interpreter',
+            representedParty: '1',
+          },
+        ],
+      },
+    ];
+    component.hearingActualsMainModel = hearingActuals;
     component.onSubmitHearingDetails();
     expect(component.submitted).toBe(true);
     expect(component.hearingTimingResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
   });
 
   it('should check parties validity', () => {
-    // TODO: check parties validity
-
+    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
+    hearingActuals.hearingActuals.actualHearingDays = [
+      {
+        hearingDate: '2021-03-12',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
+        pauseDateTimes: [],
+        notRequired: false,
+        actualDayParties: []
+      },
+    ];
+    component.hearingActualsMainModel = hearingActuals;
     component.onSubmitHearingDetails();
     expect(component.submitted).toBe(true);
     expect(component.hearingPartiesResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
   });
 
   it('should save one hearing day actuals for specific hearingDate', () => {
-    // TO DO save hearing day actuals for specific hearingDAte
     const hearingDay = {
       hearingDate: '2021-03-12',
       hearingStartTime: '2021-03-12T09:00:00.000Z',
@@ -681,38 +733,32 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.confirmActualHearingTimeForDay(hearingDay);
     component.confirmActualPartiesForDay(hearingDay);
+    expect(storeDispatchSpy).toHaveBeenCalledTimes(2);
   });
 
-  it('should calculate calculate earliest hearing date', () => {
-    const s = component.calculateEarliestHearingDate(component.actualHearingDays);
-    expect(s).toBe('14 March 2021');
+  it('should return only one date if only one hearing date', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    const actualHearingDays = [mainModel.hearingActuals.actualHearingDays[0]];
+    const s = component.calculateEarliestHearingDate(actualHearingDays);
+    expect(s).toBe('12 March 2021');
   });
 
   it('should calculate return first and last hearing date as string', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
-    const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
     const day = hearingDays[0];
     const obj1 = Object.assign({}, day, {hearingDate: '2021-03-13'});
     const obj2 = Object.assign({}, day, {hearingDate: '2021-03-15'});
     hearingDays.push(obj1);
     hearingDays.push(obj2);
     const s = component.calculateEarliestHearingDate(hearingDays);
-    expect(s).toBe('13 March 2021 - 15 March 2021');
+    expect(s).toBe('12 March 2021 - 15 March 2021');
   });
 
-  it('should extract actual day parties', () => {
-    const mainModel = _.cloneDeep(hearingActualsMainModel);
-    component.hearingRoles = hearingRoles;
-    component.getActualDayParties(mainModel);
-    expect(component.parties).toBeDefined();
-    expect(component.participants).toBeDefined();
-  });
-
-  it('should toggle the not required property of hearing day', () => {
-    const day = component.actualHearingDays[0];
-    day.notRequired = true;
-    component.wasThisHearingDayRequiredChange(day);
-    expect(day.notRequired).toBeFalsy();
+  it('should return updated notRequired', () => {
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
+    (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
+    expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 
   afterEach(() => {
@@ -771,7 +817,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
       parentKey: null,
     },
   ];
-  const partyChannels = [
+  const partyChannel = [
     {
       key: 'inPerson',
       value_en: 'In person',
@@ -949,7 +995,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
                 id: '1',
               },
               data: {
-                partyChannels,
+                partyChannel,
                 hearingRole,
               },
             },

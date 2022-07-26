@@ -12,7 +12,7 @@ export class PriorityFieldComponent {
    */
   @Input() public date: Date;
 
-  @Input() public majorPriority?: Number;
+  @Input() public majorPriority?: number;
 
   public get priority(): TaskPriority {
 
@@ -33,7 +33,7 @@ export class PriorityFieldComponent {
 
   // returns the number of days that d1 is after d2
   private daysBetween(d1: Date, d2: Date): number {
-    if(!(d1 && d2)) {
+    if (!(d1 && d2)) {
       return 0;
     }
     const utc1 = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDay());

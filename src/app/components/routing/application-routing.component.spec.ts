@@ -1,7 +1,7 @@
 import { of } from 'rxjs';
 import { ApplicationRoutingComponent } from './application-routing.component';
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import { TestBed } from '@angular/core/testing';
+import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 
 describe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;

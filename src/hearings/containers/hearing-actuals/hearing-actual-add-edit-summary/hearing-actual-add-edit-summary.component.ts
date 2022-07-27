@@ -146,7 +146,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     if (isActualHearingDaysAvailable) {
       this.actualHearingDays.forEach((actualHearingDay) => {
         const isDetailsProvided = this.getStatusLabel(actualHearingDay);
-        if (!actualHearingDay.notRequired && !isDetailsProvided && !actualHearingDay.actualDayParties.length) {
+        if (!isDetailsProvided && !actualHearingDay.actualDayParties.length) {
           isActualPartiesAvailable = false;
         }
       });

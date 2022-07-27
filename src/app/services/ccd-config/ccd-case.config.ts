@@ -169,36 +169,8 @@ export class AppConfig extends AbstractAppConfig {
     return this.workallocationUrl;
   }
 
-  private featureToggleWorkAllocation(): void {
-    this.featureToggleService
-      .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
-      .subscribe(
-        (isFeatureEnabled) =>
-          this.workallocationUrl = AppUtils.getFeatureToggledUrl(
-            isFeatureEnabled,
-            WorkAllocationTaskService.WorkAllocationUrl
-          )
-      );
-  }
-
   public getRefundsUrl(): string {
     return this.config.refunds_url;
-  }
-
-  public getAccessManagementMode(): boolean {
-    return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
-  }
-
-  public getAccessManagementBasicViewMock(): {} {
-    return this.config.access_management_basic_view_mock;
-  }
-
-  public getLocationRefApiUrl(): string {
-    return this.config.location_ref_api_url;
-  }
-
-  public getCamRoleAssignmentsApiUrl(): string {
-    return this.config.cam_role_assignments_api_url;
   }
 
   private featureToggleWorkAllocation(): void {

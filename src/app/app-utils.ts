@@ -23,7 +23,6 @@ export class AppUtils {
           return AppConstants.ENVIRONMENT_NAMES.ithc;
         case AppConstants.ENVIRONMENT_NAMES.perftest:
           return AppConstants.ENVIRONMENT_NAMES.perftest;
-        default:
       }
     }
     return AppConstants.ENVIRONMENT_NAMES.prod;

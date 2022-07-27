@@ -245,8 +245,6 @@ describe('HmctsGlobalHeaderComponent', () => {
   });
 
   it('splitNavItems', (done: DoneFn) => {
-  // 2
-  it('splitNavItems', (done: any) => {
     const USERDETAILS = {
       sub: 'Caseworker.ed@mailinator.com',
       uid: '36314153-06c2-400a-8dc3-7d3790660918',

@@ -84,12 +84,14 @@
                   <fieldset class="govuk-fieldset" id="hearing-day-required-confirmation">
                     <div class="govuk-radios">
                       <div class="govuk-radios__item"
-                           *ngFor="let button of [['Yes', false], ['No', true]]">
-                        <input type="radio" class="govuk-radios__input"
-                               (change)="updateWasThisHearingDayRequired(actualHearingDay, button[1]);
+                           *ngFor="let button of [['Yes', false], ['No', true]]"
+                           (click)="updateWasThisHearingDayRequired(actualHearingDay, button[1]);
                                   requiredDayText.hidden = false;
                                   requiredDayInput.hidden = true;
                                "
+                      >
+                        <input type="radio" class="govuk-radios__input"
+
                                [name]="'hearing-day-required__' + i"
                                [id]="'hearing-day-required-yes__' + i">
                         <label class="govuk-label govuk-radios__label" [for]="'hearing-day-required-yes__' + i">

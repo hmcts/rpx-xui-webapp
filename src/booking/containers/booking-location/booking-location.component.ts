@@ -52,6 +52,10 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
     }
   }
 
+  public selectedLocations(): LocationByEPIMMSModel[] {
+    return this.bookingProcess.location? [this.bookingProcess.location]: [];
+  }
+
   public onContinueClick(): void {
     this.formError = !this.bookingProcess.location;
     if (!this.bookingProcess.location) {

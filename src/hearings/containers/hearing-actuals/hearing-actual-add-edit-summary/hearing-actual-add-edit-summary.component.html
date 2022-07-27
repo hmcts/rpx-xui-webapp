@@ -23,7 +23,7 @@
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Hearing date(s)</dt>
-        <dd class="govuk-summary-list__value">{{hearingDate}}</dd>
+        <dd class="govuk-summary-list__value">{{hearingDateRange}}</dd>
       </div>
     </dl>
     <br>
@@ -74,45 +74,28 @@
 
         <div class="govuk-details__text listing-info">
           <dl class="govuk-summary-list govuk-!-margin-bottom-0 govuk-!-padding-right-2">
-            <div class="govuk-summary-list__row govuk-!-margin-bottom-4">
+            <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key ">Was this hearing day required?</dt>
               <dd class="govuk-summary-list__value">
-                <div #requiredDayText>
+                <div>
                   {{actualHearingDay.notRequired ? 'No' : 'Yes'}}
                 </div>
-                <div #requiredDayInput hidden>
-                  <fieldset class="govuk-fieldset" id="hearing-day-required-confirmation">
-                    <div class="govuk-radios">
-                      <div class="govuk-radios__item"
-                           *ngFor="let button of [['Yes', false], ['No', true]]"
-                           (click)="updateWasThisHearingDayRequired(actualHearingDay, button[1]);
-                                  requiredDayText.hidden = false;
-                                  requiredDayInput.hidden = true;
-                               "
-                      >
-                        <input type="radio" class="govuk-radios__input"
-
-                               [name]="'hearing-day-required__' + i"
-                               [id]="'hearing-day-required-yes__' + i">
-                        <label class="govuk-label govuk-radios__label" [for]="'hearing-day-required-yes__' + i">
-                          {{ button[0] }}
-                        </label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-
               </dd>
               <dd class="govuk-summary-list__actions">
                 <a href="javascript:void(0)" id="hearing-stage-result-change-link"
-                   (click)="requiredDayText.hidden = !requiredDayText.hidden;
-                   requiredDayInput.hidden = !requiredDayInput.hidden"
-                   class="govuk-link">Change</a>
+                   class="govuk-link"
+                   (click)="changeWasThisHearingDayRequired(actualHearingDay)"
+                >
+                  Change
+                </a>
               </dd>
             </div>
             <ng-container *ngIf="!actualHearingDay.notRequired">
+              <br>
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Hearing timings</dt>
+                <dt class="govuk-summary-list__key">
+                  <span class="govuk-heading-m govuk-!-margin-bottom-0">Hearing timings</span>
+                </dt>
                 <dd class="govuk-summary-list__value"></dd>
                 <dd class="govuk-summary-list__actions">
                   <a href="javascript:void(0)" (click)="confirmActualHearingTimeForDay(actualHearingDay)"
@@ -142,13 +125,11 @@
                 <dd class="govuk-summary-list__value">{{getPauseEndDateTime(actualHearingDay)}}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
               </div>
-              <div class="govuk-summary-list__row_no-border">
-                <dt class="govuk-summary-list__key-no-border">&nbsp;</dt>
-                <dd class="govuk-summary-list__value-no-border"></dd>
-                <dd class="govuk-summary-list__actions"></dd>
-              </div>
+              <br>
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Participants</dt>
+                <dt class="govuk-summary-list__key">
+                  <span class="govuk-heading-m govuk-!-margin-bottom-0">Participants</span>
+                </dt>
                 <dd class="govuk-summary-list__value"></dd>
                 <dd class="govuk-summary-list__actions">
                   <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)"
@@ -159,7 +140,11 @@
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Names</dt>
-                <dd class="govuk-summary-list__value">{{getPartiesNames(actualHearingDay)}}</dd>
+                <dd class="govuk-summary-list__value">
+                  <div *ngFor="let name of getPartiesNames(actualHearingDay)">
+                    {{ name }}
+                  </div>
+                </dd>
                 <dd class="govuk-summary-list__actions"></dd>
               </div>
               <div class="govuk-summary-list__row">
@@ -179,7 +164,7 @@
                   Last name: {{party.individualDetails.lastName}}<br>
                   Organisation: {{party.actualOrganisationName}}<br>
                   Attendee Type: {{party.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
-                  Attendee representing: {{party.representedParty && getRepresentingAttendee(party.representedParty, hearingDate)}}
+                  Attendee representing: {{party.representedParty && getRepresentingAttendee(party.representedParty, actualHearingDay.hearingDate) || "N/A"}}
                 </dd>
               </div>
             </ng-container>

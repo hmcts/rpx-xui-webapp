@@ -50,20 +50,22 @@
   <br />
 
 
-  <h1 class="govuk-heading-m" style="display: inline-block;">Hearing dates</h1>
+  <h1 class="govuk-heading-m" style="display: inline-block;">Hearing date(s)</h1>
 
   <ng-container *ngFor="let hearingDay of hearingDays">
-    <details class="govuk-details" data-module="govuk-details govuk-grid-row" [open]="!multiDayHearing">
-      <summary class="govuk-grid-column-one-quarter">
-        <span class="govuk-details__summary-text">
+    <div class="">
+      <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details govuk-grid-row" [open]="!multiDayHearing">
+        <summary class="govuk-grid-column-one-quarter govuk-!-margin-bottom-4">
+        <span class="govuk-details__summary-text govuk-!-padding-left-2">
           {{ hearingDay.actualHearingDay.hearingDate | date: 'd MMMM' }}
         </span>
-      </summary>
-      <div class="govuk-grid-column-three-quarters">
-        <exui-hearing-actual-summary-single-day
-          [actualHearingDay]="hearingDay.actualHearingDay" [plannedHearingDay]="hearingDay.plannedHearingDay">
-        </exui-hearing-actual-summary-single-day>
-      </div>
-    </details>
+        </summary>
+        <div class="govuk-grid-column-three-quarters summary-single-day">
+          <exui-hearing-actual-summary-single-day
+            [actualHearingDay]="hearingDay.actualHearingDay" [plannedHearingDay]="hearingDay.plannedHearingDay">
+          </exui-hearing-actual-summary-single-day>
+        </div>
+      </details>
+    </div>
   </ng-container>
 </div>

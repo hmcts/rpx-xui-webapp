@@ -63,8 +63,10 @@ export class ActualHearingsUtils {
   public static mergeSingleHearingPartActuals(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string,
                                               updatedActuals: ActualHearingDayModel): HearingActualsModel {
     const hearingActuals = {
-      hearingOutcome: hearingActualsMainModel.hearingActuals.hearingOutcome ? {...hearingActualsMainModel.hearingActuals.hearingOutcome} : {},
-      actualHearingDays: hearingActualsMainModel.hearingActuals.actualHearingDays ? [...hearingActualsMainModel.hearingActuals.actualHearingDays] : [],
+      hearingOutcome: hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.hearingOutcome
+        ? {...hearingActualsMainModel.hearingActuals.hearingOutcome} : {},
+      actualHearingDays: hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
+        ? [...hearingActualsMainModel.hearingActuals.actualHearingDays] : [],
     } as HearingActualsModel;
 
     let indexOfActual: number;

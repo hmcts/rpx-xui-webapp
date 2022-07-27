@@ -6,6 +6,7 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
 import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
@@ -15,8 +16,6 @@ import { PartyRoleDisplayValuePipe } from '../../../pipes/party-role-display-val
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
-import * as _ from 'lodash';
-import * as moment from 'moment';
 
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
@@ -468,6 +467,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should submit hearing details', () => {
+    component.actualHearingDays = hearingActualsMainModel.hearingActuals.actualHearingDays;
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.id = '1111222233334444';
     component.hearingResult = HearingResult.COMPLETED;
@@ -519,8 +519,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
     const day = hearingDays[0];
-    const obj1 = Object.assign({}, day, {hearingDate: '2021-03-13'});
-    const obj2 = Object.assign({}, day, {hearingDate: '2021-03-15'});
+    const obj1 = Object.assign({}, day, { hearingDate: '2021-03-13' });
+    const obj2 = Object.assign({}, day, { hearingDate: '2021-03-15' });
     hearingDays.push(obj1);
     hearingDays.push(obj2);
     const s = component.calculateEarliestHearingDate(hearingDays);

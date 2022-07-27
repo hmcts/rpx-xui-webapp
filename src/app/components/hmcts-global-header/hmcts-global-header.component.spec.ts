@@ -3,7 +3,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -12,8 +11,6 @@ import { UserService } from 'src/app/services/user/user.service';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../../noc/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
-import { SessionStorageService } from 'src/app/services';
-import createSpyObj = jasmine.createSpyObj;
 
 describe('HmctsGlobalHeaderComponent', () => {
   let component: HmctsGlobalHeaderComponent;
@@ -57,25 +54,6 @@ describe('HmctsGlobalHeaderComponent', () => {
   beforeEach(async(() => {
     origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-    const USERDETAILS = {
-      sub: 'Caseworker.ed@mailinator.com',
-      uid: '36314153-06c2-400a-8dc3-7d3790660918',
-      roles: [
-          'roleA',
-          'roleB',
-          'roleC',
-      ],
-      name: 'Caseworker Ed',
-      given_name: 'Caseworker',
-      family_name: 'Ed test',
-      roleCategory: 'LEGAL_OPERATIONS',
-      token: 'Bearer eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiMWVyMFdSd2dJT1RBRm9qRTRyQy9mYmVLdTNJPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJDYXNld29ya2VyLmVkQG1haWxpbmF0b3IuY29tIiwiY3RzIjoiT0FVVEgyX1NUQVRFTEVTU19HUkFOVCIsImF1dGhfbGV2ZWwiOjAsImF1ZGl0VHJhY2tpbmdJZCI6ImY3ZjVmNjM4LTBmMDQtNGQxNC1hZmZlLWFjZWVjNzkyYjBjMy04MTI4NTA0NSIsImlzcyI6Imh0dHBzOi8vZm9yZ2Vyb2NrLWFtLnNlcnZpY2UuY29yZS1jb21wdXRlLWlkYW0tYWF0Mi5pbnRlcm5hbDo4NDQzL29wZW5hbS9vYXV0aDIvcmVhbG1zL3Jvb3QvcmVhbG1zL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNzX3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoia1lNdkJlaUFmbWpYLUlJRW83bXBXVzBHMjU0Iiwibm9uY2UiOiI1SUFIb3FCUUppcXY3amY0a3Rfd0JEYWdrWUZ3SDMwbHBnWnZ5UkdXUWxJIiwiYXVkIjoieHVpd2ViYXBwIiwibmJmIjoxNjQ5Njk4MDk3LCJncmFudF90eXBlIjoiYXV0aG9yaXphdGlvbl9jb2RlIiwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsInJvbGVzIiwiY3JlYXRlLXVzZXIiLCJtYW5hZ2UtdXNlciIsInNlYXJjaC11c2VyIl0sImF1dGhfdGltZSI6MTY0OTY5ODA5NiwicmVhbG0iOiIvaG1jdHMiLCJleHAiOjE2NDk3MjY4OTcsImlhdCI6MTY0OTY5ODA5NywiZXhwaXJlc19pbiI6Mjg4MDAsImp0aSI6Il9oNktSTVJmbE5USXVVaWhZNk5OR2tHY2h0cyJ9.PrVZlLToFaOI-sGorD_yVQaXYGqaKIjZ0JOGAFyFfkGkjaqInixhvXJMu7G3QK1cRl5i1MmM3C9_AGL2N4Xh8YLBjqVnIIFfgYom2wBAoON2YcqhUbE3gVtqCPxhhZSNfxXZzspEwYP2oKKFF4M8s6QaflHZZ6eEY1eTnciaYFAHvkgQbNB5lnZHCAeSZC8bbtgHbGKbbgtE0Cpvi6CxvJVMXYk2vo376V-mVxtZrimXhAve8v48EIVDiYxXHgwHdvgUPD6wYZzsnZmdWe5sKMg0NeNdOM8XgLdwbsL-HZcAp7TvtISQ7u8gjM0eTFcLRL1TGYmMxZqUI3jsBsdwOQ'
-    };
-
-    const mockSessionStorageService = {
-      getItem: jasmine.createSpy('getItem').and.returnValue(JSON.stringify(USERDETAILS))
-    };
-
     TestBed.configureTestingModule({
       declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -93,12 +71,21 @@ describe('HmctsGlobalHeaderComponent', () => {
           useValue: storeMock
         },
         {
+          provide: UserService,
+          useValue: {
+            getUserDetails: () => of({
+              userInfo: {
+                roles: ['roleA', 'roleB']
+              }
+            })
+          }
+        },
+        {
           provide: FeatureToggleService,
           useValue: {
             isEnabled: (flag) => of(flags[flag])
           }
-        },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        }
       ]
     })
     .compileComponents();
@@ -123,25 +110,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     };
     store = TestBed.get(Store);
     storeMock.pipe.and.returnValue(of(userDetails));
-    component.items = [{
-      align: 'right',
-      text: '1',
-      href: '',
-      active: false
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      align: 'right',
-      text: '3',
-      href: '',
-      active: false
-    }];
-    nocStoreSpy = spyOn(component.nocStore, 'dispatch');
     fixture.detectChanges();
   });
 
@@ -149,32 +117,8 @@ describe('HmctsGlobalHeaderComponent', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = origTimeout;
   });
 
-  // 3
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  xit('should show the Case search button as inactive when the currentUrl does not match', () => {
-    const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
-    expect(searchButton).toBeDefined();
-    expect(searchButton.textContent).toBe('Find case');
-    expect(searchButton.getAttribute('aria-current')).not.toEqual('true');
-  });
-
-  xit('should show the Case search button as active when the currentUrl matches', () => {
-    // Get hold of the search button.
-    const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
-    expect(searchButton.getAttribute('aria-current')).not.toEqual('true');
-
-    // And get its href value.
-    const href = searchButton.getAttribute('href');
-
-    // Set the currentUrl to be the same as the search button's href.
-    component.currentUrl = href;
-    fixture.detectChanges();
-
-    // And now it should show be "active", which gives a different rendering.
-    expect(searchButton.getAttribute('aria-current')).toEqual('true');
   });
 
   it('should onEmitSubMenu', () => {
@@ -183,7 +127,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(storeMock.dispatch).toHaveBeenCalled();
   });
 
-  // 1
   it('should onEmitEvent', () => {
     spyOn(component.navigate, 'emit');
     component.onEmitEvent(1);
@@ -245,21 +188,6 @@ describe('HmctsGlobalHeaderComponent', () => {
   });
 
   it('splitNavItems', (done: DoneFn) => {
-    const USERDETAILS = {
-      sub: 'Caseworker.ed@mailinator.com',
-      uid: '36314153-06c2-400a-8dc3-7d3790660918',
-      roles: [
-          'roleA',
-          'roleB',
-          'roleC',
-      ],
-      name: 'Caseworker Ed',
-      given_name: 'Caseworker',
-      family_name: 'Ed test',
-      roleCategory: 'LEGAL_OPERATIONS',
-      token: 'Bearer eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiMWVyMFdSd2dJT1RBRm9qRTRyQy9mYmVLdTNJPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJDYXNld29ya2VyLmVkQG1haWxpbmF0b3IuY29tIiwiY3RzIjoiT0FVVEgyX1NUQVRFTEVTU19HUkFOVCIsImF1dGhfbGV2ZWwiOjAsImF1ZGl0VHJhY2tpbmdJZCI6ImY3ZjVmNjM4LTBmMDQtNGQxNC1hZmZlLWFjZWVjNzkyYjBjMy04MTI4NTA0NSIsImlzcyI6Imh0dHBzOi8vZm9yZ2Vyb2NrLWFtLnNlcnZpY2UuY29yZS1jb21wdXRlLWlkYW0tYWF0Mi5pbnRlcm5hbDo4NDQzL29wZW5hbS9vYXV0aDIvcmVhbG1zL3Jvb3QvcmVhbG1zL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNzX3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoia1lNdkJlaUFmbWpYLUlJRW83bXBXVzBHMjU0Iiwibm9uY2UiOiI1SUFIb3FCUUppcXY3amY0a3Rfd0JEYWdrWUZ3SDMwbHBnWnZ5UkdXUWxJIiwiYXVkIjoieHVpd2ViYXBwIiwibmJmIjoxNjQ5Njk4MDk3LCJncmFudF90eXBlIjoiYXV0aG9yaXphdGlvbl9jb2RlIiwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsInJvbGVzIiwiY3JlYXRlLXVzZXIiLCJtYW5hZ2UtdXNlciIsInNlYXJjaC11c2VyIl0sImF1dGhfdGltZSI6MTY0OTY5ODA5NiwicmVhbG0iOiIvaG1jdHMiLCJleHAiOjE2NDk3MjY4OTcsImlhdCI6MTY0OTY5ODA5NywiZXhwaXJlc19pbiI6Mjg4MDAsImp0aSI6Il9oNktSTVJmbE5USXVVaWhZNk5OR2tHY2h0cyJ9.PrVZlLToFaOI-sGorD_yVQaXYGqaKIjZ0JOGAFyFfkGkjaqInixhvXJMu7G3QK1cRl5i1MmM3C9_AGL2N4Xh8YLBjqVnIIFfgYom2wBAoON2YcqhUbE3gVtqCPxhhZSNfxXZzspEwYP2oKKFF4M8s6QaflHZZ6eEY1eTnciaYFAHvkgQbNB5lnZHCAeSZC8bbtgHbGKbbgtE0Cpvi6CxvJVMXYk2vo376V-mVxtZrimXhAve8v48EIVDiYxXHgwHdvgUPD6wYZzsnZmdWe5sKMg0NeNdOM8XgLdwbsL-HZcAp7TvtISQ7u8gjM0eTFcLRL1TGYmMxZqUI3jsBsdwOQ'
-    };
-    fixture.detectChanges();
     component.items = [{
       align: 'right',
       text: '1',
@@ -283,7 +211,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
 
-
     leftItems.pipe(
       switchMap(items => {
         expect(items).toEqual([{
@@ -292,11 +219,9 @@ describe('HmctsGlobalHeaderComponent', () => {
           href: '',
           active: false
         }]);
-        done();
         return rightItems;
       })
     ).subscribe(items => {
-      fixture.detectChanges();
       expect(items).toEqual([{
         align: 'right',
         text: '1',
@@ -313,54 +238,41 @@ describe('HmctsGlobalHeaderComponent', () => {
     });
   });
 
-//   it('filters out menu items for which the user does not hold the correct role', (done) => {
-//   const userDetails = {
-//     sub: 'Caseworker.ed@mailinator.com',
-//     uid: '36314153-06c2-400a-8dc3-7d3790660918',
-//     roles: [
-//         'roleA',
-//         'roleB',
-//         'roleC',
-//     ],
-//     name: 'Caseworker Ed',
-//     given_name: 'Caseworker',
-//     family_name: 'Ed test',
-//     roleCategory: 'LEGAL_OPERATIONS',
-//     token: 'Bearer eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiMWVyMFdSd2dJT1RBRm9qRTRyQy9mYmVLdTNJPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJDYXNld29ya2VyLmVkQG1haWxpbmF0b3IuY29tIiwiY3RzIjoiT0FVVEgyX1NUQVRFTEVTU19HUkFOVCIsImF1dGhfbGV2ZWwiOjAsImF1ZGl0VHJhY2tpbmdJZCI6ImY3ZjVmNjM4LTBmMDQtNGQxNC1hZmZlLWFjZWVjNzkyYjBjMy04MTI4NTA0NSIsImlzcyI6Imh0dHBzOi8vZm9yZ2Vyb2NrLWFtLnNlcnZpY2UuY29yZS1jb21wdXRlLWlkYW0tYWF0Mi5pbnRlcm5hbDo4NDQzL29wZW5hbS9vYXV0aDIvcmVhbG1zL3Jvb3QvcmVhbG1zL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNzX3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoia1lNdkJlaUFmbWpYLUlJRW83bXBXVzBHMjU0Iiwibm9uY2UiOiI1SUFIb3FCUUppcXY3amY0a3Rfd0JEYWdrWUZ3SDMwbHBnWnZ5UkdXUWxJIiwiYXVkIjoieHVpd2ViYXBwIiwibmJmIjoxNjQ5Njk4MDk3LCJncmFudF90eXBlIjoiYXV0aG9yaXphdGlvbl9jb2RlIiwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsInJvbGVzIiwiY3JlYXRlLXVzZXIiLCJtYW5hZ2UtdXNlciIsInNlYXJjaC11c2VyIl0sImF1dGhfdGltZSI6MTY0OTY5ODA5NiwicmVhbG0iOiIvaG1jdHMiLCJleHAiOjE2NDk3MjY4OTcsImlhdCI6MTY0OTY5ODA5NywiZXhwaXJlc19pbiI6Mjg4MDAsImp0aSI6Il9oNktSTVJmbE5USXVVaWhZNk5OR2tHY2h0cyJ9.PrVZlLToFaOI-sGorD_yVQaXYGqaKIjZ0JOGAFyFfkGkjaqInixhvXJMu7G3QK1cRl5i1MmM3C9_AGL2N4Xh8YLBjqVnIIFfgYom2wBAoON2YcqhUbE3gVtqCPxhhZSNfxXZzspEwYP2oKKFF4M8s6QaflHZZ6eEY1eTnciaYFAHvkgQbNB5lnZHCAeSZC8bbtgHbGKbbgtE0Cpvi6CxvJVMXYk2vo376V-mVxtZrimXhAve8v48EIVDiYxXHgwHdvgUPD6wYZzsnZmdWe5sKMg0NeNdOM8XgLdwbsL-HZcAp7TvtISQ7u8gjM0eTFcLRL1TGYmMxZqUI3jsBsdwOQ'
-//   };
-//   // windowService.getLocalStorage.and.returnValues(JSON.stringify(USERDETAILS));
-//   sessionStorageService.getItem.and.returnValues(JSON.stringify(userDetails));
-//   fixture.detectChanges();
-//   component.items = [{
-//     align: 'right',
-//     text: '1',
-//     href: '',
-//     active: false,
-//     roles: ['roleA']
-//   },
-//   {
-//     align: null,
-//     text: '2',
-//     href: '',
-//     active: false,
-//     roles: ['roleB']
-//   },
-//   {
-//     align: 'right',
-//     text: '3',
-//     href: '',
-//     active: false,
-//     roles: ['roleC']
-//   }];
-//   component.ngOnChanges(changesMock);
-//   const leftItems = component.leftItems;
-//   const rightItems = component.rightItems;
-//   leftItems.pipe(switchMap(items => {
-//       expect(items).toEqual([component.items[1]]);
-//       done();
-//       return items;
-//   }));
-// });
+  it('filters out menu items for which the user does not hold the correct role', (done) => {
+    component.items = [{
+      align: 'right',
+      text: '1',
+      href: '',
+      active: false,
+      roles: ['roleA']
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false,
+      roles: ['roleB']
+    },
+    {
+      align: 'right',
+      text: '3',
+      href: '',
+      active: false,
+      roles: ['roleC']
+    }];
+    component.ngOnChanges(changesMock);
+    const leftItems = component.leftItems;
+    const rightItems = component.rightItems;
+    leftItems.pipe(
+      switchMap(items => {
+        expect(items).toEqual([component.items[1]]);
+        return rightItems;
+      })
+    ).subscribe(items => {
+      expect(items).toEqual([component.items[0]]);
+      done();
+    });
+  });
 
   it('filters out menu items for which not all features are enabled', (done) => {
     component.items = [{

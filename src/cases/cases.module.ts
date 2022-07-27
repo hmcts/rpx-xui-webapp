@@ -30,7 +30,6 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { JurisdictionService } from '../app/services/jurisdiction/jurisdiction.service';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import { HearingsModule } from '../hearings/hearings.module';
@@ -42,16 +41,15 @@ import { WASupportedJurisdictionsService } from '../work-allocation-2/services';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
-// from directives
-import * as fromDirectives from './directives';
 // from containers
 import * as fromContainers from './containers';
+// from directives
+import * as fromDirectives from './directives';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
 
 @NgModule({
   imports: [

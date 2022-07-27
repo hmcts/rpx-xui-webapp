@@ -8,7 +8,6 @@ import {
   AllWorkCaseComponent,
   AllWorkHomeComponent,
   AllWorkTaskComponent,
-  AllWorkCaseComponent,
   AvailableTasksComponent,
   MyTasksComponent,
   TaskActionContainerComponent,

@@ -82,7 +82,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
   // add the service refernces in order to search by service
   serviceRefDataMapping.forEach(serviceRef => {
     if (services.includes(serviceRef.service)) {
-      serviceCodes = [...serviceCodes, serviceRef.serviceCodes];
+      serviceCodes = [...serviceCodes, ...serviceRef.serviceCodes];
     }
   })
   let searchResult: any[] = [];

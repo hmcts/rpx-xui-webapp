@@ -19,26 +19,27 @@ export class ActualHearingsUtils {
         : null;
 
       if (existing) {
-        return existing[0];
+        return existing;
       } else {
+        const parties = plannedDay.parties.map((party) => {
+          return {
+            actualPartyId: party.partyID,
+            partyRole: party.partyRole,
+            partyChannelSubType: party.partyChannelSubType,
+            representedParty: '',
+            didNotAttendFlag: false,
+            individualDetails: { firstName: party.individualDetails.firstName, lastName: party.individualDetails.lastName },
+            actualOrganisationName: party.organisationDetails ? party.organisationDetails.name : null
+          };
+        });
         return {
           hearingDate: this.getDate(plannedDay.plannedStartTime),
           hearingStartTime: plannedDay.plannedStartTime,
           hearingEndTime: plannedDay.plannedEndTime,
-          pauseDateTimes: [],
+          pauseDateTimes: plannedDay.pauseDateTimes,
           notRequired: false,
-          actualDayParties: plannedDay.parties.map((party) => {
-            return {
-              actualPartyId: party.partyID,
-              partyRole: party.partyRole,
-              partyChannelSubType: party.partyChannelSubType,
-              representedParty: '',
-              didNotAttendFlag: false,
-              individualDetails: { firstName: party.individualDetails.firstName, lastName: party.individualDetails.lastName },
-              actualOrganisationName: party.organisationDetails ? party.organisationDetails.name : null
-            }
-          })
-        }
+          actualDayParties: parties
+        };
       }
     });
     return hearingDays.filter(day => day !== undefined);

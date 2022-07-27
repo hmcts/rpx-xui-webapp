@@ -93,7 +93,7 @@
       <dt class="govuk-summary-list__key">Hearing timings</dt>
       <dd class="govuk-summary-list__value"></dd>
       <dd class="govuk-summary-list__actions">
-        <a href="javascript:void(0)" (click)="saveHearingActualsTiming()" id="hearing-timing-result-confirm-link"
+        <a href="javascript:void(0)" (click)="saveHearingActualsTiming(actualHearingDay)" id="hearing-timing-result-confirm-link"
           class="govuk-link">Confirm</a>&nbsp;
         <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing']" class="govuk-link">Update</a>
       </dd>
@@ -158,6 +158,7 @@
         Attendance Type: {{party.partyChannelSubType}} <br>
         Attendance representing: {{getRepresentingAttendee(party.representedParty)}}<br>
       </dd>
+      <dd class="govuk-summary-list__actions"></dd>
     </div>
   </dl>
 </ng-template>

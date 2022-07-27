@@ -146,7 +146,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       ? true : false;
   }
 
-  public saveHearingActualsTiming() {
+  public saveHearingActualsTiming(day) {
     ActualHearingsUtils.isHearingDaysUpdated = false;
     this.validationErrors = [];
     this.hearingTimingResultErrorMessage = '';
@@ -154,7 +154,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel)
+      actualHearingDays: [day]
+      // actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel)
     };
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -272,11 +273,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public getPartiesNames(day): string {
-    return day.actualDayParties.map((p) => p.individualDetails.firstName + ' ' + p.individualDetails.lastName).join(',');
+    return day.actualDayParties.map((p) => `${p.individualDetails.firstName} ${p.individualDetails.lastName}`).join(',');
   }
 
   public getPartiesAttendenceMethod(day): string {
-    return day.actualDayParties.map(p => p.individualDetails.firstName + ' ' + p.individualDetails.lastName + ': ' + p.partyChannelSubType).join(',');
+    return day.actualDayParties.map(p => `${p.individualDetails.firstName} ${p.individualDetails.lastName}: ${p.partyChannelSubType}`).join(',');
   }
 
   public getStatusLabel(day): boolean {

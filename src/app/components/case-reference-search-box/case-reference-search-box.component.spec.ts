@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -48,7 +48,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       declarations: [ CaseReferenceSearchBoxComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
+      schemas: [ NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA ],
       imports: [ HttpClientTestingModule, RouterTestingModule ],
       providers: [
         { provide: Store, useValue: storeMock },

@@ -196,6 +196,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
           useValue: {
             paramMap: of(convertToParamMap({
               id: '1',
+              hearingDate: '2021-03-12'
             })),
             snapshot: {
               data: {
@@ -261,8 +262,6 @@ describe('HearingActualsViewEditPartiesComponent', () => {
 
   it('should remove a FormGroup from the FormArray', () => {
     expect(component.parties.length).toEqual(3);
-    const addBtn = fixture.debugElement.query(By.css('.btn-add'));
-
     expect(component.parties.get([component.parties.length - 1]).value)
       .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isPlannedParty: false }));
 

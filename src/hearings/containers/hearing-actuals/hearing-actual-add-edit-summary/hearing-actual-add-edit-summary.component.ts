@@ -45,6 +45,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingStageResultErrorMessage = '';
   public hearingTimingResultErrorMessage = '';
   public hearingPartiesResultErrorMessage = '';
+  public hearingDaysRequiredErrorMessage = '';
   public successBanner: boolean = false;
   public submitted = false;
   public sub: Subscription;
@@ -140,10 +141,30 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   private isHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
-    return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0 &&
-      hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties &&
-      hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.length > 0
-      ? true : false;
+    let isActualPartiesAvailable: boolean = true;
+    const isActualHearingDaysAvailable = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
+    if (isActualHearingDaysAvailable) {
+      this.actualHearingDays.forEach((actualHearingDay) => {
+        const isDetailsProvided = this.getStatusLabel(actualHearingDay);
+        if (!actualHearingDay.notRequired && !isDetailsProvided && !actualHearingDay.actualDayParties.length) {
+          isActualPartiesAvailable = false;
+        }
+      });
+    }
+    return isActualPartiesAvailable;
+  }
+
+  private isHearingAllRequiredDaysCovered() {
+    let isAllDaysCovered: boolean = true;
+    const isActualHearingDaysAvailable = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
+    if (isActualHearingDaysAvailable) {
+      this.actualHearingDays.forEach((actualHearingDay) => {
+        if (!actualHearingDay.notRequired && !this.getStatusLabel(actualHearingDay)) {
+          isAllDaysCovered = false;
+        }
+      });
+    }
+    return isAllDaysCovered;
   }
 
   public saveHearingActualsTiming() {
@@ -237,6 +258,15 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         message: HearingActualAddEditSummaryEnum.ConfirmUpdateError
       });
       this.hearingPartiesResultErrorMessage = HearingActualAddEditSummaryEnum.ConfirmUpdateError;
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      isValid = false;
+    }
+    if (!this.isHearingAllRequiredDaysCovered()) {
+      this.validationErrors.push({
+        id: 'actual-hearing-dates',
+        message: HearingActualAddEditSummaryEnum.AllDaysCoveredError
+      });
+      this.hearingDaysRequiredErrorMessage = HearingActualAddEditSummaryEnum.AllDaysCoveredError;
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       isValid = false;
     }

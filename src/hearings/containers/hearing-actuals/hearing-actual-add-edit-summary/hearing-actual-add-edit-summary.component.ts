@@ -140,7 +140,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       ? true : false;
   }
 
-  private isHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
+  private isHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel): boolean {
     let isActualPartiesAvailable: boolean = true;
     const isActualHearingDaysAvailable = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
     if (isActualHearingDaysAvailable) {
@@ -154,7 +154,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return isActualPartiesAvailable;
   }
 
-  private isHearingAllRequiredDaysCovered() {
+  private isHearingAllRequiredDaysCovered(): boolean {
     let isAllDaysCovered: boolean = true;
     const isActualHearingDaysAvailable = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
     if (isActualHearingDaysAvailable) {

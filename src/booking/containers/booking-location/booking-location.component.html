@@ -34,7 +34,7 @@
         <!-- TODO: determine selectedLocations -->
         <exui-search-location
           class="search-location"
-          [selectedLocations]="bookingProcess.location? [bookingProcess.location]: []"
+          [selectedLocations]="selectedLocations()"
           [singleMode]="true"
           [delay]="300"
           [bookingCheck]="bookingCheckType"

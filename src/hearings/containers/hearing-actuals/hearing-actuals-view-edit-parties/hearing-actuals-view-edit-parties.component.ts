@@ -3,6 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { ValidationErrors } from '@angular/forms/src/directives/validators';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import {
@@ -16,7 +17,6 @@ import { HearingActualsStateData } from '../../../models/hearingActualsStateData
 import { HearingChannelEnum } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
-import * as moment from 'moment';
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 

@@ -93,7 +93,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('Validate mandatory fields functionality', async function(){
-        await caseEditPage.validateMandatoryFields();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseEditPage.validateMandatoryFields();
+        });
     });
 
     Then('Validate event pages display show condition logic', async function(){

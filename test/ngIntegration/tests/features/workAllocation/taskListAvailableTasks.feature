@@ -1,4 +1,4 @@
-@ng @wa1
+@_ng @wa1
 Feature: WA Release 1: Available Tasks Task list
 
     Background: Mock and browser setup
@@ -46,7 +46,7 @@ Feature: WA Release 1: Available Tasks Task list
             | row | Case reference      | Case name      | Case category      | Location       | Task                     |
             | 1   | 1234-1234-1234-1234 | test case name | auto test category | London QA labs | Autotest validation task |
 
-    Scenario: Avaiable Tasks task counts
+    Scenario:  Avaiable Tasks task counts
         Given I set MOCK available tasks count 150
         Given I start MockApp
         Given I navigate to home page
@@ -57,7 +57,7 @@ Feature: WA Release 1: Available Tasks Task list
         Then I see Available tasks page displayed
         Then I validate tasks count in page 25
 
-    Scenario: Avaiable Tasks sort columns
+    Scenario:  Avaiable Tasks sort columns
         Given I set MOCK available tasks count 150
         Given I start MockApp
         Given I navigate to home page
@@ -68,7 +68,7 @@ Feature: WA Release 1: Available Tasks Task list
         Then I see Available tasks page displayed
         Then I validate tasks column sorting
 
-    Scenario: Avaiable Tasks sort column persist in session
+    Scenario:  Avaiable Tasks sort column persist in session
         Given I set MOCK available tasks count 150
         Given I start MockApp
         Given I navigate to home page

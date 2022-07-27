@@ -8,7 +8,7 @@ const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const {getScenarioCookie} = require('../helpers/pa11yUtil');
 
-const isParallelExecution = argv.parallel ? argv.parallel === "true" : true;
+const isParallelExecution = true;
 
 const generateMergedReport = require('../reporter/reportsMerger');
 
@@ -39,7 +39,7 @@ exports.config = {
         reporter: 'test/accessibility/reporter/customReporter.js',
         // reporter: 'spec',
 
-        timeout: 120000
+        timeout: 180000
     },
     beforeLaunch() {
         if (isParallelExecution) {

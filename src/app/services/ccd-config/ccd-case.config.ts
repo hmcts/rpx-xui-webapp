@@ -200,4 +200,33 @@ export class AppConfig extends AbstractAppConfig {
   public getCamRoleAssignmentsApiUrl(): string {
     return this.config.cam_role_assignments_api_url;
   }
+
+  private featureToggleWorkAllocation(): void {
+    this.featureToggleService
+    .getValue(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease2')
+      .subscribe(
+        (currentWorkAllocationFeature) =>
+        this.workallocationUrl = currentWorkAllocationFeature === 'WorkAllocationRelease2'
+          ? 'workallocation2' : 'workallocation');
+  }
+
+  public getAccessManagementMode(): boolean {
+    return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
+  }
+
+  public getAccessManagementBasicViewMock(): {} {
+    return this.config.access_management_basic_view_mock;
+  }
+
+  public getLocationRefApiUrl(): string {
+    return this.config.location_ref_api_url;
+  }
+
+  public getCamRoleAssignmentsApiUrl(): string {
+    return this.config.cam_role_assignments_api_url;
+  }
+
+  public getPaymentReturnUrl(): string {
+      return this.environmentService.get('paymentReturnUrl');
+  }
 }

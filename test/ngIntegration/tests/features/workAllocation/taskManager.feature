@@ -1,4 +1,4 @@
-@ng
+@_ng 
 Feature: WA Release 1: Task manager
 
     Background: Mock and browser setup
@@ -48,7 +48,7 @@ Feature: WA Release 1: Task manager
             | 1   | 1234-1234-1234-1234 | test case name | auto test category | London QA labs | Autotest validation task |
 
 
-    Scenario: Task manager task counts
+    Scenario: WITH_SESSION : Task manager task counts
         Given I set MOCK with user roles
             | role                      |
             | caseworker-ia-caseofficer |
@@ -61,7 +61,7 @@ Feature: WA Release 1: Task manager
         Then I see Task manager page displayed
         Then I validate Task manager page tasks count 25
 
-    Scenario: Task manager sort columns
+    Scenario: WITH_SESSION : Task manager sort columns
         Given I set MOCK with user roles
             | role                      |
             | caseworker-ia-caseofficer |
@@ -74,7 +74,7 @@ Feature: WA Release 1: Task manager
         Then I see Task manager page displayed
         Then I validate tasks column sorting
 
-    Scenario: Task manager sort column persist in session
+    Scenario: WITH_SESSION : Task manager sort column persist in session
         Given I set MOCK with user roles
             | role                      |
             | caseworker-ia-caseofficer |

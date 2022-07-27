@@ -4,11 +4,11 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { AppConstants } from '../../../app/app.constants';
+import { AppConstants } from '../../app.constants';
+import { ApplicationThemeLogo } from '../../enums';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
-
 
 const storeMock = {
   pipe: () => of([]),
@@ -107,8 +107,61 @@ describe('AppHeaderComponent', () => {
       expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
       expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
-      expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logo);
-      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== 'none');
+      expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
+    });
+
+
+    it('should set app header content', () => {
+      const themeSpy = spyOn(component, 'getApplicationThemeForUser');
+
+      const userDetails = {
+        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+      };
+      component.setHeaderContent(userDetails);
+      expect(themeSpy).toHaveBeenCalled();
+
+    });
+
+    it('should call userThems on getApplicationThemeForUser', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme');
+
+      const userDetails = {
+        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+      };
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+
+    });
+
+    it('should call userThems on getApplicationThemeForUser with no roles', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme');
+
+      const userDetails = {
+        userInfo: []
+      };
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+      expect(component.userNav.items).toEqual([]);
+    });
+
+    it('should update theme app header properties.', () => {
+
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS
+      component.setAppHeaderNavItems(menuItems);
+      expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
+
+    });
+
+    it('should updatee navItems app header properties.', () => {
+
+      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
+      component.setAppHeaderTheme(defaultTheme);
+
+      expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
+      expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
+      expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
   });
 

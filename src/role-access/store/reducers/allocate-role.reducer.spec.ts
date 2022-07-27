@@ -1,4 +1,4 @@
-import { Actions, AllocateRoleState, AllocateTo, DurationOfRole, RoleCategory } from '../../models';
+import { Actions, AllocateRoleState, AllocateTo, DurationOfRole, Role, RoleCategory } from '../../models';
 import * as fromActions from '../actions/allocate-role.action';
 import * as fromReducer from './allocate-role.reducer';
 
@@ -7,6 +7,7 @@ describe('Allocate Role Reducer', () => {
   describe('Actions', () => {
     const STATE_DATA = {
       caseId: '111111',
+      jurisdiction: 'IA',
       state: AllocateRoleState.CHOOSE_ROLE,
       typeOfRole: null,
       allocateTo: AllocateTo.RESERVE_TO_ME,
@@ -42,9 +43,17 @@ describe('Allocate Role Reducer', () => {
     });
 
     describe('AllocateRoleSetInitData action', () => {
-      it('should set correct object', () => {
+      it('should go to choose role error if there are no roles', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.AllocateRoleSetInitData({ caseId: '111111', roleCategory: RoleCategory.JUDICIAL });
+        const action = new fromActions.AllocateRoleSetInitData({ caseId: '111111', jurisdiction: 'IA', roleCategory: RoleCategory.JUDICIAL });
+        const state = fromReducer.allocateRoleReducer(initialState, action);
+        expect(state.state).toEqual(AllocateRoleState.LOADING_ROLES);
+      });
+
+      it('should go to choose role if there are roles', () => {
+        const mockRoles: Role[] = [{roleId: 'test-role', roleName: 'Test role'}]
+        const initialState = fromReducer.allocateRoleInitialState;
+        const action = new fromActions.LoadRolesComplete({roles: mockRoles});
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.state).toEqual(AllocateRoleState.CHOOSE_ROLE);
       });
@@ -80,7 +89,11 @@ describe('Allocate Role Reducer', () => {
     describe('ChoosePersonAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.ChoosePersonAndGo({ person: {id: '111111', name: 'test', domain: 'test'}, allocateRoleState: AllocateRoleState.CHOOSE_DURATION });
+        const action = new fromActions.ChoosePersonAndGo({
+          person: {id: '111111', name: 'test', domain: 'test'},
+          allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
+          allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
+        });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.person).toEqual({id: '111111', name: 'test', domain: 'test'});
       });

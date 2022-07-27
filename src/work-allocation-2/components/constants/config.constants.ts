@@ -38,7 +38,7 @@ const CASE_NAME_AS_TEXT: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const CASE_ROLE: FieldConfig = {
-  name: 'case_role',
+  name: 'role',
   type: FieldType.STRING,
   columnLabel: 'Case role',
   sortName: 'caseRole',
@@ -70,15 +70,39 @@ const CASE_CATEGORY_DISABLE_SORT: FieldConfig = {
   ...CASE_CATEGORY,
   disableSort: true
 };
+
+const NEXT_HEARING_DATE: FieldConfig = {
+  name: 'next_hearing_date',
+  type: FieldType.FORMATTED_DATE,
+  columnLabel: 'Next hearing date',
+  sortName: 'next_hearing_date',
+  views: TaskView.ALL_VIEWS
+};
+const NEXT_HEARING_DATE_DISABLE_SORT: FieldConfig = {
+  ...NEXT_HEARING_DATE,
+  disableSort: true
+};
+
 const JURISDICTION: FieldConfig = {
   name: 'jurisdiction',
   type: FieldType.STRING,
-  columnLabel: 'Jurisdiction',
+  columnLabel: 'Service',
   sortName: 'jurisdiction',
   views: TaskView.ALL_VIEWS
 };
 const JURISDICTION_DISABLE_SORT: FieldConfig = {
   ...JURISDICTION,
+  disableSort: true
+};
+const ACCESS: FieldConfig = {
+  name: 'access',
+  type: FieldType.STRING,
+  columnLabel: 'Access',
+  sortName: 'access',
+  views: TaskView.ALL_VIEWS
+};
+const ACCESS_DISABLE_SORT: FieldConfig = {
+  ...ACCESS,
   disableSort: true
 };
 const LOCATION: FieldConfig = {
@@ -156,6 +180,21 @@ const START_DATE_DISABLE_SORT: FieldConfig = {
   ...START_DATE,
   disableSort: true
 };
+const ACCESS_START_DATE_DISABLE_SORT: FieldConfig = {
+  name: 'startDate',
+  type: FieldType.STRING,
+  columnLabel: 'Start',
+  sortName: 'startDate',
+  views: TaskView.ALL_VIEWS,
+  disableSort: true
+};
+const ACCESS_END_DATE_DISABLE_SORT: FieldConfig = {
+  name: 'endDate',
+  type: FieldType.STRING,
+  columnLabel: 'End',
+  sortName: 'endDate',
+  views: TaskView.ALL_VIEWS
+}
 const END_DATE: FieldConfig = {
   name: 'endDate',
   type: FieldType.FORMATTED_DATE,
@@ -165,6 +204,17 @@ const END_DATE: FieldConfig = {
 };
 const END_DATE_DISABLE_SORT: FieldConfig = {
   ...END_DATE,
+  disableSort: true
+};
+const DATE_SUBMITTED: FieldConfig = {
+  name: 'dateSubmitted',
+  type: FieldType.FORMATTED_DATE,
+  columnLabel: 'Date submitted',
+  sortName: 'dateSubmitted',
+  views: TaskView.ALL_VIEWS
+};
+const DATE_SUBMITTED_DISABLE_SORT: FieldConfig = {
+  ...DATE_SUBMITTED,
   disableSort: true
 };
 const ASSIGNEE: FieldConfig = {
@@ -196,22 +246,25 @@ const PERSON: FieldConfig = {
  * The views.
  */
 const AVAILABLE_TASKS_FOR_JUDICIAL: FieldConfig[] = [
-  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...JUDICIAL_DATES
+  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...JUDICIAL_DATES, NEXT_HEARING_DATE
 ];
 const AVAILABLE_TASKS_FOR_LEGAL_OPS: FieldConfig[] = [
-  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...STAFF_DATES
+  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...STAFF_DATES, NEXT_HEARING_DATE
 ];
 const MY_CASES: FieldConfig[] = [
-  CASE_NAME_AS_LINK_DISABLE_SORT, JURISDICTION_DISABLE_SORT, CASE_CATEGORY_DISABLE_SORT, CASE_ROLE_DISABLE_SORT, START_DATE_DISABLE_SORT, END_DATE_DISABLE_SORT
+  CASE_NAME_AS_LINK_DISABLE_SORT, JURISDICTION_DISABLE_SORT, CASE_CATEGORY_DISABLE_SORT, CASE_ROLE_DISABLE_SORT, START_DATE_DISABLE_SORT, END_DATE_DISABLE_SORT, NEXT_HEARING_DATE_DISABLE_SORT
+];
+const MY_ACCESS: FieldConfig[] = [
+  CASE_NAME_AS_LINK_DISABLE_SORT, JURISDICTION_DISABLE_SORT, CASE_CATEGORY_DISABLE_SORT, DATE_SUBMITTED_DISABLE_SORT, ACCESS_DISABLE_SORT, ACCESS_START_DATE_DISABLE_SORT, ACCESS_END_DATE_DISABLE_SORT
 ];
 const MY_TASKS: FieldConfig[] = [
-  CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...STAFF_DATES
+  CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...STAFF_DATES, NEXT_HEARING_DATE
 ];
 const MY_WORK_TASKS_FOR_JUDICIAL: FieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...JUDICIAL_DATES
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...JUDICIAL_DATES, NEXT_HEARING_DATE
 ];
 const MY_WORK_TASKS_FOR_LEGAL_OPS: FieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...STAFF_DATES
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...STAFF_DATES, NEXT_HEARING_DATE
 ];
 const TASK_MANAGER: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, ...STAFF_DATES, ASSIGNEE
@@ -226,10 +279,10 @@ const TASK_ACTIONS_WITH_ASSIGNEE_FOR_JUDICIAL: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, ...JUDICIAL_DATES, ASSIGNEE
 ];
 const ALL_WORK_TASKS_FOR_LEGAL_OPS: FieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...STAFF_DATES, ASSIGNEE
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...STAFF_DATES, NEXT_HEARING_DATE, ASSIGNEE
 ];
 const ALL_WORK_TASKS_FOR_JUDICIAL: FieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...JUDICIAL_DATES, ASSIGNEE
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...JUDICIAL_DATES, NEXT_HEARING_DATE, ASSIGNEE
 ];
 const ALL_WORK_CASES: FieldConfig[] = [
   CASE_NAME_AS_LINK_DISABLE_SORT, CASE_CATEGORY_DISABLE_SORT, LOCATION_DISABLE_SORT, ROLE_DISABLE_SORT, PERSON
@@ -239,6 +292,7 @@ export const CONFIG_CONSTANTS = {
   AvailableTasksForJudicial: AVAILABLE_TASKS_FOR_JUDICIAL,
   AvailableTasksForLegalOps: AVAILABLE_TASKS_FOR_LEGAL_OPS,
   MyCases: MY_CASES,
+  MyAccess: MY_ACCESS,
   MyTasks: MY_TASKS,
   MyWorkTasksForJudicial: MY_WORK_TASKS_FOR_JUDICIAL,
   MyWorkTasksForLegalOps: MY_WORK_TASKS_FOR_LEGAL_OPS,

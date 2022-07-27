@@ -1,26 +1,41 @@
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { Case } from '../../models/cases';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { getMockCases, MockRouter } from '../../tests/utils.spec';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
-import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
+import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { Case } from '../../models/cases';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { getMockCaseRoles, getMockCases, getMockLocations, MockRouter } from '../../tests/utils.spec';
+import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
+import * as dtos from '../../models/dtos';
+import { JurisdictionsService } from 'src/work-allocation-2/services/juridictions.service';
+import { MyAccessComponent } from '../my-access/my-access.component';
 
 describe('WorkCaseListWrapperComponent', () => {
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
+  mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+
+  const mockJurisdictionService = jasmine.createSpyObj('mockJurisdictionService', ['getJurisdictions']);
+  mockJurisdictionService.getJurisdictions.and.returnValue(of({}));
+
+
   let component: WorkCaseListWrapperComponent;
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
+  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
+  const mockLocations: dtos.Location[] = getMockLocations();
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
-  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase']);
+  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase', 'getMyCases', 'getMyAccess']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
@@ -28,6 +43,7 @@ describe('WorkCaseListWrapperComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
+  const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -37,8 +53,10 @@ describe('WorkCaseListWrapperComponent', () => {
         CdkTableModule,
         PaginationModule
       ],
-      declarations: [MyCasesComponent, WorkCaseListWrapperComponent, WorkCaseListComponent],
+      declarations: [MyCasesComponent, MyAccessComponent, WorkCaseListWrapperComponent, WorkCaseListComponent],
       providers: [
+        { provide: LocationDataService, useValue: mockLocationService },
+        { provide: JurisdictionsService, useValue: mockJurisdictionService },
         { provide: ChangeDetectorRef, useValue: mockRef },
         { provide: WorkAllocationCaseService, useValue: mockWorkAllocationService },
         { provide: Router, useValue: mockRouter },
@@ -48,17 +66,25 @@ describe('WorkCaseListWrapperComponent', () => {
         { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: CaseworkerDataService, useValue: mockCaseworkerDataService }
+        { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
+
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WorkCaseListWrapperComponent);
     component = fixture.componentInstance;
-    component.isPaginationEnabled$ = of(false);
     const cases: Case[] = getMockCases();
+    const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockWorkAllocationService.searchCase.and.returnValue(of({ cases }));
+    mockWorkAllocationService.getMyCases.and.returnValue(of({ cases }));
+    mockWorkAllocationService.getMyAccess.and.returnValue(of({ cases }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
+    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ))
+    mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
+    mockSessionStorageService.getItem.and.returnValue(undefined);
     fixture.detectChanges();
   }));
 
@@ -80,13 +106,13 @@ describe('WorkCaseListWrapperComponent', () => {
 
       // need to check that navigate has been called
       component.onActionHandler(firstCaseAction);
-      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), {state: {backUrl: null}});
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), { state: { backUrl: null } });
     });
 
     it('should handle a remove action', () => {
       // need to spy on the router and set up the task action
       component.onActionHandler(secondCaseAction);
-      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('remove'), {state: {backUrl: null}});
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('remove'), { state: { backUrl: null } });
     });
   });
 });

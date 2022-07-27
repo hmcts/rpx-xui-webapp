@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ApplicationTheme } from '../../../app/models/theming.model';
 import { AppConstants } from '../../app.constants';
+import { ApplicationThemeLogo } from '../../enums';
 import { AppTitleModel } from '../../models/app-title.model';
 import { NavItemsModel } from '../../models/nav-item.model';
+import { ApplicationTheme } from '../../models/theming.model';
 import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
@@ -15,7 +16,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
   public backgroundColor: string;
-  public logoType: string;
+  public logo: string;
   public logoIsUsed: boolean;
 
   constructor() {
@@ -43,7 +44,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
     this.navItems = [];
     this.userNav = { label: '', items: [] };
     this.backgroundColor = backgroundColor;
-    this.logoType = logo;
-    this.logoIsUsed = logo !== 'none';
+    this.logo = logo;
+    this.logoIsUsed = logo !== ApplicationThemeLogo.NONE;
   }
 }

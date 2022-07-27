@@ -3,6 +3,7 @@ import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 
 const logger: JUILogger = log4jui.getLogger('caseworker-service');
 const MAX_RECORDS: number = 5000;
@@ -62,13 +63,37 @@ export async function handlePostRoleAssignments(path: string, payload: any, req:
     return response;
 }
 
-export async function handlePostCaseWorkersRefData(path: string, userIds: any, req: EnhancedRequest): Promise<any> {
-    const payload = {
-        userIds,
-    };
+export async function handleCaseWorkersForServicesPost(path: string, payloads: CaseworkerPayload [], req: EnhancedRequest):
+ Promise<ServiceCaseworkerData[]> {
     const headers = setHeaders(req);
-    const response: AxiosResponse = await http.post(path, payload, { headers });
-    return response;
+    headers.pageNumber = 0;
+    headers.size = MAX_RECORDS;
+    const data = new Array<ServiceCaseworkerData>();
+    // sort
+    // direction
+    for (const payload of payloads) {
+        const response: AxiosResponse = await http.post(path, payload, { headers });
+        if (response.data.roleAssignmentResponse.length >= MAX_RECORDS) {
+            logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
+        }
+        const caseworkerService = { jurisdiction: payload.attributes.jurisdiction[0], data: response.data };
+        data.push(caseworkerService);
+    }
+    return data;
+}
+
+export async function handlePostCaseWorkersRefData(path: string, userIdsByJurisdiction: any, req: EnhancedRequest): Promise<any> {
+    const data = new Array<any>();
+    for (const userIdList of userIdsByJurisdiction) {
+        const payload = {
+            userIds: userIdList.userIds,
+        };
+        const headers = setHeaders(req);
+        const response: AxiosResponse = await http.post(path, payload, { headers });
+        const userListByService = { jurisdiction: userIdList.jurisdiction, data: response.data };
+        data.push(userListByService);
+    }
+    return data;
 }
 
 export async function handlePostJudicialWorkersRefData(path: string, userIds: any, req: EnhancedRequest): Promise<any> {
@@ -87,4 +112,16 @@ export function getUserIdsFromRoleApiResponse(response: any): string [] {
        });
     }
     return userIds;
+}
+
+export function getUserIdsFromJurisdictionRoleResponse(response: any): any [] {
+    let userIdsByJurisdiction = [];
+    response.forEach(jurisdictionRoleResponse => {
+        let userIds = [];
+        jurisdictionRoleResponse.data.roleAssignmentResponse.forEach(roleAssignment => {
+            userIds = [...userIds, roleAssignment.actorId];
+        });
+        userIdsByJurisdiction = userIdsByJurisdiction.concat({jurisdiction: jurisdictionRoleResponse.jurisdiction, userIds});
+    });
+    return userIdsByJurisdiction;
 }

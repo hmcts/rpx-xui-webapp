@@ -6,13 +6,17 @@ export interface CaseRole {
   roleCategory: RoleCategory;
   roleDefinition?: SpecificRole;
   roleName?: string;
+  roleId?: string;
   location: string;
   start: string;
   end: string;
   id: string;
   actorId: string;
-  actions: Action[];
+  actions?: Action[];
   email: string;
+  created?: string;
+  notes?: string;
+  requestedRole?: string;
 }
 
 export interface Action {

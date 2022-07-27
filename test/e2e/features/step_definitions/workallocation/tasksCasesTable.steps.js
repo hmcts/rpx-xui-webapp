@@ -43,6 +43,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click work allocation table {string} reset sort button', async function (waTableFor){
         const table = getWATableObject(waTableFor);
+        await BrowserWaits.waitForSpinnerToDissappear();
         await table.clickResetSortButton();
 
         // await BrowserWaits.retryWithActionCallback(async () => {

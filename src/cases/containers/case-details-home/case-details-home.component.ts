@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 @Component({
   selector: 'exui-case-details-home',
-  templateUrl: './case-details-home.component.html'
+  templateUrl: './case-details-home.component.html',
 })
 export class CaseDetailsHomeComponent implements OnInit {
 
@@ -13,7 +13,8 @@ export class CaseDetailsHomeComponent implements OnInit {
   constructor(
     private readonly alertService: AlertService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService
   ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation) {
@@ -27,7 +28,15 @@ export class CaseDetailsHomeComponent implements OnInit {
       this.alertService.setPreserveAlerts(true);
       this.alertService.success(this.extras.state.messageText);
     }
-    this.activatedRoute.data.subscribe(data => data);
+    this.activatedRoute.data.subscribe(data => {
+      if (data && data.case && data.case.case_type && data.case.case_type.jurisdiction) {
+        const caseInfo = {
+          cid: data.case.case_id,
+          caseType: data.case.case_type.id,
+          jurisdiction: data.case.case_type.jurisdiction.id
+        };
+        this.sessionStorageService.setItem('caseInfo', JSON.stringify(caseInfo));
+      }
+    });
   }
-
 }

@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
-import { Actions } from '../../../role-access/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Location } from '../../interfaces/common';
-import { InvokedCaseAction } from '../../models/cases';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
@@ -25,7 +23,6 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     page_size: 25
   };
   public jurisdictions: string[];
-  private selectedJurisdiction: any = 'Immigration and Asylum';
   private selectedPerson: string = '';
   private selectedRole: string = 'All';
   private selectedLocation: Location = {
@@ -68,7 +65,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       return {
         search_parameters: [
-          {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedJurisdiction},
+          {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0]},
           {key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id},
           {key: 'actorId', operator: 'EQUAL', values: this.selectedPerson},
           {key: 'role', operator: 'EQUAL', values: this.selectedRole},
@@ -87,11 +84,12 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location_id: string, jurisdiction: string, actorId: string, role: string, person: any }): void {
-    this.selectedLocation.id = selection.location_id === 'all' ? '' : selection.location_id;
-    this.selectedJurisdiction = selection.jurisdiction;
+  public onSelectionChanged(selection: { location: string, jurisdiction: string, actorId: string, role: string, person: any }): void {
+    this.selectedLocation.id = !selection.location ? '' : selection.location;
+    this.selectedServices = [selection.jurisdiction];
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;
     this.selectedRole = selection.role;
+    this.pagination.page_number = 1;
     this.doLoad();
   }
 

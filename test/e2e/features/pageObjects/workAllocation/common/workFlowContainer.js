@@ -8,7 +8,8 @@ class WorkFlowContainer{
             '.page .govuk-button-group button ',
             '.page .govuk-button-group button.govuk-button[type="submit"]',
             'exui-task-action-container button[type = "submit"]',
-            'exui-task-container-assignment button[type = "submit"]'
+            'exui-task-container-assignment button[type = "submit"]',
+            'exui-task-assignment-choose-role button[type="submit"]'
         ];
 
         const cancelLinks = [
@@ -18,7 +19,7 @@ class WorkFlowContainer{
             'exui-task-container-assignment p>a'
         ];
 
-        this.container = $('.govuk-main-wrapper , exui-allocate-role-navigation, exui-task-container-assignment');
+        this.container = $('.govuk-main-wrapper , exui-allocate-role-navigation, exui-task-container-assignment,exui-exclusion-navigation');
         this.backLink = $('a.govuk-back-link');
         this.continueButton = $(continueButtons.join());
         this.cancelLink = $(cancelLinks.join());

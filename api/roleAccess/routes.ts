@@ -1,7 +1,16 @@
 import { Router } from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
-import { confirmAllocateRole, deleteRoleByCaseAndRoleId, getRolesByCaseId, reallocateRole } from './index';
+import { confirmAllocateRole,
+  createSpecificAccessApprovalRole,
+  manageLabellingRoleAssignment,
+  deleteRoleByCaseAndRoleId,
+  getAccessRolesByCaseId,
+  getJudicialUsers,
+  getRolesByCaseId,
+  getSpecificAccessApproved,
+  reallocateRole,
+  getNewCasesCount} from './index';
 import { getPossibleRoles } from './roleAssignmentService';
 
 const router = Router({ mergeParams: true });
@@ -15,7 +24,15 @@ router.post('/allocate-role/confirm', confirmAllocateRole);
 router.post('/allocate-role/reallocate', reallocateRole);
 router.post('/allocate-role/delete', deleteRoleByCaseAndRoleId);
 
-router.get('/allocate-role/valid-roles', getPossibleRoles);
+router.post('/allocate-role/valid-roles', getPossibleRoles);
 router.post('/roles/post', getRolesByCaseId);
+router.post('/roles/access-get', getAccessRolesByCaseId);
+router.post('/roles/getJudicialUsers', getJudicialUsers);
+
+router.get('/roles/getSpecificAccessApproved', getSpecificAccessApproved );
+router.get('/roles/getNewCasesCount', getNewCasesCount );
+router.post('/roles/manageLabellingRoleAssignment/:caseId', manageLabellingRoleAssignment );
+
+router.post('/allocate-role/specific-access-approval', createSpecificAccessApprovalRole);
 
 export default router;

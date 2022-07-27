@@ -33,7 +33,12 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { JurisdictionService } from '../app/services/jurisdiction/jurisdiction.service';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
+import { HearingsModule } from '../hearings/hearings.module';
+import { HearingsPipesModule } from '../hearings/pipes/hearings.pipes.module';
+import { HearingsService } from '../hearings/services/hearings.service';
 import { OrganisationModule } from '../organisation/organisation.module';
+import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
+import { WASupportedJurisdictionsService } from '../work-allocation-2/services';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
@@ -68,7 +73,9 @@ import { PriorityFieldComponentModule } from '../work-allocation-2/components/pr
     ExuiCommonLibModule,
     LoadingModule,
     ReactiveFormsModule,
-    PriorityFieldComponentModule
+    PriorityFieldComponentModule,
+    HearingsModule,
+    HearingsPipesModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
@@ -91,7 +98,8 @@ import { PriorityFieldComponentModule } from '../work-allocation-2/components/pr
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
     ActivityResolver,
-    JurisdictionService
+    HearingsService,
+    WASupportedJurisdictionsService
   ]
 })
 /**

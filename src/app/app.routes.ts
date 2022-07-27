@@ -1,7 +1,10 @@
 import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
+import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
+import { BookingSystemErrorComponent } from 'src/booking/containers/utils/booking-system-error/booking-system-error.component';
 import {
   AccessibilityComponent,
+  ApplicationRoutingComponent,
   CookiePolicyComponent,
   GetHelpComponent,
   MediaViewerWrapperComponent,
@@ -10,13 +13,13 @@ import {
   ServiceDownComponent,
   SignedOutComponent,
 } from './components';
-import { ApplicationRoutingComponent } from './components/routing/application-routing.component';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
 
 export const routingConfiguration: ExtraOptions = {
-  paramsInheritanceStrategy: 'always'
+  paramsInheritanceStrategy: 'always',
+  scrollPositionRestoration: 'enabled'
 };
 
 export const ROUTES: Routes = [
@@ -24,6 +27,11 @@ export const ROUTES: Routes = [
     path: '',
     component: ApplicationRoutingComponent,
     pathMatch: 'full'
+  },
+  {
+    path: 'booking',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../booking/booking.module#BookingModule'
   },
   {
     path: 'cases',
@@ -62,6 +70,11 @@ export const ROUTES: Routes = [
     path: 'noc',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../noc/noc.module#NocModule'
+  },
+  {
+    path: 'hearings',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../hearings/hearings.module#HearingsModule'
   },
   {
     path: 'cookies',
@@ -108,6 +121,27 @@ export const ROUTES: Routes = [
   {
     path: 'service-down',
     component: ServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'booking-service-down',
+    component: BookingServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'booking-system-error',
+    component: BookingSystemErrorComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'refresh-booking-service-down',
+    component: RefreshBookingServiceDownComponent,
     data: {
       title: 'Service Unavailable'
     }

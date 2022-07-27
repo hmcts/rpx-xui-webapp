@@ -37,6 +37,10 @@
       "dataApi": "SERVICES_CCD_DATA_STORE_API",
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
+    "hearings": {
+      "serviceApi": "SERVICES_HEARINGS_COMPONENT_API",
+      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
+    },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
     },
@@ -45,7 +49,13 @@
     },
     "em_hrs_api": "SERVICES_EM_HRS_API",
     "prd": {
-      "api": "SERVICES_PRD_API"
+      "api": "SERVICES_PRD_API",
+      "locationApi": "SERVICES_PRD_LOCATION_API",
+      "judicialApi": "SERVICES_PRD_JUDICIAL_API",
+      "commondataApi": "SERVICES_PRD_COMMONDATA_API"
+    },
+    "locationref": {
+      "api": "SERVICES_LOCATION_REF_API_URL"
     },
     "locationref": {
       "api": "SERVICES_LOCATION_REF_API_URL"
@@ -55,6 +65,7 @@
     },
     "em_anno_api": "SERVICES_EM_ANNO_API",
     "em_docassembly_api": "SERVICES_EM_DOCASSEMBLY_API",
+    "waWorkflowApi": "SERVICES_WA_WORKFLOW_API_URL",
     "idam": {
       "idamApiUrl": "SERVICES_IDAM_API_URL",
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",
@@ -72,13 +83,17 @@
     },
     "case": {
       "caseworkerApi": "SERVICES_CASE_CASEWORKER_API",
-      "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API"
+      "judicialApi": "SERVICES_CASE_JUDICIAL_API",
+      "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API",
+      "judicialBooking": "SERVICES_JUDICIAL_BOOKING_API_PATH"
     },
     "markup_api": "SERVICES_MARKUP_API",
     "icp_api": "SERVICES_ICP_API",
     "payments": "SERVICES_PAYMENTS_URL",
     "s2s": "SERVICES_S2S",
-    "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS"
+    "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
+    "payment_return_url": "SERVICES_PAYMENT_RETURN_URL",
+    "judicialBookingsApi": "SERVICES_JUDICIAL_BOOKING_API_PATH"
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
@@ -97,6 +112,7 @@
   },
   "jurisdictions": "JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
+  "serviceRefDataMapping": "SERVICE_REF_DATA_MAPPING",
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"

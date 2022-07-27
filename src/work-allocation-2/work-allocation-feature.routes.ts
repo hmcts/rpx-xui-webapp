@@ -1,9 +1,11 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { TaskSupervisorGuard } from '../app/guards/task-supervisor.guard';
 
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { TaskActionConstants } from './components/constants';
 import {
+  AllWorkCaseComponent,
   AllWorkHomeComponent,
   AllWorkTaskComponent,
   AllWorkCaseComponent,
@@ -15,10 +17,14 @@ import {
   TaskHomeComponent,
   WorkAllocationHomeComponent,
 } from './containers';
+import { MyAccessComponent } from './containers/my-access/my-access.component';
+import { TaskAssignmentPersonNotAuthorisedComponent } from './containers/messages-container/task-assignment-person-not-authorised/task-assignment-person-not-authorised.component';
 import { MyCasesComponent } from './containers/my-cases/my-cases.component';
+import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
+import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
 
 export const ROUTES: Routes = [
   {
@@ -31,7 +37,7 @@ export const ROUTES: Routes = [
         component: TaskHomeComponent,
         canActivate: [ HealthCheckGuard ],
         resolve: {
-          location: LocationResolver
+          locations: LocationResolver
         },
         children: [
           {
@@ -58,13 +64,20 @@ export const ROUTES: Routes = [
             data: {
               title: 'HMCTS Manage cases | My work | My cases', subTitle: 'My cases'
             }
+          },
+          {
+            path: 'my-access',
+            component: MyAccessComponent,
+            data: {
+              title: 'HMCTS Manage cases | My work | My access', subTitle: 'My access'
+            }
           }
         ]
       },
       {
         path: 'all-work',
         component: AllWorkHomeComponent,
-        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
+        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard, TaskSupervisorGuard],
         data: {
           title: 'HMCTS Manage cases | Task manager'
         },
@@ -91,12 +104,17 @@ export const ROUTES: Routes = [
       },
       {
         path: ':taskId',
-        resolve: { taskAndCaseworkers: TaskResolver },
+        resolve: { taskAndCaseworkers: TaskResolver, roles: TaskRoleResolverService},
         canActivate: [ WorkAllocationFeatureToggleGuard ],
         children: [
           {
             path: 'assign',
             children: [
+              {
+                path: 'person',
+                component: TaskAssignmentContainerComponent,
+                data: TaskActionConstants.Assign
+              },
               {
                 path: 'confirm',
                 component: TaskAssignmentConfirmComponent,
@@ -104,7 +122,7 @@ export const ROUTES: Routes = [
               },
               {
                 path: '',
-                component: TaskAssignmentContainerComponent,
+                component: TaskAssignmentChooseRoleComponent,
                 data: TaskActionConstants.Assign
               }
             ]
@@ -118,8 +136,13 @@ export const ROUTES: Routes = [
                 data: TaskActionConstants.Reassign
               },
               {
-                path: '',
+                path: 'person',
                 component: TaskAssignmentContainerComponent,
+                data: TaskActionConstants.Reassign
+              },
+              {
+                path: '',
+                component: TaskAssignmentChooseRoleComponent,
                 data: TaskActionConstants.Reassign
               }
             ]
@@ -148,6 +171,10 @@ export const ROUTES: Routes = [
                 data: TaskActionConstants.UnassignNonManager
               }
             ]
+          },
+          {
+            path: 'person-not-authorised',
+            component: TaskAssignmentPersonNotAuthorisedComponent
           }
         ]
       }

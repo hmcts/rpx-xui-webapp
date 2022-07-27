@@ -136,6 +136,7 @@ describe('ExclusionsTableComponent', () => {
         notes: 'this case been remitted from Upper Tribunal and required different judge',
         type: 'Other',
         userType: 'Judicial',
+        actorId: 'actorId'
       }
     ];
     fixture.detectChanges();

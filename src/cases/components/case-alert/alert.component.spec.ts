@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { AlertIconClassPipe } from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert-icon-class.pipe';
@@ -15,16 +14,16 @@ describe('AlertComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterModule,
+      imports: [
         RouterTestingModule.withRoutes([
         ])
       ],
-      declarations: [ AlertComponent, CCDAlertComponent, AlertIconClassPipe ],
+      declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe],
       providers: [
         AlertService
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -44,7 +43,7 @@ describe('AlertComponent', () => {
 
   it('should have updated the value of message and level in ngOnInit', async () => {
     const alertService = fixture.debugElement.injector.get<AlertService>(AlertService);
-    alertService.push({message: 'message', level: 'success'});
+    alertService.push({ message: 'message', level: 'success' });
     component.ngOnInit();
     await fixture.whenStable();
     fixture.detectChanges();

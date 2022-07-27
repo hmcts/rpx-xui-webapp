@@ -1,12 +1,35 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CaseAllocatorGuard } from '../app/guards/case-allocator.guard';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { UserNotAssignableComponent } from './components';
 import { DeleteExclusionComponent, RemoveRoleComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
 import { AllocateRoleHomeComponent } from './containers/allocate-role';
-import { RoleAllocationsResolver } from './resolvers/role-allocations.resolver';
+import { SpecificAccessHomeComponent } from './containers/specific-access';
+import { TaskRoleAccessResolver } from './resolvers/task-role-access-resolver';
 
 export const ROUTES: Routes = [
+  { path: 'user-not-assignable', component: UserNotAssignableComponent },
+  {
+    path: ':taskId/assignment/:assignmentId',
+    resolve: { taskAndRole: TaskRoleAccessResolver},
+    children: [
+    {
+      path: 'specific-access',
+      component: SpecificAccessHomeComponent,
+      children: [
+        {
+          path: '',
+          component: null,
+          // canActivate: [HealthCheckGuard],
+          data: {
+            title: 'HMCTS Manage cases | Role and access | Specific access',
+          }
+        }
+      ]
+    }]
+  },
   {
     path: 'add-exclusion',
     component: AddExclusionHomeComponent,
@@ -24,7 +47,7 @@ export const ROUTES: Routes = [
   {
     path: 'delete-exclusion',
     component: DeleteExclusionComponent,
-    canActivate: [HealthCheckGuard],
+    canActivate: [HealthCheckGuard, CaseAllocatorGuard],
     data: {
       title: 'HMCTS Manage cases | Role and access | Delete exclusion',
     }
@@ -36,8 +59,7 @@ export const ROUTES: Routes = [
       {
         path: 'allocate',
         component: AllocateRoleHomeComponent,
-        resolve: { validRoles: RoleAllocationsResolver },
-        canActivate: [HealthCheckGuard],
+        canActivate: [HealthCheckGuard, CaseAllocatorGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Allocate a role',
         }
@@ -45,7 +67,7 @@ export const ROUTES: Routes = [
       {
         path: 'reallocate',
         component: AllocateRoleHomeComponent,
-        canActivate: [HealthCheckGuard],
+        canActivate: [HealthCheckGuard, CaseAllocatorGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Reallocate a role',
         }
@@ -53,7 +75,7 @@ export const ROUTES: Routes = [
       {
         path: 'remove',
         component: RemoveRoleComponent,
-        canActivate: [HealthCheckGuard],
+        canActivate: [HealthCheckGuard, CaseAllocatorGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Remove a role',
         }

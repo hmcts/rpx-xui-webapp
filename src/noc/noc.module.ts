@@ -69,7 +69,7 @@ export class NocModule {
     NocModule.forRoot();
   }
 
-  static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders {
     return {
       ngModule: NocModule,
       providers: [

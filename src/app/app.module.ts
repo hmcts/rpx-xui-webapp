@@ -34,6 +34,7 @@ import { effects } from './store/effects';
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
+import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -49,7 +50,7 @@ const routerOptions: ExtraOptions = {
 };
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

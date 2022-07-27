@@ -1,6 +1,7 @@
 Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 
+const { LOG_LEVELS } = require('../../support/constants.js');
 var BrowserWaits = require('../../support/customWaits');
 const CucumberRepprter = require('../../support/reportLogger');
 
@@ -76,7 +77,7 @@ class CreateCaseStartPage {
       await BrowserWaits.waitForElement(this.caseCaseFilterContainer);
       return true;
     }catch(err){
-      CucumberRepprter.AddMessage("Create case page not displayed "+err.message+" : "+err.stack);
+      await CucumberRepprter.AddMessage("Create case page not displayed " + err.message + " : " + err.stack), LOG_LEVELS.Error;
       return false;
     }
 

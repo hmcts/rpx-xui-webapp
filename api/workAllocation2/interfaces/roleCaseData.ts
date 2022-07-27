@@ -1,15 +1,19 @@
 export interface RoleCaseData {
+  access?: string;
   id: string;
   case_name: string;
   case_id: string;
   case_category: string;
+  case_type?: string;
   case_role: string;
   role_category: string;
   role?: string;
   jurisdiction: string;
+  jurisdictionId?: string;
   location_id: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | string;
+  endDate: Date | string;
+  dateSubmitted?: Date;
   assignee: string;
   state?: string;
   version?: string;
@@ -23,7 +27,7 @@ export interface RoleCaseData {
     legalRepDeclaration?: string[],
     appellantDateOfBirth?: string,
     hasOtherAppeals?: string,
-    appealType?: string,
+    hmctsCaseCategory?: string,
     appellantGivenNames?: string,
     appellantTitle?: string,
     appellantNationalities?: string[],
@@ -32,4 +36,5 @@ export interface RoleCaseData {
     hasNewMatters?: string,
     homeOfficeReferenceNumber?: string
   };
+  isNew?: boolean;
 }

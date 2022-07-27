@@ -5,17 +5,18 @@ import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { PaginationParameter } from '../../../work-allocation-2/models/dtos';
 
-import { Task, TaskAction, TaskServiceConfig } from '../../../work-allocation-2/models/tasks';
-import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
-import { TaskListComponent } from './task-list.component';
+import { SessionStorageService } from '../../../app/services';
+import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
+import { ConfigConstants } from '../../components/constants';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { SortOrder, TaskService } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
-import { ConfigConstants } from '../../components/constants';
-import { getMockTasks, MockRouter } from '../../tests/utils.spec';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { PaginationParameter } from '../../models/dtos';
 import { WorkAllocationTaskService } from '../../services';
+import { getMockTasks, MockRouter } from '../../tests/utils.spec';
+import { TaskListComponent } from './task-list.component';
+
 
 @Component({
   template: `
@@ -24,7 +25,7 @@ import { WorkAllocationTaskService } from '../../services';
       [tasks]='tasks'
       [tasksTotal]="tasksTotal"
       [taskServiceConfig]="taskServiceConfig"
-      [sortedBy]="SortField"
+      [sortedBy]="sortedBy"
       [pagination]="pagination"></exui-task-list>`
 })
 class WrapperComponent {
@@ -42,7 +43,7 @@ class WrapperComponent {
   template: '<div class="xui-task-field">{{task.taskName}}</div>'
 })
 class TaskFieldComponent {
-  @Input() public config: TaskFieldConfig;
+  @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
 
@@ -81,6 +82,7 @@ describe('TaskListComponent', () => {
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem']);
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
@@ -94,7 +96,8 @@ describe('TaskListComponent', () => {
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         { provide: Router, useValue: mockRouter },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -114,8 +117,8 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should return the fields as an array with a \'manage\' entry, so that we can' +
-    'display the manage column in the table.', async () => {
+  it('should return the fields as an array with a \'manage\' entry, so that we can ' +
+    'display the manage column in the table.', () => {
 
     const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
     const fieldsWithManage = [...fields, 'manage'];
@@ -168,6 +171,22 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
 
     expect(component.showResetSortButton).toBeTruthy();
+  });
+
+  it('should reset sorting', async () => {
+    component.taskServiceConfig.defaultSortFieldName = 'dueDate';
+    component.defaultSortElement = document.createElement('button');
+    component.pageSessionKey = 'pageSessionKey';
+    /// mock the emitter and dispatch the connected event
+    spyOn(component.sortEvent, 'emit');
+    spyOn(component.defaultSortElement, 'click');
+    component.onResetSorting();
+    fixture.detectChanges();
+
+    // check the emitter had been called and that it gets called with the new field defined which is caseName
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('pageSessionKey', '1');
+    expect(component.defaultSortElement.click).toHaveBeenCalled;
+
   });
 
   it('should allow sorting for different columns.', async () => {
@@ -429,31 +448,22 @@ describe('TaskListComponent', () => {
     const id = '12345678';
 
     it('should select appropriate task from location hash', () => {
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
-      const navigateCallsBefore = mockRouter.navigateCalls.length;
       const task = { id } as Task;
       wrapper.tasks = [ task ];
+      component.addActionsColumn = true;
       fixture.detectChanges();
+      component.setSelectedTask(task);
       expect(component.getSelectedTask()).toEqual(task);
-      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
-      const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall).toBeDefined();
-      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
-      expect(lastNavigateCall.extras).toEqual({ fragment: `manage_${id}` });
+      expect(component.newUrl).toEqual(`bob#manage_${task.id}`);
     });
 
     it('should handle a location hash for a task that does not exist', () => {
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
-      const navigateCallsBefore = mockRouter.navigateCalls.length;
       const task = { id: '99999999' } as Task;
       wrapper.tasks = [ task ];
+      component.addActionsColumn = true;
       fixture.detectChanges();
       expect(component.getSelectedTask()).toBeNull();
-      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
-      const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall).toBeDefined();
-      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
-      expect(lastNavigateCall.extras).toBeUndefined();
+      expect(component.newUrl).toEqual('bob');
     });
   });
 
@@ -481,4 +491,7 @@ describe('TaskListComponent', () => {
     });
   });
 
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
 });

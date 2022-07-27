@@ -3,10 +3,10 @@ import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs/internal/observable/of';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { SessionStorageService } from 'src/app/services/session-storage/session-storage.service';
+import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
 import { AppConfigService } from '../../services/config/configuration.services';
-import { SessionStorageService } from '../../services/session-storage/session-storage.service';
-import { TermsConditionsService } from '../../services/terms-and-conditions/terms-and-conditions.service';
 import { UserService } from '../../services/user/user.service';
 import * as fromActions from '../actions';
 

@@ -9,7 +9,8 @@ const globalSearchReqResMapping = require('./globalSearch/reqResMapping');
 const dummyCaseDetails = require('./ccd/caseDetails_data');
 
 const requestMapping = {
-   get:{
+    mockServiceResetCallbacks: [...WAReqResMappings.mockServiceResetCallbacks],
+    get:{
         ...nodeAppReqResMappings.get,
         ...WAReqResMappings.get,
         ...ccdReqResMapping.get,
@@ -38,15 +39,13 @@ const requestMapping = {
         '/data/internal/profile' : (req,res) => {
             res.send({});
         },
-        '/data/internal/cases/:caseid': (req,res) => {
-            res.send(dummyCaseDetails);
-        },
         '/api/caseshare/orgs': (req, res) => {
             res.send(getCaseShareOrgs());
         },
         '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata': (req,res) => {
             res.send();
         }
+      
 
     },
     post:{

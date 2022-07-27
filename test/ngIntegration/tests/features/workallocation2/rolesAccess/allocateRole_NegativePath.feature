@@ -1,10 +1,10 @@
 
 
-@ng  @wa2 @ignore
+@ng @ignore
 Feature: WA Release 2: Allocate Role judiciary - Negative path
 
     Scenario Outline: Roles and access - "<Useridentifier>" - Allocate role, reserve to me for Another period
-        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK find person response for jurisdictions
             | jurisdiction | domain | id   | email                   | name           |

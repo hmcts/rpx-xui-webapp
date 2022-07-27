@@ -60,7 +60,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel), `Tab with label "${tabLabel}" is not selected`).to.be.true;
     });
 
-    Then('I see case details page with message banner {string}', async function(bannerMessage){
-        expect(await caseDetailsPage.messageBanner.isMessageTextDisplayed(bannerMessage)).to.be.true
+    Then('I see case details page with message banner {string}', async function(expectedBannerMessage){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const actualBannerMessage = await caseDetailsPage.messageBanner.getBannerMessagesDisplayed();
+            expect(actualBannerMessage.join(",")).to.includes(expectedBannerMessage)
+        });
+        
     });
 });

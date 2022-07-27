@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
+import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
 import { Theme, UserTypeRole } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
@@ -151,12 +151,19 @@ export class AppUtils {
     return isFeatureEnabled ? workAllocationUrl : null;
   }
 
+  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[], excludedRoles: string[]): boolean {
+    // isWA enabled for this jurisdiction
+    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER) && userRoles.every(userRole => !excludedRoles.includes(userRole));
+    // check that userRoles do not have pui-case-manager
+  }
+
   public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
-    if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
-      return UserRole.LegalOps;
-    } else if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
       return UserRole.Judicial;
+    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.LegalOps;
     }
+    // TODO: When we know roles for Admin we can put this in this method
     return null;
   }
 
@@ -174,7 +181,6 @@ export class AppUtils {
         userRole = 'Admin';
         break;
       }
-      default:
     }
     return userRole;
   }
@@ -198,19 +204,18 @@ export class AppUtils {
       case 'Judicial':
         theme.appTitle.name = 'Judicial Case Manager';
         theme.backgroundColor = '#8d0f0e';
-        theme.logoType = 'judicial';
+        theme.logo = 'judicial';
         break;
       case 'LegalOps':
         theme.appTitle.name = 'Manage cases';
         theme.backgroundColor = '#202020';
-        theme.logoType = '';
+        theme.logo = '';
         break;
       case 'Solicitor':
         theme.appTitle.name = 'Manage cases';
         theme.backgroundColor = '#202020';
-        theme.logoType = 'myhmcts';
+        theme.logo = 'myhmcts';
         break;
-      default:
     }
   }
 

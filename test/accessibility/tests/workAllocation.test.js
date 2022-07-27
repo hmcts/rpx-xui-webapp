@@ -20,7 +20,7 @@ describe('Work Allocation: ', function () {
         const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','caseworker-ia-admofficer'];
         const idamid = '123456-as6543-987gvc-9909nb';
         MockApp.onGet('/api/user/details', (req,res) => {
-            res.send(nodeAppMockData.getUserDetailsWithRolesAndIdamId(roles, idamid));
+            res.send(nodeAppMockData.setUserDetailsWithRolesAndIdamId(roles, idamid));
         });
         done();
     });

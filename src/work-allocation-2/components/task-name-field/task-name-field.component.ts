@@ -25,7 +25,7 @@ export class TaskNameFieldComponent implements OnChanges {
       const caseId = this.caseId;
       if (caseId) {
         // in future required functionality, this should link to Tasks tab on Case details page
-        href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
+        href = `${AppConstants.CASE_DETAILS_URL}${caseId}/tasks`;
       }
     }
     this.pHref = href;

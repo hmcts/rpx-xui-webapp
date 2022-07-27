@@ -1,10 +1,18 @@
 <exui-app-header></exui-app-header>
+
+<xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
+
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
       <div class="govuk-grid-row">
         <exui-allocate-role-navigation (eventTrigger)="onNavEvent($event)">
           <div class="govuk-main-wrapper">
+            <exui-choose-role-error
+              #chooseRole
+              *ngIf="isComponentVisible(navigationCurrentState, noRolesErrorVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-choose-role-error>
             <exui-choose-role
               #chooseRole
               *ngIf="isComponentVisible(navigationCurrentState, chooseRoleVisibilityStates)"

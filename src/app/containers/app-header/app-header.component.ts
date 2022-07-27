@@ -4,11 +4,12 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { ApplicationTheme, NavigationItem } from '../../../app/models/theming.model';
-import { UserDetails } from '../../../app/models/user-details.model';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
+import { ApplicationThemeLogo } from '../../enums';
 import { AppTitleModel } from '../../models/app-title.model';
+import { ApplicationTheme, NavigationItem } from '../../models/theming.model';
+import { UserDetails } from '../../models/user-details.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
@@ -35,7 +36,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
   public backgroundColor: string;
-  public logoType: string;
+  public logo: string;
   public logoIsUsed: boolean = false;
   public showNavItems: Observable<boolean>;
 
@@ -110,10 +111,17 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public async setHeaderContent(userDetails) {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
-      const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().pipe(first()).toPromise();
-      const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
-      this.hideNavigationListener(this.store);
-      this.setAppHeaderProperties(applicationTheme, menuItems);
+      // const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().pipe(first()).toPromise();
+      this.getApplicationThemeForUser().subscribe(theme => {
+        this.hideNavigationListener(this.store);
+        this.setAppHeaderTheme(theme);
+      });
+      // const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
+      this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe(menuItems => {
+        this.hideNavigationListener(this.store);
+        this.setAppHeaderNavItems(menuItems);
+      });
+
     }
   }
 
@@ -142,8 +150,12 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * Set the app header properties, in one function that takes in the application theme.
    */
   public setAppHeaderProperties(applicationTheme: ApplicationTheme, navigationItems: NavigationItem[]): void {
+    this.setAppHeaderNavItems(navigationItems);
+    this.setAppHeaderTheme(applicationTheme);
+  }
+
+  public setAppHeaderTheme(applicationTheme: ApplicationTheme): void {
     this.appHeaderTitle = applicationTheme.appTitle;
-    this.setupActiveNavLink(navigationItems);
     this.userNav = this.userRoles.length > 0 ? {
       label: 'Account navigation',
       items: [{
@@ -155,8 +167,12 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       items: []
     };
     this.backgroundColor = applicationTheme.backgroundColor;
-    this.logoType = applicationTheme.logo;
-    this.logoIsUsed = applicationTheme.logo !== 'none';
+    this.logo = applicationTheme.logo;
+    this.logoIsUsed = applicationTheme.logo !== ApplicationThemeLogo.NONE;
+  }
+
+  public setAppHeaderNavItems(navigationItems: NavigationItem[]): void {
+    this.setupActiveNavLink(navigationItems);
   }
 
   /**

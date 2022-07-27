@@ -1,9 +1,14 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { of } from 'rxjs';
 
 import { TaskAlertBannerComponent } from '../../../cases/components';
+import { AllocateRoleService } from '../../../role-access/services';
+import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation-2/services';
 import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 
@@ -108,23 +113,35 @@ const CASE_VIEW: CaseView = {
 
 describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
-
+  const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
+  const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getCaseworkersForServices']);
+  const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TaskAlertBannerComponent, TasksContainerComponent],
+      imports: [
+        HttpClientTestingModule
+      ],
       providers: [
         {provide: AlertService, useValue: mockAlertService},
+        {provide: WorkAllocationCaseService, useValue: mockWACaseService},
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
+        {provide: AllocateRoleService, useValue: mockRoleService},
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                tasks: getMockTasks(),
+                tasks: {
+                  tasks: getMockTasks(),
+                  caseworkers: null
+                },
                 case: CASE_VIEW
-              }
+              },
+              paramMap: convertToParamMap({cId: '1234567890123456'}),
             }
           }
         },
@@ -137,11 +154,59 @@ describe('TasksContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TasksContainerComponent);
     component = fixture.componentInstance;
+    mockWACaseService.getTasksByCaseId.and.returnValue(of(getMockTasks()));
+    mockCaseworkerService.getCaseworkersForServices.and.returnValue([]);
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(getMockTasks()));
     fixture.detectChanges();
   });
 
   it('should correctly show task alert when warnings are present', () => {
     // as the mock tasks include a warning the task alert banner should be displayed
     expect(component.warningIncluded).toBe(true);
+  });
+
+  it('should return an empty list if there are no tasks', () => {
+    mockWACaseService.getTasksByCaseId.and.returnValue(of([]));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of([]));
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.tasks.length).toEqual(0);
+  });
+
+  it('should return task with corect name when getJudicialNamedTasks called', () => {
+    component.tasks = [
+      { id: '5f677ab6-ee64-11ec-b9f6-fe3569506667',
+        name: 'Review the appeal',
+        assignee: '09f1f25d-7d7e-4481-b8e3-8624227438ef'
+      } as any
+    ]
+    const judicialUserData = [{
+        sidam_id: '09f1f25d-7d7e-4481-b8e3-8624227438ef',
+        object_id: 'e97296ca-8182-45ef-82d0-7e4eeb6dab49-test2',
+        known_as: 'Joe',
+        surname: 'Bloggs',
+        full_name: 'Joe Bloggs',
+        post_nominals: 'Judge',
+        email_id: '4920094EMP-@ejudiciary.net',
+        personal_code: '4920094'
+    }]
+    component.getJudicialNamedTasks(judicialUserData as any).subscribe( task => {
+        expect(task[0].assigneeName).toEqual('Joe Bloggs');
+    });
+  })
+
+  it('should refresh tasks when requested', () => {
+    const firstTask = getMockTasks()[0];
+    mockWACaseService.getTasksByCaseId.and.returnValue(of([firstTask]));
+    component.onTaskRefreshRequired();
+    expect(component.tasks.length).toEqual(1);
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+  })
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
   });
 });

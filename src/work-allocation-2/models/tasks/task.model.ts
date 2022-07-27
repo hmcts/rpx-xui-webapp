@@ -15,4 +15,11 @@ export default interface Task {
   actions: TaskAction[];
   warnings?: boolean;
   derivedIcon?: string;
+  jurisdiction?: string;
+  isNew?: boolean;
+}
+
+export interface TaskResponse {
+  tasks: Task[];
+  total_records: number;
 }

@@ -1,3 +1,4 @@
+const { LOG_LEVELS } = require("../../../../support/constants");
 const BrowserWaits = require("../../../../support/customWaits"); 
 const CucumberReporter = require("../../../../support/reportLogger");
 const exuiErrorMessage = require("../../common/exuiErrorMessage");
@@ -21,7 +22,7 @@ class FindPersonComponent{
            await BrowserWaits.waitForElement(this.findPersonContainer);
            return true;
        } catch(err){
-           CucumberReporter.AddMessage(err.stack);
+           CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
            return false;
         }
     }
@@ -60,35 +61,44 @@ class FindPersonComponent{
             return true;
         } 
         catch(err){
-            CucumberReporter.AddMessage(err.stack);
+            CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
             return false;
         }
     }
 
     async getPersonsReturned(){
-        const results = this.searchResultsContainer.$$(".mat-option-text");
-        const resultCount = await results.count();
-        const resulttexts = [];
-        for(let i = 0; i < resultCount; i++){
-            const resultItem = await results.get(i);
-            resulttexts.push(await resultItem.getText());
-        }
-        return resulttexts;
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            const results = this.searchResultsContainer.$$(".mat-option-text");
+            const resultCount = await results.count();
+            const resulttexts = [];
+            for (let i = 0; i < resultCount; i++) {
+                const resultItem = await results.get(i);
+                resulttexts.push(await resultItem.getText());
+            }
+            return resulttexts;
+        });
+        
     }
 
-    getResultElementWithText(resulttext){
+    async getResultElementWithText(resulttext){
+        const elementWithResulst = element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]`));
+        CucumberReporter.AddMessage(await elementWithResulst.getText(), LOG_LEVELS.Debug)
         return element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]//mat-option//*[contains(@class,'mat-option-text') and contains(text(),'${resulttext}')]`));
     }
 
     async isPersonReturned(result){
-        const resultElement = this.getResultElementWithText(result);
+        CucumberReporter.AddMessage(`Checking is person returned "${result}"`, LOG_LEVELS.Debug)
+
+        const resultElement = await this.getResultElementWithText(result);
         return await resultElement.isPresent() && resultElement.isDisplayed()
 
     }
 
     async selectPerson(result){
-        expect(await this.isPersonReturned(result),'Result is not found').to.be.true;
-        await this.getResultElementWithText(result).click();
+        CucumberReporter.AddMessage(` Select person "${result}"`, LOG_LEVELS.Debug)
+
+        expect(await this.isPersonReturned(result), `Result is not found "${result}"`).to.be.true;
+        await (await this.getResultElementWithText(result)).click();
     }
 
     async isPersonSelected(personText){

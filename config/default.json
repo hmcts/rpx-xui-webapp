@@ -32,6 +32,10 @@
       "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
+    "hearings": {
+      "serviceApi": "hearing-service-prod.service.core-compute-prod.internal",
+      "hmcApi": "hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
+    },
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
     },
@@ -39,7 +43,13 @@
       "api": "http://ccd-case-document-am-api-prod.service.core-compute-prod.internal"
     },
     "prd": {
-      "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
+      "api": "http://rd-professional-api-prod.service.core-compute-prod.internal",
+      "locationApi": "http://rd-location-ref-api-demo.service.core-compute-demo.internal",
+      "judicialApi": "http://rd-judicial-api-aat.service.core-compute-aat.internal",
+      "commondataApi": "http://rd-commondata-api-aat.service.core-compute-aat.internal"
+    },
+    "locationref": {
+      "api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal"
     },
     "locationref": {
       "api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal"
@@ -47,6 +57,7 @@
     "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/",
+    "waWorkflowApi": "http://wa-workflow-api-prod.service.core-compute-prod.internal",
     "idam": {
       "idamApiUrl": "https://idam-api.platform.hmcts.net",
       "idamClientID": "xuiwebapp",
@@ -65,20 +76,24 @@
     },
     "case": {
       "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
-      "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal"
+      "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal",
+      "judicialApi": "http://rd-judicial-api-prod.service.core-compute-prod.internal"
     },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
     "icp_api": "http://em-icp-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
-    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
+    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
+    "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net/",
+    "judicialBookingsApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
   },
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "waSupportedJurisdictions": ["IA"],
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC",
   "globalSearchServices": "IA",
+  "waSupportedJurisdictions": ["IA", "SSCS", "CIVIL"],
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
+  "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}],
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

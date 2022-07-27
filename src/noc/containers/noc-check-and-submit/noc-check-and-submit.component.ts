@@ -41,7 +41,7 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   public nocAnswersSub: Subscription;
   public nocAnswers: NocAnswer[];
 
-  constructor(private store: Store<fromFeature.State>) {
+  constructor(private readonly store: Store<fromFeature.State>) {
     this.navEvent = {
       event: null,
       timestamp: null

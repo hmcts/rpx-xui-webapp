@@ -11,27 +11,26 @@ Feature: search criteria workflow
     Then Search page should be displayed
     When I enter search fields jurisdiction "<Jurisdiction>" case type "<CaseType>"
     When I reset case search fields
-    When I enter search fields jurisdiction "<Jurisdiction>" case type "<CaseType>"
-    When I click apply to perform case search
+    When I enter search fields jurisdiction "<Jurisdiction>" case type "<CaseType>" and click apply
     Then I see results returned
     When I open first case in search results
     Then I see case details page
 
     Examples:
-    | Jurisdiction | CaseType |
-      | Manage probate application | Grant of representation |
+      | Jurisdiction   | CaseType           |
+      | Family Divorce | XUI Test Case type |
+
 
 
   Scenario Outline:  search criteria apply workflow from Search Case Page
 
     When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
     When I click search Reset in case list page
-    When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
-    When I click search Apply in case list page
+    When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page and click apply
     Then I see results returned
     When I open first case in case list page
     Then I see case details page
 
     Examples:
-    | Jurisdiction | CaseType |
-      | Manage probate application | Grant of representation |
+      | Jurisdiction   | CaseType           |
+      | Family Divorce | XUI Test Case type |

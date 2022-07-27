@@ -8,16 +8,16 @@
     <legend class="hidden-legend">Duration of role</legend>
     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
       <div *ngFor="let durationDesc of allDurations" class="govuk-radios__item">
-        <input class="govuk-radios__input" id="contact-{{durationDesc.id}}" name="radioSelected" type="radio" [value]="durationDesc.duration" [attr.aria-describedby]="durationDesc.description" 
+        <input class="govuk-radios__input" id="contact-{{durationDesc.id}}" name="radioSelected" type="radio" [value]="durationDesc.duration" [attr.aria-describedby]="durationDesc.description"
         formControlName="radioSelected" (change)="onItemChange(durationDesc.duration)" [checked]="durationDesc.checked"/>
         <label class="govuk-label govuk-radios__label" for="contact-{{durationDesc.id}}">
-        {{durationDesc.duration}} 
+        {{durationDesc.duration}}
         </label>
         <span id="contact-{{durationDesc.id}}-item-hint" class="govuk-hint govuk-radios__hint">
         {{durationDesc.description}}
         </span>
       </div>
-      <div id="conditional-contact-3" 
+      <div id="conditional-contact-3"
       [ngClass]="anotherPeriod? (isStartDateError || isEndDateError? 'govuk-radios__conditional form-group-error' : 'govuk-radios__conditional'):'govuk-radios__conditional govuk-radios__conditional--hidden'">
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset" aria-describedby="date-start-hint" role="group">
@@ -38,7 +38,7 @@
               <label class="govuk-label govuk-date-input__label" for="date-start-day">
               Day
               </label>
-              <input id="date-start-day" name="date-start-day" type="number" pattern="[0-9]*" formControlName="dayStartDate" 
+              <input id="date-start-day" name="date-start-day" type="number" pattern="[0-9]*" formControlName="dayStartDate"
               [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'"/>
               </div>
             </div>
@@ -56,7 +56,7 @@
                 <label class="govuk-label govuk-date-input__label" for="date-start-year">
                 Year
                 </label>
-                <input id="date-start-year" name="date-start-year" type="number" pattern="[0-9]*" formControlName="yearStartDate" 
+                <input id="date-start-year" name="date-start-year" type="number" pattern="[0-9]*" formControlName="yearStartDate"
                 [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-4 date-error':'govuk-input govuk-date-input__input govuk-input--width-4'"/>
               </div>
             </div>
@@ -82,7 +82,7 @@
                   <label class="govuk-label govuk-date-input__label" for="date-end-day">
                   Day
                   </label>
-                  <input id="date-end-day" name="date-end-day" type="number" pattern="[0-9]*" formControlName="dayEndDate" 
+                  <input id="date-end-day" name="date-end-day" type="number" pattern="[0-9]*" formControlName="dayEndDate"
                   [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'"/>
                 </div>
               </div>
@@ -100,7 +100,7 @@
                   <label class="govuk-label govuk-date-input__label" for="date-end-year">
                   Year
                   </label>
-                  <input id="date-end-year" name="date-end-year" type="number" pattern="[0-9]*"  formControlName="yearEndDate" 
+                  <input id="date-end-year" name="date-end-year" type="number" pattern="[0-9]*"  formControlName="yearEndDate"
                   [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-4 date-error':'govuk-input govuk-date-input__input govuk-input--width-4'"/>
                 </div>
               </div>

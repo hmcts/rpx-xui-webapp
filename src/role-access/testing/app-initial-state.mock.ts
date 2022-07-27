@@ -42,7 +42,6 @@ export const initialMockState: State = {
           isCaseAllocator: false,
         }
       ],
-    },
-    decorate16digitCaseReferenceSearchBoxInHeader: false
+    }
   }
 };

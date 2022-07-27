@@ -37,7 +37,6 @@ export function getLogger(category: string): JUILogger {
 }
 
 function info(...messages: any[]) {
-    console.log(...messages)
     this._logger.info(...messages)
 }
 

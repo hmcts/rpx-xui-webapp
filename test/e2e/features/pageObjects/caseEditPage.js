@@ -2,7 +2,9 @@ var CcdApi = require('../../utils/ccdApi');
 var BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../support/reportLogger');
 Button = require('./webdriver-components/button.js');
-
+const RuntimeTestData = require("../../support/runtimeTestData");
+const CaseListPage = require("../pageObjects/CaseListPage");
+const { LOG_LEVELS } = require('../../support/constants');
 class caseEditPage {
     constructor() {
         this.userName = 'lukesuperuserxui@mailnesia.com';
@@ -12,7 +14,9 @@ class caseEditPage {
         this.continueButton = new Button('button[type=submit]');
         this.checkURanswerPageData;
 
-        this.validationErrorContainer = $('ccd-case-edit-page .error-summary');
+        this.validationErrorContainer = $('ccd-case-edit-page .govuk-error-summary');
+
+        this.caseListPage = new CaseListPage();
     }
 
     async isValidationErrorDisplayed(){
@@ -25,14 +29,31 @@ class caseEditPage {
 
     async validateWorkbasketInputs(reqPath) {
         let workBasketFields = await CcdApi.getWorkbasketAPIRes(reqPath);
-        let WBfieldIdPresent;
-        if (workBasketFields) {
-            for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
-                WBfieldIdPresent = $(`#${workBasketFields.workbasketInputs[i].field.id}`);
-                await BrowserWaits.waitForElement(WBfieldIdPresent);
-                expect(await WBfieldIdPresent.isPresent(), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            try{
+                let WBfieldIdPresent;
+                if (workBasketFields) {
+                    for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
+                        WBfieldIdPresent = $(`#${workBasketFields.workbasketInputs[i].field.id}`);
+                        await BrowserWaits.waitForElement(WBfieldIdPresent);
+                        expect(await WBfieldIdPresent.isPresent(), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
+                    }
+                }
+            }catch(err){
+                const caseTypeToSelect = RuntimeTestData.workbasketInputs.casetype; 
+                for (const caseType of RuntimeTestData.workbasketInputs.casetypes){
+                    if (caseType !== caseTypeToSelect){
+                        await this.caseListPage.selectCaseType(caseType);
+                        break;
+                    }
+                }
+                await BrowserWaits.waitForSeconds(2);
+                await this.caseListPage.selectCaseType(caseTypeToSelect); 
+                throw new Error(err);
             }
-        }
+            
+        });
+        
     }
 
     async validateSearchInputs(reqPath) {
@@ -81,9 +102,9 @@ class caseEditPage {
 
     async workBasketHeaders(index) {
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
+        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString(), LOG_LEVELS.Debug);
         await BrowserWaits.waitForSeconds(2);
-        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
+        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString(), LOG_LEVELS.Debug);
         let thLable = $$("ccd-search-result>table>thead tr th");
         await BrowserWaits.waitForElement($("ccd-search-result>table>thead tr th"));
         let count = await thLable.count();
@@ -283,6 +304,8 @@ class caseEditPage {
         let buttonEnable = await this.continueButton.isEnabled();
         expect(buttonEnable).to.eql(true);
 
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            $('button[type=submit]').getWebElement()) 
         await this.continueButton.click();
         let e = $("#TextField");
         await e.sendKeys(protractor.Key.ENTER);
@@ -308,10 +331,14 @@ class caseEditPage {
         await BrowserWaits.waitForElementClickable(continieElement);
         var thisPageUrl = await browser.getCurrentUrl();
         console.log("Submitting : " + thisPageUrl);
-        await continieElement.click();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl);
-        let page3 = await element(by.css("ccd-case-edit-page h1"));
-        expect(await page3.getText()).to.contains("Page 3");
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await continieElement.click();
+            await BrowserWaits.waitForPageNavigation(thisPageUrl);
+            let page3 = await element(by.css("ccd-case-edit-page h1"));
+            expect(await page3.getText()).to.contains("Page 3");
+        });
+        
     }
 
     async _getKeyVal(field) {

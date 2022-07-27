@@ -68,11 +68,12 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
 
-        this.hearingActualsMainModel.hearingActuals.actualHearingDays.forEach((hearingDay) => {
-          const key = hearingDay.hearingDate;
-          if (!this.hearingDatesAccordion.hasOwnProperty(key)) {
-            this.hearingDatesAccordion[key] = false;
-          }
+        this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.forEach(
+          plannedDay => {
+            const key = ActualHearingsUtils.getDate(plannedDay.plannedStartTime);
+            if (!this.hearingDatesAccordion.hasOwnProperty(key)) {
+              this.hearingDatesAccordion[key] = false;
+            }
         });
 
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
@@ -142,7 +143,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
 
     return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-      actualDay => Boolean(actualDay.hearingDate && actualDay.hearingStartTime
+      actualDay => actualDay.notRequired || Boolean(actualDay.hearingDate && actualDay.hearingStartTime
         && actualDay.hearingEndTime && actualDay.pauseDateTimes)
     );
   }
@@ -151,7 +152,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     const hasAllActualDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
     return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-      actualDay => actualDay.actualDayParties.length > 0
+      actualDay => actualDay.notRequired || actualDay.actualDayParties.length > 0
     );
   }
 
@@ -281,7 +282,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         const hasActualTiming = Boolean(actualDay.hearingDate && actualDay.hearingStartTime && actualDay.hearingEndTime && actualDay.pauseDateTimes);
         const hasActualParties = actualDay.actualDayParties.length > 0;
 
-        return hasActualTiming && hasActualParties;
+        return hasActualTiming && hasActualParties || actualDay.notRequired;
       }
     }
 

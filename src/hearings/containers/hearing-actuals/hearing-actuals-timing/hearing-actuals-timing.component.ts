@@ -5,12 +5,12 @@ import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
-import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ActualHearingDayModel, HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingActualsTimingErrorMessages } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
@@ -143,7 +143,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     } else {
       changedPauseEndTime = HearingActualsTimingComponent.replaceTime(hearingDate, moPauseEndTime);
     }
-    let pauseDateTimes = null;
+
+    let pauseDateTimes = [];
     if (value.pauseStartTime && value.pauseEndTime) {
       pauseDateTimes = [
         {
@@ -152,20 +153,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         }
       ];
     }
-    // const actualInDay1 = this.hearingActuals.hearingActuals && this.hearingActuals.hearingActuals.actualHearingDays
-    //   && this.hearingActuals.hearingActuals.actualHearingDays[0];
-    // const hearingActuals = {
-    //   ...this.hearingActuals.hearingActuals,
-    //   actualHearingDays: [
-    //     {
-    //       ...actualInDay1,
-    //       hearingDate,
-    //       hearingStartTime: HearingActualsTimingComponent.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')),
-    //       hearingEndTime: HearingActualsTimingComponent.replaceTime(hearingEndTime, moment(value.hearingEndTime, 'HH:mm')),
-    //       pauseDateTimes
-    //     }
-    //   ]
-    // };
 
     const updatedTimings = {
       hearingStartTime: HearingActualsTimingComponent.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')),

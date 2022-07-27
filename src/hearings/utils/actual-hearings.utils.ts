@@ -41,7 +41,7 @@ export class ActualHearingsUtils {
                       actualPartyId: party.partyID,
                       partyRole: party.partyRole,
                       partyChannelSubType: party.partyChannelSubType,
-                      representedParty: '',
+                      representedParty: null,
                       didNotAttendFlag: false,
                       individualDetails: { firstName: party.individualDetails.firstName, lastName: party.individualDetails.lastName },
                       actualOrganisationName: party.organisationDetails ? party.organisationDetails.name : null
@@ -61,10 +61,10 @@ export class ActualHearingsUtils {
   }
 
   public static mergeSingleHearingPartActuals(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string,
-                                              updatedActuals: ActualHearingDayModel ): HearingActualsModel {
+                                              updatedActuals: ActualHearingDayModel): HearingActualsModel {
     const hearingActuals = {
-      hearingOutcome: {...hearingActualsMainModel.hearingActuals.hearingOutcome},
-      actualHearingDays: [...hearingActualsMainModel.hearingActuals.actualHearingDays]
+      hearingOutcome: hearingActualsMainModel.hearingActuals.hearingOutcome ? {...hearingActualsMainModel.hearingActuals.hearingOutcome} : {},
+      actualHearingDays: hearingActualsMainModel.hearingActuals.actualHearingDays ? [...hearingActualsMainModel.hearingActuals.actualHearingDays] : [],
     } as HearingActualsModel;
 
     let indexOfActual: number;
@@ -80,7 +80,21 @@ export class ActualHearingsUtils {
         ...updatedActuals
       };
     } else {
-      hearingActuals.actualHearingDays.push(updatedActuals);
+      const plannedHearingDate = hearingActualsMainModel.hearingPlanned.plannedHearingDays.find((day) => ActualHearingsUtils.getDate(day.plannedStartTime) === hearingDate);
+
+      const newHearingActual = {
+        hearingDate,
+        hearingStartTime: plannedHearingDate.plannedStartTime,
+        hearingEndTime: plannedHearingDate.plannedEndTime,
+        actualDayParties: [],
+        pauseDateTimes: [],
+        notRequired: null,
+      };
+
+      hearingActuals.actualHearingDays.push({
+        ...newHearingActual,
+        ...updatedActuals
+      });
     }
 
     return hearingActuals;

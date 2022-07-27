@@ -302,13 +302,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public getPartiesNames(day): string {
-    const names = day.actualDayParties.map((p) => p.individualDetails.firstName + ' ' + p.individualDetails.lastName).join(',');
-    return names;
+    return day.actualDayParties.map((p) => p.individualDetails.firstName + ' ' + p.individualDetails.lastName).join(',');
   }
 
   public getPartiesAttendenceMethod(day): string {
-    const methods = day.actualDayParties.map(p => p.individualDetails.firstName + ' ' + p.individualDetails.lastName + ': ' + p.partyChannelSubType).join(',');
-    return methods;
+    return day.actualDayParties.map(p => p.individualDetails.firstName + ' ' + p.individualDetails.lastName + ': ' + p.partyChannelSubType).join(',');
   }
 
   public getStatusLabel(day): boolean {
@@ -319,6 +317,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     } else {
       return false;
     }
+  }
+
+  public wasThisHearingDayRequiredChange(day) {
+    day.notRequired = !day.notRequired;
   }
 
 }

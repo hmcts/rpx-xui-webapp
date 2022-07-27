@@ -55,7 +55,8 @@
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:api": "mocha -r ts-node/register --config ./test/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=reports/tests/api_functional,reportFilename=mochawesome",
-    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
+    "test:ngIntegrationMockEnv" : "node -e 'require(`./test/nodeMock/availablePortFinder.js`).configureTestProxyPort' && export NODEMOCK_PORT=$(node './test/nodeMock/availablePortFinder.js') ",
+    "test:ngIntegration": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:ngIntegrationDebug": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js --debug",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone"
   },
@@ -128,6 +129,7 @@
     "ngx-pagination": "^3.2.1",
     "node-http-proxy-json": "^0.1.9",
     "p-iteration": "^1.1.7",
+    "portfinder": "^1.0.28",
     "protractor-screenshot-utils": "^1.0.5",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.4.0",

@@ -166,7 +166,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       ? true : false;
   }
 
-  public saveHearingActualsTiming() {
+  public saveHearingActualsTiming(day) {
     ActualHearingsUtils.isHearingDaysUpdated = false;
     this.validationErrors = [];
     this.hearingTimingResultErrorMessage = '';
@@ -174,7 +174,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel)
+      // actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel)
+      actualHearingDays: [day]
     };
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -182,15 +183,22 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     }));
   }
 
-  public saveHearingActualsParties() {
+  public saveHearingActualsParties(day) {
     this.validationErrors = [];
     this.hearingPartiesResultErrorMessage = '';
     ActualHearingsUtils.isHearingPartiesUpdated = false;
     this.successBanner = true;
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+
+    const actualHearingDaysWithParties = [
+      {
+        ...day,
+        actualDayParties: [...this.getParticipants(day.hearingDate), ...this.getPartiesByHearingDate(day.hearingDate)],
+      }
+    ];
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: ActualHearingsUtils.getActualHearingParties(this.hearingActualsMainModel, this.parties, this.participants)
+      actualHearingDays: actualHearingDaysWithParties
     };
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -271,6 +279,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public getParticipants(hearingDate: string) {
     return this.dayParties.find(p => p.hearingDate === hearingDate).participants;
+  }
+
+  private getPartiesByHearingDate(hearingDate: string) {
+    return this.dayParties.find(p => p.hearingDate === hearingDate).parties;
   }
 
   public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {

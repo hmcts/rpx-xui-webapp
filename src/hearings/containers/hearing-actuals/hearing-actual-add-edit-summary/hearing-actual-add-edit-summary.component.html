@@ -93,7 +93,7 @@
       <dt class="govuk-summary-list__key">Hearing timings</dt>
       <dd class="govuk-summary-list__value"></dd>
       <dd class="govuk-summary-list__actions">
-        <a href="javascript:void(0)" (click)="saveHearingActualsTiming()" id="hearing-timing-result-confirm-link"
+        <a href="javascript:void(0)" (click)="saveHearingActualsTiming(actualHearingDay)" id="hearing-timing-result-confirm-link"
           class="govuk-link">Confirm</a>&nbsp;
         <a href="javascript:void(0)" class="govuk-link"
           [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing', actualHearingDay.hearingDate]">Update</a>
@@ -133,7 +133,7 @@
       <dt class="govuk-summary-list__key">Participants</dt>
       <dd class="govuk-summary-list__value"></dd>
       <dd class="govuk-summary-list__actions">
-        <a href="javascript:void(0)" (click)="saveHearingActualsParties()"
+        <a href="javascript:void(0)" (click)="saveHearingActualsParties(actualHearingDay)"
           id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
         <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
           class="govuk-link">Update</a>

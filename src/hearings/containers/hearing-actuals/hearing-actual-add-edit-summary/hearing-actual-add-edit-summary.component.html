@@ -95,7 +95,8 @@
       <dd class="govuk-summary-list__actions">
         <a href="javascript:void(0)" (click)="saveHearingActualsTiming()" id="hearing-timing-result-confirm-link"
           class="govuk-link">Confirm</a>&nbsp;
-        <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing']" class="govuk-link">Update</a>
+        <a href="javascript:void(0)" class="govuk-link"
+          [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing', actualHearingDay.hearingDate]">Update</a>
       </dd>
     </div>
     <div class="govuk-summary-list__row_no-border">
@@ -134,7 +135,7 @@
       <dd class="govuk-summary-list__actions">
         <a href="javascript:void(0)" (click)="saveHearingActualsParties()"
           id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
-        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties']"
+        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
           class="govuk-link">Update</a>
       </dd>
     </div>
@@ -148,16 +149,17 @@
       <dd class="govuk-summary-list__value">{{getPartiesAttendenceMethod(actualHearingDay)}}</dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngFor="let party of actualHearingDay.actualDayParties; let i = index;">
+    <div class="govuk-summary-list__row" *ngFor="let participant of getParticipants(actualHearingDay.hearingDate); let i = index;">
       <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
       <dd class="govuk-summary-list__value">
-        Role: {{party.partyRole}}<br>
-        First name: {{party.individualDetails.firstName}}<br>
-        Last name: {{party.individualDetails.lastName}}<br>
-        Organisation: {{party.actualOrganisationName}}<br>
-        Attendance Type: {{party.partyChannelSubType}} <br>
-        Attendance representing: {{getRepresentingAttendee(party.representedParty)}}<br>
+        Role: {{participant.partyRole | partyRoleDisplayValue: hearingRoles}}<br>
+        First name: {{participant.individualDetails.firstName}}<br>
+        Last name: {{participant.individualDetails.lastName}}<br>
+        Organisation: {{participant.actualOrganisationName}}<br>
+        Attendance Type: {{participant.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
+        Attendance representing: {{getRepresentingAttendee(party.representedParty, actualHearingDay)}}<br>
       </dd>
+      <dd class="govuk-summary-list__actions"></dd>
     </div>
   </dl>
 </ng-template>

@@ -184,7 +184,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-timing',
+        path: 'hearing-timing/:d',
         component: HearingActualsTimingComponent,
         data: {
           title: 'HMCTS Hearings | Hearing Actuals | Hearing Timing'
@@ -211,7 +211,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'actuals-parties',
+        path: 'actuals-parties/:d',
         component: HearingActualsViewEditPartiesComponent,
         data: {
           title: 'HMCTS Manage cases | Hearing Actuals | Update Participants'

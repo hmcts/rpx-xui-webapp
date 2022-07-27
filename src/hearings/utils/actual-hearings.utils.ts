@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel } from '../models/hearingActualsMainModel';
-import { HearingDateEnum } from '../models/hearings.enum';
 
 export class ActualHearingsUtils {
   public static isHearingDaysUpdated: boolean;
@@ -11,15 +10,14 @@ export class ActualHearingsUtils {
   }
 
   private static extractActualsFromPlannedDays(hearingActualsMainModel) {
-
     const hearingDays = hearingActualsMainModel.hearingPlanned.plannedHearingDays.map((plannedDay) => {
       const existing = (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays &&
         hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0)
-        ? hearingActualsMainModel.hearingActuals.actualHearingDays.find((item) => Date.parse(item.hearingDate) === Date.parse(plannedDay.plannedStartTime))
+        ? hearingActualsMainModel.hearingActuals.actualHearingDays.find((item) => Date.parse(item.hearingDate) === Date.parse(moment(plannedDay.plannedStartTime).format('YYYY-MM-DD')))
         : null;
 
       if (existing) {
-        return existing[0];
+        return existing;
       } else {
         return {
           hearingDate: this.getDate(plannedDay.plannedStartTime),
@@ -27,18 +25,8 @@ export class ActualHearingsUtils {
           hearingEndTime: plannedDay.plannedEndTime,
           pauseDateTimes: [],
           notRequired: false,
-          actualDayParties: plannedDay.parties.map((party) => {
-            return {
-              actualPartyId: party.partyID,
-              partyRole: party.partyRole,
-              partyChannelSubType: party.partyChannelSubType,
-              representedParty: '',
-              didNotAttendFlag: false,
-              individualDetails: { firstName: party.individualDetails.firstName, lastName: party.individualDetails.lastName },
-              actualOrganisationName: party.organisationDetails ? party.organisationDetails.name : null
-            }
-          })
-        }
+          actualDayParties: []
+        };
       }
     });
     return hearingDays.filter(day => day !== undefined);

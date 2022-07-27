@@ -13,22 +13,6 @@ const workAllocationMockData = require('../../../nodeMock/workAllocation/mockDat
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
-    Given('I navigate to home page', async function () {
-        await browserUtil.gotoHomePage();
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await headerpage.waitForPrimaryNavDisplay();
-            await browserUtil.waitForLD();
-        });  
-    });
-
-    Given('I navigate page route {string}', async function (routeUrl) {
-        await browser.get(routeUrl);
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await headerpage.waitForPrimaryNavDisplay();
-            await browserUtil.waitForLD();
-        });        
-    });
-
     Given('I init MockApp', async function () {
         MockApp.init();
     });
@@ -58,7 +42,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
 
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
-        CucumberReporter.AddJson(userDetails)
        
      });
 

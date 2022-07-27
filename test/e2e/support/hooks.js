@@ -114,6 +114,8 @@ defineSupportCode(({ Before,After }) => {
         try{
             await CucumberReportLog.AddScreenshot(global.screenShotUtils);
             if (scenario.result.status === 'failed') {
+                        // await BrowserWaits.waitForSeconds(600);
+
                 CucumberReportLog.AddMessage("****************** User details ******************"); 
                 CucumberReportLog.AddJson(JSON.parse(await browserUtil.getFromSessionStorage('userDetails')))
                 CucumberReportLog.AddMessage("****************** User details ******************"); 

@@ -1,10 +1,11 @@
 import { CdkTableModule } from '@angular/cdk/table';
+import { Component, DebugElement, ViewChild, inject } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { Location as AngularLocation } from '@angular/common';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, DebugElement, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
@@ -81,10 +82,11 @@ describe('TaskListFilterComponent', () => {
     postcode: 'AB11 6LT'
   };
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks', 'currentTasks$']);
-  const locationService = jasmine.createSpyObj('locationService', ['path']);
+  const locationService = jasmine.createSpyObj('locationService', ['path', 'getSpecificLocations']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
+  locationService.getSpecificLocations.and.returnValue(of([]));
   mockTaskService.currentTasks$.and.returnValue(of([null]));
   const roleAssignmentInfo = [{
     id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
@@ -129,6 +131,7 @@ describe('TaskListFilterComponent', () => {
       unsubscribe: () => null
     }
   };
+  let mockRouter: jasmine.SpyObj<Router>;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
   beforeEach(() => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
@@ -157,7 +160,7 @@ describe('TaskListFilterComponent', () => {
         },
         { provide: AngularLocation, useValue: locationService },
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
+        { provide: LocationDataService, useValue: locationService },
         { provide: TaskTypesService, useValue: { getTypesOfWork: () => of(typesOfWork) } },
         { provide: FilterService, useValue: mockFilterService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService }
@@ -192,10 +195,27 @@ describe('TaskListFilterComponent', () => {
     expect(component.fieldsConfig.persistence).toBe('local');
   });
 
+  it('should set booking locations', () => {
+    mockRouter = TestBed.get(Router);
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {location: {ids: ['231596', '231596']}}}});
+    fixture = TestBed.createComponent(WrapperComponent);
+    wrapper = fixture.componentInstance;
+    component = wrapper.appComponentRef;
+    expect(component.bookingLocations.length).toEqual(2);
+  });
+
   it('should show types of work filter with all types of work filters selected', () => {
     expect(component.fieldsSettings.fields.length).toBe(3);
     const typesOfWorkSelectedFields = component.fieldsSettings.fields[2];
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);
+  });
+
+  it('should store default locations from booking navigation', () => {
+    component.bookingLocations = ['Location1'];
+    locationService.getSpecificLocations.and.returnValue(['Location1']);
+    component.ngOnInit();
+    expect(component.defaultLocations).toBe(component.bookingLocations);
+    expect(locationService.getSpecificLocations).toHaveBeenCalledWith(component.defaultLocations);
   });
 
   it('should set allowTypesOfWorkFilter to true by default', () => {

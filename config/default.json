@@ -54,6 +54,7 @@
     "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/",
+    "waWorkflowApi": "http://wa-workflow-api-prod.service.core-compute-prod.internal",
     "idam": {
       "idamApiUrl": "https://idam-api.platform.hmcts.net",
       "idamClientID": "xuiwebapp",
@@ -80,7 +81,8 @@
     "icp_api": "http://em-icp-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
-    "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net/"
+    "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net/",
+    "judicialBookingsApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
   },
   "protocol": "https",
   "microservice": "xui_webapp",

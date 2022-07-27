@@ -5,6 +5,7 @@ import {
   getAllCaseWorkers,
   getAllCaseWorkersForLocation,
   getCases,
+  getMyAccess,
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService,
   getCaseWorkersFromServices,
@@ -22,7 +23,7 @@ import {
   showAllocateRoleLink
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
-import { getLocationById, getLocations } from './locationController';
+import { getFullLocations, getLocationById, getLocations } from './locationController';
 import { postFindPersonSearch } from './personService';
 
 const router = Router({mergeParams: true});
@@ -40,6 +41,7 @@ router.use('/findPerson', postFindPersonSearch);
 
 router.use('/location/:locationId', getLocationById);
 router.use('/location', getLocations);
+router.use('/full-location', getFullLocations);
 
 router.use('/searchForCompletable', postTaskSearchForCompletable);
 
@@ -60,5 +62,6 @@ router.use('/my-work/cases', getMyCases);
 router.use('/all-work/cases', getCases);
 
 router.use('/getJudicialUsers', getJudicialUsers);
+router.use('/my-work/myaccess', getMyAccess);
 
 export default router;

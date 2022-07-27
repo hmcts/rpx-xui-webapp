@@ -33,7 +33,7 @@ describe('RolesAndAccessComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RolesAndAccessComponent);
     component = fixture.componentInstance;
-    component.roles = CASEROLES;
+    component.roles = CASEROLES as CaseRole[];
     component.caseDetails = {
       case_id: '1',
       case_type: {

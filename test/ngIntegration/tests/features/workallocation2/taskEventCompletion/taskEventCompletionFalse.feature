@@ -35,7 +35,6 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK request "/workallocation2/task/:taskId/:action" intercept with reference "completeTaskRequest"
         Given I set MOCK request "/data/cases/:caseId/events" intercept with reference "submitEvent"
 
-
     Scenario Outline: Event with only one task assigned to this user - Trigger from menu
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 

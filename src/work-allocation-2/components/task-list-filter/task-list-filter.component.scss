@@ -30,3 +30,7 @@ div[field="types-of-work"], div[field="services"] {
     flex-basis: calc(100% - 34px);
   }
 }
+
+.hideFilter {
+  visibility: hidden;
+}

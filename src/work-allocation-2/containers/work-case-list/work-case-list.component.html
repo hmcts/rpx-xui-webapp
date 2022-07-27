@@ -1,4 +1,4 @@
-<div *ngIf="pagination; else tableSummary" class="pagination-top"
+<div *ngIf="pagination && view !== 'MyAccess'" class="pagination-top"
   attr.aria-label="{{ casesTotal }} results have been found" role="status">
   <span class="text-16" id="search-result-summary__text">Showing
     <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
@@ -7,13 +7,31 @@
     of
     <span class="govuk-!-font-weight-bold">{{ casesTotal || 0 }}</span> results</span>
 </div>
-<ng-template #tableSummary>
-  <div class="pagination-top" attr.aria-label="{{ casesTotal }} results have been found" role="status">
-    <span class="text-16">Showing <span class="govuk-!-font-weight-bold">{{
-        casesTotal || 0 }} </span>results</span>
-  </div>
-</ng-template>
-<span class="second-line"><span class="govuk-!-font-weight-bold">{{ uniqueCases || 0 }}</span> cases</span>
+<ng-container *ngIf="showResultsSummary === true">
+<div *ngIf="!pagination && view === 'MyAccess' && casesTotal > 0; else tableSummary" class="pagination-top"
+  attr.aria-label="{{ casesTotal }} results have been found" role="status">
+  <span class="text-16" id="search-result-summary__text">Displaying
+    <span class="govuk-!-font-weight-bold">{{ casesTotal }}</span>
+    of
+    <span class="govuk-!-font-weight-bold">{{ casesTotal || 0 }}</span> cases</span>
+</div>
+
+<!-- TODO: CAM_BOOKING - check this -->
+<!-- <div *ngIf="!pagination && view !== 'MyAccess'" class="pagination-top" attr.aria-label="{{ casesTotal }} results have been found" role="status">
+  <span class="text-16">Showing <span class="govuk-!-font-weight-bold">{{
+      casesTotal || 0 }} </span>results</span>
+</div> -->
+
+  <ng-template #tableSummary>
+    <div class="pagination-top" attr.aria-label="{{ casesTotal }} results have been found" role="status">
+      <span class="text-16">Showing <span class="govuk-!-font-weight-bold">{{
+          casesTotal || 0 }} </span>results</span>
+    </div>
+  </ng-template>
+
+  <!-- TODO: CAM_BOOKING - check this -->
+  <span class="second-line"><span class="govuk-!-font-weight-bold">{{ uniqueCases || 0 }}</span> cases</span>
+</ng-container>
 <!-- Reset Sorting Button -->
 <div *ngIf="showResetSortButton" class="reset-sort-button"><button type="button"
     class="govuk-button hmcts-button--secondary" (click)="onResetSorting()">Reset sorting</button></div>
@@ -37,7 +55,7 @@
         <h1 class="column-label" *ngIf="field.disableSort">{{field.columnLabel}}</h1>
       </th>
       <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
-        <exui-work-field [workField]="rowData" [config]="field"></exui-work-field>
+        <exui-roundel-badge [isNew]="rowData.isNew" [rowData]="rowData" [config]="field"></exui-roundel-badge>
       </td>
     </ng-container>
   </ng-container>
@@ -55,7 +73,7 @@
         <h1 class="column-label" *ngIf="field.disableSort">{{field.columnLabel}}</h1>
       </th>
       <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
-        <exui-work-field [workField]="rowData" [config]="field"></exui-work-field>
+        <exui-roundel-badge [isNew]="rowData.isNew" [rowData]="rowData" [config]="field"></exui-roundel-badge>
       </td>
     </ng-container>
   </ng-container>

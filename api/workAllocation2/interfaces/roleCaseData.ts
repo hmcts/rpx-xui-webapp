@@ -1,4 +1,5 @@
 export interface RoleCaseData {
+  access?: string;
   id: string;
   case_name: string;
   case_id: string;
@@ -10,8 +11,9 @@ export interface RoleCaseData {
   jurisdiction: string;
   jurisdictionId?: string;
   location_id: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | string;
+  endDate: Date | string;
+  dateSubmitted?: Date;
   assignee: string;
   state?: string;
   version?: string;
@@ -34,4 +36,5 @@ export interface RoleCaseData {
     hasNewMatters?: string,
     homeOfficeReferenceNumber?: string
   };
+  isNew?: boolean;
 }

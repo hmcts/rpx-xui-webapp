@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.6":
-  version "4.18.6"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.6.tgz#8d0d5a184ffb78b8777b054ddcc8ab452c8865e3"
-  integrity sha512-ews3NPECoxbRNTUC8kTSuYaqcRbZPRu6Wdwlb2H8ICT6LKxavlKys/V7h9kNpH56AXWB+GG3d6J5ZAa4+YQAjQ==
+"@hmcts/ccd-case-ui-toolkit@4.18.10":
+  version "4.18.10"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.10.tgz#52b843fa22150e13b3182eadbec7bf3026785666"
+  integrity sha512-hJgwoN9J/Uz3lIaSWjqi7Y4htU84UqGWzGkz45DM882PY0zGLbtyD+ok4K0ajXaZlm1n2hGoVd4bWh5Gs0vRUA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -519,7 +519,16 @@
     js-yaml "^3.8.4"
     superagent "5"
 
-"@hmcts/nodejs-logging@^3.0.0", "@hmcts/nodejs-logging@^3.0.1":
+"@hmcts/nodejs-logging@^3.0.0":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@hmcts/nodejs-logging/-/nodejs-logging-3.0.4.tgz#82418571e85f0a275e021f53008195accc55e3b9"
+  integrity sha512-42JgVVxxMI9JD+lnKkBcwIYAiJM/mIUlSLlqs8uVqnzHG/JdMhg1g6cYWqWc3UIhxl2KS+n8y4bh09nLC47nSA==
+  dependencies:
+    moment "^2.19.3"
+    on-finished "^2.3.0"
+    winston "^2.4.5"
+
+"@hmcts/nodejs-logging@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@hmcts/nodejs-logging/-/nodejs-logging-3.0.1.tgz#370bfee6c1d502ea7fec13001632bb03f15d072d"
   integrity sha512-BpOBBFvUfy3d/pGi/s0s2CxtNwnLEm1hJcsEH7av9NpXaGL1rO0zfAcEk4eKNKYZVBEoiyXlpajFtAutSAFWfg==
@@ -537,10 +546,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.9-filter-non-base-location":
-  version "1.7.9-filter-non-base-location"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.9-filter-non-base-location.tgz#9730674a504b2ca0215c2971cc0d68bbd95d292e"
-  integrity sha512-oSbFcOJ8wq/xlkLs1wLx/sniPuUgJBwfu5DyVCwPi8pAiyByMAgVUWsybJKaSBLzza+exFfEFv7Tu2gLodsabQ==
+"@hmcts/rpx-xui-common-lib@1.7.10-booking-check-type":
+  version "1.7.10-booking-check-type"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.10-booking-check-type.tgz#0c786be3a1fac9590a11526f178c7592fe6968a9"
+  integrity sha512-XodFJKi0YVTYUYQGjQCtYu94XoGM9dLYrXXAqB4T6Uzh1xiThMQ7UgtI6RSJTqYRcH225WhOyuCcMIWx6UXsbg==
   dependencies:
     tslib "^1.9.0"
 
@@ -2102,6 +2111,11 @@ async@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/async/-/async-3.2.0.tgz#b3a2685c5ebb641d3de02d161002c60fc9f85720"
   integrity sha512-TR2mEZFVOj2pLStYxLht7TyfuRzaydfpxr3k9RpHIzMgw7A64dzsdqCxH1WJyQdoe8T10nDXd9wnEigmiuHIZw==
+
+async@^3.2.3:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.4.tgz#2d22e00f8cddeb5fde5dd33522b56d1cf569a81c"
+  integrity sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==
 
 async@~1.0.0:
   version "1.0.0"
@@ -10528,7 +10542,7 @@ path-type@^4.0.0:
 path@^0.12.7:
   version "0.12.7"
   resolved "https://registry.yarnpkg.com/path/-/path-0.12.7.tgz#d4dc2a506c4ce2197eb481ebfcd5b36c0140b10f"
-  integrity sha1-1NwqUGxM4hl+tIHr/NWzbAFAsQ8=
+  integrity sha512-aXXC6s+1w7otVF9UletFkFcDsJeO7lSZBPUQhtb5O0xJe8LtYhj/GxldoL09bBj9+ZmE2hNoHqQSFMN5fikh4Q==
   dependencies:
     process "^0.11.1"
     util "^0.10.3"
@@ -10759,7 +10773,7 @@ process-nextick-args@~2.0.0:
 process@^0.11.1, process@^0.11.10:
   version "0.11.10"
   resolved "https://registry.yarnpkg.com/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
-  integrity sha1-czIwDoQBYb2j5podHZGn1LwW8YI=
+  integrity sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==
 
 progress@^2.0.0, progress@^2.0.1, progress@~2.0.0:
   version "2.0.3"
@@ -14142,6 +14156,18 @@ winston@^2.4.1:
   integrity sha512-NBo2Pepn4hK4V01UfcWcDlmiVTs7VTB1h7bgnB0rgP146bYhMxX0ypCz3lBOfNxCO4Zuek7yeT+y/zM1OfMw4Q==
   dependencies:
     async "~1.0.0"
+    colors "1.0.x"
+    cycle "1.0.x"
+    eyes "0.1.x"
+    isstream "0.1.x"
+    stack-trace "0.0.x"
+
+winston@^2.4.5:
+  version "2.4.6"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-2.4.6.tgz#da616f332928f70aac482f59b43d62228f29e478"
+  integrity sha512-J5Zu4p0tojLde8mIOyDSsmLmcP8I3Z6wtwpTDHx1+hGcdhxcJaAmG4CFtagkb+NiN1M9Ek4b42pzMWqfc9jm8w==
+  dependencies:
+    async "^3.2.3"
     colors "1.0.x"
     cycle "1.0.x"
     eyes "0.1.x"

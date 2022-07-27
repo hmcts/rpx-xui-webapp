@@ -11,6 +11,12 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
+
+const {LOG_LEVELS} = require("../../e2e/support/constants");
+
+process.env['LOG_LEVEL'] = LOG_LEVELS.Info
+
+
 if (!process.env['TEST_ENV_URL']){
     process.env['TEST_ENV_URL'] = process.env['TEST_URL']; 
 

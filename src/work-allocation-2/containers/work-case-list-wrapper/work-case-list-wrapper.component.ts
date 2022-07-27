@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, Subscription } from 'rxjs';
@@ -256,9 +256,12 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
     if (this.view === 'AllWorkCases') {
-      return this.caseService.getCases({ searchRequest, view: this.view });
+      return this.caseService.getCases({searchRequest, view: this.view});
+    } else if (this.view === 'MyCases') {
+      return this.caseService.getMyCases({searchRequest, view: this.view});
+    } else {
+      return this.caseService.getMyAccess({searchRequest, view: this.view});
     }
-    return this.caseService.getMyCases({ searchRequest, view: this.view });
   }
 
   /**
@@ -331,22 +334,26 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     const loadingToken = this.loadingService.register();
     const casesSearch$ = this.performSearchPagination();
     const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
-      const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
-      if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
-        // may want to determine judicial workers by services in filter
-        return this.rolesService.getCaseRolesUserDetails(judicialUserIds, this.selectedServices).pipe(switchMap((judicialUserData) => {
-          const judicialNamedCases = result.cases.map(judicialCase => {
-            const currentCase = judicialCase;
-            const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
-            if (theJUser) {
-              currentCase.actorName = theJUser.known_as;
+      if (result && result.cases) {
+        const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
+        if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
+          // may want to determine judicial workers by services in filter
+          return this.rolesService.getCaseRolesUserDetails(judicialUserIds, this.selectedServices).pipe(switchMap((judicialUserData) => {
+            const judicialNamedCases = result.cases.map(judicialCase => {
+              const currentCase = judicialCase;
+              const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
+              if (theJUser) {
+                currentCase.actorName = theJUser.known_as;
+                return currentCase;
+              }
               return currentCase;
-            }
-            return currentCase;
-          });
-          result.cases = judicialNamedCases;
+            });
+            result.cases = judicialNamedCases;
+            return of(result);
+          }));
+        } else {
           return of(result);
-        }));
+        }
       } else {
         return of(result);
       }

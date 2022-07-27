@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
-import { Actions, AllocateRoleStateData, CaseRole, Role, RoleCategory, RolesByService } from '../models';
+import { Actions, AllocateRoleStateData, CaseRole, Period, Role, RoleCategory, RolesByService, SpecificAccessStateData } from '../models';
 import { CaseRoleDetails } from '../models/case-role-details.interface';
 import { getAllRolesFromServices, getRoleSessionStorageKeyForServiceId, setRoles } from '../utils';
 
@@ -11,6 +11,8 @@ import { getAllRolesFromServices, getRoleSessionStorageKeyForServiceId, setRoles
 export class AllocateRoleService {
   public static allocateRoleBaseUrl = '/api/role-access/allocate-role';
   public static roleUrl = '/api/role-access/roles';
+  public static accessManagementUrl = '/api/am';
+  public static specificAccessUrl = '/api/specific-access-request';
   public backUrl: string;
   constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) { }
 
@@ -22,6 +24,14 @@ export class AllocateRoleService {
     if (action === Actions.Reallocate) {
       return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/reallocate`, allocateRoleStateData);
     }
+  }
+
+  public specificAccessApproval(specificAccessStateData: SpecificAccessStateData, period: Period): Observable<any> {
+    return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, {specificAccessStateData, period});
+  }
+
+  public requestMoreInformation(requestMoreInformationStateData: SpecificAccessStateData): Observable<any> {
+    return this.http.post(`${AllocateRoleService.specificAccessUrl}/request-more-information`, requestMoreInformationStateData);
   }
 
   public removeAllocation(assigmentId: string): Observable<any> {
@@ -64,6 +74,22 @@ export class AllocateRoleService {
 
   public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
     return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/post`, {caseId, jurisdiction, caseType, assignmentId});
+  }
+
+  public getCaseAccessRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
+    return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/access-get`, {caseId, jurisdiction, caseType, assignmentId});
+  }
+
+  public getSpecificAccessApproved(): Observable<{count}> {
+    return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getSpecificAccessApproved`);
+  }
+
+  public getNewCasesCount(): Observable<{count}> {
+    return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getNewCasesCount`);
+  }
+
+  public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
+    return this.http.post<string[]>(`${AllocateRoleService.roleUrl}/manageLabellingRoleAssignment/${caseId}`, {});
   }
 
   public getCaseRolesUserDetails(userIds: string[], services: string[]): Observable<CaseRoleDetails[]> {

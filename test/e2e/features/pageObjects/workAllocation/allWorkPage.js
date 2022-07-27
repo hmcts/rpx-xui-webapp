@@ -5,6 +5,7 @@ var cucumberReporter = require('../../../support/reportLogger');
 const { Select,GovUKRadios } = require('../../../utils/domElements');
 
 var TaskMessageBanner = require('../messageBanner');
+const { LOG_LEVELS } = require('../../../support/constants');
 
 class AllWork extends TaskList {
 
@@ -129,7 +130,7 @@ class AllWork extends TaskList {
             });
             return true;
         } catch (err) {
-            cucumberReporter.AddMessage("All work page not displayed " + err.stack);
+            cucumberReporter.AddMessage("All work page not displayed " + err.stack,LOG_LEVELS.Error);
             return false;
         }
 

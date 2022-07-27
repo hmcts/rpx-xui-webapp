@@ -1,5 +1,7 @@
 import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
+import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
+import { BookingSystemErrorComponent } from 'src/booking/containers/utils/booking-system-error/booking-system-error.component';
 import {
   AccessibilityComponent,
   ApplicationRoutingComponent,
@@ -25,6 +27,11 @@ export const ROUTES: Routes = [
     path: '',
     component: ApplicationRoutingComponent,
     pathMatch: 'full'
+  },
+  {
+    path: 'booking',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../booking/booking.module#BookingModule'
   },
   {
     path: 'cases',
@@ -114,6 +121,27 @@ export const ROUTES: Routes = [
   {
     path: 'service-down',
     component: ServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'booking-service-down',
+    component: BookingServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'booking-system-error',
+    component: BookingSystemErrorComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'refresh-booking-service-down',
+    component: RefreshBookingServiceDownComponent,
     data: {
       title: 'Service Unavailable'
     }

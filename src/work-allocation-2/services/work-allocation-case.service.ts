@@ -1,8 +1,10 @@
 import { Case } from '../models/cases';
+import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, tap} from 'rxjs/operators';
 import Task from '../models/tasks/task.model';
 
 const BASE_URL: string = '/workallocation2/case';
@@ -16,8 +18,7 @@ export enum ACTION {
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationCaseService {
-
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient, private readonly featureToggleService: FeatureToggleService) { }
 
   public getCase(caseId: string): Observable<Case> {
     const url = `${BASE_URL}/${caseId}`;
@@ -36,6 +37,9 @@ export class WorkAllocationCaseService {
     return this.http.post<Case[]>(`/workallocation2/my-work/cases`, body);
   }
 
+  public getMyAccess(body: { searchRequest: SearchCaseRequest, view: string }): Observable<any> {
+    return this.http.post<any>('/workallocation2/my-work/myaccess', body);
+  }
   public getCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
     return this.http.post<Case[]>(`/workallocation2/all-work/cases`, body);
   }

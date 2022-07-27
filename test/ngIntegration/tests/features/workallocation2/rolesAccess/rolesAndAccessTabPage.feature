@@ -260,7 +260,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
 
-        Then I validate add link for role category "Judicial" is not displayed in Roles and access page
+        Then I validate add link for role category "Judicial" is displayed in Roles and access page
         Then I validate add link for role category "Legal Ops" is not displayed in Roles and access page
         Then I validate add link for role category "Exclusion" is displayed in Roles and access page
 

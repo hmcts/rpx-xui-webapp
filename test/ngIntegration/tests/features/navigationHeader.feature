@@ -15,12 +15,13 @@ Feature: Navigation header tabs
         Given I init MockApp
         Given I start MockApp
         Given I navigate to home page
-
-        # Given I navigate to home page
-       
+        Then I log LD feature toggle values
+            | name          |
+            | mc-menu-items |
+            | mc-menu-theme |
         Then I validate header displayed for user type "<roleType>"
         Then I see primary navigation tabs "<mainHeaders>" in main header
-
+       
         Then I do not see primary navigation tabs does not exist excluding "<mainHeaders>"
             | Tabs             |
             | Case list        |

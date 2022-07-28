@@ -56,7 +56,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     return actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
-  private static getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null{
+  private static getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
     let actualPauseStartTime: string;
     if (actualIndex >= 0) {
       actualPauseStartTime = (hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays
@@ -92,10 +92,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   private static getTime(time: string): string {
     return time ? moment(time).format('HH:mm') : null;
-  }
-
-  private static getDate(dateTime: string): string {
-    return dateTime ? moment(dateTime).format('YYYY-MM-DD') : null;
   }
 
   public ngOnInit() {

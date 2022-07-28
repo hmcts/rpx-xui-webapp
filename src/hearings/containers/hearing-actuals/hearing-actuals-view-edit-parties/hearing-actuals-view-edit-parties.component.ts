@@ -125,13 +125,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
         this.plannedDayIndex = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays
           .findIndex(item => ActualHearingsUtils.getDate(item.plannedStartTime) === this.hearingDate);
-        const actualDayIndex = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays ?
-          this.hearingActualsMainModel.hearingActuals.actualHearingDays
-          .findIndex(item => item.hearingDate === this.hearingDate)
-        : null;
-
         this.setUpRoleLists();
-        this.createForm(this.hearingActualsMainModel, actualDayIndex);
+        this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
       });
   }
@@ -148,7 +143,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     }
   }
 
-  private createForm(hearingActualsMainModel: HearingActualsMainModel, actualDayIndex: number | null): void {
+  private createForm(hearingActualsMainModel: HearingActualsMainModel): void {
+    const actualDayIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(hearingActualsMainModel, this.hearingDate);
+
     const hasActualParties = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[actualDayIndex]
       && hearingActualsMainModel.hearingActuals.actualHearingDays[actualDayIndex].actualDayParties

@@ -63,11 +63,14 @@ export class ActualHearingsUtils {
   public static mergeSingleHearingPartActuals(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string,
                                               updatedActuals: ActualHearingDayModel): HearingActualsModel {
     const hearingActuals = {
-      hearingOutcome: hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.hearingOutcome
-        ? {...hearingActualsMainModel.hearingActuals.hearingOutcome} : {},
       actualHearingDays: hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
         ? [...hearingActualsMainModel.hearingActuals.actualHearingDays] : [],
     } as HearingActualsModel;
+
+    if (hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.hearingOutcome
+        && hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult) {
+      hearingActuals.hearingOutcome = {...hearingActualsMainModel.hearingActuals.hearingOutcome};
+    }
 
     let indexOfActual: number;
     if (hearingActuals.actualHearingDays && hearingActuals.actualHearingDays.length > 0) {
@@ -100,5 +103,27 @@ export class ActualHearingsUtils {
     }
 
     return hearingActuals;
+  }
+
+  public static getActualDayIndexFromHearingDate(hearingActualsMainModel: HearingActualsMainModel, hearingDate): number | undefined {
+    const hasActualsHearingDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
+    let index: number;
+    if (hasActualsHearingDays) {
+      index = hearingActualsMainModel.hearingActuals.actualHearingDays
+        .findIndex(item => item.hearingDate === hearingDate);
+    }
+
+    return index;
+  }
+
+  public static getPlannedDayIndexFromHearingDate(hearingActualsMainModel: HearingActualsMainModel, hearingDate): number | undefined {
+    const hasPlannedHearingDays = hearingActualsMainModel.hearingPlanned && hearingActualsMainModel.hearingPlanned.plannedHearingDays;
+    let index: number;
+    if (hasPlannedHearingDays) {
+      index = hearingActualsMainModel.hearingPlanned.plannedHearingDays
+        .findIndex(item => ActualHearingsUtils.getDate(item.plannedStartTime) === hearingDate);
+    }
+
+    return index;
   }
 }

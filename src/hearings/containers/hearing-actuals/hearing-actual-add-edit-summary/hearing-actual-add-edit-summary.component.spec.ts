@@ -18,7 +18,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
 
-fdescribe('HearingActualAddEditSummaryComponent', () => {
+describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
   let fixture: ComponentFixture<HearingActualAddEditSummaryComponent>;
   let store: any;
@@ -572,7 +572,7 @@ fdescribe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return hearing result reason type description for adjourned', () => {
     component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
-    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    const hearingOutcome = JSON.parse(JSON.stringify(hearingActualsMainModel.hearingActuals.hearingOutcome));
     hearingOutcome.hearingResult = HearingResult.ADJOURNED;
     hearingOutcome.hearingResultReasonType = 'postponedDueToOtherReasons';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
@@ -581,7 +581,7 @@ fdescribe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return hearing result reason type description for cancelled', () => {
     component.actualCancellationReasonCodes = actualCancellationReasonCodes;
-    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    const hearingOutcome = JSON.parse(JSON.stringify(hearingActualsMainModel.hearingActuals.hearingOutcome));
     hearingOutcome.hearingResult = HearingResult.CANCELLED;
     hearingOutcome.hearingResultReasonType = 'reasonTwo';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);

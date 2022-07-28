@@ -1,4 +1,5 @@
 <div class="hmcts-header transparent-background">
+  <a [routerLink]="'.'" fragment="content" class="govuk-skip-link">Skip to main content</a>
   <div class="hmcts-header__container">
 
     <ng-container [ngSwitch]="logo">
@@ -67,12 +68,19 @@
       <div class="hmcts-primary-navigation__item">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of (rightItems | async)">
-            <a class="hmcts-primary-navigation__link transparent-background"
+            <a
+              *ngIf="(isUserCaseManager$ | async)"
+              class="hmcts-primary-navigation__link transparent-background"
               [ngClass]="item.ngClass"
               (click)="onEmitSubMenu(item)"
               [attr.aria-current]="item.active ? true : null"
               [routerLink]="item.href">{{item.text}}
             </a>
+            <exui-case-reference-search-box
+              *ngIf="!(isUserCaseManager$ | async)"
+              [item]="item"
+              [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader">
+            </exui-case-reference-search-box>
           </li>
         </ul>
       </div>

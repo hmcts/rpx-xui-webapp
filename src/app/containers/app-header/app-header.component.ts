@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
@@ -48,6 +48,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public userDetails$: Observable<UserDetails>;
   public defaultTheme: ApplicationTheme = AppConstants.DEFAULT_USER_THEME;
   public defaultMenuItems: NavigationItem[] = AppConstants.DEFAULT_MENU_ITEMS;
+  public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
 
   constructor(
     private readonly store: Store<fromActions.State>,
@@ -88,12 +89,18 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.featureToggleKey = AppConstants.SERVICE_MESSAGES_FEATURE_TOGGLE_KEY;
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
-    this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
+
     this.setAppHeaderProperties(this.defaultTheme, this.defaultMenuItems);
 
-    this.userDetails$.subscribe(userDetails => {
-      this.setHeaderContent(userDetails);
-    });
+    this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
+    const decorate16DigitCaseReferenceSearchBoxInHeader$ = this.store.pipe(select(fromActions.getDecorate16digitCaseReferenceSearchBoxInHeader));
+    combineLatest([
+      this.userDetails$,
+      decorate16DigitCaseReferenceSearchBoxInHeader$
+    ]).subscribe(([userDetails, decorate16DigitCaseReferenceSearchBoxInHeader]) => {
+        this.setHeaderContent(userDetails);
+        this.decorate16DigitCaseReferenceSearchBoxInHeader = decorate16DigitCaseReferenceSearchBoxInHeader;
+      });
 
     // Set up the active link whenever we detect that navigation has completed.
     this.router.events.subscribe(event => {

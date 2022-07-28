@@ -97,7 +97,7 @@ describe('MyAccessComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  xit('should not show the footer when there are cases', () => {
+  it('should not show the footer when there are cases', () => {
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
@@ -106,7 +106,7 @@ describe('MyAccessComponent', () => {
     expect(footerRowClass).not.toContain('shown');
   });
 
-  xit('should show the footer when there are no cases xx', () => {
+  it('should show the footer when there are no cases xx', () => {
     spyOnProperty(component, 'cases').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
@@ -119,4 +119,8 @@ describe('MyAccessComponent', () => {
     expect(footerCell).toBeDefined();
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
+
+  afterEach(() => {
+    fixture.destroy();
+  })
 });

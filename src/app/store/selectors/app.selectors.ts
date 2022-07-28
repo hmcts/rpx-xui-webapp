@@ -36,3 +36,8 @@ export const getUseIdleSessionTimeout = createSelector(
   getConfigState,
   fromApp.getUseIdleSessionTimeout
 );
+
+export const getDecorate16digitCaseReferenceSearchBoxInHeader = createSelector(
+  getConfigState,
+  fromApp.getDecorate16digitCaseReferenceSearchBoxInHeader
+);

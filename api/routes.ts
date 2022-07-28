@@ -1,8 +1,9 @@
 import * as express from 'express';
+import { router as caseShareRoutes } from './caseshare/routes';
+import { getConfigValue, showFeature } from './configuration';
+import { APP_INSIGHTS_KEY } from './configuration/references';
+import { router as globalSearchRoutes } from './globalSearch/routes';
 import accessManagementRouter from './accessManagement/routes';
-import {router as caseShareRoutes} from './caseshare/routes';
-import {getConfigValue, showFeature} from './configuration';
-import {APP_INSIGHTS_KEY} from './configuration/references';
 import healthCheck from './healthCheck';
 import {router as hearingsRouter} from './hearings/routes';
 import authInterceptor from './lib/middleware/auth';
@@ -33,6 +34,8 @@ router.use(authInterceptor);
 
 router.use('/user', userRouter);
 
+router.use('/role-access', roleAccessRouter);
+
 router.use('/am', accessManagementRouter);
 
 router.use('/role-access', roleAccessRouter);
@@ -43,6 +46,7 @@ router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
+router.use('/globalSearch', globalSearchRoutes);
 router.use('/locations', locationsRouter);
 router.use('/service-ref-data', serviceRefDataRouter);
 router.use('/prd', prdRouter);

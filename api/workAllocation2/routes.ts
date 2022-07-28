@@ -43,9 +43,6 @@ router.use('/location/:locationId', getLocationById);
 router.use('/location', getLocations);
 router.use('/full-location', getFullLocations);
 
-router.use('/location/:locationId', getLocationById);
-router.use('/location', getLocations);
-
 router.use('/searchForCompletable', postTaskSearchForCompletable);
 
 router.use('/task/types-of-work', getTypesOfWork);

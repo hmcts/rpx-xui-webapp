@@ -4,24 +4,31 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
+
 import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
 import { HmctsGlobalHeaderComponent } from '../hmcts-global-header/hmcts-global-header.component';
 import { HeaderComponent } from './header.component';
 
 describe('Header Component', () => {
-  let mockStore: any;
-  let mockService: any;
-  let component: HeaderComponent;
-  let fixture: ComponentFixture<HeaderComponent>;
+    let mockStore: any;
+    let mockService: any;
+    let component: HeaderComponent;
+    let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent],
-      imports: [HttpClientModule, RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: Store, useValue: mockStore }]
-    }).compileComponents();
-  }));
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent],
+        imports: [HttpClientModule, RouterTestingModule],
+        providers: [{ provide: Store, useValue: mockStore }]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HeaderComponent);
+        mockStore = jasmine.createSpyObj('store', ['pipe']);
+        mockService = jasmine.createSpyObj('service', ['get']);
+        component = new HeaderComponent(mockStore);
+    });
 
   beforeEach(() => {
       fixture = TestBed.createComponent(HeaderComponent);
@@ -31,7 +38,6 @@ describe('Header Component', () => {
   });
 
   it('should create', () => {
-
       expect(component).toBeTruthy();
   });
 

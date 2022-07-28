@@ -99,7 +99,9 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public onSubmitHearingDetails(): void {
     this.submitted = true;
-    const hearingIsCancelled = this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.CANCELLED;
+    const hearingIsCancelled =
+      this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome ?
+      this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.CANCELLED : false;
     if (hearingIsCancelled || this.isValid()) {
       this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
     }

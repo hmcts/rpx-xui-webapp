@@ -3,12 +3,6 @@ import { hearingActualsMainModel } from '../hearing.test.data';
 import { ActualHearingsUtils } from './actual-hearings.utils';
 
 describe('ActualHearingsUtils', () => {
-
-  it('should return ActualHearings Timing length', () => {
-    ActualHearingsUtils.isHearingDaysUpdated = true;
-    expect(ActualHearingsUtils.isHearingDaysUpdated).toBe(true);
-  });
-
   it('should return hearing days when hearingActuals are null', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     mainModel.hearingActuals = null;
@@ -26,5 +20,4 @@ describe('ActualHearingsUtils', () => {
     const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
     expect(hearingDays).toBeDefined();
   });
-
 });

@@ -6,9 +6,6 @@ import {
 } from '../models/hearingActualsMainModel';
 
 export class ActualHearingsUtils {
-  public static isHearingDaysUpdated: boolean;
-  public static isHearingPartiesUpdated: boolean;
-
   public static getDate(dateTime: string): string {
     return dateTime ? moment(dateTime).format('YYYY-MM-DD') : null;
   }

@@ -96,13 +96,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public onSubmitHearingDetails(): void {
     this.submitted = true;
-    const hearingIsCancelled2 =
-      (this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome) ?
-      this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.CANCELLED : false;
-    const hearingIsCancelled = false;
-    console.log(hearingIsCancelled);
-    console.log(hearingIsCancelled2);
-    if (hearingIsCancelled || this.isValid()) {
+
+    if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
       this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
     }
   }
@@ -234,7 +229,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       isValid = false;
     }
 
-    if (!this.hearingResult) {
+    if (!this.hearingResult && this.hearingResult === '') {
       this.validationErrors.push({
         id: 'hearing-stage-result-update-link',
         message: HearingActualAddEditSummaryEnum.HearingResultError

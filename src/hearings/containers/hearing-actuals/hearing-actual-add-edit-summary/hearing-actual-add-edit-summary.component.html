@@ -157,7 +157,7 @@
         Last name: {{participant.individualDetails.lastName}}<br>
         Organisation: {{participant.actualOrganisationName}}<br>
         Attendance Type: {{participant.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
-        Attendance representing: {{getRepresentingAttendee(party.representedParty, actualHearingDay)}}<br>
+        Attendance representing: {{getRepresentingAttendee(participant.representedParty, actualHearingDay)}}<br>
       </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>

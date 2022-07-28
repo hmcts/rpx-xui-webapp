@@ -276,6 +276,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
           ...this.existingActualDay,
           actualDayParties: actualParties
         } as ActualHearingDayModel;
+        this.hearingActualsMainModel.hearingActuals.actualHearingDays.find(d => d.hearingDate === actualDay.hearingDate).actualDayParties = actualParties;
       } else {
         actualDay = {
           hearingDate: moment(this.existingPlannedDay.plannedStartTime).format('YYYY-MM-DD'),
@@ -285,16 +286,12 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
           pauseDateTimes: [],
           actualDayParties: actualParties
         } as ActualHearingDayModel;
+        this.hearingActualsMainModel.hearingActuals.actualHearingDays.push(actualDay);
       }
-      const actualDays = [...this.hearingActualsMainModel.hearingActuals.actualHearingDays, actualDay];
 
-      const hearingActuals = {
-        ...this.hearingActualsMainModel.hearingActuals,
-        actualHearingDays: actualDays,
-      };
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
         hearingId: this.id,
-        hearingActuals
+        hearingActuals: this.hearingActualsMainModel.hearingActuals
       }));
       this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
     }

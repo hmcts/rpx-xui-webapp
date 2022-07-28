@@ -175,7 +175,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
       // actualHearingDays: ActualHearingsUtils.getActualHearingDay(this.hearingActualsMainModel)
-      actualHearingDays: [day]
+      actualHearingDays: this.actualHearingDays
     };
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -189,16 +189,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     ActualHearingsUtils.isHearingPartiesUpdated = false;
     this.successBanner = true;
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-
-    const actualHearingDaysWithParties = [
-      {
-        ...day,
-        actualDayParties: [...this.getParticipants(day.hearingDate), ...this.getPartiesByHearingDate(day.hearingDate)],
-      }
-    ];
+    day.actualDayParties = [...this.getParticipants(day.hearingDate), ...this.getPartiesByHearingDate(day.hearingDate)];
     const hearingActuals = {
       ...this.hearingActualsMainModel.hearingActuals,
-      actualHearingDays: actualHearingDaysWithParties
+      actualHearingDays: this.actualHearingDays
     };
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -278,7 +272,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public getParticipants(hearingDate: string) {
-    return this.dayParties.find(p => p.hearingDate === hearingDate).participants;
+    const participants = this.dayParties.find(p => p.hearingDate === hearingDate).participants;
+    return participants ? participants : null;
   }
 
   private getPartiesByHearingDate(hearingDate: string) {
@@ -356,7 +351,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public getPartiesAttendenceMethod(day): string {
     const theDay = this.dayParties.find(d => d.hearingDate === day.hearingDate);
-    if (theDay) {
+    if (theDay && theDay.parties && theDay.parties.length > 0) {
       return theDay.parties
       .map((p) => `${p.individualDetails.firstName} ${p.individualDetails.lastName}: ${this.partyChannelDisplayValuePipe.transform(p.partyChannelSubType, this.partyChannels)}`).join(',');
     } else {

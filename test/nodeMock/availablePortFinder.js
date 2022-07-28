@@ -38,7 +38,7 @@ function configureTestProxyPort(){
             throw Error("No free port available")
         }
         console.log(port);
-        fs.writeFileSync(`${__dirname}/NODEMOCK_PORT.txt`, port);
+        fs.writeFileSync(`${__dirname}/NODEMOCK_PORT.txt`, port+"");
         // getAvailablePort();
         updateAngularProxyTestConfig(port);
 

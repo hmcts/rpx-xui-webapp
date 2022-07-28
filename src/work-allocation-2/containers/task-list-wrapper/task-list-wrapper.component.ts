@@ -261,14 +261,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       },
       {
         sort_by: this.taskServiceConfig.defaultSortFieldName,
-        sort_order: this.sortedBy.order
+        sort_order: this.taskServiceConfig.defaultSortDirection
       }
     ];
     }
 
     return [{
       sort_by: this.taskServiceConfig.defaultSortFieldName,
-      sort_order: this.sortedBy.order
+      sort_order: this.taskServiceConfig.defaultSortDirection
     }];
   }
 
@@ -327,12 +327,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public onPaginationHandler(pageNumber: number): void {
     this.pagination.page_number = pageNumber;
     this.sessionStorageService.setItem(this.pageSessionKey, pageNumber.toString());
-    this.loadTasks();
-  }
-
-  public onResetSortHandler(): void {
-    this.sortedBy = null;
-    this.sessionStorageService.removeItem(this.sortSessionKey);
     this.loadTasks();
   }
 

@@ -1,9 +1,9 @@
 import * as express from 'express';
-import { router as caseShareRoutes } from './caseshare/routes';
-import { getConfigValue, showFeature } from './configuration';
-import { APP_INSIGHTS_KEY } from './configuration/references';
-import { router as globalSearchRoutes } from './globalSearch/routes';
 import accessManagementRouter from './accessManagement/routes';
+import {router as caseShareRoutes} from './caseshare/routes';
+import {getConfigValue, showFeature} from './configuration';
+import {APP_INSIGHTS_KEY} from './configuration/references';
+import { router as globalSearchRoutes } from './globalSearch/routes';
 import healthCheck from './healthCheck';
 import {router as hearingsRouter} from './hearings/routes';
 import authInterceptor from './lib/middleware/auth';
@@ -33,6 +33,8 @@ router.get('/configuration', (req, res) => {
 router.use(authInterceptor);
 
 router.use('/user', userRouter);
+
+router.use('/am', accessManagementRouter);
 
 router.use('/role-access', roleAccessRouter);
 

@@ -67,6 +67,12 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       )
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
+        this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
+        this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
+        this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
+        this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
+        this.actualHearingDays = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel);
+        this.hearingDateRange = this.calculateEarliestHearingDate(this.actualHearingDays);
 
         this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.forEach(
           plannedDay => {
@@ -74,20 +80,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
             if (!this.hearingDatesAccordion.hasOwnProperty(key)) {
               this.hearingDatesAccordion[key] = false;
             }
-        });
-
-        this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
-        this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
-        this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
-        this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
-        this.actualHearingDays = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel);
-        this.hearingDateRange = this.calculateEarliestHearingDate(this.actualHearingDays);
+          });
       });
   }
 
   public ngOnDestroy(): void {
-    ActualHearingsUtils.isHearingDaysUpdated = false;
-    ActualHearingsUtils.isHearingPartiesUpdated = false;
     if (this.sub) {
       this.sub.unsubscribe();
     }
@@ -99,9 +96,12 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public onSubmitHearingDetails(): void {
     this.submitted = true;
-    const hearingIsCancelled =
-      this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome ?
+    const hearingIsCancelled2 =
+      (this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome) ?
       this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.CANCELLED : false;
+    const hearingIsCancelled = false;
+    console.log(hearingIsCancelled);
+    console.log(hearingIsCancelled2);
     if (hearingIsCancelled || this.isValid()) {
       this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
     }
@@ -112,7 +112,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.find(
       plannedDay => ActualHearingsUtils.getDate(plannedDay.plannedStartTime) === hearingDate
     );
-    console.log(hearingDate, plannedHearingDay);
 
     let party: PlannedDayPartyModel;
     if (plannedHearingDay) {
@@ -216,7 +215,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingStageResultErrorMessage = '';
     this.hearingTimingResultErrorMessage = '';
     this.hearingPartiesResultErrorMessage = '';
-    if (ActualHearingsUtils.isHearingDaysUpdated || !this.isAllHearingActualsTimingAvailable(this.hearingActualsMainModel)) {
+    if (!this.isAllHearingActualsTimingAvailable(this.hearingActualsMainModel)) {
       this.validationErrors.push({
         id: 'hearing-timing-result-confirm-link',
         message: HearingActualAddEditSummaryEnum.ConfirmUpdateError
@@ -225,7 +224,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       isValid = false;
     }
-    if (ActualHearingsUtils.isHearingPartiesUpdated || !this.isAllHearingActualsPartiesAvailable(this.hearingActualsMainModel)) {
+    if (!this.isAllHearingActualsPartiesAvailable(this.hearingActualsMainModel)) {
       this.validationErrors.push({
         id: 'hearing-parties-result-confirm-link',
         message: HearingActualAddEditSummaryEnum.ConfirmUpdateError
@@ -235,7 +234,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       isValid = false;
     }
 
-    if (this.hearingResult === '' || this.hearingResult === null) {
+    if (!this.hearingResult) {
       this.validationErrors.push({
         id: 'hearing-stage-result-update-link',
         message: HearingActualAddEditSummaryEnum.HearingResultError

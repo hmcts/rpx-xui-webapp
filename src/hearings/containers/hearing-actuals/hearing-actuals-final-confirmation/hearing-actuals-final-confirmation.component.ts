@@ -20,6 +20,7 @@ export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestr
   public ngOnInit(): void {
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       hearingList => {
+        console.log(hearingList);
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
         this.heading = 'You have successfully submitted the hearing details.';
         this.subheading = 'What happens next';

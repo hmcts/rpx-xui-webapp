@@ -364,6 +364,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
           useValue: {
             paramMap: of(convertToParamMap({
               id: '1',
+              hearingDate: '2021-03-12'
             })),
             snapshot: {
               data: {

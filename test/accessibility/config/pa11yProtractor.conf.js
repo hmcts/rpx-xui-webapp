@@ -8,6 +8,9 @@ const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const {getScenarioCookie} = require('../helpers/pa11yUtil');
 
+
+const nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
 const isParallelExecution = true;
 
 const generateMergedReport = require('../reporter/reportsMerger');
@@ -44,10 +47,10 @@ exports.config = {
     beforeLaunch() {
         console.log("Before launch : isParallelExecution " + isParallelExecution);
         if (isParallelExecution) {
-            MockApp.setServerPort(3001);
+            MockApp.setServerPort(nodeMockPort);
             MockApp.init();
             MockApp.startServer();
-            console.log("Before launch : mock started on 3001 ");
+            console.log(`Before launch : mock started on ${nodeMockPort} `);
         }
     },
 
@@ -63,9 +66,9 @@ exports.config = {
 
             });
         } else {
-            MockApp.setServerPort(3001);
+            MockApp.setServerPort(nodeMockPort);
             await MockApp.startServer();
-            console.log("On prepare : mock started on 3001" );
+            console.log("On prepare : mock started on " + nodeMockPort );
         }
     },
     onComplete() {

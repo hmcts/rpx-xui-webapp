@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 var portfinder = require('portfinder');
 
-portfinder.basePort = 3005;    // default: 8000
-portfinder.highestPort = 3100; // default: 65535
+portfinder.basePort = 3001;    // default: 8000
+portfinder.highestPort = 3200; // default: 65535
 
 
 function getAvailablePort(){
@@ -37,7 +37,7 @@ function configureTestProxyPort(){
         if (err) {
             throw Error("No free port available")
         }
-        console.log(port);
+        console.log(`************ First port available in range: ${port} of [${portfinder.basePort} - ${portfinder.highestPort}] ************`);
         fs.writeFileSync(`${__dirname}/NODEMOCK_PORT.txt`, port+"");
         // getAvailablePort();
         updateAngularProxyTestConfig(port);

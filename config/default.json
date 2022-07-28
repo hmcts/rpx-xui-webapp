@@ -51,9 +51,6 @@
     "locationref": {
       "api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal"
     },
-    "locationref": {
-      "api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal"
-    },
     "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/",

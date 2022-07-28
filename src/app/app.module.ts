@@ -21,6 +21,7 @@ import { ProvidersModule } from './providers/providers.module';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
@@ -34,7 +35,6 @@ import { effects } from './store/effects';
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
-import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]

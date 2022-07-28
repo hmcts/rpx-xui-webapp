@@ -57,9 +57,6 @@
     "locationref": {
       "api": "SERVICES_LOCATION_REF_API_URL"
     },
-    "locationref": {
-      "api": "SERVICES_LOCATION_REF_API_URL"
-    },
     "caseShare": {
       "api": "SERVICES_CASE_SHARE_API"
     },

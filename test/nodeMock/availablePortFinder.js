@@ -48,5 +48,3 @@ function configureTestProxyPort(){
 
 module.exports = { configureTestProxyPort, getAvailablePort };
 
-getAvailablePort();
-

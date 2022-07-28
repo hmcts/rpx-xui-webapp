@@ -52,6 +52,9 @@ Feature: WA Release 2: All work
             | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
 
 
+        Then I validate work allocation task table column "Task" width less than or equal to 280
+        Then I validate work allocation task table column "Case name" width less than or equal to 200
+
         Then I see manage link displayed for task at position 1
         Then I see manage link displayed for task at position 2
         Then I see manage link displayed for task at position 4
@@ -118,3 +121,48 @@ Feature: WA Release 2: All work
         Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
         Then I validate task list table sorted with column "Case name" in order "asc"
 
+
+
+
+@test
+    Scenario Outline:  All work Tasks, colums width "<UserType>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK tasks with permissions for view "All work" and assigned state ""
+            | Permissions | Count |
+            | Manage      | 10    |
+            | Read        | 10    |
+        Given I set MOCK case workers for release "1"
+            | email              | firstName | lastName | idamId              | location.id | location.locationName |
+            | test_cw_1@test.com | cw1       | test     | 1234-1234-1234-1231 | 10001       | Location 1            |
+            | test_cw_2@test.com | cw2       | test     | 1234-1234-1234-1232 | 10002       | Location 2            |
+            | test_cw_3@test.com | cw3       | test     | 1234-1234-1234-1233 | 10003       | Location 3            |
+            | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
+            | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
+        Given I set MOCK tasks with attributes for view "All work"
+            | index | permissions                | assignee            | case_name                                                                                  | location_name   | task_title                                                                                                                                                       | dueDate | created_date | case_category        |
+            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1                                                                                     | test location 1 | test auto task 1                                                                                                                                                 | -1      | -10          | auto test category 1 |
+            | 1     | Read                       | 1234-1234-1234-1231 | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | test location 6 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30     | -40          | auto test category 6 |
+
+        Given I start MockApp
+        Given I navigate to home page
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        Then I validate task list table columns displayed for user "<UserType>"
+            | ColumnHeader  | Caseworker | Judge |
+            | Case name     | Yes        | Yes   |
+            | Case category | Yes        | Yes   |
+            | Location      | Yes        | Yes   |
+            | Person        | Yes        | Yes   |
+            | Task          | Yes        | Yes   |
+            | Task created  | No         | Yes   |
+            | Due date      | Yes        | No    |
+            | Priority      | Yes        | No    |
+
+       
+
+        Then I validate work allocation task table column "Task" width less than or equal to 280
+        Then I validate work allocation task table column "Case name" width less than or equal to 200
+
+        Examples:
+            | UserIdentifier     | UserType   | Roles                                                            |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |

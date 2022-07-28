@@ -11,6 +11,8 @@ const config = require('../../config/conf.js');
 const reportLogger = require('../../support/reportLogger');
 const { LOG_LEVELS } = require('../../support/constants');
 
+const browserUtil = require('../../../ngIntegration/util/browserUtil');
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 

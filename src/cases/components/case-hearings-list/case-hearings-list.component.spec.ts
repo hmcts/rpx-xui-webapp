@@ -763,8 +763,8 @@ describe('CaseHearingsListComponent', () => {
 
     const viewOrEdit9 = fixture.debugElement.query(By.css('#link-view-or-edit-h100009'));
     expect(viewOrEdit9).toBeNull();
-    const cancel9 = fixture.debugElement.query(By.css('#link-cancel-h100009')).nativeElement;
-    expect(cancel9.textContent).toBe('Cancel');
+    const cancel9 = fixture.debugElement.query(By.css('#link-cancel-h100009'));
+    expect(cancel9).toBeNull();
     const linkHearing9 = fixture.debugElement.query(By.css('#link-hearing-link-h100009'));
     expect(linkHearing9).toBeNull();
     const manageLinks9 = fixture.debugElement.query(By.css('#link-manage-links-h100009'));

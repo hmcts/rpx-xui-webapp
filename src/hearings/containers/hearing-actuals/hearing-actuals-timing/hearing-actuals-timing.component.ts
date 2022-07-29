@@ -125,7 +125,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     this.submitted = false;
     const plannedIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(this.hearingActuals, this.hearingDate);
     const actualIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(this.hearingActuals, this.hearingDate);
-
     const hearingStartTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime)
       || (plannedIndex && this.hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime);
     const hearingEndTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime)

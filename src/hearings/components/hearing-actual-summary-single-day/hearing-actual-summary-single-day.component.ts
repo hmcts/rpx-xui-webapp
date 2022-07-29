@@ -20,9 +20,11 @@ export class HearingActualSummarySingleDayComponent implements OnInit {
   public participants: ActualDayPartyModel[] = [];
   public attendees: ActualDayPartyModel[] = [];
   public partyChannels: LovRefDataModel[] = [];
+  public hearingRoles: LovRefDataModel[] = [];
 
   constructor(private readonly route: ActivatedRoute) {
     this.partyChannels = this.route.snapshot.data.partyChannels;
+    this.hearingRoles = this.route.snapshot.data.hearingRoles;
   }
 
   public ngOnInit() {

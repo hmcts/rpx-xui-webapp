@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { HearingsUtils } from '../../utils/hearings.utils';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { AnswerSource, EXUIDisplayStatusEnum, HearingChannelEnum, LaCaseStatus } from '../../models/hearings.enum';
 import * as fromHearingStore from '../../store';
+import { HearingsUtils } from '../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-listing-information-summary',

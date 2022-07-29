@@ -56,7 +56,7 @@ export class HearingAnswersPipe implements PipeTransform {
               protected readonly locationsDataService: LocationsDataService) {
   }
 
-  public transform(answerSource: AnswerSource, hearingState$: Observable<State>, index: number): Observable<string> {
+  public transform(answerSource: AnswerSource, hearingState$: Observable<State>, index?: number): Observable<string> {
     let converter: AnswerConverter = new DefaultAnswerConverter();
     switch (answerSource) {
       case AnswerSource.CASE_NAME:

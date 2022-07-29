@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary-single-day.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { hearingActualsMainModel, hearingRoles } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
-import { hearingActualsMainModel } from '../../hearing.test.data';
+import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary-single-day.component';
 
 
 describe('HearingActualSummarySingleDayComponent', () => {
@@ -172,6 +172,7 @@ describe('HearingActualSummarySingleDayComponent', () => {
     },
   ];
 
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -182,7 +183,8 @@ describe('HearingActualSummarySingleDayComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                partyChannels
+                partyChannels,
+                hearingRoles
               }
             },
             fragment: of('point-to-me'),

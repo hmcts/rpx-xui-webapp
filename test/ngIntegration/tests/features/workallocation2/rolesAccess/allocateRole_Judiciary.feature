@@ -90,8 +90,8 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
             | Person                      |
-            | user1 j(judge_user1@gov.uk) |
-        When I select find person result "user1 j(judge_user1@gov.uk) " in work flow
+            | user1 j (judge_user1@gov.uk) |
+        When I select find person result "user1 j (judge_user1@gov.uk) " in work flow
         When I click continue in work flow page "Find the person"
 
         Then I see Allocate role work flow page "Duration of role" with caption "Allocate a hearing judge" is displayed
@@ -108,7 +108,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
             | Type of role                      | Lead judge                  |
             | Who the role will be allocated to | Allocate to another person  |
             | Duration of role                  | 7 days                      |
-            | Person                            | user1 j(judge_user1@gov.uk) |
+            | Person                            | user1 j (judge_user1@gov.uk) |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
@@ -236,7 +236,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
             | Person                      |
-            | user1 j(judge_user1@gov.uk) |
+            | user1 j (judge_user1@gov.uk) |
         When I select find person result "judge_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 

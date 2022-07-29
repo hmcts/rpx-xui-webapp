@@ -1,14 +1,8 @@
-import { ActualHearingsUtils } from './actual-hearings.utils';
-import { hearingActualsMainModel } from '../hearing.test.data';
 import * as _ from 'lodash';
+import { hearingActualsMainModel } from '../hearing.test.data';
+import { ActualHearingsUtils } from './actual-hearings.utils';
 
 describe('ActualHearingsUtils', () => {
-
-  it('should return ActualHearings Timing length', () => {
-    ActualHearingsUtils.isHearingDaysUpdated = true;
-    expect(ActualHearingsUtils.isHearingDaysUpdated).toBe(true);
-  });
-
   it('should return hearing days when hearingActuals are null', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     mainModel.hearingActuals = null;
@@ -17,14 +11,13 @@ describe('ActualHearingsUtils', () => {
     const obj2 = Object.assign({}, day, {plannedStartTime: '2021-03-15'});
     mainModel.hearingPlanned.plannedHearingDays.push(obj2);
     mainModel.hearingPlanned.plannedHearingDays.push(obj1);
-    const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
     expect(hearingDays).toBeDefined();
   });
 
   it('should return hearing days when hearingActuals are available', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
-    const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
     expect(hearingDays).toBeDefined();
   });
-
 });

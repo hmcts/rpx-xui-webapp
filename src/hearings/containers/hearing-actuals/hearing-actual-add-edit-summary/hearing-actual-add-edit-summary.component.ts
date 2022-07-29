@@ -134,8 +134,23 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public getHearingTypeDescription(hearingType: string): string {
     const hearingTypeFromLookup = this.hearingTypes && this.hearingTypes.find(x => x.key.toLowerCase() === hearingType.toLowerCase());
+
     return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }
+
+  public getParties(actualHearingDay: ActualHearingDayModel) {
+    const plannedDayIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(this.hearingActualsMainModel, actualHearingDay.hearingDate);
+    return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[plannedDayIndex].parties;
+  }
+
+  public getAttendees(actualHearingDay: ActualHearingDayModel) {
+    const plannedDayIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(this.hearingActualsMainModel, actualHearingDay.hearingDate);
+    const plannedParties = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[plannedDayIndex].parties;
+    const plannedPartiesIds = plannedParties.map(party => party.partyID);
+
+    return actualHearingDay.actualDayParties.filter(actualParty => !plannedPartiesIds.includes(actualParty.actualPartyId));
+  }
+
 
   private isAllHearingActualsTimingAvailable(hearingActualsMainModel: HearingActualsMainModel) {
     const hasAllActualDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
@@ -261,20 +276,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       ? moment(day.pauseDateTimes[0].pauseEndTime).format(HearingDateEnum.DisplayTime) : null;
   }
 
-  public getPartiesNames(day): string[] {
-    return day.actualDayParties.map((p) => `${p.individualDetails.firstName} ${p.individualDetails.lastName}`);
-  }
-
-  public getPartiesAttendenceMethod(day): { fullName: string; partyChannelSubType: string }[] {
-    return day.actualDayParties.map(party => {
-      return {
-        fullName: `${party.individualDetails.firstName} ${party.individualDetails.lastName}`,
-        partyChannelSubType: party.partyChannelSubType
-      };
-    });
-  }
-
-  public getStatusLabel(day): boolean {
+  public isDetailsProvidedForDay(day): boolean {
     if (this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
       && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0) {
       const actualDay = this.hearingActualsMainModel.hearingActuals.actualHearingDays.find(d => Date.parse(d.hearingDate) === Date.parse(day.hearingDate));

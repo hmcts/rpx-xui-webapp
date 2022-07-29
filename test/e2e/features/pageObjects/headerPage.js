@@ -28,17 +28,6 @@ function HeaderSearch(){
 
 }
 
-
-function HeaderPage() {
-    this.jcmLogoImg = element(by.xpath("//div[contains(@class,'hmcts-header__container')]//a//img[@src='/assets/images/govuk-crest-jcm.png']"));
-    this.myHMCTSHeader = element(by.xpath("//div[contains(@class,'hmcts-header__container')]//a//span[contains(text(),'MyHMCTS')]"));
-    this.headerLink = $('div.hmcts-header__container a.hmcts-header__link');
-    this.globalHeaderContainerWithStyle = element(by.xpath("//exui-hmcts-global-header/.."));
-
-    this.caseReferenceSearchBox = $('.hmcts-primary-navigation__search exui-case-reference-search-box');
-const config = require('../../config/conf');
-
-
 function HeaderPage() {
     this.jcmLogoImg = element(by.xpath("//div[contains(@class,'hmcts-header__container')]//a//img[@src='/assets/images/govuk-crest-jcm.png']"));
     this.myHMCTSHeader = element(by.xpath("//div[contains(@class,'hmcts-header__container')]//a//span[contains(text(),'MyHMCTS')]"));
@@ -358,6 +347,6 @@ function HeaderPage() {
 
   }
 
-}}
+}
 
 module.exports = new HeaderPage;

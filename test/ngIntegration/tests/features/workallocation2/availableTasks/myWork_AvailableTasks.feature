@@ -125,7 +125,6 @@ Feature: WA Release 2: My work -  Available tasks
         Then I validate task list table sorted with column "Case name" in order "asc"
 
 
-    @test
     Scenario Outline:  Available Tasks, columns width "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
@@ -144,8 +143,9 @@ Feature: WA Release 2: My work -  Available tasks
             | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
         Given I set MOCK tasks with attributes for view "Available tasks"
             | index | permissions                | assignee            | case_name                                                                                  | location_name   | task_title                                                                                                                                                       | dueDate | created_date | case_category        |
-            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1                                                                                     | test location 1 | test auto task 1                                                                                                                                                 | -1      | -10          | auto test category 1 |  
-            | 1     | Read                       | 1234-1234-1234-1231 | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | test location 6 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30     | -40          | auto test category 6 |
+            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1                                                                                     | test location 1 | test auto task 1                                                                                                                                                 | -1      | -10          | auto test category 1 |
+            | 1     | Manage                     | 1234-1234-1234-1231 | case 2                                                                                     | test location 2 | test auto task 2                                                                                                                                                 | 0       | -10          | auto test category 2 |
+            | 2     | Read                       | 1234-1234-1234-1231 | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30     | -40          | auto test category 3 |
 
 
         Given I start MockApp
@@ -164,6 +164,17 @@ Feature: WA Release 2: My work -  Available tasks
 
         Then I validate work allocation task table column "Task" width less than or equal to 280
         Then I validate work allocation task table column "Case name" width less than or equal to 200
+
+        Then If current user "<UserType>" is "Judge", I validate task table values displayed
+            | row | Case name                                                                                  | Case category        | Location        | Task                                                                                                                                                             | Task created |
+            | 1   | case 1                                                                                     | auto test category 1 | test location 1 | test auto task 1                                                                                                                                                 | -10          |
+            | 2   | case 2                                                                                     | auto test category 2 | test location 2 | test auto task 2                                                                                                                                                 | -10          |
+            | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -40          |
+        Then If current user "<UserType>" is "Caseworker", I validate task table values displayed
+            | row | Case name                                                                                  | Case category        | Location        | Task                                                                                                                                                             | Due date | Priority |
+            | 1   | case 1                                                                                     | auto test category 1 | test location 1 | test auto task 1                                                                                                                                                 | -1       | HIGH     |
+            | 2   | case 2                                                                                     | auto test category 2 | test location 2 | test auto task 2                                                                                                                                                 | 0        | MEDIUM   |
+            | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      | HIGH     |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                                            |

@@ -4,6 +4,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { hearingActualsMainModel, hearingRoles } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
+import { PartyChannelDisplayValuePipe } from '../../pipes/party-channel-display-value.pipe';
+import { PartyRoleDisplayValuePipe } from '../../pipes/party-role-display-value.pipe';
 import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary-single-day.component';
 
 
@@ -176,7 +178,7 @@ describe('HearingActualSummarySingleDayComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [HearingActualSummarySingleDayComponent],
+      declarations: [HearingActualSummarySingleDayComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
       providers: [
         {
           provide: ActivatedRoute,
@@ -193,6 +195,7 @@ describe('HearingActualSummarySingleDayComponent', () => {
       ],
     })
       .compileComponents();
+
     fixture = TestBed.createComponent(HearingActualSummarySingleDayComponent);
     component = fixture.componentInstance;
     component.actualHearingDay = hearingActualsMainModel.hearingActuals.actualHearingDays[0];

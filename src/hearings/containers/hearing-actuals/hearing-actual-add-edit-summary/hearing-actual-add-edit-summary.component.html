@@ -14,7 +14,7 @@
   </div>
 </div>
 
-<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="error$ | async">
+<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="errors$ | async">
 </xuilib-hmcts-error-summary>
 
 <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">

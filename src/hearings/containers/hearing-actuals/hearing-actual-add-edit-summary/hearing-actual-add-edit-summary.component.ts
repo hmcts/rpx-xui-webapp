@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { HearingValuesStateData } from '../../../../hearings/models/hearingValuesStateData';
 import { HttpError } from '../../../../models/httpError.model';
 import {
   ActualHearingDayModel,
@@ -49,6 +50,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public partyChannels: LovRefDataModel[] = [];
   public hearingDateRange: string;
   public hearingDatesAccordion = {} as { [hearingDate: string]: boolean};
+  public isPaperHearing: boolean = false;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
@@ -61,6 +63,13 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
     this.error$ = this.hearingStore.select(fromHearingStore.getHearingActualsLastError);
+    this.hearingStore.select(fromHearingStore.getHearingValues).pipe(
+      filter((state: HearingValuesStateData) => !!state.serviceHearingValuesModel)
+    ).subscribe(
+      (state: HearingValuesStateData) => {
+        this.isPaperHearing = state.serviceHearingValuesModel.hearingChannels.indexOf('ONPPRS') > -1;
+      }
+    );
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
@@ -289,5 +298,9 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     }
 
     return false;
+  }
+
+  public togglePaperHearing() {
+    this.isPaperHearing = !this.isPaperHearing;
   }
 }

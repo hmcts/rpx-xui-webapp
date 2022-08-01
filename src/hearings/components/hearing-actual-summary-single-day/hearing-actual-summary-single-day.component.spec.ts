@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary-single-day.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { hearingActualsMainModel, hearingRoles } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
-import { hearingActualsMainModel } from '../../hearing.test.data';
+import { PartyChannelDisplayValuePipe } from '../../pipes/party-channel-display-value.pipe';
+import { PartyRoleDisplayValuePipe } from '../../pipes/party-role-display-value.pipe';
+import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary-single-day.component';
 
 
 describe('HearingActualSummarySingleDayComponent', () => {
@@ -172,17 +174,19 @@ describe('HearingActualSummarySingleDayComponent', () => {
     },
   ];
 
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [HearingActualSummarySingleDayComponent],
+      declarations: [HearingActualSummarySingleDayComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
       providers: [
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                partyChannels
+                partyChannels,
+                hearingRoles
               }
             },
             fragment: of('point-to-me'),
@@ -191,6 +195,7 @@ describe('HearingActualSummarySingleDayComponent', () => {
       ],
     })
       .compileComponents();
+
     fixture = TestBed.createComponent(HearingActualSummarySingleDayComponent);
     component = fixture.componentInstance;
     component.actualHearingDay = hearingActualsMainModel.hearingActuals.actualHearingDays[0];

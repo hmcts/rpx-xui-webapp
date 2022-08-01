@@ -96,7 +96,7 @@
     </div>
     <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
       <dt class="govuk-summary-list__key">
-        {{isCaseStatusListed() ? 'How participants will attend' : 'Participant attendence'}}
+        How participants will attend
       </dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer:hearingState$ | async"></dd>
@@ -181,7 +181,7 @@
             </div>
             <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
               <dt class="govuk-summary-list__key">
-                {{isCaseStatusListed() ? 'How participants will attend' : 'Participant attendence'}}
+                How participants will attend
               </dt>
               <dd class="govuk-summary-list__value"
                 [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer:hearingState$:i | async"></dd>

@@ -20,7 +20,6 @@ import {
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { State } from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 
 @Component({
@@ -29,8 +28,7 @@ import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
   styleUrls: ['./hearing-actual-add-edit-summary.component.scss']
 })
 export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
-  public hearingState$: Observable<State>;
-  public isPaperHearing$: Observable<boolean>;
+  public hearingState$: Observable<fromHearingStore.State>;
   public hearingActualsMainModel: HearingActualsMainModel;
   public hearingOutcome: HearingOutcomeModel;
   public hearingRoles: LovRefDataModel[] = [];
@@ -69,8 +67,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState);
-    this.isPaperHearing$ = this.hearingState$.map(state => {
-      return state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
+    this.hearingState$.map(state => {
+      this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
     });
     this.errors$ = combineLatest([
       this.hearingStore.select(fromHearingStore.getHearingActualsLastError),

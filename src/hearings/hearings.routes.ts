@@ -474,6 +474,7 @@ export const ROUTES: Routes = [
           judicialResponseUsers: JudicialUserSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          hearingRoles: HearingActualRoleResolverService,
         },
         component: HearingCompletedSummaryComponent,
         data: {

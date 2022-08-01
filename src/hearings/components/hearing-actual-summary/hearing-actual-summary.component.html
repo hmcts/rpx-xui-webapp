@@ -69,7 +69,7 @@
         </summary>
         <div class="govuk-grid-column-three-quarters summary-single-day">
           <exui-hearing-actual-summary-single-day
-            [actualHearingDay]="hearingDay.actualHearingDay" [plannedHearingDay]="hearingDay.plannedHearingDay">
+            [actualHearingDay]="hearingDay.actualHearingDay" [plannedHearingDay]="hearingDay.plannedHearingDay" [isPaperHearing]="isPaperHearing$ | async">
           </exui-hearing-actual-summary-single-day>
         </div>
       </details>

@@ -6,12 +6,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
+import { HearingAnswersPipe } from '../../pipes/hearing-answers.pipe';
+import { PartyChannelDisplayValuePipe } from '../../pipes/party-channel-display-value.pipe';
+import { PartyRoleDisplayValuePipe } from '../../pipes/party-role-display-value.pipe';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
 
-describe('HearingActualSummaryComponent', () => {
+fdescribe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
   let fixture: ComponentFixture<HearingActualSummaryComponent>;
   let router: Router;
@@ -179,9 +182,10 @@ describe('HearingActualSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule,
-        HttpClientTestingModule],
-      declarations: [HearingActualSummaryComponent],
+      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
+      declarations: [HearingActualSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe,
+        HearingAnswersPipe
+      ],
       providers: [
         provideMockStore({ initialState }),
         {
@@ -204,6 +208,7 @@ describe('HearingActualSummaryComponent', () => {
     fixture = TestBed.createComponent(HearingActualSummaryComponent);
     component = fixture.componentInstance;
     component.hearingActualsMainModel = hearingActualsMainModel;
+    component.hearingState$ = new Observable();
     router = TestBed.get(Router);
     fixture.detectChanges();
   });

@@ -5,7 +5,7 @@ import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/loca
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
+import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { AppUtils } from '../../../app/app-utils';
 import * as fromAppStore from '../../../app/store';
 import { Location } from '../../models/dtos';

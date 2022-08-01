@@ -1,14 +1,14 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
-import { postTaskCompletionForAccess } from '../workAllocation2';
+import { postTaskCompletionForAccess } from '../workAllocation';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { getConfigValue } from '../configuration';
 import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
-import { commonGetFullLocation } from '../workAllocation2/locationService';
+import { commonGetFullLocation } from '../workAllocation/locationService';
 
 export async function getBookings(req, resp: Response, next: NextFunction) {
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);

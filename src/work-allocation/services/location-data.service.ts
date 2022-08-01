@@ -8,8 +8,8 @@ import { Location, LocationByEPIMMSModel } from '../models/dtos';
 
 @Injectable()
 export class LocationDataService {
-  public static locationUrl: string = '/workallocation2/location';
-  public static fullLocationUrl: string = '/workallocation2/full-location';
+  public static locationUrl: string = '/workallocation/location';
+  public static fullLocationUrl: string = '/workallocation/full-location';
   public static allLocationsKey: string = 'allLocations';
   public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 

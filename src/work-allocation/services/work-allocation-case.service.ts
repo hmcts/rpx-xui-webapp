@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap, tap} from 'rxjs/operators';
 import Task from '../models/tasks/task.model';
 
-const BASE_URL: string = '/workallocation2/case';
+const BASE_URL: string = '/workallocation/case';
 export enum ACTION {
   ASSIGN = 'assign',
   CANCEL = 'cancel',
@@ -34,14 +34,14 @@ export class WorkAllocationCaseService {
   }
 
   public getMyCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
-    return this.http.post<Case[]>(`/workallocation2/my-work/cases`, body);
+    return this.http.post<Case[]>(`/workallocation/my-work/cases`, body);
   }
 
   public getMyAccess(body: { searchRequest: SearchCaseRequest, view: string }): Observable<any> {
-    return this.http.post<any>('/workallocation2/my-work/myaccess', body);
+    return this.http.post<any>('/workallocation/my-work/myaccess', body);
   }
   public getCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
-    return this.http.post<Case[]>(`/workallocation2/all-work/cases`, body);
+    return this.http.post<Case[]>(`/workallocation/all-work/cases`, body);
   }
 
   public getActionUrl(caseId: string, action: ACTION): string {

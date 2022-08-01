@@ -18,7 +18,7 @@ import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
 import * as dtos from '../../models/dtos';
-import { JurisdictionsService } from 'src/work-allocation-2/services/juridictions.service';
+import { JurisdictionsService } from 'src/work-allocation/services/juridictions.service';
 import { MyAccessComponent } from '../my-access/my-access.component';
 
 describe('WorkCaseListWrapperComponent', () => {

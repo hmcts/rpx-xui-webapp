@@ -11,7 +11,7 @@ import { Task } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
 import { TaskRole } from '../models/tasks';
 
-const BASE_URL: string = '/workallocation2/task';
+const BASE_URL: string = '/workallocation/task';
 
 export enum ACTION {
   ASSIGN = 'assign',

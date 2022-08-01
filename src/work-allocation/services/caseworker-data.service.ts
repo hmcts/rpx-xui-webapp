@@ -9,8 +9,8 @@ import { getAllCaseworkersFromServices, getCaseworkerSessionStorageKeyForService
 
 @Injectable({ providedIn: 'root' })
 export class CaseworkerDataService {
-  public static caseWorkerUrl: string = '/workallocation2/caseworker';
-  public static caseWorkerForServices: string = 'workallocation2/retrieveCaseWorkersForServices';
+  public static caseWorkerUrl: string = '/workallocation/caseworker';
+  public static caseWorkerForServices: string = 'workallocation/retrieveCaseWorkersForServices';
   public static caseworkersKey: string = 'caseworkers';
   public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 

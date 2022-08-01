@@ -183,7 +183,7 @@ export class AppConfig extends AbstractAppConfig {
       .subscribe(
         (currentWorkAllocationFeature) =>
         this.workallocationUrl = currentWorkAllocationFeature === 'WorkAllocationRelease2'
-          ? 'workallocation2' : 'workallocation');
+          ? 'workallocation' : 'workallocation');
   }
 
   public getAccessManagementMode(): boolean {

@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, throwError } from 'rxjs';
-import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
+import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
 import { PriorityFieldComponentModule } from '../../components/priority-field/priority.module';

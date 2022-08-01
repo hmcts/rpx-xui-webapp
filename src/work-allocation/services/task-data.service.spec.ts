@@ -14,6 +14,6 @@ describe('TaskTypesService', () => {
   it('getTypesOfWork should make correct api call', () => {
     const service = new TaskTypesService(mockHttpService, mockSessionStorageService);
     service.getTypesOfWork();
-    expect(mockHttpService.get).toHaveBeenCalledWith('/workallocation2/task/types-of-work');
+    expect(mockHttpService.get).toHaveBeenCalledWith('/workallocation/task/types-of-work');
   });
 });

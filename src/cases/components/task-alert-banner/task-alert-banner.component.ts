@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Task } from '../../../work-allocation-2/models/tasks';
+import { Task } from '../../../work-allocation/models/tasks';
 
 @Component({
   selector: 'exui-task-alert-banner',

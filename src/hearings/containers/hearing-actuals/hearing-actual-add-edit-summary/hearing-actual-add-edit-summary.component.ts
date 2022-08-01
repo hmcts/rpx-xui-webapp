@@ -4,7 +4,6 @@ import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { HttpError } from '../../../../models/httpError.model';
 import {
   ActualHearingDayModel,
   HearingActualsMainModel,
@@ -47,7 +46,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public submitted = false;
   public sub: Subscription;
   public id: string;
-  public error$: Observable<HttpError[]>;
+  public errors$: Observable<number>;
   public partyChannels: LovRefDataModel[] = [];
   public hearingDateRange: string;
   public hearingDatesAccordion = {} as { [hearingDate: string]: boolean};
@@ -66,10 +65,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.isPaperHearing$ = this.hearingState$.map(state => {
       return state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes('ONPRS');
     });
-    this.error$ = combineLatest([
+    this.errors$ = combineLatest([
       this.hearingStore.select(fromHearingStore.getHearingActualsLastError),
       this.hearingStore.select(fromHearingStore.getHearingRequestLastError)
-    ]);
+    ]).map((errors) => errors.filter(item => item).length);
 
     this.sub = this.hearingState$.pipe(
         filter((state) => !!state.hearingActuals.hearingActualsMainModel),

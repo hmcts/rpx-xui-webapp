@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel } from '../../models/hearingActualsMainModel';
-import { HearingDateEnum, HearingResult } from '../../models/hearings.enum';
+import { AnswerSource, HearingDateEnum, HearingResult } from '../../models/hearings.enum';
+import * as fromHearingStore from '../../store';
 
 @Component({
   selector: 'exui-hearing-actual-summary',
@@ -8,11 +10,14 @@ import { HearingDateEnum, HearingResult } from '../../models/hearings.enum';
   styleUrls: ['./hearing-actual-summary.component.scss']
 })
 export class HearingActualSummaryComponent implements OnInit {
+  @Input() public hearingState$: Observable<fromHearingStore.State>;
   @Input() public hearingActualsMainModel: HearingActualsMainModel;
+
   public isCompleted: boolean;
   public isAdjourned: boolean;
   public hearingDays: { actualHearingDay: ActualHearingDayModel; plannedHearingDay: PlannedHearingDayModel }[] = [];
   public dateFormat = HearingDateEnum;
+  public answerSource = AnswerSource;
 
   public ngOnInit(): void {
     this.isCompleted = this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.COMPLETED;

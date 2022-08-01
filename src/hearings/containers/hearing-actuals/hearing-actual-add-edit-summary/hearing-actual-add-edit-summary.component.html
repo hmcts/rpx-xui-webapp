@@ -160,7 +160,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions"></dd>
               </div>
-              <ng-container *ngIf="isPaperHearing$ | async">
+              <ng-container *ngIf="!isPaperHearing">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">How participants will attend</dt>
                   <dd class="govuk-summary-list__value">

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
-import { Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HttpError } from '../../../../models/httpError.model';
 import {
@@ -11,11 +11,11 @@ import {
   HearingOutcomeModel,
   PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
-import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { ACTION, HearingActualAddEditSummaryEnum, HearingDateEnum, HearingResult } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import { State } from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 
 @Component({
@@ -24,6 +24,8 @@ import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
   styleUrls: ['./hearing-actual-add-edit-summary.component.scss']
 })
 export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
+  public hearingState$: Observable<State>;
+  public isPaperHearing$: Observable<boolean>;
   public hearingActualsMainModel: HearingActualsMainModel;
   public hearingOutcome: HearingOutcomeModel;
   public hearingRoles: LovRefDataModel[] = [];
@@ -45,7 +47,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public submitted = false;
   public sub: Subscription;
   public id: string;
-  public error$: Observable<HttpError>;
+  public error$: Observable<HttpError[]>;
   public partyChannels: LovRefDataModel[] = [];
   public hearingDateRange: string;
   public hearingDatesAccordion = {} as { [hearingDate: string]: boolean};
@@ -60,13 +62,20 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
-    this.error$ = this.hearingStore.select(fromHearingStore.getHearingActualsLastError);
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
-      .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
+    this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState);
+    this.isPaperHearing$ = this.hearingState$.map(state => {
+      return state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes('ONPRS');
+    });
+    this.error$ = combineLatest([
+      this.hearingStore.select(fromHearingStore.getHearingActualsLastError),
+      this.hearingStore.select(fromHearingStore.getHearingRequestLastError)
+    ]);
+
+    this.sub = this.hearingState$.pipe(
+        filter((state) => !!state.hearingActuals.hearingActualsMainModel),
       )
-      .subscribe((state: HearingActualsStateData) => {
-        this.hearingActualsMainModel = state.hearingActualsMainModel;
+      .subscribe((state) => {
+        this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
         this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);

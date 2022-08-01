@@ -10,7 +10,13 @@ import {
   HearingOutcomeModel,
   PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
-import { ACTION, HearingActualAddEditSummaryEnum, HearingDateEnum, HearingResult } from '../../../models/hearings.enum';
+import {
+  ACTION,
+  HearingActualAddEditSummaryEnum,
+  HearingChannelEnum,
+  HearingDateEnum,
+  HearingResult
+} from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -63,7 +69,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.id = this.route.snapshot.params.id;
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState);
     this.isPaperHearing$ = this.hearingState$.map(state => {
-      return state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes('ONPRS');
+      return state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
     });
     this.errors$ = combineLatest([
       this.hearingStore.select(fromHearingStore.getHearingActualsLastError),

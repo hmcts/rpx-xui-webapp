@@ -5,7 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { UserRole } from '../../../../app/models';
-import { getLabel } from '../../../../work-allocation-2/utils';
+import { getLabel } from '../../../../work-allocation/utils';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
 import {
   AllocateRoleNavigation,

@@ -4,7 +4,7 @@ import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { TASK_ROLES } from '../../../../api/workAllocation2/constants/task-roles.mock.data';
+import { TASK_ROLES } from '../../../../api/workAllocation/constants/task-roles.mock.data';
 import { ChooseRadioOptionComponent } from '../../../role-access/components';
 
 import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role.component';

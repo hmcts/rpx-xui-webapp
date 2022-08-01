@@ -77,7 +77,7 @@ export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_CASE_JUDICIALWOR
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
 
-const logger: JUILogger = log4jui.getLogger('workallocation2');
+const logger: JUILogger = log4jui.getLogger('workallocation');
 
 /**
  * getTask

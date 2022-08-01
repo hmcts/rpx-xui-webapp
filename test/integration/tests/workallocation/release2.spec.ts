@@ -23,7 +23,7 @@ describe('Work allocations Release 2', () => {
     });
 
     // tslint:disable-next-line: only-arrow-functions
-    it('case officer,get locations /workallocation2/location', async function () {
+    it('case officer,get locations /workallocation/location', async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
@@ -32,7 +32,7 @@ describe('Work allocations Release 2', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const response = await Request.get(`workallocation2/location`, headers, 200);
+        const response = await Request.get(`workallocation/location`, headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('array');
         if (response.data.length > 0){
@@ -42,10 +42,10 @@ describe('Work allocations Release 2', () => {
         }else{
             reporterMsg(`No locations returned`);
         }
-        
+
     });
 
-    it('case officer,get caseworkers /workallocation2/caseworker', async function () {
+    it('case officer,get caseworkers /workallocation/caseworker', async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
@@ -54,7 +54,7 @@ describe('Work allocations Release 2', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const response = await Request.get(`workallocation2/caseworker`, headers, 200);
+        const response = await Request.get(`workallocation/caseworker`, headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('array');
 
@@ -67,7 +67,7 @@ describe('Work allocations Release 2', () => {
 
 
     // tslint:disable-next-line: only-arrow-functions
-    it('case officer,search for completable tasks of a case /workallocation2/searchForCompletable' , async function () {
+    it('case officer,search for completable tasks of a case /workallocation/searchForCompletable' , async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
@@ -86,7 +86,7 @@ describe('Work allocations Release 2', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/searchForCompletable`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation/searchForCompletable`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
 
         const actual = response.data;
@@ -96,7 +96,7 @@ describe('Work allocations Release 2', () => {
 
     });
 
-    it('case officer,get exclusion roles categories /workallocation2/exclusion/rolesCategory', async function() {
+    it('case officer,get exclusion roles categories /workallocation/exclusion/rolesCategory', async function() {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
@@ -104,7 +104,7 @@ describe('Work allocations Release 2', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const response = await Request.get(`workallocation2/exclusion/rolesCategory`, headers, 200);
+        const response = await Request.get(`workallocation/exclusion/rolesCategory`, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRoleCategory();
@@ -112,7 +112,7 @@ describe('Work allocations Release 2', () => {
         expect(actual[0]).to.have.all.keys(Object.keys(expected));
     });
 
-    it('case officer,get case roles workallocation2/roles/:caseId', async function () {
+    it('case officer,get case roles workallocation/roles/:caseId', async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);

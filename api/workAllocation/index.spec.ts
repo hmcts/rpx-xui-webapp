@@ -11,7 +11,7 @@ import { mockTasks } from './taskTestData.spec';
 
 chai.use(sinonChai);
 
-describe('workAllocation2', () => {
+describe('workAllocation', () => {
 
   const SUCCESS_RESPONSE = {status: 200, data: 'ok'};
   let sandbox: sinon.SinonSandbox;

@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Task} from '../../../work-allocation-2/models/tasks';
+import { Task} from '../../../work-allocation/models/tasks';
 import { TaskAlertBannerComponent } from '..';
 describe('TaskAlertBannerComponent', () => {
   let component: TaskAlertBannerComponent;

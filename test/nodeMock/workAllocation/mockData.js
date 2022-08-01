@@ -301,7 +301,10 @@ class WorkAllocationMockData {
             const validRoleTypes = WorkAllocationDataModels.getValidRoles();
 
             let validRoleCounter = 0;
+            let caseCounter = 0;
             for (const caseAlloc of cases) {
+                caseCounter++;
+                caseAlloc.case_name = new Array(caseCounter).fill(`testCase name ${caseCounter}`).join("-") 
                 caseAlloc.case_role = validRoleTypes[validRoleCounter].roleId;
                 caseAlloc.role_category = validRoleTypes[validRoleCounter].roleCategory;
                 validRoleCounter++;

@@ -46,6 +46,13 @@
       <dd class="govuk-summary-list__value">
         {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
     </div>
+
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+      <dt class="govuk-summary-list__key">Was this a paper hearing?</dt>
+      <dd class="govuk-summary-list__value"
+          [innerHtml]="answerSource.IS_PAPER_HEARING | transformAnswer:hearingState$ | async">
+      </dd>
+    </div>
   </dl>
   <br />
 

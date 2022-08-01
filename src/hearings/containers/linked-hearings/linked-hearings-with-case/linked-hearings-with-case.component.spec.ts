@@ -9,12 +9,8 @@ import { of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import {
   ACTION,
-  EXUIDisplayStatusEnum,
-  EXUISectionStatusEnum,
-  HearingLinkedSelectionEnum, HearingListingStatusEnum,
-  HMCStatus, Mode
+  Mode
 } from '../../../models/hearings.enum';
-import { ServiceLinkedCasesWithHearingsModel } from '../../../models/linkHearings.model';
 import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -33,81 +29,6 @@ describe('LinkedHearingsWithCaseComponent', () => {
   const caseId = '1111-2222-3333-4444';
   const hearingId = 'h100002';
   const hearingGroupRequestId = 'g1000000';
-
-  const serviceLinkedCasesWithNoSelectedHearings: ServiceLinkedCasesWithHearingsModel[] = [
-    {
-      caseRef: '4652724902696213',
-      caseName: 'Smith vs Peterson',
-      reasonsForLink: [
-        'Linked for a hearing'
-      ],
-      caseHearings: [{
-        hearingID: 'h100001',
-        hearingType: 'Substantive',
-        hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-        lastResponseReceivedDateTime: '',
-        exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-        exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
-        hmcStatus: HMCStatus.HEARING_REQUESTED,
-        responseVersion: 'rv1',
-        hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-        listAssistCaseStatus: '',
-        hearingIsLinkedFlag: true,
-        hearingGroupRequestId: null,
-        hearingDaySchedule: [],
-        isSelected: false,
-      }]
-    },
-    {
-      caseRef: '5283819672542864',
-      caseName: 'Smith vs Peterson',
-      reasonsForLink: [
-        'Linked for a hearing',
-        'Progressed as part of lead case'
-      ],
-      caseHearings: []
-    },
-    {
-      caseRef: '8254902572336147',
-      caseName: 'Smith vs Peterson',
-      reasonsForLink: [
-        'Familial',
-        'Guardian',
-        'Linked for a hearing'
-      ],
-      caseHearings: [{
-        hearingID: 'h100010',
-        hearingType: 'Direction Hearings',
-        hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-        lastResponseReceivedDateTime: '',
-        exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-        exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
-        hmcStatus: HMCStatus.AWAITING_LISTING,
-        responseVersion: 'rv1',
-        hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-        listAssistCaseStatus: '',
-        hearingIsLinkedFlag: true,
-        hearingGroupRequestId: null,
-        hearingDaySchedule: [],
-        isSelected: false,
-      }, {
-        hearingID: 'h100012',
-        hearingType: 'Chambers Outcome',
-        hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-        lastResponseReceivedDateTime: '',
-        exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-        exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
-        hmcStatus: HMCStatus.AWAITING_LISTING,
-        responseVersion: 'rv1',
-        hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-        listAssistCaseStatus: '',
-        hearingIsLinkedFlag: true,
-        hearingGroupRequestId: null,
-        hearingDaySchedule: [],
-        isSelected: false,
-      }]
-    }
-  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -144,7 +65,6 @@ describe('LinkedHearingsWithCaseComponent', () => {
     mockHearingService = TestBed.get(HearingsService);
     store = TestBed.get(Store);
     component = fixture.componentInstance;
-    component.linkedCases = serviceLinkedCasesWithNoSelectedHearings;
     fixture.detectChanges();
   });
 
@@ -153,13 +73,12 @@ describe('LinkedHearingsWithCaseComponent', () => {
   });
 
   it('should check on submit error', () => {
-    component.linkedCases = serviceLinkedCasesWithNoSelectedHearings;
     component.initForm();
     component.getHearingsAvailable();
     component.onSubmit();
     fixture.detectChanges();
-    expect(component.linkHearingForm.valid).toBeFalsy();
-    expect(component.linkedHearingSelectionError).toBe(HearingLinkedSelectionEnum.ValidSelectionError);
+    expect(component.linkHearingForm.valid).toBeTruthy();
+    expect(component.linkedHearingSelectionError).toBeNull();
   });
 
   it('should check on submit success', () => {
@@ -203,13 +122,12 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.navigate();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g00101', 'h1000002', 'group-selection']);
 
-    component.linkedCases = serviceLinkedCasesWithNoSelectedHearings;
     component.initForm();
     component.getHearingsAvailable();
     component.mode = component.pageMode.MANAGE_HEARINGS;
     fixture.detectChanges();
     component.navigate();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g00101', 'h1000002', 'check-your-answers']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g00101', 'h1000002', 'group-selection']);
   });
 
   it('should dispatch to store on unlink hearings', () => {
@@ -221,6 +139,27 @@ describe('LinkedHearingsWithCaseComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ManageLinkedHearingGroup({
       linkedHearingGroup: null, hearingGroupRequestId, caseId, hearingId
     })));
+  });
+
+  it('should return true if isManageLink is true and the hearing is linkable', () => {
+    component.isManageLink = true;
+    component.hearingGroupRequestId = hearingGroupRequestId;
+    const result = component.isSelectable(initialState.hearings.hearingLinks.serviceLinkedCasesWithHearings[0].caseHearings[0]);
+    expect(result).toBeTruthy();
+  });
+
+  it('should return true if isManageLink is true and the hearing is linkable', () => {
+    component.isManageLink = true;
+    component.hearingGroupRequestId = hearingGroupRequestId;
+    const result = component.isSelectable(initialState.hearings.hearingLinks.serviceLinkedCasesWithHearings[2].caseHearings[0]);
+    expect(result).toBeTruthy();
+  });
+
+  it('should return true if isManageLink is false and the hearing is linkable', () => {
+    component.isManageLink = false;
+    component.hearingGroupRequestId = hearingGroupRequestId;
+    const result = component.isSelectable(initialState.hearings.hearingLinks.serviceLinkedCasesWithHearings[0].caseHearings[0]);
+    expect(result).toBeTruthy();
   });
 
   afterEach(() => {

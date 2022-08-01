@@ -194,6 +194,15 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     });
   }
 
+  public isSelectable(hearing: HearingDetailModel): boolean {
+    const isLinkable = hearing.hearingIsLinkedFlag && !hearing.hearingGroupRequestId;
+    if (this.isManageLink) {
+      return this.hearingGroupRequestId === hearing.hearingGroupRequestId || isLinkable;
+    } else  {
+      return isLinkable;
+    }
+  }
+
   public navigate(): void {
     if (this.mode === this.pageMode.MANAGE_HEARINGS) {
       if (this.linkHearingForm.valid) {

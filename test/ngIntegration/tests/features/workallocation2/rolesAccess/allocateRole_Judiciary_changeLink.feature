@@ -42,7 +42,7 @@ Feature: WA Release 2: Roles and access - Allocate Role Case worker - Check your
         When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
             | Person                      |
-            | user1 j(judge_user1@gov.uk) |
+            | user1 j (judge_user1@gov.uk) |
         When I select find person result "judge_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   ActualDayPartyModel,
-  ActualHearingDayModel,
+  ActualHearingDayModel, PlannedDayPartyModel,
   PlannedHearingDayModel
 } from '../../models/hearingActualsMainModel';
 import { HearingDateEnum } from '../../models/hearings.enum';
@@ -16,6 +16,8 @@ import { LovRefDataModel } from '../../models/lovRefData.model';
 export class HearingActualSummarySingleDayComponent implements OnInit {
   @Input() public plannedHearingDay: PlannedHearingDayModel = {} as PlannedHearingDayModel;
   @Input() public actualHearingDay: ActualHearingDayModel = {} as ActualHearingDayModel;
+  @Input() public isPaperHearing: boolean;
+
   public dateFormat = HearingDateEnum;
   public participants: ActualDayPartyModel[] = [];
   public attendees: ActualDayPartyModel[] = [];
@@ -62,19 +64,16 @@ export class HearingActualSummarySingleDayComponent implements OnInit {
     });
   }
 
-  public getChannelInfo(channelType: string): { channel: string; subChannel: string; } {
-    let channelInfo: { channel: string; subChannel: string; };
-    this.partyChannels.forEach(channel => {
-      if (channel.child_nodes && channel.child_nodes.length) {
-        channel.child_nodes.forEach(subChannel => {
-          if (channelType === subChannel.key) {
-            channelInfo = { channel: channel.value_en, subChannel: subChannel.value_en };
-          }
-        });
-      } else if (channel.key === channelType) {
-        channelInfo = { channel: channel.value_en, subChannel: '' };
-      }
-    });
-    return channelInfo;
+  public getRepresentingAttendee(partyId: string): string {
+    let party: PlannedDayPartyModel;
+    if (this.plannedHearingDay) {
+      party = this.plannedHearingDay.parties.find(x => x.partyID === partyId.toString());
+    }
+
+    if (party && party.individualDetails) {
+      return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
+    } else {
+      return '';
+    }
   }
 }

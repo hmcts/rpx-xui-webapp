@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel } from '../../models/hearingActualsMainModel';
-import { AnswerSource, HearingDateEnum, HearingResult } from '../../models/hearings.enum';
+import { AnswerSource, HearingChannelEnum, HearingDateEnum, HearingResult } from '../../models/hearings.enum';
 import * as fromHearingStore from '../../store';
 
 @Component({
@@ -15,6 +16,7 @@ export class HearingActualSummaryComponent implements OnInit {
 
   public isCompleted: boolean;
   public isAdjourned: boolean;
+  public isPaperHearing$: Observable<boolean>;
   public hearingDays: { actualHearingDay: ActualHearingDayModel; plannedHearingDay: PlannedHearingDayModel }[] = [];
   public dateFormat = HearingDateEnum;
   public answerSource = AnswerSource;
@@ -22,6 +24,9 @@ export class HearingActualSummaryComponent implements OnInit {
   public ngOnInit(): void {
     this.isCompleted = this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.COMPLETED;
     this.isAdjourned = this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.ADJOURNED;
+    this.isPaperHearing$ = this.hearingState$ && this.hearingState$.pipe(
+      map(state => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
+    );
 
     const actualHearingDaysLength = this.hearingActualsMainModel.hearingActuals.actualHearingDays.length;
     for (let i = 0; i < actualHearingDaysLength; i++) {

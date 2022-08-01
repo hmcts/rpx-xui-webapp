@@ -16,6 +16,9 @@ export const LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
 export const CITIZEN_ROLE = 'citizen';
 export const CITIZEN_ROLE_CATEGORY = 'CITIZEN';
 export const CITIZEN_ROLE_NAME = 'citizen';
+export const CTSC_ROLE = 'ctsc';
+export const CTSC_ROLE_CATEGORY = 'CTSC_USER';
+export const CTSC_ROLE_NAME = 'ctsc';
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
@@ -45,7 +48,7 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
  }
 
 export function getMappedRoleCategory(roles: string[], roleCategories: string[]): string {
-   const roleKeywords: string[] = roles.join().split('-').join().split(',');
+   const roleKeywords: string[] = roles.join().toLocaleLowerCase().split('-').join().split(',');
    if (this.roleOrCategoryExists(JUDGE_ROLE, JUDGE_ROLE_CATEGORY, roleKeywords, roleCategories)) {
       return JUDGE_ROLE_CATEGORY;
    } else if (this.roleOrCategoryExists(PROFESSIONAL_ROLE, PROFESSIONAL_ROLE_CATEGORY, roleKeywords, roleCategories)) {
@@ -54,6 +57,8 @@ export function getMappedRoleCategory(roles: string[], roleCategories: string[])
       return CITIZEN_ROLE_CATEGORY;
    } else if (this.roleOrCategoryExists(ADMIN_ROLE, ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
       return ADMIN_ROLE_CATEGORY;
+   } else if (this.roleOrCategoryExists(CTSC_ROLE, CTSC_ROLE_CATEGORY, roleKeywords, roleCategories)) {
+      return CTSC_ROLE_CATEGORY;
    } else {
       return LEGAL_OPERATIONS_ROLE_CATEGORY;
    }

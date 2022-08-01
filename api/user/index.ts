@@ -48,7 +48,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     locationInfo = getRoleAssignmentInfo(response.data.roleAssignmentResponse);
     const roles = getOrganisationRoles(response.data.roleAssignmentResponse);
     userInfo.roles = userInfo.roles.concat(roles);
-    userInfo.roleCategory = getMappedRoleCategory(userInfo.roles, ['LEGAL_OPERATIONS', 'JUDICIAL', 'ADMIN']);
+    userInfo.roleCategory = getMappedRoleCategory(userInfo.roles, ['LEGAL_OPERATIONS', 'JUDICIAL', 'ADMIN', 'CTSC']);
     req.session.roleAssignmentResponse = response.data.roleAssignmentResponse;
   } catch (error) {
     console.log(error);

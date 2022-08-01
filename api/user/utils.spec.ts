@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { getMappedRoleCategory, getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
-import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants';
+import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE, CTSC_USER, ORGANISATION_ROLE_TYPE, JUDICIAL_TYPE } from './constants';
 
 describe('user.utils', () => {
   describe('isCurrentUserCaseAllocator without jurisdiction and location', () => {
@@ -143,7 +143,19 @@ describe('user.utils', () => {
                      'case-allocator', 'tribunal-caseworker',
                      'hmcts-legal-operations', 'task-supervisor'];
       const result = getMappedRoleCategory(roles, ['LEGAL_OPERATIONS']);
-      console.log('getMappedRoleCategory', result);
+      expect(result).to.equal(LEGAL_OPS_TYPE);
+      //console.log('getMappedRoleCategory', result);
+    });
+
+
+    it('should return CTSC_USER', () => {
+      let roles = ['CTSC', 'CTSC-TEAM-LEADER'];
+      let result = getMappedRoleCategory(roles, ['CTSC_USER']);
+      expect(result).to.equal(CTSC_USER);
+      
+      roles = ['ctsc', 'ctsc-team-leader'];
+      result = getMappedRoleCategory(roles, ['CTSC_USER']);
+      expect(result).to.equal(CTSC_USER);
     });
   });
 });

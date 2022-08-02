@@ -53,6 +53,12 @@
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Paper hearing</dt>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.IS_PAPER_HEARING | transformAnswer:hearingState$ | async">
+      </dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Hearing date</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED | transformAnswer:hearingState$ | async"></dd>
@@ -88,9 +94,9 @@
         [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
       <dt class="govuk-summary-list__key">
-        {{isCaseStatusListed() ? 'How participants will attend' : 'Participant attendence'}}
+        How participants will attend
       </dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer:hearingState$ | async"></dd>
@@ -122,6 +128,12 @@
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Hearing stage</dt>
       <dd class="govuk-summary-list__value" [innerHtml]="answerSource.STAGE | transformAnswer:hearingState$ | async">
+      </dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Paper hearing</dt>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.IS_PAPER_HEARING | transformAnswer:hearingState$ | async">
       </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
@@ -167,9 +179,9 @@
               <dd class="govuk-summary-list__value"
                 [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$:i | async"></dd>
             </div>
-            <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
               <dt class="govuk-summary-list__key">
-                {{isCaseStatusListed() ? 'How participants will attend' : 'Participant attendence'}}
+                How participants will attend
               </dt>
               <dd class="govuk-summary-list__value"
                 [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer:hearingState$:i | async"></dd>

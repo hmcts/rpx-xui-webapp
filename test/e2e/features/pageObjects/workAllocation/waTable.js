@@ -64,6 +64,22 @@ class WAListTable {
         return await this.tableRows.count();
     }
 
+    async getHeaderColumnWidth(headerName){
+        let headerElement = null;
+        try{
+            headerElement = element(by.xpath(`//${this.baseCssLocator}//table//thead//th//button[contains(text(),'${headerName}')]/..`))
+            const dim = await headerElement.getSize();
+            return dim.width; 
+        }catch(err){
+            console.log(err);
+            console.log("retrying with header element as non-clickable element");
+            headerElement = element(by.xpath(`//${this.baseCssLocator}//table//thead//th//h1[contains(text(),'${headerName}')]/..`))
+            const dim = await headerElement.getSize();
+            return dim.width;
+        }
+        
+    }
+
     getHeaderElementWithName(headerName) {
         return element(by.xpath(`//${ this.baseCssLocator }//table//thead//th//button[contains(text(),'${headerName}')]`));
     }

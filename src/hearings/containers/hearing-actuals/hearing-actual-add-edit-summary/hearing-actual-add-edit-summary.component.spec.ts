@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,6 +10,7 @@ import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
 import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
+import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
 import { PartyChannelDisplayValuePipe } from '../../../pipes/party-channel-display-value.pipe';
 import { PartyRoleDisplayValuePipe } from '../../../pipes/party-role-display-value.pipe';
@@ -300,7 +301,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
       child_nodes: null,
     },
   ];
-
   const actualCancellationReasonCodes = [
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -342,8 +342,121 @@ describe('HearingActualAddEditSummaryComponent', () => {
       child_nodes: null,
     },
   ];
-
-  const hearingRoles = [
+  const partyChannel = [
+    {
+      key: 'inPerson',
+      value_en: 'In person',
+      value_cy: '',
+      hintText_EN: 'in person',
+      hintTextCY: 'Wyneb yn wyneb',
+      order: 1,
+      parentKey: null,
+    },
+    {
+      key: 'byPhone',
+      value_en: 'By phone',
+      value_cy: '',
+      hintText_EN: 'By Phone',
+      hintTextCY: 'Ffôn',
+      order: 2,
+      parentKey: null,
+      child_nodes: [
+        {
+          key: 'telephone-btMeetMe',
+          value_en: 'Telephone - BTMeetme',
+          value_cy: '',
+          hintText_EN: 'By Phone bTMeetme',
+          hintTextCY: '',
+          order: 1,
+          parentKey: null,
+        },
+        {
+          key: 'telephone-CVP',
+          value_en: 'Telephone - CVP',
+          value_cy: '',
+          hintText_EN: 'By Phone CVP',
+          hintTextCY: '',
+          order: 2,
+          parentKey: null,
+        },
+        {
+          key: 'telephone-other',
+          value_en: 'Telephone - Other',
+          value_cy: '',
+          hintText_EN: 'By Phone Other',
+          hintTextCY: '',
+          order: 3,
+          parentKey: null,
+        },
+        {
+          key: 'telephone-skype',
+          value_en: 'Telephone - Skype',
+          value_cy: '',
+          hintText_EN: 'By Phone Skype',
+          hintTextCY: '',
+          order: 4,
+          parentKey: null,
+        },
+      ],
+    },
+    {
+      key: 'byVideo',
+      value_en: 'By video',
+      value_cy: 'Fideo',
+      hintText_EN: 'By video',
+      hintTextCY: '',
+      order: 4,
+      parentKey: null,
+      child_nodes: [
+        {
+          key: 'video-conference',
+          value_en: 'Video Conference',
+          value_cy: '',
+          hintText_EN: 'By video conference',
+          hintTextCY: '',
+          order: 4,
+          parentKey: null,
+        },
+        {
+          key: 'video-other',
+          value_en: 'Video - Other',
+          value_cy: '',
+          hintText_EN: 'By video other',
+          hintTextCY: '',
+          order: 4,
+          parentKey: null,
+        },
+        {
+          key: 'video-skype',
+          value_en: 'Video - Skype',
+          value_cy: '',
+          hintText_EN: 'By video skype',
+          hintTextCY: '',
+          order: 4,
+          parentKey: null,
+        },
+        {
+          key: 'video-teams',
+          value_en: 'Video - Teams',
+          value_cy: '',
+          hintText_EN: 'By video teams',
+          hintTextCY: '',
+          order: 4,
+          parentKey: null,
+        },
+      ],
+    },
+    {
+      key: 'notAttending',
+      value_en: 'Not attending',
+      value_cy: '',
+      hintText_EN: 'not attending',
+      hintTextCY: '',
+      order: 5,
+      parentKey: null,
+    },
+  ];
+  const hearingRole = [
     {
       category_key: 'EntityRoleCode',
       key: 'appellant',
@@ -385,15 +498,30 @@ describe('HearingActualAddEditSummaryComponent', () => {
     }
   ];
 
-  const HEARING_ID = 'h00001';
-
-  beforeEach(async(() => {
+  beforeEach((() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
       imports: [RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({
+              id: '1',
+            })),
+            snapshot: {
+              params: {
+                id: '1',
+              },
+              data: {
+                partyChannel,
+                hearingRole
+              },
+            },
+          },
+        },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -403,7 +531,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     fixture = TestBed.createComponent(HearingActualAddEditSummaryComponent);
     store = TestBed.get(Store);
     component = fixture.componentInstance;
-    component.hearingRoles = hearingRoles;
     fixture.detectChanges();
   });
 
@@ -426,11 +553,12 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return attending representative', () => {
     component.hearingActualsMainModel = hearingActualsMainModel;
-    const attendingRepresentative1 = component.getRepresentingAttendee('1');
+    const hearingDate = '2021-03-12';
+    const attendingRepresentative1 = component.getRepresentingAttendee('1', hearingDate);
     expect(attendingRepresentative1).toEqual('Bob Jones');
-    const attendingRepresentative2 = component.getRepresentingAttendee('2');
+    const attendingRepresentative2 = component.getRepresentingAttendee('2', hearingDate);
     expect(attendingRepresentative2).toEqual('DWP ');
-    const attendingRepresentative3 = component.getRepresentingAttendee('3');
+    const attendingRepresentative3 = component.getRepresentingAttendee('3', hearingDate);
     expect(attendingRepresentative3).toEqual('');
   });
 
@@ -444,7 +572,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return hearing result reason type description for adjourned', () => {
     component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
-    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    const hearingOutcome = JSON.parse(JSON.stringify(hearingActualsMainModel.hearingActuals.hearingOutcome));
     hearingOutcome.hearingResult = HearingResult.ADJOURNED;
     hearingOutcome.hearingResultReasonType = 'postponedDueToOtherReasons';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
@@ -453,7 +581,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return hearing result reason type description for cancelled', () => {
     component.actualCancellationReasonCodes = actualCancellationReasonCodes;
-    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    const hearingOutcome = JSON.parse(JSON.stringify(hearingActualsMainModel.hearingActuals.hearingOutcome));
     hearingOutcome.hearingResult = HearingResult.CANCELLED;
     hearingOutcome.hearingResultReasonType = 'reasonTwo';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
@@ -485,61 +613,153 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should check days validity', () => {
-    ActualHearingsUtils.isHearingDaysUpdated = true;
-    ActualHearingsUtils.isHearingPartiesUpdated = false;
+    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
+    hearingActuals.hearingActuals.actualHearingDays = [
+      {
+        hearingDate: '',
+        hearingStartTime: '',
+        hearingEndTime: '',
+        pauseDateTimes: null,
+        notRequired: false,
+        actualDayParties: [
+          {
+            actualPartyId: '1',
+            individualDetails: {
+              firstName: 'Bob',
+              lastName: 'Jones',
+            },
+            actualOrganisationName: 'Company A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'appellant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '2',
+            individualDetails: {
+              firstName: 'Mary',
+              lastName: 'Jones',
+            },
+            actualOrganisationName: 'Company B',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'claimant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '3',
+            individualDetails: {
+              firstName: 'James',
+              lastName: 'Gods',
+            },
+            actualOrganisationName: 'Solicitors A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'interpreter',
+            representedParty: '1',
+          },
+        ],
+      },
+    ];
+    component.hearingActualsMainModel = hearingActuals;
     component.onSubmitHearingDetails();
     expect(component.submitted).toBe(true);
     expect(component.hearingTimingResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
   });
 
   it('should check parties validity', () => {
-    ActualHearingsUtils.isHearingDaysUpdated = false;
-    ActualHearingsUtils.isHearingPartiesUpdated = true;
+    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
+    hearingActuals.hearingActuals.actualHearingDays = [
+      {
+        hearingDate: '2021-03-12',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
+        pauseDateTimes: [],
+        notRequired: false,
+        actualDayParties: []
+      },
+    ];
+    component.hearingActualsMainModel = hearingActuals;
     component.onSubmitHearingDetails();
     expect(component.submitted).toBe(true);
     expect(component.hearingPartiesResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
   });
 
-  it('should save hearings Actuals', () => {
-    ActualHearingsUtils.isHearingDaysUpdated = true;
-    ActualHearingsUtils.isHearingPartiesUpdated = true;
+  it('should save one hearing day actuals for specific hearingDate', () => {
+    const hearingDay = {
+      hearingDate: '2021-03-12',
+      hearingStartTime: '2021-03-12T09:00:00.000Z',
+      hearingEndTime: '2021-03-13T10:00:00.000Z',
+      notRequired: false,
+      pauseDateTimes: [],
+      actualDayParties: [
+        {
+          actualPartyId: '1',
+          individualDetails: {
+            firstName: 'Bob',
+            lastName: 'Jones',
+          },
+          actualOrganisationName: 'Company A',
+          didNotAttendFlag: false,
+          partyChannelSubType: 'inPerson',
+          partyRole: 'appellant',
+          representedParty: '',
+        },
+        {
+          actualPartyId: '2',
+          individualDetails: {
+            firstName: 'Mary',
+            lastName: 'Jones',
+          },
+          actualOrganisationName: 'Company B',
+          didNotAttendFlag: false,
+          partyChannelSubType: 'inPerson',
+          partyRole: 'claimant',
+          representedParty: '',
+        },
+        {
+          actualPartyId: '3',
+          individualDetails: {
+            firstName: 'James',
+            lastName: 'Gods',
+          },
+          actualOrganisationName: 'Solicitors A',
+          didNotAttendFlag: false,
+          partyChannelSubType: 'inPerson',
+          partyRole: 'interpreter',
+          representedParty: '1',
+        },
+      ],
+    };
     const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.saveHearingActualsTiming();
-    component.saveHearingActualsParties();
-    expect(ActualHearingsUtils.isHearingPartiesUpdated).toBe(false);
-    expect(ActualHearingsUtils.isHearingDaysUpdated).toBe(false);
+    component.confirmActualHearingTimeForDay(hearingDay);
+    component.confirmActualPartiesForDay(hearingDay);
+    expect(storeDispatchSpy).toHaveBeenCalledTimes(2);
   });
 
-  it('should calculate calculate earliest hearing date', () => {
-    const s = component.calculateEarliestHearingDate(component.actualHearingDays);
-    expect(s).toBe('14 March 2021');
+  it('should return only one date if only one hearing date', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    const actualHearingDays = [mainModel.hearingActuals.actualHearingDays[0]];
+    const s = component.calculateEarliestHearingDate(actualHearingDays);
+    expect(s).toBe('12 March 2021');
   });
 
   it('should calculate return first and last hearing date as string', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
-    const hearingDays = ActualHearingsUtils.getActualHearingDay(mainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
     const day = hearingDays[0];
     const obj1 = Object.assign({}, day, { hearingDate: '2021-03-13' });
     const obj2 = Object.assign({}, day, { hearingDate: '2021-03-15' });
     hearingDays.push(obj1);
     hearingDays.push(obj2);
     const s = component.calculateEarliestHearingDate(hearingDays);
-    expect(s).toBe('13 March 2021 - 15 March 2021');
+    expect(s).toBe('12 March 2021 - 15 March 2021');
   });
 
-  it('should extract actual day parties', () => {
-    const mainModel = _.cloneDeep(hearingActualsMainModel);
-    component.hearingRoles = hearingRoles;
-    component.getActualDayParties(mainModel);
-    expect(component.parties).toBeDefined();
-    expect(component.participants).toBeDefined();
-  });
-
-  it('should toggle the not required property of hearing day', () => {
-    const day = component.actualHearingDays[0];
-    day.notRequired = true;
-    component.wasThisHearingDayRequiredChange(day);
-    expect(day.notRequired).toBeFalsy();
+  it('should return updated notRequired', () => {
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
+    (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
+    expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 
   afterEach(() => {
@@ -753,6 +973,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
       didNotAttendFlag: false,
     },
   ];
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
@@ -788,11 +1009,6 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
     fixture = TestBed.createComponent(HearingActualAddEditSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  xit('should display form with actual parties involved', () => {
-    expect(component.parties.length).toBe(2);
-    expect(component.participants.length).toBe(1);
   });
 
   afterEach(() => {

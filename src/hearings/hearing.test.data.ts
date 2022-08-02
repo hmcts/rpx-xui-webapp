@@ -1859,11 +1859,11 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     },
     actualHearingDays: [
       {
-        hearingDate: '2021-03-12T09:00:00.000Z',
+        hearingDate: '2021-03-12',
         hearingStartTime: '2021-03-12T09:00:00.000Z',
-        hearingEndTime: '2021-03-13T10:00:00.000Z',
-        notRequired: false,
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
         pauseDateTimes: [],
+        notRequired: false,
         actualDayParties: [
           {
             actualPartyId: '1',
@@ -1902,7 +1902,52 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             representedParty: '1',
           },
         ],
-      }
+      },
+      {
+        hearingDate: '2021-03-14',
+        hearingStartTime: '2021-03-14T09:00:00.000Z',
+        hearingEndTime: '2021-03-14T10:00:00.000Z',
+        pauseDateTimes: [],
+        notRequired: false,
+        actualDayParties: [
+          {
+            actualPartyId: '1',
+            individualDetails: {
+              firstName: 'Bob',
+              lastName: 'Jones',
+            },
+            actualOrganisationName: 'Company A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'appellant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '2',
+            individualDetails: {
+              firstName: 'Mary',
+              lastName: 'Jones',
+            },
+            actualOrganisationName: 'Company B',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'claimant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '3',
+            individualDetails: {
+              firstName: 'James',
+              lastName: 'Gods',
+            },
+            actualOrganisationName: 'Solicitors A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'interpreter',
+            representedParty: '1',
+          },
+        ],
+      },
     ],
   },
   hearingPlanned: {
@@ -1910,7 +1955,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     plannedHearingDays: [
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
-        plannedEndTime: '2021-03-13T10:00:00.000Z',
+        plannedEndTime: '2021-03-12T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -2490,3 +2535,175 @@ export const initialState = {
     }
   },
 };
+
+export const hearingRoles = [
+  {
+    category_key: 'EntityRoleCode',
+    key: 'APEL',
+    value_en: 'Appellant',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Applicant',
+    parent_key: 'APPL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'APIN',
+    value_en: 'Appointee',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Support',
+    parent_key: 'SUPP',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'JOPA',
+    value_en: 'Joint Party',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Applicant',
+    parent_key: 'APPL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'OTPA',
+    value_en: 'Other Party',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Respondent',
+    parent_key: 'RESP',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'RESP',
+    value_en: 'Respondent',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'WERP',
+    value_en: 'Welfare Representative',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Representative',
+    parent_key: 'RPTT',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'LGRP',
+    value_en: 'Legal Representative',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Representative',
+    parent_key: 'RPTT',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'BARR',
+    value_en: 'Barrister',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Representative',
+    parent_key: 'RPTT',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'INTP',
+    value_en: 'Interpreter',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'RPTT',
+    value_en: 'Representative',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'SUPP',
+    value_en: 'Support',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'APPL',
+    value_en: 'Applicant',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'DEFE',
+    value_en: 'Defendant',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  }
+];

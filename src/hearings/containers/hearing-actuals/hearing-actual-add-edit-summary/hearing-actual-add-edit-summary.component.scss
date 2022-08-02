@@ -11,18 +11,21 @@ span.align-right {
 }
 
 .listing-info {
-  .govuk-summary-list {    
+  .govuk-summary-list {
     // background-color: #f3f2f1;
     .govuk-summary-list__key {
-      padding: 2px 10px;
       width: 275px;
       position: relative;
-      left: 150px;;
-
+      left: 150px;
     }
+
     .govuk-summary-list__value {
       position: relative;
       left: 150px;
+    }
+
+    .govuk-summary-list__actions {
+      position: relative;
     }
   }
 }

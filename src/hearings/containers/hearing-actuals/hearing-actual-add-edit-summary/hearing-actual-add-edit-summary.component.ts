@@ -4,13 +4,14 @@ import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { HearingConditions } from 'src/hearings/models/hearingConditions';
 import {
   ActualHearingDayModel,
   HearingActualsMainModel,
   HearingOutcomeModel,
   PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
-import { HearingRequestMainModel, HearingConditions } from '../../../models/hearingRequestMain.model';
+import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
   HearingActualAddEditSummaryEnum,

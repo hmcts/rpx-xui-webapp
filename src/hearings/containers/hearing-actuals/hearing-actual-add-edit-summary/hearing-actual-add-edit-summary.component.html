@@ -63,7 +63,7 @@
       <div class="govuk-error-message" *ngIf="hearingDaysRequiredErrorMessage !== ''">
         {{hearingDaysRequiredErrorMessage}}
       </div>
-      <div [ngClass]="{'govuk-form-group govuk-form-group--error': hearingDaysRequiredErrorMessage !== ''}" id="actual-hearing-dates">
+      <div [ngClass]="{'govuk-form-group govuk-form-group--error': hearingDaysRequiredErrorMessage !== '' || hearingTimingResultErrorMessage !== '' || hearingPartiesResultErrorMessage !== ''}" id="actual-hearing-dates">
         <details *ngFor="let actualHearingDay of actualHearingDays; let i = index"
                 class="govuk-details" data-module="govuk-details"
                 [open]="hearingDatesAccordion[actualHearingDay.hearingDate]">

@@ -158,20 +158,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[plannedDayIndex].parties;
   }
 
-  private isHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel): boolean {
-    let isActualPartiesAvailable: boolean = true;
-    const isActualHearingDaysAvailable = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
-    if (isActualHearingDaysAvailable) {
-      this.actualHearingDays.forEach((actualHearingDay) => {
-        const isDetailsProvided = this.isDetailsProvidedForDay(actualHearingDay);
-        if (!isDetailsProvided && !actualHearingDay.actualDayParties.length) {
-          isActualPartiesAvailable = false;
-        }
-      });
-    }
-    return isActualPartiesAvailable;
-  }
-
   private isHearingAllRequiredDaysCovered(): boolean {
     let isAllDaysCovered: boolean = true;
     const isActualHearingDaysAvailable = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
@@ -295,7 +281,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       isValid = false;
     }
 
-    if (!this.hearingResult && this.hearingResult === '') {
+    if (!this.hearingResult || this.hearingResult === '') {
       this.validationErrors.push({
         id: 'hearing-stage-result-update-link',
         message: HearingActualAddEditSummaryEnum.HearingResultError

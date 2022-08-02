@@ -145,13 +145,14 @@ export class ActualHearingsUtils {
   public static getRepresentingAttendee(partyId: string, hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): string {
     let party: PlannedDayPartyModel;
     const plannedDayIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(hearingActualsMainModel, hearingDate);
-    if (plannedDayIndex) {
+    if (plannedDayIndex >= 0) {
       const plannedHearingDay = hearingActualsMainModel.hearingPlanned.plannedHearingDays[plannedDayIndex];
       party = plannedHearingDay.parties.find(x => x.partyID === partyId.toString());
     }
 
     if (party && party.individualDetails) {
-      return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
+      const names = [party.individualDetails.firstName, party.individualDetails.lastName].filter(item => item);
+      return names.join(' ');
     } else {
       return '';
     }

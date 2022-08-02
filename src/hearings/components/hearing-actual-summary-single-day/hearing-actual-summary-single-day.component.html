@@ -40,11 +40,11 @@
   </h2>
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Channel</dt>
-      <dd class="govuk-summary-list__value">{{getChannelInfo(participant.partyChannelSubType)?.channel}}</dd>
+      <dt class="govuk-summary-list__key">Role</dt>
+      <dd class="govuk-summary-list__value">{{participant.partyRole | partyRoleDisplayValue:hearingRoles}}</dd>
     </div>
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Sub-channel</dt>
+      <dt class="govuk-summary-list__key">Attendance type</dt>
       <dd class="govuk-summary-list__value">{{getChannelInfo(participant.partyChannelSubType)?.subChannel}}</dd>
     </div>
   </dl>

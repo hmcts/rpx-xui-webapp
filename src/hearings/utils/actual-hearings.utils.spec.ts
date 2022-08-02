@@ -26,7 +26,7 @@ describe('ActualHearingsUtils', () => {
     const attendingRepresentative1 = ActualHearingsUtils.getRepresentingAttendee('1', hearingActualsMainModel, hearingDate);
     expect(attendingRepresentative1).toEqual('Bob Jones');
     const attendingRepresentative2 = ActualHearingsUtils.getRepresentingAttendee('2', hearingActualsMainModel, hearingDate);
-    expect(attendingRepresentative2).toEqual('DWP ');
+    expect(attendingRepresentative2).toEqual('DWP');
     const attendingRepresentative3 = ActualHearingsUtils.getRepresentingAttendee('3', hearingActualsMainModel, hearingDate);
     expect(attendingRepresentative3).toEqual('');
   });

@@ -10,6 +10,7 @@ import {
   HearingOutcomeModel,
   PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
+import { HearingRequestMainModel, HearingConditions } from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
   HearingActualAddEditSummaryEnum,
@@ -55,6 +56,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingDateRange: string;
   public hearingDatesAccordion = {} as { [hearingDate: string]: boolean};
   public isPaperHearing: boolean = false;
+  private hearingRequestMainModel: HearingRequestMainModel;
+  private hearingConditions: HearingConditions;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
@@ -68,7 +71,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.id = this.route.snapshot.params.id;
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState);
     this.hearingState$.map(state => {
+      console.log(state);
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
+      this.hearingRequestMainModel = state.hearingRequest.hearingRequestMainModel;
+      this.hearingConditions = state.hearingConditions;
     });
     this.errors$ = combineLatest([
       this.hearingStore.select(fromHearingStore.getHearingActualsLastError),
@@ -112,6 +118,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
       this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
+      if (this.isPaperHearing) {
+        this.hearingRequestMainModel.hearingDetails.hearingChannels = [HearingChannelEnum.ONPPR.toString()];
+        this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel, this.hearingConditions));
+      }
     }
   }
 

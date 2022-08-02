@@ -27,17 +27,9 @@ export class HearingActualSummaryComponent implements OnInit {
     this.isPaperHearing$ = this.hearingState$ && this.hearingState$.pipe(
       map(state => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
     );
-
-    const actualHearingDaysLength = this.hearingActualsMainModel.hearingActuals.actualHearingDays.length;
-    for (let i = 0; i < actualHearingDaysLength; i++) {
-      this.hearingDays.push({
-        actualHearingDay: this.hearingActualsMainModel.hearingActuals.actualHearingDays[i],
-        plannedHearingDay: this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[i]
-      });
-    }
   }
 
-  public get multiDayHearing() {
-    return this.hearingDays.length > 1;
+  public get isMultiDayHearing() {
+    return this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 1;
   }
 }

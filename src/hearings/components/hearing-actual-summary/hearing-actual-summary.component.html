@@ -3,7 +3,7 @@
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Hearing date(s)</dt>
       <dd class="govuk-summary-list__value">
-        <ng-container *ngIf="multiDayHearing; else singleDayHearingDate">
+        <ng-container *ngIf="isMultiDayHearing; else singleDayHearingDate">
           {{ hearingDays[0]?.actualHearingDay?.hearingStartTime | date:"dd MMMM yyyy" }} - {{ hearingDays[hearingDays.length - 1]?.actualHearingDay?.hearingStartTime | date:"dd MMMM yyyy" }}
         </ng-container>
         <ng-template #singleDayHearingDate>
@@ -59,17 +59,18 @@
 
   <h1 class="govuk-heading-m" style="display: inline-block;">Hearing date(s)</h1>
 
-  <ng-container *ngFor="let hearingDay of hearingDays">
-    <div class="">
-      <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details govuk-grid-row" [open]="!multiDayHearing">
+  <ng-container *ngFor="let actualHearingDay of hearingActualsMainModel.hearingActuals.actualHearingDays">
+    <div>
+      <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details govuk-grid-row" [open]="!isMultiDayHearing">
         <summary class="govuk-grid-column-one-quarter govuk-!-margin-bottom-4">
         <span class="govuk-details__summary-text govuk-!-padding-left-2">
-          {{ hearingDay.actualHearingDay.hearingDate | date: 'd MMMM' }}
+          {{ actualHearingDay.hearingDate | date: 'd MMMM' }}
         </span>
         </summary>
         <div class="govuk-grid-column-three-quarters summary-single-day">
           <exui-hearing-actual-summary-single-day
-            [actualHearingDay]="hearingDay.actualHearingDay" [plannedHearingDay]="hearingDay.plannedHearingDay" [isPaperHearing]="isPaperHearing$ | async">
+            [hearingActualsMainModel]="hearingActualsMainModel" [hearingDate]="actualHearingDay.hearingDate"
+            [isPaperHearing]="isPaperHearing$ | async">
           </exui-hearing-actual-summary-single-day>
         </div>
       </details>

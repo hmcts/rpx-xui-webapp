@@ -14,7 +14,7 @@ import { PartyChannelDisplayValuePipe } from '../../pipes/party-channel-display-
 import { PartyRoleDisplayValuePipe } from '../../pipes/party-role-display-value.pipe';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
 
-fdescribe('HearingActualSummaryComponent', () => {
+describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
   let fixture: ComponentFixture<HearingActualSummaryComponent>;
   let router: Router;

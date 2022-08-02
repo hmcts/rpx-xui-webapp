@@ -1,8 +1,9 @@
 import * as moment from 'moment';
 import {
+  ActualDayPartyModel,
   ActualHearingDayModel,
   HearingActualsMainModel,
-  HearingActualsModel
+  HearingActualsModel, PlannedDayPartyModel
 } from '../models/hearingActualsMainModel';
 
 export class ActualHearingsUtils {
@@ -103,7 +104,7 @@ export class ActualHearingsUtils {
   }
 
   public static getActualDayIndexFromHearingDate(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): number | undefined {
-    const hasActualsHearingDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
+    const hasActualsHearingDays = hearingActualsMainModel && hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
     let index: number;
     if (hasActualsHearingDays) {
       index = hearingActualsMainModel.hearingActuals.actualHearingDays
@@ -122,5 +123,37 @@ export class ActualHearingsUtils {
     }
 
     return index;
+  }
+
+  public static getParties(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): PlannedDayPartyModel[] {
+    const plannedDayIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(hearingActualsMainModel, hearingDate);
+
+    return plannedDayIndex >= 0 ? hearingActualsMainModel.hearingPlanned.plannedHearingDays[plannedDayIndex].parties : [];
+  }
+
+  public static getAttendees(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): ActualDayPartyModel[] {
+    const plannedDayIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(hearingActualsMainModel, hearingDate);
+    const plannedParties = hearingActualsMainModel.hearingPlanned.plannedHearingDays[plannedDayIndex].parties;
+    const plannedPartiesIds = plannedParties.map(party => party.partyID);
+
+    const actualHearingDayIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(hearingActualsMainModel, hearingDate);
+    const actualParties = hearingActualsMainModel.hearingActuals.actualHearingDays[actualHearingDayIndex].actualDayParties;
+
+    return actualParties.filter(actualParty => !plannedPartiesIds.includes(actualParty.actualPartyId));
+  }
+
+  public static getRepresentingAttendee(partyId: string, hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): string {
+    let party: PlannedDayPartyModel;
+    const plannedDayIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(hearingActualsMainModel, hearingDate);
+    if (plannedDayIndex) {
+      const plannedHearingDay = hearingActualsMainModel.hearingPlanned.plannedHearingDays[plannedDayIndex];
+      party = plannedHearingDay.parties.find(x => x.partyID === partyId.toString());
+    }
+
+    if (party && party.individualDetails) {
+      return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
+    } else {
+      return '';
+    }
   }
 }

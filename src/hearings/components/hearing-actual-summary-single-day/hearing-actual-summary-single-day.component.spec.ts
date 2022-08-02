@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { hearingActualsMainModel, hearingRoles } from '../../hearing.test.data';
+import { hearingRoles } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { PartyChannelDisplayValuePipe } from '../../pipes/party-channel-display-value.pipe';
 import { PartyRoleDisplayValuePipe } from '../../pipes/party-role-display-value.pipe';
@@ -198,8 +198,6 @@ describe('HearingActualSummarySingleDayComponent', () => {
 
     fixture = TestBed.createComponent(HearingActualSummarySingleDayComponent);
     component = fixture.componentInstance;
-    component.actualHearingDay = hearingActualsMainModel.hearingActuals.actualHearingDays[0];
-    component.plannedHearingDay = hearingActualsMainModel.hearingPlanned.plannedHearingDays[0];
     router = TestBed.get(Router);
     fixture.detectChanges();
   });

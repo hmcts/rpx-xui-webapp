@@ -154,7 +154,7 @@
                     <div *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
                       {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}: {{party.partyChannelSubType | partyChannelDisplayValue: partyChannels}}
                     </div>
-                  </dd>=
+                  </dd>
                   <dd class="govuk-summary-list__actions"></dd>
                 </div>
                 <div class="govuk-summary-list__row" *ngFor="let attendee of actualHearingUtils.getAttendees(hearingActualsMainModel, actualHearingDay.hearingDate); let i = index;">

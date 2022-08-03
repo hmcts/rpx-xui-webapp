@@ -26,6 +26,7 @@ export interface LocationInfo {
   substantive?: string;
   notes?: Note;
   requestedRole?: string;
+  roleType?: string;
 }
 
 export interface Note {

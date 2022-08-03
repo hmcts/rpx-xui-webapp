@@ -1,0 +1,19 @@
+.case-reference-container {
+  display: flex;
+  flex-direction: row;
+
+  .label {
+    color: white;
+    font-weight: normal;
+    margin: 8px 6px 0 0;
+  }
+
+  .govuk-input {
+    width: 219px;
+  }
+
+  .govuk-button--secondary {
+    height: 36px;
+    margin: 2px 0 0 4px;
+  }
+}

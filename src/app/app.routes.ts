@@ -171,6 +171,16 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: 'search',
+    canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
+    loadChildren: '../search/search.module#SearchModule',
+    data: {
+      title: 'Search cases',
+      needsFeaturesEnabled: ['feature-global-search'],
+      featureDisabledRedirect: '/'
+    }
+  },
+  {
     path: 'refunds',
     canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
     loadChildren: '../refunds/refunds.module#RefundsModule',

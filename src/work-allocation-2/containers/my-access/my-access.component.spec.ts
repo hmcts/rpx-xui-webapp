@@ -119,4 +119,8 @@ describe('MyAccessComponent', () => {
     expect(footerCell).toBeDefined();
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
+
+  afterEach(() => {
+    fixture.destroy();
+  })
 });

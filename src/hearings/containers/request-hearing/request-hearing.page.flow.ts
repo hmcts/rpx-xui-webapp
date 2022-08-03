@@ -48,7 +48,7 @@ export abstract class RequestHearingPageFlow {
         this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest());
         break;
       case ACTION.CONTINUE:
-        this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel, this.hearingCondition));
+        this.hearingStore.dispatch(new fromHearingStore.UpdateActualHearingRequest(this.hearingRequestMainModel));
         break;
       case ACTION.SUBMIT:
         this.hearingStore.dispatch(new fromHearingStore.SubmitHearingRequest(this.hearingRequestMainModel));

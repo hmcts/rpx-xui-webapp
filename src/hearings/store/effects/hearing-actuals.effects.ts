@@ -59,7 +59,7 @@ export class HearingActualsEffects {
     ofType(hearingActualsActions.UPDATE_ACTUAL_HEARING_REQUEST),
     switchMap((action: any) => this.hearingsService.updateHearingRequest(action.payload)
       .pipe(
-        map(() => new hearingActualsActions.UpdateActualHearingRequestSuccess(action.payload)),
+        map(() => new hearingActualsActions.UpdateActualHearingRequestSuccess(action.payload.requestDetails.hearingRequestID)),
         catchError((error: HttpError) => of(new hearingActualsActions.UpdateActualHearingRequestError(error)))
       ))
   );

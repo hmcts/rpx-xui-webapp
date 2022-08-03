@@ -56,7 +56,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingDateRange: string;
   public hearingDatesAccordion = {} as { [hearingDate: string]: boolean};
   public isPaperHearing: boolean = false;
-  private hearingRequestMainModel: HearingRequestMainModel;
+  public hearingRequestMainModel: HearingRequestMainModel;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
@@ -125,7 +125,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
           ...this.hearingRequestMainModel,
           hearingDetails
         };
-        this.hearingStore.dispatch(new fromHearingStore.SubmitHearingRequest(hearingRequestMainModel));
+        this.hearingStore.dispatch(new fromHearingStore.UpdateActualHearingRequest(hearingRequestMainModel));
       }
     }
   }

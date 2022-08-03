@@ -98,8 +98,7 @@
                   </a>
                 </dd>
               </div>
-              <ng-container *ngIf="!actualHearingDay.notRequired">
-                <br>
+              <ng-container *ngIf="!isPaperHearing">
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">
                     <span class="govuk-heading-m govuk-!-margin-bottom-0">Hearing timings</span>
@@ -155,28 +154,18 @@
                   </dd>
                   <dd class="govuk-summary-list__actions"></dd>
                 </div>
-                <ng-container *ngIf="isPaperHearing$ | async">
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">How participants will attend</dt>
-                    <dd class="govuk-summary-list__value">
-                      <div *ngFor="let party of getParties(actualHearingDay)">
-                        {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}: {{party.partyChannelSubType | partyChannelDisplayValue: partyChannels}}
-                      </div>
-                    </dd>
-                    <dd class="govuk-summary-list__actions"></dd>
-                  </div>
-                  <div class="govuk-summary-list__row" *ngFor="let attendee of getAttendees(actualHearingDay); let i = index;">
-                    <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
-                    <dd class="govuk-summary-list__value">
-                      Role: {{attendee.partyRole | partyRoleDisplayValue: hearingRoles}}<br>
-                      First name: {{attendee.individualDetails.firstName}}<br>
-                      Last name: {{attendee.individualDetails.lastName}}<br>
-                      Organisation: {{attendee.actualOrganisationName}}<br>
-                      Attendee Type: {{attendee.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
-                      Attendee representing: {{attendee.representedParty && getRepresentingAttendee(attendee.representedParty, actualHearingDay.hearingDate) || "N/A"}}
-                    </dd>
-                  </div>
-                </ng-container>
+                <div class="govuk-summary-list__row" *ngFor="let attendee of getAttendees(actualHearingDay); let i = index;">
+                  <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
+                  <dd class="govuk-summary-list__value">
+                    Role: {{attendee.partyRole | partyRoleDisplayValue: hearingRoles}}<br>
+                    First name: {{attendee.individualDetails.firstName}}<br>
+                    Last name: {{attendee.individualDetails.lastName}}<br>
+                    Organisation: {{attendee.actualOrganisationName}}<br>
+                    Attendee Type: {{attendee.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
+                    Attendee representing: {{attendee.representedParty && getRepresentingAttendee(attendee.representedParty, actualHearingDay.hearingDate) || "N/A"}}
+                  </dd>
+                  <dd class="govuk-summary-list__actions"></dd>
+                </div>
               </ng-container>
             </dl>
           </div>

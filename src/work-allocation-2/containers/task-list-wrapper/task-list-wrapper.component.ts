@@ -258,18 +258,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       return [{
         sort_by: this.sortedBy.fieldName,
         sort_order: this.sortedBy.order
-      },
-      {
-        sort_by: this.taskServiceConfig.defaultSortFieldName,
-        sort_order: this.taskServiceConfig.defaultSortDirection
-      }
-    ];
+      }];
     }
 
-    return [{
-      sort_by: this.taskServiceConfig.defaultSortFieldName,
-      sort_order: this.taskServiceConfig.defaultSortDirection
-    }];
+    return [];
   }
 
   public getPaginationParameter(): PaginationParameter {

@@ -12,14 +12,21 @@ const taskListPage = require('../pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('./workAllocation/taskManagerPage');
 const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
 const allWorkPage = require("../../features/pageObjects/workAllocation/allWorkPage");
+const globalSearchPage = require('./globalSearchCases');
 const CucumberReporter = require('../../support/reportLogger');
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
 const searchCasePage = new SearchCasePage();
 
-const config = require('../../config/conf');
+function HeaderSearch(){
 
+  this.container = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box"));
+  this.label = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//span"));
+  this.input = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//input[@id='caseReference']"));
+  this.button = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//button"));
+
+}
 
 function HeaderPage() {
     this.jcmLogoImg = element(by.xpath("//div[contains(@class,'hmcts-header__container')]//a//img[@src='/assets/images/govuk-crest-jcm.png']"));
@@ -51,6 +58,8 @@ function HeaderPage() {
       await this.waitForPrimaryNavDisplay();
     }
 
+    this.headerSearch = new HeaderSearch();
+
     this.amOnPage = async function(){
       return await this.headerAppLogoLink.isPresent();
     }
@@ -81,7 +90,36 @@ function HeaderPage() {
           throw new Error(`User type ${userType} is not recognized`);
         }
       });
-      
+    }
+
+    this.clickPrimaryNavigationWithLabel = async function(label){
+      const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
+      await BrowserWaits.retryWithActionCallback(async () => {
+        if (userType.toLowerCase() === 'caseworker') {
+          expect(await this.jcmLogoImg.isPresent(), "JCM logo displayed").to.be.false;
+          expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS is displayed").to.be.false;
+          expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Manage Cases");
+          expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
+
+        } else if (userType.toLowerCase() === 'judicial') {
+          await BrowserWaits.waitForElement(this.jcmLogoImg);
+          expect(await this.jcmLogoImg.isPresent(), "JCM logo not displayed").to.be.true;
+          expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS is displayed").to.be.false;
+          expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Judicial Case Manager");
+          expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(141, 15, 14);");
+
+        } else if (userType.toLowerCase() === 'solicitor') {
+          await BrowserWaits.waitForElement(this.myHMCTSHeader);
+          expect(await this.jcmLogoImg.isPresent(), "JCM displayed").to.be.false;
+          expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS displayed").to.be.true;
+          expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Manage Cases");
+          expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
+
+        } else {
+          throw new Error(`User type ${userType} is not recognized`);
+        }
+      });
+
     }
 
 
@@ -107,14 +145,14 @@ function HeaderPage() {
     }
 
     this.clickAppLogoLink = async function(){
-       await this.headerAppLogoLink.click(); 
+       await this.headerAppLogoLink.click();
     }
 
     this.caseList = function(){
       return element(by.xpath("//a[contains(text(),'Case list')]"))
     };
-    this.createCase =  function() { 
-      return element(by.xpath("//li/a[contains(text(),'Create case')]")) 
+    this.createCase =  function() {
+      return element(by.xpath("//li/a[contains(text(),'Create case')]"))
     };
 
     this.clickRefunds = async function () {
@@ -140,11 +178,11 @@ function HeaderPage() {
 
   this.clickManageCases = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForElement(this.manageCases);  
+      await BrowserWaits.waitForElement(this.manageCases);
       await this.manageCases.click();
       await browserUtil.waitForLD();
     });
-    //await BrowserWaits.waitForElement($('exui-case-list'));  
+    //await BrowserWaits.waitForElement($('exui-case-list'));
   };
 
   this.clickCaseList = async function () {
@@ -153,7 +191,7 @@ function HeaderPage() {
     await BrowserWaits.waitForElementClickable(this.caseList());
     await this.caseList().click();
     await browserUtil.waitForLD();
-    expect(await caseListPage.amOnPage()).to.be.true 
+    expect(await caseListPage.amOnPage()).to.be.true
   };
 
   this.clickCreateCase = async function () {
@@ -178,7 +216,7 @@ function HeaderPage() {
       await this.taskList().click();
       await browserUtil.waitForLD();
     });
-    
+
   };
 
   this.clickTaskManager = async function () {
@@ -193,16 +231,16 @@ function HeaderPage() {
 
   this.clickFindCase = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForElement(this.findCase);  
+      await BrowserWaits.waitForElement(this.findCase);
       await this.findCase.click();
 
       var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text() , 'Search')]"));
-      await BrowserWaits.waitForElement(searchPageHeader); 
+      await BrowserWaits.waitForElement(searchPageHeader);
     });
   };
 
   this.clickSignOut = async function () {
-    await BrowserWaits.waitForElement(this.signOut);  
+    await BrowserWaits.waitForElement(this.signOut);
     this.signOut.click();
     browser.sleep(SHORT_DELAY);
   };
@@ -240,7 +278,7 @@ function HeaderPage() {
         await this.refreshBrowser(); 
         throw new Error(`Tab ${tabText} is not present in navigation tabs headers ${primaryTabs} `);
       }
-    }); 
+    });
   };
 
   this.getPrimaryTabsDisplayed = async function  () {
@@ -254,7 +292,7 @@ function HeaderPage() {
       }
       return tabsText;
     });
-    
+
   }
 
 
@@ -269,7 +307,7 @@ function HeaderPage() {
       }
       return tabsText;
     });
-    
+
   }
 
   this.isPrimaryTabPageDisplayed = async function(primaryTab){
@@ -294,6 +332,9 @@ function HeaderPage() {
         break;
       case 'My work':
         retValue = await myWorkPage.amOnPage();
+        break;
+      case 'Search':
+        retValue = await globalSearchPage.amOnPage();
         break;
       case 'All work':
         retValue = await allWorkPage.amOnPage();

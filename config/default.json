@@ -87,9 +87,10 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "waSupportedJurisdictions": ["IA"],
+  "globalSearchServices": "IA, CIVIL",
+  "waSupportedJurisdictions": ["IA", "SSCS", "CIVIL"],
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
-  "serviceRefDataMapping": [{"IA": "BFA1"}],
+  "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}],
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

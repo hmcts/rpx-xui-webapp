@@ -1,4 +1,3 @@
-
 @ng @test
 Feature: Work access page, feature toggle and route guards
 

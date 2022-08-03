@@ -39,7 +39,7 @@ class WAListTable {
     }
 
     async waitForSpinnerToDissappear() {
-        await BrowserWaits.waitForSpinnerToDissappear();
+        await this.spinner.waitForSpinnerToDissappear();
     }
 
     async waitForTable() {
@@ -49,7 +49,7 @@ class WAListTable {
             let isTableFooterDispayed = await this.tableFooter.isDisplayed();
             cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
             return tableRowsCount > 0 || isTableFooterDispayed;
-        }, 45000);
+        }, BrowserWaits.waitTime);
     }
 
     async isTableDisplayed() {
@@ -180,8 +180,10 @@ class WAListTable {
     }
 
     async isManageLinkPresent(position) {
-        const row = await this.getTableRowAt(position);
-        return await row.$('button[id^="manage_"]').isPresent();
+        return await browserUtil.stepWithRetry(async () => {
+            const row = await this.getTableRowAt(position);
+            return await row.$('button[id^="manage_"]').isPresent();
+        });
     }
 
     async clickManageLinkForRowAt(position) {

@@ -108,8 +108,8 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role Legal Ops (EU
         When I enter find person search input "case" in work flow
         Then I see find person search results in work flow
             | Person                                  |
-            | caseworker1 cw(caseworker_user1@gov.uk) |
-            | caseworker2 cw(caseworker_user2@gov.uk) |
+            | caseworker1 cw (caseworker_user1@gov.uk) |
+            | caseworker2 cw (caseworker_user2@gov.uk) |
         When I select find person result "caseworker_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 
@@ -256,8 +256,8 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role Legal Ops (EU
         When I enter find person search input "cas" in work flow
         Then I see find person search results in work flow
             | Person                                  |
-            | caseworker1 cw(caseworker_user1@gov.uk) |
-            | caseworker2 cw(caseworker_user2@gov.uk) |
+            | caseworker1 cw (caseworker_user1@gov.uk) |
+            | caseworker2 cw (caseworker_user2@gov.uk) |
         When I select find person result "caseworker_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 

@@ -6,7 +6,6 @@ import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { AxiosResponse } from 'axios';
 import { Role, RolesByService } from './models/roleType';
-import { mockAdminRefinedRoles } from './roleData.mock';
 
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
@@ -17,9 +16,8 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
       serviceIds.forEach(serviceId => {
         // note: if service obtained, check role either includes service or does not specify service
         const serviceRoles = roles.filter(role =>
-          role.roleJurisdiction && (!role.roleJurisdiction.values
-             || (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId))));
-        rolesByService.push({service: serviceId, roles: serviceRoles.concat(mockAdminRefinedRoles)});
+          role.roleJurisdiction && (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)))
+        rolesByService.push({service: serviceId, roles: serviceRoles});
       })
     }
     return res.send(rolesByService).status(200);

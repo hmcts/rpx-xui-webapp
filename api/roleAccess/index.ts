@@ -46,7 +46,6 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
         finalRoles.push(unknownRole);
       }
     });
-    // TODO: Remove mocked Admin roles after testing
     return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);
@@ -78,12 +77,12 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
     return res.status(200).send([]);
   }
   const services = req.body.services ? req.body.services : userIds;
-  const serviceCodes: string[] = [];
+  let serviceCodes: string[] = [];
   const serviceRefDataMapping = getServiceRefDataMappingList();
   // add the service refernces in order to search by service
   serviceRefDataMapping.forEach(serviceRef => {
-    if (services.includes(Object.keys(serviceRef)[0])) {
-      serviceCodes.push(Object.values(serviceRef)[0] as string);
+    if (services.includes(serviceRef.service)) {
+      serviceCodes = [...serviceCodes, ...serviceRef.serviceCodes];
     }
   })
   let searchResult: any[] = [];

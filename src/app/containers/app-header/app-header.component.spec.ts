@@ -16,7 +16,6 @@ const storeMock = {
   }
 };
 
-
 const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
 let dispatchSpy: jasmine.Spy;
@@ -108,11 +107,8 @@ describe('AppHeaderComponent', () => {
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
 
-
     it('should set app header content', async () => {
       const themeSpy = spyOn(component, 'getApplicationThemeForUser').and.returnValue(of(AppConstants.DEFAULT_USER_THEME));
-      
-      
 
       const userDetails = {
         userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']

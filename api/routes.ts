@@ -3,6 +3,7 @@ import accessManagementRouter from './accessManagement/routes';
 import {router as caseShareRoutes} from './caseshare/routes';
 import {getConfigValue, showFeature} from './configuration';
 import {APP_INSIGHTS_KEY} from './configuration/references';
+import { router as globalSearchRoutes } from './globalSearch/routes';
 import healthCheck from './healthCheck';
 import {router as hearingsRouter} from './hearings/routes';
 import authInterceptor from './lib/middleware/auth';
@@ -37,12 +38,17 @@ router.use('/am', accessManagementRouter);
 
 router.use('/role-access', roleAccessRouter);
 
+router.use('/am', accessManagementRouter);
+
+router.use('/role-access', roleAccessRouter);
+
 router.use('/locations', locationsRouter);
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
+router.use('/globalSearch', globalSearchRoutes);
 router.use('/locations', locationsRouter);
 router.use('/service-ref-data', serviceRefDataRouter);
 router.use('/prd', prdRouter);

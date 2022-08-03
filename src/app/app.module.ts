@@ -21,9 +21,11 @@ import { ProvidersModule } from './providers/providers.module';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
+import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { LoggerService } from './services/logger/logger.service';
@@ -33,7 +35,6 @@ import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
-import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -100,7 +101,8 @@ const routerOptions: ExtraOptions = {
     AcceptTermsService,
     CaseShareService,
     { provide: FeatureToggleService, useClass: LaunchDarklyService },
-    TimeoutNotificationsService
+    TimeoutNotificationsService,
+    JurisdictionService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

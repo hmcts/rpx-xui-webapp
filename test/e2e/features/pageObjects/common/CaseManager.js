@@ -31,6 +31,7 @@ class CaseManager {
         this.formFields = 'ccd-case-edit-form>div';
         this.ccdCaseDetails = $('ccd-case-viewer');
         this.ccdCaseEdit = $('ccd-case-edit')
+        this.caseDetailsPage = $('exui-case-details-home');
         this.exuiCaseHomeComp = $("exui-case-home");
         this.checkYourAnswers = $(".check-your-answers");
 
@@ -238,6 +239,7 @@ class CaseManager {
         cucumberReporter.AddMessage("Submitting page: " + thisPageUrl, LOG_LEVELS.Debug);
         console.log("Submitting : " + thisPageUrl )
 
+        let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
 
             try{

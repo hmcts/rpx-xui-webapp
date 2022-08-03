@@ -111,6 +111,7 @@ defineSupportCode(function ({ Given, When, Then }) {
         .deleteAllCookies();
       CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
       await browser.get(config.config.baseUrl);
+      await browser.sleep(45000);
       await BrowserWaits.waitForElement(loginPage.signinTitle);
       expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
     });
@@ -353,6 +354,19 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.hrsTesterUser, config.config.params.hrsTesterPassword, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
+
+  Given('I am logged into Expert UI with case clags user details', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.case_flags_username, config.config.params.case_flags_password);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.case_flags_username, config.config.params.case_flags_password, this);
 
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)

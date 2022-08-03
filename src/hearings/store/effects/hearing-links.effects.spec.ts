@@ -4,7 +4,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
@@ -135,7 +135,7 @@ describe('Hearing Links Effects', () => {
       };
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
-      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(Observable.throwError(error));
+      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(throwError(error));
       const action = new hearingLinksActions.SubmitLinkedHearingGroup({ linkedHearingGroup, caseId, hearingId });
       actions$ = cold('-a', { a: action });
       const expected = cold('-b', { b: error });

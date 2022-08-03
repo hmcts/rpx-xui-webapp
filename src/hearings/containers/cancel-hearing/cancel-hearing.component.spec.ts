@@ -77,7 +77,7 @@ describe('CancelHearingComponent', () => {
                 hearingCancelOptions: reasons,
               },
             },
-            params: Observable.of({ hearingId: HEARING_ID }),
+            params: of({ hearingId: HEARING_ID }),
           },
         },
         provideMockStore({ initialState }),

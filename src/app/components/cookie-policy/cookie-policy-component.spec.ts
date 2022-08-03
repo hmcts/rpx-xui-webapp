@@ -13,14 +13,6 @@ describe('CookiePolicyComponentTest', () => {
   class FooterStubComponent {
   }
 
-  @Component({
-    selector: `exui-app-host-dummy-component`,
-    template: `<exui-cookie-policy/>`
-  })
-  class TestDummyHostComponent {
-    public cookiePolicy: CookiePolicyComponent;
-  }
-  const testHostComponent = TestDummyHostComponent;
   let component: CookiePolicyComponent;
   let fixture: ComponentFixture<CookiePolicyComponent>;
 

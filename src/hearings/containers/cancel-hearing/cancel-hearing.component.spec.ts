@@ -65,7 +65,9 @@ describe('CancelHearingComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
+        { path: 'cases/case-details/1111222233334444/hearings', redirectTo: '' }
+      ]), HttpClientTestingModule],
       declarations: [CancelHearingComponent],
       providers: [
         { provide: HearingsService, useValue: hearingsService },

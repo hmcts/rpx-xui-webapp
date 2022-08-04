@@ -77,7 +77,7 @@ describe('HearingVenueComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const locationsDataService: LocationsDataService = new LocationsDataService(mockedHttpClient);
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent],
@@ -117,15 +117,11 @@ describe('HearingVenueComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set hearingList.hearingListMainModel to SSCS', () => {
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
+  it('should set hearingList.hearingListMainModel to SSCS', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable().then(() => {
       expect(component.selectedLocations).toEqual([
-        {
-          epimms_id: '123',
-          court_name: 'test location',
-          region: 'Wales',
-        } as LocationByEPIMMSModel
+        ...FOUND_LOCATIONS
       ]);
 
       expect(component.serviceIds).toEqual('BBA3');
@@ -181,12 +177,6 @@ describe('HearingVenueComponent', () => {
     const result = component.isLocationValid();
     expect(component.validationErrors).toEqual([]);
     expect(result).toEqual(true);
-  });
-
-
-  it('should initialise component', async () => {
-    expect(component).toBeDefined();
-    component.ngOnInit();
   });
 
   it('should display selection in selection list', async () => {

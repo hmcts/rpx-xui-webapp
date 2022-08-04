@@ -570,6 +570,11 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(description).toEqual('');
   });
 
+  it('should check is errror bar handling', () => {
+    expect(component.isHearingActualsDaysAvailable(0)).toBeTruthy();
+    expect(component.isHearingActualsPartiesAvailable(0)).toBeTruthy();
+  });
+
   it('should return hearing result reason type description for adjourned', () => {
     component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
     const hearingOutcome = JSON.parse(JSON.stringify(hearingActualsMainModel.hearingActuals.hearingOutcome));

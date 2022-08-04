@@ -40,6 +40,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public isHearingsAvailable: boolean;
   public linkedHearingEnum = HearingLinkedSelectionEnum;
   public mode: Mode;
+  public showSpinner: boolean = true;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -58,14 +59,17 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
-        this.isHearingsSelected(state.hearingLinks.serviceLinkedCasesWithHearings);
-        this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings;
-        this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
-        if (state.hearingLinks.lastError) {
-          this.errors.push({id: 'httpError', message: HearingSummaryEnum.BackendError});
+        if (state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings) {
+          this.isHearingsSelected(state.hearingLinks.serviceLinkedCasesWithHearings);
+          this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings;
+          this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
+          if (state.hearingLinks.lastError) {
+            this.errors.push({id: 'httpError', message: HearingSummaryEnum.BackendError});
+          }
+          this.initForm();
+          this.getHearingsAvailable();
+          this.showSpinner = false;
         }
-        this.initForm();
-        this.getHearingsAvailable();
       }
     );
   }

@@ -41,6 +41,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   ];
   public error$: Observable<HttpError>;
   public isManageJourneyFinalPage: boolean;
+  public showSpinner: boolean = true;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -69,6 +70,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
           } else {
             this.setHearingLinkedGroup(this.hearingLinks);
           }
+          this.showSpinner = false;
         }
       }
     );
@@ -98,14 +100,17 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
       this.hearingsInGroup.forEach(hearing => {
         const foundHearing = allHearings.find(aHearing => aHearing.hearingID === hearing.hearingId);
         const foundCase = hearingLinksStateData.serviceLinkedCasesWithHearings.find(linkedCase => linkedCase.caseHearings.some(aHaring => aHaring.hearingID === hearing.hearingId));
-        const linkedCaseHearingsResult: LinkedCaseHearingsResult = {
-          caseRef: foundCase.caseRef,
-          caseName: foundCase.caseName,
-          hearingID: hearing.hearingId,
-          hearingType: foundHearing.hearingType,
-          position: hearing.hearingOrder
-        };
-        if (!this.linkedCaseHearingsResults.some(result => result.hearingID === hearing.hearingId)) {
+        let linkedCaseHearingsResult: LinkedCaseHearingsResult = null;
+        if (foundCase && foundHearing) {
+          linkedCaseHearingsResult = {
+            caseRef: foundCase.caseRef,
+            caseName: foundCase.caseName,
+            hearingID: hearing.hearingId,
+            hearingType: foundHearing.hearingType,
+            position: hearing.hearingOrder
+          };
+        }
+        if (!this.linkedCaseHearingsResults.some(result => result.hearingID === hearing.hearingId) && linkedCaseHearingsResult) {
           this.linkedCaseHearingsResults.push(linkedCaseHearingsResult);
         }
       });

@@ -2,13 +2,13 @@ import {NextFunction, Response} from 'express';
 import {sendGet, sendPost} from '../common/crudService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
-import * as log4jui from "../lib/log4jui";
+import * as log4jui from '../lib/log4jui';
 import {EnhancedRequest, JUILogger} from '../lib/models';
-import {DEFAULT_SCREEN_FLOW} from "./data/defaultScreenFlow.data";
-import {hmcHearingsUrl} from "./hmc.index";
-import {HearingListMainModel} from "./models/hearingListMain.model";
-import {EXUIDisplayStatusEnum} from "./models/hearings.enum";
-import {hearingStatusMappings} from "./models/hearingStatusMappings";
+import {DEFAULT_SCREEN_FLOW} from './data/defaultScreenFlow.data';
+import {hmcHearingsUrl} from './hmc.index';
+import {HearingListMainModel} from './models/hearingListMain.model';
+import {EXUIDisplayStatusEnum} from './models/hearings.enum';
+import {hearingStatusMappings} from './models/hearingStatusMappings';
 import {
   ServiceLinkedCasesModel
 } from './models/linkHearings.model';

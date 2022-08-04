@@ -2,8 +2,8 @@ import { HearingLinksStateData } from '../../models/hearingLinksStateData.model'
 import * as fromActions from '../actions';
 
 export const initialHearingLinksState: HearingLinksStateData = {
-  serviceLinkedCases: [],
-  serviceLinkedCasesWithHearings: [],
+  serviceLinkedCases: null,
+  serviceLinkedCasesWithHearings: null,
   linkedHearingGroup: null,
   lastError: null
 };

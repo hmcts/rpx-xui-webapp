@@ -41,7 +41,7 @@ export class UpdateHearingRequest implements Action {
   public readonly type = UPDATE_HEARING_REQUEST;
 
   constructor(public hearingRequestMainModel: HearingRequestMainModel,
-              public hearingCondition: HearingConditions) {
+              public hearingCondition?: HearingConditions) {
   }
 }
 

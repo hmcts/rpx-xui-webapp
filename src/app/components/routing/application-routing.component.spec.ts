@@ -35,6 +35,12 @@ describe('ApplicationRoutingComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   });
 
+  it('should navigateBasedOnUserRole caseworker-civil', () => {
+    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
+    component.navigateBasedOnUserRole();
+    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
+  });
+
   it('should navigateBasedOnUserRole caseworker-ia-caseofficer', () => {
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-ia-caseofficer']}}));
     component.navigateBasedOnUserRole();

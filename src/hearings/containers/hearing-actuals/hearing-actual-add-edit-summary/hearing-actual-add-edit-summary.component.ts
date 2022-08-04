@@ -116,7 +116,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
       this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
       if (this.isPaperHearing) {
-        this.hearingRequestMainModel.hearingDetails.hearingChannels = [HearingChannelEnum.ONPPR.toString()];
         const hearingDetails = {
           ...this.hearingRequestMainModel.hearingDetails,
           hearingChannels: [HearingChannelEnum.ONPPR.toString()]

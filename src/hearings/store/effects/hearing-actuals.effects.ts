@@ -57,9 +57,9 @@ export class HearingActualsEffects {
   @Effect()
   public updateActualHearingRequest$ = this.actions$.pipe(
     ofType(hearingActualsActions.UPDATE_ACTUAL_HEARING_REQUEST),
-    mergeMap((action: any) => this.hearingsService.updateHearingRequest(action.payload)
+    mergeMap((action: any) => this.hearingsService.updateHearingRequest(action.payload.hearingRequestMainModel)
       .pipe(
-        map(() => new hearingActualsActions.UpdateActualHearingRequestSuccess(action.payload)),
+        map(() => new hearingActualsActions.UpdateActualHearingRequestSuccess(action.payload.hearingRequestMainModel)),
         catchError((error: HttpError) => of(new hearingActualsActions.UpdateActualHearingRequestError(error)))
       ))
   );

@@ -65,7 +65,7 @@ describe('Hearing Actuals Actions', () => {
         hearingDetails: null,
         hearingResponse: null
       };
-      const action = new fromHearingActualsAction.UpdateActualHearingRequest(hearingRequestMainModel);
+      const action = new fromHearingActualsAction.UpdateActualHearingRequest({hearingRequestMainModel});
       expect(action.type).toBe(fromHearingActualsAction.UPDATE_ACTUAL_HEARING_REQUEST);
     });
 
@@ -75,7 +75,7 @@ describe('Hearing Actuals Actions', () => {
         hearingDetails: null,
         hearingResponse: null
       };
-      const action = new fromHearingActualsAction.UpdateActualHearingRequestSuccess(hearingRequestMainModel);
+      const action = new fromHearingActualsAction.UpdateActualHearingRequestSuccess({hearingRequestMainModel});
       expect(action.type).toBe(fromHearingActualsAction.UPDATE_ACTUAL_HEARING_REQUEST_SUCCESS);
     });
 

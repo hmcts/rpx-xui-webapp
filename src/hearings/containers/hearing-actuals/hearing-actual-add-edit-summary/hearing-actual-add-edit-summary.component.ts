@@ -121,14 +121,14 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       if (this.isPaperHearing) {
         const hearingDetails = {
           ...this.hearingRequestMainModel.hearingDetails,
-          hearingChannels: [HearingChannelEnum.ONPPR.toString()]
+          hearingChannels: [HearingChannelEnum.ONPPR.toString()],
+          amendReasonCodes: ['adminreq']
         };
         const hearingRequestMainModel = {
           ...this.hearingRequestMainModel,
-          hearingDetails
+          hearingDetails,
         };
-        console.log(hearingRequestMainModel);
-        this.hearingStore.dispatch(new fromHearingStore.UpdateActualHearingRequest(hearingRequestMainModel));
+        this.hearingStore.dispatch(new fromHearingStore.UpdateActualHearingRequest({hearingRequestMainModel}));
       }
       this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
     }

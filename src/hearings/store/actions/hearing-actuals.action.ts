@@ -91,13 +91,13 @@ export class ResetHearingActualsLastError implements Action {
 
 export class UpdateActualHearingRequest implements Action {
   public readonly type = UPDATE_ACTUAL_HEARING_REQUEST;
-  constructor(public hearingRequestMainModel: HearingRequestMainModel) {
+  constructor(public payload: {hearingRequestMainModel: HearingRequestMainModel}) {
   }
 }
 
 export class UpdateActualHearingRequestSuccess implements Action {
   public readonly type = UPDATE_ACTUAL_HEARING_REQUEST_SUCCESS;
-  constructor(public hearingRequestMainModel: HearingRequestMainModel) {
+  constructor(public payload: {hearingRequestMainModel: HearingRequestMainModel}) {
   }
 }
 

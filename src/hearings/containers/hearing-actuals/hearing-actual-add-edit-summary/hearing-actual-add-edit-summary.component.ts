@@ -10,6 +10,7 @@ import {
   HearingOutcomeModel,
   PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
+import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
   HearingActualAddEditSummaryEnum,
@@ -29,7 +30,6 @@ import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 })
 export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
-  public isPaperHearing: boolean;
   public hearingActualsMainModel: HearingActualsMainModel;
   public hearingOutcome: HearingOutcomeModel;
   public hearingRoles: LovRefDataModel[] = [];
@@ -55,6 +55,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public partyChannels: LovRefDataModel[] = [];
   public hearingDateRange: string;
   public hearingDatesAccordion = {} as { [hearingDate: string]: boolean};
+  public isPaperHearing: boolean = false;
+  public hearingRequestMainModel: HearingRequestMainModel;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
@@ -67,8 +69,9 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState);
-    this.hearingState$.map(state => {
+    this.hearingState$.subscribe(state => {
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
+      this.hearingRequestMainModel = state.hearingRequest.hearingRequestMainModel;
     });
     this.errors$ = combineLatest([
       this.hearingStore.select(fromHearingStore.getHearingActualsLastError),
@@ -112,6 +115,18 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
       this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
+      if (this.isPaperHearing) {
+        this.hearingRequestMainModel.hearingDetails.hearingChannels = [HearingChannelEnum.ONPPR.toString()];
+        const hearingDetails = {
+          ...this.hearingRequestMainModel.hearingDetails,
+          hearingChannels: [HearingChannelEnum.ONPPR.toString()]
+        };
+        const hearingRequestMainModel = {
+          ...this.hearingRequestMainModel,
+          hearingDetails
+        };
+        this.hearingStore.dispatch(new fromHearingStore.UpdateActualHearingRequest(hearingRequestMainModel));
+      }
     }
   }
 
@@ -302,5 +317,9 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     }
 
     return false;
+  }
+
+  public togglePaperHearing() {
+    this.isPaperHearing = !this.isPaperHearing;
   }
 }

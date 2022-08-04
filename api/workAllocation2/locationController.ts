@@ -38,7 +38,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
     const path: string = prepareGetLocationsUrl(basePath);
     const response = await handleLocationGet(path, req);
-    const newLocations = response.data.filter(venue => venue.is_case_management_location === 'Y').
+    const newLocations = response.data.court_venues.filter(venue => venue.is_case_management_location === 'Y').
                          map(venue => ({id: venue.epimms_id, locationName: venue.site_name }));
     res.send(newLocations).status(response.status);
   } catch (error) {

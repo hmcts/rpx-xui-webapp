@@ -99,72 +99,77 @@
                 </dd>
               </div>
               <ng-container *ngIf="!isPaperHearing">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    <span class="govuk-heading-m govuk-!-margin-bottom-0">Hearing timings</span>
-                  </dt>
-                  <dd class="govuk-summary-list__value"></dd>
-                  <dd class="govuk-summary-list__actions">
-                    <a href="javascript:void(0)" (click)="confirmActualHearingTimeForDay(actualHearingDay)"
-                      id="hearing-timing-result-confirm-link" class="govuk-link">
-                      Confirm
-                    </a>&nbsp;
-                    <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing', actualHearingDay.hearingDate]" class="govuk-link">Update</a>
-                  </dd>
+                <div class="hearing-table-row" [ngClass]="{'error': (hearingTimingResultErrorMessage !== '') && !isHearingActualsDaysAvailable(i)}">
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                      <span class="govuk-heading-m govuk-!-margin-bottom-0">Hearing timings</span>
+                    </dt>
+                    <dd class="govuk-summary-list__value"></dd>
+                    <dd class="govuk-summary-list__actions">
+                      <a href="javascript:void(0)" (click)="confirmActualHearingTimeForDay(actualHearingDay)"
+                        id="hearing-timing-result-confirm-link" class="govuk-link">
+                        Confirm
+                      </a>&nbsp;
+                      <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing', actualHearingDay.hearingDate]" class="govuk-link">Update</a>
+                    </dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Start time</dt>
+                    <dd class="govuk-summary-list__value">{{actualHearingDay.hearingStartTime | date: "HH:mm"}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Finish time</dt>
+                    <dd class="govuk-summary-list__value">{{actualHearingDay.hearingEndTime | date: "HH:mm"}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Pause time</dt>
+                    <dd class="govuk-summary-list__value">{{getPauseStartDateTime(actualHearingDay)}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Resume time</dt>
+                    <dd class="govuk-summary-list__value">{{getPauseEndDateTime(actualHearingDay)}}</dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                  </div>
                 </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Start time</dt>
-                  <dd class="govuk-summary-list__value">{{actualHearingDay.hearingStartTime | date: "HH:mm"}}</dd>
-                  <dd class="govuk-summary-list__actions"></dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Finish time</dt>
-                  <dd class="govuk-summary-list__value">{{actualHearingDay.hearingEndTime | date: "HH:mm"}}</dd>
-                  <dd class="govuk-summary-list__actions"></dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Pause time</dt>
-                  <dd class="govuk-summary-list__value">{{getPauseStartDateTime(actualHearingDay)}}</dd>
-                  <dd class="govuk-summary-list__actions"></dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Resume time</dt>
-                  <dd class="govuk-summary-list__value">{{getPauseEndDateTime(actualHearingDay)}}</dd>
-                  <dd class="govuk-summary-list__actions"></dd>
-                </div>
+
                 <br>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    <span class="govuk-heading-m govuk-!-margin-bottom-0">Participants</span>
-                  </dt>
-                  <dd class="govuk-summary-list__value"></dd>
-                  <dd class="govuk-summary-list__actions">
-                    <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)"
-                      id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
-                    <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
-                      class="govuk-link">Update</a>
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">Names</dt>
-                  <dd class="govuk-summary-list__value">
-                    <div *ngFor="let party of getParties(actualHearingDay)">
-                      {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}
-                    </div>
-                  </dd>
-                  <dd class="govuk-summary-list__actions"></dd>
-                </div>
-                <div class="govuk-summary-list__row" *ngFor="let attendee of getAttendees(actualHearingDay); let i = index;">
-                  <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
-                  <dd class="govuk-summary-list__value">
-                    Role: {{attendee.partyRole | partyRoleDisplayValue: hearingRoles}}<br>
-                    First name: {{attendee.individualDetails.firstName}}<br>
-                    Last name: {{attendee.individualDetails.lastName}}<br>
-                    Organisation: {{attendee.actualOrganisationName}}<br>
-                    Attendee Type: {{attendee.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
-                    Attendee representing: {{attendee.representedParty && getRepresentingAttendee(attendee.representedParty, actualHearingDay.hearingDate) || "N/A"}}
-                  </dd>
-                  <dd class="govuk-summary-list__actions"></dd>
+                <div class="hearing-table-row" [ngClass]="{'error': hearingPartiesResultErrorMessage !== '' && (!isHearingActualsPartiesAvailable(i))}">
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                      <span class="govuk-heading-m govuk-!-margin-bottom-0">Participants</span>
+                    </dt>
+                    <dd class="govuk-summary-list__value"></dd>
+                    <dd class="govuk-summary-list__actions">
+                      <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)"
+                        id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
+                      <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
+                        class="govuk-link">Update</a>
+                    </dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Names</dt>
+                    <dd class="govuk-summary-list__value">
+                      <div *ngFor="let party of getParties(actualHearingDay)">
+                        {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}
+                      </div>
+                    </dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                  </div>
+                  <div class="govuk-summary-list__row" *ngFor="let attendee of getAttendees(actualHearingDay); let i = index;">
+                    <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
+                    <dd class="govuk-summary-list__value">
+                      Role: {{attendee.partyRole | partyRoleDisplayValue: hearingRoles}}<br>
+                      First name: {{attendee.individualDetails.firstName}}<br>
+                      Last name: {{attendee.individualDetails.lastName}}<br>
+                      Organisation: {{attendee.actualOrganisationName}}<br>
+                      Attendee Type: {{attendee.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
+                      Attendee representing: {{attendee.representedParty && getRepresentingAttendee(attendee.representedParty, actualHearingDay.hearingDate) || "N/A"}}
+                    </dd>
+                    <dd class="govuk-summary-list__actions"></dd>
+                  </div>
                 </div>
               </ng-container>
             </dl>

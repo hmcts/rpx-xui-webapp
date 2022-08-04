@@ -184,9 +184,13 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
 
     return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-      actualDay => actualDay.notRequired || Boolean(actualDay.hearingDate && actualDay.hearingStartTime
-        && actualDay.hearingEndTime && actualDay.pauseDateTimes)
+      actualDay => this.isAcutalTimingAvailable(actualDay)
     );
+  }
+
+  public isAcutalTimingAvailable(actualDay: ActualHearingDayModel): boolean {
+    return actualDay.notRequired || Boolean(actualDay.hearingDate && actualDay.hearingStartTime
+      && actualDay.hearingEndTime && actualDay.pauseDateTimes);
   }
 
   private isAllHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
@@ -195,6 +199,17 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
       actualDay => actualDay.notRequired || actualDay.actualDayParties.length > 0
     );
+  }
+
+
+  public isHearingActualsDaysAvailable(position: number) {
+    return this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[position]
+      && (this.isAcutalTimingAvailable(this.hearingActualsMainModel.hearingActuals.actualHearingDays[position]));
+  }
+
+  public isHearingActualsPartiesAvailable(position: number): boolean {
+    return this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[position]
+      && (this.hearingActualsMainModel.hearingActuals.actualHearingDays[position].notRequired || this.hearingActualsMainModel.hearingActuals.actualHearingDays[position].actualDayParties.length > 0);
   }
 
   public confirmActualHearingTimeForDay(hearingDay: ActualHearingDayModel) {

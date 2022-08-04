@@ -64,7 +64,9 @@ describe('LinkedHearingsWithCaseComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsWithCaseComponent],
-      imports: [ReactiveFormsModule, RouterTestingModule,
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
+        { path: 'hearings/link/4652724902696211/h000001/group-selection', redirectTo: '' }
+      ]),
         HearingsPipesModule,
         RouterModule,
         RouterTestingModule.withRoutes([])],

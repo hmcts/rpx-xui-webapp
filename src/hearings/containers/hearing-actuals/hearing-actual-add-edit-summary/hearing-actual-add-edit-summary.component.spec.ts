@@ -9,7 +9,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
-import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
+import { hearingActualsMainModel, hearingRequestMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
 import { PartyChannelDisplayValuePipe } from '../../../pipes/party-channel-display-value.pipe';
@@ -759,6 +759,17 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
     (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
+  });
+
+  it('should submit update actual hearing request if the isPaperHearing is true', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.id = '1111222233334444';
+    component.hearingResult = HearingResult.COMPLETED;
+    component.hearingRequestMainModel = hearingRequestMainModel;
+    component.isPaperHearing = true;
+    component.onSubmitHearingDetails();
+    expect(component.submitted).toEqual(true);
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateActualHearingRequest(component.hearingRequestMainModel));
   });
 
   afterEach(() => {

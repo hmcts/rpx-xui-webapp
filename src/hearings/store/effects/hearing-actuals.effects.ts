@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingActualsActions from '../../../hearings/store/actions/hearing-actuals.action';
 import { HttpError } from '../../../models/httpError.model';
@@ -51,6 +51,16 @@ export class HearingActualsEffects {
         map(() => new hearingActualsActions.SubmitHearingActualsSuccess(action.payload)),
         tap(() => this.router.navigate([`/hearings/actuals/${action.payload}/hearing-actuals-confirmation`])),
         catchError((error: HttpError) => of(new hearingActualsActions.SubmitHearingActualsFailure(error)))
+      ))
+  );
+
+  @Effect()
+  public updateActualHearingRequest$ = this.actions$.pipe(
+    ofType(hearingActualsActions.UPDATE_ACTUAL_HEARING_REQUEST),
+    mergeMap((action: any) => this.hearingsService.updateHearingRequest(action.payload)
+      .pipe(
+        map(() => new hearingActualsActions.UpdateActualHearingRequestSuccess(action.payload)),
+        catchError((error: HttpError) => of(new hearingActualsActions.UpdateActualHearingRequestError(error)))
       ))
   );
 

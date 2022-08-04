@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { HearingRequestMainModel } from '../../../hearings/models/hearingRequestMain.model';
 import { HttpError } from '../../../models/httpError.model';
 import { ActualHearingDayModel, HearingActualsMainModel, HearingActualsModel } from '../../models/hearingActualsMainModel';
 
@@ -13,6 +14,9 @@ export const SUBMIT_HEARING_ACTUALS = '[HEARING ACTUALS] Submit Hearing Actuals'
 export const SUBMIT_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Submit Hearing Actuals Success';
 export const SUBMIT_HEARING_ACTUALS_FAILURE = '[HEARING ACTUALS] Submit Hearing Actuals Failure';
 export const RESET_HEARING_ACTUALS_LAST_ERROR = '[HEARING ACTUALS] Reset Hearing Actuals Last Error';
+export const UPDATE_ACTUAL_HEARING_REQUEST = '[HEARING ACTUAL] Update Actual Hearing Request';
+export const UPDATE_ACTUAL_HEARING_REQUEST_SUCCESS = '[HEARING ACTUAL] Update Actual Hearing Request Success';
+export const UPDATE_ACTUAL_HEARING_REQUEST_ERROR = '[HEARING ACTUAL] Update Actual Hearing Request Error';
 
 export class ResetHearingActuals implements Action {
   public readonly type = RESET_HEARING_ACTUALS;
@@ -85,6 +89,24 @@ export class ResetHearingActualsLastError implements Action {
   public readonly type = RESET_HEARING_ACTUALS_LAST_ERROR;
 }
 
+export class UpdateActualHearingRequest implements Action {
+  public readonly type = UPDATE_ACTUAL_HEARING_REQUEST;
+  constructor(public hearingRequestMainModel: HearingRequestMainModel) {
+  }
+}
+
+export class UpdateActualHearingRequestSuccess implements Action {
+  public readonly type = UPDATE_ACTUAL_HEARING_REQUEST_SUCCESS;
+  constructor(public hearingRequestMainModel: HearingRequestMainModel) {
+  }
+}
+
+export class UpdateActualHearingRequestError implements Action {
+  public readonly type = UPDATE_ACTUAL_HEARING_REQUEST_ERROR;
+  constructor(public payload: HttpError) {
+  }
+}
+
 export type HearingActualsAction =
   | ResetHearingActuals
   | SaveHearingActualsPlannedDays
@@ -96,4 +118,7 @@ export type HearingActualsAction =
   | SubmitHearingActuals
   | SubmitHearingActualsSuccess
   | SubmitHearingActualsFailure
-  | ResetHearingActualsLastError;
+  | ResetHearingActualsLastError
+  | UpdateActualHearingRequest
+  | UpdateActualHearingRequestSuccess
+  | UpdateActualHearingRequestError;

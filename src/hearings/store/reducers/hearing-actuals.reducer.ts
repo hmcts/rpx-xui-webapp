@@ -66,6 +66,17 @@ export function hearingActualsReducer(
         lastError: null
       }
     }
+    case fromActions.UPDATE_ACTUAL_HEARING_REQUEST_SUCCESS: {
+      return {
+        ...currentState,
+      };
+    }
+    case fromActions.UPDATE_ACTUAL_HEARING_REQUEST_ERROR: {
+      return {
+        ...currentState,
+        lastError: action.payload
+      };
+    }
     default: {
       return {
         ...currentState

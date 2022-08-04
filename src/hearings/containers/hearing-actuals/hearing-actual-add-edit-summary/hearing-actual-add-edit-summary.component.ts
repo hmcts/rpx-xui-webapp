@@ -10,6 +10,7 @@ import {
   HearingOutcomeModel,
   PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
+import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
   HearingActualAddEditSummaryEnum,
@@ -55,6 +56,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public partyChannels: LovRefDataModel[] = [];
   public hearingDateRange: string;
   public hearingDatesAccordion = {} as { [hearingDate: string]: boolean};
+  public hearingRequestMainModel: HearingRequestMainModel;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
@@ -67,8 +69,9 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState);
-    this.hearingState$.map(state => {
+    this.hearingState$.subscribe(state => {
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
+      this.hearingRequestMainModel = state.hearingRequest.hearingRequestMainModel;
     });
     this.errors$ = combineLatest([
       this.hearingStore.select(fromHearingStore.getHearingActualsLastError),
@@ -107,10 +110,26 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingsService.navigateAction(ACTION.BACK);
   }
 
+  public togglePaperHearing() {
+    this.isPaperHearing = !this.isPaperHearing;
+  }
+
   public onSubmitHearingDetails(): void {
     this.submitted = true;
 
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
+      if (this.isPaperHearing) {
+        const hearingDetails = {
+          ...this.hearingRequestMainModel.hearingDetails,
+          hearingChannels: [HearingChannelEnum.ONPPR.toString()]
+        };
+        const hearingRequestMainModel = {
+          ...this.hearingRequestMainModel,
+          hearingDetails
+        };
+        console.log(hearingRequestMainModel);
+        this.hearingStore.dispatch(new fromHearingStore.UpdateActualHearingRequest(hearingRequestMainModel));
+      }
       this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
     }
   }

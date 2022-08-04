@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.10-flags-field-in-complex-and-collection-types":
-  version "4.18.10-flags-field-in-complex-and-collection-types"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.10-flags-field-in-complex-and-collection-types.tgz#01fbf8beacc5fa87c39012ba9ff1ef8a707525c0"
-  integrity sha512-su/iL+kXYo1auJ3JgYiJRonzQD/MUGA/wP8SIi7Ap8PdmAcOmF/25j/aXdMzjTLbke72w7Za46Su1QChcyGb3Q==
+"@hmcts/ccd-case-ui-toolkit@4.18.10-flags-field-in-complex-and-collection-types-1":
+  version "4.18.10-flags-field-in-complex-and-collection-types-1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.10-flags-field-in-complex-and-collection-types-1.tgz#da87672b1b32ee9857dbc77c4e1933a06bddd1fa"
+  integrity sha512-Log7qcycngTVlUo/vmJu+yUsOwOrrXdCCS2pRTytjphfcWNscqOIetxoHWiWLa//Rra3n/m3HfVjDYlBQe2zSQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

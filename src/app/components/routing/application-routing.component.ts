@@ -28,8 +28,6 @@ export class ApplicationRoutingComponent implements OnInit {
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     userDetails$.subscribe(userDetails => {
-      // caseworker-civil
-      // caseworker
       userDetails && userDetails.userInfo && userDetails.userInfo.roles &&
       (userDetails.userInfo.roles.includes('caseworker-ia-iacjudge')
       || userDetails.userInfo.roles.includes('caseworker-ia-caseofficer')

@@ -1,7 +1,7 @@
 import { of } from 'rxjs';
 import { ApplicationRoutingComponent } from './application-routing.component';
 
-describe('ApplicationRoutingComponent', () => {
+fdescribe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;
   let router;
   let waFeatureService;
@@ -12,6 +12,7 @@ describe('ApplicationRoutingComponent', () => {
     waFeatureService = jasmine.createSpyObj('service', ['getActiveWAFeature']);
     mockStore = jasmine.createSpyObj('store', ['pipe']);
     component = new ApplicationRoutingComponent(router, waFeatureService, mockStore);
+    router.url = '/';
   });
 
   it('should create', () => {

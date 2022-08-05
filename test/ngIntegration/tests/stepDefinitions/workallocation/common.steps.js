@@ -217,7 +217,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     expectedValue = workAllocationDateUtil.getTaskCeateDateDisplayString(expectedValue);
                 }
 
-                if (columnName.includes('Hearing date')) {
+                if (columnName.includes('Next hearing date')) {
                     expectedValue = workAllocationDateUtil.getDurationDateDisplayString(expectedValue);
                 }
 

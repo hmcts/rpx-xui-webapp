@@ -102,21 +102,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) {
-        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === useridentifier)[0];
-        if (!testUserIdamId) {
-            throw new Error("Provided user identifer is not configured in test data. " + releaseUer);
-        }
-
-        const userIdamID = testUserIdamId.idamId;
-       
-        roles = roles.split(",");
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            // workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        }
-        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-        CucumberReporter.AddJson(userDetails);
-        global.scenarioData[mockUserRef] = userDetails;
+    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) { 
+        nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles(useridentifier,roles);
+        CucumberReporter.AddJson(nodeAppMock.userDetails);
+        global.scenarioData[mockUserRef] = nodeAppMock.userDetails;
        
     });
 

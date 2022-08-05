@@ -51,12 +51,12 @@ class WorkAllocationMockData {
 
         this.caseRoleForAssignment = [this.caseRoles[0]];
 
-        this.myWorkMyTasks = this.getMyWorkMyTasks(150);
-        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(200);
-        this.allWorkTasks = this.getAllWorkTasks(300);
+        this.myWorkMyTasks = this.getMyWorkMyTasks(25);
+        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(25);
+        this.allWorkTasks = this.getAllWorkTasks(25);
 
-        this.myCases = this.getWACases(125);
-        this.allWorkCases = this.getWACases(125);
+        this.myCases = this.getWACases(25);
+        this.allWorkCases = this.getWACases(25);
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
     }

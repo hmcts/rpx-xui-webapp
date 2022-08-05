@@ -168,7 +168,7 @@ Feature: WA Release 2: My work - Work filters
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
-@test
+
     Scenario Outline: Work filters locations based on organisation role and base location
 
         Given I set MOCK caseworkers for service "IA"

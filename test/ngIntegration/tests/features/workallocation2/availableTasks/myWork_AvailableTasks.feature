@@ -56,7 +56,7 @@ Feature: WA Release 2: My work -  Available tasks
             | Hearing date | Yes | Yes |
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
-            | row | Case name | Case category        | Location        | Task             | Task created |Hearing date|
+            | row | Case name | Case category        | Location        | Task             | Task created |Next hearing datee|
             | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -10          |20|
             | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          |21|
 

@@ -20,8 +20,8 @@
 <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-m">Hearing details</h1>
-    <dl class="govuk-summary-list" *ngIf="actualHearingDays">
-      <div class="govuk-summary-list__row">
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row" *ngIf="actualHearingDays">
         <dt class="govuk-summary-list__key">Hearing date(s)</dt>
         <dd class="govuk-summary-list__value">{{hearingDateRange}}</dd>
       </div>

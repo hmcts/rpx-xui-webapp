@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.6-case-flags-table-styling-changes":
-  version "4.18.6-case-flags-table-styling-changes"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.6-case-flags-table-styling-changes.tgz#e6e38821b7fc3e0f15217f54923ca1388767ff56"
-  integrity sha512-wkl40PS8uYmIIEdk05nrkXcKhwgDvzzNr1ROJcm9tK6XMQao0Vm6FT++/PLQi2ZN13mp156UaBkL4GjxPiPFyA==
+"@hmcts/ccd-case-ui-toolkit@4.18.10-flags-field-in-complex-and-collection-types-1":
+  version "4.18.10-flags-field-in-complex-and-collection-types-1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.10-flags-field-in-complex-and-collection-types-1.tgz#da87672b1b32ee9857dbc77c4e1933a06bddd1fa"
+  integrity sha512-Log7qcycngTVlUo/vmJu+yUsOwOrrXdCCS2pRTytjphfcWNscqOIetxoHWiWLa//Rra3n/m3HfVjDYlBQe2zSQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

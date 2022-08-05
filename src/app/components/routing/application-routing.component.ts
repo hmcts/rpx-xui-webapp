@@ -28,10 +28,14 @@ export class ApplicationRoutingComponent implements OnInit {
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     userDetails$.subscribe(userDetails => {
+      if (this.router.url !== '/' ) {
+        return;
+      }
       userDetails && userDetails.userInfo && userDetails.userInfo.roles &&
       (userDetails.userInfo.roles.includes('caseworker-ia-iacjudge')
       || userDetails.userInfo.roles.includes('caseworker-ia-caseofficer')
-      || userDetails.userInfo.roles.includes('caseworker-ia-admofficer'))
+      || userDetails.userInfo.roles.includes('caseworker-ia-admofficer')
+      || userDetails.userInfo.roles.includes('caseworker-civil'))
       ? this.router.navigate([ApplicationRoutingComponent.defaultWAPage]) : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
     });
   }

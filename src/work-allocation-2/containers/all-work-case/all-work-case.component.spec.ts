@@ -118,7 +118,7 @@ describe('AllWorkCaseComponent', () => {
   it('should show judicial names when available', () => {
     const firstMockCase = component.cases[0];
     const secondMockCase = component.cases[1];
-    
+
     expect(firstMockCase.assignee).not.toBe(undefined);
     expect(firstMockCase.actorName).toBe('Mr Test');
 

@@ -163,10 +163,10 @@ describe('AllWorkTaskComponent', () => {
     expect(searchRequest.search_parameters).not.toContain({key: 'person', operator: 'IN', values: []});
     expect(searchRequest.search_parameters).toContain({key: 'role_category', operator: 'IN', values: ['JUDICIAL']});
     // expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'IN', values: ['High']});
-  })
+  });
 
   it('should show judicial names when available', () => {
-    const firstMockTask= component.tasks[0];
+    const firstMockTask = component.tasks[0];
     const secondMockTask = component.tasks[1];
 
     expect(firstMockTask.assignee).not.toBe(undefined);

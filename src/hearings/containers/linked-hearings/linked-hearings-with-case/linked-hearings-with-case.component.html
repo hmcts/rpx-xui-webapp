@@ -54,7 +54,7 @@
               </td>
               <td class="govuk-table__cell govuk-table-width-10-percent">
                 <div class="govuk-radios" data-module="govuk-radios">
-                  <div class="govuk-radios__item" *ngIf="isSelectable(hearing)">
+                  <div class="govuk-radios__item" *ngIf="isManageLink ? (hearingGroupRequestId === hearing.hearingGroupRequestId) : (hearing.hearingIsLinkedFlag && !hearing.hearingGroupRequestId)">
                     <input class="govuk-radios__input" id="{{case.caseRef}}{{hearing.hearingID}}" type="radio"
                            [value]="true" [checked]="getHearingsFormValue(i).controls[pos].get('isSelected').value"
                            (click)="updateLinkedCase(i, pos);" [formControlName]="'isSelected'">

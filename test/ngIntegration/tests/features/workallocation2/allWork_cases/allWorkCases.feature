@@ -48,6 +48,8 @@ Feature: WA Release 2: All work > Cases
         Then I validate work allocation cases count in page 20
         Then I validate work allocation cases table pagination controls, is displayed state is "false"
 
+
+        Then I validate work allocation case table column "Case name" width less than or equal to 200
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |

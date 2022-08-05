@@ -134,7 +134,8 @@
                 <dd class="govuk-summary-list__actions">
                   <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)"
                      id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
-                  <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
+                  <a *ngIf="!isPaperHearing"
+                     href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
                      class="govuk-link">Update</a>
                 </dd>
               </div>

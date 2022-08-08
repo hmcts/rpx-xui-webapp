@@ -41,7 +41,7 @@
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:functional": "npm-run-all -s -c -l test:ngIntegration test:functionalApiE2e",
     "test:functionalApiE2e": "npm-run-all -p -c -l test:api  test:functionalE2E",
-    "test:functionalE2E": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js",
+    "test:functionalE2E": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test:functional:local": "yarn test:ngIntegration &&  webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js --local",
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",

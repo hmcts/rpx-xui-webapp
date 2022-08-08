@@ -111,7 +111,6 @@ defineSupportCode(function ({ Given, When, Then }) {
         .deleteAllCookies();
       CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
       await browser.get(config.config.baseUrl);
-      await browser.sleep(45000);
       await BrowserWaits.waitForElement(loginPage.signinTitle);
       expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
     });
@@ -361,7 +360,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
-  Given('I am logged into Expert UI with case clags user details', async function () {
+  Given('I am logged into Expert UI with case flags user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.case_flags_username, config.config.params.case_flags_password);
     const world = this;
 

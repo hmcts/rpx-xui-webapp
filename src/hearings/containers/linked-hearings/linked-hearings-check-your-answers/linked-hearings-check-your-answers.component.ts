@@ -13,6 +13,7 @@ import {
   LinkedHearingsDetailModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../../../models/linkHearings.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
@@ -42,6 +43,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   public error$: Observable<HttpError>;
   public isManageJourneyFinalPage: boolean;
   public showSpinner: boolean = true;
+  public hearingStageOptions: LovRefDataModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -57,6 +59,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
     this.hearingGroupRequestId = this.route.snapshot.params.hearingGroupRequestId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.error$ = this.hearingStore.select(fromHearingStore.getHearingLinksLastError);
+    this.hearingStageOptions = this.route.snapshot.data.hearingStageOptions;
   }
 
   public ngOnInit(): void {

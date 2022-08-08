@@ -39,7 +39,7 @@
             <tr class="govuk-table__row" [formGroupName]="pos"
                 *ngFor="let hearing of case.caseHearings; let pos = index">
               <td scope="row"
-                  class="govuk-table__cell align-middle govuk-table-width-45-percent">{{hearing.hearingType}}
+                  class="govuk-table__cell align-middle govuk-table-width-45-percent">{{hearing.hearingType | convertToValue : hearingStageOptions}}
                 <span *ngIf="!!hearing.hearingGroupRequestId">
                   &nbsp;&nbsp;
                   <img src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle"

@@ -1,14 +1,21 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
-import { GroupLinkType, Mode } from '../../../models/hearings.enum';
-import { GroupDetailsModel, HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesWithHearingsModel } from '../../../models/linkHearings.model';
-import { HearingsService } from '../../../services/hearings.service';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {select, Store} from '@ngrx/store';
+import {Subscription} from 'rxjs';
+import {HearingLinksStateData} from '../../../models/hearingLinksStateData.model';
+import {GroupLinkType, Mode} from '../../../models/hearings.enum';
+import {
+  GroupDetailsModel,
+  HearingDetailModel,
+  LinkedHearingGroupMainModel,
+  LinkedHearingsDetailModel,
+  ServiceLinkedCasesWithHearingsModel
+} from '../../../models/linkHearings.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-linked-hearings-how-to-heard',
@@ -34,6 +41,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public hearingsInGroup: LinkedHearingsDetailModel[];
   public groupDetails: GroupDetailsModel;
   public groupLinkType = GroupLinkType;
+  public hearingStageOptions: LovRefDataModel[];
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -54,7 +62,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
         this.hearingsInGroup = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup;
         this.groupDetails = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.groupDetails;
-        this.hearingLinks =  state.hearingLinks;
+        this.hearingLinks = state.hearingLinks;
         this.selectedOption = this.groupDetails && this.groupDetails.groupLinkType;
         this.form = this.fb.group({
           hearingGroup: [this.groupDetails && this.groupDetails.groupLinkType || '', Validators.required],
@@ -65,6 +73,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingGroupRequestId = this.route.snapshot.params.hearingGroupRequestId;
     this.hearingId = this.route.snapshot.params.hearingId;
+    this.hearingStageOptions = this.route.snapshot.data.hearingStageOptions;
   }
 
   public get hearingOrder(): FormArray {
@@ -72,7 +81,9 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   private addRow(linkCase: ServiceLinkedCasesWithHearingsModel): void {
-    if (!linkCase || !linkCase.caseHearings) { return; }
+    if (!linkCase || !linkCase.caseHearings) {
+      return;
+    }
 
     this.hearingOrder.push(this.fb.group({
       caseReference: [linkCase.caseRef],
@@ -100,7 +111,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
 
   private initiateFormCreation() {
     if (this.selectedLinkedCases && this.selectedLinkedCases.length) {
-      this.positionDropdownValues = Array.from({ length: this.selectedLinkedCases.length }, (_, i) => i + 1);
+      this.positionDropdownValues = Array.from({length: this.selectedLinkedCases.length}, (_, i) => i + 1);
       this.createForm();
     }
   }
@@ -153,7 +164,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public onOrderChange(index: number) {
     const positionSelected = this.hearingOrder.controls[index].get('position').value;
     const hasSamePosSelectedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position === positionSelected && rowIndex !== index);
-    hasSamePosSelectedIndex.forEach((val, idx: number) => val && this.hearingOrder.controls[idx].patchValue({ position: '' }));
+    hasSamePosSelectedIndex.forEach((val, idx: number) => val && this.hearingOrder.controls[idx].patchValue({position: ''}));
   }
 
   public hasPosToBePreSelected(index: number) {

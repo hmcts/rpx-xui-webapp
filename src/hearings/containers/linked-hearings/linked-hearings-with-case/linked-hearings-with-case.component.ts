@@ -13,6 +13,7 @@ import {
   LinkedHearingGroupMainModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../../../models/linkHearings.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
@@ -41,6 +42,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public linkedHearingEnum = HearingLinkedSelectionEnum;
   public mode: Mode;
   public showSpinner: boolean = true;
+  public hearingStageOptions: LovRefDataModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -53,6 +55,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingGroupRequestId = this.route.snapshot.params.hearingGroupRequestId;
     this.hearingId = this.route.snapshot.params.hearingId;
+    this.hearingStageOptions = this.route.snapshot.data.hearingStageOptions;
   }
 
   public ngOnInit(): void {

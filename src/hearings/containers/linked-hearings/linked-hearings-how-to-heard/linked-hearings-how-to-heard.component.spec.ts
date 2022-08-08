@@ -4,8 +4,8 @@ import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
 import * as _ from 'lodash';
+import {of} from 'rxjs';
 import {initialState} from '../../../hearing.test.data';
 import {
   EXUIDisplayStatusEnum,
@@ -16,6 +16,7 @@ import {
   Mode
 } from '../../../models/hearings.enum';
 import {ServiceLinkedCasesWithHearingsModel} from '../../../models/linkHearings.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsPipesModule} from '../../../pipes/hearings.pipes.module';
 import {HearingsService} from '../../../services/hearings.service';
 import {HowLinkedHearingsBeHeardComponent} from './linked-hearings-how-to-heard.component';
@@ -102,6 +103,48 @@ const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
       }
     ],
   },
+];
+
+const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
+  {
+    category_key: 'HearingType',
+    key: 'BBA3-SUB',
+    value_en: 'Substantive',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingType',
+    key: 'BBA3-DIR',
+    value_en: 'Direction Hearings',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingType',
+    key: 'BBA3-CHA',
+    value_en: 'Chambers Outcome',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  }
 ];
 
 const hearingLinksMock = {
@@ -235,6 +278,7 @@ function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterS
           snapshot: {
             data: {
               mode: modeOfLinking,
+              hearingStageOptions: HEARING_STAGE_OPTIONS
             },
             params: {
               caseId: '8254902572336147',

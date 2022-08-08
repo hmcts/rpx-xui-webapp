@@ -79,6 +79,9 @@ export const ROUTES: Routes = [
   },
   {
     path: 'link/:caseId/:hearingId',
+    resolve: {
+      hearingStageOptions: HearingStageResolver,
+    },
     component: LinkedHearingsComponent,
     canActivate: [HealthCheckGuard, HearingsEditGuard],
     children: [
@@ -114,6 +117,9 @@ export const ROUTES: Routes = [
   },
   {
     path: 'manage-links/:caseId/:hearingGroupRequestId/:hearingId',
+    resolve: {
+      hearingStageOptions: HearingStageResolver,
+    },
     component: LinkedHearingsComponent,
     data: {
       mode: Mode.MANAGE_HEARINGS

@@ -49,37 +49,38 @@
     </div>
   </dl>
 </div>
-
-<div *ngFor="let attendee of attendees; let i = index">
-  <h2 class="govuk-heading-s">Attendee {{i+1}}</h2>
-  <dl class="govuk-summary-list">
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Role</dt>
-      <dd class="govuk-summary-list__value">{{attendee.partyRole}}</dd>
-    </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">First name</dt>
-      <dd class="govuk-summary-list__value">{{attendee.individualDetails.firstName}}</dd>
-    </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Last name</dt>
-      <dd class="govuk-summary-list__value">{{attendee.individualDetails.lastName}}</dd>
-    </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Channel</dt>
-      <dd class="govuk-summary-list__value">{{getChannelInfo(attendee.partyChannelSubType)?.channel}}</dd>
-    </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Sub-channel</dt>
-      <dd class="govuk-summary-list__value">{{getChannelInfo(attendee.partyChannelSubType)?.subChannel}}</dd>
-    </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Organisation</dt>
-      <dd class="govuk-summary-list__value">{{attendee.actualOrganisationName}}</dd>
-    </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Attendee representing</dt>
-      <dd class="govuk-summary-list__value">{{attendee.representedParty}}</dd>
-    </div>
-  </dl>
-</div>
+<ng-container *ngIf="!(isHearingCompleted && isPaperHearing)">
+  <div *ngFor="let attendee of attendees; let i = index">
+    <h2 class="govuk-heading-s">Attendee {{i+1}}</h2>
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Role</dt>
+        <dd class="govuk-summary-list__value">{{attendee.partyRole}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">First name</dt>
+        <dd class="govuk-summary-list__value">{{attendee.individualDetails.firstName}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Last name</dt>
+        <dd class="govuk-summary-list__value">{{attendee.individualDetails.lastName}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Channel</dt>
+        <dd class="govuk-summary-list__value">{{getChannelInfo(attendee.partyChannelSubType)?.channel}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Sub-channel</dt>
+        <dd class="govuk-summary-list__value">{{getChannelInfo(attendee.partyChannelSubType)?.subChannel}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Organisation</dt>
+        <dd class="govuk-summary-list__value">{{attendee.actualOrganisationName}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Attendee representing</dt>
+        <dd class="govuk-summary-list__value">{{attendee.representedParty}}</dd>
+      </div>
+    </dl>
+  </div>
+</ng-container>

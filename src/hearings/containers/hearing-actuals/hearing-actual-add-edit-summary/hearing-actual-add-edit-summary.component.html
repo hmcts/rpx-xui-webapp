@@ -49,6 +49,19 @@
       </dl>
     </div>
     <br>
+    <h1 class="govuk-heading-m">Paper hearing</h1>
+    <div [ngClass]="{'govuk-form-group govuk-form-group--error': hearingStageResultErrorMessage !== ''}">
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Was this a paper hearing?</dt>
+          <dd class="govuk-summary-list__value">{{isPaperHearing ? 'Yes' : 'No'}}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a href="javascript:void(0)" (click)="togglePaperHearing()" id="paper-hearing-change-link" class="govuk-link">Change</a>            
+          </dd>
+        </div>
+      </dl>
+    </div>
+    <br>    
     <h1 class="govuk-heading-m">Hearing date(s)</h1>
   </div>
 </div>

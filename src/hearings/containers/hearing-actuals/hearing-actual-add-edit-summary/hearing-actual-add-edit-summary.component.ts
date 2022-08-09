@@ -67,7 +67,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState);
-    this.hearingState$.map(state => {
+    this.hearingState$.subscribe(state => {
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
     });
     this.errors$ = combineLatest([
@@ -105,6 +105,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public onBack(): void {
     this.hearingsService.navigateAction(ACTION.BACK);
+  }
+
+  public togglePaperHearing() {
+    this.isPaperHearing = !this.isPaperHearing;
   }
 
   public onSubmitHearingDetails(): void {

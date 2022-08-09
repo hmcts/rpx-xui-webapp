@@ -30,6 +30,8 @@ import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { SharedModule } from './shared/shared.module';
 import { effects } from './store/effects';
+import { RpxTranslationModule } from '@hmcts/rpx-xui-translation';
+
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
@@ -73,6 +75,14 @@ const routerOptions: ExtraOptions = {
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
+    RpxTranslationModule.forRoot({
+      testMode: true,
+      baseUrl: '',
+      debounceTimeMs: 300,
+      validity: {
+        days: 100
+      }
+    })
   ],
   providers: [
     {

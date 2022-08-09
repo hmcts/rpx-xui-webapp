@@ -106,8 +106,6 @@ nodejs:
     SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}2.internal:8443/openam/oauth2/hmcts
     # Card Payment Return Url (for Ways To Pay)
     SERVICES_PAYMENT_RETURN_URL: https://paymentoutcome-web.{{ .Values.global.environment }}.platform.hmcts.net/
-    # Services Common RD
-    SERVICES_COMMONRD_API: http://rd-commondata-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
 
     #Feature Flags
     FEATURE_APP_INSIGHTS_ENABLED: true

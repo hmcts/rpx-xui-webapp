@@ -8,7 +8,6 @@ import { FieldType } from '../../enums';
 @Component({
   selector: 'exui-work-field',
   templateUrl: './work-field.component.html',
-  styleUrls: ['./work-field.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class WorkFieldComponent {

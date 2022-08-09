@@ -32,8 +32,7 @@
     "access_management_mode": false,
     "access_management_basic_view_mock_mode": false,
     "location_ref_api_url": "/refdata/location",
-    "cam_role_assignments_api_url": "/am/role-assignments",
-    "case_flags_refdata_api_url": "/refdata/commondata/caseflags/service-id=:sid"
+    "cam_role_assignments_api_url": "/am/role-assignments"
   },
   "urls": {
     "idam": {

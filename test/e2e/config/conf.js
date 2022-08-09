@@ -62,8 +62,6 @@ const config = {
     caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01',
     hrsTesterUser: 'xui.hrs.tester@hmcts.net',
     hrsTesterPassword: 'Monday01',
-    case_flags_username: process.env.CASE_FLAGS_USERNAME ? process.env.CASE_FLAGS_USERNAME : 'henry_fr_harper@yahoo.com' ,
-    case_flags_password: process.env.CASE_FLAGS_PASSWORD ? process.env.CASE_FLAGS_PASSWORD : 'Nagoya0102' ,
     ia_users_credentials: {
       case_officer: {
         username: process.env.TEST_CASEOFFICER_USERNAME || 'ia.caseofficer.ccd@gmail.com',

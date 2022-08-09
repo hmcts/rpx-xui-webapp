@@ -32,6 +32,9 @@
       "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
+    "commonrd": {
+      "api": "http://rd-commondata-api-prod.service.core-compute-prod.internal"
+    },
     "hearings": {
       "serviceApi": "hearing-service-prod.service.core-compute-prod.internal",
       "hmcApi": "hmc-cft-hearing-service-prod.service.core-compute-prod.internal"

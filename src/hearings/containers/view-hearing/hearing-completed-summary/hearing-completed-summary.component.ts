@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import * as fromHearingStore from '../../../store';
+import * as hearingRequestActions from '../../../store/actions/hearing-request.action';
 
 @Component({
   selector: 'exui-hearing-completed-summary',
@@ -13,8 +15,9 @@ import * as fromHearingStore from '../../../store';
 export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsMainModel: HearingActualsMainModel;
   public sub: Subscription;
+  public routeSub: Subscription;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly store: Store<any>, private readonly route: ActivatedRoute) {
   }
 
   public ngOnInit(): void {
@@ -25,11 +28,17 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
       });
+
+    this.routeSub =
+      this.route.params.subscribe(params => {
+        this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '' }));
+      });
   }
 
   public ngOnDestroy(): void {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+    this.routeSub.unsubscribe();
   }
 }

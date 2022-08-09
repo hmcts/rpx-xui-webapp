@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { hearingActualsMainModel, hearingRoles } from '../../hearing.test.data';
+import { hearingActualsMainModel, hearingRoles, initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { PartyChannelDisplayValuePipe } from '../../pipes/party-channel-display-value.pipe';
 import { PartyRoleDisplayValuePipe } from '../../pipes/party-role-display-value.pipe';
@@ -13,6 +15,7 @@ describe('HearingActualSummarySingleDayComponent', () => {
   let component: HearingActualSummarySingleDayComponent;
   let fixture: ComponentFixture<HearingActualSummarySingleDayComponent>;
   let router: Router;
+  let mockStore: any;
   const partyChannels: LovRefDataModel[] = [
     {
       key: 'inPerson',
@@ -180,6 +183,7 @@ describe('HearingActualSummarySingleDayComponent', () => {
       imports: [RouterTestingModule],
       declarations: [HearingActualSummarySingleDayComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
       providers: [
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -197,6 +201,7 @@ describe('HearingActualSummarySingleDayComponent', () => {
       .compileComponents();
 
     fixture = TestBed.createComponent(HearingActualSummarySingleDayComponent);
+    mockStore = TestBed.get(Store);
     component = fixture.componentInstance;
     component.actualHearingDay = hearingActualsMainModel.hearingActuals.actualHearingDays[0];
     component.plannedHearingDay = hearingActualsMainModel.hearingPlanned.plannedHearingDays[0];

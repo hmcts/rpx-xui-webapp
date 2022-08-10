@@ -50,6 +50,20 @@
     </div>
     <br>
     <h1 class="govuk-heading-m">{{ actualHearingDays && actualHearingDays.length > 1 ? 'Hearing date(s)' : 'Hearing date' }}</h1>
+    <h1 class="govuk-heading-m">Paper hearing</h1>
+    <div [ngClass]="{'govuk-form-group govuk-form-group--error': hearingStageResultErrorMessage !== ''}">
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Was this a paper hearing?</dt>
+          <dd class="govuk-summary-list__value">{{isPaperHearing ? 'Yes' : 'No'}}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a href="javascript:void(0)" (click)="togglePaperHearing()" id="paper-hearing-change-link" class="govuk-link">Change</a>            
+          </dd>
+        </div>
+      </dl>
+    </div>
+    <br>    
+    <h1 class="govuk-heading-m">Hearing date(s)</h1>
   </div>
 </div>
 
@@ -134,14 +148,15 @@
                 <dd class="govuk-summary-list__actions">
                   <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)"
                      id="hearing-parties-result-confirm-link" class="govuk-link">Confirm</a>&nbsp;
-                  <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
+                  <a *ngIf="!isPaperHearing"
+                     href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
                      class="govuk-link">Update</a>
                 </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Names</dt>
                 <dd class="govuk-summary-list__value">
-                  <div *ngFor="let party of getParties(actualHearingDay)">
+                  <div *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
                     {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}
                   </div>
                 </dd>
@@ -151,13 +166,13 @@
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key">How participants will attend</dt>
                   <dd class="govuk-summary-list__value">
-                    <div *ngFor="let party of getParties(actualHearingDay)">
+                    <div *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
                       {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}: {{party.partyChannelSubType | partyChannelDisplayValue: partyChannels}}
                     </div>
                   </dd>
                   <dd class="govuk-summary-list__actions"></dd>
                 </div>
-                <div class="govuk-summary-list__row" *ngFor="let attendee of getAttendees(actualHearingDay); let i = index;">
+                <div class="govuk-summary-list__row" *ngFor="let attendee of actualHearingUtils.getAttendees(hearingActualsMainModel, actualHearingDay.hearingDate); let i = index;">
                   <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
                   <dd class="govuk-summary-list__value">
                     Role: {{attendee.partyRole | partyRoleDisplayValue: hearingRoles}}<br>
@@ -165,7 +180,7 @@
                     Last name: {{attendee.individualDetails.lastName}}<br>
                     Organisation: {{attendee.actualOrganisationName}}<br>
                     Attendee Type: {{attendee.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
-                    Attendee representing: {{attendee.representedParty && getRepresentingAttendee(attendee.representedParty, actualHearingDay.hearingDate) || "N/A"}}
+                    Attendee representing: {{attendee.representedParty && actualHearingUtils.getRepresentingAttendee(attendee.representedParty, hearingActualsMainModel, actualHearingDay.hearingDate) || "N/A"}}
                   </dd>
                   <dd class="govuk-summary-list__actions"></dd>
                 </div>

@@ -551,17 +551,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
   });
 
-  it('should return attending representative', () => {
-    component.hearingActualsMainModel = hearingActualsMainModel;
-    const hearingDate = '2021-03-12';
-    const attendingRepresentative1 = component.getRepresentingAttendee('1', hearingDate);
-    expect(attendingRepresentative1).toEqual('Bob Jones');
-    const attendingRepresentative2 = component.getRepresentingAttendee('2', hearingDate);
-    expect(attendingRepresentative2).toEqual('DWP ');
-    const attendingRepresentative3 = component.getRepresentingAttendee('3', hearingDate);
-    expect(attendingRepresentative3).toEqual('');
-  });
-
   it('should return empty string for hearing result reason type completed', () => {
     const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.COMPLETED;

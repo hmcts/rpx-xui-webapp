@@ -33,6 +33,8 @@ import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
+import { RpxTranslationModule } from '@hmcts/rpx-xui-translation';
+
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -73,6 +75,14 @@ const routerOptions: ExtraOptions = {
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
+    RpxTranslationModule.forRoot({
+      testMode: true,
+      baseUrl: '',
+      debounceTimeMs: 300,
+      validity: {
+        days: 100
+      }
+    })
   ],
   providers: [
     {

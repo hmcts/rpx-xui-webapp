@@ -1,20 +1,21 @@
-<exui-page-wrapper [title]="'Case list'">
+<exui-page-wrapper [title]="'Case list' | rpxTranslate">
   <div class="case-list-component">
     <div class="hmcts-action-bar">
       <div class="hmcts-action-bar__filter">
         <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button" aria-haspopup="true" [attr.aria-expanded]="showFilter ? 'true' : 'false'">
-          {{toggleButtonName}}
+          {{toggleButtonName | rpxTranslate}}
         </button>
       </div>
       <div class="hmcts-action-bar__filter"  *ngIf="isCaseShareVisible$ | async">
         <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false"
                 [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
-          Share Case
+          {{'Share Case' | rpxTranslate}}
         </button>
       </div>
     </div>
+
     <div class="search-block">
-        <div class="hmcts-filter-layout__filter" [hidden]="!showFilter" >
+        <div class="hmcts-filter-layout__filter" [hidden]="!showFilter">
             <div class="form-group">
                 <div class="container-fluid">
                     <exui-ccd-connector
@@ -31,6 +32,7 @@
                 </div>
             </div>
         </div>
+
         <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
           <ccd-search-result
             #ccdSearchResult
@@ -56,11 +58,11 @@
             <details class="govuk-details" data-module="govuk-details">
               <summary class="govuk-details__summary">
                 <span id="sp-msg-unselected-case-header" class="govuk-details__summary-text">
-                  Why are some cases unselectable?
+                  {{'Why are some cases unselectable?' | rpxTranslate}}
                 </span>
               </summary>
               <div id="sp-msg-unselected-case-content" class="govuk-details__text">
-                You might not be able to select and share some cases in your current case list. However, you'll be able to select any new cases you create and share them.
+                {{'You might not be able to select and share some cases in your current case list. However, you\'ll be able to select any new cases you create and share them.' | rpxTranslate}}
               </div>
             </details>
           </div>

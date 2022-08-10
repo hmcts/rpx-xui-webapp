@@ -6,7 +6,7 @@ import {State} from '../store';
 import {HearingsUtils} from '../utils/hearings.utils';
 import {AnswerConverter} from './answer.converter';
 
-export class ReasonForCancellationAnswerConverter implements AnswerConverter {
+export class ReasonForActualCancellationAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {
   }
 

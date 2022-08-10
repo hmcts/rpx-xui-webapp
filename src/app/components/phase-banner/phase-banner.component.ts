@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { RpxLanguage, RpxTranslationService } from '@hmcts/rpx-xui-translation';
+import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   selector: 'exui-phase-banner',

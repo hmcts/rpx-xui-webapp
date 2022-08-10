@@ -72,7 +72,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
       },
       {
         id: 'howAttendant',
-        answerTitle: 'How will each party attend the hearing?',
+        answerTitle: 'How will each participant attend the hearing?',
         answerSource: AnswerSource.HOW_ATTENDANT,
         isHiddenSource: IsHiddenSource.PAPER_HEARING,
         changeLink: '/hearings/request/hearing-attendance#partyChannel0',

@@ -1,7 +1,7 @@
 import { of } from 'rxjs';
 import { ApplicationRoutingComponent } from './application-routing.component';
 
-fdescribe('ApplicationRoutingComponent', () => {
+describe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;
   let router;
   let waFeatureService;

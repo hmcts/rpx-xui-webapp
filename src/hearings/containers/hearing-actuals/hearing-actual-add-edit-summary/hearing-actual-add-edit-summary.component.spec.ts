@@ -744,6 +744,28 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(s).toBe('12 March 2021 - 15 March 2021');
   });
 
+  it('should return hearing date(s) text as string', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
+    const day = hearingDays[0];
+    const obj1 = Object.assign({}, day, {hearingDate: '2021-03-13'});
+    const obj2 = Object.assign({}, day, {hearingDate: '2021-03-15'});
+    hearingDays.push(obj1);
+    hearingDays.push(obj2);
+    component.actualHearingDays = hearingDays;
+    const s = component.getHearingDateText();
+    expect(s).toBe('Hearing date(s)');
+  });
+
+  it('should return hearing date text as string', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    let hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
+    hearingDays = hearingDays.splice(0, 1);
+    component.actualHearingDays = hearingDays;
+    const s = component.getHearingDateText();
+    expect(s).toBe('Hearing date');
+  });
+
   it('should return updated notRequired', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
     (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);

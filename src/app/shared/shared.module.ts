@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { MediaViewerModule } from '@hmcts/media-viewer';
+import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import * as fromAppComponents from '../components';
 import * as fromAppContainers from '../containers';
 import * as fromAppDirectives from '../directives';
+import { TaskSupervisorGuard } from '../guards/task-supervisor.guard';
 import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
-import { MediaViewerModule } from '@hmcts/media-viewer';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-lib';
 import { InfoMessageCommService } from './services/info-message-comms.service';
 import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
-import { TaskSupervisorGuard } from '../guards/task-supervisor.guard';
-import { RpxTranslationModule } from '@hmcts/rpx-xui-translation';
 
 /**
  * Shared Module

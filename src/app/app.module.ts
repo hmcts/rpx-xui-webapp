@@ -30,7 +30,7 @@ import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { SharedModule } from './shared/shared.module';
 import { effects } from './store/effects';
-import { RpxTranslationModule } from '@hmcts/rpx-xui-translation';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 // ngrx modules - END
 // APP store

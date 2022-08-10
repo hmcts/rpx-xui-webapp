@@ -5,7 +5,6 @@ import * as amendedJurisdictions from './amendedJurisdictions';
 import { getConfigValue } from './configuration';
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
-  SERVICES_COMMONRD_API_URL,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,
   SERVICES_EM_ANNO_API_URL,
@@ -15,6 +14,7 @@ import {
   SERVICES_LOCATION_REF_API_URL,
   SERVICES_MARKUP_API_URL,
   SERVICES_PAYMENTS_URL,
+  SERVICES_PRD_COMMONDATA_API,
   SERVICES_REFUNDS_API_URL,
   SERVICES_ROLE_ASSIGNMENT_API_PATH
 } from './configuration/references';
@@ -150,6 +150,6 @@ export const initProxy = (app: Express) => {
     // intentional (see Line 66 of CaseFlagApiController.java in
     // https://github.com/hmcts/rd-commondata-api/blob/master/src/main/java/uk/gov/hmcts/reform/cdapi/controllers)
     source: '/refdata/commondata/caseflags/service-id=:sid',
-    target: getConfigValue(SERVICES_COMMONRD_API_URL),
+    target: getConfigValue(SERVICES_PRD_COMMONDATA_API),
   });
 };

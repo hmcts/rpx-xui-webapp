@@ -12,6 +12,8 @@ import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-li
 import { InfoMessageCommService } from './services/info-message-comms.service';
 import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
 import { TaskSupervisorGuard } from '../guards/task-supervisor.guard';
+import { RpxTranslationModule } from '@hmcts/rpx-xui-translation';
+
 
 /**
  * Shared Module
@@ -20,7 +22,7 @@ import { TaskSupervisorGuard } from '../guards/task-supervisor.guard';
  */
 
 @NgModule( {
-  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule],
+  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule, RpxTranslationModule.forChild()],
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,

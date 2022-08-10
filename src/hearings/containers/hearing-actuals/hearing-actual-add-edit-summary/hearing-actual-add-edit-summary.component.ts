@@ -107,6 +107,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.isPaperHearing = !this.isPaperHearing;
   }
 
+  public getHearingDateText(): string {
+    return this.actualHearingDays && this.actualHearingDays.length > 1 ? 'Hearing date(s)' : 'Hearing date';
+  }
+
   public onSubmitHearingDetails(): void {
     this.submitted = true;
 

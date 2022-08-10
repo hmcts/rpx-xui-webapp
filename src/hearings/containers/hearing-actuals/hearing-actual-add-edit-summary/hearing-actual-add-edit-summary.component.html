@@ -22,7 +22,7 @@
     <h1 class="govuk-heading-m">Hearing details</h1>
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Hearing date(s)</dt>
+        <dt class="govuk-summary-list__key">{{ getHearingDateText() }}</dt>
         <dd class="govuk-summary-list__value">{{hearingDateRange}}</dd>
       </div>
     </dl>
@@ -49,6 +49,7 @@
       </dl>
     </div>
     <br>
+    <h1 class="govuk-heading-m">{{ getHearingDateText() }}</h1>
     <h1 class="govuk-heading-m">Paper hearing</h1>
     <div [ngClass]="{'govuk-form-group govuk-form-group--error': hearingStageResultErrorMessage !== ''}">
       <dl class="govuk-summary-list">

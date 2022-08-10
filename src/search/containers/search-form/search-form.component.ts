@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Subscription } from 'rxjs';
+import { JurisdictionsService } from '../../../work-allocation-2/services/juridictions.service';
 import { DateCategoryType, SearchFormControl, SearchFormErrorMessage, SearchFormErrorType, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters, SearchValidationError } from '../../models';
 import { SearchService } from '../../services/search.service';
@@ -35,6 +36,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   public dateOfDeathErrorMessage: ErrorMessagesModel;
 
   constructor(private readonly fb: FormBuilder,
+              private readonly jurisdictionsService: JurisdictionsService,
               private readonly searchService: SearchService,
               private readonly router: Router,
               private readonly route: ActivatedRoute) {
@@ -125,11 +127,14 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       validators: [SearchValidators.dateComparisonValidator(), SearchValidators.searchFormValidator()]
     });
 
-    this.searchServiceSubscription$ = this.searchService.getServices().subscribe(services => {
-      services.forEach(service => {
-        this.services.push({ label: service.serviceName, value: service.serviceId, id: service.serviceId });
+    this.jurisdictionsService.getJurisdictions().subscribe(jur => {
+      this.searchServiceSubscription$ = this.searchService.getServices().subscribe(services => {
+        services.forEach(service => {
+          this.services.push({ label: service.serviceName, value: service.serviceId, id: service.serviceId });
+        });
       });
     });
+
     // Set default service selection to "All"
     this.formGroup.get(SearchFormControl.SERVICES_LIST).setValue(this.services[0].id);
 

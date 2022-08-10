@@ -21,8 +21,8 @@
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-m">Hearing details</h1>
     <dl class="govuk-summary-list">
-      <div class="govuk-summary-list__row" *ngIf="actualHearingDays">
-        <dt class="govuk-summary-list__key">Hearing date(s)</dt>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ actualHearingDays && actualHearingDays.length > 1 ? 'Hearing date(s)' : 'Hearing date' }}</dt>
         <dd class="govuk-summary-list__value">{{hearingDateRange}}</dd>
       </div>
     </dl>
@@ -49,7 +49,7 @@
       </dl>
     </div>
     <br>
-    <h1 *ngIf="actualHearingDays" class="govuk-heading-m">Hearing date(s)</h1>
+    <h1 class="govuk-heading-m">{{ actualHearingDays && actualHearingDays.length > 1 ? 'Hearing date(s)' : 'Hearing date' }}</h1>
   </div>
 </div>
 

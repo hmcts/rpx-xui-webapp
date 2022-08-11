@@ -57,6 +57,18 @@ describe('Jurisdiction', () => {
     expect(response).to.deep.equal(res);
   });
 
+
+  it('should not return any service', async() => {
+    let services = globalSearchServices.generateServices(undefined);
+    expect(services.length).to.equal(0);
+
+    services = globalSearchServices.generateServices(null);
+    expect(services.length).to.equal(0);
+
+    services = globalSearchServices.generateServices([]);
+    expect(services.length).to.equal(0);
+  });
+
   it('should return global search services', async() => {
     const services = globalSearchServices.generateServices(jurisdictionList);
     expect(services).to.deep.equal(serviceList);

@@ -25,8 +25,8 @@
 <ng-container *ngIf="tasksTotal">
   <ng-container *ngFor="let field of fields | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: tasksTotal }" [cdkColumnDef]="field.name">
     <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
-      <button class="column-sort"
-              *ngIf="field.columnLabel && !field.disableSort"
+      <button class="column-sort" 
+              [style.display]="field.columnLabel && !field.disableSort ? 'block' : 'none'"               
               type="button"
               [id]="'sort_by_' + field.sortName"
               data-index="0"
@@ -43,7 +43,7 @@
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
     <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
       <button class="column-sort"
-              *ngIf="field.columnLabel && !field.disableSort"
+              [style.display]="field.columnLabel && !field.disableSort ? 'block' : 'none'"
               type="button"
               [id]="'sort_by_' + field.sortName"
               data-index="0"

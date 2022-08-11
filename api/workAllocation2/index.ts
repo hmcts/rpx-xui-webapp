@@ -12,7 +12,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { Role } from '../roleAccess/models/roleType';
 import { getAllRoles } from '../roleAccess/roleAssignmentService';
-import {RoleAssignment} from '../user/interfaces/roleAssignment';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
@@ -27,10 +27,10 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 import { ViewType } from './constants/actions';
-import {CaseList} from './interfaces/case';
+import { CaseList } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
-import {CaseDataType, Caseworker, CaseworkersByService} from './interfaces/common';
+import { CaseDataType, Caseworker, CaseworkersByService } from './interfaces/common';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
@@ -138,25 +138,32 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
+    let prioritySortParameter;
+    searchRequest.sorting_parameters.find((sort, index) => {
+      if (sort.sort_by === 'priority') {
+        prioritySortParameter = sort;
+        searchRequest.sorting_parameters.splice(index, 1)
+      }
+    });
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
-     // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
+    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
     data.tasks.forEach(task => {
       task.hearing_date =
-        new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString()
+        new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any))).toString()
     });
 
     const payload = req.body;
     const sortingParameters = payload.searchRequest.sorting_parameters;
     if (sortingParameters && sortingParameters.length > 0) {
-      sortingParameters.forEach( sortParameter => {
+      sortingParameters.forEach(sortParameter => {
         if (sortParameter.sort_by === 'hearing_date') {
           sortParameter.sort_by = 'caseName'
         }
@@ -165,6 +172,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
+      data = mockTaskPrioritisation(data, prioritySortParameter, searchRequest)
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
       returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
@@ -172,6 +180,115 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.send(returnData);
   } catch (error) {
     next(error);
+  }
+}
+
+function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
+  // TEMPORARY CODE: priority_date and  major_priority parameter is not yet enabled by Task API. to be removed
+  let randomDate = new Date(2022, 0, 1);
+  data.tasks = data.tasks.map((task, index) => {
+    randomDate = mockDate(randomDate)
+    task.priority_date = mockDate(randomDate);
+    task.major_priority = randomInt(index, 0, 5000);
+    return task;
+  });
+
+  if (prioritySortParameter) {
+    data.tasks.sort((a, b) => {
+      if (prioritySortParameter.sort_order === 'asc') {
+        return a.major_priority > b.major_priority ? 1 : -1;
+      } else if (prioritySortParameter.sort_order === 'desc') {
+        return b.major_priority > a.major_priority ? 1 : -1;
+      }
+    });
+  }
+
+  searchRequest.sorting_parameters.map((sort, index) => {
+    if (sort.sort_by === 'caseName') {
+      if (sort.sort_order === 'asc') {
+        data.tasks.sort((a, b) => {
+          return a.case_name.localeCompare(b.case_name) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      } else if (sort.sort_order === 'desc') {
+        data.tasks.sort((a, b) => {
+          return b.case_name.localeCompare(a.case_name) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      }
+    }
+    if (sort.sort_by === 'caseCategory') {
+      if (sort.sort_order === 'asc') {
+        data.tasks.sort((a, b) => {
+          return a.case_category.localeCompare(b.case_category) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      } else if (sort.sort_order === 'desc') {
+        data.tasks.sort((a, b) => {
+          return b.case_category.localeCompare(a.case_category) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      }
+    }
+    if (sort.sort_by === 'locationName') {
+      if (sort.sort_order === 'asc') {
+        data.tasks.sort((a, b) => {
+          return a.location_name.localeCompare(b.location_name) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      } else if (sort.sort_order === 'desc') {
+        data.tasks.sort((a, b) => {
+          return b.location_name.localeCompare(a.location_name) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      }
+    }
+    if (sort.sort_by === 'taskTitle') {
+      if (sort.sort_order === 'asc') {
+        data.tasks.sort((a, b) => {
+          return a.task_title.localeCompare(b.task_title) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      } else if (sort.sort_order === 'desc') {
+        data.tasks.sort((a, b) => {
+          return b.task_title.localeCompare(a.task_title) ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      }
+    }
+    if (sort.sort_by === 'dueDate') {
+      if (sort.sort_order === 'asc') {
+        data.tasks.sort((a, b) => {
+          return b.due_date - a.due_date ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      } else if (sort.sort_order === 'desc') {
+        data.tasks.sort((a, b) => {
+          return a.due_date - b.due_date ||
+            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
+        });
+      }
+    }
+  });
+  return data;
+}
+
+function mockDate(start) {
+  const mockStartDate = new Date(start.valueOf());
+  mockStartDate.setDate(mockStartDate.getDate() + 1);
+  return mockStartDate;
+}
+
+function randomInt(index, min, max) {
+  if (index >= 10) {
+    min = Math.ceil(2000);
+    max = Math.floor(5000);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  if (index < 10) {
+    min = Math.ceil(0);
+    max = Math.floor(2000);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }
 
@@ -208,7 +325,21 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const actionedTasks = assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
-    return res.send(actionedTasks).status(status);
+    // TEMPORARY CODE: priority_date and  major_priority parameter is not yet enabled by Task API. to be removed
+    let tasks = actionedTasks;
+    if (data) {
+      let randomDate = new Date(2022, 0, 1);
+      tasks = tasks.map((task, index) => {
+        randomDate = mockDate(randomDate)
+        task.priority_date = mockDate(randomDate);
+        task.major_priority = randomInt(index, 0, 5000);
+        return task;
+      });
+
+    }
+    return res.send(tasks).status(status);
+    // TEMPERORY CODE: end
+    // return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);
   }
@@ -224,9 +355,9 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
     const jurisdictions = getWASupportedJurisdictionsList();
     let status;
     let data;
-    jurisdictions.includes(jurisdiction) ? {status, data} =
-     await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
-     : (status = 200, data = []);
+    jurisdictions.includes(jurisdiction) ? { status, data } =
+      await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
+      : (status = 200, data = []);
     return res.status(status).send(data);
   } catch (e) {
     next(e);
@@ -243,8 +374,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     if (req.body.hasNoAssigneeOnComplete === true) {
       req.body = {
         completion_options: {
-           assign_and_complete: true,
-         },
+          assign_and_complete: true,
+        },
       };
     } else {
       delete req.body.hasNoAssigneeOnComplete;
@@ -326,7 +457,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest): Promise<Case
 // similar as above but checks services
 export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: Response): Promise<CaseworkersByService[]> {
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const jurisdictions = req.body.serviceIds as string [];
+  const jurisdictions = req.body.serviceIds as string[];
   // will need to check specific jurisdiction have caseworkers in session
   let newJurisdictions: string[];
   let sessionCaseworkersByService: CaseworkersByService[] = [];
@@ -480,7 +611,7 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
 }
 
 export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment [];
+  const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
   const specificRoleAssignments = roleAssignments.filter(roleAssignment =>
     roleAssignment.grantType === 'SPECIFIC'
     ||
@@ -548,15 +679,15 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
     result.cases.forEach(item => {
       item.hearing_date = new Date(+new Date() + Math.random() *
-      (new Date(2022, 6, 20) as any - (new Date() as any) )).toString();
+        (new Date(2022, 6, 20) as any - (new Date() as any))).toString();
     });
-    if ( sorting_parameters &&
-        sorting_parameters.some(parameter => parameter.sort_by === 'hearing_date')) {
-        if ( sorting_parameters.find(parameter => parameter.sort_by === 'hearing_date').sort_order === 'desc' ) {
-          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) > Date.parse(b.hearing_date) ? -1 : 1));
-        } else {
-          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) < Date.parse(b.hearing_date) ? -1 : 1));
-        }
+    if (sorting_parameters &&
+      sorting_parameters.some(parameter => parameter.sort_by === 'hearing_date')) {
+      if (sorting_parameters.find(parameter => parameter.sort_by === 'hearing_date').sort_order === 'desc') {
+        result.cases = result.cases.sort((a, b) => (Date.parse(a.hearing_date) > Date.parse(b.hearing_date) ? -1 : 1));
+      } else {
+        result.cases = result.cases.sort((a, b) => (Date.parse(a.hearing_date) < Date.parse(b.hearing_date) ? -1 : 1));
+      }
     }
     return res.send(result).status(200);
   } catch (e) {
@@ -609,7 +740,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
     result.cases.forEach(item => {
       item.hearing_date =
-      new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString();
+        new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any))).toString();
     });
     return res.send(result).status(200);
   } catch (error) {

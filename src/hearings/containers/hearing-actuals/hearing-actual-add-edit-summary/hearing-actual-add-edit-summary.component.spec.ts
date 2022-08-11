@@ -560,8 +560,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should check is errror bar handling', () => {
-    expect(component.isHearingActualsDaysAvailable(0)).toBeTruthy();
-    expect(component.isHearingActualsPartiesAvailable(0)).toBeTruthy();
+    expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
+    expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
   });
 
   it('should return hearing result reason type description for adjourned', () => {
@@ -771,8 +771,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
     const day = hearingDays[0];
-    const obj1 = Object.assign({}, day, {hearingDate: '2021-03-13'});
-    const obj2 = Object.assign({}, day, {hearingDate: '2021-03-15'});
+    const obj1 = Object.assign({}, day, { hearingDate: '2021-03-13' });
+    const obj2 = Object.assign({}, day, { hearingDate: '2021-03-15' });
     hearingDays.push(obj1);
     hearingDays.push(obj2);
     component.actualHearingDays = hearingDays;
@@ -791,7 +791,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return updated notRequired', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-    (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
+      (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 

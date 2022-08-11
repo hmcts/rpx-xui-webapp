@@ -33,7 +33,7 @@ import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
-import { RpxTranslationModule } from '@hmcts/rpx-xui-translation';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production

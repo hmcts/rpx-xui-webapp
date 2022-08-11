@@ -559,6 +559,11 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(description).toEqual('');
   });
 
+  it('should check is errror bar handling', () => {
+    expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
+    expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
+  });
+
   it('should return hearing result reason type description for adjourned', () => {
     component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
     const hearingOutcome = JSON.parse(JSON.stringify(hearingActualsMainModel.hearingActuals.hearingOutcome));
@@ -584,6 +589,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should submit hearing details', () => {
+    component.actualHearingDays = hearingActualsMainModel.hearingActuals.actualHearingDays;
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.id = '1111222233334444';
     component.hearingResult = HearingResult.COMPLETED;
@@ -591,6 +597,23 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(component.submitted).toEqual(true);
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals(component.id));
   });
+
+  it('should check is errror bar handling', () => {
+    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
+    hearingActuals.hearingActuals.actualHearingDays = [
+      {
+        hearingDate: '2021-03-12',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
+        pauseDateTimes: [],
+        notRequired: false,
+        actualDayParties: []
+      },
+    ];
+    expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
+    expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
+  });
+
 
   it('should fail submitting hearing details if hearing result is not selected', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
@@ -736,8 +759,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
     const day = hearingDays[0];
-    const obj1 = Object.assign({}, day, {hearingDate: '2021-03-13'});
-    const obj2 = Object.assign({}, day, {hearingDate: '2021-03-15'});
+    const obj1 = Object.assign({}, day, { hearingDate: '2021-03-13' });
+    const obj2 = Object.assign({}, day, { hearingDate: '2021-03-15' });
     hearingDays.push(obj1);
     hearingDays.push(obj2);
     const s = component.calculateEarliestHearingDate(hearingDays);
@@ -748,8 +771,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
     const day = hearingDays[0];
-    const obj1 = Object.assign({}, day, {hearingDate: '2021-03-13'});
-    const obj2 = Object.assign({}, day, {hearingDate: '2021-03-15'});
+    const obj1 = Object.assign({}, day, { hearingDate: '2021-03-13' });
+    const obj2 = Object.assign({}, day, { hearingDate: '2021-03-15' });
     hearingDays.push(obj1);
     hearingDays.push(obj2);
     component.actualHearingDays = hearingDays;
@@ -768,7 +791,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return updated notRequired', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-    (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
+      (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 

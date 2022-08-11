@@ -262,15 +262,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       isValid = false;
     }
-    if (!this.isHearingAllRequiredDaysCovered()) {
-      this.validationErrors.push({
-        id: 'actual-hearing-dates',
-        message: HearingActualAddEditSummaryEnum.AllDaysCoveredError
-      });
-      this.hearingDaysRequiredErrorMessage = HearingActualAddEditSummaryEnum.AllDaysCoveredError;
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      isValid = false;
-    }
 
     if (!this.hearingResult || this.hearingResult === '') {
       this.validationErrors.push({

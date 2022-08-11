@@ -10,5 +10,4 @@ export interface HearingResponseModel {
   hearingCancellationReason: string;
   hearingDaySchedule: HearingDayScheduleModel[];
   errorTimestamp?: string;
-  cancellationReasonCodes?: string[];
 }

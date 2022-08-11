@@ -22,6 +22,10 @@ const isParallelExecution = argv.parallel ? argv.parallel === "true" : !getBDDTa
 
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
 
+
+ 
+const nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
 const perfLoggingPrefs = {
     'enableNetwork': true,
     'enablePage': false
@@ -86,8 +90,8 @@ const config = {
 
     beforeLaunch(){
         if (isParallelExecution) {
-            MockApp.setServerPort(3001);
-            MockApp.init(3002);
+            MockApp.setServerPort(nodeMockPort);
+            MockApp.init(parseInt(nodeMockPort) + 1);
             MockApp.startServer();
         }    
     },
@@ -111,7 +115,7 @@ const config = {
                 
             });
         }else{
-            MockApp.setServerPort(3001);
+            MockApp.setServerPort(nodeMockPort);
             //await MockApp.startServer();
         }    
        

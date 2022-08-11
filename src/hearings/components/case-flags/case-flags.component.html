@@ -1,0 +1,33 @@
+<div class="govuk-inset-text">
+  {{ info }}
+</div>
+<div class="govuk-form-group">
+  <table *ngFor="let caseFlags of caseFlagsGroup" class="govuk-table">
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header govuk-table__header_name">{{ caseFlags.name }}</th>
+      <th scope="col" class="govuk-table__header govuk-table__header_comments">Comments</th>
+      <th scope="col" class="govuk-table__header govuk-table__header_flag-status">Flag status</th>
+    </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row" *ngFor="let partyFlag of caseFlags.partyFlags">
+      <td class="govuk-table__cell">
+        <label>
+          {{ partyFlag.displayName }}
+        </label>
+      </td>
+      <td class="govuk-table__cell">
+        <label>
+          {{ partyFlag.flagDescription }}
+        </label>
+      </td>
+      <td class="govuk-table__cell">
+        <label class="govuk-tag">
+          {{ partyFlag.flagStatus}}
+        </label>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

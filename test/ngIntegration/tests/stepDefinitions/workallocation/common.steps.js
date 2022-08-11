@@ -27,19 +27,36 @@ const CucumberReporter = require('../../../../e2e/support/reportLogger');
 const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
+const CaseListTable = require('../../../../e2e/features/pageObjects/workAllocation/casesTable');
+
+const workAllocationDateUtil = require('../../../../e2e/features/pageObjects/workAllocation/common/workAllocationDateUtil');
+
+const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
+    const waCaseListTable = new CaseListTable();
+
+    const TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY = {
+        'priority': 'Is out of scope and will be removed as part of https://tools.hmcts.net/jira/browse/EUI-4809',
+        'taskType': 'Is to be includes only in 2.1 till the it will be ignored in test'
+    }
+
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
-        
+        await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field', 'Sort test', true);
             
+            const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
+            if (val !== "success"){
+                throw new Error(JSON.stringify(val));
+
+           } 
             await taskListTable.clickPaginationLink(paginationLinktext);
             await BrowserWaits.waitForConditionAsync(async () => {
                 const caseCatColVal = await taskListTable.getColumnValueForTaskAt('Case category', 1);
+                CucumberReporter.AddMessage('OnPagination page refresh dinee: ' + !caseCatColVal.includes('Sort test'));
                 return !caseCatColVal.includes('Sort test');
             });
             await BrowserWaits.waitForConditionAsync(async () => {
@@ -49,6 +66,108 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        
     });
 
+    When('I click WA case list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
+        await waCaseListTable.waitForTable();
+        await BrowserWaits.retryWithActionCallback(async () => {
+
+            const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
+            if (val !== "success") {
+                throw new Error(JSON.stringify(val));
+
+            }
+            await waCaseListTable.clickPaginationLink(paginationLinktext);
+            await BrowserWaits.waitForConditionAsync(async () => {
+                const caseCatColVal = await waCaseListTable.getColumnValueForCaseAt('Case category', 1);
+                return !caseCatColVal.includes('Sort test');
+            });
+            await BrowserWaits.waitForConditionAsync(async () => {
+                return global.scenarioData[reference] !== null
+            }, 5000);
+        });
+
+    });
+
+    Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
+        const reqBody = global.scenarioData[requestReference];
+        const datatableHash = datatable.hashes()[0];
+        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equal(parseInt(datatableHash.PageNumber));
+        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equal(parseInt(datatableHash.PageSize));
+    });
+
+
+    Then('I validate task search request with reference {string} have search parameters', async function (requestReference, datatable) {
+        const softAssert = new SoftAssert();
+        const reqBody = global.scenarioData[requestReference];
+        const datatableHash = datatable.hashes();
+        CucumberReporter.AddMessage("Req body received:");
+        CucumberReporter.AddJson(reqBody);
+        const reqSearchParams = reqBody.searchRequest.search_parameters;
+        for (let i = 0; i < datatableHash.length; i++) {
+            searchHash = datatableHash[i];
+            if (Object.keys(TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY).includes(searchHash.key)){
+                CucumberReporter.AddMessage(`${searchHash.key} is ignored for eeason : ${TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY[searchHash.key]}`);
+                continue;
+            }
+            const searchParamObj = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchHash.key);
+           
+            softAssert.setScenario(`Search param with key ${searchHash.key} is present`);
+            if (searchHash.value !== ''){
+                await softAssert.assert(async () => expect(searchParamObj.length > 0).to.be.true);
+            }
+             
+            if (searchParamObj.length > 0) {
+                if (searchHash.value && searchHash.value !== ""){
+                    softAssert.setScenario(`Search param with key ${searchHash.key} and values ${searchHash.value} is present`);
+                    if (searchHash.value !== ''){
+                        await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
+                    }
+                    
+                }
+
+                if (searchHash.size) {
+                    softAssert.setScenario(`Search param with key ${searchHash.key} and has value count ${searchHash.size}`);
+                    await softAssert.assert(async () => expect(searchParamObj[0].values.length).to.equal(parseInt(searchHash.size)));
+                }
+                
+            }
+        }
+        softAssert.finally();
+
+    });
+
+    Then('I validate task search request with reference {string} does not have search parameters', async function (requestReference, datatable) {
+        const softAssert = new SoftAssert();
+        const reqBody = global.scenarioData[requestReference];
+        const datatableHash = datatable.hashes();
+
+        const reqSearchParams = reqBody.searchRequest.search_parameters;
+        for (let i = 0; i < datatableHash.length; i++) {
+            searchHash = datatableHash[i];
+            if (Object.keys(TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY).includes(searchHash.key)) {
+                CucumberReporter.AddMessage(`${searchHash.key} is ignored for eeason : ${TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY[searchHash.key]}`);
+                continue;
+            }
+            const searchParamObj = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchHash.key);
+            softAssert.setScenario(`Search param with key ${searchHash.key} is present`);
+            if (searchParamObj.length > 0) {
+                softAssert.setScenario(`Search param with key ${searchHash.key} and values ${searchHash.values} is present`);
+                await softAssert.assert(async () => expect(searchParamObj[0].values).to.not.includes(searchHash.value));
+            }
+        }
+        softAssert.finally();
+        
+    });
+
+
+    Then('I validate task search request with reference {string} does not have search patameter key {string}', async function (requestReference, searchKey) {
+        const reqBody = global.scenarioData[requestReference];
+
+        const reqSearchParams = reqBody.searchRequest.search_parameters;
+        const searchParametersMatchingType = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchKey);
+
+        expect(searchParametersMatchingType.length, `Search parameter mathcing key "${searchKey}" found in request body ${reqBody} `).to.equal(0); 
+
+    });
 
     Given('I set MOCK case workers for release {string}', async function(forRelease,datatable){
         const persons = getPersonResponse(datatable);
@@ -68,34 +187,53 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task table values displayed', async function(datatable){
+        await validateTaskTableValues(datatable);
+    });
+
+    Then('If current user {string} is {string}, I validate task table values displayed', async function (currentUser,validationForUserType ,datatable) {
+        if (currentUser === validationForUserType){
+            await validateTaskTableValues(datatable);
+        }
+    });
+
+    async function validateTaskTableValues(datatable){
         const tableRowHashes = datatable.hashes();
-        const softAssert= new SoftAssert();
-        for (let i = 0; i < tableRowHashes.length; i++){
+        const softAssert = new SoftAssert();
+        for (let i = 0; i < tableRowHashes.length; i++) {
             const expectRowHash = tableRowHashes[i];
             const rowNum = parseInt(expectRowHash["row"]);
 
             const hashkeys = Object.keys(expectRowHash);
 
-            for (let j = 0; j < hashkeys.length; j++){
+            for (let j = 0; j < hashkeys.length; j++) {
                 const columnName = hashkeys[j];
-                const expectedValue = expectRowHash[columnName];
+                let expectedValue = expectRowHash[columnName];
+
+                if (columnName.includes('Due date')){
+                    expectedValue = workAllocationDateUtil.getTaskDueDateDisplayString(expectedValue);
+                }
+
+                if (columnName.includes('Task created')) {
+                    expectedValue = workAllocationDateUtil.getTaskCeateDateDisplayString(expectedValue);
+                }
 
                 let actualColumnValue = null;
-                if (columnName === "row"){
+                if (columnName === "row") {
                     continue;
-                }else{
+                } else {
                     actualColumnValue = await taskListTable.getColumnValueForTaskAt(columnName, rowNum)
                 }
 
-                softAssert.setScenario(`At row ${rowNum} validation of column ${columnName}`);
-                await softAssert.assert(async () => expect(actualColumnValue).to.includes(expectedValue));
+                const assertionMessage = `At row ${rowNum} validation of column ${columnName}`;
+                softAssert.setScenario(assertionMessage);
+                await softAssert.assert(async () => expect(actualColumnValue, assertionMessage).to.includes(expectedValue));
 
             }
 
-            
+
         }
         softAssert.finally();
-    });
+    } 
 
     function getLocationsResponse(datatable){
         const locationHashes = datatable.hashes();

@@ -11,7 +11,7 @@ import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
-import { GoActionParams } from 'src/cases/models/go-action-params.model';
+import { GoActionParams } from '../../../cases/models/go-action-params.model';
 
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
@@ -63,6 +63,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     if (this.navigationSubscription) {
+      // When case home is destroyed reset the navigation notifier service observables
+      this.navigationNotifier.announceNavigation({});
       this.navigationSubscription.unsubscribe();
     }
   }

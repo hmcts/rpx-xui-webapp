@@ -4,3 +4,16 @@
 .all-work-filter-label {
     font-weight: 550!important;
 }
+
+.tasks-container {
+    display: flex;
+    justify-content: space-between;
+    exui-task-manager-filter {
+      margin-right: 40px;
+      width: 25%;
+    }
+  
+    .exui-task-list {
+      width: 70%;
+    }
+}

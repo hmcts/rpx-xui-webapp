@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { AppConstants } from 'src/app/app.constants';
+import { AppConstants } from '../../../app/app.constants';
 import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 import * as fromRoot from '../../store';
 import { Observable } from 'rxjs';

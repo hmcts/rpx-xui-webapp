@@ -6,6 +6,7 @@
     "jsRules": {},
     "rules": {
         "object-literal-key-quotes": false,
+        "object-literal-sort-keys": false,
         "arrow-parens": [
             true,
             "ban-single-arg-parens"
@@ -22,7 +23,11 @@
         "max-classes-per-file": false,
         "max-line-length": [
             true,
-            130
+          {
+            "limit": 130,
+            "check-regex": false,
+            "ignore-pattern": "\/http"
+          }
         ],
         "member-access": false,
         "no-console": false,
@@ -57,7 +62,8 @@
                 },
                 "esSpecCompliant": true
             }
-        ]
+        ],
+        "ordered-imports": { "severity": "warning" }
     },
     "rulesDirectory": [],
     "linterOptions": {

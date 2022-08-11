@@ -1,3 +1,4 @@
+import { RoleCategory } from '../../role-access/models';
 import { Caseworker } from '../models/dtos';
 import { CaseworkerDisplayName } from './caseworker-display-name.pipe';
 
@@ -6,7 +7,8 @@ const mockCaseworker: Caseworker = {
   firstName: 'Mr',
   lastName: 'Test',
   email: 'MrTest@email.com',
-  location: null
+  location: null,
+  roleCategory: RoleCategory.LEGAL_OPERATIONS
 };
 
 const mockName = `${mockCaseworker.firstName} ${mockCaseworker.lastName}`;

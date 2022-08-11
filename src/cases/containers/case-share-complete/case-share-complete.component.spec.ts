@@ -3,33 +3,49 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { State } from '../../../app/store/reducers';
 import { CaseShareCompleteComponent } from './case-share-complete.component';
+import * as fromCasesFeature from '../../store';
 
 describe('CaseShareCompleteComponent', () => {
   let component: CaseShareCompleteComponent;
   let fixture: ComponentFixture<CaseShareCompleteComponent>;
-
-  let store: MockStore<State>;
+  const SHARED_CASE = [{
+    caseId: '9417373995765133',
+    caseTitle: 'Sam Green Vs Williams Lee',
+    sharedWith: [
+      {
+        idamId: 'u666666',
+        firstName: 'Kate',
+        lastName: 'Grant',
+        email: 'kate.grant@lambbrooks.com'
+      }]
+  }];
+  let mockStore: any;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
   beforeEach(() => {
+
+    mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
+    mockStore.pipe.and.returnValue(of(SHARED_CASE));
+
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ CaseShareCompleteComponent ],
       imports: [ RouterTestingModule ],
       providers: [
-        provideMockStore(),
+        {
+          provide: Store,
+          useValue: mockStore
+        },
         {
           provide: FeatureToggleService,
           useValue: mockFeatureToggleService
         }
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
     fixture = TestBed.createComponent(CaseShareCompleteComponent);
     component = fixture.componentInstance;
+    mockStore.pipe.and.returnValue(of(SHARED_CASE));
     fixture.detectChanges();
     mockFeatureToggleService.getValue.and.returnValue(of(true));
   });
@@ -121,7 +137,7 @@ describe('CaseShareCompleteComponent', () => {
   it('should tidy up shared case if complete', () => {
     component.completeScreenMode = 'COMPLETE';
     component.ngOnDestroy();
-    expect(component.shareCases.length).toEqual(0);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromCasesFeature.ResetCaseSelection());
   });
 
   it('should see add user info only from case if remove user feature is toggled off', () => {

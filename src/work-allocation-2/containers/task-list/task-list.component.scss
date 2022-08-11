@@ -1,3 +1,6 @@
+.task-list-container {
+  padding-top: 10px;
+}
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -9,12 +12,18 @@
 /**
  * Used to override the border-bottom style being set by the GDS .govuk-table__cell
  */
-.border-none {
-  border: 0px;
+.govuk-table__cell {
+  border: 0;
+  font-family: "GDS Transport", arial, sans-serif;
+}
+.reset-sort-button {
+  float: right;
+  margin-bottom: -10px;
 }
 
 .column-sort {
   padding-right: 20px;
+  white-space: nowrap;
 
   &:hover{
     padding-right: 20px;
@@ -23,7 +32,7 @@
   &:after{
     right: 0.5px;
   }
-  
+
   &:before{
     right: 0.5px;
   }
@@ -32,7 +41,6 @@
 .header-cell {
 
   display: flex;
-
   .arrow {
     border: 1px solid red;
     padding: 0 0 0 10px;
@@ -43,9 +51,12 @@
  * The "Manage +" button should mirror the GDS accordion functionality. However,
  * it still needs to be in keeping with the styling within the table.
  */
+.govuk-accordion__section-header {
+  padding-top: 5px;
+}
 .govuk-accordion__section-button {
   &.xui-reset {
-    font-size: inherit;
+    font-size: 19px;
     margin-right: 20px;
     text-decoration: underline;
     font-weight: 400;
@@ -56,7 +67,7 @@
       height: 14px;
       width: 14px;
       right: 0;
-      top: 16px;
+      top: 15px;
       margin-top: 0;
     }
     &[aria-expanded=true] {
@@ -110,4 +121,9 @@
       }
     }
   }
+}
+
+.column-label {
+  font-weight: bold;
+  color: #115da0;
 }

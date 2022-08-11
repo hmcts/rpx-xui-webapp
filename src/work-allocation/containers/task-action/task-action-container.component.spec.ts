@@ -1,11 +1,12 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { Observable, of } from 'rxjs';
 
 import { TaskListComponent } from '..';
@@ -45,6 +46,7 @@ describe('WorkAllocation', () => {
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
+    const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
 
     beforeEach(() => {
       TestBed.configureTestingModule({
@@ -53,7 +55,7 @@ describe('WorkAllocation', () => {
           ErrorMessageComponent, NothingComponent
         ],
         imports: [
-          WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule,
+          WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
           RouterTestingModule.withRoutes(
             [
               { path: 'tasks/list', component: NothingComponent }
@@ -62,6 +64,7 @@ describe('WorkAllocation', () => {
         ],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
           {
             provide: ActivatedRoute,
             useValue: {

@@ -1,6 +1,8 @@
 import { ExtraOptions, Routes } from '@angular/router';
+import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import {
   AccessibilityComponent,
+  ApplicationRoutingComponent,
   CookiePolicyComponent,
   GetHelpComponent,
   MediaViewerWrapperComponent,
@@ -9,13 +11,13 @@ import {
   ServiceDownComponent,
   SignedOutComponent,
 } from './components';
-import { ApplicationRoutingComponent } from './components/routing/application-routing.component';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
 
 export const routingConfiguration: ExtraOptions = {
-  paramsInheritanceStrategy: 'always'
+  paramsInheritanceStrategy: 'always',
+  scrollPositionRestoration: 'enabled'
 };
 
 export const ROUTES: Routes = [
@@ -39,6 +41,11 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
   },
+  {
+    path: 'role-access',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../role-access/role-access.module#RoleAccessModule'
+  },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
   { path: 'case/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
@@ -56,6 +63,11 @@ export const ROUTES: Routes = [
     path: 'noc',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../noc/noc.module#NocModule'
+  },
+  {
+    path: 'hearings',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../hearings/hearings.module#HearingsModule'
   },
   {
     path: 'cookies',
@@ -128,6 +140,16 @@ export const ROUTES: Routes = [
     component: SignedOutComponent,
     data: {
       title: 'You have been signed out'
+    }
+  },
+  {
+    path: 'refunds',
+    canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
+    loadChildren: '../refunds/refunds.module#RefundsModule',
+    data: {
+      title: 'Refunds',
+      needsFeaturesEnabled: ['feature-refunds'],
+      featureDisabledRedirect: '/'
     }
   },
   {

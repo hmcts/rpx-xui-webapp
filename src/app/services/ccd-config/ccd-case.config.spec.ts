@@ -17,6 +17,10 @@ class MockConfigService {
       document_management_secure_enabled: true,
       hrs_url: 'dummy',
       remote_hrs_url: 'dummy',
+      access_management_mode: true,
+      access_management_basic_view_mock: 'dummy',
+      location_ref_api_url: 'dummy',
+      cam_role_assignments_api_url: 'dummy',
     };
   }
   public getEditorConfiguration = () => this.config;
@@ -47,8 +51,8 @@ describe('AppConfiguration', () => {
 
   it('should be created', inject([AppConfig], (service: AppConfig) => {
     expect(service).toBeTruthy();
-    expect(mockFeatureToggleService.isEnabled).toHaveBeenCalled();
-    expect(service.workallocationUrl).toBeNull();
+    expect(mockFeatureToggleService.getValue).toHaveBeenCalled();
+    expect(service.workallocationUrl).toEqual('workallocation');
   }));
 
   it('should have load', inject([AppConfig], (service: AppConfig) => {
@@ -143,4 +147,20 @@ describe('AppConfiguration', () => {
     expect(service.getDocumentSecureMode()).toBe(true);
   }));
 
+  it('should have getAccessManagementMode return value', inject([AppConfig], (service: AppConfig) => {
+    mockEnvironmentService.get.and.returnValue(true);
+    expect(service.getAccessManagementMode()).toBe(true);
+  }));
+
+  it('should have getAccessManagementBasicViewMock return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getAccessManagementBasicViewMock()).toBe(true);
+  }));
+
+  it('should have getLocationRefApiUrl return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getLocationRefApiUrl()).toBe('dummy');
+  }));
+
+  it('should have getCamRoleAssignmentsApiUrl return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getCamRoleAssignmentsApiUrl()).toBe('dummy');
+  }));
 });

@@ -1,0 +1,39 @@
+<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="error$ | async"></xuilib-hmcts-error-summary>
+<exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"></exui-linked-hearings-case-title>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Check your answers</h1>
+    <div>
+      <h2 class="govuk-heading-m">Linked hearings</h2>
+      <span class="govuk-body align-right">
+        <a href="javascript:void(0)" class="govuk-link" id="hearing-link-change" (click)="onChange()">Change</a>
+      </span>
+    </div>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Case name and number</th>
+          <th scope="col" class="govuk-table__header">Stage of hearing</th>
+          <th scope="col" class="govuk-table__header" *ngIf="showPositionColumn">Position</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row" *ngFor="let case of linkedCases">
+          <td class="govuk-table__cell">
+            {{case.caseName}} {{case.caseReference}}
+          </td>
+          <td class="govuk-table__cell">{{case.hearingStage}}</td>
+          <td class="govuk-table__cell" *ngIf="showPositionColumn">{{case.position}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<br>
+<div class="govuk-grid-row linked-hearings-button">
+  <div class="govuk-button-group">
+    <button class="govuk-button primary" data-module="govuk-button" (click)="onLinkHearings()">
+      Link hearings
+    </button>
+  </div>
+</div>

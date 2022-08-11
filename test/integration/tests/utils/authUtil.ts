@@ -55,6 +55,21 @@ export async function getXSRFToken(username, password) {
     return xsrfToken;
 }
 
+export async function getAuthorisation(username, password) {
+    if (!authCookiesForUsers.hasOwnProperty(username)) {
+        authCookiesForUsers[username] = await authenticateAndGetcookies(username, password);
+    }
+    let authToken = '';
+    for (const cookie of authCookiesForUsers[username]) {
+        // console.log(cookie.name);
+        if (cookie.name === '__auth__') {
+            authToken = cookie.value;
+            break;
+        }
+    }
+    return authToken;
+}
+
 export async function getUserId(username, password) {
     if (!authCookiesForUsers.hasOwnProperty(username)) {
         authCookiesForUsers[username] = await authenticateAndGetcookies(username, password);
@@ -75,85 +90,87 @@ export async function getUserId(username, password) {
 
 async function  authenticateAndGetcookies(username, password)  {
 
-    const browser = await puppeteer.launch(getPuppeteerLaunchOptions());
+    let browser = null;
+    let page =null;
 
-    const page = await browser.newPage();
-    await page.goto(config.baseUrl);
+    try{
+        browser = await puppeteer.launch(getPuppeteerLaunchOptions());
+        page = await browser.newPage();
+        await page.goto(config.baseUrl);
 
-    let isLoginSuccess = false;
-    let loginAttemptsCounter = 0;
-    while (loginAttemptsCounter < 5 && !isLoginSuccess){
-        try {
-            await page.waitForSelector('#username', { visible: true });
+        let isLoginSuccess = false;
+        let loginAttemptsCounter = 0;
+        while (loginAttemptsCounter < 5 && !isLoginSuccess) {
+            try {
+                await page.waitForSelector('#username', { visible: true });
 
-            await page.type('#username', username);
-            await page.type('#password', password);
+                await page.type('#username', username);
+                await page.type('#password', password);
 
-            await page.click('.button');
+                await page.click('.button');
 
-            const primaryNavElement = page.$('.hmcts-primary-navigation');
-            const loginEmailField = page.$('#username'); 
- 
-            // await new Promise((resolve,reject) => {
-            //     let interval = setInterval(async () => {
-            //         console.log("Checing login status : " + new Date().toTimeString());
-            //         if (primaryNavElement != undefined){
-            //             resolve('Login successful');
-            //         } else if (loginEmailField != undefined){
-            //             let usernameInput = await page.$eval('#username', element => element.value);
-            //             if (usernameInput === ""){
-            //                 reject("Login page reloaded, first time login issue");
-            //             }
-            //         }
-            //     },10000);
-            // });
+                const primaryNavElement = page.$('.hmcts-primary-navigation');
+                const loginEmailField = page.$('#username');
 
-            let waitCounter = 0;
-            while (waitCounter < 20){
-                await setTimeout(() => {
-                    console.log(waitCounter+"  : timeout sleep " + new Date().toTimeString());
-                }, 1000);
-                waitCounter++;
-                if (primaryNavElement != undefined) {
-                    break;
+
+
+                let waitCounter = 0;
+                while (waitCounter < 20) {
+                    await setTimeout(() => {
+                        console.log(waitCounter + "  : timeout sleep " + new Date().toTimeString());
+                    }, 1000);
+                    waitCounter++;
+                    if (primaryNavElement != undefined) {
+                        break;
+                    }
+                    else if (loginEmailField != undefined) {
+                        let usernameInput = await page.$eval('#username', element => element.value);
+                        if (usernameInput === "") {
+                            throw new Error("Login page reloaded. ");
+                        }
+                    }
                 }
-                else if (loginEmailField != undefined) {
-                    let usernameInput = await page.$eval('#username', element => element.value);
-                    if (usernameInput === ""){
-                       throw new Error("Login page reloaded. "); 
-                     }
-                }
+                await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 20000 });
+
+                // await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
+
+
+                isLoginSuccess = true;
+            } catch (error) {
+                console.log("Pupeeteer browser login to app error occured : " + error);
+
+                let usernameInput = "";
+                try {
+                    usernameInput = await page.$eval('#username', element => element.value);
+                } catch (err) { }
+
+                if (usernameInput === "") {
+                    loginAttemptsCounter++;
+                    console.log("Login error : " + error.message);
+                } else {
+                    await page.close();
+                    await browser.close();
+                    throw error;
+                };
             }
-            await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
-
-            // await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
-
-
-            isLoginSuccess = true;
-        } catch (error) {
-            let usernameInput = "";
-            try{
-                usernameInput = await page.$eval('#username', element => element.value);
-            }catch(err){}
-           
-            if (usernameInput === "") {
-                loginAttemptsCounter++;
-                console.log("Login error : " + error.message);
-            } else {
-                await browser.close();
-                throw error;
-            };
         }
-    }
-    
-    const cookies = await page.cookies();
 
+    }catch(err){
+        console.log("Pupeeteer browser login to app error occured : " + err);
+
+        await page.close();
+        await browser.close();
+        throw new Error(err);
+    }
+    const cookies = await page.cookies();
+    await page.close();
     await browser.close();
     return cookies;
-};
+   
+}
 
 function getPuppeteerLaunchOptions(){
-    const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: [] };
+    const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] };
     // if (!config.baseUrl.includes('manage-case.')) {
     //     puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
     // }

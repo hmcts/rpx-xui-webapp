@@ -7,19 +7,26 @@ const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../e2e/support/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
+const workAllocationDataModel = require("../../../dataModels/workAllocation");
+const reportLogger = require('../../../e2e/support/reportLogger');
+const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
         await browserUtil.gotoHomePage();
-        await headerpage.waitForPrimaryNavDisplay();
-        await browserUtil.waitForLD();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerpage.waitForPrimaryNavDisplay();
+            await browserUtil.waitForLD();
+        });  
     });
 
     Given('I navigate page route {string}', async function (routeUrl) {
         await browser.get(routeUrl);
-        await headerpage.waitForPrimaryNavDisplay();
-        await browserUtil.waitForLD();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerpage.waitForPrimaryNavDisplay();
+            await browserUtil.waitForLD();
+        });        
     });
 
     Given('I init MockApp', async function () {
@@ -27,6 +34,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I start MockApp', async function () {
+        try{
+            await MockApp.stopServer();
+        }
+        catch(err){}
        await MockApp.startServer();
     });
 
@@ -48,26 +59,63 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
         CucumberReporter.AddJson(userDetails)
-        MockApp.onGet('/api/user/details', (req,res) => {
-            res.send(userDetails);
-        });
+       
      });
 
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
         global.scenarioData[reference] = null;
         MockApp.addIntercept(url,(req,res,next) => {
+            CucumberReporter.AddMessage(`Intercepted: ${url}`)
             global.scenarioData[reference] = req.body;
             next();
         })
      });
 
+    Given('I set MOCK request {string} response log to report', async function (url) {
+        MockApp.addIntercept(url, (req, res, next) => { 
+            let send = res.send;
+            res.send = function (body) {
+                CucumberReporter.AddMessage(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort }" ---------------------------`);
+                CucumberReporter.AddMessage('Intercept response on MOCK api ' + url);
+                CucumberReporter.AddMessage('response code ' + res.statusCode);
+                try{
+                    CucumberReporter.AddJson(body)
+                }catch(err){
+                    CucumberReporter.AddMessage(body)
+                }
+                CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
+                send.call(this, body);
+            }
+            next();
+        })
+    });
+
+    Given('I set MOCK request {string} intercept, hold response with reference {string}', async function (url,reference) {
+        MockApp.addIntercept(url, (req, res, next) => {
+            CucumberReporter.AddJson(req.body)
+            let send = res.send;
+            res.send = function (body) {
+                CucumberReporter.AddMessage('Intercept response or api ' + url);
+                CucumberReporter.AddJson(body)
+                global.scenarioData[reference] = body;
+                send.call(this, body);
+            }
+            next();
+        })
+    });
+
      Given('I reset reference {string} value to null', async function(reference){
          global.scenarioData[reference] = null;
      });
 
+    Then('I verify reference {string} value is null', async function (reference){
+        expect(global.scenarioData[reference] === null, `Assertion failed: ${reference} is not null`).to.be.true;
+     });
+
      When('I wait for reference {string} value not null', async function(reference){
-         await BrowserWaits.waitForConditionAsync(async () => {
-             return global.scenarioData[reference] !== null
+         await BrowserWaits.retryWithActionCallback(async () => {
+             expect(global.scenarioData[reference] !== null, `reference ${reference} is null`).to.be.true;
+ 
          });
      });
 
@@ -76,22 +124,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
          switch (apiMethod.toLowerCase()){
             case 'get':
                  MockApp.onGet(apiEndpoint, (req, res) => {
+                     reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
                      res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
              case 'post':
                  MockApp.onPost(apiEndpoint, (req, res) => {
+                     reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
                      res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
              case 'put':
                  MockApp.onPut(apiEndpoint, (req, res) => {
+                     reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
                      res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
              case 'delete':
                  MockApp.onDelete(apiEndpoint, (req, res) => {
-                     res.status(responseCode).send({ error: "Test error from mock" });
+                    reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
+                    res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
 
@@ -100,6 +152,38 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        }
         
         
+     });
+
+
+    Given('I set MOCK find person response for jurisdictions', async function(datatable){
+        const personsConfigHashes = datatable.hashes();
+
+        for (const person of personsConfigHashes) {
+
+            if (person.domain === 'Judicial'){
+                const judge = JSON.parse(JSON.stringify(workAllocationMockData.judgeUsers[0]));
+                judge.sidam_id = person.id;
+                judge.email_id = person.email;
+                judge.full_name = person.name;
+
+                workAllocationMockData.judgeUsers.push(judge);
+            } else if (person.domain === 'Legal Ops'){
+                const cw = JSON.parse(JSON.stringify(workAllocationMockData.caseWorkersList[0]));
+                const fullNameArr = person.name.split(" ");
+                cw.idamId = person.id;
+                cw.email = person.email;
+                cw.firstName = fullNameArr[0];
+                cw.lastName = fullNameArr[1];
+
+                workAllocationMockData.addCaseworker(cw,'IA'); 
+ 
+            }
+
+             
+        }
+       
+
+
      });
 
 

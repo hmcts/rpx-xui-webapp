@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AppConfigService } from '../config/configuration.services';
-import { AppConstants } from '../../app.constants';
-import { AppUtils } from '../../app-utils';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
-import { EnvironmentService } from '../../../app/shared/services/environment.service';
+import { AppUtils } from '../../app-utils';
+import { AppConstants } from '../../app.constants';
+import { EnvironmentService } from '../../shared/services/environment.service';
+import { AppConfigService } from '../config/configuration.services';
 
 /**
  * see more:
@@ -15,8 +15,8 @@ import { EnvironmentService } from '../../../app/shared/services/environment.ser
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-  protected config: CaseEditorConfig;
   public workallocationUrl: string;
+  protected config: CaseEditorConfig;
 
   constructor(
     private readonly appConfigService: AppConfigService,
@@ -33,18 +33,20 @@ export class AppConfig extends AbstractAppConfig {
         document_management_secure_enabled: val
       }
     });
-  }
 
-  private featureToggleWorkAllocation(): void {
-    this.featureToggleService
-      .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
-      .subscribe(
-        (isFeatureEnabled) =>
-          this.workallocationUrl = AppUtils.getFeatureToggledUrl(
-            isFeatureEnabled,
-            WorkAllocationTaskService.WorkAllocationUrl
-          )
-      );
+    this.featureToggleService.getValue('access-management-mode', false).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_mode: val
+      }
+    });
+
+    this.featureToggleService.getValue('access-management-basic-view-mock', {}).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_basic_view_mock: val
+      }
+    });
   }
 
   public load(): Promise<void> {
@@ -89,6 +91,14 @@ export class AppConfig extends AbstractAppConfig {
 
   public getPaymentsUrl() {
     return this.config.payments_url;
+  }
+
+  public getHrsUrl() {
+    return this.config.hrs_url;
+  }
+
+  public getRemoteHrsUrl() {
+    return this.config.remote_hrs_url;
   }
 
   public getCaseHistoryUrl(caseId: string, eventId: string) {
@@ -164,11 +174,36 @@ export class AppConfig extends AbstractAppConfig {
     return this.workallocationUrl;
   }
 
-  public getHrsUrl(): string {
-    return this.config.hrs_url;
+  public getRefundsUrl(): string {
+    return 'api/refund';
   }
 
-  public getRemoteHrsUrl(): string {
-    return this.config.remote_hrs_url;
+  private featureToggleWorkAllocation(): void {
+    this.featureToggleService
+    .getValue(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease2')
+      .subscribe(
+        (currentWorkAllocationFeature) =>
+        this.workallocationUrl = currentWorkAllocationFeature === 'WorkAllocationRelease2'
+          ? 'workallocation2' : 'workallocation');
+  }
+
+  public getAccessManagementMode(): boolean {
+    return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
+  }
+
+  public getAccessManagementBasicViewMock(): {} {
+    return this.config.access_management_basic_view_mock;
+  }
+
+  public getLocationRefApiUrl(): string {
+    return this.config.location_ref_api_url;
+  }
+
+  public getCamRoleAssignmentsApiUrl(): string {
+    return this.config.cam_role_assignments_api_url;
+  }
+
+  public getPaymentReturnUrl(): string {
+      return this.environmentService.get('paymentReturnUrl');
   }
 }

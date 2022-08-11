@@ -1,9 +1,8 @@
 const jwt = require('jsonwebtoken');
 const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
-const MockApp = require('../../nodeMock/app');
-const config = require('../config/protractor-cucumber.conf');
-
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
 
 const axios = require('axios');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -15,11 +14,12 @@ const axiosOptions = {
 axios.defaults.withCredentials = true;
 
 const http = axios.create(axiosOptions);
-
+const nodeAppMockData = require('../../nodeMock/nodeApp/mockData'); 
 class BrowserUtil{
 
     async gotoHomePage(){
-        await browser.get(config.config.baseUrl);
+        const baseUrl =  argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/';
+        await browser.get(baseUrl);
     }
 
     setAuthCookie(){
@@ -58,32 +58,29 @@ class BrowserUtil{
     }
 
     setUserDetailsWithRoles(rolesArray) {
-        MockApp.onGet('/api/user/details', (req, res) => {
-            res.send({
-                "canShareCases": true, "sessionTimeout": {
-                    "idleModalDisplayTime": 10, "pattern": "-solicitor", "totalIdleTime": 50
-                },
-                "userInfo": {
-                    "id": "41a90c39-d756-4eba-8e85-5b5bf56b31f5",
-                    "forename": "Luke",
-                    "surname": "Wilson",
-                    "email": "lukesuperuserxui@mailnesia.com",
-                    "active": true,
-                    "roles": rolesArray
-                }
-            });
-        });
-}
+        nodeAppMockData.getUserDetailsWithRoles(rolesArray);
+       
+    }
 
 
     async waitForLD(){
         try{
             return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
         }catch(err){
+            reportLogger.AddMessage(err);
             console.log(err);
             return false;
         }
         
+    }
+
+    onLDReceivedLogFeatureValue(name){
+        let togglesToLogs = global.scenarioData['featureToggleToLog']
+        if (!togglesToLogs){
+            global.scenarioData['featureToggleToLog'] = [];
+            togglesToLogs = global.scenarioData['featureToggleToLog'];
+        } 
+        togglesToLogs.push(name)
     }
 
     async waitForNetworkResponse(url){
@@ -101,6 +98,7 @@ class BrowserUtil{
                     await this.stepWithRetry(async () => global.scenarioData['featureToggles'] = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request')
                     // await browser.sleep(2000);
                     reportLogger.AddMessage("LD response received");
+                    this.logFeatureToggleForScenario();
                     //reportLogger.AddJson(global.scenarioData['featureToggles']);
                     return true;
                 }
@@ -110,6 +108,23 @@ class BrowserUtil{
         reportLogger.AddMessage("LD response not received in 15sec");
 
         return false;
+    }
+
+    logFeatureToggleForScenario(){
+        const ldfeatureToggles = global.scenarioData['featureToggles'];
+        const togglesToLogs = global.scenarioData['featureToggleToLog'];
+        reportLogger.AddMessage(`LOgging scenario features toggle values ${JSON.stringify(togglesToLogs)}`);
+
+        if (!togglesToLogs){
+            return;
+        }
+        const toggleValuesToLog = {};
+        for (let i = 0; i < togglesToLogs.length; i++) {
+            const toggleName = togglesToLogs[i];
+            toggleValuesToLog[toggleName] = ldfeatureToggles[toggleName].value;
+        }
+
+        reportLogger.AddJson(toggleValuesToLog);
     }
 
     async addScreenshot(thisTest, onBrowser){
@@ -142,14 +157,23 @@ class BrowserUtil{
         return scenarioId ? scenarioId.value : null;
     }
 
+    async isTextPresentInElementWithCssSelector(cssSelector, text){
+        const elementtext = await $(cssSelector).getText();
+        return elementtext.includes(text);
+    }
+
     async addTextToElementWithCssSelector(cssSelector, text,append){
-        await browser.executeScript(() => {
+        return await browser.executeScript( () => {
             let div = document.querySelector(arguments[0]);
+            if(div === undefined || div == null){
+                return `no element found with query selector ${arguments[0]}`
+            }
             if (arguments[2]){
                 div.innerHTML += arguments[1];
             }else{
                 div.innerHTML = arguments[1];
             }
+            return "success";
             
         }, cssSelector, text, append);
     }
@@ -159,6 +183,15 @@ class BrowserUtil{
             element);
     }
 
-}
+    async getFromSessionStorage(key){
+        return await browser.executeScript('return window.sessionStorage["'+key+'"]',
+            key);
+    }
 
+    async getFromLocalStorage(key) {
+        return await browser.executeScript('return window.localStorage["' + key + '"]',
+            key);
+    }
+
+}
 module.exports = new BrowserUtil();

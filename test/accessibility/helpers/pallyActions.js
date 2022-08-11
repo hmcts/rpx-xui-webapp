@@ -36,6 +36,14 @@ class Actions{
 
     }
 
+    checkOption(cssLocator){
+        return [...this.clickElement(cssLocator),'check field ' + cssLocator];
+    }
+
+    unCheckOption(cssLocator) {
+        return ['uncheck field ' + cssLocator];
+    }
+
 
     waitForUrlNotTobe(url){
         return ['wait for url to not be ' + url];

@@ -1,7 +1,7 @@
 
 const BrowserWaits = require('../../support/customWaits');
-const { browser } = require('protractor');
-
+const TaskMessageBanner = require("./messageBanner");
+const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
 class CaseListPage{
 
@@ -20,6 +20,7 @@ class CaseListPage{
         this.searchResultsTopPagination = $("ccd-search-result .pagination-top");
         this.noResultsNotification = $("ccd-search-result .notification");
 
+        this.ccdCaseSearchResult = $('ccd-search-result');
         this.caseListRows = $$("ccd-search-result>table>tbody>tr");
 
         //case list pagination navigation
@@ -41,6 +42,9 @@ class CaseListPage{
         this.ccdCaseViewer = $("ccd-case-viewer");
 
         this.loadingSpinner = $(".loading-spinner-in-action");
+
+        this.taskInfoMessageBanner = new TaskMessageBanner(".case-list-component");
+
     }
 
     async amOnPage(){
@@ -51,40 +55,81 @@ class CaseListPage{
 
     async _waitForSearchComponent(){
         await BrowserWaits.waitForElement(this.searchFilterContainer);
-        await this.waitForSpinnerToDissappear();
+        await BrowserWaits.waitForSpinnerToDissappear();
     }
 
-    async waitForSpinnerToDissappear(){
-        await BrowserWaits.waitForCondition(async () => {
-            return !(await $(".loading-spinner-in-action").isPresent());
-        });
-    }
     _getOptionSelectorWithText(optionText){
-        return by.xpath("//option[text() = '"+optionText+"']");
+        let elementLocator = null;
+        if (optionText.includes('|')){
+            const options = optionText.split('|');
+            let locatorString = "//option[";
+             let i = 0;   
+            for (const option of options){
+                if( i === 0){
+                    locatorString += `contains(text(), '${option.trim()}')`;
+                }else{
+                    locatorString += `or contains(text(), '${option.trim()}')`;
+                }
+                i++; 
+            } 
+            elementLocator = by.xpath(locatorString +']');
+
+        }else{
+            elementLocator = by.xpath("//option[text() = '" + optionText + "']");
+        }
+
+        return elementLocator
     }
 
     async selectJurisdiction(jurisdiction){
+        await BrowserWaits.waitForSeconds(1);
+        await BrowserWaits.waitForSpinnerToDissappear();
         await this._waitForSearchComponent();
-        await this.jurisdictionSelectElement.element(this._getOptionSelectorWithText(jurisdiction)).click(); 
+        CucumberReportLogger.LogTestDataInput(`Case list page Jurisdiction : ${jurisdiction}`);
+
+        await this.jurisdictionSelectElement.element(this._getOptionSelectorWithText(jurisdiction)).click();
+
+        RuntimeTestData.workbasketInputs.jurisdiction = jurisdiction;
+        const caseTypeElements = this.caseTypeSelectElement.$$("option");
+        const caseTypesSize = await caseTypeElements.count();
+        RuntimeTestData.workbasketInputs.casetypes = [];
+        for (let i = 0; i < caseTypesSize; i++){
+            const option = await caseTypeElements.get(i);
+            const optionText = await option.getText();
+            RuntimeTestData.workbasketInputs.casetypes.push(optionText);
+ 
+        } 
     }
 
     async selectCaseType(caseType) {
+        await BrowserWaits.waitForSeconds(1);
+        await BrowserWaits.waitForSpinnerToDissappear();
         await this._waitForSearchComponent();
+        CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
         await this.caseTypeSelectElement.element(this._getOptionSelectorWithText(caseType)).click();
+        CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
+        RuntimeTestData.workbasketInputs.casetype = caseType; 
+
     }
 
     async selectState(state) {
+        await BrowserWaits.waitForSpinnerToDissappear();
         await this._waitForSearchComponent();
+        CucumberReportLogger.LogTestDataInput(`Case list page event: ${state}`);
+
         await this.stateSelectElement.element(this._getOptionSelectorWithText(state)).click();
+        RuntimeTestData.workbasketInputs.state = state; 
+
     }
 
     async clickSearchApplyBtn(){ 
         await BrowserWaits.retryWithActionCallback(async () => {
             await this._waitForSearchComponent();
-            await this.waitForSpinnerToDissappear();
+            await BrowserWaits.waitForSpinnerToDissappear();
             await browser.executeScript('arguments[0].scrollIntoView()',
                 this.searchApplyBtn);
             await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
+            CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.");
             await this.searchApplyBtn.click();
         });
     }
@@ -99,9 +144,9 @@ class CaseListPage{
 
     async waitForCaseResultsToDisplay(){
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
+        await CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
         await BrowserWaits.waitForSeconds(2);
-        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
+       await  CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
 
     }
 
@@ -115,19 +160,18 @@ class CaseListPage{
 
     async clickFirstCaseLink(){
         let currentPageUrl = await browser.getCurrentUrl();
+        await CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
 
-        let isNavigationSuccess = false;
-        let retryAttemptsCounter = 0;
-        while (retryAttemptsCounter <= 3 && !isNavigationSuccess ){
-            try{
-                await this.caseListRows.get(0).$("td a").click();
-                await BrowserWaits.waitForPageNavigation(currentPageUrl); 
-                isNavigationSuccess = true;
-            }catch(err){
-                retryAttemptsCounter++;
-                CucumberReportLogger.AddMessage(`Error openning first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
-            }
-        } 
+        await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await BrowserWaits.waitForSpinnerToDissappear(); 
+            await this.caseListRows.get(0).$("td a").click();
+            await BrowserWaits.waitForPageNavigation(currentPageUrl); 
+        });
+
+      
+        await CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
+
     }
 
     async getCountOfCasesListedInPage(){

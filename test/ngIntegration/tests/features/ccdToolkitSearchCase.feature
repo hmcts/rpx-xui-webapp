@@ -57,14 +57,3 @@ Feature: Search case page
         Then I wait to see case results displayed
         When I click search case pagination "previous" page
         Then I wait to see case results displayed
-
-     Scenario: Validate Case event/next step triggers listed
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
-        Given I navigate page route "cases/case-search"
-        Then I see search case page displayed
-        When I select jurisdiction "Family Divorce" case type "Divorce case - v115.00"
-        Then I Validate case event trigger actions listed "searchInputConfig"
-    

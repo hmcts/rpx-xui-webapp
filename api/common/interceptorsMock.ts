@@ -13,8 +13,7 @@ const exceptionOptions = {
 export function requestInterceptor(request) {
   const logger = log4jui.getLogger('MOCK: outgoing');
 
-  const url = shorten(request.url, getConfigValue(MAX_LOG_LINE));
-  logger.info(`${request.method.toUpperCase()} to ${url}`);
+  logger.info(`${request.method.toUpperCase()} to ${request.url}`);
   //add timings to requests
   request.metadata = {startTime: new Date()};
 
@@ -29,7 +28,7 @@ export function successInterceptor(response) {
 
   const url = shorten(response.config.url, getConfigValue(MAX_LOG_LINE));
 
-  logger.info(`Success on ${response.config.method.toUpperCase()} to ${url} (${response.duration})`);
+  logger.info(`Success on ${response.config.method.toUpperCase()} to ${url} in (${response.duration})`);
   return response;
 }
 
@@ -41,7 +40,7 @@ export function errorInterceptor(error) {
 
   const url = shorten(error.config.url, getConfigValue(MAX_LOG_LINE));
 
-  let data = valueOrNull(error, 'response.data.details');
+  let data = valueOrNull(error, 'response.data');
   if (!data) {
     data = valueOrNull(error, 'response.status') ? JSON.stringify(error.response.data, null, 2) : null;
     if (!data) {

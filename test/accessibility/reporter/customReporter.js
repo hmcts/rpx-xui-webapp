@@ -2,6 +2,8 @@ var mocha = require('mocha');
 const fs = require('fs');
 
 const { conf } = require('../config/config');
+const MockApp = require('../../nodeMock/app');
+
 
 module.exports = report;
 
@@ -22,6 +24,8 @@ function report(runner) {
     function onPass(test) {
         console.log('\n');
         console.log('\t[ PASS ] ' + test.title);
+        console.log('\t\t screenshots ' + test.screenshots);
+
         console.log('\n');
         tests.push(getTestDetails(test))
         passCounter++;
@@ -35,6 +39,8 @@ function report(runner) {
         console.log('\n');
         console.log('\t[ FAIL ] ' + test.title);
         console.log('\t\t' + err.message);
+        console.log('\t\t screenshots ' + test.screenshots);
+
         console.log('\n');
         // console.log(test);
         tests.push(getTestDetails(test))
@@ -65,25 +71,30 @@ function generateReport(passCount, failCount, tests) {
     if (!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir);
     }
-    let destReport = destDir + "Report.html"
-    let destJson = destDir + "report_output.js"
+    let destReport = `${destDir}Report_${MockApp.serverPort}.html`
+    let destJson = `${destDir}report_output_${MockApp.serverPort}.json`
 
     fs.copyFileSync(sourceReport, destReport);
 
     let htmlData = fs.readFileSync(sourceReport, 'utf8');
-    var result = 'var replacejsoncontent = ' + JSON.stringify(reportJson);
+    var result = JSON.stringify(reportJson);
     fs.writeFileSync(destJson, result);
+    htmlData = htmlData.replace('replacejsoncontent', JSON.stringify(reportJson));
+    fs.writeFileSync(destReport, htmlData);
+
     copyResources();
 
 
 }
+
 
 function getTestDetails(test) {
     return {
         name: test.title,
         status: test.state,
         error: test.err ? test.err.message : "",
-        a11yResult: test.ctx.a11yResult
+        a11yResult: test.ctx.a11yResult,
+        screenshots:test.ctx.screenshots
     };
 
 }

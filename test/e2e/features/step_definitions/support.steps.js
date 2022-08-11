@@ -4,12 +4,11 @@ const BrowserWaits = require("../../support/customWaits");
 const ArrayUtil = require("../../utils/ArrayUtil");
 var { defineSupportCode } = require('cucumber');
 const { browser } = require("protractor");
+const BrowserLogs = require('../../support/browserLogs');
 
+const cucumberReporter = require('../../support/reportLogger');
 defineSupportCode(function ({ And, But, Given, Then, When }) {
    
-    Given('I save current window handle reference {string}', async function(windowReference){
-        global.scenarioData["window." + windowReference] = await browser.driver.getWindowHandle();
-    });
 
     Given('I switch to new window opened', async function(){
         let retryCounter = 1;
@@ -26,6 +25,27 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await browser.switchTo().window(unknownWindowHandles[0]);
         });
         
+    });
+
+    Then('I verify a networkc all made with endpoint containing {string}', async function(endPoint){
+        const networkLogs = await BrowserLogs.getNetworkLogs();
+        let isendPointTrigered = false;
+        for (networkCall of networkLogs){
+            if(networkCall.requestDetails.url.includes(endPoint)){
+                isendPointTrigered = true;
+                break;
+            }
+        }
+        // cucumberReporter.AddJson(networkLogs);
+        expect(isendPointTrigered).to.be.true
+    });
+
+    Given('I am perforing actions to validate {string}', async function(behaviour){
+        const behaviourStringLen = behaviour.length;
+        const border = "**********************".padStart(behaviourStringLen,"*")
+        cucumberReporter.AddMessage(`${border}`);
+        cucumberReporter.AddMessage(`********** ${behaviour} ***********`);
+        cucumberReporter.AddMessage(`${border}`);
     });
 
     async function getUnknownWindowHandles(){

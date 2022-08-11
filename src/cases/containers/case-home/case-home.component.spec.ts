@@ -6,7 +6,7 @@ import {
   ErrorNotifierService, HttpError, NavigationOrigin
 } from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
-import { reducers } from 'src/app/store';
+import { reducers } from '../../../app/store';
 import { CaseHomeComponent } from '..';
 import * as fromFeature from '../../store';
 import { LoadingService as CCDLoadingService } from '@hmcts/ccd-case-ui-toolkit';
@@ -49,6 +49,10 @@ describe('CaseHomeComponent', () => {
     fixture = TestBed.createComponent(CaseHomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  beforeAll(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   });
 
   describe('paramHandler', () => {

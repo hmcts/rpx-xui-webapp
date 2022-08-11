@@ -82,7 +82,9 @@ defineSupportCode(function ({ Given, When, Then }) {
         console.log(err);
           await browser.driver.manage()
             .deleteAllCookies();
-          await browser.get(config.config.baseUrl);
+          const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+
+          await browser.get(baseUrl);
           await BrowserWaits.waitForElement(loginPage.emailAddress);
           await loginPage.loginWithCredentials(username, password);
           loginAttemptRetryCounter++;
@@ -110,9 +112,8 @@ defineSupportCode(function ({ Given, When, Then }) {
       CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
       await browser.get(config.config.baseUrl);
       await BrowserWaits.waitForElement(loginPage.signinTitle);
+      expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
     });
-
-    expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
 
   });
 
@@ -133,7 +134,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.signinTitle.getText())
       .to
       .eventually
-      .equal('Sign in');
+      .equal('Sign in or create an account');
     await expect(loginPage.emailAddress.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.password.isDisplayed()).to.eventually.be.true;
     browser.sleep(SHORT_DELAY);
@@ -163,29 +164,28 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given(/^I should be redirected to the Idam login page$/, async function () {
 
-    const world = this;
-    await BrowserWaits.retryForPageLoad(loginPage.signinTitle, function(message){
-      world.attach("Idam login page load attempt : "+message)
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(loginPage.signinTitle);
+      await expect(loginPage.signinTitle.getText())
+        .to
+        .eventually
+        .equal('Sign in or create an account');
     });
-
-    await expect(loginPage.signinTitle.getText())
-      .to
-      .eventually
-      .equal('Sign in');
     browser.sleep(LONG_DELAY);
+
   });
 
 
   Then(/^I select the sign out link$/, async function () {
-    browser.sleep(SHORT_DELAY);
-    await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
-    browser.sleep(SHORT_DELAY);
-    try{
-      await loginPage.signOutlink.click();
-    }catch(err){
+
+    await BrowserWaits.retryWithActionCallback(async () => {
       await browser.sleep(SHORT_DELAY);
+      await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
+      await browser.sleep(SHORT_DELAY);
+      await BrowserWaits.waitForElementClickable(loginPage.signOutlink);
       await loginPage.signOutlink.click();
-    }
+    });
+
     browser.sleep(SHORT_DELAY);
   });
 
@@ -193,18 +193,20 @@ defineSupportCode(function ({ Given, When, Then }) {
   Then('I should be redirected to EUI dashboard page', async function () {
 
     const world = this;
-    await BrowserUtil.waitForLD();
-    await BrowserWaits.retryForPageLoad($("exui-header"), function(message){
-      world.attach("Redirected to EUI dashboard , attempt reload : "+message);
+
+    await BrowserWaits.retryWithActionCallback(async () => {
+      try{
+        await BrowserUtil.waitForLD();
+        await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
+        await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
+        
+        await BrowserUtil.waitForLD();
+      }catch(err){
+        await browser.get(config.config.baseUrl);
+        throw new Error(err);
+      }
+
     });
-
-    await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
-    await expect(loginPage.dashboard_header.getText())
-      .to
-      .eventually
-      .contains('Case list');
-
-    await BrowserUtil.waitForLD();
 
   });
 
@@ -214,6 +216,19 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.username, config.config.params.password, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
+
+  Given('I am logged into Expert UI with valid Probate back office user credentials', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.usernameProbate, config.config.params.password);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.usernameProbate, config.config.params.password, this);
 
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
@@ -253,16 +268,37 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given(/^I am logged into Expert UI with Probate user details$/, async function () {
     browser.sleep(MID_DELAY);
-    await loginPage.emailAddress.sendKeys(config.config.params.username);
+    await loginPage.emailAddress.sendKeys(config.config.params.probate_username);
     browser.sleep(MID_DELAY);
-    await loginPage.password.sendKeys(config.config.params.password);
+    await loginPage.password.sendKeys(config.config.params.probate_password);
     await loginPage.clickSignIn();
     browser.sleep(LONG_DELAY);
 
     loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.probate_username, config.config.params.probate_password, this);
+  });
+
+  Given('I am logged into Expert UI as IA {string}', async function (usertype) {
+    browser.sleep(MID_DELAY);
+    await loginPage.emailAddress.sendKeys(config.config.params.ia_users_credentials[usertype].username);
+    browser.sleep(MID_DELAY);
+    await loginPage.password.sendKeys(config.config.params.ia_users_credentials[usertype].password);
+    await loginPage.clickSignIn();
+    browser.sleep(LONG_DELAY);
+    loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.username, config.config.params.password, this);
   });
 
+  Then('I should see the expected banner for IA {string}', async function (usertype) {
+    let bannerElementBgColor = await headerPage.headerBanner.getAttribute('style');
+    let navItems =  await headerPage.primaryNavBar_NavItems.getText();
+    if(usertype === 'judge') {
+      // expect(bannerElementBgColor).to.equal('background-color: rgb(141, 15, 14);');
+      expect(navItems).to.not.include('Create case');
+      return;
+    }
+    expect(bannerElementBgColor).to.equal('background-color: rgb(32, 32, 32);');
+});
 
   Given('I am logged into Expert UI caseworker-ia-adm user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password);
@@ -291,14 +327,15 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given('I am logged into Expert UI with test user identified as {string}', async function (testUserIdentifier) {
+    const world = this;
 
-    const matchingUsers = testConfig.users.filter(user => user.userIdentifier === testUserIdentifier);
+    const matchingUsers = testConfig.users[testConfig.testEnv].filter(user => user.userIdentifier === testUserIdentifier);
     if (matchingUsers.length === 0 ){
       throw new Error(`Test user with identifier ${testUserIdentifier} is not found, check app test config anf fix test issue`);
     }
-   
+
     const userEmail = matchingUsers[0].email;
-    const key = 'Welcome01';
+    const key = matchingUsers[0].key;
 
     await loginPage.givenIAmLoggedIn(userEmail, key);
 
@@ -310,7 +347,6 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
- // hrs.tester@hmcts.net/passwOrd01hrs
   Given('I am logged into Expert UI with hrs testes user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.hrsTesterUser, config.config.params.hrsTesterPassword);
     const world = this;
@@ -328,7 +364,8 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.driver.manage()
       .deleteAllCookies();
-    await browser.get(config.config.baseUrl + '/cases/case-filter');
+    const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+    await browser.get(baseUrl + '/cases/case-filter');
   });
 
   Then(/^I should be redirected back to Login page after direct link$/, async function () {
@@ -336,7 +373,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.signinTitle.getText())
       .to
       .eventually
-      .equal('Sign in');
+      .equal('Sign in or create an account');
     browser.sleep(LONG_DELAY);
   });
 

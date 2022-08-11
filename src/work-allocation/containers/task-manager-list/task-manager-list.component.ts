@@ -14,7 +14,7 @@ import {
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { SessionStorageService } from '../../../app/services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
-import { UserInfo } from 'src/app/models/user-details.model';
+import { UserInfo } from '../../../app/models/user-details.model';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseworkerDisplayName } from '../../pipes';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -145,17 +145,17 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
    * Override the default.
    */
   public getSearchTaskRequestPagination(): SearchTaskRequest {
+    const caseworkerParameter = this.getCaseworkerParameter();
+    // EUI-4707 - Do not return a caseworker parameter if searching all caseworkers
+    const searchParameters = caseworkerParameter ? [this.getLocationParameter(), caseworkerParameter] : [this.getLocationParameter()];
     return {
-      search_parameters: [
-        this.getLocationParameter(),
-        this.getCaseworkerParameter()
-      ],
+      search_parameters: searchParameters,
       sorting_parameters: [this.getSortParameter()],
       pagination_parameters: this.getPaginationParameter()
     };
   }
 
-  private getLocationParameter() {
+  private getLocationParameter(): any {
     let values: string[];
     if (this.selectedLocation && this.selectedLocation !== FilterConstants.Options.Locations.ALL) {
       values = [ this.selectedLocation.id ];
@@ -165,7 +165,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     return { key: 'location', operator: 'IN', values };
   }
 
-  private getCaseworkerParameter() {
+  private getCaseworkerParameter(): any {
     let key: string = 'user';
     let values: string[];
     if (this.selectedCaseworker && this.selectedCaseworker !== FilterConstants.Options.Caseworkers.ALL) {
@@ -176,7 +176,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
         values = [this.selectedCaseworker.idamId];
       }
     } else {
-      values = [];
+      return null;
     }
     return { key: `${key}`, operator: 'IN', values };
   }

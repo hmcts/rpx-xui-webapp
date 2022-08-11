@@ -1,13 +1,15 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { AppConstants } from './app.constants';
-import { NavItemsModel } from './models/nav-item.model';
+import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
+import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
+import { Theme, UserTypeRole } from './models/theme.model';
+import { NavigationItem } from './models/theming.model';
+import { UserDetails, UserRole } from './models/user-details.model';
 
 export class AppUtils {
 
   public static getEnvironment(url: string): string {
     const regex = 'pr-|localhost|aat|demo|ithc|perftest';
     const matched = url.match(regex);
-
 
     if (matched && matched[0]) {
       switch (matched[0]) {
@@ -65,7 +67,7 @@ export class AppUtils {
   /**
    * Set the active property on the navigation items.
    */
-  public static setActiveLink(items: NavItemsModel[], currentUrl: string): NavItemsModel[] {
+  public static setActiveLink(items: NavigationItem[], currentUrl: string): NavigationItem[] {
     let fullUrl = false;
     let matchingUrl = '';
     [fullUrl, matchingUrl] = AppUtils.checkTabs(items, currentUrl);
@@ -79,12 +81,11 @@ export class AppUtils {
 
   /**
    * Tab logic - Works out which tab needs to be selected via the current tab urls and the given url
-   *
    * @param items - the tab urls
-   * @param currrentUrl - the url being tested
+   * @param currentUrl - the url being tested
    * @return - a list including boolean stating whether the full url is given or the similar matching url
    */
-  public static checkTabs(items: NavItemsModel[], currentUrl: string): any[] {
+  public static checkTabs(items: NavigationItem[], currentUrl: string): any[] {
     let fullUrl = false;
     let maxLength = 0;
     let matchingUrl = '';
@@ -113,9 +114,8 @@ export class AppUtils {
 
   /**
    * Check if item's href is equivalent to the current url
-   *
    * @param href - one of the tab urls
-   * @param currrentUrl - the url being tested
+   * @param currentUrl - the url being tested
    * @return - boolean value
    */
   public static isFullUrl(href: string, currentUrl: string): boolean {
@@ -146,7 +146,84 @@ export class AppUtils {
     return child ? child.data : null;
   }
 
-  public static getFeatureToggledUrl(isFeatureEnabled: boolean, workallocationUrl: string): string {
-    return isFeatureEnabled ? workallocationUrl : null;
+  public static getFeatureToggledUrl(isFeatureEnabled: boolean, workAllocationUrl: string): string {
+    return isFeatureEnabled ? workAllocationUrl : null;
+  }
+
+  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[], excludedRoles: string[]): boolean {
+    // isWA enabled for this jurisdiction
+    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER) && userRoles.every(userRole => !excludedRoles.includes(userRole));
+    // check that userRoles do not have pui-case-manager
+  }
+
+  public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
+    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.Judicial;
+    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.LegalOps;
+    }
+    return null;
+  }
+
+  public static convertDomainToLabel(userRole: string): string {
+    switch (userRole) {
+      case UserRole.LegalOps: {
+        userRole = 'Legal Ops';
+        break;
+      }
+      case UserRole.Judicial: {
+        userRole = 'Judicial';
+        break;
+      }
+      case UserRole.Admin: {
+        userRole = 'Admin';
+        break;
+      }
+    }
+    return userRole;
+  }
+
+
+  public static getFilterPersistenceByRoleType(userDetails: UserDetails): FilterPersistence {
+    const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+    const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
+    switch (roleType) {
+      case 'LegalOps':
+        return 'session';
+      case 'Judicial':
+        return 'local';
+      default:
+        return 'session';
+    }
+  }
+
+  public static setThemeBasedOnUserType(userType: string, theme: Theme) {
+    switch (userType) {
+      case 'Judicial':
+        theme.appTitle.name = 'Judicial Case Manager';
+        theme.backgroundColor = '#8d0f0e';
+        theme.logo = 'judicial';
+        break;
+      case 'LegalOps':
+        theme.appTitle.name = 'Manage cases';
+        theme.backgroundColor = '#202020';
+        theme.logo = '';
+        break;
+      case 'Solicitor':
+        theme.appTitle.name = 'Manage cases';
+        theme.backgroundColor = '#202020';
+        theme.logo = 'myhmcts';
+        break;
+    }
+  }
+
+  public static getUserType(userRoles: string[], userTypeRoles: UserTypeRole): string {
+    if (userRoles.some(userRole => userTypeRoles.solicitor && userTypeRoles.solicitor.includes(userRole))) {
+      return 'Solicitor';
+    } else if (userRoles.some(userRole => userTypeRoles.judicial && userTypeRoles.judicial.includes(userRole))) {
+      return 'Judicial';
+    } else {
+      return 'LegalOps';
+    }
   }
 }

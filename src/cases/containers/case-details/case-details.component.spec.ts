@@ -1,15 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs/internal/observable/of';
+
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
 import { CaseDetailsComponent } from './case-details.component';
 
-
-class MockSortService {
-  public features = {};
-  public getFeatureToggle() { }
-  public cgetEditorConfiguration() { }
-}
 describe('CaseDetailsComponent', () => {
   let component: CaseDetailsComponent;
   let fixture: ComponentFixture<CaseDetailsComponent>;
@@ -63,4 +58,7 @@ describe('CaseDetailsComponent', () => {
     expect(subscription.unsubscribe).not.toHaveBeenCalled();
   });
 
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
 });

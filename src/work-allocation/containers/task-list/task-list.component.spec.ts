@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-import { PaginationParameter } from 'src/work-allocation/models/dtos';
+import { PaginationParameter } from '../../models/dtos';
 
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -126,13 +126,13 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseId');
+    const button = element.querySelector('#sort_by_caseName');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    // check the emitter had been called and that it gets called with the first field which is caseReference (caseId)
+    // check the emitter had been called and that it gets called with the first field which is caseName
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
   });
 
   it('should allow sorting for different columns.', async () => {
@@ -432,5 +432,9 @@ describe('TaskListComponent', () => {
     it('should correctly set the summary text', () => {
       expect(paginationSummary.innerText).toContain('Showing 1 to 2 of 2 results');
     });
+  });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
   });
 });

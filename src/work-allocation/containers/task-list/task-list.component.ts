@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PaginationParameter } from 'src/work-allocation/models/dtos';
+import { PaginationParameter } from '../../../work-allocation/models/dtos';
 
 import { ListConstants } from '../../components/constants';
 import { TaskSort } from '../../enums';
@@ -160,7 +160,7 @@ export class TaskListComponent implements OnChanges {
 
     // If this is the field we're sorted by, return the appropriate order.
     if (this.sortedBy.fieldName === fieldName) {
-      return this.sortedBy.order === TaskSort.ASC ? 'ascending' : 'descending'
+      return this.sortedBy.order === TaskSort.ASC ? 'ascending' : 'descending';
     }
 
     // This field is not sorted, return NONE.

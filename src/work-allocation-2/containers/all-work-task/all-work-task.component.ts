@@ -1,109 +1,138 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, } from '@angular/core';
+import { Person } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
-import { UserInfo } from 'src/app/models/user-details.model';
-import { SessionStorageService } from 'src/app/services';
-import { CONFIG_CONSTANTS } from 'src/work-allocation-2/components/constants/config.constants';
-import { LIST_CONSTANTS } from 'src/work-allocation-2/components/constants/list.constants';
-import { TaskService, TaskSort } from 'src/work-allocation-2/enums';
-import { PaginationParameter, SearchTaskRequest, SortParameter } from 'src/work-allocation-2/models/dtos';
-import { WorkAllocationTaskService } from 'src/work-allocation-2/services';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation-2/utils';
-import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
+import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { SortOrder } from '../../enums';
+import { Location } from '../../interfaces/common';
+import { FieldConfig, SortField } from '../../models/common';
+import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
+import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
-    selector: 'exui-all-work-tasks',
-    templateUrl: 'all-work-task.component.html',
-    styleUrls: ['all-work-task.component.scss']
+  selector: 'exui-all-work-tasks',
+  templateUrl: 'all-work-task.component.html',
+  styleUrls: ['all-work-task.component.scss']
 })
-export class AllWorkTaskComponent implements OnInit {
-  public constructor(private readonly taskService: WorkAllocationTaskService,
-                     private sessionStorageService: SessionStorageService,
-                     private readonly router: Router) {}
-
-  public sortedBy: TaskSortField = {
+export class AllWorkTaskComponent extends TaskListWrapperComponent {
+  private static ALL_TASKS = 'All';
+  private static AVAILABLE_TASKS = 'None / Available tasks';
+  public locations: Location[];
+  public waSupportedJurisdictions$: Observable<string[]>;
+  public sortedBy: SortField = {
     fieldName: '',
-    order: TaskSort.NONE
+    order: SortOrder.NONE
   };
-
   public pagination: PaginationParameter = {
     page_number: 1,
     page_size: 25
   };
-  public emptyMessage: string = 'Change your selection to view tasks.';
-
-  private readonly defaultTaskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: TaskSort.NONE,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
+  private selectedLocation: Location = {
+    id: '**ALL LOCATIONS**',
+    locationName: '',
+    services: [],
   };
-  public tasks: Task[] = new Array<Task>();
-  public tasksTotal: number = 0;
+  private selectedTaskCategory: string = 'All';
+  private selectedPerson: string = '';
+  private selectedTaskType: string = 'All';
 
-  public get fields(): TaskFieldConfig[] {
-    return CONFIG_CONSTANTS.AllWorkTasks;
+  public get emptyMessage(): string {
+    return ListConstants.EmptyMessage.AllWork;
   }
 
-  public ngOnInit() {
-    this.doLoad();
+  public get sortSessionKey(): string {
+    return SortConstants.Session.AllWork;
   }
 
-  public get taskServiceConfig(): TaskServiceConfig {
-    return this.defaultTaskServiceConfig;
-  }
-
-  public onPaginationEvent(pageNumber: number): void {
-  }
-
-  public onSortHandler(fieldName: string): void {
-  }
-
-  public onActionHandler(taskAction: InvokedTaskAction): void {
+  public get pageSessionKey(): string {
+    return PageConstants.Session.AllWork;
   }
 
   public get view(): string {
-    return 'AllWorkAssigned';
+    return ListConstants.View.AllWork;
   }
 
-  private doLoad(): void {
-    this.performSearchPagination().subscribe(result => {
-        this.tasks = result.tasks;
-        this.tasksTotal = result.total_records;
-      }, error => {
-        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
+  public get fields(): FieldConfig[] {
+    return this.isCurrentUserJudicial() ? ConfigConstants.AllWorkTasksForJudicial : ConfigConstants.AllWorkTasksForLegalOps;
   }
 
-  public performSearchPagination(): Observable<any> {
-    const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTaskWithPagination({ searchRequest, view: this.view });
+  public loadCaseWorkersAndLocations(): void {
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    let isJudge = false;
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const id = userInfo.id ? userInfo.id : userInfo.uid;
-      isJudge = userInfo.roles.some(role => LIST_CONSTANTS.JUDGE_ROLES.includes(role));
+      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const searchParameters = [
+        {key: 'jurisdiction', operator: 'IN', values: this.selectedServices},
+        this.getStateParameter()
+      ];
+      const personParameter = { key: 'user', operator: 'IN', values: [this.selectedPerson] };
+      const locationParameter = this.getLocationParameter();
+      const taskTypeParameter = this.getTaskTypeParameter();
+      if (this.selectedPerson) {
+        searchParameters.push(personParameter);
+      }
+      if (locationParameter) {
+        searchParameters.push(locationParameter);
+      };
+      if (taskTypeParameter) {
+        searchParameters.push(taskTypeParameter);
+      };
+      return {
+        search_parameters: searchParameters,
+        sorting_parameters: [this.getSortParameter()],
+        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
+        pagination_parameters: this.getPaginationParameter()
+      };
     }
-    return {
-      search_parameters: [],
-      sorting_parameters: [this.getSortParameter()],
-      pagination_parameters: this.getPaginationParameter(),
-      search_by: isJudge ? 'judge' : 'caseworker',
-    };
   }
 
-  public getSortParameter(): SortParameter {
-    return {
-      sort_by: this.sortedBy.fieldName,
-      sort_order: this.sortedBy.order
-    };
+  /**
+   * Handle the paging event
+   */
+  public onPaginationEvent(pageNumber: number): void {
+    this.onPaginationHandler(pageNumber);
   }
 
-  public getPaginationParameter(): PaginationParameter {
-    return { ...this.pagination };
+  public onSelectionChanged(selection: { location: string, service: string, selectPerson: string, person: Person, taskType: string }): void {
+    this.selectedLocation.id = selection.location;
+    this.selectedServices = [selection.service];
+    this.selectedTaskCategory = selection.selectPerson;
+    this.selectedPerson = selection.person ? selection.person.id : null;
+    this.selectedTaskType = selection.taskType;
+    this.onPaginationHandler(1);
+  }
+
+  private getLocationParameter(): any {
+    let values: string[];
+    if (this.selectedLocation && this.selectedLocation.id !== FilterConstants.Options.Locations.ALL.id) {
+      values = this.selectedLocation.id ? [this.selectedLocation.id] : [];
+    } else {
+      values = this.locations.map(loc => loc.id);
+    }
+    return values && values.length > 0 ? { key: 'location', operator: 'IN', values } : null;
+  }
+
+  private getStateParameter(): any {
+    if (this.selectedTaskCategory && this.selectedTaskCategory !== AllWorkTaskComponent.ALL_TASKS) {
+      if (this.selectedTaskCategory === AllWorkTaskComponent.AVAILABLE_TASKS) {
+        return { key: 'state', operator: 'IN', values: ['unassigned'] };
+      } else {
+        return { key: 'state', operator: 'IN', values: ['assigned'] };
+      }
+    } else {
+      return { key: 'state', operator: 'IN', values: ['assigned', 'unassigned'] };
+    }
+  }
+
+  private getTaskTypeParameter(): any {
+    if (this.selectedTaskType && this.selectedTaskType !== AllWorkTaskComponent.ALL_TASKS) {
+      return {key: 'role_category', operator: 'IN', values: [this.selectedTaskType]};
+    }
   }
 }

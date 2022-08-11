@@ -11,15 +11,42 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
-const isParallelExecution = true;
+if (!process.env['TEST_ENV_URL']){
+    process.env['TEST_ENV_URL'] = process.env['TEST_URL']; 
 
+}
+process.env['TEST_URL'] = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
+
+
+const isParallelExecution = argv.parallel ? argv.parallel === "true" : !getBDDTags().includes('@none') ? true : false;
+
+const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
+
+
+ 
+const nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
+const perfLoggingPrefs = {
+    'enableNetwork': true,
+    'enablePage': false
+};
+
+const loggingPrefs = {
+    performance: 'ALL',
+    browser: 'ALL'
+};
+
+if (!argv.head ){
+    chromeOptArgs.push('--headless');
+}
 const jenkinsConfig = [
 
     {
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
-        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
+        chromeOptions: { args: chromeOptArgs, perfLoggingPrefs: perfLoggingPrefs  },
+        loggingPrefs: loggingPrefs
     }
 ];
 
@@ -28,7 +55,8 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+        chromeOptions: { args: chromeOptArgs, perfLoggingPrefs: perfLoggingPrefs },
+        loggingPrefs: loggingPrefs,
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -40,7 +68,7 @@ const localConfig = [
 
 if(isParallelExecution){
     jenkinsConfig[0].shardTestFiles = true;
-    jenkinsConfig[0].maxInstances = 3;
+    jenkinsConfig[0].maxInstances = 5;
 }
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
@@ -50,7 +78,7 @@ const config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
     specs: ['../tests/features/**/*.feature'],
-    baseUrl: argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/',
+    baseUrl: process.env['TEST_URL'] ,
     params: {
 
     },
@@ -62,8 +90,8 @@ const config = {
 
     beforeLaunch(){
         if (isParallelExecution) {
-            MockApp.setServerPort(3001);
-            MockApp.init();
+            MockApp.setServerPort(nodeMockPort);
+            MockApp.init(parseInt(nodeMockPort) + 1);
             MockApp.startServer();
         }    
     },
@@ -78,6 +106,7 @@ const config = {
             browserInstance: browser
         });
 
+       
         if (isParallelExecution){
             MockApp.getNextAvailableClientPort().then(res => {
                 MockApp.setServerPort(res.data.port);
@@ -86,13 +115,20 @@ const config = {
                 
             });
         }else{
-            MockApp.setServerPort(3001);
+            MockApp.setServerPort(nodeMockPort);
             //await MockApp.startServer();
-            MockApp.setLogMessageCallback(customReporter.AddMessage);
         }    
-        MockApp.setLogMessageCallback(customReporter.AddJson);
+       
+
+        //Set default explict timeout default value to 10sec
+        const customWaits = require('../../e2e/support/customWaits');
+        customWaits.setDefaultWaitTime(8000);
+        customWaits.setLoglevelINFO();
+        customWaits.setRetryCount(2);
+
     },
     cucumberOpts: {
+        'fail-fast': true,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
@@ -120,7 +156,9 @@ const config = {
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
                 jsonDir: 'reports/tests/ngIntegration',
-                reportPath: 'reports/tests/ngIntegration'
+                reportPath: 'reports/tests/ngIntegration',
+                displayDuration : true,
+                durationInMS : false
             }
         }
     ]
@@ -130,12 +168,14 @@ const config = {
 
 function getBDDTags() {
     let tags = [];
-    if (!process.env.TEST_URL ||
-        process.env.TEST_URL.includes("pr-") ||
-        process.env.TEST_URL.includes("localhost")) {
-        tags.push("@ng");
+    console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_ENV_URL']}`);
+    console.log(`*********************** process.env['TEST_ENV_URL'] : ${process.env['TEST_ENV_URL']}`);
+    if (process.env['TEST_ENV_URL'].includes("pr-") ||
+        process.env['TEST_ENV_URL'].includes("localhost")) { 
         if (argv.tags){
             tags = argv.tags.split(',');
+        }else{
+            tags = ["@ng", "~@ignore"];
         }
     }else{
         tags.push("@none"); 

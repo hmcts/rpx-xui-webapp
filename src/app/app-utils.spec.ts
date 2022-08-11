@@ -1,6 +1,9 @@
+import { initialMockState } from '../role-access/testing/app-initial-state.mock';
 import { AppUtils } from './app-utils';
-import { AppConstants } from './app.constants';
-import { NavItemsModel } from './models/nav-item.model';
+import { AppConstants, LEGAL_OPS_ROLE_LIST } from './app.constants';
+import { Theme } from './models/theme.model';
+import { NavigationItem } from './models/theming.model';
+import { UserRole } from './models/user-details.model';
 
 describe('getEnvironment', () => {
 
@@ -81,7 +84,7 @@ describe('getCookieRolesAsArray', () => {
 describe('setActiveLink', () => {
 
   it('should correctly flag an item as being active', () => {
-    const ITEMS: NavItemsModel[] = [
+    const ITEMS: NavigationItem[] = [
       { href: '/a', active: false, text: 'A' },
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
@@ -98,7 +101,7 @@ describe('setActiveLink', () => {
   });
 
   it('should correctly deactivate a previously active item', () => {
-    const ITEMS: NavItemsModel[] = [
+    const ITEMS: NavigationItem[] = [
       { href: '/a', active: true, text: 'A' },
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
@@ -116,7 +119,7 @@ describe('setActiveLink', () => {
   });
 
   it('should correctly deactivate all items when the URL matches none of them', () => {
-    const ITEMS: NavItemsModel[] = [
+    const ITEMS: NavigationItem[] = [
       { href: '/a', active: true, text: 'A' },
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
@@ -137,7 +140,7 @@ describe('setActiveLink', () => {
     expect(AppUtils.pad('1', 3)).toEqual('001');
   });
 
-  const mockItems: NavItemsModel[] = [
+  const mockItems: NavigationItem[] = [
     // fill with actual mock data
     { href: '/tasks', active: false, text: 'A' },
     { href: '/tasks/task-manager', active: false, text: 'B' },
@@ -169,7 +172,7 @@ describe('setActiveLink', () => {
     expect(AppUtils.isFullUrl(mockItems[0].href, '/tasks/task-manager')).toBeFalsy();
     expect(AppUtils.isFullUrl(mockItems[0].href, '/cases/case-search')).toBeTruthy();
     expect(AppUtils.isFullUrl(mockItems[0].href, '/task')).toBeFalsy();
-  })
+  });
 });
 
 describe('getFeatureToggledUrl', () => {
@@ -182,5 +185,114 @@ describe('getFeatureToggledUrl', () => {
   it('url when feature is on', () => {
     const url = AppUtils.getFeatureToggledUrl(true, 'someUrl');
     expect(url).toEqual('someUrl');
+  });
+});
+
+describe('isLegalOpsOrJudicial', () => {
+
+  it('should return legal ops role if user has any legal ops role', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-caseofficer']);
+    expect(isLegalOpsOrJudicial).toBe(UserRole.LegalOps);
+  });
+
+  it('should return judicial role if user has any judicial role', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-iacjudge']);
+    expect(isLegalOpsOrJudicial).toBe(UserRole.Judicial);
+  });
+
+  it('should return null if user has no judicial or legal ops role', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker']);
+    expect(isLegalOpsOrJudicial).toBeNull();
+  });
+
+  it('should return legal ops role if user is an task supervisor', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['task-supervisor']);
+    expect(isLegalOpsOrJudicial).toBe('legalops');
+  });
+
+  it('should return legal ops role if user is an caseworker-ia', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
+    expect(isLegalOpsOrJudicial).toBe('legalops');
+  });
+
+  it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-admofficer']);
+    expect(isLegalOpsOrJudicial).toBe('legalops');
+  });
+
+  it('should return the judicial domain from the user list', () => {
+    const role = AppUtils.convertDomainToLabel(UserRole.Judicial);
+    expect(role).toBe('Judicial');
+  });
+
+  it('should return the legal ops domain from the user list', () => {
+    const role = AppUtils.convertDomainToLabel(UserRole.LegalOps);
+    expect(role).toBe('Legal Ops');
+  });
+
+  it('should return the admin domain from the user list', () => {
+    const role = AppUtils.convertDomainToLabel(UserRole.Admin);
+    expect(role).toBe('Admin');
+  });
+});
+
+describe('setThemeBasedOnUserType', () => {
+  it('Judicial User', () => {
+    const theme = { appTitle: {}} as Theme;
+    AppUtils.setThemeBasedOnUserType('Judicial', theme);
+    expect(theme.appTitle.name).toEqual('Judicial Case Manager');
+    expect(theme.backgroundColor).toEqual( '#8d0f0e');
+    expect(theme.logo).toEqual('judicial');
+  });
+
+  it('LegalOps User', () => {
+    const theme = { appTitle: {}} as Theme;
+    AppUtils.setThemeBasedOnUserType('LegalOps', theme);
+    expect(theme.appTitle.name).toEqual('Manage cases');
+    expect(theme.backgroundColor).toEqual('#202020');
+    expect(theme.logo).toEqual('');
+  });
+
+  it('Solicitor User', () => {
+    const theme = { appTitle: {}} as Theme;
+    AppUtils.setThemeBasedOnUserType('Solicitor', theme);
+    expect(theme.appTitle.name).toEqual('Manage cases');
+    expect(theme.backgroundColor).toEqual('#202020');
+    expect(theme.logo).toEqual('myhmcts');
+  });
+});
+
+describe('getUserType', () => {
+  it('Solicitor', () => {
+    const userRole = { solicitor: ['role1'] };
+    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
+    expect(userType).toEqual('Solicitor');
+  });
+
+  it('Judicial', () => {
+    const userRole = { judicial: ['role1'] };
+    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
+    expect(userType).toEqual('Judicial');
+  });
+
+  it('LegalOps', () => {
+    const userRole = { legalOps: ['role1'] };
+    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
+    expect(userType).toEqual('LegalOps');
+  });
+});
+
+
+describe('getFilterPersistenceByRoleType', () => {
+  it('should return local persistence if user is a judicial user', () => {
+    const persistence = AppUtils.getFilterPersistenceByRoleType(initialMockState.appConfig.userDetails);
+    expect(persistence).toEqual('local');
+  });
+
+  it('should return local persistence if user is a legalOps user', () => {
+    const userDetails = initialMockState.appConfig.userDetails;
+    userDetails.userInfo.roles = LEGAL_OPS_ROLE_LIST;
+    const persistence = AppUtils.getFilterPersistenceByRoleType(userDetails);
+    expect(persistence).toEqual('session');
   });
 });

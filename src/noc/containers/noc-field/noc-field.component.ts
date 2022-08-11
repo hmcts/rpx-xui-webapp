@@ -32,7 +32,10 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements On
   public ngOnInit(): void {
     const componentClass = this.paletteService.getFieldComponentClass(this.questionField);
 
-    const injector = Injector.create([], this.fieldContainer.parentInjector);
+    const injector = Injector.create({
+      providers: [],
+      parent: this.fieldContainer.parentInjector
+    });
     const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Provide component @Inputs

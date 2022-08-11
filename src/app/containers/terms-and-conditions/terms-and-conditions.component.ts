@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
+import { TermsConditionsService } from '../../../app/services/terms-and-conditions/terms-and-conditions.service';
 import * as fromRoot from '../../store';
 
 @Component({

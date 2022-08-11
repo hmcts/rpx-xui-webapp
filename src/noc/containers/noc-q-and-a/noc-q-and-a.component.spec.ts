@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { NocNavigationEvent } from 'src/noc/models';
+import { NocNavigationEvent } from '../../../noc/models';
 import * as fromNocStore from '../../store';
 import { NocErrorPipe } from '../noc-field/utils';
 import { NocQAndAComponent } from './noc-q-and-a.component';

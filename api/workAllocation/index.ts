@@ -38,7 +38,7 @@ export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
-const logger: JUILogger = log4jui.getLogger('workAllocation')
+const logger: JUILogger = log4jui.getLogger('workAllocation');
 
 /**
  * getTask
@@ -86,6 +86,8 @@ export async function searchTaskWithPagination(req: EnhancedRequest, res: Respon
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
+    // EUI-4285 - Remove pagination parameters from request
+    delete searchRequest.pagination_parameters;
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     res.status(status);
     // Assign actions to the tasks on the data from the API.
@@ -127,10 +129,10 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
     if (error.status !== 401) {
       next(error);
     } else {
-      logger.error(error)
+      logger.error(error);
       res.status(500);
-      const maskedError = {status: 500, message: 'mask 401 Error with 500', orignalError: error}
-      next(maskedError)
+      const maskedError = {status: 500, message: 'mask 401 Error with 500', orignalError: error};
+      next(maskedError);
     }
   }
 }

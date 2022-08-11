@@ -3,12 +3,12 @@ import * as addContext from 'mochawesome/addContext'
 let testContext;
 export const mochaHooks = {
    beforeEach(){
-      // testContext = this;
+       testContext = this;
    } 
 }
 
 export const setTestContext = (testObj) => {
-
+   console.log("******************** .  SET context called ");
    testContext = testObj;
 }
 
@@ -24,4 +24,19 @@ export const reporterJson = (jsonMsg) => {
    addContext(testContext, reportMsg);
 }
 
+export const testWithRetry = async (fn) => {
+   let i = 0;
+   while (i < 3) {
+      i++;
+      try {
+         await fn();
+         break;
+      }
+      catch (err) {
+         reporterMsg(err);
+      }
+
+   }
+
+}
 

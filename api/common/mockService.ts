@@ -3,10 +3,10 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { exists } from '../lib/util';
-import { httpMock } from './httpMock';
+import { HttpMock } from './httpMock';
 
 const logger: JUILogger = log4jui.getLogger('mock-service');
-
+export const httpMock = HttpMock.getInstance();
 /**
  * Handle GET method
  *

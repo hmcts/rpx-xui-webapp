@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
 import {
@@ -31,10 +32,17 @@ import { StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
+import { HearingsModule } from '../hearings/hearings.module';
+import { HearingsPipesModule } from '../hearings/pipes/hearings.pipes.module';
+import { HearingsService } from '../hearings/services/hearings.service';
 import { OrganisationModule } from '../organisation/organisation.module';
+import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
+import { WASupportedJurisdictionsService } from '../work-allocation-2/services';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
+// from directives
+import * as fromDirectives from './directives';
 // from containers
 import * as fromContainers from './containers';
 import { ActivityResolver } from './resolvers/activity.resolver';
@@ -61,9 +69,13 @@ import { effects, reducers } from './store';
     CaseListFiltersModule,
     WorkbasketFiltersModule,
     ExuiCommonLibModule,
-    LoadingModule
+    LoadingModule,
+    ReactiveFormsModule,
+    PriorityFieldComponentModule,
+    HearingsModule,
+    HearingsPipesModule
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers],
+  declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
     PlaceholderService,
     CasesService,
@@ -83,7 +95,9 @@ import { effects, reducers } from './store';
     ScrollToService,
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
-    ActivityResolver
+    ActivityResolver,
+    HearingsService,
+    WASupportedJurisdictionsService
   ]
 })
 /**

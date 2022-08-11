@@ -22,7 +22,7 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
-## Running unit tests
+## Running unit tests 
 
 Run `yarn test` to execute the unit tests on both the Angular and Node layers. Note that 
 `yarn test` is run on the build pipelines.
@@ -37,7 +37,7 @@ Run `yarn lint:node` to execute note linting.
 
 Run `yarn test-pact` to run the PACT tests.
 
-Run `yarn pact-stub` to run the PACT stub server.
+Run `yarn pact-stub` to run the PACT stub server. 
 
 # Branches, Environment and Deployment methods used
 # Branches, Environment and Deployment methods used 
@@ -71,7 +71,7 @@ Adding new files into /config should be avoided, as it increases complexity.
 It increases complexity if we were to add files to /config as we already have the Preview and AAT Jenkins enviromental
 values contained within values.preview.template.yaml and values.aat.template.yaml.
 
-# Setting up Secrets locally (Required)
+# Setting up Secrets locally (Required) 
 
 You need to setup secrets locally before you run the project. Why? - When you push this application
 up through AKS deployed through Flux to AAT, ITHC and Prod, the application will take in the secrets on these environments.
@@ -120,7 +120,7 @@ which in turn uses `propertiesVolume.addTo()`
 
 # How Application Configuration (Node Config) Works
 
-The application picks up the configuration from the /config .json files.
+The application picks up the configuration from the /config .json files. 
 
 The references within *.json ie. production.json are set by the /charts/xui-terms-and-conditions/values.yaml file ie.
 POSTGRES_SERVER_PORT is set by POSTGRES_SERVER_PORT within values.yaml. <br><br>HOWEVER if there is a
@@ -128,6 +128,7 @@ values.*.template.yaml file it will override the values within the values.yaml f
 pipelines, where values.*.template.yaml are available to the build pipeline.
 
 AKS uses a .json file in /config and the values.yaml from within charts/xui-terms-and-conditions ONLY.
+ 
  
 AKS does not use values.aat.template.yaml and values.previews.template.yaml
 
@@ -196,4 +197,4 @@ Extended version of script below:
 (https://robferguson.org/blog/2017/09/09/a-simple-logging-service-for-angular-4/)
 
 END
-Trigger2
+Trigger2 Trigger3

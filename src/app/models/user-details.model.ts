@@ -6,6 +6,13 @@ export interface UserInfo {
   active: boolean;
   roles: string[];
   uid?: string;
+  roleCategory?: string;
+}
+
+export interface RoleAssignmentInfo {
+  primaryLocation: string;
+  jurisdiction: string;
+  isCaseAllocator: boolean;
 }
 
 export interface UserDetails {
@@ -15,4 +22,12 @@ export interface UserDetails {
   };
   canShareCases: boolean;
   userInfo: UserInfo;
+  roleAssignmentInfo?: RoleAssignmentInfo[];
+}
+
+export enum UserRole {
+  Admin = 'admin',
+  LegalOps = 'legalops',
+  Judicial = 'judicial',
+  Ogd = 'ogd',
 }

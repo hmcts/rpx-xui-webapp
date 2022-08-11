@@ -1,32 +1,34 @@
 export interface ElasticSearchQuery {
-  native_es_query: RequestBodySearch
-  supplementary_data: string[]
+  native_es_query: RequestBodySearch;
+  supplementary_data: string[];
 }
 
 export interface RequestBodySearch {
-  from?: number,
-  sort?: Array<{ [key: string]: {} }>
-  query?: Query
-  size?: number,
+  from?: number;
+  sort?: Array<{ [key: string]: {} }>;
+  query?: Query;
+  size?: number;
 }
 
-interface Query {
-  bool: Bool
+export interface Query {
+  bool?: Bool;
+  terms?: { [key: string]: any };
+  term?: { [key: string]: any };
 }
 
-interface Bool {
-  must: Must[]
+export interface Bool {
+  must: Must[];
 }
 
-interface Must {
-  match?: Match
-  wildcard?: WildCard
+export interface Must {
+  match?: Match;
+  wildcard?: WildCard;
 }
 
 export interface Match {
-  match: { [key: string]: {} }
+  match: { [key: string]: {} };
 }
 
 export interface WildCard {
-  wildcard: { [key: string]: {} }
+  wildcard: { [key: string]: {} };
 }

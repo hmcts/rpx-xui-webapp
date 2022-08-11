@@ -10,9 +10,16 @@
  "reportDir": "reports/tests/api_functional/",
 "reportFilename": "XUI_MC_API_Functional_Tests",
   "slow": 75,
-  "timeout": 120000,
+  "timeout": 180000,
   "ui": "bdd",
-  "spec" : ["./test/integration/tests/*.spec.ts"],
-  "exclude": [],
+  "spec" : ["./test/integration/tests/**/*.spec.ts"],
+  "exclude": [
+        "./test/integration/tests/workallocation/release2.spec.ts",
+        "./test/integration/tests/workallocation/release2Cases.spec.ts",
+        "./test/integration/tests/workallocation/release2Tasks.spec.ts",
+        "./test/integration/tests/workallocation/release2CaseRoles.spec.ts",
+        "./test/integration/tests/workallocation/locations.spec.ts",
+        "./test/integration/tests/workallocation/person.spec.ts"
+  ],
   "file": ["./test/integration/tests/utils/helper.ts"]
 }

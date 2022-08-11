@@ -5,7 +5,7 @@ import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 
 const logger: JUILogger = log4jui.getLogger('caseworker-service');
-const MAX_RECORDS: number = 100;
+const MAX_RECORDS: number = 500;
 
 export async function handleCaseWorkerGetAll(path: string, req: EnhancedRequest): Promise<any> {
   logger.info('getting all caseworkers for', path);

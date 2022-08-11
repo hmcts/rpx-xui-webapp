@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { shareReplay } from 'rxjs/operators';
-import { EnvironmentConfig } from 'src/models/environmentConfig.model';
+import { EnvironmentConfig } from '../../../models/environmentConfig.model';
 
 @Injectable({
   providedIn: 'root'

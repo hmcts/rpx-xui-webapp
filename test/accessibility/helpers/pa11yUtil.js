@@ -4,7 +4,7 @@ const { conf } = require('../config/config');
 
 const jwt = require('jsonwebtoken');
 const puppeteer = require('puppeteer');
-
+const MockApp = require('../../nodeMock/app');
 
 const fs = require('fs');
 
@@ -23,13 +23,15 @@ async function initBrowser() {
 
     page = await testBrowser.newPage();
     await page.goto("http://localhost:4200/");
-    
+    await page.setCookie({ name: 'scenarioMockPort', value: '' + MockApp.serverPort })
+    // await page.goto("http://localhost:4200/");
+
 }
 
 async function pa11ytest(test, actions, startUrl, roles) {
     let isTestSuccess = false;
     let retryCounter = 0;
-
+    test.screenshots = [];
     while (!isTestSuccess && retryCounter < 3) {
 
         try {
@@ -41,6 +43,7 @@ async function pa11ytest(test, actions, startUrl, roles) {
             console.log("Retrying test again for " + retryCounter);
         }
     }
+    console.log(test.screenshots);
 }
 
 async function pa11ytestRunner(test, actions, startUrl, roles) {
@@ -63,9 +66,10 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
 
     let result;
 
-    // await initBrowser();
+  
     // await setScenarioCookie(test);
     try {
+        await initBrowser();
         result = await pa11y(startUrl, {
             browser: testBrowser,
             page: page,
@@ -92,6 +96,7 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
         };
        
         result.executionTime = elapsedTime;
+        test.screenshots.push(screenshotReportRef);
         result.screenshot = screenshotReportRef;
         test.a11yResult = result;
         console.log("Test Execution time : " + elapsedTime);
@@ -106,6 +111,8 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
     await testBrowser.close();
     const elapsedTime = Date.now() - startTime;
     result.executionTime = elapsedTime;
+
+    test.screenshots.push(screenshotReportRef);
     result.screenshot = screenshotReportRef;
     test.a11yResult = result;
     console.log("Test Execution time : " + elapsedTime);

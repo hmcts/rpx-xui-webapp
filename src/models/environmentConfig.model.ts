@@ -10,4 +10,6 @@ export interface EnvironmentConfig {
   protocol: string;
   oidcEnabled: string;
   launchDarklyClientId?: string;
+  accessManagementEnabled?: boolean;
+  paymentReturnUrl: string;
 }

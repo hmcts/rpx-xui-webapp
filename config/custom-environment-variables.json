@@ -37,6 +37,10 @@
       "dataApi": "SERVICES_CCD_DATA_STORE_API",
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
+    "hearings": {
+      "serviceApi": "SERVICES_HEARINGS_COMPONENT_API",
+      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
+    },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
     },
@@ -45,7 +49,13 @@
     },
     "em_hrs_api": "SERVICES_EM_HRS_API",
     "prd": {
-      "api": "SERVICES_PRD_API"
+      "api": "SERVICES_PRD_API",
+      "locationApi": "SERVICES_PRD_LOCATION_API",
+      "judicialApi": "SERVICES_PRD_JUDICIAL_API",
+      "commondataApi": "SERVICES_PRD_COMMONDATA_API"
+    },
+    "locationref": {
+      "api": "SERVICES_LOCATION_REF_API_URL"
     },
     "caseShare": {
       "api": "SERVICES_CASE_SHARE_API"
@@ -59,21 +69,25 @@
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
       "iss": "SERVICES_IDAM_ISS_URL"
     },
+    "location_api": "SERVICES_LOCATION_API",
     "work_allocation": {
       "taskApi": "SERVICES_WORK_ALLOCATION_TASK_API"
     },
+    "refunds": "SERVICES_REFUNDS_API_URL",
     "role_assignment": {
       "roleApi": "SERVICES_ROLE_ASSIGNMENT_API"
     },
     "case": {
       "caseworkerApi": "SERVICES_CASE_CASEWORKER_API",
-      "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API"
+      "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API",
+      "judicialApi": "SERVICES_CASE_JUDICIAL_API"
     },
     "markup_api": "SERVICES_MARKUP_API",
     "icp_api": "SERVICES_ICP_API",
     "payments": "SERVICES_PAYMENTS_URL",
     "s2s": "SERVICES_S2S",
-    "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS"
+    "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
+    "payment_return_url": "SERVICES_PAYMENT_RETURN_URL"
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
@@ -91,6 +105,8 @@
     }
   },
   "jurisdictions": "JURISDICTIONS",
+  "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
+  "serviceRefDataMapping": "SERVICE_REF_DATA_MAPPING",
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"
@@ -126,6 +142,14 @@
     },
     "workAllocationEnabled": {
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
+      "__format":"json"
+    },
+    "substantiveRoleEnabled": {
+      "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
+      "__format":"json"
+    },
+    "accessManagementEnabled": {
+      "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
       "__format":"json"
     }
   },

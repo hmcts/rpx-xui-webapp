@@ -1,8 +1,8 @@
-import * as express from 'express'
-import { getUserDetails } from './index'
+import * as express from 'express';
+import { getUserDetails } from './index';
 
-const router = express.Router({ mergeParams: true })
+const router = express.Router({ mergeParams: true });
 
-router.use('/details', getUserDetails)
+router.use('/details', getUserDetails);
 
-export default router
+export default router;

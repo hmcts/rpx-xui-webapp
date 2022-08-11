@@ -1,28 +1,42 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { of, throwError } from 'rxjs';
 
+import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
-import { InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
-import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
+import { getMockLocations, getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
 @Component({
-  template: `<exui-available-tasks></exui-available-tasks>`
+  template: `
+    <exui-available-tasks></exui-available-tasks>`
 })
 class WrapperComponent {
   @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
 }
+
+const userInfo =
+  `{"id":"exampleId",
+    "forename":"Joe",
+    "surname":"Bloggs",
+    "email":"JoeBloggs@example.com",
+    "active":true,
+    "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
+    "token":"eXaMpLeToKeN"}`;
 
 describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
@@ -31,13 +45,18 @@ describe('AvailableTasksComponent', () => {
 
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockLocations: dtos.Location[] = getMockLocations();
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask', 'searchTask']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
-  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockRouter = new MockRouter();
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
+  const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getCaseworkersForServices']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -48,25 +67,48 @@ describe('AvailableTasksComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
+      declarations: [AvailableTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
+        { provide: FilterService, useValue: mockFilterService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
+        { provide: AllocateRoleService, useValue: mockRoleService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(false);
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
+    const filterFields: FilterSetting = {
+      id: 'locations',
+      fields: [
+        {
+          name: 'locations',
+          value: ['231596']
+        },
+        {
+          name: 'types-of-work',
+          value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
+        }
+      ]
+    };
+    mockCaseworkerDataService.getCaseworkersForServices.and.returnValue(of([]));
+    mockFilterService.getStream.and.returnValue(of(filterFields));
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
+    spyOn(mockRouter, 'navigate');
     fixture.detectChanges();
   });
 
@@ -74,9 +116,31 @@ describe('AvailableTasksComponent', () => {
     fixture.destroy();
   });
 
-  it('should make a call to load tasks using the default search request', () => {
+  it('should make a call to load tasks using the default search request', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    fixture.detectChanges();
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
+  }));
+
+  it('should allow searching via location', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const exampleLocations = ['location1', 'location2', 'location3'];
+    component.selectedLocations = exampleLocations;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[0];
+    expect(searchParameter.key).toBe('available_tasks_only');
+    expect(searchParameter.operator).toBe('BOOLEAN');
+    expect(searchParameter.value).toBe(true);
+  });
+
+  it('should allow searching via work types', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
+    component.selectedWorkTypes = workTypes;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[3];
+    expect(searchParameter.key).toBe('work_type');
+    expect(searchParameter.values).toBe(workTypes);
   });
 
   it('should have all column headers, including "Manage +"', () => {
@@ -97,14 +161,17 @@ describe('AvailableTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  it('should not show the footer when there are tasks', () => {
+  it('should not show the footer when there are tasks', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
     const footerRowClass = footerRow.getAttribute('class');
     expect(footerRowClass).toContain('footer-row');
     expect(footerRowClass).not.toContain('shown');
-  });
+  }));
 
   it('should show the footer when there are no tasks', () => {
     spyOnProperty(component, 'tasks').and.returnValue([]);
@@ -154,7 +221,7 @@ describe('AvailableTasksComponent', () => {
 
       const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
 
-      mockTaskService.claimTask.and.returnValue(throwError({status: errorStatusCode}));
+      mockTaskService.claimTask.and.returnValue(throwError({ status: errorStatusCode }));
 
       const taskId = '123456';
       component.claimTask(taskId);
@@ -181,9 +248,10 @@ describe('AvailableTasksComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}`], {
         state: {
           showMessage: true,
-          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        }
+      });
     });
-  });
 
     it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
       'a task has been unsuccessful.', () => {
@@ -192,7 +260,7 @@ describe('AvailableTasksComponent', () => {
 
       const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
 
-      mockTaskService.claimTask.and.returnValue(throwError({status: errorStatusCode}));
+      mockTaskService.claimTask.and.returnValue(throwError({ status: errorStatusCode }));
 
       const firstTask = getMockTasks()[1];
       component.claimTaskAndGo(firstTask);
@@ -246,35 +314,78 @@ describe('AvailableTasksComponent', () => {
   });
 
   describe('onActionHandler()', () => {
-
+    const TASK_ID = '2345678901234567';
+    const taskAction: InvokedTaskAction = {
+      action: {
+        id: TaskActionIds.CLAIM,
+        title: 'Assign to me',
+      },
+      task: {
+        assignee: null,
+        description: null,
+        assigneeName: null,
+        id: TASK_ID,
+        case_id: '2345678901234567',
+        caseName: 'Mankai Lit',
+        caseCategory: 'Revocation',
+        location: 'Taylor House',
+        taskName: 'Review appellant case',
+        dueDate: new Date(1604506789000),
+        actions: [{
+          id: TaskActionIds.CLAIM,
+          title: 'Assign to me',
+        }]
+      }
+    };
     it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
 
       const claimTaskSpy = spyOn(component, 'claimTask');
-
-      const TASK_ID = '2345678901234567';
-      const taskAction: InvokedTaskAction = {
-        action: {
-          id: TaskActionIds.CLAIM,
-          title: 'Assign to me',
-        },
-        task: {
-          id: TASK_ID,
-          case_id: '2345678901234567',
-          caseName: 'Mankai Lit',
-          caseCategory: 'Revocation',
-          location: 'Taylor House',
-          taskName: 'Review appellant case',
-          dueDate: new Date(1604506789000),
-          actions: [ {
-            id: TaskActionIds.CLAIM,
-            title: 'Assign to me',
-          } ]
-        }
-      };
-
       component.onActionHandler(taskAction);
 
       expect(claimTaskSpy).toHaveBeenCalledWith(TASK_ID);
     });
+
+    [
+      { statusCode: 403, routeUrl: '/not-authorised' },
+      { statusCode: 401, routeUrl: '/not-authorised' },
+      { statusCode: 500, routeUrl: '/service-down' },
+      { statusCode: 400, routeUrl: '/service-down' },
+    ].forEach(scr => {
+      it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
+        mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
+
+        component.onPaginationEvent(1);
+        expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
+      });
+    });
+
+    [
+      { statusCode: 403, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM },
+      { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM },
+      { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM },
+      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM },
+      { statusCode: 403, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM_AND_GO },
+    ].forEach(scr => {
+      it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
+        mockTaskService.claimTask.and.returnValue(throwError({ status: scr.statusCode }));
+
+        taskAction.action.id = scr.action;
+        component.onActionHandler(taskAction);
+
+        expect(mockTaskService.claimTask).toHaveBeenCalledWith(TASK_ID);
+        if (scr.statusCode === 400) {
+          expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith({
+            type: InfoMessageType.WARNING,
+            message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+          });
+        } else {
+          expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
+        }
+      });
+    });
+
   });
 });

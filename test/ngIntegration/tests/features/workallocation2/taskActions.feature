@@ -1,4 +1,4 @@
-@ng
+@ng  @wa2
 Feature: WA Release 2: Task actions
 
     Background: Mock and browser setup
@@ -7,10 +7,10 @@ Feature: WA Release 2: Task actions
 
     Scenario Outline:  Available Tasks actions for "<UserType>"
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
-           
+
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions |
-            | Manage      |
+            | Manage,Own  |
             | Read        |
         Given I start MockApp
         Given I navigate to home page

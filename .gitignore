@@ -78,3 +78,5 @@ stryker.log
 # yalc
 .yalc/
 yalc.lock
+
+ignore/

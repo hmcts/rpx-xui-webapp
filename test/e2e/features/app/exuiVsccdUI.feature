@@ -6,8 +6,7 @@ Feature: Application feature variations with professional users Bs Non professio
         Then I should be redirected to EUI dashboard page
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list selection feature "is" available
 
@@ -17,7 +16,6 @@ Feature: Application feature variations with professional users Bs Non professio
         Then I should be redirected to EUI dashboard page
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Financial Remedy Consented" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Financial Remedy Consented" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list selection feature "is not" available

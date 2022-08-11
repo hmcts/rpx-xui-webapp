@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { InvokedTaskAction, Task } from '../../..//work-allocation-2/models/tasks';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../work-allocation-2/enums';
-import { SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
-import { TaskFieldConfig } from '../../../work-allocation-2/models/tasks';
-import { handleFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
 
-import { UserInfo } from '../../../app/models/user-details.model';
-import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
+import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { FieldConfig } from '../../models/common';
+import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
+import { InvokedTaskAction, Task } from '../../models/tasks';
+import { handleTasksFatalErrors, REDIRECTS } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -15,16 +16,24 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
 
-  public get fields(): TaskFieldConfig[] {
-    return ConfigConstants.AvailableTasks;
+  public get fields(): FieldConfig[] {
+    return this.isCurrentUserJudicial() ? ConfigConstants.AvailableTasksForJudicial : ConfigConstants.AvailableTasksForLegalOps;
   }
 
   public get sortSessionKey(): string {
     return SortConstants.Session.AvailableTasks;
   }
 
+  public get pageSessionKey(): string {
+    return PageConstants.Session.AvailableTasks;
+  }
+
   public get view(): string {
     return ListConstants.View.AvailableTasks;
+  }
+
+  public get emptyMessage(): string {
+    return ListConstants.EmptyMessage.AvailableTasks;
   }
 
   /**
@@ -35,15 +44,24 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
+      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const searchParameters: SearchTaskParameter [] = [
+        { key: 'available_tasks_only', operator: 'BOOLEAN', value: true },
+        // This will be later modifed from Service checkbox
+        { key: 'jurisdiction', operator: 'IN', values: ['IA'] }
+      ];
+      const locationParameter = this.getLocationParameter();
+      const typesOfWorkParameter = this.getTypesOfWorkParameter();
+      if (locationParameter) {
+        searchParameters.push(locationParameter);
+      }
+      if (typesOfWorkParameter) {
+        searchParameters.push(typesOfWorkParameter);
+      }
       return {
-        search_parameters: [
-          {key: 'location', operator: 'IN', values: []},
-          {key: 'state', operator: 'IN', values: ['unassigned']}
-        ],
+        search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],
-        search_by: isJudge ? 'judge' : 'caseworker',
+        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
     }
@@ -76,8 +94,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       this.router.navigate([goToCaseUrl], {
         state: {
           showMessage: true,
-          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}
-        });
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        }
+      });
     }, error => {
 
       this.claimTaskErrors(error.status);
@@ -89,9 +108,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * that the Task is no longer available.
    */
   public claimTaskErrors(status: number): void {
-
     const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
-    const handledStatus = handleFatalErrors(status, this.router, REDIRECT_404);
+    const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
@@ -122,5 +140,21 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   public onPaginationEvent(pageNumber: number): void {
     this.onPaginationHandler(pageNumber);
+  }
+
+  private getLocationParameter(): SearchTaskParameter {
+    if (this.selectedLocations && this.selectedLocations.length > 0) {
+      return { key: 'location', operator: 'IN', values: this.selectedLocations };
+    } else {
+      return null;
+    }
+  }
+
+  private getTypesOfWorkParameter(): SearchTaskParameter {
+    if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0) {
+      return { key: 'work_type', operator: 'IN', values: this.selectedWorkTypes };
+    } else {
+      return null;
+    }
   }
 }

@@ -3,6 +3,7 @@ var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
+const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
@@ -18,7 +19,7 @@ const errorPage = require('../../../../e2e/features/pageObjects/errorPage');
 const SoftAssert = require('../../../util/softAssert');
 const browserUtil = require('../../../util/browserUtil');
 const errorMessageForResponseCode = require('../../../util/errorResonseMessage');
-
+const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 const MockUtil = require('../../../util/mockUtil');
 const WAUtil = require('../../workAllocation/utils');
@@ -33,10 +34,77 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     const caseListPage = new CaseListPage();
-    Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (view,assignedState ,taskPermissionsTable) {
+
+    Given('I set MOCK locations for WA release 2', async function(locationsDatatable){
+        const locationsHashes = locationsDatatable.hashes();
+        const locationsResponseBody = [];
+        for (let i = 0; i < locationsHashes.length;i++){
+            let location = workAllocationDataModel.getLocation();
+            locationsResponseBody.push(location);
+            let locationHashKeys = Object.keys(locationsHashes[i]);
+            locationHashKeys.forEach(key => {
+                location[key] = locationsHashes[i][key];
+            })
+            
+        }
+        MockApp.onGet("/workallocation2/location", (req,res) => {
+            res.send(locationsResponseBody);
+        })
+    });
+
+    Given('I set MOCK persons end point {string} for WA release 2', async function (endpoint, personsDatatable) {
+        const personshashes = personsDatatable.hashes();
+        const personsResponseBody = [];
+        for (let i = 0; i < personshashes.length; i++) {
+            let person = workAllocationDataModel.getCaseWorkerOrperson();
+            personsResponseBody.push(person);
+            let personHashKeys = Object.keys(personshashes[i]);
+            personHashKeys.forEach(key => {
+                person[key] = personshashes[i][key];
+            })
+
+        }
+        MockApp.onGet(endpoint, (req, res) => {
+            res.send(personsResponseBody);
+        })
+    });
+
+    Given('I set MOCK judicial users end point {string} for WA release 2', async function (endpoint, personsDatatable) {
+        const personshashes = personsDatatable.hashes();
+        const personsResponseBody = [];
+        for (let i = 0; i < personshashes.length; i++) {
+            let person = workAllocationDataModel.getRefDataJudge();
+            personsResponseBody.push(person);
+            let personHashKeys = Object.keys(personshashes[i]);
+            personHashKeys.forEach(key => {
+                person[key] = personshashes[i][key];
+            })
+
+        }
+        MockApp.onPost(endpoint, (req, res) => {
+            const reqUser = req.body.userIds;
+            if (reqUser.length === 0){
+                res.send(personsResponseBody);
+            }else{
+                const requestedUser = [];
+                for (const forUserId of reqUser){
+                    for (const personInMock of personsResponseBody){
+                        if (personInMock.sidam_id === forUserId){
+                            requestedUser.push(personInMock);
+                            break; 
+                        }
+                   } 
+                }
+                res.send(requestedUser);
+            } 
+        })
+    });
+
+    Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (inputView,assignedState ,taskPermissionsTable) {
         const taskPermissionHashes = taskPermissionsTable.hashes(); 
         const tasks = [];
-
+        let view = inputView.split(" ").join("");
+        view = view.toLowerCase();
         for (let i = 0; i < taskPermissionHashes.length; i++){
             let taskCount = 0;
             if (taskPermissionHashes[i].hasOwnProperty('Count')){
@@ -50,32 +118,77 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             
         }
+
+        switch (view){
+            case 'mytasks':
+                workAllocationMockData.myWorkMyTasks = { tasks: tasks, total_records: tasks.length };
+                break;
+            case 'availabletasks':
+                workAllocationMockData.myWorkAvailableTasks = { tasks: tasks, total_records: tasks.length };
+                break;
+            case 'allwork':
+                workAllocationMockData.allWorkTasks = { tasks: tasks, total_records: tasks.length };
+                break;
+
+            default:
+                throw new Error(`Unrecognised input view from step def "${inputView}"`);
+        }
         
-        MockApp.onPost("/workallocation2/taskWithPagination/", (req, res) => {
-            try{
-                const thisPageTasks = [];
-                const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-                const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+    });
 
-                const startIndexForPage = (pageNum-1) * pageSize;
-                const endIndexForPage = (startIndexForPage + pageSize) < tasks.length ? startIndexForPage + pageSize : tasks.length - 1;
-                for (let i = startIndexForPage; i < endIndexForPage; i++) {
-                    thisPageTasks.push(tasks[i]);
-                }
-                res.send({ tasks: thisPageTasks, total_records: tasks.length });
-            }catch(e){
-                CucumberReporter.AddMessage("Mock error on request /workallocation2/taskWithPagination/ "+e);
-                res.status(500).send({error:'mock error occured'});
-            }
-            
-
-            
-        });
-
+    Given('I set MOCK workallocation cases with permissions for view {string}', async function (viewInTest, casePermissionsTable) {
+        workAllocationMockData.setCasesWithPermissionsForView(viewInTest, casePermissionsTable.hashes()) 
     });
 
 
-    Then('I validate {string} tasks columns sorting with taskRequest url {string} on page {int}', async function (waPage,taskRequesturl,onPage ,datatable) {
+    Given('I set MOCK tasks with attributes for view {string}', async function (forView, attributesDatatable) {
+        const tasksHashes = attributesDatatable.hashes();
+        let tasksObj = {};
+        let view = forView.toLowerCase();
+        view = view.split(" ").join("");
+        let tasks = [];
+        if (view.includes("mytasks")) {
+            tasks = workAllocationMockData.myWorkMyTasks;
+        } else if (view.includes("availabletask")) {
+            tasks = workAllocationMockData.myWorkAvailableTasks;
+        } else if (view.includes("allwork")) {
+            tasks = workAllocationMockData.allWorkTasks;
+        } else {
+            throw new Error("Unrecognised task view " + forView);
+        }
+        tasksObj = tasks;
+        await ArrayUtil.forEach(tasksHashes, async  (taskHash) => {
+            let task = tasksObj.tasks[taskHash.index];
+
+            let taskHashKeys = Object.keys(taskHash);
+            await ArrayUtil.forEach(taskHashKeys, key => {
+                if(key.toLowerCase() === "index"){
+                    //ignore index;
+                } else if (key.toLowerCase() === "permissions"){
+                    task.permissions = taskHash[key].split(",");
+                    task.actions = workAllocationDataModel.getRelease2TaskActions(task.permissions, view, taskHash.assignee ? "assigned": "unassigned")
+                } else if (key.toLowerCase() === "assignee") {
+                    if (taskHash[key] === ""){
+                        delete task[key];
+                    } else{
+                        task[key] = taskHash[key];
+                    }
+                    
+                } else if (key.toLowerCase().includes("date")) {
+                    task[key] = getDateValueForDays(taskHash[key]);
+                }else{
+                    task[key] = taskHash[key];
+                }
+
+            });
+            CucumberReporter.AddMessage(`Mock Task at index  ${taskHash.index}  `);
+            CucumberReporter.AddJson(task);
+        })
+       
+    });
+
+
+    Then('I validate {string} tasks columns sorting with taskRequest url {string} on page {int} for user type {string}', async function (waPage,taskRequesturl,onPage ,userType,datatable) {
         const softAssert = new SoftAssert();
         const datatableHashes = datatable.hashes();
         const pageUndertest = waPage.toLowerCase() === "my work" ? myWorkPage : null;
@@ -92,8 +205,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (let i = 0; i < datatableHashes.length; i++) {
             
             sortColumnInRequestParam = null;
-            const headerName = datatableHashes[i]['Header'];
+            const headerName = datatableHashes[i]['ColumnHeader'];
             const sortColumnId = datatableHashes[i]['FieldId'];
+            const forUserType = datatableHashes[i][userType];
+
+            if (!forUserType.toLowerCase().includes('true') || !forUserType.toLowerCase().includes('yes')){
+                continue;
+            }
 
             const headerElement = await pageUndertest.getHeaderElementWithName(headerName);
             // const headerColId = await headerElement.getAttribute("id");
@@ -101,7 +219,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             softAssert.setScenario("sorting: " + headerName);
             await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName)).to.equal("none"));
            
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field','Sort test',true);
+            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field','Sort test',true);
             await pageUndertest.clickColumnHeader(headerName); 
             await BrowserWaits.waitForConditionAsync(async () => { 
                 return sortColumnInRequestParam !== null
@@ -121,7 +239,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             
             sortColumnInRequestParam = null;
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field', 'Sort test', true);
+            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field', 'Sort test', true);
             await pageUndertest.clickColumnHeader(headerName);
            
             await BrowserWaits.waitForConditionAsync(async () => {
@@ -146,5 +264,30 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+
+    Given('I set MOCK task details for WA release2', async function(taskDetailsDatatable){
+        const inputTaskDetails = taskDetailsDatatable.hashes();
+
+        const taskDetails = workAllocationMockData.taskDetails;
+        const taskKeys = Object.keys(inputTaskDetails);
+
+        await ArrayUtil.forEach(taskKeys,async(key) => {
+            if(key.toLowerCase().includes("date")){
+                taskDetails.task[key] = getDateValueForDays(inputTaskDetails[key]);
+            }else{
+                taskDetails.task[key] = inputTaskDetails[key];
+            } 
+        })
+
+    });
+
+    function getDateValueForDays(days){
+        const daysNum = parseInt(days);
+        let date = new Date();
+        date.setDate(date.getDate()+daysNum);
+        return date.toISOString().replace("Z","+0100")
+        
+        
+    }
 
 }) ;

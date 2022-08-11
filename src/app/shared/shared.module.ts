@@ -21,7 +21,13 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
  */
 
 @NgModule( {
-  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule, RpxTranslationModule.forChild()],
+  imports: [
+    RouterModule,
+    CommonModule,
+    MediaViewerModule,
+    ExuiCommonLibModule,
+    RpxTranslationModule.forChild()
+  ],
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
@@ -31,7 +37,8 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
     ...fromAppDirectives.directives,
-    ...GOV_UI_COMPONENTS
+    ...GOV_UI_COMPONENTS,
+    RpxTranslationModule
   ],
   providers: [
     HealthCheckGuard,

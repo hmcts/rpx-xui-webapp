@@ -9,7 +9,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
-import { hearingActualsMainModel, hearingRequestMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
+import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
 import { PartyChannelDisplayValuePipe } from '../../../pipes/party-channel-display-value.pipe';
@@ -551,17 +551,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
   });
 
-  it('should return attending representative', () => {
-    component.hearingActualsMainModel = hearingActualsMainModel;
-    const hearingDate = '2021-03-12';
-    const attendingRepresentative1 = component.getRepresentingAttendee('1', hearingDate);
-    expect(attendingRepresentative1).toEqual('Bob Jones');
-    const attendingRepresentative2 = component.getRepresentingAttendee('2', hearingDate);
-    expect(attendingRepresentative2).toEqual('DWP ');
-    const attendingRepresentative3 = component.getRepresentingAttendee('3', hearingDate);
-    expect(attendingRepresentative3).toEqual('');
-  });
-
   it('should return empty string for hearing result reason type completed', () => {
     const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.COMPLETED;
@@ -608,6 +597,23 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(component.submitted).toEqual(true);
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals(component.id));
   });
+
+  it('should check is errror bar handling', () => {
+    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
+    hearingActuals.hearingActuals.actualHearingDays = [
+      {
+        hearingDate: '2021-03-12',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
+        pauseDateTimes: [],
+        notRequired: false,
+        actualDayParties: []
+      },
+    ];
+    expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
+    expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
+  });
+
 
   it('should fail submitting hearing details if hearing result is not selected', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
@@ -761,23 +767,33 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(s).toBe('12 March 2021 - 15 March 2021');
   });
 
+  it('should return hearing date(s) text as string', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
+    const day = hearingDays[0];
+    const obj1 = Object.assign({}, day, {hearingDate: '2021-03-13'});
+    const obj2 = Object.assign({}, day, {hearingDate: '2021-03-15'});
+    hearingDays.push(obj1);
+    hearingDays.push(obj2);
+    component.actualHearingDays = hearingDays;
+    const s = component.getHearingDateText();
+    expect(s).toBe('Hearing date(s)');
+  });
+
+  it('should return hearing date text as string', () => {
+    const mainModel = _.cloneDeep(hearingActualsMainModel);
+    let hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel);
+    hearingDays = hearingDays.splice(0, 1);
+    component.actualHearingDays = hearingDays;
+    const s = component.getHearingDateText();
+    expect(s).toBe('Hearing date');
+  });
+
   it('should return updated notRequired', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
     (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
-
-  it('should submit update actual hearing request if the isPaperHearing is true', () => {
-    const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.id = '1111222233334444';
-    component.hearingResult = HearingResult.COMPLETED;
-    component.hearingRequestMainModel = hearingRequestMainModel;
-    component.isPaperHearing = true;
-    component.onSubmitHearingDetails();
-    expect(component.submitted).toEqual(true);
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.UpdateActualHearingRequest(component.hearingRequestMainModel));
-  });
-
 
   afterEach(() => {
     fixture.destroy();

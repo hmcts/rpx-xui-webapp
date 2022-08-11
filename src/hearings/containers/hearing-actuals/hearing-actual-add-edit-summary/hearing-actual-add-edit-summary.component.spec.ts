@@ -592,6 +592,23 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals(component.id));
   });
 
+  it('should check is errror bar handling', () => {
+    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
+    hearingActuals.hearingActuals.actualHearingDays = [
+      {
+        hearingDate: '2021-03-12',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
+        pauseDateTimes: [],
+        notRequired: false,
+        actualDayParties: []
+      },
+    ];
+    expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
+    expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
+  });
+
+
   it('should fail submitting hearing details if hearing result is not selected', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.hearingResult = '';

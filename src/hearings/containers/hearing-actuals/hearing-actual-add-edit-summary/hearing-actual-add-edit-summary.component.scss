@@ -45,4 +45,11 @@ span.align-right {
       border-bottom: none;
     }
   }
+  .hearing-table-row{
+    display: table-row-group;
+  }
+  .error{
+    border-left-color: #d4351c;
+    box-shadow: inset 5px 0 0 0 #d4351c;
+  }
 }

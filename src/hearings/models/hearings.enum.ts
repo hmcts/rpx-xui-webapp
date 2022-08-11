@@ -345,7 +345,7 @@ export enum HearingResult {
 
 export enum HearingActualAddEditSummaryEnum {
   HearingResultError = 'Enter a hearing result',
-  ConfirmUpdateError  = 'Confirm or update before continue',
+  ConfirmUpdateError = 'Confirm or update before continue',
   AllDaysCoveredError = 'Hearing details cannot be submitted until all required hearing days have taken place'
 }
 

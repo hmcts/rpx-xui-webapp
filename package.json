@@ -131,6 +131,7 @@
     "node-http-proxy-json": "^0.1.9",
     "p-iteration": "^1.1.7",
     "protractor-screenshot-utils": "^1.0.5",
+    "rpx-xui-translation": "^0.1.0",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.4.0",
     "shortid": "^2.2.14",

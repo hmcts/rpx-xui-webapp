@@ -2,14 +2,13 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslatePipe } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SessionStorageService } from 'src/app/services';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
-import createSpyObj = jasmine.createSpyObj;
 
 describe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
@@ -54,7 +53,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ HmctsGlobalHeaderComponent ],
+      declarations: [ HmctsGlobalHeaderComponent, RpxTranslatePipe ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       imports: [ RouterTestingModule ],
       providers: [

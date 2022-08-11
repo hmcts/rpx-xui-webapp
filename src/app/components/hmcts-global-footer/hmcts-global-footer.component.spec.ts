@@ -4,6 +4,7 @@ import {Component, DebugElement, Input, ViewChild} from '@angular/core';
 import {Helper, Navigation} from '../../containers/footer/footer.model';
 import { AppConstants } from '../../app.constants';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 describe('HmctsGlobalFooterComponent', () => {
     @Component({
@@ -34,10 +35,18 @@ describe('HmctsGlobalFooterComponent', () => {
     const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
     beforeEach(async(() => {
+      const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
       TestBed.configureTestingModule({
         declarations: [ HmctsGlobalFooterComponent ],
         imports: [
-            RouterTestingModule
+            RouterTestingModule,
+            RpxTranslationModule.forChild()
+        ],
+        providers: [
+            {
+                provide: RpxTranslationService,
+                useFactory: rpxTranslationServiceStub
+            }      
         ]
       })
       .compileComponents();

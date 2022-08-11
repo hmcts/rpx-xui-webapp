@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { HeaderComponent } from './header.component';
 import { HmctsGlobalHeaderComponent } from '../hmcts-global-header/hmcts-global-header.component';
 import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
-import { RpxTranslationService } from 'rpx-xui-translation';
+import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 describe('Header Component', () => {
     let mockStore: any;
@@ -19,7 +19,7 @@ describe('Header Component', () => {
       const rpxTranslationServiceStub = () => ({ language: 'en' });
       TestBed.configureTestingModule({
         declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent],
-        imports: [HttpClientModule, RouterTestingModule],
+        imports: [HttpClientModule, RouterTestingModule, RpxTranslationModule.forChild()],
         providers: [
           { provide: Store, useValue: mockStore },
           { provide: RpxTranslationService, useValue: rpxTranslationServiceStub }

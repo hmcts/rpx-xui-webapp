@@ -1,18 +1,26 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { PhaseBannerComponent } from './phase-banner.component';
 
 describe('PhaseBannerComponent', () => {
   let component: PhaseBannerComponent;
   let fixture: ComponentFixture<PhaseBannerComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [PhaseBannerComponent]
-    }).compileComponents();
-  }));
-
   beforeEach(() => {
+    const rpxTranslationServiceStub = () => ({ language: 'en' });
+    TestBed.configureTestingModule({
+      imports: [RpxTranslationModule.forChild()],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [PhaseBannerComponent],
+      providers: [
+        {
+          provide: RpxTranslationService,
+          useFactory: rpxTranslationServiceStub
+        }
+      ]
+    });
     fixture = TestBed.createComponent(PhaseBannerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -19,7 +19,7 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   @Output() public eventTrigger = new EventEmitter();
 
   public bookingCheckType = BookingCheckType.POSSIBLE_BOOKINGS;
-
+  public selectedLocations: LocationByEPIMMSModel[] = [];
   public jurisdictions: string;
   public findLocationFormGroup: FormGroup;
   public formError: boolean;
@@ -37,6 +37,7 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   public ngOnInit(): void {
     this.getJurisdictions();
+    this.selectedLocations = this.bookingProcess.location ? [this.bookingProcess.location] : [];
   }
 
   public ngAfterViewInit(): void {

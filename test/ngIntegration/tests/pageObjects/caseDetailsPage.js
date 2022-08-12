@@ -9,7 +9,8 @@ class CaseDetailsPage{
         this.caseTitle = $('.title');
         this.eventTriggerContainer = $('ccd-event-trigger');
 
-
+        this.challengedAccessRequestContainer = $('ccd-case-challenged-access-request');
+        this.specificAccessRequestContainer = $('ccd-case-specific-access-request');
     }
 
     async amOnPage(){

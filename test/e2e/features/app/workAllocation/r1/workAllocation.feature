@@ -7,8 +7,6 @@ Feature: WA Release 1: : Work allocations task list, Available list and Task man
         Then I should be redirected to EUI dashboard page
 
         Then I see primary navigation tabs "<mainHeaders>" in main header
-        Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
-
 
         When I click on primary navigation header tab "Task list", I see selected tab page displayed
         Then I see Task list sub navigation tabs

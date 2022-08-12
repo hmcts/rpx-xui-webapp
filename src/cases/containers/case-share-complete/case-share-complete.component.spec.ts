@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { CaseShareCompleteComponent } from './case-share-complete.component';
 import * as fromCasesFeature from '../../store';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 describe('CaseShareCompleteComponent', () => {
   let component: CaseShareCompleteComponent;
@@ -31,7 +32,17 @@ describe('CaseShareCompleteComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ CaseShareCompleteComponent ],
-      imports: [ RouterTestingModule ],
+      imports: [
+        RouterTestingModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true,
+        })
+      ],
       providers: [
         {
           provide: Store,

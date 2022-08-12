@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { NocAnswer, NocState } from '../../models';
 import * as fromFeature from '../../store';
@@ -20,10 +21,13 @@ describe('NocCheckYourAnswersComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ NocCheckYourAnswersComponent ],
       imports: [
-        UtilsModule
+        UtilsModule,
+        RpxTranslationModule.forChild(),
       ],
       providers: [
-        provideMockStore()
+        provideMockStore(),
+        RpxTranslationService,
+        RpxTranslationConfig,
       ]
     })
     .compileComponents();

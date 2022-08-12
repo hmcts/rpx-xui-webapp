@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { AFFIRMATION_DEFAULT_DISAGREE_ERROR, AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR } from '../../constants/nocErrorMap.enum';
 import { NocAnswer, NocEvent, NocNavigationEvent, NocQuestion } from '../../models';
@@ -62,10 +63,15 @@ describe('NocCheckAndSubmitComponent', () => {
   }];
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RpxTranslationModule.forChild(),
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ NocCheckAndSubmitComponent ],
       providers: [
-        provideMockStore()
+        provideMockStore(),
+        RpxTranslationService,
+        RpxTranslationConfig,
       ]
     })
     .compileComponents();

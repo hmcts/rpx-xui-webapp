@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
+import { AppConstants, CTSC_ROLE_LIST, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
 import { Theme, UserTypeRole } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
@@ -159,6 +159,8 @@ export class AppUtils {
   public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
     if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
       return UserRole.Judicial;
+    } else if (userRoles.some(userRole => CTSC_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.Ctsc;
     } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
       return UserRole.LegalOps;
     }
@@ -178,6 +180,10 @@ export class AppUtils {
       }
       case UserRole.Admin: {
         userRole = 'Admin';
+        break;
+      }
+      case UserRole.Ctsc: {
+        userRole = 'CTSC User';
         break;
       }
     }

@@ -1,6 +1,6 @@
 
 var HearingRecordingsCase = require('../pageObjects/hearingRecordingsCase');
-
+const browserWaits = require('../../support/customWaits');
 var { defineSupportCode } = require('cucumber');
 
 
@@ -13,7 +13,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
   });
 
   When('I click on a file', async function () {
-    await hearingRecordingsCase.clickFileLink();
+    await browserWaits.retryWithActionCallback(async () => {
+      await hearingRecordingsCase.clickFileLink();
+    });
+   
   });
 
 

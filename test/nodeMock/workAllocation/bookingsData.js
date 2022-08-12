@@ -4,14 +4,14 @@ const BookingDataModel = require('../../dataModels/bookings');
 class BookingsData{
 
     constructor(){
-        this.bookingResponse = { bookings:[]};
+        this.bookingResponse = [];
         this.allLocations = [];
-        this.setUpBookings([
-            { appointmentId : "100"},
-            { appointmentId: "101" },
-            { appointmentId: "102" },
-            { appointmentId: "103" }
-        ]);
+        // this.setUpBookings([
+        //     { appointmentId : "100"},
+        //     { appointmentId: "101" },
+        //     { appointmentId: "102" },
+        //     { appointmentId: "103" }
+        // ]);
          
     }
 
@@ -31,7 +31,7 @@ class BookingsData{
     }
 
     setUpBookings(bookings){
-        this.bookingResponse.bookings = bookings.map(booking => {
+        this.bookingResponse = bookings.map(booking => {
             const bookingModel = BookingDataModel.getBooking();
             for (const bookingKey of Object.keys(booking)){
                 bookingModel[bookingKey] = booking[bookingKey]; 

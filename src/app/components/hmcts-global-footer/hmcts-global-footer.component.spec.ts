@@ -46,7 +46,7 @@ describe('HmctsGlobalFooterComponent', () => {
             {
                 provide: RpxTranslationService,
                 useFactory: rpxTranslationServiceStub
-            }      
+            }
         ]
       })
       .compileComponents();

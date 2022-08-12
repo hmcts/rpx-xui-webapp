@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
-import { RpxTranslatePipe } from 'rpx-xui-translation';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SessionStorageService } from 'src/app/services';
@@ -53,9 +53,19 @@ describe('HmctsGlobalHeaderComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ HmctsGlobalHeaderComponent, RpxTranslatePipe ],
+      declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      imports: [ RouterTestingModule ],
+      imports: [
+        RouterTestingModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true,
+        })
+      ],
       providers: [
         provideMockStore(),
         {

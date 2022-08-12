@@ -1,12 +1,12 @@
 import { Component, DebugElement, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RpxTranslatePipe } from 'rpx-xui-translation';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { AppConstants } from '../../app.constants';
 import { Helper, Navigation } from '../../containers/footer/footer.model';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
 
-describe('HmctsGlobalFooterComponent', () => {
+fdescribe('HmctsGlobalFooterComponent', () => {
     @Component({
         selector: `exui-app-host-dummy-component`,
         template: `<exui-app-hmcts-global-footer
@@ -36,9 +36,17 @@ describe('HmctsGlobalFooterComponent', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        declarations: [ HmctsGlobalFooterComponent, RpxTranslatePipe ],
+        declarations: [ HmctsGlobalFooterComponent ],
         imports: [
-            RouterTestingModule
+          RouterTestingModule,
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            validity: {
+              days: 1
+            },
+            testMode: true,
+          })
         ]
       })
       .compileComponents();

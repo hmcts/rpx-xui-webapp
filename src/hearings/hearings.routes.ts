@@ -459,6 +459,7 @@ export const ROUTES: Routes = [
         path: 'hearing-cancelled-summary/:id',
         resolve: {
           actualSummary: ActualSummaryResponseResolver,
+          cancelHearingReasons: CancelHearingRequestReasonResolver,
           cancelHearingActualReasons: CancelHearingActualReasonResolver,
           hearingPriorities: RefDataResolver,
           caseFlags: CaseFlagsResolver,

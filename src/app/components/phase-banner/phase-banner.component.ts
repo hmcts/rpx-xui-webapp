@@ -17,7 +17,7 @@ export class PhaseBannerComponent implements OnInit {
   public ngOnInit(): void {
   }
 
-  public toggleLanguage(lang: RpxLanguage) {
+  public toggleLanguage(lang: RpxLanguage): void {
     this.langService.language = lang;
   }
 

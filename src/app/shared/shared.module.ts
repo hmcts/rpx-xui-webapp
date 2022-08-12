@@ -11,7 +11,6 @@ import * as fromAppDirectives from '../directives';
 import { TaskSupervisorGuard } from '../guards/task-supervisor.guard';
 import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
-import { InfoMessageCommService } from './services/info-message-comms.service';
 import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
 
 /**

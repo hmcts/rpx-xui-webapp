@@ -1,15 +1,15 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { RpxTranslatePipe, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
+import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { PhaseBannerComponent } from './phase-banner.component';
 
-describe('PhaseBannerComponent', () => {
+fdescribe('PhaseBannerComponent', () => {
   let component: PhaseBannerComponent;
   let fixture: ComponentFixture<PhaseBannerComponent>;
 
   beforeEach(() => {
-    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  } });
     TestBed.configureTestingModule({
       imports: [RpxTranslationModule.forChild()],
       schemas: [NO_ERRORS_SCHEMA],
@@ -36,7 +36,12 @@ describe('PhaseBannerComponent', () => {
     const feedbackLinkSpanElement = fixture.debugElement.query(By.css(`${feedbackLinkClass} span.visuallyhidden`)).nativeElement;
 
     expect(feedbackLinkElement.getAttribute('target')).toBe('_blank');
-    expect(feedbackLinkSpanElement.innerHTML).toEqual('(Opens in a new window)');
+    expect(feedbackLinkSpanElement.innerHTML).toEqual('');
   });
+
+  it('should change the language', () => {
+    component.toggleLanguage('en');
+    expect(component.currentLang).toBe('en');
+  })
 
 });

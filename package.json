@@ -129,7 +129,6 @@
     "node-http-proxy-json": "^0.1.9",
     "p-iteration": "^1.1.7",
     "protractor-screenshot-utils": "^1.0.5",
-    "rpx-xui-translation": "^0.1.0",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.4.0",
     "shortid": "^2.2.14",
@@ -141,9 +140,7 @@
     "web-animations-js": "^2.3.2",
     "xlsx": "^0.15.4",
     "zone.js": "~0.11.3",
-    "rpx-xui-translation": "^0.1.0",
-    "dexie": "^3.2.2",
-    "luxon": "^2.4.0"    
+    "rpx-xui-translation": "^0.1.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",

@@ -346,18 +346,19 @@ class MockApp{
 const mockInstance = new MockApp();
 module.exports = mockInstance;
 
-
+const bookingsMockData = require('./workAllocation/bookingsData')
 const args = minimist(process.argv)
-//if (args.standalone){
-    //mockInstance.setServerPort(3001);
-    //mockInstance.init();
-
-    //setUpcaseConfig();
+if (args.standalone){
+    mockInstance.setServerPort(3001);
+    mockInstance.init();
+    nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles("IAC_Judge_WA_R2", "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator");
+    // bookingsMockData.bookingResponse = [];
+    // setUpcaseConfig();
     // getDLCaseConfig();
     // collectionDynamicListeventConfig()
     // createCustomCaseDetails();
-    //mockInstance.startServer()
-//}
+    mockInstance.startServer()
+}
 
 function setUpcaseConfig() {
     const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');

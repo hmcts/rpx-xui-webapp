@@ -201,7 +201,8 @@ describe('CaseViewerContainerComponent', () => {
           surname: 'judge'
         },
         roleAssignmentInfo: []
-      }
+      },
+      decorate16digitCaseReferenceSearchBoxInHeader: false
     }
   };
   const TABS: CaseTab[] = [

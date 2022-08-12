@@ -18,6 +18,12 @@ export interface RoleAssignmentInfo {
   roleType?: string;
 }
 
+export interface RoleAssignmentInfo {
+  primaryLocation: string;
+  jurisdiction: string;
+  isCaseAllocator: boolean;
+}
+
 export interface UserDetails {
   sessionTimeout: {
     idleModalDisplayTime: number,

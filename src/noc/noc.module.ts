@@ -6,7 +6,6 @@ import { AbstractAppConfig, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolk
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { RpxTranslatePipe, RpxTranslationModule } from 'rpx-xui-translation';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import * as fromContainers from './containers';
@@ -39,7 +38,6 @@ import { effects, reducers } from './store';
       ReactiveFormsModule,
       UtilsModule,
       ExuiCommonLibModule,
-      RpxTranslationModule.forChild(),
   ],
   declarations: [...fromContainers.containers],
   entryComponents: [

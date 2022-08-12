@@ -33,4 +33,5 @@ export enum UserRole {
   LegalOps = 'legalops',
   Judicial = 'judicial',
   Ogd = 'ogd',
+  Ctsc = 'ctsc'
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { BookingCheckType, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
@@ -17,7 +17,7 @@ import { getRoleCategory } from '../../utils';
   styleUrls: ['./task-manager-filter.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TaskManagerFilterComponent implements OnInit, OnDestroy {
+export class TaskManagerFilterComponent implements OnInit, AfterViewInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';
   @Input() public jurisdictions: string[] = [];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -152,8 +152,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           label: PersonRole.ADMIN
         },
         {
-          key: PersonRole.ADMIN,
-          label: PersonRole.ADMIN
+          key: PersonRole.CTSC,
+          label: PersonRole.CTSC
         }
       ],
       minSelected: 1,
@@ -202,10 +202,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         {
           key: 'ADMIN',
           label: 'Admin'
-        },
-        {
-          key: 'CTSC',
-          label: 'CTSC User'
         }
       ],
       minSelected: 1,
@@ -268,6 +264,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         }, {});
         this.selectionChanged.emit(fields);
       });
+  }
+
+  public ngAfterViewInit(): void {
+    (document.getElementById('select_role') as HTMLInputElement).value = this.roleType;
   }
 
   public ngOnDestroy(): void {

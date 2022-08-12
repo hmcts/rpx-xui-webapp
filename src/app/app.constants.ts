@@ -138,5 +138,6 @@ export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-m
 export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
 export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil'];
 export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge'];
+export const CTSC_ROLE_LIST: string[] = ['ctsc','ctsc-team-leader','CTSC','CTSC-TEAM-LEADER'];
 export const SERVICE_OPTIONS_LIST = [{key: 'IA', label: 'Immigration and Asylum'}, {key: 'SSCS', label: 'Social security and child support'}];
 export const PUI_CASE_MANAGER = 'pui-case-manager';

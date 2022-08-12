@@ -9,7 +9,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
   let hearingRecordingsCase = new HearingRecordingsCase();
 
   When('I click on Case Hearing Files tab', async function () {
-    await hearingRecordingsCase.hearingFilesTab();
+    await browserWaits.retryWithActionCallback(async () => {
+      await hearingRecordingsCase.hearingFilesTab();
+    });
   });
 
   When('I click on a file', async function () {
@@ -21,7 +23,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
   Then('I see the file displayed in Media Viewer', async function () {
-    await hearingRecordingsCase.checkFile();
+    await browserWaits.retryWithActionCallback(async () => {
+      await hearingRecordingsCase.checkFile();
+    });
   });
 
 });

@@ -1225,10 +1225,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.7.17-RC.1":
-  version "2.7.17-RC.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.17-RC.1.tgz#2e7eb3898931127a76ea99abb9c88f67e9ffb6b9"
-  integrity sha512-/NA4Af8rwyWygzW2JY/ZDsdRdjMBRFdLyhTtc2ODMmxTM97sMyUhzTbJoZocDDspK1cX6CYKpFoCAhrlk6YeOw==
+"@hmcts/media-viewer@2.7.18-RC.1":
+  version "2.7.18-RC.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.18-RC.1.tgz#ba2808db613da5869d1950b7377bce0425e18b71"
+  integrity sha512-Ae9MMxh7o+IRakA6CMAK6dQ4pXosk1ux55YHlv5gC6kvMRbcd7vk8ZYBVOAO0VQdnkpCXgt4uMwMSef6zdyU+g==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"

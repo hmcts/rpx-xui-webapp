@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 import { NocFillFormOfflineComponent } from './noc-fill-form-offline.component';
 
@@ -8,7 +9,14 @@ describe('NocFillFormOfflineComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocFillFormOfflineComponent ]
+      declarations: [ NocFillFormOfflineComponent ],
+      imports: [
+        RpxTranslationModule.forChild(),
+      ],
+      providers: [
+        RpxTranslationService,
+        RpxTranslationConfig,
+      ]
     })
     .compileComponents();
   }));

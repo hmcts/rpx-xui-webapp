@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import * as fromRoot from '../../../app/store/reducers';
 import { NocNavigationEvent } from '../../models';
@@ -15,6 +16,7 @@ describe('NocNavigationComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
+        RpxTranslationModule.forChild(),
         StoreModule.forRoot({
           ...fromRoot.reducers,
           feature: combineReducers(fromNocStore.reducers),
@@ -22,7 +24,12 @@ describe('NocNavigationComponent', () => {
       ],
       declarations: [
         NocNavigationComponent
+      ],
+      providers: [
+        RpxTranslationService,
+        RpxTranslationConfig,
       ]
+
     }).compileComponents();
 
     store = TestBed.get(Store);

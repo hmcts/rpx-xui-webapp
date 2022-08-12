@@ -1,4 +1,6 @@
 const workAllocationMockData = require('./mockData');
+const bookingsMockData = require('./bookingsData');
+
 const CucumberReporter = require('../../e2e/support/reportLogger');
 const MockApp = require('../app');
 
@@ -67,8 +69,17 @@ module.exports = {
         '/api/locations/getLocations': (req, res) => {
             res.send(workAllocationMockData.searchLocations(req.query.serviceIds, req.query.searchTerm));
         },
-        '/workallocation2/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:service': (req,res) => {
+        '/workallocation2/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:service': (req, res) => {
             res.send(workAllocationMockData.caseEventTasks);
+        },
+        '/workallocation2/full-location':(req,res) => {
+            res.send(bookingsMockData.getAllLocationDetails());
+        },
+        '/api/role-access/roles/getNewCasesCount':(req,res) =>{
+            res.send({count:0})
+        },
+        '/api/role-access/roles/getSpecificAccessApproved':(req,res) => {
+            res.send({count:0});
         }
     },
     post: {
@@ -345,7 +356,10 @@ module.exports = {
 
         '/api/locations/getLocations':(req,res) => {
             res.send(workAllocationMockData.getLocations(req.body)); 
-        }
+        },
+        '/am/getBookings': (req, res) => {
+            res.send(bookingsMockData.getBookings());
+        },
     }
    
 }

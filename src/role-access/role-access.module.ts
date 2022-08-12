@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -23,6 +23,7 @@ import { effects, reducers } from './store';
     HttpClientModule,
     StoreModule.forFeature('role-access', reducers),
     EffectsModule.forFeature(effects),
+    PipesModule,
     roleAccessRouting,
     SharedModule,
     FormsModule,

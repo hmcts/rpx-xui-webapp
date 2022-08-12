@@ -3,6 +3,7 @@ const BrowserWaits = require('../../support/customWaits');
 const TaskMessageBanner = require("./messageBanner");
 const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
+const { LOG_LEVELS } = require('../../support/constants');
 class CaseListPage{
 
     constructor(){
@@ -129,7 +130,7 @@ class CaseListPage{
             await browser.executeScript('arguments[0].scrollIntoView()',
                 this.searchApplyBtn);
             await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
-            CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.");
+            CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.", LOG_LEVELS.Debug);
             await this.searchApplyBtn.click();
         });
     }
@@ -144,9 +145,9 @@ class CaseListPage{
 
     async waitForCaseResultsToDisplay(){
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-        await CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
+        await CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString(), LOG_LEVELS.Debug);
         await BrowserWaits.waitForSeconds(2);
-       await  CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
+        await CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString(), LOG_LEVELS.Debug);
 
     }
 
@@ -160,17 +161,22 @@ class CaseListPage{
 
     async clickFirstCaseLink(){
         let currentPageUrl = await browser.getCurrentUrl();
-        await CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
+        CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
 
         await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await BrowserWaits.waitForSpinnerToDissappear(); 
-            await this.caseListRows.get(0).$("td a").click();
-            await BrowserWaits.waitForPageNavigation(currentPageUrl); 
-        });
-
-      
-        await CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
+        let isNavigationSuccess = false;
+        let retryAttemptsCounter = 0;
+        while (retryAttemptsCounter <= 3 && !isNavigationSuccess ){
+            try{
+                await this.caseListRows.get(0).$("td a").click();
+                await BrowserWaits.waitForPageNavigation(currentPageUrl); 
+                isNavigationSuccess = true;
+            }catch(err){
+                retryAttemptsCounter++;
+                CucumberReportLogger.AddMessage(`Error opening first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
+            }
+        } 
+        CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
 
     }
 

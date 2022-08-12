@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, OnDestroy, Output } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
@@ -27,7 +26,9 @@ export class WorkCaseListComponent implements OnChanges {
   @Input() public sortedBy: SortField;
   @Input() public addActionsColumn: boolean = true;
   @Input() public pagination: PaginationParameter;
+  @Input() public view: string;
   @Input() public showManage = {};
+  @Input() public showResultsSummary: boolean = true;
 
   /**
    * The message to display when there are no cases to display in the list.

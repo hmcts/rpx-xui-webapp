@@ -18,13 +18,17 @@ Feature: WA Release 2: My cases
             | Case role     |
             | Start         |
             | End           |
+            | Hearing date |
 
         Then I validate work allocation table columns are links
             | ColumnHeader |
             | Case name    |
 
+        Then I validate work allocation case table column "Case name" width less than or equal to 200
         When I click work allocation case column link "Case name" at row 1
         Then I see case details page
+
+
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |

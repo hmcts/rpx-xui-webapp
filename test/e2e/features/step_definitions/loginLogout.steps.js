@@ -4,7 +4,7 @@ const loginPage = require('../pageObjects/loginLogoutObjects');
 const headerPage = require('../pageObjects/headerPage');
 
 const { defineSupportCode } = require('cucumber');
-const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
+const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 const config = require('../../config/conf.js');
 const EC = protractor.ExpectedConditions;
 const BrowserWaits = require("../../support/customWaits");
@@ -109,7 +109,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await BrowserWaits.retryWithActionCallback(async function(){
       await browser.driver.manage()
         .deleteAllCookies();
-      CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
+      CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl, LOG_LEVELS.Info);
       await browser.get(config.config.baseUrl);
       await BrowserWaits.waitForElement(loginPage.signinTitle);
       expect(await loginPage.signinBtn.isDisplayed()).to.be.true;

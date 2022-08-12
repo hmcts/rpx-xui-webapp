@@ -62,6 +62,7 @@
     },
     "em_anno_api": "SERVICES_EM_ANNO_API",
     "em_docassembly_api": "SERVICES_EM_DOCASSEMBLY_API",
+    "waWorkflowApi": "SERVICES_WA_WORKFLOW_API_URL",
     "idam": {
       "idamApiUrl": "SERVICES_IDAM_API_URL",
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",
@@ -79,15 +80,17 @@
     },
     "case": {
       "caseworkerApi": "SERVICES_CASE_CASEWORKER_API",
+      "judicialApi": "SERVICES_CASE_JUDICIAL_API",
       "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API",
-      "judicialApi": "SERVICES_CASE_JUDICIAL_API"
+      "judicialBooking": "SERVICES_JUDICIAL_BOOKING_API_PATH"
     },
     "markup_api": "SERVICES_MARKUP_API",
     "icp_api": "SERVICES_ICP_API",
     "payments": "SERVICES_PAYMENTS_URL",
     "s2s": "SERVICES_S2S",
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
-    "payment_return_url": "SERVICES_PAYMENT_RETURN_URL"
+    "payment_return_url": "SERVICES_PAYMENT_RETURN_URL",
+    "judicialBookingsApi": "SERVICES_JUDICIAL_BOOKING_API_PATH"
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",

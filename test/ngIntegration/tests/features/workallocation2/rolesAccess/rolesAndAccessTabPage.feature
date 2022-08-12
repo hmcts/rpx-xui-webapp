@@ -54,7 +54,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
 
         Then I validate for role category "Judicial" in case roles and access message displayed as "There are no judicial roles for this case."
-        Then I validate for role category "Legal Ops" in case roles and access message displayed as "There are no legal ops roles for this case."
+        Then I validate for role category "Legal Ops" in case roles and access message displayed as "There are no legal Ops roles for this case."
         Then I validate for role category "Exclusions" in case roles and access message displayed as "There are no exclusions for this case."
 
     Scenario: Case with roles - 1 judicial, 1 LegalOps, 1 Exclusion
@@ -260,7 +260,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
 
-        Then I validate add link for role category "Judicial" is not displayed in Roles and access page
+        Then I validate add link for role category "Judicial" is displayed in Roles and access page
         Then I validate add link for role category "Legal Ops" is not displayed in Roles and access page
         Then I validate add link for role category "Exclusion" is displayed in Roles and access page
 

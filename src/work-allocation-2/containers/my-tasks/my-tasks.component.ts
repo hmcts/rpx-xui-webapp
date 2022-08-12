@@ -76,7 +76,9 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   }
 
   private getTypesOfWorkParameter(): SearchTaskParameter {
-    if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0) {
+    const typeOfWorkInfo = this.sessionStorageService.getItem('typesOfWork_cache');
+    const totalWorkTypes = typeOfWorkInfo ? JSON.parse(typeOfWorkInfo) : undefined;
+    if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0 && (!totalWorkTypes || this.selectedWorkTypes.length < totalWorkTypes.length)) {
       return { key: 'work_type', operator: 'IN', values: this.selectedWorkTypes };
     } else {
       return null;

@@ -1,17 +1,19 @@
-import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { AxiosResponse } from 'axios';
+import { http } from '../lib/http';
+import { setHeaders } from '../lib/proxy';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
-import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
-import { setHeaders } from '../lib/proxy';
-import { CourtVenue } from '../workAllocation2/interfaces/location';
-import { handleLocationGet } from '../workAllocation2/locationService';
-import { prepareGetSpecificLocationUrl } from '../workAllocation2/util';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
+import { CourtVenue } from '../workAllocation2/interfaces/location';
+import { handleLocationGet } from '../workAllocation2/locationService';
+import { prepareGetSpecificLocationUrl } from '../workAllocation2/util';
 
+// const url: string = getConfigValue(SERVICES_PRD_API_URL);
+// TODO: CAM_BOOKING - check this
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
 
 /**
@@ -26,6 +28,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
+  const bookingLocations = req.body.bookingLocations;
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
     res.status(200).send([]);
@@ -36,7 +39,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const courtTypeIds = getCourtTypeIdsByService(serviceIds);
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
-  // const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}`;
+
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
@@ -50,13 +53,29 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     userLocations.forEach(userLocation => {
       const courtTypes = getCourtTypeIdsByService([userLocation.service]);
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
-      results = results.filter(thisResult => !(courtTypes.includes(thisResult.court_type_id))
-       || locationIds.includes(thisResult.epimms_id));
+      if (bookingLocations) {
+        // when we are trying to filter out locations when booking location is present - my work
+        if (userLocation.bookable) {
+          results = filterOutResults(results, bookingLocations, courtTypes);
+        } else {
+          results = filterOutResults(results, locationIds, courtTypes);
+        }
+      } else if (userLocation.bookable) {
+        // when we are filtering for any possible booking location - role needs to be bookable - create booking
+        results = filterOutResults(results, locationIds, courtTypes);
+      }
     })
-    res.status(response.status).send(results);
+    response.data.results = results;
+    res.status(response.status).send(response.data.results);
   } catch (error) {
     next(error);
   }
+
+}
+
+export function filterOutResults(locations: LocationModel[], locationIds: string[], courtTypes: string[]): LocationModel[] {
+  return locations.filter(location => !(courtTypes.includes(location.court_type_id))
+            || (locationIds.includes(location.epimms_id) || (!locationIds || locationIds.length === 0)));
 }
 
 /**
@@ -89,6 +108,9 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
 
 function getLocationIdsFromLocationList(locations: any): string[] {
   const locationIds: string[] = [];
+  if (!locations) {
+    return [];
+  }
   locations.forEach(location => {
     locationIds.push(location.id.toString());
   });

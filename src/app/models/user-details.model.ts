@@ -14,7 +14,14 @@ export interface RoleAssignmentInfo {
   jurisdiction: string;
   substantive?: string;
   isCaseAllocator: boolean;
+  bookable?: boolean;
   roleType?: string;
+}
+
+export interface RoleAssignmentInfo {
+  primaryLocation: string;
+  jurisdiction: string;
+  isCaseAllocator: boolean;
 }
 
 export interface UserDetails {

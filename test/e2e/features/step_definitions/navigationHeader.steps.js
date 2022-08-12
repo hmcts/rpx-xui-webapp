@@ -9,6 +9,8 @@ const browserUtil = require("../../../ngIntegration/util/browserUtil");
 const headerpage = require('../pageObjects/headerPage');
 const config = require('../../config/conf.js');
 const reportLogger = require('../../support/reportLogger');
+const { LOG_LEVELS } = require('../../support/constants');
+
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -85,7 +87,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                             return await headerPage.isTabPresentInMainNav(headerlabel);
                         });
                     } catch (err) {
-                        reportLogger.AddMessage(`Expected main nav tab "${headerlabel}" not present in "${navigationTabsArr}"`);
+                        reportLogger.AddMessage(`Expected main nav tab "${headerlabel}" not present in "${navigationTabsArr}"`, LOG_LEVELS.Error);
                     }
                     softAssert.setScenario('Nav header in main tab ' + headerlabel);
                     await softAssert.assert(async () => expect(await headerPage.isTabPresentInMainNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
@@ -115,7 +117,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
 
-        cucumberReporter.AddMessage("Tabs not to be displaued " + navigationTabsArr); 
+        cucumberReporter.AddMessage("Tabs not to be displaued " + navigationTabsArr, LOG_LEVELS.Info); 
         await browserWaits.retryWithActionCallback(async () => {
             try {
                 const softAssert = new SoftAssert();
@@ -187,21 +189,35 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await browserWaits.retryWithActionCallback(async () => {
             await browserUtil.waitForLD(); 
             try{
-                await headerPage.validateHeaderDisplayedForUserType(userType);
+                await browserWaits.retryWithActionCallback(async () => {
+                    try {
+                        await headerPage.validateHeaderDisplayedForUserType(userType);
+                    } catch (err) {
+                        await headerpage.clickManageCases();
+                        throw new Error(err); 
+                    }
+                });
             }catch(err){
                 const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/';
                 await browser.get(baseUrl);
-                await headerpage.waitForPrimaryNavDisplay();
+                await headerpage.click();
                 await browserUtil.waitForLD();
                 throw new Error(err);
-            } 
+            }
+            
         });
-
+        
     });
 
     Then('I validate 16-digit Case reference search box isDisplayed? is {string}', async function(isDisplayed){
         isDisplayed = isDisplayed.toLowerCase();
         expect(await headerPage.caseReferenceSearchBox.isPresent()).to.equal(isDisplayed.includes('yes') || isDisplayed.includes('true') );
+    });
+
+
+    Then('I validate primary navigation headers not displayed', async function () {
+        const tabsDisplayed = await headerPage.getPrimaryTabsDisplayed();
+        expect(tabsDisplayed.length).to.equal(0);
     });
 
 });

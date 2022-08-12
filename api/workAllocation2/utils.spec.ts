@@ -957,6 +957,7 @@ describe('workAllocation.utils', () => {
         attributes: {
           caseId: '123',
           primaryLocation: '001',
+          isNew: true
         },
       },
       {
@@ -968,6 +969,7 @@ describe('workAllocation.utils', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           primaryLocation: '001',
+          isNew: true
         },
       },
       {
@@ -980,16 +982,19 @@ describe('workAllocation.utils', () => {
         attributes: {
           caseId: '456',
           primaryLocation: '001',
+          isNew: true
         },
       },
     ];
     const expectedRoleCaseData: RoleCaseData[] = [{
+      access: undefined,
       id: '1',
       case_id: '123',
       case_name: '123',
       case_category: 'Asylum',
       case_type: "Asylum",
       case_role: 'example-role',
+      isNew: true,
       jurisdiction: 'IA',
       jurisdictionId: 'IA',
       location_id: '001',
@@ -998,14 +1003,17 @@ describe('workAllocation.utils', () => {
       endDate: new Date('01-01-2022'),
       assignee: 'person1',
       role_category: 'LEGAL_OPERATIONS',
+      dateSubmitted: undefined,
     },
       {
+        access: undefined,
         id: '3',
         case_id: '456',
         case_name: '456',
         case_category: 'Test',
         case_type: 'Test',
         case_role: 'example-role-2',
+        isNew: true,
         jurisdiction: 'IA',
         jurisdictionId: 'IA',
         location_id: '001',
@@ -1014,16 +1022,17 @@ describe('workAllocation.utils', () => {
         endDate: new Date('01-01-2022'),
         assignee: 'person1',
         role_category: 'LEGAL_OPERATIONS',
+        dateSubmitted: undefined,
       }
     ];
     it('should return empty list if there is nothing given', () => {
-      expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
-      expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
-      expect(mapCasesFromData(null, firstRoleAssignment, paginationConfig)).to.deep.equal([]);
-      expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
+      expect(mapCasesFromData([], [])).to.deep.equal([]);
+      expect(mapCasesFromData([], firstRoleAssignment)).to.deep.equal([]);
+      expect(mapCasesFromData([], firstRoleAssignment)).to.deep.equal([]);
+      expect(mapCasesFromData([], [])).to.deep.equal([]);
     });
     it('should return correct case data if role assignment data returned', () => {
-      expect(mapCasesFromData(mockCaseData, mockRoleAssignment, null)).to.deep.equal(expectedRoleCaseData);
+      expect(mapCasesFromData(mockCaseData, mockRoleAssignment)).to.deep.equal(expectedRoleCaseData);
     });
   });
 

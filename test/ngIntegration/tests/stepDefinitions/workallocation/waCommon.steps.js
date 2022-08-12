@@ -102,37 +102,48 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) {
-        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === useridentifier)[0];
-        if (!testUserIdamId) {
-            throw new Error("Provided user identifer is not configured in test data. " + releaseUer);
-        }
-
-        const userIdamID = testUserIdamId.idamId;
-        await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
-
-       
-
-        roles = roles.split(",");
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            // workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        }
-        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-        CucumberReporter.AddJson(userDetails);
-        global.scenarioData[mockUserRef] = userDetails;
+    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) { 
+        nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles(useridentifier,roles);
+        CucumberReporter.AddJson(nodeAppMock.userDetails);
+        global.scenarioData[mockUserRef] = nodeAppMock.userDetails;
        
     });
 
-    Given('I set MOCK user with reference {string} roleAssignmentInfo', async function(userDetailsRef, locatiosInfo){
+    Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function(userDetailsRef, roleAssignments){
+        const boolAttributes = ['isCaseAllocator','bookable']; 
         const userDetails = global.scenarioData[userDetailsRef];
-        const locationInfos = [];
-        for (let loc of locatiosInfo.hashes()){
-            loc.isCaseAllocator = loc.isCaseAllocator === "true"
-            locationInfos.push(loc);
+        const roleAssignmentArr = [];
+        for (let roleAssignment of roleAssignments.hashes()){
+            const roleKeys = Object.keys(roleAssignment);
+
+            boolAttributes.forEach(attr => {
+                if (roleKeys.includes(attr)){
+                    roleAssignment[attr] = roleAssignment[attr] === "true";
+                }
+            })
+            
+            roleAssignmentArr.push(roleAssignment);
         }
-        userDetails.roleAssignmentInfo = locationInfos;
+        userDetails.roleAssignmentInfo.push(...roleAssignmentArr);
     });
 
+    Given('I set MOCK user with reference {string} roleAssignmentInfo', async function (userDetailsRef, roleAssignments) {
+        const boolAttributes = ['isCaseAllocator', 'bookable'];
+        const userDetails = global.scenarioData[userDetailsRef];
+        const roleAssignmentArr = [];
+        for (let roleAssignment of roleAssignments.hashes()) {
+            const roleKeys = Object.keys(roleAssignment);
+
+            boolAttributes.forEach(attr => {
+                if (roleKeys.includes(attr)) {
+                    roleAssignment[attr] = roleAssignment[attr] === "true";
+                }
+            })
+
+            roleAssignmentArr.push(roleAssignment);
+        }
+        userDetails.roleAssignmentInfo = roleAssignmentArr;
+    });
 
     Given('I set MOCK with user identifer {string} role type {string} and role identifiers {string}', async function (useridentifier,roleType ,roleIdentifiers) {
         const roles = [];
@@ -142,10 +153,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
 
         const userIdamID = testUserIdamId.idamId;
-        await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
-
-      
- 
+       
         const rolesIdentifiersArr = roleIdentifiers.split(",");
         const roleidentifersForRoleType = userRolesConfig[roleType.toLowerCase()];
         if (!roleidentifersForRoleType){

@@ -14,6 +14,18 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
+    Then('I see work filter of type {string} is displayed',async function(filterType){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await myWorkPage.isWorkFilterOfTypeDisplayed(filterType)).to.be.true;
+        });
+    });
+
+    Then('I see work filter of type {string} is not displayed', async function (filterType) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await myWorkPage.isWorkFilterOfTypeDisplayed(filterType)).to.be.false;
+        });
+    });
+
     Then('I see work filter button displayed', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
             await BrowserWaits.waitForElement(myWorkPage.showHideWorkFilterBtn);
@@ -22,7 +34,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate work filter button text is {string}', async function (btntext) {
-        expect(await myWorkPage.showHideWorkFilterBtn.getText()).to.contains(btntext);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await myWorkPage.showHideWorkFilterBtn.getText()).to.contains(btntext);
+        });
     });
 
     When('I click work filter button to {string} filter', async function (filterStateTo) {

@@ -1,9 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, Subscription } from 'rxjs';
-import { mergeMap, switchMap } from 'rxjs/operators';
+import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -28,7 +28,7 @@ import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../..
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
 })
-export class WorkCaseListWrapperComponent implements OnInit {
+export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public specificPage: string = '';
   public caseworkers: Caseworker[] = [];
@@ -45,6 +45,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
   protected allRoles: Role[];
   protected defaultLocation: string = 'all';
   private pCases: Case[];
+  public selectedLocations: string[] = [];
+
   /**
    * Mock CaseServiceConfig.
    */
@@ -58,12 +60,16 @@ export class WorkCaseListWrapperComponent implements OnInit {
   private pUniqueCases: number;
   public routeEventsSubscription: Subscription;
 
+  // subscriptions
+  private selectedLocationsSubscription: Subscription;
+
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
   constructor(
     protected readonly ref: ChangeDetectorRef,
     protected readonly caseService: WorkAllocationCaseService,
+    protected readonly filterService: FilterService,
     protected readonly router: Router,
     protected readonly infoMessageCommService: InfoMessageCommService,
     protected readonly sessionStorageService: SessionStorageService,
@@ -151,6 +157,26 @@ export class WorkCaseListWrapperComponent implements OnInit {
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
+    this.addSelectedLocationsSubscriber();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.selectedLocationsSubscription) {
+      this.selectedLocationsSubscription.unsubscribe();
+    }
+  }
+
+  public addSelectedLocationsSubscriber() {
+    this.selectedLocationsSubscription = this.filterService.getStream('locations').pipe(
+      debounceTime(200),
+      filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+    ).subscribe((f: FilterSetting) => {
+      const newLocations = f.fields.find((field) => field.name === 'locations').value;
+      this.selectedLocations = (newLocations).map(l => l.epimms_id);
+      if (this.selectedLocations.length) {
+        this.doLoad();
+      }
+    });
   }
 
   public setupCaseWorkers(): void {
@@ -230,9 +256,12 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
     if (this.view === 'AllWorkCases') {
-      return this.caseService.getCases({ searchRequest, view: this.view });
+      return this.caseService.getCases({searchRequest, view: this.view});
+    } else if (this.view === 'MyCases') {
+      return this.caseService.getMyCases({searchRequest, view: this.view});
+    } else {
+      return this.caseService.getMyAccess({searchRequest, view: this.view});
     }
-    return this.caseService.getMyCases({ searchRequest, view: this.view });
   }
 
   /**
@@ -305,22 +334,26 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const loadingToken = this.loadingService.register();
     const casesSearch$ = this.performSearchPagination();
     const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
-      const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
-      if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
-        // may want to determine judicial workers by services in filter
-        return this.rolesService.getCaseRolesUserDetails(judicialUserIds, this.selectedServices).pipe(switchMap((judicialUserData) => {
-          const judicialNamedCases = result.cases.map(judicialCase => {
-            const currentCase = judicialCase;
-            const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
-            if (theJUser) {
-              currentCase.actorName = theJUser.known_as;
+      if (result && result.cases) {
+        const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
+        if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
+          // may want to determine judicial workers by services in filter
+          return this.rolesService.getCaseRolesUserDetails(judicialUserIds, this.selectedServices).pipe(switchMap((judicialUserData) => {
+            const judicialNamedCases = result.cases.map(judicialCase => {
+              const currentCase = judicialCase;
+              const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
+              if (theJUser) {
+                currentCase.actorName = theJUser.known_as;
+                return currentCase;
+              }
               return currentCase;
-            }
-            return currentCase;
-          });
-          result.cases = judicialNamedCases;
+            });
+            result.cases = judicialNamedCases;
+            return of(result);
+          }));
+        } else {
           return of(result);
-        }));
+        }
       } else {
         return of(result);
       }

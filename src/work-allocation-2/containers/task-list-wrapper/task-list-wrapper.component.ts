@@ -10,6 +10,7 @@ import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { AllocateRoleService } from '../../../role-access/services';
+import { TaskListFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
@@ -43,7 +44,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public taskServiceConfig: TaskServiceConfig;
   protected userDetailsKey: string = 'userDetails';
   private pTasks: Task[] = [];
-  private selectedLocationsSubscription: Subscription;
+  private myWorkSubscription: Subscription;
   private pTasksTotal: number;
   public routeEventsSubscription: Subscription;
 
@@ -155,13 +156,13 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public ngOnDestroy(): void {
-    if (this.selectedLocationsSubscription) {
-      this.selectedLocationsSubscription.unsubscribe();
+    if (this.myWorkSubscription) {
+      this.myWorkSubscription.unsubscribe();
     }
   }
 
   public loadCaseWorkersAndLocations() {
-    this.selectedLocationsSubscription = this.filterService.getStream('my-work-tasks-filter')
+    this.myWorkSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
       .pipe(
         debounceTime(200),
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
@@ -172,9 +173,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         const services = f.fields.find((field) => field.name === 'services').value;
         const newWorkTypes = typesOfWork ? typesOfWork.value : [];
         this.resetPagination(this.selectedLocations, newLocations);
-        // TODO - restore this line when LocationModel changes to epimms_id
-        // this.selectedLocations = (newLocations as unknown as LocationModel[]).map((l) => l.epimms_id);
-        this.selectedLocations = (newLocations).map((l) => l.epimms_id);
+        if (newLocations) {
+          this.selectedLocations = (newLocations).map((l) => l.epimms_id);
+        }
         this.selectedWorkTypes = newWorkTypes.filter(workType => workType !== 'types_of_work_all');
         this.selectedServices = services.filter(service => service !== 'services_all');
         if (this.selectedLocations.length) {
@@ -341,6 +342,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
           assignedJudicialUsers.push(task.assignee);
         }
       });
+      if (!assignedJudicialUsers) {
+        return of(result);
+      }
       return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, this.selectedServices).pipe(switchMap(((judicialUserData) => {
         result.tasks.map(task => {
           const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);

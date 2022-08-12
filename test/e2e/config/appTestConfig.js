@@ -92,6 +92,12 @@ const data = {
                 key: "Welcome01"
             },
 
+            {
+                idamId: "7381c1ae-9cc9-4251-b283-727feef94a3d",
+                email: "xui_bookingui_on@hmcts.net",
+                release: "bookingui-WA3", userIdentifier: "BOOKING_UI-FT-ON",
+                key: "Monday01"
+            },
 
 
         ],

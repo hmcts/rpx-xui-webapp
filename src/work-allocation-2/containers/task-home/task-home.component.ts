@@ -3,9 +3,11 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from 
 import { FilterPersistence, SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
+
 import { AppUtils } from '../../../app/app-utils';
-import { ErrorMessage, UserInfo } from '../../../app/models';
+import { ErrorMessage } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
+import { AllocateRoleService } from '../../../role-access/services';
 import { SortField } from '../../models/common';
 
 @Component({
@@ -28,25 +30,37 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    { text: 'Available tasks', href: '/work/my-work/available', active: false }
+    {text: 'Available tasks', href: '/work/my-work/available', active: false}
   ];
 
   private routeSubscription: Subscription;
 
   constructor(
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly allocateRoleService: AllocateRoleService
   ) {
   }
 
   public ngOnInit(): void {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      if (userInfo && userInfo.roleCategory && userInfo.roleCategory !== 'ADMIN') {
-        this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
+
+    this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
+    this.subNavigationItems.push({text: 'My access', href: '/work/my-work/my-access', active: false});
+
+    this.allocateRoleService.getSpecificAccessApproved().subscribe( (countOfApproval) => {
+     const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;
+     if ( myAccessNavItem ) {
+      myAccessNavItem.roundel = countOfApproval.count ;
+     }
+    });
+
+    this.allocateRoleService.getNewCasesCount().subscribe( (countOfApproval) => {
+      const myCasesNavItem = this.subNavigationItems.find(nav => nav.text === 'My cases'  ) ;
+      if ( myCasesNavItem ) {
+       myCasesNavItem.roundel = countOfApproval.count ;
       }
-    }
+    });
+
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.

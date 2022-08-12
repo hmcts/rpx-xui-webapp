@@ -8,6 +8,7 @@ import { AlertService, CaseUIToolkitModule, PipesModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { SharedModule } from '../app/shared/shared.module';
+import { BookingService } from '../booking/services';
 import { RoleAccessModule } from '../role-access/role-access.module';
 import { PriorityFieldComponentModule } from './components/priority-field/priority.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
@@ -38,6 +39,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     WorkAllocationTaskService,
     WorkAllocationFeatureToggleGuard,
     AlertService,
+    BookingService,
     CaseworkerDataService,
     WorkAllocationFeatureService,
     WASupportedJurisdictionsService,

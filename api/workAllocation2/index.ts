@@ -66,6 +66,7 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
+import { AxiosResponse } from 'axios';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -85,7 +86,6 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
-
     const jsonResponse = await handleTaskGet(getTaskPath, req);
     if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
       jsonResponse.task.dueDate = jsonResponse.task.due_date;
@@ -147,6 +147,21 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
+     // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
+    data.tasks.forEach(task => {
+      task.hearing_date =
+        new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString()
+    });
+
+    const payload = req.body;
+    const sortingParameters = payload.searchRequest.sorting_parameters;
+    if (sortingParameters && sortingParameters.length > 0) {
+      sortingParameters.forEach( sortParameter => {
+        if (sortParameter.sort_by === 'hearing_date') {
+          sortParameter.sort_by = 'caseName'
+        }
+      });
+    }
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
@@ -241,6 +256,28 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
   } catch (error) {
     // 5528 - removed error handling for 403 errors
     next(error);
+  }
+}
+
+/**
+ * Post to invoke an action on a Task.
+ */
+// tslint:disable-next-line:max-line-length
+export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+
+  try {
+    // Additional setting to mark unassigned tasks as done - need to assign task before completing
+    const newRequest = {
+      completion_options: {
+        assign_and_complete: true,
+      },
+    };
+    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.body.taskId, 'complete');
+    const completionResponse = await handleTaskPost(getTaskPath, newRequest, req);
+    return completionResponse;
+  } catch (error) {
+    next(error);
+    return error;
   }
 }
 
@@ -444,10 +481,52 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
   return casePromises;
 }
 
+export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment [];
+  const specificRoleAssignments = roleAssignments.filter(roleAssignment =>
+    roleAssignment.grantType === 'SPECIFIC'
+    ||
+    roleAssignment.roleName === 'specific-access-requested'
+    ||
+    roleAssignment.roleName === 'specific-access-denied'
+    ||
+    roleAssignment.grantType === 'CHALLENGED'
+  );
+  const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
+  const mappedCases = mapCasesFromData(cases, specificRoleAssignments);
+  const result = {
+    cases: mappedCases,
+    total_records: 0,
+    unique_cases: 0,
+  };
+  return res.send(result).status(200);
+}
+
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
-    const roleAssignments = req.session.roleAssignmentResponse;
-    const cases = await getCaseIdListFromRoles(roleAssignments as RoleAssignment[], req);
+    const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
+
+    // get 'service' and 'location' filters from search_parameters on request
+    const { search_parameters, sorting_parameters } = req.body.searchRequest;
+    const services = search_parameters.find(searchParam => searchParam.key === 'services');
+    const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
+
+    let serviceIds = [];
+    let locationIds = [];
+    if (services && services.hasOwnProperty('values')) {
+      serviceIds = services.values;
+    }
+    if (locations && locations.hasOwnProperty('values')) {
+      locationIds = locations.values;
+    }
+
+    // filter role assignments by service id(s)
+    const filteredRoleAssignments = roleAssignments.filter(roleAssignment =>
+      serviceIds.includes(roleAssignment.attributes.jurisdiction)
+    );
+
+    // get cases using either filteredRoleAssignments array or roleAssignments array if no serviceId filters are applied
+    const cases = await getCaseIdListFromRoles(!serviceIds.length ? roleAssignments : filteredRoleAssignments, req);
 
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
@@ -462,11 +541,29 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       unique_cases: 0,
     };
 
-    if (cases.length) {
-      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any, null) : [];
+    // filter cases by locationIds
+    const caseData = filterByLocationId(result.cases, locationIds);
+    logger.info('results filtered by location id', caseData.length, locationIds);
+
+    if (caseData) {
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
-      result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
+      const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
+      result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
+    }
+    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
+    result.cases.forEach(item => {
+      item.hearing_date = new Date(+new Date() + Math.random() *
+      (new Date(2022, 6, 20) as any - (new Date() as any) )).toString();
+    });
+    if ( sorting_parameters &&
+        sorting_parameters.some(parameter => parameter.sort_by === 'hearing_date')) {
+        if ( sorting_parameters.find(parameter => parameter.sort_by === 'hearing_date').sort_order === 'desc' ) {
+          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) > Date.parse(b.hearing_date) ? -1 : 1));
+        } else {
+          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) < Date.parse(b.hearing_date) ? -1 : 1));
+        }
     }
     return res.send(result).status(200);
   } catch (e) {
@@ -511,11 +608,16 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
       checkedRoles = getSubstantiveRoles(roleAssignmentResult.roleAssignmentResponse);
     }
-    const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, pagination) : [];
+    const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles) : [];
     result.total_records = mappedCases.length;
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
     result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
+    result.cases.forEach(item => {
+      item.hearing_date =
+      new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString();
+    });
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

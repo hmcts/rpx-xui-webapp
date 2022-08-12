@@ -1,7 +1,7 @@
 <p *ngIf="defaultLocations && defaultLocations.length">Access tasks and cases.</p>
 <p *ngIf="defaultLocations && !defaultLocations.length">{{noDefaultLocationMessage}}</p>
 <div class="button-heading">
-  <button class="govuk-button hmcts-button--secondary" type="button" (click)="this.toggleFilter=!this.toggleFilter">
+  <button class="govuk-button hmcts-button--secondary" type="button" (click)="onToggleFilter(allowTypesOfWorkFilter)">
     {{toggleFilter ? 'Hide': 'Show' }} work filter
   </button>
   <ng-container *ngIf="showFilteredText">
@@ -10,8 +10,5 @@
   </ng-container>
 </div>
 <div class="govuk-!-padding-3 filter govuk-!-margin-bottom-3" *ngIf="toggleFilter">
-  <xuilib-generic-filter
-    [config]="fieldsConfig"
-    [settings]="fieldsSettings"
-  ></xuilib-generic-filter>
+  <xuilib-generic-filter [config]="fieldsConfig" [settings]="fieldsSettings"></xuilib-generic-filter>
 </div>

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { BookingCheckType, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
@@ -9,7 +9,6 @@ import { filter, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
-import { Location } from '../../models/dtos';
 import { getRoleCategory } from '../../utils';
 
 @Component({
@@ -85,7 +84,9 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
       enableAddLocationButton: false,
-      type: 'find-location'
+      type: 'find-location',
+      radioSelectionChange: 'selectLocation=search',
+      bookingCheckType: BookingCheckType.NO_CHECK
     };
   }
 
@@ -115,11 +116,11 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           key: 'None / Available tasks',
-          label: 'None / Available tasks'
+          label: 'Unassigned'
         },
         {
           key: 'Specific person',
-          label: 'Specific person'
+          label: 'Assigned to a person'
         }
       ],
       minSelected: 1,
@@ -129,7 +130,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       changeResetFields: ['person', 'findPersonControl'],
       lineBreakBefore: true,
       findPersonField: 'person',
-      title: 'Person',
+      title: 'Tasks',
       type: 'radio'
     };
   }
@@ -173,7 +174,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelectedError: null,
       domainField: 'role',
       enableCondition: 'selectPerson=Specific person',
-      type: 'find-person'
+      type: 'find-person',
+      radioSelectionChange: 'selectPerson=Specific person'
     };
   }
 
@@ -203,7 +205,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a task type',
       maxSelectedError: null,
       lineBreakBefore: true,
-      title: 'Task type',
+      title: 'Tasks by role type',
       type: 'select'
     };
   }

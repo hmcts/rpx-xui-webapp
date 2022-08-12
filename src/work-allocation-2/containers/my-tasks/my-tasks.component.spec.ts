@@ -35,6 +35,12 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
+const workTypeInfo =
+  `[{"key":"hearing_work","label":"Hearing work"},
+    {"key":"routine_work","label":"Routine work"},
+    {"key":"decision_making_work","label":"Decision-making work"},
+    {"key":"applications","label":"Applications"}]`
+
 describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
@@ -138,12 +144,21 @@ describe('MyTasksComponent', () => {
   });
 
   it('should allow searching via work types', () => {
-    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    mockSessionStorageService.getItem.and.returnValues(userInfo, workTypeInfo, '1');
     const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
     component.selectedWorkTypes = workTypes;
     const searchParameter = component.getSearchTaskRequestPagination().search_parameters[4];
     expect(searchParameter.key).toBe('work_type');
     expect(searchParameter.values).toBe(workTypes);
+  });
+
+  it('should not search by work types if all work types are selected', () => {
+    mockSessionStorageService.getItem.and.returnValues(userInfo, workTypeInfo, '1');
+    const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work', 'extra_work_type'];
+    component.selectedWorkTypes = workTypes;
+    for (const search_parameter of component.getSearchTaskRequestPagination().search_parameters) {
+      expect(search_parameter.key).not.toBe('work_type');
+    }
   });
 
   it('should have all column headers, including "Manage +"', () => {

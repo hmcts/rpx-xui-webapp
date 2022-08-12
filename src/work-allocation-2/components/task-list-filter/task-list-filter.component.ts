@@ -1,6 +1,6 @@
-import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Location as AngularLocation } from '@angular/common';
 import {
   FilterConfig,
   FilterError,
@@ -15,9 +15,9 @@ import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
-import { Location } from '../../models/dtos';
+import { Location, LocationByEPIMMSModel } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
-import { WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
+import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { servicesMap } from '../../utils';
 
@@ -26,7 +26,7 @@ import { servicesMap } from '../../utils';
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
   description: 'At least one location is required',
-  fieldId: 'locations'
+  fieldId: 'myWork'
 };
 
 @Component({
@@ -36,9 +36,10 @@ export const LOCATION_ERROR: ErrorMessage = {
   encapsulation: ViewEncapsulation.None
 })
 export class TaskListFilterComponent implements OnInit, OnDestroy {
-  private static readonly FILTER_NAME = 'my-work-tasks-filter';
+  public static readonly FILTER_NAME = 'my-work-tasks-filter';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
+  public allowTypesOfWorkFilter = true;
   public appStoreSub: Subscription;
   public showFilteredText = false;
   public noDefaultLocationMessage = 'Use the work filter to show tasks and cases based on service, work type and location';
@@ -59,21 +60,32 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     id: TaskListFilterComponent.FILTER_NAME,
     fields: [],
   };
+  public selectedLocations: string[] = [];
+  public bookingLocations: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
+  private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
    */
-  constructor(private readonly route: ActivatedRoute,
-              private readonly location: AngularLocation,
-              private readonly filterService: FilterService,
-              private readonly taskService: WorkAllocationTaskService,
-              private readonly service: WASupportedJurisdictionsService,
-              private readonly taskTypesService: TaskTypesService,
-              private readonly appStore: Store<fromAppStore.State>) {
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly location: AngularLocation,
+    private readonly filterService: FilterService,
+    private readonly locationService: LocationDataService,
+    private readonly router: Router,
+    private readonly taskService: WorkAllocationTaskService,
+    private readonly service: WASupportedJurisdictionsService,
+    private readonly taskTypesService: TaskTypesService,
+    private readonly appStore: Store<fromAppStore.State>) {
+      if (this.router.getCurrentNavigation() &&
+          this.router.getCurrentNavigation().extras.state &&
+          this.router.getCurrentNavigation().extras.state.location) {
+          this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
+      }
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
@@ -88,25 +100,60 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private static hasBaseLocations(locations, baseLocations): boolean {
+    if (!(locations.value && locations.value.length > 0)) {
+      return false;
+    }
     const result = locations.value.filter(location => baseLocations.value.find(baseLocation => _.isEqual(location, baseLocation)));
     return result.length >= baseLocations.value.length;
   }
 
+  // TODO: CAM_BOOKING - remove this
+  // public subscribeToSelectedLocations(): void {
+  //   this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
+  //     .pipe(
+  //       filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+  //     )
+  //     .subscribe((f: FilterSetting) => {
+  //       this.selectedLocations = this.bookingLocations && this.bookingLocations.length > 0 ? this.bookingLocations :  f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
+  //       this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
+  //       this.toggleFilter = false;
+  //     });
+  // }
+
   public ngOnInit(): void {
-    this.fieldsConfig.persistence = this.persistence || 'session';
+    this.setPersistenceAndDefaultLocations();
+    // TODO: CAM_BOOKING - are both subscriptions still needed, check this
+    // MASTER
     this.subscription = combineLatest([
       this.taskTypesService.getTypesOfWork(),
       this.service.getWASupportedJurisdictions(),
-      this.taskService.getUsersAssignedTasks()
-    ])
-      .subscribe(([typesOfWork, services, assignedTasks]: [any[], string[], Task[]]) => {
-        this.setUpServicesFilter(services);
-        this.setUpLocationFilter();
-        this.setUpTypesOfWorkFilter(typesOfWork);
-        this.persistFirstSetting();
-        this.subscribeToFilters(assignedTasks);
-      });
+      this.taskService.getUsersAssignedTasks(),
+      this.locationService.getSpecificLocations(this.defaultLocations)
+    ]).subscribe(([typesOfWork, services, assignedTasks, locations]: [any[], string[], Task[], LocationByEPIMMSModel[]]) => {
+      this.setUpServicesFilter(services);
+      this.setUpLocationFilter(locations);
+      this.setUpTypesOfWorkFilter(typesOfWork);
+      this.persistFirstSetting();
+      this.subscribeToFilters(assignedTasks);
+    });
+
+    // TODO: CAM_BOOKING - remove this
+    // 4347 - BOOKINGS-UI
+    // this.locationSubscription = this.locationService.getLocations().subscribe((locations: Location[]) => {
+    //   locations.forEach((location) => this.allLocations.push(location.id.toString()));
+    //   this.setUpLocationFilter(locations);
+    //   this.persistFirstSetting();
+    // });
+    //
+
     this.setErrors();
+    this.setAllowTypesOfWorkFilter(this.router.url);
+    this.routeSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.setAllowTypesOfWorkFilter(this.router.url);
+        this.toggleFilter = false;
+      }
+    });
   }
 
   public ngOnDestroy(): void {
@@ -124,6 +171,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
     if (this.errorSubscription && !this.errorSubscription.closed) {
       this.errorSubscription.unsubscribe();
+    }
+
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
     }
   }
 
@@ -151,8 +202,21 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       });
   }
 
+  private setPersistenceAndDefaultLocations(): void {
+    this.fieldsConfig.persistence = this.persistence || 'session';
+    // get booking locations
+    if (this.bookingLocations && this.bookingLocations.length > 0) {
+      this.defaultLocations = this.bookingLocations;
+    } else if (history.state && history.state.location && history.state.location.id) {
+      const location: Location = history.state.location;
+      this.defaultLocations = [location.id];
+    }
+  }
+
   private persistFirstSetting(): void {
-    if (!this.filterService.get(TaskListFilterComponent.FILTER_NAME)) {
+    const savedFilterSetting = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
+    // if there are bookings we have been led to this by or if there is no saved filter
+    if ((this.defaultLocations && this.defaultLocations.length > 0) || !savedFilterSetting) {
       this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
       this.filterService.isInitialSetting = true;
     }
@@ -171,7 +235,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setUpLocationFilter(): void {
+  private setUpLocationFilter(locations: LocationByEPIMMSModel[]): void {
     const field: FilterFieldConfig = {
       name: 'locations',
       options: [],
@@ -185,17 +249,17 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       type: 'find-location',
       enableAddLocationButton: true
     };
-    if (this.route.snapshot.data && this.route.snapshot.data.locations) {
-      const locations: Location[] = this.route.snapshot.data.locations;
-      if (locations) {
-        this.defaultLocations = locations;
+    let baseLocation = null;
+    // if there are no booking locations selected then check for base location for salary judge
+    if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.location) {
+      const location: Location = this.route.snapshot.data.location;
+      if (location) {
+        baseLocation = [location];
       }
-    } else {
-      this.defaultLocations = [];
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: 'locations',
-      value: this.defaultLocations
+      value: baseLocation ? baseLocation : locations
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
@@ -210,7 +274,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       options: [
         {
           key: 'types_of_work_all',
-          label: 'Select all',
+          label: 'All work types',
           selectAll: true
         },
         ...typesOfWork
@@ -282,4 +346,30 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         this.fieldsConfig.fields.push(field);
       });
     }
+
+  /**
+   * Sets the value of the allowTypesOfWorkFilter boolean determined by provided params
+   *
+   * @param url - the url string to check against
+   * @param myCaseUrl - the string to search for in the url
+   */
+  private setAllowTypesOfWorkFilter(url: string, myCasesUrl = 'my-work/my-cases'): void {
+    this.allowTypesOfWorkFilter = !url.includes(myCasesUrl);
+  }
+
+  /**
+   * Toggles the filter state
+   *
+   * @param showTypesOfWorkFilter - used to determine whether the types-of-work filters will be displayed
+   */
+  public onToggleFilter(showTypesOfWorkFilter: boolean): void {
+    this.toggleFilter = !this.toggleFilter;
+    if (this.toggleFilter) {
+      setTimeout(() => {
+        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
+        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+      }, 0);
+    }
+  }
+
 }

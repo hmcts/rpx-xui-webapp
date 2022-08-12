@@ -91,7 +91,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         testTrigger.id = eventId;
         testTrigger.name = eventName;
         caseDetails.triggers.push(testTrigger);
-        
     });
 
     Given('I set MOCK case roles', async function(caseRolesDatatable){

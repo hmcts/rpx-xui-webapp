@@ -12,7 +12,9 @@ import { Observable, of } from 'rxjs';
 import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { WASupportedJurisdictionsService } from 'src/work-allocation-2/services';
+
+import { AllocateRoleService } from '../../../role-access/services';
+import { WASupportedJurisdictionsService } from '../../../work-allocation-2/services';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -154,6 +156,12 @@ describe('CaseViewerContainerComponent', () => {
     }
   }
 
+  class MockAllocateRoleService {
+    public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
+      return of([]);
+    }
+  }
+
   const initialState: State = {
     routerReducer: null,
     appConfig: {
@@ -193,7 +201,8 @@ describe('CaseViewerContainerComponent', () => {
           surname: 'judge'
         },
         roleAssignmentInfo: []
-      }
+      },
+      decorate16digitCaseReferenceSearchBoxInHeader: false
     }
   };
   const TABS: CaseTab[] = [
@@ -227,6 +236,7 @@ describe('CaseViewerContainerComponent', () => {
           }
         },
         {provide: FeatureToggleService, useClass: MockFeatureToggleService},
+        {provide: AllocateRoleService, useClass: MockAllocateRoleService },
         {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService}
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]

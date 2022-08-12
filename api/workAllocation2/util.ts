@@ -17,7 +17,6 @@ import {exists, reflect} from '../lib/util';
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
 import {getCaseListPromises} from "./index";
 import {Case, CaseList} from './interfaces/case';
-import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import {
   Action,
@@ -93,7 +92,16 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 }
 
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
+  // Assign actions to the tasks on the data from the API.
   if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
+    const sortingParameters = req.body.searchRequest.sorting_parameters;
+    if (sortingParameters && sortingParameters.length > 0) {
+      sortingParameters.forEach( sortParam => {
+        if (sortParam.sort_by === 'hearing_date') {
+          sortParam.sort_by = 'caseName';
+        }
+      });
+    }
     const paginationConfig = req.body.searchRequest.pagination_parameters;
     const pageSize = paginationConfig.page_size;
     const pageNumber = (paginationConfig.page_number - 1) * pageSize;
@@ -522,8 +530,7 @@ export function filterByLocationId(cases: Case[], locations: string[]): Case[] {
 
 export function mapCasesFromData(
   caseDetails: Case[],
-  roleAssignmentList: RoleAssignment[],
-  paginationConfig: PaginationParameter
+  roleAssignmentList: RoleAssignment[]
 ): RoleCaseData[] {
   if (!caseDetails) {
     return [];
@@ -553,7 +560,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     case_name: getCaseName(caseDetail),
     case_role: roleAssignment.roleName,
     role: roleAssignment.roleName,
-    endDate: roleAssignment.endTime,
+    endDate: getEndDate(roleAssignment),
     id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,
     jurisdictionId: caseDetail.jurisdiction,
@@ -562,8 +569,62 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     caseDetail.case_data.caseManagementLocation &&
     caseDetail.case_data.caseManagementLocation.baseLocation ?
       caseDetail.case_data.caseManagementLocation.baseLocation : null,
-    startDate: roleAssignment.beginTime,
+    startDate: getStartDate(roleAssignment),
+    access: getGrantType(roleAssignment),
+    dateSubmitted: roleAssignment.created,
+    isNew: roleAssignment.attributes.isNew,
   };
+}
+export function getGrantType(roleAssignment: RoleAssignment) {
+  if (roleAssignment.grantType === 'SPECIFIC'
+      ||
+      roleAssignment.roleName === 'specific-access-requested'
+      ||
+      roleAssignment.roleName === 'specific-access-denied') {
+      return 'Specific';
+  } else if (roleAssignment.grantType) {
+    return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
+      return second.toUpperCase() + third.toLowerCase();
+    });
+  } else {
+    return roleAssignment.grantType;
+  }
+}
+
+export function getStartDate(roleAssignment: RoleAssignment): Date | string {
+  if (roleAssignment.roleName === 'specific-access-requested') {
+    return 'Pending';
+  } else if (roleAssignment.roleName === 'specific-access-denied') {
+    return 'Not authorised';
+  } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED') && roleAssignment.beginTime) {
+    return formatDate(new Date(roleAssignment.beginTime));
+  }
+  return roleAssignment.beginTime;
+}
+
+export function getEndDate(roleAssignment: RoleAssignment): Date | string {
+  if (roleAssignment.roleName === 'specific-access-requested' || roleAssignment.roleName === 'specific-access-denied') {
+    return '';
+  } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED') && roleAssignment.endTime) {
+    return formatDate(new Date(roleAssignment.endTime));
+  }
+  return roleAssignment.endTime;
+}
+
+export function formatDate(date: Date) {
+  const day = date.toLocaleString('default', { day: '2-digit' });
+  const month = date.toLocaleString('default', { month: 'short' });
+  const year = date.toLocaleString('default', { year: 'numeric' });
+  return `${day} ${month} ${year}`;
+}
+
+export function getAccessType(roleAssignment: RoleAssignment) {
+  return roleAssignment.grantType ?
+  roleAssignment.grantType.replace(/\w+/g, replacableString => {
+    return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
+  })
+  :
+  undefined;
 }
 
 export function getCaseName(caseDetail: Case): string {

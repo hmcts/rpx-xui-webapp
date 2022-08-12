@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocYesNoFieldComponent } from './noc-yes-no-field.component';
 import { YesNoService } from './yes-no.service';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 describe('NocYesNoFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -45,11 +46,14 @@ describe('NocYesNoFieldComponent', () => {
       ],
       imports: [
         ReactiveFormsModule,
-        UtilsModule
+        UtilsModule,
+        RpxTranslationModule.forChild(),
       ],
       providers: [
         provideMockStore(),
-        YesNoService
+        YesNoService,
+        RpxTranslationService,
+        RpxTranslationConfig,
       ]
     }).compileComponents();
   }));

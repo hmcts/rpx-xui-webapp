@@ -150,10 +150,6 @@ export class TaskManagerFilterComponent implements OnInit, AfterViewInit, OnDest
         {
           key: PersonRole.ADMIN,
           label: PersonRole.ADMIN
-        },
-        {
-          key: PersonRole.CTSC,
-          label: PersonRole.CTSC
         }
       ],
       minSelected: 1,
@@ -202,6 +198,10 @@ export class TaskManagerFilterComponent implements OnInit, AfterViewInit, OnDest
         {
           key: 'ADMIN',
           label: 'Admin'
+        },
+        {
+          key: 'CTSC User',
+          label: 'CTSC User'
         }
       ],
       minSelected: 1,
@@ -267,7 +267,7 @@ export class TaskManagerFilterComponent implements OnInit, AfterViewInit, OnDest
   }
 
   public ngAfterViewInit(): void {
-    (document.getElementById('select_role') as HTMLInputElement).value = this.roleType;
+    (document.getElementById('select_taskType') as HTMLInputElement).value = this.roleType;
   }
 
   public ngOnDestroy(): void {

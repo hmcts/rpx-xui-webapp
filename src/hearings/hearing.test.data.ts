@@ -2151,6 +2151,7 @@ export const initialState = {
           status: 'LISTED',
           timeStamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
+          cancellationReasonCodes: ['withdraw', 'struck']
         },
         hearingResponse: {
           listAssistTransactionID: '',

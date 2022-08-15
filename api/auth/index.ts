@@ -68,7 +68,6 @@ export const getXuiNodeMiddleware = () => {
     password,
     routes: [
       '/workallocation/caseworker',
-      '/workallocation/caseworker',
       '/api/role-access/roles/getJudicialUsers',
       '/workallocation/retrieveCaseWorkersForServices',
       '/workallocation/retrieveCaseWorkersForSpecificService',

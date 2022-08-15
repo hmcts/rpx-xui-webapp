@@ -360,6 +360,18 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
+  Given('I am logged into Expert UI with case flags user details', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.caseFlagsUser, config.config.params.caseFlagsPassword);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.caseFlagsUser, config.config.params.caseFlagsPassword, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
 
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.driver.manage()

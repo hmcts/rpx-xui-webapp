@@ -62,6 +62,8 @@ const config = {
     caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01',
     hrsTesterUser: 'xui.hrs.tester@hmcts.net',
     hrsTesterPassword: 'Monday01',
+    caseFlagsUser: 'henry_fr_harper@yahoo.com',
+    caseFlagsPassword: 'Nagoya0102',
     ia_users_credentials: {
       case_officer: {
         username: process.env.TEST_CASEOFFICER_USERNAME || 'ia.caseofficer.ccd@gmail.com',
@@ -119,7 +121,7 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-    tags: ['@smoke or @test','not @ignore'],
+    tags: ['@managecaseflags'],
     require: [
       '../support/timeout.js',
       '../support/hooks.js',

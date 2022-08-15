@@ -92,7 +92,7 @@ const config = {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-        tags: getBDDTags(),
+        tags: ["@managecaseflags"],
         require: [
             '../support/timeout.js',
             '../support/hooks.js',
@@ -126,7 +126,7 @@ function getBDDTags(){
     if (argv.tags) {
         tags = argv.tags.split(',');
     } else {
-        tags = ["@fullfunctional", "~@ignore"];
+        tags = ["@managecaseflags"];
     }
     return tags;
 }

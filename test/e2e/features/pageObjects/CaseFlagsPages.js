@@ -3,11 +3,11 @@ const BrowserWaits = require('../../support/customWaits');
 const TaskMessageBanner = require("./messageBanner");
 const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
-const { Select,GovUKRadios } = require("../../utils/domElements");
+const { Select, GovUKRadios } = require("../../utils/domElements");
 
-class CaseFlagsPages{
+class CaseFlagsPages {
 
-    constructor(){
+    constructor() {
 
         this.caseEditPageHeader = $('.govuk-form-group h1');
         this.nextButton = element(by.xpath("//button[text() = 'Next']"));
@@ -39,7 +39,7 @@ class CaseFlagsPages{
         this.previousPageLink = $(".ngx-pagination .pagination-previous a");
         this.nextPageLink = $(".ngx-pagination .pagination-next a");
 
-        this.sortColumnsIconLinks = $$(".search-result-column-sort a.sort-widget");  
+        this.sortColumnsIconLinks = $$(".search-result-column-sort a.sort-widget");
 
         //Case list selection feature elements
         this.tableHeaderSelectAllInput = $("ccd-search-result #select-all");
@@ -56,33 +56,37 @@ class CaseFlagsPages{
 
     }
 
-    async amOnCreateACaseFlagPage(caseFlagsPageHeader){
+    async amOnCreateACaseFlagPage(caseFlagsPageHeader) {
         await BrowserWaits.waitForElement(this.caseEditPageHeader);
-        return await this.caseEditPageHeader.getText() === caseFlagsPageHeader;
+        let headerText = await this.caseEditPageHeader.getText();
+        return headerText.includes(caseFlagsPageHeader);
     }
 
-    async selectCaseFlagOption(optionText){
+    async selectCaseFlagOption(optionText) {
         await browser.sleep(10000);
-        let optionToSelect = new GovUKRadios('css','#conditional-radios-list');
+        let optionToSelect = new GovUKRadios('css', '#conditional-radios-list');
         await optionToSelect.selectOption(optionText);
         await this.nextButton.click();
     }
 
-    async enterTextFieldValue(text){
+    async enterTextFieldValue(text) {
         await this.commentsTextField.sendKeys(text);
         await this.nextButton.click();
     }
 
-    async submit(){
+    async submit() {
         await browser.sleep(10000);
         await BrowserWaits.waitForElementClickable(this.caseEditPageHeader);
         await this.submitButton.click();
     }
 
-    async getBannerText(){
-        
+    async getBannerText() {
         await browser.sleep(20000);
         return await this.notificationBanner.getText();
+    }
+
+    async manageFlagStatus(statusBefore, statusAfter, comment) {
+
     }
 
 }

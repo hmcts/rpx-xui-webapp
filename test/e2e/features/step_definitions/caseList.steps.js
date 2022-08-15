@@ -159,6 +159,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click case at row {int} and navigate to case view page', async function (rowNum) {
+        await browser.sleep(10000);
         await caseListPage.clickCaseLinkAtRow(rowNum);
     });
 

@@ -7,6 +7,7 @@ defineSupportCode(function ({ Then, When }) {
     var caseFlagsPages = new CaseFlagsPages();
 
     Then('I am on case flags {string} page', async function (caseFlagsPageHeader) {
+        await browser.sleep(15000);
         expect(await caseFlagsPages.amOnCreateACaseFlagPage(caseFlagsPageHeader)).to.be.true;
     });
 
@@ -24,5 +25,9 @@ defineSupportCode(function ({ Then, When }) {
 
     Then('I see the case flags banner', async function () {
         expect(await caseFlagsPages.getBannerText()).to.match(/There are \d+ active flags on this case/);
+    });
+
+    When('I make flag status {string} if {string} and modify comment {string', async function (statusBefore, statusAfter, comment) {
+        await caseFlagsPages.manageFlagStatus(statusBefore, statusAfter, comment);
     });
 });

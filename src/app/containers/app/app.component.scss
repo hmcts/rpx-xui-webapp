@@ -35,6 +35,10 @@ header, footer.govuk-footer{
     min-width: 900px;
   }
 
+  .govuk-phase-banner .language {
+    float: right;  
+  }
+
 @import "~govuk-frontend/govuk/all";
 @import "~@hmcts/frontend/all";
 

@@ -35,6 +35,7 @@ fdescribe('HmctsGlobalFooterComponent', () => {
     const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
     beforeEach(async(() => {
+      const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
       TestBed.configureTestingModule({
         declarations: [ HmctsGlobalFooterComponent ],
         imports: [
@@ -47,6 +48,8 @@ fdescribe('HmctsGlobalFooterComponent', () => {
             },
             testMode: true,
           })
+        ],
+        providers: []
         ]
       })
       .compileComponents();

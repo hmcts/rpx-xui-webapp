@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import * as fromContainers from '../../containers';
 import { NocNavigationEvent, NocState } from '../../models';
@@ -28,7 +29,8 @@ describe('NocHomeComponent', () => {
       imports: [
         ReactiveFormsModule,
         UtilsModule,
-        RouterTestingModule
+        RouterTestingModule,
+        RpxTranslationModule.forChild(),
       ],
       schemas: [
         NO_ERRORS_SCHEMA
@@ -37,6 +39,8 @@ describe('NocHomeComponent', () => {
         ...fromContainers.containers
       ],
       providers: [
+        RpxTranslationService,
+        RpxTranslationConfig,
         provideMockStore(),
         {
           provide: Router,

@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { NocNavigationEvent, NocState } from '../../models';
 import * as fromNocStore from '../../store';
@@ -19,7 +20,8 @@ describe('NocCaseRefComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        UtilsModule
+        UtilsModule,
+        RpxTranslationModule.forChild(),
       ],
       schemas: [
         NO_ERRORS_SCHEMA
@@ -28,7 +30,9 @@ describe('NocCaseRefComponent', () => {
         NocCaseRefComponent
       ],
       providers: [
-        provideMockStore()
+        provideMockStore(),
+        RpxTranslationService,
+        RpxTranslationConfig,
       ]
     }).compileComponents();
 

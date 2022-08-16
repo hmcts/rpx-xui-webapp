@@ -4,55 +4,68 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 
-import { HeaderComponent } from './header.component';
-import { HmctsGlobalHeaderComponent } from '../hmcts-global-header/hmcts-global-header.component';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { of } from 'rxjs';
 import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
+import { HmctsGlobalHeaderComponent } from '../hmcts-global-header/hmcts-global-header.component';
+import { HeaderComponent } from './header.component';
+
+const flags = {
+  enabledFlag: true,
+  disabledFlag: false
+};
 
 describe('Header Component', () => {
-    let mockStore: any;
-    let mockService: any;
-    let component: HeaderComponent;
-    let fixture: ComponentFixture<HeaderComponent>;
+  let mockStore: any;
+  let mockService: any;
+  let component: HeaderComponent;
+  let fixture: ComponentFixture<HeaderComponent>;
 
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent],
-        imports: [HttpClientModule, RouterTestingModule],
-        providers: [{ provide: Store, useValue: mockStore }]
-      }).compileComponents();
-    }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent],
+      imports: [HttpClientModule, RouterTestingModule],
+      providers: [{ provide: Store, useValue: mockStore },
+      {
+        provide: FeatureToggleService,
+        useValue: {
+          isEnabled: (flag) => of(flags[flag])
+        }
+      }]
+    }).compileComponents();
+  }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(HeaderComponent);
-        mockStore = jasmine.createSpyObj('store', ['pipe']);
-        mockService = jasmine.createSpyObj('service', ['get']);
-        component = new HeaderComponent(mockStore);
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HeaderComponent);
+    mockStore = jasmine.createSpyObj('store', ['pipe']);
+    mockService = jasmine.createSpyObj('service', ['get']);
+    component = new HeaderComponent(mockStore);
+  });
 
-    it('should create', () => {
+  it('should create', () => {
 
-        expect(component).toBeTruthy();
-    });
+    expect(component).toBeTruthy();
+  });
 
-    it('should render the skip to content link', () => {
-      const element = fixture.debugElement.query(By.css('.govuk-skip-link')).nativeElement;
-      expect(element.innerHTML).toEqual('Skip to main content');
-    });
+  it('should render the skip to content link', () => {
+    const element = fixture.debugElement.query(By.css('.govuk-skip-link')).nativeElement;
+    expect(element.innerHTML).toEqual('Skip to main content');
+  });
 
-    it('should call emitNavigate with event and this.navigate', () => {
+  it('should call emitNavigate with event and this.navigate', () => {
 
-      const event = {};
-      spyOn(component, 'emitNavigate');
+    const event = {};
+    spyOn(component, 'emitNavigate');
 
-      component.onNavigate(event);
-      expect(component.emitNavigate).toHaveBeenCalled();
-    });
+    component.onNavigate(event);
+    expect(component.emitNavigate).toHaveBeenCalled();
+  });
 
-    it('should emitNavigate', () => {
+  it('should emitNavigate', () => {
 
-        const event = {};
-        const emitter = jasmine.createSpyObj('emitter', ['emit']);
-        component.emitNavigate(event, emitter);
-        expect(emitter.emit).toHaveBeenCalled();
-    });
+    const event = {};
+    const emitter = jasmine.createSpyObj('emitter', ['emit']);
+    component.emitNavigate(event, emitter);
+    expect(emitter.emit).toHaveBeenCalled();
+  });
 });

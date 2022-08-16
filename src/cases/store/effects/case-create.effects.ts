@@ -53,7 +53,7 @@ export class CaseCreateEffects {
   public applyCreatedCaseLoaded$ = this.actions$.pipe(
     ofType(fromActions.CREATED_CASE_LOADED),
     map((payload: any) => {
-       this.alertService.success(`Case #${payload.caseId} has been created.`, true);
+       this.alertService.success(`Case #${payload.caseId} has been created.`);
        this.loggerService.info('Case created successfully');
        return new fromRoot.NewCaseLoadedSuccessfully();
     }),

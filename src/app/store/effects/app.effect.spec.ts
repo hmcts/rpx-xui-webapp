@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { StoreModule } from '@ngrx/store';
 import { hot } from 'jasmine-marbles';
@@ -31,6 +32,7 @@ describe('App Effects', () => {
                     provide: AuthService,
                     useValue: AuthServiceMock
                 },
+                RoleService,
                 fromAppEffects.AppEffects,
                 provideMockActions(() => actions$)
             ]

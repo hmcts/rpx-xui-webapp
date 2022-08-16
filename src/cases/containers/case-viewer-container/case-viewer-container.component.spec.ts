@@ -10,13 +10,11 @@ import { FeatureToggleService, FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+import { WASupportedJurisdictionsService } from 'src/work-allocation-2/services';
 import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
-<<<<<<< HEAD
-=======
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WASupportedJurisdictionsService } from 'src/work-allocation-2/services';
->>>>>>> master
 
 @Component({
   // tslint:disable-next-line:component-selector

@@ -10,10 +10,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import {
+  LoadingService,
+  CookieService,
+  FilterService,
   ExuiCommonLibModule,
   FeatureToggleService,
+  GoogleTagManagerService,
   LaunchDarklyService,
-  TimeoutNotificationsService
+  RoleService,
+  TimeoutNotificationsService,
+  FeatureToggleGuard,
+  CaseSharingStateService
 } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
@@ -123,8 +130,15 @@ export function launchDarklyClientIdFactory(
     },
     AcceptTermsService,
     CaseShareService,
+    CaseSharingStateService,
     { provide: FeatureToggleService, useClass: LaunchDarklyService },
     TimeoutNotificationsService,
+    RoleService,
+    GoogleTagManagerService,
+    CookieService,
+    LoadingService,
+    FilterService,
+    FeatureToggleGuard
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -23,7 +23,7 @@ const capability = {
 
 if (isParallelExecution) {
     capability.shardTestFiles = true;
-    capability.maxInstances = 4;
+    capability.maxInstances = 6;
 }
 
 
@@ -57,7 +57,7 @@ exports.config = {
         MockApp.init();
         if (isParallelExecution) {
             MockApp.getNextAvailableClientPort().then(res => {
-                MockApp.setServerPort(res.data.port); 
+                MockApp.setServerPort(res.data.port);
                 MockApp.startServer();
 
             });
@@ -68,7 +68,7 @@ exports.config = {
         }
     },
     onComplete() {
-       
+
     },
 
     async afterLaunch(){

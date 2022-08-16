@@ -16,20 +16,13 @@ const storeMock = {
   }
 };
 
-const featureToggleServiceMock = {
-  getValue: () => {
-    return {
-      subscribe: () => AppConstants.DEFAULT_USER_THEME
-    };
-  }
-};
-
 const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
 let dispatchSpy: jasmine.Spy;
 let subscribeSpy: jasmine.Spy;
 
 describe('AppHeaderComponent', () => {
+  let featureToggleServiceSpy: jasmine.SpyObj<FeatureToggleService>;
 
   let component: AppHeaderComponent;
   let fixture: ComponentFixture<AppHeaderComponent>;
@@ -37,8 +30,9 @@ describe('AppHeaderComponent', () => {
   const subscriptionMock: Subscription = new Subscription();
   const stateStoreMock: Store<fromActions.State> = new Store<fromActions.State>(null, null, null);
   const eventsSub = new BehaviorSubject<any>(null);
+  const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
 
-  beforeEach(async(() => {
+  beforeEach(async () => {
     dispatchSpy = spyOn(storeMock, 'dispatch');
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
@@ -75,11 +69,13 @@ describe('AppHeaderComponent', () => {
     }).compileComponents();
 
     store = TestBed.get(Store);
+    featureToggleServiceSpy = TestBed.get(FeatureToggleService) as jasmine.SpyObj<FeatureToggleService>;
 
+    featureToggleServiceSpy.getValue.and.returnValue(of(AppConstants.DEFAULT_MENU_ITEMS));
     fixture = TestBed.createComponent(AppHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   describe('deserialiseUserRoles()', () => {
 
@@ -111,9 +107,8 @@ describe('AppHeaderComponent', () => {
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
 
-
-    it('should set app header content', () => {
-      const themeSpy = spyOn(component, 'getApplicationThemeForUser');
+    it('should set app header content', async () => {
+      const themeSpy = spyOn(component, 'getApplicationThemeForUser').and.returnValue(of(AppConstants.DEFAULT_USER_THEME));
 
       const userDetails = {
         userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
@@ -124,7 +119,7 @@ describe('AppHeaderComponent', () => {
     });
 
     it('should call userThems on getApplicationThemeForUser', () => {
-      const userThemeSpy = spyOn(component, 'getUsersTheme');
+      const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
 
       const userDetails = {
         userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
@@ -135,7 +130,7 @@ describe('AppHeaderComponent', () => {
     });
 
     it('should call userThems on getApplicationThemeForUser with no roles', () => {
-      const userThemeSpy = spyOn(component, 'getUsersTheme');
+      const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
 
       const userDetails = {
         userInfo: []

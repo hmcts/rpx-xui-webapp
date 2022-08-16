@@ -3,7 +3,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
 import { ApplicationThemeLogo } from '../../enums';
@@ -149,7 +148,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   public setAppHeaderTheme(applicationTheme: ApplicationTheme): void {
     this.appHeaderTitle = applicationTheme.appTitle;
-    this.userNav = this.userRoles.length > 0 ? {
+    this.userNav = this.userRoles && this.userRoles.length > 0 ? {
       label: 'Account navigation',
       items: [{
         text: 'Sign out',

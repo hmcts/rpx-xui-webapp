@@ -6,7 +6,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Go } from '../../../app/store/actions';
 import { hearingRequestMainModel, initialState } from '../../hearing.test.data';
 import { Mode } from '../../models/hearings.enum';
@@ -186,7 +186,7 @@ describe('Hearing Request Effects', () => {
         path: ''
       };
       const dispatchSpy = spyOn(store, 'dispatch');
-      hearingsServiceMock.submitHearingRequest.and.returnValue(Observable.throwError(error));
+      hearingsServiceMock.submitHearingRequest.and.returnValue(throwError(error));
       const action = new hearingRequestActions.SubmitHearingRequest(hearingRequestMainModel);
       actions$ = cold('-a', { a: action });
       const expected = cold('-b', { b: error });
@@ -217,7 +217,7 @@ describe('Hearing Request Effects', () => {
         path: ''
       };
       const dispatchSpy = spyOn(store, 'dispatch');
-      hearingsServiceMock.updateHearingRequest.and.returnValue(Observable.throwError(error));
+      hearingsServiceMock.updateHearingRequest.and.returnValue(throwError(error));
       const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
       actions$ = cold('-a', { a: action });
       const expected = cold('-b', { b: error });

@@ -36,19 +36,20 @@ import { HearingsModule } from '../hearings/hearings.module';
 import { HearingsPipesModule } from '../hearings/pipes/hearings.pipes.module';
 import { HearingsService } from '../hearings/services/hearings.service';
 import { OrganisationModule } from '../organisation/organisation.module';
+import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
+import { WASupportedJurisdictionsService } from '../work-allocation-2/services';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
-// from directives
-import * as fromDirectives from './directives';
 // from containers
 import * as fromContainers from './containers';
+// from directives
+import * as fromDirectives from './directives';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
 
 @NgModule({
   imports: [
@@ -95,7 +96,8 @@ import { PriorityFieldComponentModule } from '../work-allocation-2/components/pr
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
     ActivityResolver,
-    HearingsService
+    HearingsService,
+    WASupportedJurisdictionsService
   ]
 })
 /**

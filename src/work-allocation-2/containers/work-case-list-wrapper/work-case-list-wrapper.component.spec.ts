@@ -2,10 +2,6 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { getMockCases, getMockCaseRoles, getMockLocations } from '../../tests/utils.spec';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
-import { MyAccessComponent } from '../my-access/my-access.component';
-import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -16,10 +12,14 @@ import { CaseRoleDetails } from '../../../role-access/models/case-role-details.i
 import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { getMockCaseRoles, getMockCases, getMockLocations, MockRouter } from '../../tests/utils.spec';
+import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
 import * as dtos from '../../models/dtos';
 import { JurisdictionsService } from 'src/work-allocation-2/services/juridictions.service';
+import { MyAccessComponent } from '../my-access/my-access.component';
 
 describe('WorkCaseListWrapperComponent', () => {
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);

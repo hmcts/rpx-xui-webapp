@@ -44,9 +44,10 @@ export const ROUTES: Routes = [
     loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
   },
   {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+    redirectTo: 'work/my-work/list',
+    canActivate: [AuthGuard, AcceptTermsGuard]
   },
   {
     path: 'role-access',
@@ -168,6 +169,16 @@ export const ROUTES: Routes = [
     component: SignedOutComponent,
     data: {
       title: 'You have been signed out'
+    }
+  },
+  {
+    path: 'search',
+    canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
+    loadChildren: '../search/search.module#SearchModule',
+    data: {
+      title: 'Search cases',
+      needsFeaturesEnabled: ['feature-global-search'],
+      featureDisabledRedirect: '/'
     }
   },
   {

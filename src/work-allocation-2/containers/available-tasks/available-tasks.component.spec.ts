@@ -97,6 +97,10 @@ describe('AvailableTasksComponent', () => {
         {
           name: 'types-of-work',
           value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
+        },
+        {
+          name: 'services',
+          value: ['IA', 'CIVIL']
         }
       ]
     };
@@ -152,7 +156,9 @@ describe('AvailableTasksComponent', () => {
     for (let i = 0; i < fields.length; i++) {
       // ensure derivedIcon has no header and every other field does
       if (fields[i].columnLabel) {
-        expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        if (fields[i].columnLabel !== 'Priority') {
+          expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        }
       } else {
         expect(headerCells[i].textContent).toEqual('');
       }

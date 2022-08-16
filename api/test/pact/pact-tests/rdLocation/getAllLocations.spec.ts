@@ -15,7 +15,7 @@ const { somethingLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_location', port: 8000 });
 
 const serviceCode = "BFA1";
-describe("Locations ref data api, get all locations for service", () => {
+xdescribe("Locations ref data api, get all locations for service", () => {
 
     const RESPONSE_BODY = {
         "court_venues": [

@@ -191,7 +191,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate {string} tasks columns sorting with taskRequest url {string} on page {int} for user type {string}', async function (waPage,taskRequesturl,onPage ,userType,datatable) {
         const softAssert = new SoftAssert();
         const datatableHashes = datatable.hashes();
-        const pageUndertest = waPage.toLowerCase() === "my work" ? myWorkPage : null;
+        let pageUndertest = null;
+
+        switch (waPage.toLowerCase()){
+            case "my work":
+                pageUndertest = myWorkPage;
+                break;
+            case "my work cases":
+                pageUndertest = myWorkPage;
+                pageUndertest.clickSubNavigationTab("My cases"); 
+                break; 
+        }
 
         let sortColumnInRequestParam = null;
         MockApp.addIntercept(taskRequesturl, (req, res, next) => {
@@ -278,6 +288,32 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 taskDetails.task[key] = inputTaskDetails[key];
             } 
         })
+
+    });
+
+    Then('I validate work filter get location request body {string}, user locations', async function(requestBodyref, datatable){
+        const body = global.scenarioData[requestBodyref];
+        const userLocations = body.userLocations;
+
+        const expecteduserLocation = datatable.hashes();
+            
+        for (const serviceLocations  of expecteduserLocation){
+            const service = serviceLocations.service; 
+            const locationIds = serviceLocations.locationIds;
+
+            if (locationIds === ''){
+                const userServiceLocation = userLocations.find(userLocationService => userLocationService.service === service );
+                expect(userServiceLocation === undefined, `${service} location not expected ${JSON.stringify(body)}`).to.be.true
+            }else{
+                const expectedLocationsList = locationIds.split(",");
+                const userServiceLocation = userLocations.find(userLocationService => userLocationService.service === service);
+
+                const actualLocationsList = userServiceLocation.locations.map(loc => loc.id);
+                for (const expectedloc of expectedLocationsList){
+                    expect(actualLocationsList.includes(expectedloc), `${service} location ${expectedloc} not present ${JSON.stringify(body)} `).to.be.true;
+                } 
+            }
+        }
 
     });
 

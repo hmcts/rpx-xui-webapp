@@ -1,4 +1,4 @@
-@ng 
+@_ng 
 Feature: WA Release 1: Task manager
 
     Background: Mock and browser setup
@@ -35,7 +35,7 @@ Feature: WA Release 1: Task manager
         Given I start MockApp
         Given I navigate to home page
         Given I reset reference "taskSearchRequest" value to null
-        When I click on primary navigation header "Task manager"
+        When I click on primary navigation header tab "Task manager", I see selected tab page displayed
 
         Then I see Task manager page displayed
         Then I validate Task manager page tasks count 25
@@ -56,7 +56,7 @@ Feature: WA Release 1: Task manager
         Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header "Task manager"
+        When I click on primary navigation header tab "Task manager", I see selected tab page displayed
 
         Then I see Task manager page displayed
         Then I validate Task manager page tasks count 25
@@ -69,7 +69,7 @@ Feature: WA Release 1: Task manager
         Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header "Task manager"
+        When I click on primary navigation header tab "Task manager", I see selected tab page displayed
 
         Then I see Task manager page displayed
         Then I validate tasks column sorting
@@ -82,8 +82,7 @@ Feature: WA Release 1: Task manager
         Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header "Task manager"
-
+        When I click on primary navigation header tab "Task manager", I see selected tab page displayed
         Then I see Task manager page displayed
         Then I validate Task manager tasks sort column persist in session
 

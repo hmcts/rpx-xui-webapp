@@ -354,18 +354,18 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     let endDate = null;
     let hearingWindow: HearingWindowModel = null;
     if (this.priorityForm.value.specificDate === RadioOptions.YES) {
-      firstDateMustBe = `${moment(Object.values(this.priorityForm.value.firstHearing).join('-'), HearingDateEnum.DefaultFormat).toISOString()}`;
+      firstDateMustBe = `${moment.utc(Object.values(this.priorityForm.value.firstHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}`;
     } else if (this.priorityForm.value.specificDate === RadioOptions.CHOOSE_DATE_RANGE) {
       startDate = this.priorityForm.value.dateRangeHearing.earliestHearing
       && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_day
       && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_month
       && this.priorityForm.value.dateRangeHearing.earliestHearing.earliestHearingDate_year ?
-        `${moment(Object.values(this.priorityForm.value.dateRangeHearing.earliestHearing).join('-'), HearingDateEnum.DefaultFormat).toISOString()}` : null;
+        `${moment.utc(Object.values(this.priorityForm.value.dateRangeHearing.earliestHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}` : null;
       endDate = this.priorityForm.value.dateRangeHearing.latestHearing
       && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_day
       && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_month
       && this.priorityForm.value.dateRangeHearing.latestHearing.latestHearingDate_year ?
-        `${moment(Object.values(this.priorityForm.value.dateRangeHearing.latestHearing).join('-'), HearingDateEnum.DefaultFormat).toISOString()}` : null;
+        `${moment.utc(Object.values(this.priorityForm.value.dateRangeHearing.latestHearing).join('-'), HearingDateEnum.DefaultFormat).local().toISOString()}` : null;
     }
     if (startDate || endDate) {
       hearingWindow = {

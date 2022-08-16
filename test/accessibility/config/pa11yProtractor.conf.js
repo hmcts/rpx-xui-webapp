@@ -20,7 +20,7 @@ const capability = {
 
 if (isParallelExecution) {
     capability.shardTestFiles = true;
-    capability.maxInstances = 4;
+    capability.maxInstances = 6;
 }
 
 

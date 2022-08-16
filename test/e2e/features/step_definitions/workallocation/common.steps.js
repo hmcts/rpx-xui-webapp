@@ -447,7 +447,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
             if (tasksCount === 0) {
                 expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
-                expect(await taskListPage.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");
             } else {
                 expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
             }
@@ -516,4 +515,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskAssignmentPersonNotAuthorisedPage.backButton.click(); 
      });
 
+    Then('I validate work allocation task table column {string} width less than or equal to {int}', async function(columnName, size){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const columnWidthActual = await taskListTable.getHeaderColumnWidth(columnName);
+            reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`)
+            expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}` ).to.be.true;
+        }); 
+        
+    });
+
+    Then('I validate work allocation case table column {string} width less than or equal to {int}', async function (columnName, size) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const columnWidthActual = await waCaseListTable.getHeaderColumnWidth(columnName);
+            reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`)
+            expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}`).to.be.true;
+        });
+       
+    });
 });

@@ -194,6 +194,7 @@ describe('TasksContainerComponent', () => {
         expect(task[0].assigneeName).toEqual('Joe Bloggs');
     });
   })
+
   it('should refresh tasks when requested', () => {
     const firstTask = getMockTasks()[0];
     mockWACaseService.getTasksByCaseId.and.returnValue(of([firstTask]));

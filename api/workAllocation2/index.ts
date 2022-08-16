@@ -475,21 +475,23 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
   }
   const roleResponse = await getAllRoles(req); // get the roles from the endpoint
   const roles: Role[] = roleResponse.data;
-
   const payloads: CaseworkerPayload[] = prepareServiceRoleApiRequest(newJurisdictions, roles);
   const data: ServiceCaseworkerData[] = await handleCaseWorkersForServicesPost(roleApiPath, payloads, req);
-  const userIds = getUserIdsFromJurisdictionRoleResponse(data);
-  if (userIds.length === 0) {
+  const userIdsByJurisdiction = getUserIdsFromJurisdictionRoleResponse(data);
+  if (userIdsByJurisdiction.length === 0) {
     return sessionCaseworkersByService;
   }
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
-  const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
-
-  const caseWorkerReferenceData = getCaseworkerDataForServices(userResponse.data, data);
-  // note have to merge any new service caseworker data for full session as well as services specified in params
+  const fullCaseworkerByServiceInfo = [];
+  const userResponse = await handlePostCaseWorkersRefData(userUrl, userIdsByJurisdiction, req);
+  userResponse.forEach(userList => {
+    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction = userList.jurisdiction);
+    const caseWorkerReferenceData = getCaseworkerDataForServices(userList.data, jurisdictionData);
+    // note have to merge any new service caseworker data for full session as well as services specified in params
+    fullCaseworkerByServiceInfo.push(caseWorkerReferenceData);
+  })
   req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
-    [...req.session.caseworkersByService, ...caseWorkerReferenceData] : caseWorkerReferenceData;
-  const fullCaseworkerByServiceInfo = [...caseWorkerReferenceData, ...sessionCaseworkersByService];
+      [...req.session.caseworkersByService, ...fullCaseworkerByServiceInfo] : fullCaseworkerByServiceInfo;
   return fullCaseworkerByServiceInfo;
 }
 
@@ -638,16 +640,16 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     // get 'service' and 'location' filters from search_parameters on request
     const { search_parameters, sorting_parameters } = req.body.searchRequest;
     const services = search_parameters.find(searchParam => searchParam.key === 'services');
-    // const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
+    const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
 
     let serviceIds = [];
-    // let locationIds = [];
+    let locationIds = [];
     if (services && services.hasOwnProperty('values')) {
       serviceIds = services.values;
     }
-    // if (locations && locations.hasOwnProperty('values')) {
-    //   locationIds = locations.values;
-    // }
+    if (locations && locations.hasOwnProperty('values')) {
+      locationIds = locations.values;
+    }
 
     // filter role assignments by service id(s)
     const filteredRoleAssignments = roleAssignments.filter(roleAssignment =>
@@ -670,8 +672,12 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       unique_cases: 0,
     };
 
-    if (cases.length) {
-      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any) : [];
+    // filter cases by locationIds
+    const caseData = filterByLocationId(result.cases, locationIds);
+    logger.info('results filtered by location id', caseData.length, locationIds);
+
+    if (caseData) {
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
       result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);

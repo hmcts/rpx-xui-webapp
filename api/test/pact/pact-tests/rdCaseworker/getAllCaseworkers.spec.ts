@@ -17,7 +17,7 @@ const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUser
 const MockApp = require('../../../../../test/nodeMock/app');
 
 const locationId = "123456";
-describe("Caseworker ref data api, get all caseworkers", () => {
+xdescribe("Caseworker ref data api, get all caseworkers", () => {
 
     const REQUEST_BODY = {
         userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')],

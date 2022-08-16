@@ -72,11 +72,14 @@ module.exports = {
         '/workallocation2/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:service': (req, res) => {
             res.send(workAllocationMockData.caseEventTasks);
         },
-        '/am/bookings': (req,res) => {
-            res.send(bookingsMockData.getBookings());
-        },
         '/workallocation2/full-location':(req,res) => {
             res.send(bookingsMockData.getAllLocationDetails());
+        },
+        '/api/role-access/roles/getNewCasesCount':(req,res) =>{
+            res.send({count:0})
+        },
+        '/api/role-access/roles/getSpecificAccessApproved':(req,res) => {
+            res.send({count:0});
         }
     },
     post: {
@@ -346,6 +349,16 @@ module.exports = {
         } ,
         '/api/role-access/allocate-role/valid-roles': (req, res) => {
             res.send(workAllocationMockData.getRoles(req.body.serviceIds));
+        },
+        '/api/locations/getLocationsById': (req, res) => {
+            res.send(workAllocationMockData.getLocationsByIds(req.body.locations));
+        },
+
+        '/api/locations/getLocations':(req,res) => {
+            res.send(workAllocationMockData.getLocations(req.body)); 
+        },
+        '/am/getBookings': (req, res) => {
+            res.send(bookingsMockData.getBookings());
         },
     }
    

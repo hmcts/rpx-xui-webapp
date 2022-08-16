@@ -51,12 +51,12 @@ class WorkAllocationMockData {
 
         this.caseRoleForAssignment = [this.caseRoles[0]];
 
-        this.myWorkMyTasks = this.getMyWorkMyTasks(150);
-        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(200);
-        this.allWorkTasks = this.getAllWorkTasks(300);
+        this.myWorkMyTasks = this.getMyWorkMyTasks(25);
+        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(25);
+        this.allWorkTasks = this.getAllWorkTasks(25);
 
-        this.myCases = this.getWACases(125);
-        this.allWorkCases = this.getWACases(125);
+        this.myCases = this.getWACases(25);
+        this.allWorkCases = this.getWACases(25);
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
     }
@@ -129,6 +129,7 @@ class WorkAllocationMockData {
         return user;
     }
 
+
     addCaseworker(caseworker, service) {
         let caseworketByService = null;
 
@@ -149,7 +150,7 @@ class WorkAllocationMockData {
                 personWithIdamd.lastName = caseworker.lastName;
                 personWithIdamd.email = caseworker.email;
                 personWithIdamd.roleCategory = caseworker.roleCategory; 
-
+                personWithIdamd.service = service;
 
                 personWithIdamd.location = {
                     id: locationsByService[0].epimms_id,
@@ -160,6 +161,41 @@ class WorkAllocationMockData {
             }
         }
     }
+
+    setLocationForCaseWokerInService(service, email,locationId ){
+        let locationsByService = null;
+        for (const byService of this.locationsByServices) {
+            if (byService.service === service) {
+                locationsByService = byService.locations;
+                break;
+            }
+        }
+
+        let locationDetailsToDetach = null;
+        for (const location of locationsByService){
+            if (location.epimms_id === locationId){
+                locationDetailsToDetach = {
+                    id: location.epimms_id,
+                    locationName: location.court_name 
+                }
+                break; 
+            }
+        }
+
+        for (const byservice of this.caseworkersByService) {
+            if (byservice.service === service) {
+               
+                for(const caseworker of byservice.caseworkers){
+                    if(caseworker.email === email){
+                        caseworker.location = locationDetailsToDetach; 
+                    } 
+                }
+                break;
+            }
+        }
+
+    }
+
 
     getLocationsByServices(services){
        const  locationsByService = [];
@@ -301,7 +337,10 @@ class WorkAllocationMockData {
             const validRoleTypes = WorkAllocationDataModels.getValidRoles();
 
             let validRoleCounter = 0;
+            let caseCounter = 0;
             for (const caseAlloc of cases) {
+                caseCounter++;
+                caseAlloc.case_name = new Array(caseCounter).fill(`testCase name ${caseCounter}`).join("-") 
                 caseAlloc.case_role = validRoleTypes[validRoleCounter].roleId;
                 caseAlloc.role_category = validRoleTypes[validRoleCounter].roleCategory;
                 validRoleCounter++;
@@ -810,6 +849,55 @@ class WorkAllocationMockData {
         }
         return locationMatchingId;
        
+    }
+
+    getLocationsByIds(locations) {
+        const locationIdsToMatch = locations.map(l => l.id); 
+        const allLocations = [];
+        for (const locationsByService of this.locationsByServices) {
+            allLocations.push(...locationsByService.locations);
+        }
+
+        let mathcingLocations = [];
+        for (const location of allLocations) {
+            if (locationIdsToMatch.includes(location.epimms_id )) {
+                mathcingLocations.push(location);
+            }
+        }
+        return mathcingLocations;
+
+    }
+
+    getLocations(reqBody) {
+        const serviceIds = reqBody.serviceIds.split(",");
+        const searchTerm = reqBody.searchTerm;
+
+        const usersServiceLocations = reqBody.userLocations;
+
+        let mathcingLocation = [];
+        for (const locationsByService of this.locationsByServices) {
+            if (!serviceIds.includes(locationsByService.service)){
+                continue;
+            }
+            const filteredByUserLocation = locationsByService.locations.filter(serviceLocation => {
+                if (!usersServiceLocations){
+                    return true;
+                }
+                let userLocationsForService = usersServiceLocations.find(userServiceloc => userServiceloc.service === locationsByService.service ); 
+                if (!userLocationsForService){
+                    return true;
+                }else{
+                    let locationIds = userLocationsForService.locations.map(loc => loc.id);
+                    return locationIds.includes(serviceLocation.epimms_id); 
+                }
+                
+            });
+            mathcingLocation.push(...filteredByUserLocation);
+        }
+
+        mathcingLocation = mathcingLocation.filter(location => location.court_name.includes(searchTerm));
+        return mathcingLocation;
+
     }
 
 

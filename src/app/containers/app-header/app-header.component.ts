@@ -4,7 +4,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { AppUtils } from '../../app-utils';
-import { AppConstants } from '../../app.constants';
+import { AppConstants }x from '../../app.constants';
 import { ApplicationThemeLogo } from '../../enums';
 import { AppTitleModel } from '../../models/app-title.model';
 import { ApplicationTheme, NavigationItem } from '../../models/theming.model';

@@ -1,4 +1,4 @@
-@ng 
+@ng  
 Feature: WA Release 2: All work
 
     Background: Mock and browser setup

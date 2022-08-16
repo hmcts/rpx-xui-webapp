@@ -12,7 +12,7 @@ import { confirmAllocateRole,
   reallocateRole,
   getNewCasesCount
 } from './index';
-import { getPossibleRoles, getRoleByAssignmentId } from './roleAssignmentService';
+import { getPossibleRoles } from './roleAssignmentService';
 
 const router = Router({ mergeParams: true });
 router.use(authInterceptor);

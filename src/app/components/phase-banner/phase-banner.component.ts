@@ -7,6 +7,7 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 })
 export class PhaseBannerComponent implements OnInit {
   @Input() type: string;
+  public noBanner: boolean;
 
   public get currentLang() {
     return this.langService.language;
@@ -18,7 +19,12 @@ export class PhaseBannerComponent implements OnInit {
   }
 
   public toggleLanguage(lang: RpxLanguage): void {
+    this.noBanner = (lang === 'cy');
     this.langService.language = lang;
+  }
+
+  public closeBanner() {
+    this.noBanner = true;
   }
 
 }

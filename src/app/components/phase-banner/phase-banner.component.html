@@ -13,4 +13,17 @@
           </span>
       </p>
   </div>
+
+  <div *ngIf="!noBanner" class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header">
+      <span (click)="closeBanner()" class="close">X</span>
+      <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+        Pwysig
+      </h2>
+    </div>
+    <div class="govuk-notification-banner__content">
+      Nid yw rhai sgriniau yn y gwasanaeth hwn wedi’u cyfieithu i’r Gymraeg eto ac maent ar hyn o bryd yn cynnwys testun Saesneg.
+    </div>
+  </div>  
+
 </div>

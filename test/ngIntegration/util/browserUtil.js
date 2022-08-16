@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
-const MockApp = require('../../nodeMock/app');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 
@@ -116,6 +115,9 @@ class BrowserUtil{
         const togglesToLogs = global.scenarioData['featureToggleToLog'];
         reportLogger.AddMessage(`LOgging scenario features toggle values ${JSON.stringify(togglesToLogs)}`);
 
+        if (!togglesToLogs){
+            return;
+        }
         const toggleValuesToLog = {};
         for (let i = 0; i < togglesToLogs.length; i++) {
             const toggleName = togglesToLogs[i];

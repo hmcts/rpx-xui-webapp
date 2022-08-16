@@ -36,6 +36,10 @@ import { HearingsPipesModule } from '../hearings/pipes/hearings.pipes.module';
 import { HearingsService } from '../hearings/services/hearings.service';
 import { OrganisationModule } from '../organisation/organisation.module';
 import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
+<<<<<<< HEAD
+=======
+import { WASupportedJurisdictionsService } from '../work-allocation-2/services';
+>>>>>>> master
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
@@ -93,7 +97,8 @@ import { effects, reducers } from './store';
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
     ActivityResolver,
-    HearingsService
+    HearingsService,
+    WASupportedJurisdictionsService
   ]
 })
 /**

@@ -6,7 +6,7 @@ import { AppConstants } from '../../app.constants';
 import { Helper, Navigation } from '../../containers/footer/footer.model';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
 
-fdescribe('HmctsGlobalFooterComponent', () => {
+describe('HmctsGlobalFooterComponent', () => {
     @Component({
         selector: `exui-app-host-dummy-component`,
         template: `<exui-app-hmcts-global-footer
@@ -48,8 +48,6 @@ fdescribe('HmctsGlobalFooterComponent', () => {
             },
             testMode: true,
           })
-        ],
-        providers: []
         ]
       })
       .compileComponents();

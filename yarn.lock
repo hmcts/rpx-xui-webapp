@@ -1183,10 +1183,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.0-EUI-5696-upload-error-fix":
-  version "4.18.0-EUI-5696-upload-error-fix"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.0-EUI-5696-upload-error-fix.tgz#52c634e40ba42a5f5a2e6714234f1fd8b238337f"
-  integrity sha512-0zmXoHQgwv/Lm+nN7QQq8F4TAeMD3vD8WLen20qvHpOfMkoXbod7vpnGokXCJF5WDE/tpjJP+9gS4/jY5fpd6w==
+"@hmcts/ccd-case-ui-toolkit@4.18.14-rc1":
+  version "4.18.14-rc1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.14-rc1.tgz#0c168abd24505424d71453395153247ab366a92c"
+  integrity sha512-OuHJfAwZO2y7Q3liVRg6XytStg2l8eGu6mVW0mobk9VUJA0A8L7vP0J8gqaniCIZbYQUOns8qAx14T4O1eTcGQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -1207,8 +1207,6 @@
     moment-timezone "^0.5.31"
     npm-registry-fetch "^4.0.5"
     rx-polling "1.1.0"
-    rxjs "^6.3.3"
-    rxjs-compat "^6.3.3"
     typescript "3.1.1"
     underscore "^1.9.1"
     yargs-parser "18.1.2"

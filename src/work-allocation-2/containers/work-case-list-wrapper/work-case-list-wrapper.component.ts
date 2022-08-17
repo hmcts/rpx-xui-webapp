@@ -53,7 +53,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   private readonly defaultCaseServiceConfig: CaseServiceConfig = {
     service: CaseService.IAC,
     defaultSortDirection: SortOrder.ASC,
-    defaultSortFieldName: 'startDate',
+    defaultSortFieldName: 'hearing_date',
     fields: this.fields,
   };
   private pCasesTotal: number;

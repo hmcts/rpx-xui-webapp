@@ -200,7 +200,7 @@ export class TaskManagerFilterComponent implements OnInit, AfterViewInit, OnDest
           label: 'Admin'
         },
         {
-          key: 'CTSC User',
+          key: 'CTSC_USER',
           label: 'CTSC User'
         }
       ],
@@ -267,7 +267,8 @@ export class TaskManagerFilterComponent implements OnInit, AfterViewInit, OnDest
   }
 
   public ngAfterViewInit(): void {
-    (document.getElementById('select_taskType') as HTMLInputElement).value = this.roleType;
+    (document.getElementById('select_taskType') as HTMLInputElement).value = getRoleCategory(this.roleType);
+    (document.getElementById('select_role') as HTMLInputElement).value = this.roleType;
   }
 
   public ngOnDestroy(): void {

@@ -17,7 +17,7 @@
       [info]="'Any reasonable adjustments on this page will be included in the hearing request.'"
       [caseFlagsGroup]="reasonableAdjustmentFlags">
     </exui-case-flags>
-    <p class="govuk-body">Review <a id="linkAmendFlags"
+    <p class="govuk-body" *ngIf="serviceHearingValuesModel.caseFlags?.flagAmendURL">Review <a id="linkAmendFlags"
                                     target="_blank"
                                     href="{{serviceHearingValuesModel.caseFlags?.flagAmendURL}}">
       case flags and reasonable adjustments (opens in new tab)</a> if you need to make any changes.

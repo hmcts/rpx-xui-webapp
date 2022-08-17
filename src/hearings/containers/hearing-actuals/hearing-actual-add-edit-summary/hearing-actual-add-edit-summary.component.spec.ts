@@ -1,22 +1,21 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute, convertToParamMap} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import { Observable, of } from 'rxjs';
-import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
-import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
-import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
-import { PartyChannelDisplayValuePipe } from '../../../pipes/party-channel-display-value.pipe';
-import { PartyRoleDisplayValuePipe } from '../../../pipes/party-role-display-value.pipe';
-import { HearingsService } from '../../../services/hearings.service';
+import {Observable, of} from 'rxjs';
+import {ActualHearingsUtils} from 'src/hearings/utils/actual-hearings.utils';
+import {hearingActualsMainModel, hearingStageRefData, initialState} from '../../../hearing.test.data';
+import {ACTION, HearingActualAddEditSummaryEnum, HearingResult} from '../../../models/hearings.enum';
+import {ConvertToValuePipe} from '../../../pipes/convert-to-value.pipe';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
+import {HearingActualAddEditSummaryComponent} from './hearing-actual-add-edit-summary.component';
+import {ActualHearingDayModel} from '../../../models/hearingActualsMainModel';
 
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
@@ -304,43 +303,134 @@ describe('HearingActualAddEditSummaryComponent', () => {
   const actualCancellationReasonCodes = [
     {
       category_key: 'ActualCancellationReasonCodes',
-      key: 'reasonOne',
-      value_en: 'Reason 1',
+      key: 'withdraw',
+      value_en: 'Withdrawn',
       value_cy: '',
-      hint_text_en: 'Reason 1',
+      hint_text_en: '',
       hint_text_cy: '',
-      lov_order: 1,
+      lov_order: null,
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'ActualCancellationReasonCodes',
-      key: 'reasonTwo',
-      value_en: 'Reason 2',
+      key: 'struck',
+      value_en: 'Struck Out',
       value_cy: '',
-      hint_text_en: 'Reason 2',
+      hint_text_en: '',
       hint_text_cy: '',
-      lov_order: 2,
+      lov_order: null,
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
     {
       category_key: 'ActualCancellationReasonCodes',
-      key: 'reasonThree',
-      value_en: 'Reason 3',
+      key: 'unable',
+      value_en: 'Party unable to attend',
       value_cy: '',
-      hint_text_en: 'Reason 3',
+      hint_text_en: '',
       hint_text_cy: '',
-      lov_order: 3,
+      lov_order: null,
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null,
+      child_nodes: null
     },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'exclusio',
+      value_en: 'Exclusion',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'incompl',
+      value_en: 'Incomplete Tribunal',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'listerr',
+      value_en: 'Listed in error',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'other',
+      value_en: 'Other',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'notready',
+      value_en: 'No longer ready for hearing',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'notatt',
+      value_en: 'Party did not attend',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'ActualCancellationReasonCodes',
+      key: 'lapsed',
+      value_en: 'Lapsed',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    }
   ];
   const partyChannel = [
     {
@@ -500,7 +590,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
+      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe],
       imports: [RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
@@ -552,7 +642,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should return empty string for hearing result reason type completed', () => {
-    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
+    const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.COMPLETED;
     hearingOutcome.hearingResultReasonType = '';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
@@ -565,8 +656,9 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should return hearing result reason type description for adjourned', () => {
+    const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
     component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
-    const hearingOutcome = JSON.parse(JSON.stringify(hearingActualsMainModel.hearingActuals.hearingOutcome));
+    const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.ADJOURNED;
     hearingOutcome.hearingResultReasonType = 'postponedDueToOtherReasons';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
@@ -574,12 +666,13 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should return hearing result reason type description for cancelled', () => {
+    const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
     component.actualCancellationReasonCodes = actualCancellationReasonCodes;
-    const hearingOutcome = JSON.parse(JSON.stringify(hearingActualsMainModel.hearingActuals.hearingOutcome));
+    const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
     hearingOutcome.hearingResult = HearingResult.CANCELLED;
-    hearingOutcome.hearingResultReasonType = 'reasonTwo';
+    hearingOutcome.hearingResultReasonType = 'unable';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
-    expect(description).toEqual('Reason 2');
+    expect(description).toEqual('Party unable to attend');
   });
 
   it('should return correct hearing type from the hearing types', () => {
@@ -673,6 +766,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       },
     ];
     component.hearingActualsMainModel = hearingActuals;
+    component.hearingResult = HearingResult.COMPLETED;
     component.onSubmitHearingDetails();
     expect(component.submitted).toBe(true);
     expect(component.hearingTimingResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
@@ -691,6 +785,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
       },
     ];
     component.hearingActualsMainModel = hearingActuals;
+    component.hearingResult = HearingResult.COMPLETED;
     component.onSubmitHearingDetails();
     expect(component.submitted).toBe(true);
     expect(component.hearingPartiesResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
@@ -1009,15 +1104,15 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
+      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule,
         HttpClientTestingModule
       ],
       providers: [
-        { provide: HearingsService, useValue: hearingsService },
-        provideMockStore({ initialState: newState }),
+        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({initialState: newState}),
         {
           provide: ActivatedRoute,
           useValue: {

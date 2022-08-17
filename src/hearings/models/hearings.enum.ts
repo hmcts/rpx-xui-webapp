@@ -181,7 +181,7 @@ export enum HearingJudgeSelectionEnum {
 }
 
 export enum HearingLinkedSelectionEnum {
-  ValidSelectionError = 'You need to select atleast one hearing',
+  ValidSelectionError = 'You need to select at least one hearing',
   HearingSelection = 'Which hearings should be linked?',
   NoHearingSelection = 'There are no hearings available to link to',
   NoLinkedCases = 'No linked Cases',
@@ -303,7 +303,8 @@ export enum AnswerSource {
   HEARING_SPECIFIC_DATE,
   HEARING_PRIORITY,
   ADDITIONAL_INSTRUCTION,
-  REASON_FOR_CANCELLATION,
+  REASON_FOR_ACTUAL_CANCELLATION,
+  REASON_FOR_REQUEST_CANCELLATION,
   LINKED_HEARINGS
 }
 

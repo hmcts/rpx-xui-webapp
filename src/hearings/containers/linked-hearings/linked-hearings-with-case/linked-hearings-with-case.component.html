@@ -1,5 +1,6 @@
+<xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
 <a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">Back</a>
-<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
+<xuilib-hmcts-error-summary [errorMessages]="errors" [header]="'There is a problem'" *ngIf="errors && errors.length">
 </xuilib-hmcts-error-summary>
 <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"></exui-linked-hearings-case-title>
 <h1 class="govuk-heading-l" *ngIf="!linkedCases?.length">{{ linkedHearingEnum.NoLinkedCases}}</h1>
@@ -38,7 +39,7 @@
             <tr class="govuk-table__row" [formGroupName]="pos"
                 *ngFor="let hearing of case.caseHearings; let pos = index">
               <td scope="row"
-                  class="govuk-table__cell align-middle govuk-table-width-45-percent">{{hearing.hearingType}}
+                  class="govuk-table__cell align-middle govuk-table-width-45-percent">{{hearing.hearingType | convertToValue : hearingStageOptions}}
                 <span *ngIf="!!hearing.hearingGroupRequestId">
                   &nbsp;&nbsp;
                   <img src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle"
@@ -53,7 +54,7 @@
               </td>
               <td class="govuk-table__cell govuk-table-width-10-percent">
                 <div class="govuk-radios" data-module="govuk-radios">
-                  <div class="govuk-radios__item" *ngIf="isManageLink ? (hearingGroupRequestId === hearing.hearingGroupRequestId) : (hearing.hearingIsLinkedFlag && !hearing.hearingGroupRequestId)">
+                  <div class="govuk-radios__item" *ngIf="isSelectable(hearing)">
                     <input class="govuk-radios__input" id="{{case.caseRef}}{{hearing.hearingID}}" type="radio"
                            [value]="true" [checked]="getHearingsFormValue(i).controls[pos].get('isSelected').value"
                            (click)="updateLinkedCase(i, pos);" [formControlName]="'isSelected'">

@@ -1,13 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { hearingRoles } from '../../hearing.test.data';
-import { LovRefDataModel } from '../../models/lovRefData.model';
-import { PartyChannelDisplayValuePipe } from '../../pipes/party-channel-display-value.pipe';
-import { PartyRoleDisplayValuePipe } from '../../pipes/party-role-display-value.pipe';
-import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary-single-day.component';
-
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute, Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {of} from 'rxjs';
+import {hearingRoles} from '../../hearing.test.data';
+import {LovRefDataModel} from '../../models/lovRefData.model';
+import {ConvertToValuePipe} from '../../pipes/convert-to-value.pipe';
+import {HearingActualSummarySingleDayComponent} from './hearing-actual-summary-single-day.component';
 
 describe('HearingActualSummarySingleDayComponent', () => {
   let component: HearingActualSummarySingleDayComponent;
@@ -178,7 +176,7 @@ describe('HearingActualSummarySingleDayComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [HearingActualSummarySingleDayComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
+      declarations: [HearingActualSummarySingleDayComponent, ConvertToValuePipe],
       providers: [
         {
           provide: ActivatedRoute,

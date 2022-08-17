@@ -45,9 +45,9 @@ describe('LinkedHearingsFinalConfirmationComponent', () => {
   });
 
   it('should set correct heading text', () => {
-    component.linkedHearingsCount = 0;
+    component.linkedHearingsCount = null;
     component.ngOnInit();
-    expect(component.heading).toBe('All links to other hearings removed');
+    expect(component.heading).toBe('All hearings are now unlinked');
     component.linkedHearingsCount = 1;
     component.ngOnInit();
     expect(component.heading).toBe('1 hearing is now linked');

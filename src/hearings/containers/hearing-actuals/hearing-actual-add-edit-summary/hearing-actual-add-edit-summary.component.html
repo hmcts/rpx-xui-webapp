@@ -180,7 +180,7 @@
                         <div
                           *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
                           {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}:
-                          {{party.partyChannelSubType | partyChannelDisplayValue: partyChannels}}
+                          {{party.partyChannelSubType | convertToValue: partyChannels}}
                         </div>
                       </dd>
                       <dd class="govuk-summary-list__actions"></dd>
@@ -189,11 +189,11 @@
                       *ngFor="let attendee of actualHearingUtils.getAttendees(hearingActualsMainModel, actualHearingDay.hearingDate); let i = index;">
                       <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
                       <dd class="govuk-summary-list__value">
-                        Role: {{attendee.partyRole | partyRoleDisplayValue: hearingRoles}}<br>
+                        Role: {{attendee.partyRole | convertToValue: hearingRoles}}<br>
                         First name: {{attendee.individualDetails.firstName}}<br>
                         Last name: {{attendee.individualDetails.lastName}}<br>
                         Organisation: {{attendee.actualOrganisationName}}<br>
-                        Attendee Type: {{attendee.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
+                        Attendee Type: {{attendee.partyChannelSubType | convertToValue: partyChannels}} <br>
                         Attendee representing: {{attendee.representedParty &&
                         actualHearingUtils.getRepresentingAttendee(attendee.representedParty, hearingActualsMainModel,
                         actualHearingDay.hearingDate) || "N/A"}}

@@ -1,10 +1,10 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { HearingLinksStateData } from '../../../../hearings/models/hearingLinksStateData.model';
-import { initialState } from '../../../hearing.test.data';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {initialState} from '../../../hearing.test.data';
+import {HearingLinksStateData} from '../../../models/hearingLinksStateData.model';
 import {
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
@@ -16,10 +16,54 @@ import {
   HearingDetailModel,
   LinkedCaseHearingsResult,
 } from '../../../models/linkHearings.model';
-import { CaseReferencePipe } from '../../../pipes/case-reference.pipe';
-import { HearingsService } from '../../../services/hearings.service';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {CaseReferencePipe} from '../../../pipes/case-reference.pipe';
+import {ConvertToValuePipe} from '../../../pipes/convert-to-value.pipe';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
+import {LinkedHearingsCheckYourAnswersComponent} from './linked-hearings-check-your-answers.component';
+
+const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
+  {
+    category_key: 'HearingType',
+    key: 'BBA3-SUB',
+    value_en: 'Substantive',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingType',
+    key: 'BBA3-DIR',
+    value_en: 'Direction Hearings',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingType',
+    key: 'BBA3-CHA',
+    value_en: 'Chambers Outcome',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  }
+];
 
 describe('LinkedHearingsCheckYourAnswersComponent', () => {
   let component: LinkedHearingsCheckYourAnswersComponent;
@@ -35,11 +79,12 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   const mockRoute = {
     snapshot: {
       params: {
-        caseId: { caseId },
-        hearingId: { hearingId }
+        caseId: {caseId},
+        hearingId: {hearingId}
       },
       data: {
         mode: Mode.MANAGE_HEARINGS,
+        hearingStageOptions: HEARING_STAGE_OPTIONS
       }
     }
   };
@@ -84,12 +129,12 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CaseReferencePipe, LinkedHearingsCheckYourAnswersComponent],
+      declarations: [CaseReferencePipe, LinkedHearingsCheckYourAnswersComponent, ConvertToValuePipe],
       providers: [
-        provideMockStore({ initialState }),
-        { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: Router, useValue: mockRouter },
-        { provide: HearingsService, useValue: hearingsService }
+        provideMockStore({initialState}),
+        {provide: ActivatedRoute, useValue: mockRoute},
+        {provide: Router, useValue: mockRouter},
+        {provide: HearingsService, useValue: hearingsService}
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

@@ -1,5 +1,7 @@
 import {HearingLinksStateData} from '../../models/hearingLinksStateData.model';
-import {ServiceLinkedCasesModel} from '../../models/linkHearings.model';
+import {
+  ServiceLinkedCasesModel
+} from '../../models/linkHearings.model';
 import * as fromHearingLinksActions from '../actions/hearing-links.action';
 import * as fromHearingLinksReducer from './hearing-links.reducer';
 
@@ -13,6 +15,24 @@ describe('Hearing Links Reducer', () => {
         const action = new fromHearingLinksActions.ResetHearingLinks();
         const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
+      });
+    });
+
+    describe('ManageLinkedHearingGroup action', () => {
+      it('should have ManageLinkedHearingGroup action', () => {
+        const initialState = fromHearingLinksReducer.initialHearingLinksState;
+        const payload = {
+          linkedHearingGroup: {
+            groupDetails: null,
+            hearingsInGroup: null
+          },
+          caseId: '1111222233334444',
+          hearingGroupRequestId: 'g1000000',
+          hearingId: 'h100000'
+        };
+        const action = new fromHearingLinksActions.ManageLinkedHearingGroup(payload);
+        const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);
+        expect(hearingsState.linkedHearingGroup.hearingsInGroup).toEqual(null);
       });
     });
 

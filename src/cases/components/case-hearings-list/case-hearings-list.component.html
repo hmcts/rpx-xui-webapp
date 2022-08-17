@@ -14,7 +14,7 @@
     </td>
   </tr>
   <tr class="govuk-table__row" *ngFor="let hearing of hearingList$ | async">
-    <td class="govuk-table__header govuk-table-width-30-percent gds-font">{{ hearing.hearingType | stageDisplayValue: hearingStageOptions}}
+    <td class="govuk-table__header govuk-table-width-30-percent gds-font">{{ hearing.hearingType | convertToValue: hearingStageOptions}}
       <img *ngIf="hasUpdateAction && isManageLinksEnabled(hearing.hearingGroupRequestId)" src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle" alt="Linked">
     </td>
     <td
@@ -39,7 +39,7 @@
              (click)="addAndEdit(hearing.hearingID)">Add or edit</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </ng-container>
       </div>
-      <div *ngIf="hasDeleteAction && !isNonCancellable(hearing.exuiDisplayStatus)" class="div-action">
+      <div *ngIf="hasDeleteAction && !isNonCancellable(hearing.exuiDisplayStatus) && !isAwaitingActual(hearing.exuiDisplayStatus)" class="div-action">
         <a id="link-cancel-{{hearing.hearingID}}"
            href="javascript:void(0)"
            (click)="cancelHearing(hearing.hearingID)">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;

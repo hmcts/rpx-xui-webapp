@@ -1,10 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
 import * as moment from 'moment';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { ActualHearingDayModel, HearingActualsMainModel, HearingOutcomeModel } from '../../../models/hearingActualsMainModel';
+import {combineLatest, Observable, Subscription} from 'rxjs';
+import {filter} from 'rxjs/operators';
+import {
+  ActualHearingDayModel,
+  HearingActualsMainModel,
+  HearingOutcomeModel
+} from '../../../models/hearingActualsMainModel';
 import {
   ACTION,
   HearingActualAddEditSummaryEnum,
@@ -12,10 +16,10 @@ import {
   HearingDateEnum,
   HearingResult
 } from '../../../models/hearings.enum';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { HearingsService } from '../../../services/hearings.service';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
+import {ActualHearingsUtils} from '../../../utils/actual-hearings.utils';
 
 @Component({
   selector: 'exui-hearing-actual-add-edit-summary',
@@ -37,7 +41,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingResultReasonTypeDescription: string;
   public validationErrors: { id: string, message: string }[] = [];
   public serverErrors: { id: string, message: string }[] = [
-    { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
+    {id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.'}
   ];
   public hearingStageResultErrorMessage = '';
   public hearingTimingResultErrorMessage = '';
@@ -58,7 +62,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.partyChannels = this.route.snapshot.data.partyChannel;
     this.actualPartHeardReasonCodes = this.route.snapshot.data.actualPartHeardReasonCodes;
-    this.actualCancellationReasonCodes = this.route.snapshot.data.actualCancellationReasonCodes;
+    this.actualCancellationReasonCodes = this.route.snapshot.data.cancelHearingActualReasons;
   }
 
   public ngOnInit(): void {
@@ -187,7 +191,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.validationErrors = [];
     this.hearingTimingResultErrorMessage = '';
     this.successBanner = true;
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     const updatedActuals = {
       hearingDate: hearingDay.hearingDate,
       hearingStartTime: hearingDay.hearingStartTime,
@@ -195,7 +199,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       pauseDateTimes: hearingDay.pauseDateTimes,
     } as ActualHearingDayModel;
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-      (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
+    (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
 
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -207,13 +211,13 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.validationErrors = [];
     this.hearingPartiesResultErrorMessage = '';
     this.successBanner = true;
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 
     const updatedActuals = {
       actualDayParties: [...hearingDay.actualDayParties]
     } as ActualHearingDayModel;
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-      (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
+    (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
 
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -224,7 +228,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public changeWasThisHearingDayRequired(hearingDay: ActualHearingDayModel) {
     this.validationErrors = [];
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-      (this.hearingActualsMainModel, hearingDay.hearingDate, { notRequired: !hearingDay.notRequired } as ActualHearingDayModel);
+    (this.hearingActualsMainModel, hearingDay.hearingDate, {notRequired: !hearingDay.notRequired} as ActualHearingDayModel);
 
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
@@ -251,7 +255,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         id: 'hearing-timing-result-confirm-link',
         message: HearingActualAddEditSummaryEnum.ConfirmUpdateError
       });
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     }
     if (!this.isHearingAllRequiredDaysCovered()) {
       this.validationErrors.push({
@@ -259,7 +263,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         message: HearingActualAddEditSummaryEnum.AllDaysCoveredError
       });
       this.hearingDaysRequiredErrorMessage = HearingActualAddEditSummaryEnum.AllDaysCoveredError;
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
       isValid = false;
     }
 
@@ -269,7 +273,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         message: HearingActualAddEditSummaryEnum.HearingResultError
       });
       this.hearingStageResultErrorMessage = HearingActualAddEditSummaryEnum.HearingResultError;
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
       isValid = false;
     }
 

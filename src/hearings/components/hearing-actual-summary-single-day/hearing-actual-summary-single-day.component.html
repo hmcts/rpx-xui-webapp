@@ -49,7 +49,7 @@
         <dt class="govuk-summary-list__key">How participants will attend</dt>
         <dd class="govuk-summary-list__value">
           <div *ngFor="let participant of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate)">
-            {{ participant.individualDetails.firstName }} {{ participant.individualDetails.lastName }}: {{participant.partyChannelSubType | partyChannelDisplayValue: partyChannels}}
+            {{ participant.individualDetails.firstName }} {{ participant.individualDetails.lastName }}: {{participant.partyChannelSubType | convertToValue: partyChannels}}
           </div>
         </dd>
       </div>
@@ -57,11 +57,11 @@
       <div class="govuk-summary-list__row" *ngFor="let attendee of ActualHearingsUtils.getAttendees(hearingActualsMainModel, hearingDate); let i = index;">
         <dt class="govuk-summary-list__key">Attendee {{i + 1}}</dt>
         <dd class="govuk-summary-list__value">
-          Role: {{attendee.partyRole | partyRoleDisplayValue: hearingRoles}}<br>
+          Role: {{attendee.partyRole | convertToValue: hearingRoles}}<br>
           First name: {{attendee.individualDetails.firstName}}<br>
           Last name: {{attendee.individualDetails.lastName}}<br>
           Organisation: {{attendee.actualOrganisationName}}<br>
-          Attendee Type: {{attendee.partyChannelSubType | partyChannelDisplayValue: partyChannels}} <br>
+          Attendee Type: {{attendee.partyChannelSubType | convertToValue: partyChannels}} <br>
           Attendee representing: {{attendee.representedParty && ActualHearingsUtils.getRepresentingAttendee(attendee.representedParty, hearingActualsMainModel, actualHearingDay.hearingDate) || "N/A"}}
         </dd>
       </div>

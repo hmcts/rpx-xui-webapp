@@ -1854,7 +1854,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
       hearingFinalFlag: false,
       hearingResult: HearingResult.CANCELLED,
       hearingResultDate: '2019-01-01',
-      hearingResultReasonType: 'reasonTwo',
+      hearingResultReasonType: 'unable',
       hearingType: 'Pre-hearing review',
     },
     actualHearingDays: [
@@ -2231,6 +2231,7 @@ export const initialState = {
           status: 'LISTED',
           timeStamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
+          cancellationReasonCodes: ['withdraw', 'struck']
         },
         hearingResponse: {
           listAssistTransactionID: '',

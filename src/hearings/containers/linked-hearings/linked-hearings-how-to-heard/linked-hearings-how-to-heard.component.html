@@ -67,7 +67,7 @@
                     </a>
                   </td>
                   <td class="govuk-table__cell">
-                    {{group.get('hearingStage').value}}
+                    {{group.get('hearingStage').value | convertToValue : hearingStageOptions}}
                   </td>
                   <td *ngIf="hearingOrder">
                     <select class="govuk-select" [id]="'hearingsOrder'+i" formControlName="position"

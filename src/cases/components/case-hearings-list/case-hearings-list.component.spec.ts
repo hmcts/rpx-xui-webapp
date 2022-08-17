@@ -763,8 +763,8 @@ describe('CaseHearingsListComponent', () => {
 
     const viewOrEdit9 = fixture.debugElement.query(By.css('#link-view-or-edit-h100009'));
     expect(viewOrEdit9).toBeNull();
-    const cancel9 = fixture.debugElement.query(By.css('#link-cancel-h100009')).nativeElement;
-    expect(cancel9.textContent).toBe('Cancel');
+    const cancel9 = fixture.debugElement.query(By.css('#link-cancel-h100009'));
+    expect(cancel9).toBeNull();
     const linkHearing9 = fixture.debugElement.query(By.css('#link-hearing-link-h100009'));
     expect(linkHearing9).toBeNull();
     const manageLinks9 = fixture.debugElement.query(By.css('#link-manage-links-h100009'));
@@ -876,7 +876,7 @@ describe('CaseHearingsListComponent', () => {
     // CANCELLED
     component.viewDetails(PAST_HEARING_LIST[0]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100008', '/hearings/view/hearing-cancelled-summary');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100008', '/hearings/view/hearing-cancelled-summary/h100008');
     // COMPLETED
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();

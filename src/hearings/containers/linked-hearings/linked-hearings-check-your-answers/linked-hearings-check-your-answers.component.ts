@@ -13,6 +13,7 @@ import {
   LinkedHearingsDetailModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../../../models/linkHearings.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
@@ -41,6 +42,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   ];
   public error$: Observable<HttpError>;
   public isManageJourneyFinalPage: boolean;
+  public showSpinner: boolean = true;
+  public hearingStageOptions: LovRefDataModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -56,6 +59,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
     this.hearingGroupRequestId = this.route.snapshot.params.hearingGroupRequestId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.error$ = this.hearingStore.select(fromHearingStore.getHearingLinksLastError);
+    this.hearingStageOptions = this.route.snapshot.data.hearingStageOptions;
   }
 
   public ngOnInit(): void {
@@ -69,6 +73,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
           } else {
             this.setHearingLinkedGroup(this.hearingLinks);
           }
+          this.showSpinner = false;
         }
       }
     );
@@ -98,14 +103,17 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
       this.hearingsInGroup.forEach(hearing => {
         const foundHearing = allHearings.find(aHearing => aHearing.hearingID === hearing.hearingId);
         const foundCase = hearingLinksStateData.serviceLinkedCasesWithHearings.find(linkedCase => linkedCase.caseHearings.some(aHaring => aHaring.hearingID === hearing.hearingId));
-        const linkedCaseHearingsResult: LinkedCaseHearingsResult = {
-          caseRef: foundCase.caseRef,
-          caseName: foundCase.caseName,
-          hearingID: hearing.hearingId,
-          hearingType: foundHearing.hearingType,
-          position: hearing.hearingOrder
-        };
-        if (!this.linkedCaseHearingsResults.some(result => result.hearingID === hearing.hearingId)) {
+        let linkedCaseHearingsResult: LinkedCaseHearingsResult = null;
+        if (foundCase && foundHearing) {
+          linkedCaseHearingsResult = {
+            caseRef: foundCase.caseRef,
+            caseName: foundCase.caseName,
+            hearingID: hearing.hearingId,
+            hearingType: foundHearing.hearingType,
+            position: hearing.hearingOrder
+          };
+        }
+        if (!this.linkedCaseHearingsResults.some(result => result.hearingID === hearing.hearingId) && linkedCaseHearingsResult) {
           this.linkedCaseHearingsResults.push(linkedCaseHearingsResult);
         }
       });

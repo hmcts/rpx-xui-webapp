@@ -44,6 +44,7 @@ import {ActualSummaryResponseResolver} from './resolvers/actual-summary-response
 import {AdditionalFacilitiesResolver} from './resolvers/additional-facilities.resolver';
 import {AdjournHearingActualReasonResolver} from './resolvers/adjourn-hearing-actual-reason.resolver';
 import {CancelHearingActualReasonResolver} from './resolvers/cancel-hearing-actual-reason.resolver';
+import {CancelHearingRequestReasonResolver} from './resolvers/cancel-hearing-request-reason.resolver';
 import {CaseFlagsResolver} from './resolvers/case-flags.resolver';
 import {CaseTypesResolver} from './resolvers/case-types.resolver';
 import {CourtLocationsDataResolver} from './resolvers/court-locations-resolver.resolve';
@@ -79,6 +80,9 @@ export const ROUTES: Routes = [
   },
   {
     path: 'link/:caseId/:hearingId',
+    resolve: {
+      hearingStageOptions: HearingStageResolver,
+    },
     component: LinkedHearingsComponent,
     canActivate: [HealthCheckGuard, HearingsEditGuard],
     children: [
@@ -114,6 +118,9 @@ export const ROUTES: Routes = [
   },
   {
     path: 'manage-links/:caseId/:hearingGroupRequestId/:hearingId',
+    resolve: {
+      hearingStageOptions: HearingStageResolver,
+    },
     component: LinkedHearingsComponent,
     data: {
       mode: Mode.MANAGE_HEARINGS
@@ -441,6 +448,7 @@ export const ROUTES: Routes = [
           judicialResponseUsers: JudicialUserSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
+          cancelHearingReasons: CancelHearingRequestReasonResolver,
         },
         component: HearingCancellationSummaryComponent,
         data: {
@@ -448,8 +456,11 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-cancelled-summary',
+        path: 'hearing-cancelled-summary/:id',
         resolve: {
+          actualSummary: ActualSummaryResponseResolver,
+          cancelHearingReasons: CancelHearingRequestReasonResolver,
+          cancelHearingActualReasons: CancelHearingActualReasonResolver,
           hearingPriorities: RefDataResolver,
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
@@ -491,6 +502,7 @@ export const ROUTES: Routes = [
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
           hearingRoles: HearingActualRoleResolverService,
+          adjournReasons: AdjournHearingActualReasonResolver,
         },
         component: HearingCompletedSummaryComponent,
         data: {

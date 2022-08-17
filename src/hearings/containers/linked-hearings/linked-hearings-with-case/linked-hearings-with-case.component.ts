@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {select, Store} from '@ngrx/store';
+import {Subscription} from 'rxjs';
 import {
   HearingLinkedSelectionEnum,
+  HearingSummaryEnum,
   Mode
 } from '../../../models/hearings.enum';
 import {
@@ -12,9 +13,10 @@ import {
   LinkedHearingGroupMainModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../../../models/linkHearings.model';
-import { HearingsService } from '../../../services/hearings.service';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-linked-hearings-with-case',
@@ -29,7 +31,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public hearingId: string;
   public caseName: string;
   public linkedHearingSelectionError: string;
-  public validationErrors: { id: string, message: string }[] = [];
+  public errors: { id: string, message: string }[] = [];
   public linkedCases: ServiceLinkedCasesWithHearingsModel[] = [];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public sub: Subscription;
@@ -39,6 +41,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public isHearingsAvailable: boolean;
   public linkedHearingEnum = HearingLinkedSelectionEnum;
   public mode: Mode;
+  public showSpinner: boolean = true;
+  public hearingStageOptions: LovRefDataModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -51,17 +55,24 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingGroupRequestId = this.route.snapshot.params.hearingGroupRequestId;
     this.hearingId = this.route.snapshot.params.hearingId;
+    this.hearingStageOptions = this.route.snapshot.data.hearingStageOptions;
   }
 
   public ngOnInit(): void {
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
-        this.isHearingsSelected(state.hearingLinks.serviceLinkedCasesWithHearings);
-        this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings;
-        this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
-        this.initForm();
-        this.getHearingsAvailable();
+        if (state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings) {
+          this.isHearingsSelected(state.hearingLinks.serviceLinkedCasesWithHearings);
+          this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings;
+          this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
+          if (state.hearingLinks.lastError) {
+            this.errors.push({id: 'httpError', message: HearingSummaryEnum.BackendError});
+          }
+          this.initForm();
+          this.getHearingsAvailable();
+          this.showSpinner = false;
+        }
       }
     );
   }
@@ -118,13 +129,14 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public shouldSelected(hearingInfo): boolean {
-    return this.isManageLink ? this.linkedHearingGroup.hearingsInGroup.some(x => x.hearingId === hearingInfo.hearingID) : hearingInfo.isSelected;
+    return this.isManageLink ? !!this.linkedHearingGroup.hearingsInGroup
+      && this.linkedHearingGroup.hearingsInGroup.some(x => x.hearingId === hearingInfo.hearingID) : hearingInfo.isSelected;
   }
 
   public initForm(): void {
     this.linkHearingForm = this.fb.group({
       linkedCasesWithHearings: this.getCasesFormArray
-    }, { validator: this.validators.validateLinkedHearings() });
+    }, {validator: this.validators.validateLinkedHearings()});
   }
 
   public getHearingsAvailable() {
@@ -172,13 +184,13 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         this.onUnlinkHearings();
       }
     } else {
-      this.validationErrors = [];
+      this.errors = [];
       this.linkedHearingSelectionError = null;
       if (this.linkHearingForm.valid) {
         this.saveLinkedHearingInfo();
       } else {
         this.linkedHearingSelectionError = this.linkedHearingEnum.ValidSelectionError;
-        this.validationErrors.push({ id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError });
+        this.errors.push({id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError});
       }
     }
   }
@@ -187,6 +199,15 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.linkedCases[casePos].caseHearings.forEach((hearingInfo, pos) => {
       this.getHearingsFormValue(casePos).controls[pos].get('isSelected').setValue(false);
     });
+  }
+
+  public isSelectable(hearing: HearingDetailModel): boolean {
+    const isLinkable = hearing.hearingIsLinkedFlag && !hearing.hearingGroupRequestId;
+    if (this.isManageLink) {
+      return this.hearingGroupRequestId === hearing.hearingGroupRequestId || isLinkable;
+    } else  {
+      return isLinkable;
+    }
   }
 
   public navigate(): void {

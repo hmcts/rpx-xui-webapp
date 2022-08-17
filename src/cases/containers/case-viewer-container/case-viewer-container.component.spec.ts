@@ -13,8 +13,6 @@ import { Observable, of } from 'rxjs';
 import { WASupportedJurisdictionsService } from 'src/work-allocation-2/services';
 import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { WASupportedJurisdictionsService } from 'src/work-allocation-2/services';
 
 @Component({
   // tslint:disable-next-line:component-selector

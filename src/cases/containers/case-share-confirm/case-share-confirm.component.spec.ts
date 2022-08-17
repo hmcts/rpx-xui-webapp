@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { State } from '../../../app/store/reducers';
 import { CaseShareConfirmComponent } from './case-share-confirm.component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 describe('CaseShareConfirmComponent', () => {
   let component: CaseShareConfirmComponent;
@@ -15,6 +16,16 @@ describe('CaseShareConfirmComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ CaseShareConfirmComponent ],
+      imports: [
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true,
+        })
+      ],
       providers: [
         provideMockStore(),
       ]

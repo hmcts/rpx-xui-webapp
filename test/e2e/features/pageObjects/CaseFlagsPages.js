@@ -4,6 +4,7 @@ const TaskMessageBanner = require("./messageBanner");
 const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
 const { Select, GovUKRadios } = require("../../utils/domElements");
+const config = require('../../config/functional.conf');
 
 class CaseFlagsPages {
 
@@ -11,6 +12,7 @@ class CaseFlagsPages {
     totalFlagsCount = -1;
     constructor() {
 
+        this.caseFlagId = '1660859139477705';
         this.caseFlagsCountInfo = {};
         this.totalFlagsCount = -1;
         this.caseEditPageHeader = $('.govuk-form-group h1');
@@ -20,6 +22,40 @@ class CaseFlagsPages {
         this.notificationBanner = $('ccd-notification-banner');
         this.caseFlagStatus = $$('ccd-case-flag-table  tr td:nth-child(5)  strong');
         this.optionsList = $$('#conditional-radios-list div:nth-child(2)');
+
+        //case flag case creation
+        this.caseCreationData = {
+            case_level_cf_type: $('#caseFlags_roleOnCase'),
+            case_level_cf_partyname: $('#caseFlags_partyName'),
+            party_level_cf_type: $('#CaseFlag3_roleOnCase'),
+            party_level_cf_partyname: $('#CaseFlag3_partyName'),
+            continue: $('button[type=submit]'),
+            submit: $('button[type=submit]'),
+            return: $('button[type=submit]')
+        }
+    }
+
+    async createCaseLevelCaseFlags(datatable){
+        console.log(datatable);
+        const caseFlagsDataTable = datatable.hashes();
+        caseFlagsDataTable.forEach( async row =>  {
+            await this.caseCreationData[ row ['field']].sendKeys(row ['value']);
+        });
+        await BrowserWaits.waitForElementClickable(this.caseCreationData.continue);
+        await this.caseCreationData.continue.click();
+        await BrowserWaits.waitForElementClickable(this.caseCreationData.submit);
+        await this.caseCreationData.submit.click();
+        await BrowserWaits.waitForElementClickable(this.caseCreationData.return);
+        await this.caseCreationData.return.click();
+        await browser.sleep(5000);
+        let caseUrl = await browser.getCurrentUrl();
+        console.log(caseUrl);
+        this.caseFlagId = caseUrl.match(/\d{16}/)[0];
+    }
+
+    async navigateToCreatedCaseFlagsPage(){
+        await browser.get(config.config.baseUrl + '/cases/case-details/' + this.caseFlagId);
+        await browser.sleep(5000);
     }
 
     static async setTotalFlagsCountInfo(){

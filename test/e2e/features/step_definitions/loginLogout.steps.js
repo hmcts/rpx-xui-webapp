@@ -117,6 +117,18 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
+  When('I navigate to AAT UI Url', async function () {
+    await BrowserWaits.retryWithActionCallback(async function(){
+      await browser.driver.manage()
+        .deleteAllCookies();
+      CucumberReportLogger.AddMessage("App base url : " + config.config.aatUrl);
+      await browser.get(config.config.aatUrl);
+      await BrowserWaits.waitForElement(loginPage.signinTitle);
+      expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
+    });
+
+  });
+
   Then(/^I should see failure error summary$/, async function () {
     await waitForElement('heading-large');
     await expect(loginPage.failure_error_heading.isDisplayed()).to.eventually.be.true;
@@ -360,6 +372,18 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
+  Given('I am logged into Expert UI with case flags user details', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.caseflags_username, config.config.params.caseflags_password);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.caseflags_username, config.config.params.caseflags_password, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
 
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.driver.manage()

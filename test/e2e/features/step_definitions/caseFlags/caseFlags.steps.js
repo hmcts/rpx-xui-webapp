@@ -6,6 +6,14 @@ var { defineSupportCode } = require('cucumber');
 defineSupportCode(function ({ Then, When }) {
     var caseFlagsPages = new CaseFlagsPages();
 
+    When('I create a case flags case with the following data', async function(caseFlagsDataTable){
+        await caseFlagsPages.createCaseLevelCaseFlags(caseFlagsDataTable);
+    });
+
+    When('I navigate to the created case flags case details page', async function(){
+        await caseFlagsPages.navigateToCreatedCaseFlagsPage();
+    });
+
     Then('I am on create a case flag page', async function () {
         await browser.sleep(15000);
         expect(await caseFlagsPages.amOnCreateACaseFlagPage("Where should this flag be added")).to.be.true;
@@ -38,7 +46,7 @@ defineSupportCode(function ({ Then, When }) {
     });
 
     Then('I see the case flags banner', async function () {
-        expect(await caseFlagsPages.getBannerText()).to.match(/There are \d+ active flags on this case/);
+        expect(await caseFlagsPages.getBannerText()).to.match(/\d+ active flag.? on this case/);
     });
 
     When('I make flag status {string} if {string} and modify comment {string', async function (statusBefore, statusAfter, comment) {

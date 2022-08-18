@@ -47,6 +47,7 @@
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
     "test:fullfunctional": "npm-run-all -s -c -l test:ngIntegration  test:api  test:functionalE2E",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
+    "test:fullfunctionalE2e": "protractor ./test/e2e/config/fullfunctional.conf.js",
     "fortifyScan": "./test/java/gradlew -p test/java fortifyScan",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:apiGateway": "echo 'not implemented'",

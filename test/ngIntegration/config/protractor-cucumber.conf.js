@@ -128,7 +128,8 @@ const config = {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
-        tags: getBDDTags() ,
+        //tags: getBDDTags() ,
+        tags: ["@createcaseflagscase"],
         require: [
             '../../e2e/support/timeout.js',
             '../util/cucumberHooks.js',

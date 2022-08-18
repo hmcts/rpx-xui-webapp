@@ -1,6 +1,6 @@
 const workAllocationMockData = require('./mockData');
 const bookingsMockData = require('./bookingsData');
-
+const rolesAccessMockData = require('./rolesAccess');
 const CucumberReporter = require('../../e2e/support/reportLogger');
 const MockApp = require('../app');
 
@@ -360,6 +360,12 @@ module.exports = {
         '/am/getBookings': (req, res) => {
             res.send(bookingsMockData.getBookings());
         },
+        '/api/role-access/roles/access-get': (req, res) => {
+            res.send(workAllocationMockData.caseRoles);
+        },
+        '/api/am/specific-access-approval':(req,res) =>{
+            res.send({});
+        }
     }
    
 }

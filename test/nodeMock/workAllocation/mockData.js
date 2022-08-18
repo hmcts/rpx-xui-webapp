@@ -685,6 +685,15 @@ class WorkAllocationMockData {
                 } else if (taskAttribute.toLowerCase().includes('warnings')) {
                     const val = task[taskAttribute].toLowerCase();
                     taskTemplate[taskAttribute] = val.includes('true') || val.includes('yes');
+                } else if (taskAttribute.toLowerCase().includes('warning_list')) {
+                    taskTemplate.warning_list = { values :[]};
+                    const testInputWarnings = task[taskAttribute].split(",");
+                    const responseWantings = testInputWarnings.map(t =>{
+                        return {
+                            text: t
+                        }
+                    }) 
+                    taskTemplate.warning_list.values = responseWantings;
                 } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
                     const val = task[taskAttribute].toLowerCase();
                     if (val.includes('session')) {

@@ -22,7 +22,8 @@ const CucumberReporter = require('../e2e/support/reportLogger');
 
 const nodeMockConfig = require('./config');
 
-const port = 3001;
+const nodeMockPort = require('./availablePortFinder').getAvailablePort();
+const parallelProxyStartPort = parseInt(nodeMockPort) + 1; 
 class MockApp{
 
     constructor(){
@@ -32,7 +33,7 @@ class MockApp{
 
     init(clientPortStart){
         this.requestLogs = [];
-        this.clientPortCounter = clientPortStart ? clientPortStart : 3002;
+        this.clientPortCounter = clientPortStart ? clientPortStart : parallelProxyStartPort;
         this.scenarios = {};
 
         this.browserScenarioCookieCallback = null;
@@ -112,7 +113,7 @@ class MockApp{
                 callback(req, res);
             }
         }catch(err){
-            if(port !== 3001){
+            if(port !== nodeMockPort){
                 await http.post(`http://localhost:${port}/mockerror`, { error: err })
             }
             console.log(err);
@@ -193,7 +194,7 @@ class MockApp{
             return sessionRequestMapping[method][path];
         }else{
 
-            if (this.serverPort !== 3001) {
+            if (this.serverPort !== nodeMockPort) {
                 this.logMessage(Object.keys(this.scenarioRequestCallbacks));
                 if (this.scenarioRequestCallbacks[scenarioId]){
                     this.logMessage(Object.keys(this.scenarioRequestCallbacks[scenarioId]['callbacks'][method]));
@@ -204,7 +205,7 @@ class MockApp{
     }
     
     getNextAvailableClientPort(){
-        return http.get('http://localhost:3001/proxy/port',{});
+        return http.get(`http://localhost:${nodeMockPort}/proxy/port`,{});
     }
 
     async startServer(){
@@ -348,16 +349,16 @@ module.exports = mockInstance;
 
 
 const args = minimist(process.argv)
-if (args.standalone){
-    mockInstance.setServerPort(3001);
-    mockInstance.init();
+//if (args.standalone){
+    //mockInstance.setServerPort(nodeMockPort);
+    //mockInstance.init();
 
-    setUpcaseConfig();
+    //setUpcaseConfig();
     // getDLCaseConfig();
     // collectionDynamicListeventConfig()
     // createCustomCaseDetails();
-    mockInstance.startServer()
-}
+    //mockInstance.startServer()
+//}
 
 function setUpcaseConfig() {
     const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');

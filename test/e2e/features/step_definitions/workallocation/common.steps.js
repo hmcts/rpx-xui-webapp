@@ -187,13 +187,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click task column link {string} at row {int}', async function(colName, rowPos){
-        await taskListTable.clickTaskColLink(colName,rowPos);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await taskListTable.clickTaskColLink(colName, rowPos);
+        })
     });
 
     When('I click task column link {string} at row {int}, I see case details page', async function (colName, rowPos) {
         
         await BrowserWaits.waitForPageNavigationOnAction(async () => {
-            await taskListTable.clickTaskColLink(colName, rowPos);
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await taskListTable.clickTaskColLink(colName, rowPos);
+            });
         });
 
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -512,4 +516,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskAssignmentPersonNotAuthorisedPage.backButton.click(); 
      });
 
+    Then('I validate work allocation task table column {string} width less than or equal to {int}', async function(columnName, size){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const columnWidthActual = await taskListTable.getHeaderColumnWidth(columnName);
+            reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`)
+            expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}` ).to.be.true;
+        }); 
+        
+    });
+
+    Then('I validate work allocation case table column {string} width less than or equal to {int}', async function (columnName, size) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const columnWidthActual = await waCaseListTable.getHeaderColumnWidth(columnName);
+            reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`)
+            expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}`).to.be.true;
+        });
+       
+    });
 });

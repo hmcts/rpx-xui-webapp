@@ -2,9 +2,15 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
+import { SessionStorageService } from 'src/app/services';
 import { PhaseBannerComponent } from './phase-banner.component';
 
-fdescribe('PhaseBannerComponent', () => {
+const mockSessionStorageService = {
+  getItem: jasmine.createSpy('getItem').and.returnValue(JSON.parse('false')),
+  setItem: jasmine.createSpy('setItem').and.returnValue(JSON.stringify('false'))
+};
+
+describe('PhaseBannerComponent', () => {
   let component: PhaseBannerComponent;
   let fixture: ComponentFixture<PhaseBannerComponent>;
 
@@ -18,7 +24,8 @@ fdescribe('PhaseBannerComponent', () => {
         {
           provide: RpxTranslationService,
           useFactory: rpxTranslationServiceStub
-        }
+        },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
       ]
     });
     fixture = TestBed.createComponent(PhaseBannerComponent);
@@ -42,6 +49,6 @@ fdescribe('PhaseBannerComponent', () => {
   it('should change the language', () => {
     component.toggleLanguage('en');
     expect(component.currentLang).toBe('en');
-  })
+  });
 
 });

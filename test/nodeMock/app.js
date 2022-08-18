@@ -352,7 +352,7 @@ const args = minimist(process.argv)
 if (args.standalone){
     mockInstance.setServerPort(3001);
     mockInstance.init();
-    nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles("IAC_Judge_WA_R2", "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator");
+    nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles("IAC_CaseOfficer_R2", "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator");
     // bookingsMockData.bookingResponse = [];
     // setUpcaseConfig();
     // getDLCaseConfig();

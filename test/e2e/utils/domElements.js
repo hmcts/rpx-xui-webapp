@@ -89,6 +89,12 @@ class GovUKRadios{
         throw new Error(`Radio option "${option}" not found in options "${options}"`);
     }
 
+    async selectOptionNumber(number){
+        const elements = $$(`${this.selector} .govuk-radios__item .govuk-radios__label`);
+        await elements.get(number).click();
+        
+    }
+
 }
 
 module.exports = { Select, GovUKRadios }

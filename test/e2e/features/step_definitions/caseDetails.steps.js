@@ -4,9 +4,11 @@ const CucumberReportLogger = require('../../support/reportLogger');
 var { defineSupportCode } = require('cucumber');
 const BrowserWaits = require("../../support/customWaits");
 const caseDetailsPage = require("../pageObjects/caseDetailsPage");
+const CaseFlagsPage = require('../pageObjects/CaseFlagsPages');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
    
+    var caseFlagsPage = new CaseFlagsPage();
     Then('I see case details tab label {string} is displayed is {string}', async function (tabLabel, boolString) {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel)).to.equal(boolString.toLowerCase().includes('true'))
@@ -66,5 +68,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(actualBannerMessage.join(",")).to.includes(expectedBannerMessage)
         });
         
+    });
+
+    Then('I am on {string} tab', async function(tabLabel){
+        expect (await caseFlagsPage.amOnPage()).to.be.true;
     });
 });

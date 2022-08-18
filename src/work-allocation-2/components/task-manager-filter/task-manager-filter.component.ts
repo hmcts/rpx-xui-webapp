@@ -225,7 +225,7 @@ export class TaskManagerFilterComponent implements OnInit, AfterViewInit, OnDest
         },
         {
           name: 'role',
-          value: [this.roleType]
+          value: [this.roleType === PersonRole.CTSC ? PersonRole.CASEWORKER : this.roleType]
         },
         );
       }
@@ -268,7 +268,7 @@ export class TaskManagerFilterComponent implements OnInit, AfterViewInit, OnDest
 
   public ngAfterViewInit(): void {
     (document.getElementById('select_taskType') as HTMLInputElement).value = getRoleCategory(this.roleType);
-    (document.getElementById('select_role') as HTMLInputElement).value = this.roleType;
+    (document.getElementById('select_role') as HTMLInputElement).value = this.roleType === PersonRole.CTSC ? PersonRole.CASEWORKER : this.roleType;
   }
 
   public ngOnDestroy(): void {

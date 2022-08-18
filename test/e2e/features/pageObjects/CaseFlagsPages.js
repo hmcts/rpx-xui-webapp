@@ -3,86 +3,92 @@ const BrowserWaits = require('../../support/customWaits');
 const TaskMessageBanner = require("./messageBanner");
 const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
-const { Select,GovUKRadios } = require("../../utils/domElements");
+const { Select, GovUKRadios } = require("../../utils/domElements");
 
-class CaseFlagsPages{
+class CaseFlagsPages {
 
-    constructor(){
+    activeFlagsCount = -1;
+    totalFlagsCount = -1;
+    constructor() {
 
+        this.caseFlagsCountInfo = {};
+        this.totalFlagsCount = -1;
         this.caseEditPageHeader = $('.govuk-form-group h1');
         this.nextButton = element(by.xpath("//button[text() = 'Next']"));
         this.submitButton = element(by.xpath("//button[text() = 'Submit']"));
         this.commentsTextField = $('#flagComments');
         this.notificationBanner = $('ccd-notification-banner');
-
-        this.caselistComponent = $('.case-list-component');
-
-        this.jurisdictionSelectElement = $("#wb-jurisdiction");
-        this.caseTypeSelectElement = $("#wb-case-type");
-        this.stateSelectElement = $("#wb-case-state");
-
-        this.searchApplyBtn = $("ccd-workbasket-filters form button:not(.button-secondary)");
-        this.searchReset = $("ccd-workbasket-filters form button.button-secondary");
-
-        this.searchFilterContainer = $("ccd-workbasket-filters form");
-
-        this.searchResultsTopPagination = $("ccd-search-result .pagination-top");
-        this.noResultsNotification = $("ccd-search-result .notification");
-
-        this.ccdCaseSearchResult = $('ccd-search-result');
-        this.caseListRows = $$("ccd-search-result>table>tbody>tr");
-
-        //case list pagination navigation
-        this.paginationInfotext = $(".pagination-top span");
-
-        this.paginationControlsContainer = $(".ngx-pagination");
-        this.previousPageLink = $(".ngx-pagination .pagination-previous a");
-        this.nextPageLink = $(".ngx-pagination .pagination-next a");
-
-        this.sortColumnsIconLinks = $$(".search-result-column-sort a.sort-widget");  
-
-        //Case list selection feature elements
-        this.tableHeaderSelectAllInput = $("ccd-search-result #select-all");
-        this.caseSelectionCheckboxes = $$("td .govuk-checkboxes__input");
-        this.shareCaseButton = $("#btn-share-button");
-        this.resetCaseSelectionLink = $("a.search-result-reset-link");
-
-        //ccd-case-viewer
-        this.ccdCaseViewer = $("ccd-case-viewer");
-
-        this.loadingSpinner = $(".loading-spinner-in-action");
-
-        this.taskInfoMessageBanner = new TaskMessageBanner(".case-list-component");
-
+        this.caseFlagStatus = $$('ccd-case-flag-table  tr td:nth-child(5)  strong');
+        this.optionsList = $$('#conditional-radios-list div:nth-child(2)');
     }
 
-    async amOnCreateACaseFlagPage(caseFlagsPageHeader){
+    static async setTotalFlagsCountInfo(){
+        let flagStatusCounts = {};
+        let caseFlagsStatus = await $$('ccd-case-flag-table  tr td:nth-child(5)  strong').getText();
+        flagStatusCounts['TOTAL'] = caseFlagsStatus.length;
+        caseFlagsStatus.forEach(function (x) { flagStatusCounts[x] = (flagStatusCounts[x] || 0) + 1; });
+        console.log(flagStatusCounts);
+        this.caseFlagsCountInfo = flagStatusCounts;
+    }
+
+    static getTotalFlagsCountInfo(){
+        return this.caseFlagsCountInfo;
+    }
+
+    async amOnPage(){
+        await CaseFlagsPages.setTotalFlagsCountInfo();
+        let notificationBannerText = await $('ccd-notification-banner').getText();
+        let activeFlagsCount = notificationBannerText.match(/\d+/)[0];
+        console.log(activeFlagsCount);
+        console.log(CaseFlagsPages.getTotalFlagsCountInfo());
+        return Number(activeFlagsCount) === CaseFlagsPages.getTotalFlagsCountInfo()['ACTIVE'];
+    }
+
+    async amOnCreateACaseFlagPage(caseFlagsPageHeader) {
         await BrowserWaits.waitForElement(this.caseEditPageHeader);
-        return await this.caseEditPageHeader.getText() === caseFlagsPageHeader;
+        let headerText = await this.caseEditPageHeader.getText();
+        return headerText.includes(caseFlagsPageHeader);
     }
 
-    async selectCaseFlagOption(optionText){
+    async amOnManageCaseFlagsPage(caseFlagsPageHeader) {
+        await BrowserWaits.waitForElement(this.caseEditPageHeader);
+        let headerText = await this.caseEditPageHeader.getText();
+        return headerText.includes(caseFlagsPageHeader);
+    }
+
+    async selectCaseFlagOption(optionText) {
         await browser.sleep(10000);
-        let optionToSelect = new GovUKRadios('css','#conditional-radios-list');
+        let optionToSelect = new GovUKRadios('css', '#conditional-radios-list');
         await optionToSelect.selectOption(optionText);
         await this.nextButton.click();
     }
 
-    async enterTextFieldValue(text){
+    async selectCaseFlagOptionNumber(count) {
+        await browser.sleep(10000);
+        let optionToSelect = new GovUKRadios('css', '#conditional-radios-list');
+        await optionToSelect.selectOptionNumber(count - 1);
+        //await this.optionsList.get(count).click();
+        await this.nextButton.click();
+    }
+
+    async enterTextFieldValue(text) {
         await this.commentsTextField.sendKeys(text);
         await this.nextButton.click();
     }
 
-    async submit(){
+    async submit() {
         await browser.sleep(10000);
         await BrowserWaits.waitForElementClickable(this.caseEditPageHeader);
         await this.submitButton.click();
     }
 
-    async getBannerText(){
-        
+    async getBannerText() {
         await browser.sleep(20000);
         return await this.notificationBanner.getText();
+    }
+
+    async manageFlagStatus(statusBefore, statusAfter, comment) {
+
     }
 
 }

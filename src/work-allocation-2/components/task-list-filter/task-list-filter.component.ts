@@ -46,7 +46,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public error: ErrorMessage;
   public fieldsConfig: FilterConfig = {
     persistence: 'session',
-    id: TaskListFilterComponent.FILTER_NAME,
+    id: 'locations',
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',

@@ -15,7 +15,7 @@ export class PhaseBannerComponent implements OnInit {
     return this.langService.language;
   }
 
-  constructor(private readonly langService: RpxTranslationService, 
+  constructor(private readonly langService: RpxTranslationService,
               private readonly sessionStorageService: SessionStorageService) { }
 
   public ngOnInit(): void {

@@ -194,12 +194,12 @@ describe('TaskListFilterComponent', () => {
   });
 
   it('should set the persistence to be local storage if the  user is a judicial user', () => {
-    expect(component.fieldsConfig.persistence).toBe('local');    
+    expect(component.fieldsConfig.persistence).toBe('local');
   });
 
   it('should set the fieldConfig id to locations to set the default location', () => {
-    expect(component.fieldsConfig.id).toBe('locations');    
-  });  
+    expect(component.fieldsConfig.id).toBe('locations');
+  });
 
   it('should set booking locations', () => {
     mockRouter = TestBed.get(Router);

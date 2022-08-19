@@ -71,9 +71,18 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
       dateOfBirth: null,
       dateOfDeath: null
     };
-
     // Store the search parameters to session
     this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
+
+
+    this.searchService.getResults().subscribe( result => {
+
+      //after backedn api fixed by backend team code should be as below
+      //   if ( !result.resultInfo.casesReturned && result.resultInfo.casesReturned === 0) {
+      //     this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
+      //     return;
+      //   }
+
 
     // If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page
     if (this.formGroup.get(this.CASE_REF_FIELD).invalid) {
@@ -86,6 +95,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
 
     // Navigate to case details page, ensuring the case reference is sanitised, i.e. has been stripped of separators (spaces and '-' characters)
     this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+    })
   }
 
   public ngOnDestroy(): void {

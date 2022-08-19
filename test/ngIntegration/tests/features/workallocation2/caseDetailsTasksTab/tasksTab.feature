@@ -16,7 +16,7 @@ Feature: WA Release 2: Case details Tasks tab
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
-        Given I set MOCK request "/workallocation2/case/task/:caseid" response log to report
+        Given I set MOCK request "/workallocation/case/task/:caseid" response log to report
 
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"

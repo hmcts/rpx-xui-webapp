@@ -2,7 +2,7 @@
 Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
     Background: User and mock data setup
-        Given I set MOCK request "/workallocation2/findPerson" response log to report
+        Given I set MOCK request "/workallocation/findPerson" response log to report
         Given I set MOCK request "/api/role-access/roles/post" response log to report
 
         Given I set MOCK case details with reference "caseDetails"

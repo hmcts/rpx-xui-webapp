@@ -1183,10 +1183,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.14-rc1":
-  version "4.18.14-rc1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.14-rc1.tgz#0c168abd24505424d71453395153247ab366a92c"
-  integrity sha512-OuHJfAwZO2y7Q3liVRg6XytStg2l8eGu6mVW0mobk9VUJA0A8L7vP0J8gqaniCIZbYQUOns8qAx14T4O1eTcGQ==
+"@hmcts/ccd-case-ui-toolkit@4.18.16-EUI-2831-dynamic-multiselect":
+  version "4.18.16-EUI-2831-dynamic-multiselect"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.16-EUI-2831-dynamic-multiselect.tgz#08b043cabe8b9e3f030d1d18cea8ac14565acd9e"
+  integrity sha512-XlxSXOytK1/UMNenQ4LAkrFHpeiSzBtC4L5QbsuOE8b9wodYUYog9l6dyuI/Paws24WapggKa/McqHjHhe2Gug==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -13478,7 +13478,7 @@ rx-polling@1.1.0:
   resolved "https://registry.yarnpkg.com/rx-polling/-/rx-polling-1.1.0.tgz#633fc1813e05bb974f4dccd84e5a58b65e5395b1"
   integrity sha512-Y/YBGBewcbx+PXXoEEL4pxa7StHqKJcg1DHNhRIitSoakEZUa5inEEjpjQaksQfr9krsESP9GAdlPZmF31MO3g==
 
-rxjs-compat@^6.3.3, rxjs-compat@^6.6.7:
+rxjs-compat@^6.6.7:
   version "6.6.7"
   resolved "https://registry.yarnpkg.com/rxjs-compat/-/rxjs-compat-6.6.7.tgz#6eb4ef75c0a58ea672854a701ccc8d49f41e69cb"
   integrity sha512-szN4fK+TqBPOFBcBcsR0g2cmTTUF/vaFEOZNuSdfU8/pGFnNmmn2u8SystYXG1QMrjOPBc6XTKHMVfENDf6hHw==
@@ -13497,7 +13497,7 @@ rxjs@6.4.0:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@^6.3.3, rxjs@^6.4.0, rxjs@^6.5.3, rxjs@~6.6.0:
+rxjs@^6.4.0, rxjs@^6.5.3, rxjs@~6.6.0:
   version "6.6.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==

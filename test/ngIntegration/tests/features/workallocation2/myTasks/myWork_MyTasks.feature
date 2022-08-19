@@ -107,7 +107,7 @@ Feature: WA Release 2: My work - My Tasks
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page

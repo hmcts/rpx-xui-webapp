@@ -176,7 +176,7 @@ Feature: WA Release 2: My work - My tasks - Task assignment
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
 
-        Given I set MOCK api method "post" endpoint "/workallocation2/task/:taskId/assign" with error response code 401
+        Given I set MOCK api method "post" endpoint "/workallocation/task/:taskId/assign" with error response code 401
         
         Given I start MockApp
         Given I navigate to home page

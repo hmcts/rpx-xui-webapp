@@ -20,6 +20,12 @@ class CaseFlagsPages {
         this.submitButton = element(by.xpath("//button[text() = 'Submit']"));
         this.commentsTextField = $('#flagComments');
         this.notificationBanner = $('ccd-notification-banner');
+        this.caseFlagFields = {
+            heading: $('ccd-case-flag-table  tr:nth-child(1) td:nth-child(1)'),
+            comment: $('ccd-case-flag-table  tr:nth-child(1) td:nth-child(2)'),
+            creationDate: $('ccd-case-flag-table  tr:nth-child(1) td:nth-child(3)'),
+            lastModifiedDate: $('ccd-case-flag-table  tr:nth-child(1) td:nth-child(4)')
+        };
         this.caseFlagStatus = $$('ccd-case-flag-table  tr td:nth-child(5)  strong');
         this.optionsList = $$('#conditional-radios-list div:nth-child(2)');
 
@@ -33,6 +39,12 @@ class CaseFlagsPages {
             submit: $('button[type=submit]'),
             return: $('button[type=submit]')
         }
+    }
+
+    async getCaseFlagOptions(){
+        let optionsDomElement = new GovUKRadios('css', '#conditional-radios-list');
+        let optionsList = await optionsDomElement.getOptions();
+        return optionsList;
     }
 
     async createCaseLevelCaseFlags(datatable){

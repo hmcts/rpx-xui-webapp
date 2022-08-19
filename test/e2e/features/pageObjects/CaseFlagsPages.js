@@ -33,8 +33,8 @@ class CaseFlagsPages {
         this.caseCreationData = {
             case_level_cf_type: $('#caseFlags_roleOnCase'),
             case_level_cf_partyname: $('#caseFlags_partyName'),
-            party_level_cf_type: $('#CaseFlag3_roleOnCase'),
-            party_level_cf_partyname: $('#CaseFlag3_partyName'),
+            party_level_cf_type: $('#CaseFlag_roleOnCase'),
+            party_level_cf_partyname: $('#CaseFlag_partyName'),
             continue: $('button[type=submit]'),
             submit: $('button[type=submit]'),
             return: $('button[type=submit]')

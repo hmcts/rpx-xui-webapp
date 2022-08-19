@@ -5,6 +5,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { GetHelpComponent } from '..';
 import { of } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { RpxTranslatePipe } from 'rpx-xui-translation';
 
 describe('GetHelpComponent', () => {
   let component: GetHelpComponent;
@@ -13,7 +14,7 @@ describe('GetHelpComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [GetHelpComponent, ContactDetailsComponent],
+      declarations: [GetHelpComponent, ContactDetailsComponent, RpxTranslatePipe],
       providers: [
       {
         provide: Store,

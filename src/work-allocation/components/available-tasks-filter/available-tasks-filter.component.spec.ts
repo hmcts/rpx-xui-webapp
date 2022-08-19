@@ -3,6 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslatePipe, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 
 import * as dtos from '../../models/dtos';
@@ -34,6 +35,7 @@ describe('AvailableTasksFilterComponent', () => {
     [FilterConstants.Session.AvailableTasks]: mockSavedFilter
   };
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockRpxTranslationService = jasmine.createSpyObj('mockRpxTranslationService', ['translate']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,6 +44,7 @@ describe('AvailableTasksFilterComponent', () => {
       ],
       declarations: [ AvailableTasksFilterComponent, WrapperComponent ],
       providers: [
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService },
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter }
       ]

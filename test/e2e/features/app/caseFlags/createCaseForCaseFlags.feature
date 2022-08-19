@@ -1,4 +1,4 @@
-@fullfunctional1
+@fullfunctional12
 Feature: Create Case for Case Flags
     Create Case for Case Flags
 

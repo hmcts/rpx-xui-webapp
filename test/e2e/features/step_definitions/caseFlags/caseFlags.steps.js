@@ -19,6 +19,22 @@ defineSupportCode(function ({ Then, When }) {
         expect(await caseFlagsPages.amOnCreateACaseFlagPage("Where should this flag be added")).to.be.true;
     });
 
+    Then('I check for case flag fields', async function(caseFlagsFields){
+        let fieldsToCheck = caseFlagsFields.rows().map( row =>  row[0] );
+        fieldsToCheck.forEach( async field =>  {
+            let text = await caseFlagsPages.caseFlagFields[field].getText();
+            console.log('text is : ' + text);
+            //expect(await caseFlagsPages.caseFlagFields[field].getText()).to.not.be.null;
+        });
+    });
+
+    Then('I see the following case flags options', async function(caseFlagsOptions){
+        await browser.sleep(5000);
+        let listedOptions = await caseFlagsPages.getCaseFlagOptions();
+        let expectedOptions = caseFlagsOptions.rows().map( row =>  row[0] );
+        expect(listedOptions).to.deep.equal(expectedOptions);
+    });
+
     Then('I am on manage case flags page', async function () {
         await browser.sleep(15000);
         expect(await caseFlagsPages.amOnManageCaseFlagsPage("Manage case flags")).to.be.true;

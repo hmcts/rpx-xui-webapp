@@ -134,7 +134,7 @@ const config = {
 
     },
     cucumberOpts: {
-        'fail-fast': argv.failFast ? argv.failFast.includes("true") : true,
+        'fail-fast': argv.failFast ? argv.failFast.includes("true") : false,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],

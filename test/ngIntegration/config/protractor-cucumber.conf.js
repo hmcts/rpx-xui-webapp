@@ -30,7 +30,11 @@ const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-se
 
 
  
-const nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+let  nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
+if (argv.debug){
+    nodeMockPort = 3001; 
+}
 
 const perfLoggingPrefs = {
     'enableNetwork': true,

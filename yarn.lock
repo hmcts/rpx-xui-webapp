@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.10-revert-erroneous-html-tag-change":
-  version "4.18.10-revert-erroneous-html-tag-change"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.10-revert-erroneous-html-tag-change.tgz#8ab91b44affe02bd99d596bdd4b5955d3078bff5"
-  integrity sha512-KY2W5UUV7F8meXjlx6LIxkqbknTxfh2FTArtUKBIghJSSTuKM5oke6aCg23kXf+rAZMBraC77C7ip/W9fRiTYg==
+"@hmcts/ccd-case-ui-toolkit@4.18.14-case-flags":
+  version "4.18.14-case-flags"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.14-case-flags.tgz#170efc55338ac49d0e3aada8aa1cf687e1fd1043"
+  integrity sha512-BJir+16Xtmmjw140V0PhWobffepC/xGPvHAvWSnFKXstH0W+G7BuqvIsDnAoPXb4LQgstgwQq7Ps0ooux14lTA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

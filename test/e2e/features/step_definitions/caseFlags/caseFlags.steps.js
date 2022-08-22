@@ -68,4 +68,9 @@ defineSupportCode(function ({ Then, When }) {
     When('I make flag status {string} if {string} and modify comment {string', async function (statusBefore, statusAfter, comment) {
         await caseFlagsPages.manageFlagStatus(statusBefore, statusAfter, comment);
     });
+
+    When('I enter Other flag type {string}', async function(otherFlagType){
+        await caseFlagsPages.enterOtherFlagType(otherFlagType);
+        await caseFlagsPages.nextButton.click();
+    });
 });

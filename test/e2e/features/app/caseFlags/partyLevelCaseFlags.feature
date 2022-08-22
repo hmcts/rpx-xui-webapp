@@ -1,4 +1,4 @@
-@fullfunctional1
+@fullfunctional12
 Feature: Party Level Case Flags
   Party Level Case Flags
 

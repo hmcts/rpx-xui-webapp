@@ -5,6 +5,7 @@ const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
 const { Select, GovUKRadios } = require("../../utils/domElements");
 const config = require('../../config/functional.conf');
+const { createThis } = require('typescript');
 
 class CaseFlagsPages {
 
@@ -13,6 +14,7 @@ class CaseFlagsPages {
     constructor() {
 
         this.caseFlagId = '1660859139477705';
+        this.caseCreated = false;
         this.caseFlagsCountInfo = {};
         this.totalFlagsCount = -1;
         this.caseEditPageHeader = $('.govuk-form-group h1');
@@ -28,17 +30,22 @@ class CaseFlagsPages {
         };
         this.caseFlagStatus = $$('ccd-case-flag-table  tr td:nth-child(5)  strong');
         this.optionsList = $$('#conditional-radios-list div:nth-child(2)');
+        this.otherFlagType = $('#other-flag-type-description');
 
         //case flag case creation
         this.caseCreationData = {
             case_level_cf_type: $('#caseFlags_roleOnCase'),
             case_level_cf_partyname: $('#caseFlags_partyName'),
-            party_level_cf_type: $('#CaseFlag_roleOnCase'),
-            party_level_cf_partyname: $('#CaseFlag_partyName'),
+            party_level_cf_type: $('#CaseFlag1_roleOnCase'),
+            party_level_cf_partyname: $('#CaseFlag1_partyName'),
             continue: $('button[type=submit]'),
             submit: $('button[type=submit]'),
             return: $('button[type=submit]')
         }
+    }
+
+    async enterOtherFlagType(text){
+        await this.otherFlagType.sendKeys(text);
     }
 
     async getCaseFlagOptions(){
@@ -48,9 +55,17 @@ class CaseFlagsPages {
     }
 
     async createCaseLevelCaseFlags(datatable){
+        console.log('case created value : ' + this.caseCreated)
+        if(this.caseCreated) {
+            console.log('--------------------- NOT GOING TO PRINT ---------------------');
+            return;
+        }
+        console.log('---------------------------------------------------');
         console.log(datatable);
+        console.log('---------------------------------------------------');
         const caseFlagsDataTable = datatable.hashes();
         caseFlagsDataTable.forEach( async row =>  {
+            await BrowserWaits.waitForElement(this.caseCreationData[ row ['field']]);
             await this.caseCreationData[ row ['field']].sendKeys(row ['value']);
         });
         await BrowserWaits.waitForElementClickable(this.caseCreationData.continue);
@@ -63,6 +78,7 @@ class CaseFlagsPages {
         let caseUrl = await browser.getCurrentUrl();
         console.log(caseUrl);
         this.caseFlagId = caseUrl.match(/\d{16}/)[0];
+        this.caseCreated = true;
     }
 
     async navigateToCreatedCaseFlagsPage(){
@@ -108,7 +124,9 @@ class CaseFlagsPages {
         await browser.sleep(10000);
         let optionToSelect = new GovUKRadios('css', '#conditional-radios-list');
         await optionToSelect.selectOption(optionText);
-        await this.nextButton.click();
+        if(optionText !== 'Other') {
+            await this.nextButton.click();
+        }
     }
 
     async selectCaseFlagOptionNumber(count) {

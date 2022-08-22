@@ -1,3 +1,4 @@
+const BrowserWaits = require('../../../support/customWaits');
 var CaseFlagsPages = require("../../pageObjects/CaseFlagsPages");
 
 var { defineSupportCode } = require('cucumber');
@@ -15,7 +16,7 @@ defineSupportCode(function ({ Then, When }) {
     });
 
     Then('I am on create a case flag page', async function () {
-        await browser.sleep(15000);
+        await browser.sleep(10000);
         expect(await caseFlagsPages.amOnCreateACaseFlagPage("Where should this flag be added")).to.be.true;
     });
 
@@ -36,7 +37,7 @@ defineSupportCode(function ({ Then, When }) {
     });
 
     Then('I am on manage case flags page', async function () {
-        await browser.sleep(15000);
+        await browser.sleep(10000);
         expect(await caseFlagsPages.amOnManageCaseFlagsPage("Manage case flags")).to.be.true;
     });
 
@@ -53,8 +54,43 @@ defineSupportCode(function ({ Then, When }) {
         expect (await caseFlagsPages.caseEditPageHeader.getText()).to.include(pageHeader);
     });
 
+    When('I make the case flag inactive', async function(){
+        expect(await caseFlagsPages.statusField.getText()).to.equal('ACTIVE');
+        await caseFlagsPages.deactivateFlag();
+        expect(await caseFlagsPages.statusField.getText()).to.equal('INACTIVE');
+    });
+
     When('I enter {string} in text field', async function (text) {
         await caseFlagsPages.enterTextFieldValue(text);
+    });
+
+    Then('I am on Review Flag Details Page', async function(datatable){
+        const flagDetails = datatable.hashes();
+        flagDetails.forEach( async (row, index) =>  {
+            await BrowserWaits.waitForElement(caseFlagsPages.reviewCreateCaseFlagsFields.get(index));
+            console.log(await caseFlagsPages.reviewCreateCaseFlagsFields.get(index).getText());
+            console.log([row ['field']][0]);
+            console.log(await caseFlagsPages.reviewCreatedCaseFlagsValues.get(index).getText());
+            console.log([ row ['value']][0]);
+            expect(await caseFlagsPages.reviewCreateCaseFlagsFields.get(index).getText()).to.equal([ row ['field']][0]);
+            expect(await caseFlagsPages.reviewCreatedCaseFlagsValues.get(index).getText()).to.include([ row ['value']][0]);
+            //await this.caseCreationData[ row ['field']].sendKeys(row ['value']);
+        });
+    });
+
+    When('I click change', async function(){
+        await BrowserWaits.waitForElementClickable(caseFlagsPages.changeButton);
+        await caseFlagsPages.changeButton.click();
+    });
+
+    When('I click previous button', async function(){
+        await BrowserWaits.waitForElementClickable(caseFlagsPages.previousButton);
+        await caseFlagsPages.previousButton.click();
+    });
+
+    When('I click cancel link', async function(){
+        await BrowserWaits.waitForElementClickable(caseFlagsPages.cancelOption);
+        await caseFlagsPages.cancelOption.click();
     });
 
     When('I submit case flag', async function () {
@@ -72,5 +108,24 @@ defineSupportCode(function ({ Then, When }) {
     When('I enter Other flag type {string}', async function(otherFlagType){
         await caseFlagsPages.enterOtherFlagType(otherFlagType);
         await caseFlagsPages.nextButton.click();
+    });
+
+    When('I click {string} button and check for {string} error notification', async function(buttonToClick, errorMessage){
+        if(buttonToClick === "Next"){
+            await BrowserWaits.waitForElementClickable(caseFlagsPages.nextButton);
+            await caseFlagsPages.nextButton.click();
+            let errHeading = await caseFlagsPages.errorSummaryHeadings.getText();
+            let errMsg = await caseFlagsPages.errorSummaryField.getText()
+            console.log(errMsg);
+            expect((await caseFlagsPages.errorSummaryHeadings.getText()).join(':')).to.include(errorMessage);
+            expect(await caseFlagsPages.errorSummaryField.getText()).to.include(errorMessage);
+        }
+        else if(buttonToClick === "Continue"){
+            await BrowserWaits.waitForElementClickable(caseFlagsPages.continueButton);
+            await caseFlagsPages.continueButton.click();
+            let errMsg = await caseFlagsPages.errorSummaryHeadings.getText();
+            console.log(errMsg);
+            expect((await caseFlagsPages.errorSummaryHeadings.getText()).join(':')).to.include(errorMessage);
+        }
     });
 });

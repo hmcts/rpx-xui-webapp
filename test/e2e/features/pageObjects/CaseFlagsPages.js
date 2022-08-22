@@ -20,6 +20,11 @@ class CaseFlagsPages {
         this.caseEditPageHeader = $('.govuk-form-group h1');
         this.nextButton = element(by.xpath("//button[text() = 'Next']"));
         this.submitButton = element(by.xpath("//button[text() = 'Submit']"));
+        this.previousButton = element(by.xpath("//button[text() = 'Previous']"));
+        this.cancelOption = $('ccd-case-edit-submit form p a');
+        this.continueButton = element(by.xpath("//button[text() = 'Continue']"));
+        this.statusButton = $('.govuk-grid-row div button');
+        this.statusField = $('ccd-update-flag .govuk-tag');
         this.commentsTextField = $('#flagComments');
         this.notificationBanner = $('ccd-notification-banner');
         this.caseFlagFields = {
@@ -31,6 +36,11 @@ class CaseFlagsPages {
         this.caseFlagStatus = $$('ccd-case-flag-table  tr td:nth-child(5)  strong');
         this.optionsList = $$('#conditional-radios-list div:nth-child(2)');
         this.otherFlagType = $('#other-flag-type-description');
+        this.reviewCreateCaseFlagsFields = $$('ccd-case-flag-summary-list dt');
+        this.reviewCreatedCaseFlagsValues = $$('ccd-case-flag-summary-list dd');
+        this.changeButton = element(by.linkText('Change'));
+        this.errorSummaryHeadings = $$('ccd-case-edit .govuk-error-summary');
+        this.errorSummaryField = $('ccd-case-edit .govuk-error-message');
 
         //case flag case creation
         this.caseCreationData = {
@@ -151,6 +161,11 @@ class CaseFlagsPages {
     async getBannerText() {
         await browser.sleep(20000);
         return await this.notificationBanner.getText();
+    }
+
+    async deactivateFlag(){
+        await BrowserWaits.waitForElementClickable(this.statusButton);
+        await this.statusButton.click();
     }
 
     async manageFlagStatus(statusBefore, statusAfter, comment) {

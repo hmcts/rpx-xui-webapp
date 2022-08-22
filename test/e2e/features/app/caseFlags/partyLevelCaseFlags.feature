@@ -12,6 +12,8 @@ Feature: Party Level Case Flags
     Then I am on case form page
     When I create a case flags case with the following data
       | field                    | value                          |
+      | case_level_cf_type       | Complex Case                   |
+      | case_level_cf_partyname  | Case Level Case Flags Party 1  |
       | party_level_cf_type      | Reasonable adjustment          |
       | party_level_cf_partyname | Party Level Case Flags Party 1 |
     When I navigate to the created case flags case details page
@@ -61,11 +63,10 @@ Feature: Party Level Case Flags
     Then I see case details page displayed with tab "Case flags" selected
     And I am on "Case flags" tab
     Then I check for case flag fields
-      | fields           |
-      | heading          |
-      | comment          |
-      | creationDate     |
-      | lastModifiedDate |
+      | fields       |
+      | heading      |
+      | comment      |
+      | creationDate |
     When I start case next step "Manage case flags"
     Then I am on manage case flags page
     When I select "Party Level Case Flags Party 1" case flag option

@@ -1,4 +1,4 @@
-@fullfunctional1
+@fullfunctional12
 Feature: Case Level Case Flags Other Type
   Case Level Case Flags Other Type
 

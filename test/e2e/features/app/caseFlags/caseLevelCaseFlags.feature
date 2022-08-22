@@ -1,4 +1,3 @@
-@fullfunctional12
 Feature: Case Level Case Flags
   Case Level Case Flags
 
@@ -19,9 +18,12 @@ Feature: Case Level Case Flags
     And I click tab with label "Case flags" in case details page
     Then I see case details page displayed with tab "Case flags" selected
 
+  @fullfunctional1
   Scenario: Create and Manage Case Level Case Flags
     When I start case next step "Create case flag"
     Then I am on case flags "Where should this flag be added?" page
+    When I click "Next" button and check for "Please make a selection" error notification
+    And I click "Continue" button and check for "Please select Next to complete the creation of the case flag" error notification
     When I select "Case Level Case Flags Party 1" case flag option
     Then I am on case flags "Select flag type" page
     Then I see the following case flags options
@@ -39,25 +41,42 @@ Feature: Case Level Case Flags
       | RRO (Restricted Reporting Order / Anonymisation) |
       | Closed material                                  |
       | Other                                            |
+    When I click "Next" button and check for "Please select a flag type" error notification
+    And I click "Continue" button and check for "Please select Next to complete the creation of the case flag" error notification
     When I select "Complex Case" case flag option
     Then I am on case flags "Add comments for this flag" page
+    When I click "Next" button and check for "Please enter comments for this flag" error notification
+    And I click "Continue" button and check for "Please select Next to complete the creation of the case flag" error notification
     When I enter "comments for case level case flags" in text field
+    Then I am on Review Flag Details Page
+      | field       | value                              |
+      | Add flag to | Case Level Case Flags Party 1      |
+      | Flag type   | Complex Case                       |
+      | Comments    | comments for case level case flags |
     When I submit case flag
     Then I see the case flags banner
     When I click tab with label "Case flags" in case details page
     Then I see case details page displayed with tab "Case flags" selected
     And I am on "Case flags" tab
     Then I check for case flag fields
-      | fields           |
-      | heading          |
-      | comment          |
-      | creationDate     |
-      | lastModifiedDate |
+      | fields       |
+      | heading      |
+      | comment      |
+      | creationDate |
     When I start case next step "Manage case flags"
     Then I am on manage case flags page
+    When I click "Next" button and check for "Please make a selection" error notification
+    And I click "Continue" button and check for "Please select Next to complete the update of the selected case flag" error notification
     When I select "Case name missing - Complex Case (comments for case level case flags)" case flag option
     Then I am on case flags "Update flag" page
+    When I make the case flag inactive
     When I enter "modifying test case flags" in text field
+    Then I am on Review Flag Details Page
+      | field           | value                              |
+      | Update flag for | Case Level Case Flags Party 1      |
+      | Flag type       | Complex Case                       |
+      | Comments        | comments for case level case flags |
+      | Status          | Inactive                           |
     And I submit case flag
     Then I see the case flags banner
     When I click tab with label "Case flags" in case details page
@@ -68,3 +87,6 @@ Feature: Case Level Case Flags
       | comment          |
       | creationDate     |
       | lastModifiedDate |
+
+
+

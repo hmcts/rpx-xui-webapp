@@ -44,6 +44,7 @@ const config = {
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   specs: ['../features/**/*.feature'],
   baseUrl: process.env.TEST_URL || 'http://localhost:3000/',
+  createCaseForCaseFlagsUrl: process.env.CREATE_CASE_FOR_CASE_FLAGS_URL || 'https://manage-case.demo.platform.hmcts.net/',
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
     targetEnv: argv.env || 'local',
@@ -60,6 +61,8 @@ const config = {
 
     caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'xui_auto_co_r1@justice.gov.uk' ,
     caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01',
+    caseflags_username: process.env.CASEFLAGS_USERNAME ? process.env.CASEFLAGS_USERNAME :'henry_fr_harper@yahoo.com' ,
+    caseflags_password: process.env.CASEFLAGS_PASSWORD ? process.env.CASEFLAGS_PASSWORD :'Nagoya0102',
     hrsTesterUser: 'xui.hrs.tester@hmcts.net',
     hrsTesterPassword: 'Monday01',
     ia_users_credentials: {

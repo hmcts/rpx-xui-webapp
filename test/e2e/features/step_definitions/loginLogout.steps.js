@@ -33,34 +33,34 @@ defineSupportCode(function ({ Given, When, Then }) {
       try {
         // await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
         await BrowserWaits.waitForCondition(async () => {
-          let isEmailFieldDisplayed = await loginPage.emailAddress.isPresent() ;
+          let isEmailFieldDisplayed = await loginPage.emailAddress.isPresent();
           let credentialsErrorPresent = await loginPage.isLoginCredentialsErrorDisplayed();
           let isEmailValuePresent = false;
-          if (isEmailFieldDisplayed){
+          if (isEmailFieldDisplayed) {
             let isEmailValuePresent = (await loginPage.emailAddress.getText()) !== "";
           }
           let errorMessage = "";
-          if (credentialsErrorPresent){
+          if (credentialsErrorPresent) {
             invalidCredentialsCounter++;
             errorMessage = testCounter + " Credentials error occured " + invalidCredentialsCounter;
           }
 
-          if (isEmailFieldDisplayed && !isEmailValuePresent){
-            errorMessage = errorMessage +" : " +testCounter+" login page refresh ";
+          if (isEmailFieldDisplayed && !isEmailValuePresent) {
+            errorMessage = errorMessage + " : " + testCounter + " login page refresh ";
           }
 
           const currentUrl = await browser.getCurrentUrl();
-          if (!isEmailFieldDisplayed && currentUrl.includes("idam-web-public")){
-            errorMessage = errorMessage + ":" +testCounter+" Unknown IDAM service error occured. See attached screenshot ";
+          if (!isEmailFieldDisplayed && currentUrl.includes("idam-web-public")) {
+            errorMessage = errorMessage + ":" + testCounter + " Unknown IDAM service error occured. See attached screenshot ";
           }
           // console.log(testCounter +" : error message =>"+errorMessage+"<=");
-          if (errorMessage !== ""){
+          if (errorMessage !== "") {
             throw new Error(errorMessage);
-          } else if (isEmailFieldDisplayed && emailValuePresent){
+          } else if (isEmailFieldDisplayed && emailValuePresent) {
             console.log(testCounter + "  ");
 
             return false;
-          }else{
+          } else {
             return true;
           }
 
@@ -79,7 +79,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
           console.log(err + " : Login re attempt " + loginAttemptRetryCounter);
           world.attach(err + " : Login re attempt " + loginAttemptRetryCounter);
-        console.log(err);
+          console.log(err);
           await browser.driver.manage()
             .deleteAllCookies();
           const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
@@ -106,7 +106,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   When('I navigate to Expert UI Url', async function () {
-    await BrowserWaits.retryWithActionCallback(async function(){
+    await BrowserWaits.retryWithActionCallback(async function () {
       await browser.driver.manage()
         .deleteAllCookies();
       CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
@@ -115,6 +115,17 @@ defineSupportCode(function ({ Given, When, Then }) {
       expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
     });
 
+  });
+
+  When('I navigate to AAT UI Url', async function () {
+    await BrowserWaits.retryWithActionCallback(async function () {
+      await browser.driver.manage()
+        .deleteAllCookies();
+      CucumberReportLogger.AddMessage("App base url : " + config.config.createCaseForCaseFlagsUrl);
+      await browser.get(config.config.createCaseForCaseFlagsUrl);
+      await BrowserWaits.waitForElement(loginPage.signinTitle);
+      expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
+    });
   });
 
   Then(/^I should see failure error summary$/, async function () {
@@ -195,13 +206,13 @@ defineSupportCode(function ({ Given, When, Then }) {
     const world = this;
 
     await BrowserWaits.retryWithActionCallback(async () => {
-      try{
+      try {
         await BrowserUtil.waitForLD();
         await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
         await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
-        
+
         await BrowserUtil.waitForLD();
-      }catch(err){
+      } catch (err) {
         await browser.get(config.config.baseUrl);
         throw new Error(err);
       }
@@ -291,14 +302,14 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Then('I should see the expected banner for IA {string}', async function (usertype) {
     let bannerElementBgColor = await headerPage.headerBanner.getAttribute('style');
-    let navItems =  await headerPage.primaryNavBar_NavItems.getText();
-    if(usertype === 'judge') {
+    let navItems = await headerPage.primaryNavBar_NavItems.getText();
+    if (usertype === 'judge') {
       // expect(bannerElementBgColor).to.equal('background-color: rgb(141, 15, 14);');
       expect(navItems).to.not.include('Create case');
       return;
     }
     expect(bannerElementBgColor).to.equal('background-color: rgb(32, 32, 32);');
-});
+  });
 
   Given('I am logged into Expert UI caseworker-ia-adm user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password);
@@ -330,7 +341,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     const world = this;
 
     const matchingUsers = testConfig.users[testConfig.testEnv].filter(user => user.userIdentifier === testUserIdentifier);
-    if (matchingUsers.length === 0 ){
+    if (matchingUsers.length === 0) {
       throw new Error(`Test user with identifier ${testUserIdentifier} is not found, check app test config anf fix test issue`);
     }
 
@@ -360,6 +371,18 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
+  Given('I am logged into Expert UI with case flags user details', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.caseflags_username, config.config.params.caseflags_password);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.caseflags_username, config.config.params.caseflags_password, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
 
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.driver.manage()

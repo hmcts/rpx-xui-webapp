@@ -52,7 +52,7 @@ class GovUKRadios{
     async isEnabled(){
         const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${this.selector}`));
 
-        return await containert.isEnabled();
+        return await container.isEnabled();
     }
 
     async getRadioOptions(){

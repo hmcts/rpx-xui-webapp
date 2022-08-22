@@ -4,9 +4,12 @@ const CucumberReportLogger = require('../../support/reportLogger');
 var { defineSupportCode } = require('cucumber');
 const BrowserWaits = require("../../support/customWaits");
 const caseDetailsPage = require("../pageObjects/caseDetailsPage");
+const CaseFlagsPage = require('../pageObjects/CaseFlagsPages');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
-   
+
+    let caseFlagsPage = new CaseFlagsPage();
+
     Then('I see case details tab label {string} is displayed is {string}', async function (tabLabel, boolString) {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel)).to.equal(boolString.toLowerCase().includes('true'))
@@ -21,11 +24,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
-    Then('I see case details tab label {string} displayed', async function(tabLabel){
+    Then('I see case details tab label {string} displayed', async function (tabLabel) {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel)).to.be.true
         });
-        
+
     });
 
     Then('I see case details tab label {string} not displayed', async function (tabLabel) {
@@ -36,7 +39,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    Then('I see case details tab with label {string} is selected', async function (tabLabel){
+    Then('I see case details tab with label {string} is selected', async function (tabLabel) {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel)).to.be.true
         });
@@ -50,21 +53,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click tab with label {string} in case details page', async function (tabLabel) {
         await BrowserWaits.retryWithActionCallback(async () => {
-            await caseDetailsPage.clickTabWithLabel(tabLabel)    
+            await caseDetailsPage.clickTabWithLabel(tabLabel)
         });
     });
 
-    Then('I see case details page displayed with tab {string} selected', async function(tabLabel){
-        expect(await caseDetailsPage.amOnPage(),'Not on case details page').to.be.true;
+    Then('I see case details page displayed with tab {string} selected', async function (tabLabel) {
+        expect(await caseDetailsPage.amOnPage(), 'Not on case details page').to.be.true;
         expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel), `Tab with label "${tabLabel}" is not present or displayed`).to.be.true;
         expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel), `Tab with label "${tabLabel}" is not selected`).to.be.true;
     });
 
-    Then('I see case details page with message banner {string}', async function(expectedBannerMessage){
+    Then('I see case details page with message banner {string}', async function (expectedBannerMessage) {
         await BrowserWaits.retryWithActionCallback(async () => {
             const actualBannerMessage = await caseDetailsPage.messageBanner.getBannerMessagesDisplayed();
             expect(actualBannerMessage.join(",")).to.includes(expectedBannerMessage)
         });
-        
+
     });
+
+    Then('I am on {string} tab', async function (tabLabel) {
+        expect(await caseFlagsPage.amOnPage()).to.be.true;
+    });
+
 });

@@ -41,6 +41,8 @@ class CaseDetailsPage{
     async clickTabWithLabel(tabLabel){
         await this.waitForTabHeader();
         const tabElement = this.getTabElementWithLabel(tabLabel);
+        await BrowserWaits.waitForSpinnerToDissappear();
+        await BrowserWaits.waitForElementClickable(tabElement);
         await tabElement.click();
     }
 

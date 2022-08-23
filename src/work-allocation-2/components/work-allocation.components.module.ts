@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatNativeDateModule } from '@angular/material';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 import * as fromComponents from '.';
 import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module';
@@ -25,7 +26,8 @@ import { PriorityFieldComponentModule } from './priority-field/priority.module';
     MatFormFieldModule,
     MatNativeDateModule,
     MatInputModule,
-    PriorityFieldComponentModule
+    PriorityFieldComponentModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     ...fromComponents.components,

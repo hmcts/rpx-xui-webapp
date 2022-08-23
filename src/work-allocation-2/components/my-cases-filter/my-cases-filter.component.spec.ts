@@ -9,6 +9,7 @@ import { MyCasesFilterComponent } from './my-cases-filter.component';
 import { of } from 'rxjs/internal/observable/of';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   template: `<exui-my-cases-filter></exui-my-cases-filter>`
@@ -40,10 +41,12 @@ describe('MyCasesFilterComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        ExuiCommonLibModule
+        ExuiCommonLibModule,
+        RpxTranslationModule
       ],
       declarations: [MyCasesFilterComponent, WrapperComponent ],
       providers: [
+        RpxTranslationService, RpxTranslationConfig,
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
           provide: FilterService, useValue: mockFilterService

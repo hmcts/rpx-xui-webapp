@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of, throwError } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
@@ -65,7 +66,15 @@ describe('AvailableTasksComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        PaginationModule
+        PaginationModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       declarations: [AvailableTasksComponent, WrapperComponent, TaskListComponent],
       providers: [

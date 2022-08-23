@@ -18,6 +18,7 @@ import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsSer
 import { getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 import { AllocateRoleService } from 'src/role-access/services';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @Component({
   template: `
@@ -67,6 +68,14 @@ describe('AllWorkTaskComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule,
         StoreModule.forRoot({...reducers}),
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent ],
       providers: [
@@ -215,7 +224,15 @@ describe('AllWorkTaskComponent', () => {
               { path: 'service-down', component: NothingComponent },
               { path: 'not-authorised', component: NothingComponent }
             ]
-          )
+          ),
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            validity: {
+              days: 1
+            },
+            testMode: true
+          })
         ],
         declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent, NothingComponent],
         providers: [

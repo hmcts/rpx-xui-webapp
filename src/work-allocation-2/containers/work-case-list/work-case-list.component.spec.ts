@@ -13,6 +13,7 @@ import { PaginationParameter } from '../../models/dtos';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { getMockCases, MockRouter } from '../../tests/utils.spec';
 import { ConfigConstants } from '../../components/constants';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @Component({
   template: `
@@ -75,7 +76,15 @@ describe('CaseListComponent', () => {
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule,
-        PaginationModule
+        PaginationModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       declarations: [WorkCaseListComponent, WrapperComponent],
       providers: [

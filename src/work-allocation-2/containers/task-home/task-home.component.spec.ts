@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs/internal/observable/of';
 import { ErrorMessage } from 'src/app/models';
 
@@ -94,6 +95,14 @@ describe('TaskHomeComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
       providers: [

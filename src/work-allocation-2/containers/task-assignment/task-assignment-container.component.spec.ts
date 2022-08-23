@@ -11,6 +11,7 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/se
 import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { Observable } from 'rxjs';
 
 import { TaskListComponent } from '..';
@@ -87,6 +88,14 @@ describe('TaskAssignmentContainerComponent2', () => {
             {path: 'my-work/list', component: NothingComponent}
           ]
         ),
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       providers: [
         {provide: Location, useValue: locationStub},

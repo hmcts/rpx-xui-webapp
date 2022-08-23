@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessageContainerComponent } from '../../containers/info-message-container/info-message-container.component';
@@ -30,7 +31,15 @@ describe('TaskHomeComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule
+        WorkAllocationComponentsModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent],
       providers: [

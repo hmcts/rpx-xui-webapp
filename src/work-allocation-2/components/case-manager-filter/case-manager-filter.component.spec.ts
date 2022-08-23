@@ -18,14 +18,14 @@ import { ALL_LOCATIONS } from '../constants/locations';
   template: `
     <exui-case-manager-filter></exui-case-manager-filter>`
 })
-class WrapperComponentManager {
+class WrapperComponentManagerComponent {
   @ViewChild(CaseManagerFilterComponent) public appComponentRef: CaseManagerFilterComponent;
 }
 
 describe('CaseManagerFilterComponent', () => {
   let component: CaseManagerFilterComponent;
-  let wrapper: WrapperComponentManager;
-  let fixture: ComponentFixture<WrapperComponentManager>;
+  let wrapper: WrapperComponentManagerComponent;
+  let fixture: ComponentFixture<WrapperComponentManagerComponent>;
   let store: Store<fromStore.State>;
   let storePipeMock: any;
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase']);
@@ -49,7 +49,7 @@ describe('CaseManagerFilterComponent', () => {
         RouterTestingModule,
         RpxTranslationModule.forChild()
       ],
-      declarations: [CaseManagerFilterComponent, WrapperComponentManager ],
+      declarations: [CaseManagerFilterComponent, WrapperComponentManagerComponent ],
       providers: [
         RpxTranslationService, RpxTranslationConfig,
         provideMockStore(),
@@ -63,7 +63,7 @@ describe('CaseManagerFilterComponent', () => {
     store = TestBed.get(Store);
     storePipeMock = spyOn(store, 'pipe');
 
-    fixture = TestBed.createComponent(WrapperComponentManager);
+    fixture = TestBed.createComponent(WrapperComponentManagerComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     storePipeMock.and.returnValue(of(0));

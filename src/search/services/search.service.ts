@@ -64,10 +64,10 @@ export class SearchService {
   private mapSearchParametersToRequestCriteria(searchParameters: SearchParameters): SearchRequestCriteria {
     let parties: SearchRequestParty[] = [];
     const { address, dateOfBirth, dateOfDeath, emailAddress, fullName, postcode} = searchParameters;
-    if(address || dateOfBirth || dateOfDeath ||  emailAddress || fullName || postcode) {
+    if (address || dateOfBirth || dateOfDeath ||  emailAddress || fullName || postcode) {
       parties = [{
         addressLine1: address,
-        dateOfBirth: dateOfBirth? dateOfBirth.replace(/\b(\d)\b/g, '0$1') : null,
+        dateOfBirth: dateOfBirth ? dateOfBirth.replace(/\b(\d)\b/g, '0$1') : null,
         dateOfDeath: dateOfDeath ? dateOfDeath.replace(/\b(\d)\b/g, '0$1') : null,
         emailAddress,
         partyName: fullName,

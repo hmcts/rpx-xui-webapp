@@ -3,7 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { RpxTranslatePipe, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
+import { RpxTranslatePipe, RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 
 import * as dtos from '../../models/dtos';
@@ -40,11 +40,12 @@ describe('AvailableTasksFilterComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ExuiCommonLibModule
+        ExuiCommonLibModule,
+        RpxTranslationModule.forChild()
       ],
       declarations: [ AvailableTasksFilterComponent, WrapperComponent ],
       providers: [
-        { provide: RpxTranslationService, useValue: mockRpxTranslationService },
+        RpxTranslationService, RpxTranslationConfig,
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter }
       ]

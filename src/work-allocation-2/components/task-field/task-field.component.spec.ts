@@ -6,6 +6,7 @@ import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskFieldComponent } from './task-field.component';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
@@ -35,7 +36,10 @@ describe('WorkAllocation', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        imports: [ WorkAllocationComponentsModule, RpxTranslationModule.forChild() ],
+        providers: [
+          RpxTranslationService, RpxTranslationConfig
+        ]
       })
       .compileComponents();
     }));

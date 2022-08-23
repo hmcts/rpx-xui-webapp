@@ -6,6 +6,7 @@ import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/servi
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { Observable, of } from 'rxjs';
 
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
@@ -39,6 +40,16 @@ describe('CaseListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
+      ],
       declarations: [CaseListComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [

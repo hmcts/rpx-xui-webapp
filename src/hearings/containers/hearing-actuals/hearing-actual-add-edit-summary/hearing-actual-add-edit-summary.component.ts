@@ -108,10 +108,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingsService.navigateAction(ACTION.BACK);
   }
 
-  public togglePaperHearing() {
-    this.isPaperHearing = !this.isPaperHearing;
-  }
-
   public getHearingDateText(): string {
     return this.actualHearingDays && this.actualHearingDays.length > 1 ? 'Hearing date(s)' : 'Hearing date';
   }

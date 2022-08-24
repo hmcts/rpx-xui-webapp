@@ -1,10 +1,9 @@
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { NextFunction, Response } from 'express';
-import { handleGet, handlePost } from '../common/crudService';
+import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import {
   GLOBAL_SEARCH_SERVICES,
-  SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH
 } from '../configuration/references';
 import { GlobalSearchService } from '../interfaces/globalSearchService';
@@ -26,11 +25,6 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
     let services: any;
     if (req.session.jurisdictions) {
       services = generateServices(req.session.jurisdictions as Jurisdiction[]);
-    } else {
-      const domain = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}`;
-      const path = `${domain}/aggregated/caseworkers/:uid/jurisdictions?access=read`;
-      const response = await handleGet(path, req, next);
-      services = generateServices(response.data as Jurisdiction[]);
     }
 
     // Store generated global search services to session
@@ -64,6 +58,11 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
  * @returns
  */
 export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchService[] {
+
+  if (!jurisdictions) {
+    return [];
+  }
+
   // Retrieve global search services id from config
   const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
   const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');

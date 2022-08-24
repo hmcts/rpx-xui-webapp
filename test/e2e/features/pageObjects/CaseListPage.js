@@ -51,7 +51,7 @@ class CaseListPage{
     async amOnPage(){
         await BrowserWaits.waitForElement(this.caselistComponent);
         await BrowserWaits.waitForElement(this.searchFilterContainer);
-        return await this.caselistComponent.isPresent(); 
+        return (await this.caselistComponent.isPresent()) && (await this.ccdCaseSearchResult.isPresent()); 
     }
 
     async _waitForSearchComponent(){

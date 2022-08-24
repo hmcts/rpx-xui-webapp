@@ -81,6 +81,7 @@ describe('TaskListFilterComponent', () => {
     court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN test1',
     postcode: 'AB11 6LT'
   };
+  const mockStore = jasmine.createSpyObj('mockStore', ['pipe']);
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks', 'currentTasks$']);
   const locationService = jasmine.createSpyObj('locationService', ['path', 'getSpecificLocations']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
@@ -88,6 +89,7 @@ describe('TaskListFilterComponent', () => {
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
   locationService.getSpecificLocations.and.returnValue(of([]));
   mockTaskService.currentTasks$.and.returnValue(of([null]));
+  mockStore.pipe.and.returnValue(of({roleAssignmentInfo: [{jurisdiction: 'IA', roleType: 'ORGANISATION'}]}));
   const roleAssignmentInfo = [{
     id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
     actorIdType: 'IDAM',
@@ -147,7 +149,7 @@ describe('TaskListFilterComponent', () => {
       ],
       declarations: [TaskListFilterComponent, WrapperComponent],
       providers: [
-        provideMockStore(),
+        { provide: Store, useValue: mockStore },
         {
           provide: ActivatedRoute,
           useValue: {

@@ -5,6 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
+import { JurisdictionsService } from '../../../work-allocation-2/services/juridictions.service';
 import { SearchFormControl, SearchFormErrorMessage, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';
@@ -17,25 +18,36 @@ describe('SearchFormComponent', () => {
   let fixture: ComponentFixture<SearchFormComponent>;
   const formBuilder = new FormBuilder();
   let searchService: jasmine.SpyObj<SearchService>;
+  let jurisdictionsService: jasmine.SpyObj<JurisdictionsService>;
   let router: Router;
   let route: ActivatedRoute;
 
   beforeEach(async(() => {
     searchService = createSpyObj<SearchService>('searchService', ['getServices', 'storeState', 'retrieveState']);
     searchService.getServices.and.returnValue(of([
-      {serviceName: 'Test service', serviceId: 'TEST'},
-      {serviceName: 'Another test service', serviceId: 'TEST2'}
+      { serviceName: 'Test service', serviceId: 'TEST' },
+      { serviceName: 'Another test service', serviceId: 'TEST2' }
     ]));
+
+    jurisdictionsService = createSpyObj<JurisdictionsService>('jurisdictionsService', ['getJurisdictions']);
+    jurisdictionsService.getJurisdictions.and.returnValue(of([{
+      id: 'IA',
+      name: 'Immigration & Asylum',
+      description: 'Immigration & Asylum',
+      caseTypes: []
+    }]));
+
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule, RouterTestingModule ],
-      declarations: [ SearchFormComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      declarations: [SearchFormComponent],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: FormBuilder, useValue: formBuilder },
-        { provide: SearchService, useValue: searchService }
+        { provide: SearchService, useValue: searchService },
+        { provide: JurisdictionsService, useValue: jurisdictionsService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -54,12 +66,13 @@ describe('SearchFormComponent', () => {
   it('should have called ngOnInit and populate the Services list', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.searchServiceSubscription$).toBeTruthy();
+    expect(jurisdictionsService.getJurisdictions).toHaveBeenCalled();
     expect(searchService.getServices).toHaveBeenCalled();
     expect(component.services.length).toEqual(3);
     expect(component.services).toEqual([
-      {label: 'All', value: 'ALL', id: 'ALL'},
-      {label: 'Test service', value: 'TEST', id: 'TEST'},
-      {label: 'Another test service', value: 'TEST2', id: 'TEST2'}
+      { label: 'All', value: 'ALL', id: 'ALL' },
+      { label: 'Test service', value: 'TEST', id: 'TEST' },
+      { label: 'Another test service', value: 'TEST2', id: 'TEST2' }
     ]);
     expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('ALL');
   });
@@ -108,7 +121,7 @@ describe('SearchFormComponent', () => {
     expect(searchService.storeState.calls.all()[1].args[0]).toEqual(SearchStatePersistenceKey.START_RECORD);
     expect(searchService.storeState.calls.all()[1].args[1]).toEqual(1);
 
-    expect(router.navigate).toHaveBeenCalledWith(['results'], {relativeTo: route});
+    expect(router.navigate).toHaveBeenCalledWith(['results'], { relativeTo: route });
   });
 
   it('should store the selected service in the search parameters when the selected value is not \"All\"', () => {

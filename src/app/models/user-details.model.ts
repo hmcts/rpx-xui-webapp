@@ -14,7 +14,7 @@ export interface RoleAssignmentInfo {
   jurisdiction: string;
   substantive?: string;
   isCaseAllocator: boolean;
-  bookable?: boolean;
+  bookable?: boolean | string;
   roleType?: string;
 }
 

@@ -51,12 +51,12 @@ class WorkAllocationMockData {
 
         this.caseRoleForAssignment = [this.caseRoles[0]];
 
-        this.myWorkMyTasks = this.getMyWorkMyTasks(150);
-        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(200);
-        this.allWorkTasks = this.getAllWorkTasks(300);
+        this.myWorkMyTasks = this.getMyWorkMyTasks(25);
+        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(25);
+        this.allWorkTasks = this.getAllWorkTasks(25);
 
-        this.myCases = this.getWACases(125);
-        this.allWorkCases = this.getWACases(125);
+        this.myCases = this.getWACases(25);
+        this.allWorkCases = this.getWACases(25);
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
     }
@@ -337,7 +337,10 @@ class WorkAllocationMockData {
             const validRoleTypes = WorkAllocationDataModels.getValidRoles();
 
             let validRoleCounter = 0;
+            let caseCounter = 0;
             for (const caseAlloc of cases) {
+                caseCounter++;
+                caseAlloc.case_name = new Array(caseCounter).fill(`testCase name ${caseCounter}`).join("-") 
                 caseAlloc.case_role = validRoleTypes[validRoleCounter].roleId;
                 caseAlloc.role_category = validRoleTypes[validRoleCounter].roleCategory;
                 validRoleCounter++;
@@ -682,6 +685,15 @@ class WorkAllocationMockData {
                 } else if (taskAttribute.toLowerCase().includes('warnings')) {
                     const val = task[taskAttribute].toLowerCase();
                     taskTemplate[taskAttribute] = val.includes('true') || val.includes('yes');
+                } else if (taskAttribute.toLowerCase().includes('warning_list')) {
+                    taskTemplate.warning_list = { values :[]};
+                    const testInputWarnings = task[taskAttribute].split(",");
+                    const responseWantings = testInputWarnings.map(t =>{
+                        return {
+                            text: t
+                        }
+                    }) 
+                    taskTemplate.warning_list.values = responseWantings;
                 } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
                     const val = task[taskAttribute].toLowerCase();
                     if (val.includes('session')) {

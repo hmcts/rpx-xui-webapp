@@ -115,7 +115,7 @@ export function getMockCases(): Case[] {
 export function getMockTasks(): Task[] {
   return [
     {
-      assignee: '123456789',
+      assignee: null,
       assigneeName: null,
       id: '1549476532065586',
       jurisdiction: 'IA',

@@ -7,24 +7,24 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
-
+import { AllocateRoleService } from 'src/role-access/services';
+import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
-import { TaskListComponent } from '..';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
-import { AllocateRoleService } from 'src/role-access/services';
+
 
 @Component({
   template: `
     <exui-all-work-tasks></exui-all-work-tasks>`
 })
 class WrapperComponent {
-  @ViewChild(AllWorkTaskComponent) public appComponentRef: AllWorkTaskComponent;
+  @ViewChild(AllWorkTaskComponent, {static: false}) public appComponentRef: AllWorkTaskComponent;
 }
 
 @Component({
@@ -161,7 +161,7 @@ xdescribe('AllWorkTaskComponent', () => {
     expect(searchRequest.search_parameters).not.toContain({key: 'person', operator: 'IN', values: []});
     expect(searchRequest.search_parameters).toContain({key: 'role_category', operator: 'IN', values: ['JUDICIAL']});
     // expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'IN', values: ['High']});
-  })
+  });
 
   afterEach(() => {
     fixture.destroy();

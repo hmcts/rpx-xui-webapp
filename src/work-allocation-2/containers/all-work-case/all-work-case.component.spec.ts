@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
@@ -60,7 +61,15 @@ describe('AllWorkCaseComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({...reducers}),
         WorkAllocationComponentsModule,
-        PaginationModule
+        PaginationModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       declarations: [AllWorkCaseComponent, WrapperComponent, WorkCaseListComponent],
       providers: [

@@ -6,13 +6,14 @@ import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { SessionStorageService } from '../../../app/services';
-import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { SortOrder, TaskService } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter } from '../../models/dtos';
+import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
@@ -89,8 +90,16 @@ describe('TaskListComponent', () => {
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule,
-        PaginationModule
-      ],
+        PaginationModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
+    ],
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },

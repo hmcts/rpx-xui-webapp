@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.14-welsh-release-part1":
-  version "1.7.14-welsh-release-part1"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.14-welsh-release-part1.tgz#8498066af14ffbd11ae248d625733004980ae18e"
-  integrity sha512-Zi0aHgoFEQ0BvTu5nQIa/Ow9W8Qb53AvS6C3hB9BTOfrucWYR0hXpHwyduX6zGpw7ZgeXjvZxZqRP6VtnKobIw==
+"@hmcts/rpx-xui-common-lib@1.7.19-welsh-release-part1":
+  version "1.7.19-welsh-release-part1"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.19-welsh-release-part1.tgz#f8ec30888fa42451a9539dfbda8b47766fe065f6"
+  integrity sha512-DnIWf06wcBujNbh1wq79SOox2JD+vzjqcGthXEse16JgZ8Bs0/x8nIuVHX1EVroV9dfF72ADKH4/w2T90GeOEw==
   dependencies:
     tslib "^1.9.0"
 
@@ -11603,10 +11603,10 @@ roarr@^2.14.5:
     semver-compare "^1.0.0"
     sprintf-js "^1.1.2"
 
-rpx-xui-translation@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/rpx-xui-translation/-/rpx-xui-translation-0.1.0.tgz#5f551fdb4df7a31dd62661e919b97455cfda2cf6"
-  integrity sha512-bZCOKw5xkpmIXkD7AIsENQZd0sIailLy+AAXCktbyvl/SPrXN0BuqerRdiWaQtTN9/V+sKqKAWfoL45ak9Up3g==
+rpx-xui-translation@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/rpx-xui-translation/-/rpx-xui-translation-0.1.1.tgz#aa02639806f641737d9d2d43915adc3c93888ff4"
+  integrity sha512-F+/K0u+1+jnUK+9SnkPpBFWwYU9p4YtXgTlokcqwUlKEyStuVzi8ctb78shK3Et2ic1OY1I3GrF9Fb4Zj56Frg==
   dependencies:
     dexie "^3.2.2"
     luxon "^2.4.0"

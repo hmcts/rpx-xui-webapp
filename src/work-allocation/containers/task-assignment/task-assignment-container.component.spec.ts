@@ -7,6 +7,7 @@ import { MatAutocompleteModule } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { Observable } from 'rxjs';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
@@ -58,8 +59,16 @@ describe('TaskAssignmentContainerComponent1', () => {
           [
             { path: 'tasks/list', component: NothingComponent }
           ]
-        )
-      ],
+        ),
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
+    ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         {

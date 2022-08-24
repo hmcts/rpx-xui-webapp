@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs/internal/observable/of';
 import { TaskManagerFilterComponent } from '..';
 import * as fromStore from '../../../app/store';
@@ -84,13 +85,15 @@ describe('TaskManagerFilterComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
-        ExuiCommonLibModule,
         HttpClientTestingModule,
         RouterTestingModule,
-        ExuiCommonLibModule
+        ExuiCommonLibModule,
+        RpxTranslationModule.forChild()
       ],
       declarations: [TaskManagerFilterComponent, WrapperComponent],
       providers: [
+        RpxTranslationService,
+        RpxTranslationConfig,
         provideMockStore(),
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },

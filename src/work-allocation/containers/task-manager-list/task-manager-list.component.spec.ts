@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, LoadingModule, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
@@ -48,8 +49,16 @@ describe('TaskManagerListComponent', () => {
         RouterTestingModule,
         WorkAllocationComponentsModule,
         LoadingModule,
-        PaginationModule
-      ],
+        PaginationModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
+    ],
       declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },

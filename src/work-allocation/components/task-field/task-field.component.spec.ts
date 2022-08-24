@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 import { TaskFieldType, TaskView } from './../../enums';
 import { Task, TaskFieldConfig } from './../../models/tasks';
@@ -34,7 +35,10 @@ describe('WorkAllocation', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        imports: [ WorkAllocationComponentsModule, RpxTranslationModule.forChild() ],
+        providers: [
+          RpxTranslationService, RpxTranslationConfig
+        ]
       })
       .compileComponents();
     }));

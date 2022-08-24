@@ -7,25 +7,24 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
-import { AllocateRoleService } from 'src/role-access/services';
-import { TaskListComponent } from '..';
+
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
+import { TaskListComponent } from '..';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
+import { getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 import { AllocateRoleService } from 'src/role-access/services';
-import { CaseRoleDetails } from 'src/role-access/models';
 
 @Component({
   template: `
     <exui-all-work-tasks></exui-all-work-tasks>`
 })
 class WrapperComponent {
-  @ViewChild(AllWorkTaskComponent, {static: false}) public appComponentRef: AllWorkTaskComponent;
+  @ViewChild(AllWorkTaskComponent) public appComponentRef: AllWorkTaskComponent;
 }
 
 @Component({
@@ -42,7 +41,7 @@ class TaskFieldComponent {
   @Input() public task: Task;
 }
 
-xdescribe('AllWorkTaskComponent', () => {
+describe('AllWorkTaskComponent', () => {
   let component: AllWorkTaskComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -91,9 +90,8 @@ xdescribe('AllWorkTaskComponent', () => {
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
-    const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
-    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -163,18 +161,7 @@ xdescribe('AllWorkTaskComponent', () => {
     expect(searchRequest.search_parameters).not.toContain({key: 'person', operator: 'IN', values: []});
     expect(searchRequest.search_parameters).toContain({key: 'role_category', operator: 'IN', values: ['JUDICIAL']});
     // expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'IN', values: ['High']});
-  });
-
-  it('should show judicial names when available', () => {
-    const firstMockTask = component.tasks[0];
-    const secondMockTask = component.tasks[1];
-
-    expect(firstMockTask.assignee).not.toBe(undefined);
-    expect(firstMockTask.assigneeName).toBe('Mr Test');
-
-    expect(secondMockTask.assignee).toBe(null);
-    expect(secondMockTask.assigneeName).toBe('Sir Testing');
-  });
+  })
 
   afterEach(() => {
     fixture.destroy();
@@ -189,7 +176,7 @@ xdescribe('AllWorkTaskComponent', () => {
   { statusCode: 500, routeUrl: '/service-down' },
   { statusCode: 400, routeUrl: '/service-down' },
 ].forEach(scr => {
-  xdescribe('AllWorkTaskComponent negative cases', () => {
+  describe('AllWorkTaskComponent negative cases', () => {
     let component: AllWorkTaskComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

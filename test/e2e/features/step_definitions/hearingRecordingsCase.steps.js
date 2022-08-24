@@ -14,6 +14,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     await browserWaits.retryWithActionCallback(async () => {
       try{
         await hearingRecordingsCase.hearingFilesTab();
+        await browserWaits.waitForElement(hearingRecordingsCase.hearingFilesTabContainer)
       }catch(err){
         cucumberReporter.AddMessage("Refresing browser to get missing tab");
         await headerPage.refreshBrowser();

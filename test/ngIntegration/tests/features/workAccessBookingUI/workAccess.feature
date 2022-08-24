@@ -156,7 +156,7 @@ Feature: Work access page
         Given I navigate page route "booking", wait for locator "exui-booking-home"
 
 
-        Then I see work access page displayed
+        Then I see work access page not displayed
         Then I see work access radio button "View existing bookings" displayed
         Then I see work access radio button "Create new booking" displayed
         Then I see work access radio button "View tasks and cases" displayed

@@ -6,12 +6,12 @@ class BookingsData{
     constructor(){
         this.bookingResponse = [];
         this.allLocations = [];
-        // this.setUpBookings([
-        //     { appointmentId : "100"},
-        //     { appointmentId: "101" },
-        //     { appointmentId: "102" },
-        //     { appointmentId: "103" }
-        // ]);
+        this.setUpBookings([
+            { appointmentId : "100"},
+            { appointmentId: "101" },
+            { appointmentId: "102" },
+            { appointmentId: "103" }
+        ]);
          
     }
 

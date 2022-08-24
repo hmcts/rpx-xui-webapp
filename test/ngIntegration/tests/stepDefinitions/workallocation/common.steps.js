@@ -2,7 +2,7 @@ var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
-
+const rolesAccessMockData = require('../../../../nodeMock/workAllocation/rolesAccess');
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('../../../../e2e/features/pageObjects/workAllocation/taskManagerPage');
@@ -196,6 +196,32 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
+    // Given('I set MOCK case roles', async function(datatable){
+    //     const caseRoles = [];
+    //     const tableRowHashes = datatable.hashes();
+    //     for (const row of tableRowHashes) {
+    //         const mockCaseRole = rolesAccessMockData.dataModel.getCaseRole(); 
+    //         caseRoles.push(mockCaseRole)
+    //         const hashkeys = Object.keys(row);
+
+    //         for (let j = 0; j < hashkeys.length; j++) {
+    //             const key = hashkeys[j];
+
+    //             // if (key.includes('start') || key.includes('end') || key.includes('created')) {
+    //             //     mockCaseRole[key] = workAllocationDateUtil.getDateFormat(row[key],"YYYY-MM-DD");
+    //             // }else{
+    //             //     mockCaseRole[key] = row[key]; 
+    //             // }
+
+    //             mockCaseRole[key] = row[key]; 
+
+    //         }
+
+
+    //     }
+    //     rolesAccessMockData.caseRoles = caseRoles;
+    // });
+
     async function validateTaskTableValues(datatable){
         const tableRowHashes = datatable.hashes();
         const softAssert = new SoftAssert();
@@ -217,7 +243,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     expectedValue = workAllocationDateUtil.getTaskCeateDateDisplayString(expectedValue);
                 }
 
-                if (columnName.includes('Next hearing date')) {
+                if (columnName.includes('Hearing date')) {
                     expectedValue = workAllocationDateUtil.getDurationDateDisplayString(expectedValue);
                 }
 

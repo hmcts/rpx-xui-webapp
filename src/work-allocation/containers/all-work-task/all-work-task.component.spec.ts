@@ -15,9 +15,10 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { getMockTasks } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 import { AllocateRoleService } from 'src/role-access/services';
+import { CaseRoleDetails } from 'src/role-access/models';
 
 @Component({
   template: `
@@ -90,8 +91,9 @@ describe('AllWorkTaskComponent', () => {
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
+    const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
-    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -161,7 +163,18 @@ describe('AllWorkTaskComponent', () => {
     expect(searchRequest.search_parameters).not.toContain({key: 'person', operator: 'IN', values: []});
     expect(searchRequest.search_parameters).toContain({key: 'role_category', operator: 'IN', values: ['JUDICIAL']});
     // expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'IN', values: ['High']});
-  })
+  });
+
+  it('should show judicial names when available', () => {
+    const firstMockTask = component.tasks[0];
+    const secondMockTask = component.tasks[1];
+
+    expect(firstMockTask.assignee).not.toBe(undefined);
+    expect(firstMockTask.assigneeName).toBe('Sir Testing');
+
+    expect(secondMockTask.assignee).toBe(null);
+    expect(secondMockTask.assigneeName).toBe('Sir Testing');
+  });
 
   afterEach(() => {
     fixture.destroy();

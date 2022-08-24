@@ -1,4 +1,4 @@
-@ng @test 
+@ng 
 Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Background: Mock and browser setup
@@ -62,7 +62,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Given I set MOCK request "/workallocation/all-work/cases" intercept with reference "caseSearchRequest"
 
     Scenario: Tasks filters state, with user role "Caseworker"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 

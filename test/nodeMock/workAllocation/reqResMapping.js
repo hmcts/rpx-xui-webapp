@@ -172,7 +172,15 @@ module.exports = {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
-       
+        '/workallocation/task/:taskId/assign': (req, res) => {
+            res.status(204).send();
+        },
+        '/workallocation/task/:taskId/complete': (req, res) => {
+            res.status(204).send();
+        },
+        '/workallocation/task/:taskId/claim': (req, res) => {
+            res.status(204).send();
+        },  
         '/workallocation/task/:taskId/cancel': (req, res) => {
             res.status(204).send();
         },

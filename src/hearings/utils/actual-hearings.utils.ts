@@ -127,7 +127,8 @@ export class ActualHearingsUtils {
 
   public static getParties(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): PlannedDayPartyModel[] {
     const plannedDayIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(hearingActualsMainModel, hearingDate);
-
+    console.log('hearingActualsMainModel', hearingActualsMainModel);
+    console.log('plannedDayIndex', plannedDayIndex);
     return plannedDayIndex >= 0 ? hearingActualsMainModel.hearingPlanned.plannedHearingDays[plannedDayIndex].parties : [];
   }
 

@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs/internal/observable/of';
 
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
@@ -120,9 +121,12 @@ describe('TaskListFilterComponent', () => {
         ExuiCommonLibModule,
         HttpClientTestingModule,
         StoreModule,
+        RpxTranslationModule.forChild()
       ],
       declarations: [TaskListFilterComponent, WrapperComponent],
       providers: [
+        RpxTranslationService,
+        RpxTranslationConfig,
         {
           provide: ActivatedRoute,
           useValue: {

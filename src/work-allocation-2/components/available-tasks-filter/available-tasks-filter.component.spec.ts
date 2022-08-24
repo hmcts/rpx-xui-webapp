@@ -10,6 +10,7 @@ import { LocationDataService } from '../../services';
 import { getMockLocations } from '../../tests/utils.spec';
 import { FilterConstants } from '../../components/constants';
 import { AvailableTasksFilterComponent } from './available-tasks-filter.component';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   template: `<exui-available-tasks-filter (selectionChanged)="onSelectionChanged($event)"></exui-available-tasks-filter>`
@@ -38,10 +39,12 @@ describe('AvailableTasksFilterComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ExuiCommonLibModule
+        ExuiCommonLibModule,
+        RpxTranslationModule.forChild()
       ],
       declarations: [ AvailableTasksFilterComponent, WrapperComponent ],
       providers: [
+        RpxTranslationService, RpxTranslationConfig,
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter }
       ]

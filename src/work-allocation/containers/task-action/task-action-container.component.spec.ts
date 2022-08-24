@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { Observable, of } from 'rxjs';
 
 import { TaskListComponent } from '..';
@@ -60,7 +61,15 @@ describe('WorkAllocation', () => {
             [
               { path: 'tasks/list', component: NothingComponent }
             ]
-          )
+          ),
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            validity: {
+              days: 1
+            },
+            testMode: true
+          })
         ],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },

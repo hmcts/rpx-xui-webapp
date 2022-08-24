@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { GlobalSearchService } from '../../../api/interfaces/globalSearchService';
 import { SearchStatePersistenceKey } from '../enums';
 import { SearchParameters, SearchRequest, SearchRequestCriteria, SearchResult } from '../models';
+import { SearchRequestParty } from '../models/search-request-party.model';
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
@@ -61,6 +62,19 @@ export class SearchService {
   }
 
   private mapSearchParametersToRequestCriteria(searchParameters: SearchParameters): SearchRequestCriteria {
+    let parties: SearchRequestParty[] = [];
+    const { address, dateOfBirth, dateOfDeath, emailAddress, fullName, postcode} = searchParameters;
+    if (address || dateOfBirth || dateOfDeath ||  emailAddress || fullName || postcode) {
+      parties = [{
+        addressLine1: address,
+        dateOfBirth: dateOfBirth ? dateOfBirth.replace(/\b(\d)\b/g, '0$1') : null,
+        dateOfDeath: dateOfDeath ? dateOfDeath.replace(/\b(\d)\b/g, '0$1') : null,
+        emailAddress,
+        partyName: fullName,
+        postCode: postcode
+      }]
+    }
+
     return {
       CCDCaseTypeIds: null,
       CCDJurisdictionIds: searchParameters.CCDJurisdictionIds,
@@ -71,16 +85,7 @@ export class SearchService {
         ? searchParameters.caseReferences.map(caseRef => caseRef.replace(/[\s-]/g, ''))
         : null,
       otherReferences: searchParameters.otherReferences,
-      parties: [{
-        addressLine1: searchParameters.address,
-        // Ensure dates have a leading zero for numbers less than 10; regex matches single digits between
-        // non-alphanumeric boundaries and prepends a 0 to the capturing group
-        dateOfBirth: searchParameters.dateOfBirth ? searchParameters.dateOfBirth.replace(/\b(\d)\b/g, '0$1') : null,
-        dateOfDeath: searchParameters.dateOfDeath ? searchParameters.dateOfDeath.replace(/\b(\d)\b/g, '0$1') : null,
-        emailAddress: searchParameters.emailAddress,
-        partyName: searchParameters.fullName,
-        postCode: searchParameters.postcode
-      }],
+      parties,
       stateIds: null
     };
   }

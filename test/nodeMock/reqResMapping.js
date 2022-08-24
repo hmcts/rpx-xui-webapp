@@ -44,6 +44,23 @@ const requestMapping = {
         },
         '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata': (req,res) => {
             res.send();
+        },
+        '/api/service-ref-data/get': (req,res) => {
+            res.send([
+                {
+                    "service": "IA",
+                    "serviceCodes": [
+                        "BFA1"
+                    ]
+                },
+                {
+                    "service": "CIVIL",
+                    "serviceCodes": [
+                        "AAA6",
+                        "AAA7"
+                    ]
+                }
+            ]);
         }
       
 

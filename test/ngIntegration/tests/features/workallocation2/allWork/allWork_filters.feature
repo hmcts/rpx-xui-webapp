@@ -62,7 +62,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
 
     Scenario: Tasks filters state, with user role "Caseworker"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -86,9 +86,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Search for a location |
 
 
-        Then I see filter "Person" is displayed in all work page
+        Then I see filter "Tasks" is displayed in all work page
 
-        Then I see filter "Person role type" is displayed in all work page
+        Then I see filter "Tasks by role type" is displayed in all work page
 
         Then I see filter "Person input" is displayed in all work page
 
@@ -129,8 +129,8 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I select location search result "IA Court Taylor House" in all work filter
         Then I see location "IA Court Taylor House" selected in all work filter
 
-        When I select filter item "Person" select or radio option "<Task_Category>" in all work page
-        When I select filter item "Person role type" select or radio option "<Person_Role_Type>" in all work page
+        When I select filter item "Tasks" select or radio option "<Task_Category>" in all work page
+        When I select filter item "Tasks by role type" select or radio option "<Person_Role_Type>" in all work page
 
         When I enter find person search input "<Person_search>" in work flow
 
@@ -154,7 +154,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | priority     | <Priority>     |
 
         Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "All" in all work page
+        When I select filter item "Tasks" select or radio option "All" in all work page
         When I select filter item "Location radios" select or radio option "All" in all work page
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
@@ -162,9 +162,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                              | person_id                            | Person_Role_Type | Task_type | Priority |
-            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
+            | IA | Test loc 3 | 12347 | Assigned to a person | cas | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops | Legal Ops | High |
+            | IA | Test loc 3 | 12347 | Assigned to a person | user1 | user1 j (judge_user1@gov.uk) | 1231 | Judicial | Legal Ops | High |
+            | IA | Test loc 3 | 12347 | Assigned to a person | adm | admin1 a (admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin | Admin | High |
 
     Scenario: "Judicial" Tasks filters state
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
@@ -189,9 +189,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | All                   |
             | Search for a location |
 
-        Then I see filter "Person" is displayed in all work page
+        Then I see filter "Tasks" is displayed in all work page
 
-        Then I see filter "Person role type" is displayed in all work page
+        Then I see filter "Tasks by role type" is displayed in all work page
 
 
         Then I see filter "Person input" is displayed in all work page
@@ -234,8 +234,8 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see location "IA Court Taylor House" selected in all work filter
 
 
-        When I select filter item "Person" select or radio option "<Task_Category>" in all work page
-        When I select filter item "Person role type" select or radio option "<Person_Role_Type>" in all work page
+        When I select filter item "Tasks" select or radio option "<Task_Category>" in all work page
+        When I select filter item "Tasks by role type" select or radio option "<Person_Role_Type>" in all work page
 
         When I enter find person search input "<Person_search>" in work flow
 
@@ -258,7 +258,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
 
         Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "All" in all work page
+        When I select filter item "Tasks" select or radio option "All" in all work page
         When I select filter item "Location radios" select or radio option "All" in all work page
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
@@ -267,9 +267,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                              | person_id                            | Person_Role_Type | Task_type |
-            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
+            | IA | Test loc 3 | 12347 | Assigned to a person | cas | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops | Legal Ops |
+            | IA | Test loc 3 | 12347 | Assigned to a person | user1 | user1 j (judge_user1@gov.uk) | 1231 | Judicial | Legal Ops |
+            | IA | Test loc 3 | 12347 | Assigned to a person | adm | admin1 a (admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin | Admin |
 
     Scenario: "Caseworker" Cases filters state
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "task-supervisor,case-allocator,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
@@ -303,7 +303,6 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
         Then I see filter "Person" is displayed in all work page
 
-        Then I see filter "Person role type" is displayed in all work page
         Then I see filter "Role type" is enabled in all work page
 
         Then I see filter "Person input" is displayed in all work page
@@ -364,8 +363,8 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | role         | <Role_Type>    |
         Examples:
             | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                   | person_id                            | Role_Type |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)  | 1231                                 | Judicial  |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
+            | IA | Test loc 3 | 12347 | Specific person | user1 | user1 j (judge_user1@gov.uk) | 1231 | Judicial |
+            | IA | Test loc 3 | 12347 | Specific person | adm | admin1 a (admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin |
 
     Scenario Outline: "Judicial" Case filter selection, with role type <Role_Type>
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
@@ -424,5 +423,5 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | role         | <Role_Type>    |
         Examples:
             | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                   | person_id                            | Role_Type |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)  | 1231                                 | Judicial  |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
+            | IA | Test loc 3 | 12347 | Specific person | user1 | user1 j (judge_user1@gov.uk) | 1231 | Judicial |
+            | IA | Test loc 3 | 12347 | Specific person | adm | admin1 a (admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin |

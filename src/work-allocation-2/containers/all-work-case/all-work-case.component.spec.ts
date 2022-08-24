@@ -120,7 +120,7 @@ describe('AllWorkCaseComponent', () => {
     const secondMockCase = component.cases[1];
 
     expect(firstMockCase.assignee).not.toBe(undefined);
-    expect(firstMockCase.actorName).toBe('Test');
+    expect(firstMockCase.actorName).toBe('Mr Test');
 
     expect(secondMockCase.assignee).toBe(undefined);
     expect(secondMockCase.actorName).toBe(null);

@@ -23,11 +23,7 @@ const capability = {
 
 if (isParallelExecution) {
     capability.shardTestFiles = true;
-<<<<<<< HEAD
-    capability.maxInstances = 6;
-=======
     capability.maxInstances = 5;
->>>>>>> feature/release3-wa3
 }
 
 

@@ -10,7 +10,7 @@ import { BookingGuard } from './guards/booking-guard';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { LocationDataService } from '../work-allocation-2/services';
+import { LocationDataService } from '../work-allocation/services';
 import { BookingService } from './services';
 
 @NgModule({

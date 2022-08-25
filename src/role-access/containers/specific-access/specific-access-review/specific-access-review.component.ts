@@ -7,7 +7,7 @@ import { take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
 
 import { UserDetails } from '../../../../app/models';
-import { CaseworkerDataService } from '../../../../work-allocation-2/services';
+import { CaseworkerDataService } from '../../../../work-allocation/services';
 import { ERROR_MESSAGE } from '../../../constants';
 import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../../models/enums';

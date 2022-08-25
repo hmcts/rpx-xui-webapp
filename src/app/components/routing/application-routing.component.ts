@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { WorkAllocationFeatureService } from '../../../work-allocation-2/services';
+import { WorkAllocationFeatureService } from '../../../work-allocation/services';
 import * as fromActions from '../../store';
 
 @Component({ templateUrl: './application-routing.component.html'})

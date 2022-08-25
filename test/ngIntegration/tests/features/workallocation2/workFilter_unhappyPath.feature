@@ -1,14 +1,14 @@
-@ng  
+@ng
 Feature: WA Release 2: My work - Work filters - Uhhappy paths
 
     Background: Mock and browser setup
         Given I init MockApp
-     
-        Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
-        Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
+
+        Given I set MOCK request "/workallocation/task" intercept with reference "workallocationTaskRequest"
+        Given I set MOCK request "/workallocation/my-work/cases" intercept with reference "workallocationCasesRequest"
 
 
-   
+
     Scenario Outline:  Work filters api error <responseCode> on apply
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
         Given I start MockApp
@@ -21,8 +21,8 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
 
-        Given I set MOCK request "/workallocation2/task" response log to report
-        Given I set MOCK api method "post" endpoint "/workallocation2/task" with error response code <responseCode>
+        Given I set MOCK request "/workallocation/task" response log to report
+        Given I set MOCK api method "post" endpoint "/workallocation/task" with error response code <responseCode>
         Given I start MockApp
         When I click work location filter Apply button
 

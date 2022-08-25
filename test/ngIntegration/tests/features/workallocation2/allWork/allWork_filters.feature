@@ -40,8 +40,8 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Admin    | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
             | Admin    | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
-        Given I set MOCK request "/workallocation2/findPerson" response log to report
-        Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findpersonRequest"
+        Given I set MOCK request "/workallocation/findPerson" response log to report
+        Given I set MOCK request "/workallocation/findPerson" intercept with reference "findpersonRequest"
 
 
 
@@ -58,8 +58,8 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      | ADMIN            |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | ADMIN            |
 
-        Given I set MOCK request "/workallocation2/task" intercept with reference "taskSearchRequest"
-        Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
+        Given I set MOCK request "/workallocation/task" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/all-work/cases" intercept with reference "caseSearchRequest"
 
     Scenario: Tasks filters state, with user role "Caseworker"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"

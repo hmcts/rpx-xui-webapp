@@ -97,7 +97,7 @@ describe("Task management api, Search for completebale tasks on case event", () 
                 return configValues[prop];
             });
 
-            const { postTaskSearchForCompletable } = requireReloaded('../../../../workAllocation2/index');
+            const { postTaskSearchForCompletable } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

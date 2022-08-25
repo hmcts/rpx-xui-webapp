@@ -1,7 +1,7 @@
 import { RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 
-import { getMockTasks } from '../../work-allocation-2/tests/utils.spec';
+import { getMockTasks } from '../../work-allocation/tests/utils.spec';
 import { CaseRole, RoleCategory } from '../models';
 import { TaskRoleAccessResolver } from './task-role-access-resolver';
 

@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
-import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
+import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseRole } from '../../models';
 import { CaseRolesTableComponent } from './case-roles-table.component';
 

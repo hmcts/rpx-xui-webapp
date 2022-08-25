@@ -30,7 +30,11 @@ const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-se
 
 
  
-const nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+let  nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
+if (argv.debug){
+    nodeMockPort = 3001; 
+}
 
 const perfLoggingPrefs = {
     'enableNetwork': true,
@@ -134,7 +138,7 @@ const config = {
 
     },
     cucumberOpts: {
-        'fail-fast': argv.failFast ? argv.failFast.includes("true") : true,
+        'fail-fast': argv.failFast ? argv.failFast.includes("true") : false,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],

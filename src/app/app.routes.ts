@@ -41,7 +41,7 @@ export const ROUTES: Routes = [
   {
     path: 'work',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
+    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks

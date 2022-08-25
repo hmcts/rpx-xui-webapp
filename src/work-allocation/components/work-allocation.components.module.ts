@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatNativeDateModule } from '@angular/material';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import * as fromComponents from '.';
-import * as fromPipes from '../pipes';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from '../services';
+import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService } from '../services';
+import { PriorityFieldComponentModule } from './priority-field/priority.module';
 
 // from containers
 @NgModule({
@@ -17,17 +19,21 @@ import { CaseworkerDataService, InfoMessageCommService, LocationDataService } fr
     ExuiCommonLibModule,
     FormsModule, // TODO: Remove this as it's only needed for testing.
     PipesModule,
-    ReactiveFormsModule
+    WorkAllocationPipesModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatInputModule,
+    PriorityFieldComponentModule
   ],
   declarations: [
     ...fromComponents.components,
-    ...fromPipes.pipes
   ],
-  providers: [CaseworkerDataService, LocationDataService, InfoMessageCommService],
+  providers: [CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
     ...fromComponents.components,
-    ...fromPipes.pipes
   ]
 })
 export class WorkAllocationComponentsModule {

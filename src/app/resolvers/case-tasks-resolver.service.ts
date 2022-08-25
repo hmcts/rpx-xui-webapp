@@ -3,15 +3,15 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, first } from 'rxjs/operators';
-import { TaskList } from '../../work-allocation-2/models/dtos';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation-2/utils';
+import { TaskList } from '../../work-allocation/models/dtos';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CaseTasksResolverService implements Resolve<TaskList> {
 
-  public static CASE_TASKS_URL: string = '/workallocation2/case/task';
+  public static CASE_TASKS_URL: string = '/workallocation/case/task';
 
   constructor(private readonly http: HttpClient, private readonly router: Router) {
   }

@@ -51,6 +51,17 @@ export class BookingCheckComponent implements OnInit {
       beginDate: this.bookingProcess.startDate,
       endDate: this.bookingProcess.endDate
     };
+    const givenDate = payload.beginDate;
+    if (givenDate && givenDate.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)) {
+      // Ensure that the date is set as today
+      // issue previously with API rejecting DST because time was today 00:00 but UTC was yesterday 23:00
+      payload.beginDate = new Date();
+      payload.beginDate.setHours(0, 0, 0, 0);
+      // only replace the time if current status is DST
+      if (payload.beginDate.getHours() !== payload.beginDate.getUTCHours()) {
+        payload.beginDate.setHours(1);
+      }
+    }
     this.bookingService.createBooking(payload).pipe(
       switchMap(() => {
         return this.bookingService.refreshRoleAssignments().pipe(

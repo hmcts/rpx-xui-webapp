@@ -4,7 +4,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "caseSearchRequest"
+        Given I set MOCK request "/workallocation/my-work/cases" intercept with reference "caseSearchRequest"
 
 
     Scenario Outline: pagnation and sorting for user type "<UserType>" with roles "<Roles>"
@@ -38,7 +38,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
         When I click work allocation table "cases" column header "Hearing date"
         Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
 
-        Then I validate "My workcases " tasks columns sorting with taskRequest url "/workallocation2/my-work/case" on page 3 for user type "<UserType>"
+        Then I validate "My workcases " tasks columns sorting with taskRequest url "/workallocation/my-work/case" on page 3 for user type "<UserType>"
             | ColumnHeader  | Caseworker | Judge | FieldId      |
             | Hearing date | Yes | Yes | hearing_date |
 
@@ -106,7 +106,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
         Then I validate work allocation cases table pagination controls, is displayed state is "false"
 
     
-        Then I validate "My work" tasks columns sorting with taskRequest url "workallocation2/my-work/cases" on page 3 for user type "<UserType>"
+        Then I validate "My work" tasks columns sorting with taskRequest url "workallocation/my-work/cases" on page 3 for user type "<UserType>"
             | ColumnHeader  | Caseworker | Judge | FieldId      |
             | Hearing date | Yes | Yes | hearing_date |
 

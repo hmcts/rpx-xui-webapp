@@ -29,8 +29,8 @@ Feature: WA Release 2: My work - Work filters
 
 
 
-        Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
-        Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
+        Given I set MOCK request "/workallocation/task" intercept with reference "workallocationTaskRequest"
+        Given I set MOCK request "/workallocation/my-work/cases" intercept with reference "workallocationCasesRequest"
 
         Given I set MOCK request "/api/locations/getLocations" intercept with reference "workFilterLocationsRequest"
 

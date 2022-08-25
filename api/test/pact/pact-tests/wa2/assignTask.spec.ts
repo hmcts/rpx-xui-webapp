@@ -29,7 +29,7 @@ describe("Task management api, assign a task to user", () => {
         });
 
         before(async () => {
-           
+
             await pactSetUp.provider.setup()
             const interaction = {
                 state: "assign a task using taskId",
@@ -65,7 +65,7 @@ describe("Task management api, assign a task to user", () => {
                 return configValues[prop];
             });
 
-            const { postTaskAction } = requireReloaded('../../../../workAllocation2/index');
+            const { postTaskAction } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

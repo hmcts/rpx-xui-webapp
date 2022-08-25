@@ -41,7 +41,7 @@ Feature: WA Release 2: My cases
             | case-allocator | 10 |
             | case-allocator | 10 |
 
-        Given I set MOCK request "/workallocation2/my-work/cases/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/my-work/cases/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page

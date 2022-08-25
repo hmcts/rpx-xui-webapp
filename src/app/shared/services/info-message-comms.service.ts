@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { InformationMessage } from '../../../work-allocation-2/models/comms';
+import { InformationMessage } from '../../../work-allocation/models/comms';
 
 @Injectable({ providedIn: 'root' })
 export class InfoMessageCommService {

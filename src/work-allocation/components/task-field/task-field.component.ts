@@ -1,7 +1,8 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 
-import { TaskFieldType } from './../../enums';
-import { Task, TaskFieldConfig } from './../../models/tasks';
+import { FieldType } from '../../enums';
+import { FieldConfig } from '../../models/common';
+import { Task } from '../../models/tasks';
 
 @Component({
   selector: 'exui-task-field',
@@ -15,7 +16,7 @@ export class TaskFieldComponent {
    * to obtain the correct value from the task and determine how it
    * should be rendered.
    */
-  @Input() public config: TaskFieldConfig;
+  @Input() public config: FieldConfig;
 
   /**
    * The task, which contains the value we want to render in this
@@ -25,7 +26,7 @@ export class TaskFieldComponent {
 
   // This is here for the ngSwitch in the template so we don't have
   // hard-coded strings floating around the place.
-  protected fieldType = TaskFieldType;
+  protected fieldType = FieldType;
 
   /**
    * Convert a string, number, or Date to date object.
@@ -37,6 +38,5 @@ export class TaskFieldComponent {
     }
     return null;
   }
-
 
 }

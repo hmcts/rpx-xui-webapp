@@ -9,7 +9,7 @@ import { setHeaders } from '../lib/proxy';
 import { getServiceRefDataMappingList } from '../serviceRefData';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { CaseRole } from '../workAllocation2/interfaces/caseRole';
+import { CaseRole } from '../workAllocation/interfaces/caseRole';
 import {
   toDenySADletionRequestedRoleBody,
   toDenySARoleAssignmentBody,

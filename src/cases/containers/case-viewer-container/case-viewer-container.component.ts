@@ -10,7 +10,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import {AppUtils} from '../../../app/app-utils';
 import {AppConstants} from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
-import { WASupportedJurisdictionsService } from '../../../work-allocation-2/services';
+import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import {FeatureVariation} from '../../models/feature-variation.model';
 import {Utils} from '../../utils/utils';
 

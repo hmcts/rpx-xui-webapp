@@ -17,7 +17,7 @@ import { SpecificAccessReviewComponent } from '../specific-access-review/specifi
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { DurationHelperService } from '../../../services';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
-import { getMockTasks } from 'src/work-allocation-2/tests/utils.spec';
+import { getMockTasks } from 'src/work-allocation/tests/utils.spec';
 
 describe('SpecificAccessHomeComponent', () => {
   let component: SpecificAccessHomeComponent;

@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
-import { Task } from '../../../../work-allocation-2/models/tasks';
-import { CaseworkerDataService } from '../../../../work-allocation-2/services';
+import { Task } from '../../../../work-allocation/models/tasks';
+import { CaseworkerDataService } from '../../../../work-allocation/services';
 import { specificAccessApprovedVisibilityStates, specificAccessDeniedVisibilityStates, specificAccessDurationVisibilityStates, specificAccessInformationVisibilityStates, specificAccessReviewVisibilityStates } from '../../../constants';
 import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';

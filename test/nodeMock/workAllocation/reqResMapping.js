@@ -180,7 +180,10 @@ module.exports = {
         },
         '/workallocation/task/:taskId/claim': (req, res) => {
             res.status(204).send();
-        },  
+        }, 
+        '/workallocation/task/:taskId/unclaim': (req, res) => {
+            res.status(204).send();
+        },   
         '/workallocation/task/:taskId/cancel': (req, res) => {
             res.status(204).send();
         },

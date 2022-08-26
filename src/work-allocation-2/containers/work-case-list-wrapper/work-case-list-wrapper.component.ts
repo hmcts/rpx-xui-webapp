@@ -313,7 +313,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
             const currentCase = judicialCase;
             const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
             if (theJUser) {
-              currentCase.actorName = theJUser.known_as;
+              currentCase.actorName = theJUser.full_name;
               return currentCase;
             }
             return currentCase;

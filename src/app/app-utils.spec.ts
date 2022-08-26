@@ -335,7 +335,7 @@ describe('getFilterPersistenceByRoleType', () => {
           ],
         }
       };
-      
+
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);
       USER_2.roleAssignmentInfo[0].bookable = false;
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);

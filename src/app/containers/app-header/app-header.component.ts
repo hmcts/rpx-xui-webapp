@@ -88,7 +88,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     this.featureToggleKey = AppConstants.SERVICE_MESSAGES_FEATURE_TOGGLE_KEY;
-    this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;    
+    this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
 
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     const decorate16DigitCaseReferenceSearchBoxInHeader$ = this.store.pipe(select(fromActions.getDecorate16digitCaseReferenceSearchBoxInHeader));
@@ -105,7 +105,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         this.router.events.subscribe(event => {
           this.setNavigationEnd(event);
         });
-      });   
+      });
   }
 
   public async setHeaderContent(userDetails) {

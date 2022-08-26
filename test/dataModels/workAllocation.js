@@ -138,10 +138,14 @@ class WorkAllocationModels {
     getFindPersonObj() {
         return {
             domain: 1,
-            email: "andy.kings@email.com",
-            id: "id131",
+            emailId: "andy.kings@email.com",
+            idamId: "id131",
             name: "Andy Kings",
-            knownAs:'Lead Judgee'
+            knownAs:'Lead Judgee',
+            fullName:'Judge Robin',
+            personalCode:'',
+            surname:'test',
+            title:'Mr'
         }
     }
 

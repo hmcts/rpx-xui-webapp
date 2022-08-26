@@ -47,7 +47,14 @@ function HeaderPage() {
 
 
     this.navigateToRoute = async function(route){
-      await browser.get(config.config.baseUrl + route);
+      let currentUrl = await browser.getCurrentUrl();
+      const protocol = currentUrl.split(":")[0];
+      const domain = currentUrl.replace(`${protocol}://`,'').split("/")[0];
+
+      CucumberReporter.AddMessage(`appProtocol: ${protocol}, domain ${domain}`);
+      const baseUrl = `${protocol}://${domain}`
+
+      await browser.get(baseUrl + route);
       await browserUtil.waitForLD();
       await this.waitForPrimaryNavDisplay(); 
     }

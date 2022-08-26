@@ -86,7 +86,6 @@ Feature: WA Release 2: Case details Tasks tab
 
         Then I validate case details task tab page is displayed
         Then I validate task tab alert banner header is "Task alert"
-        Then I validate task tab alert banner message is "An application is pending a decision. Consider if this application has an impact on any other tasks you might wish to complete."
         Then I validate task tab active tasks container displayed
         Then I validate task tab active tasks displayed count 15
 

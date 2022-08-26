@@ -1,14 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { FeatureToggleService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-
 import { AppConstants } from '../../../app/app.constants';
+import { Component, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
+import { FeatureToggleService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 import { WorkAllocationFeatureService } from '../../../work-allocation-2/services';
 import * as fromActions from '../../store';
-
 
 @Component({ templateUrl: './application-routing.component.html'})
 export class ApplicationRoutingComponent implements OnInit {

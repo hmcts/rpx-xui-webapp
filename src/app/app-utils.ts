@@ -37,9 +37,6 @@ export class AppUtils {
    * @param url - '/cases'
    */
   public static showNavItems(url: string): boolean {
-    if ( url.indexOf('booking') > 0 ) {
-      return false;
-    }
     return url.indexOf('accept-terms-and-conditions') < 0 && url.indexOf('terms-and-conditions') < 0;
   }
 
@@ -71,6 +68,11 @@ export class AppUtils {
    * Set the active property on the navigation items.
    */
   public static setActiveLink(items: NavigationItem[], currentUrl: string): NavigationItem[] {
+
+    if (currentUrl.indexOf('booking') > 0 ) {
+      return [];
+    }
+
     let fullUrl = false;
     let matchingUrl = '';
     [fullUrl, matchingUrl] = AppUtils.checkTabs(items, currentUrl);

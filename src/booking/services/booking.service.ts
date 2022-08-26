@@ -8,8 +8,8 @@ export class BookingService {
 
   constructor(private readonly http: HttpClient) { }
 
-  public getBookings(userId: string): Observable< Booking[]> {
-    return this.http.post<Booking[]>(`/am/getBookings`, { userId });
+  public getBookings(userId: string, bookableServices: string[]): Observable< Booking[]> {
+    return this.http.post<Booking[]>(`/am/getBookings`, { userId, bookableServices });
   }
 
   // only get bookings if the user is a FP judge, stops unnecessary calls

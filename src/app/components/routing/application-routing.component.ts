@@ -1,4 +1,5 @@
 import { AppConstants } from '../../../app/app.constants';
+import { AppUtils } from '../../../app/app-utils';
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { FeatureToggleService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -37,12 +38,10 @@ export class ApplicationRoutingComponent implements OnInit {
     const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$]);
 
     userAccess$.pipe(map(([userDetails, bookingFeatureToggle]) => {
-      const { roleAssignmentInfo, userInfo } = userDetails;
-      const isBookableAndJudicialRole = userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some( roleAssignment => 'bookable' in roleAssignment && roleAssignment.bookable === true );
       if (this.router.url !== '/' ) {
         return;
       }
-      if (bookingFeatureToggle && isBookableAndJudicialRole) {
+      if (bookingFeatureToggle && AppUtils.isBookableAndJudicialRole(userDetails)) {
         return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
       }
       userDetails && userDetails.userInfo && userDetails.userInfo.roles &&

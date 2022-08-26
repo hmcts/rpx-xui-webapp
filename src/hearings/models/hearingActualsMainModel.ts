@@ -11,10 +11,8 @@ export interface ActualIndividualDetailsModel {
   lastName: string;
 }
 
-export interface IndividualDetailsModel {
+export interface IndividualDetailsModel extends ActualIndividualDetailsModel {
   title: string;
-  firstName: string;
-  lastName: string;
 }
 
 export interface OrganisationDetailsModel {
@@ -38,6 +36,14 @@ export interface ActualDayPartyModel {
   partyChannelSubType: string;
   partyRole: string;
   representedParty: string;
+}
+
+export interface DisplayDayPartyModel {
+  partyID: string;
+  partyRole: string;
+  individualDetails: ActualIndividualDetailsModel;
+  actualOrganisationName: string;
+  partyChannelSubType: string;
 }
 
 export interface PlannedHearingDayModel {

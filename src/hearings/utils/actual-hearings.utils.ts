@@ -136,9 +136,9 @@ export class ActualHearingsUtils {
       .find(actualHearingDay => actualHearingDay.hearingDate === hearingDate).actualDayParties;
     const plannedParties = plannedDayIndex >= 0 ? hearingActualsMainModel.hearingPlanned.plannedHearingDays[plannedDayIndex].parties : [];
     const plannedPartyIds: string[] = plannedParties.map(plannedParty => plannedParty.partyID);
-    const actualPartiesFromPlanned = actualDayParties.filter(party => plannedPartyIds.some(id => id === party.actualPartyId));
-    const actualDisplayModels = actualPartiesFromPlanned.map(party => ActualHearingsUtils.actualToDisplayModel(party));
-    const plannedDisplayModels = plannedParties.map(party => ActualHearingsUtils.plannedToDisplayModel(party));
+    const actualPartiesFromPlanned: ActualDayPartyModel[] = actualDayParties && actualDayParties.filter(party => plannedPartyIds.some(id => id === party.actualPartyId));
+    const actualDisplayModels: DisplayDayPartyModel[] = actualPartiesFromPlanned && actualPartiesFromPlanned.map(party => ActualHearingsUtils.actualToDisplayModel(party));
+    const plannedDisplayModels: DisplayDayPartyModel[] = plannedParties.map(party => ActualHearingsUtils.plannedToDisplayModel(party));
     if (actualDisplayModels && actualDisplayModels.length) {
       return actualDisplayModels;
     } else {

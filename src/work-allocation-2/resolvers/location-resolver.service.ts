@@ -60,7 +60,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
             map((caseWorkers) => this.extractLocations(caseWorkers)),
           )
         ),
-        mergeMap((locations: Location[]) => this.bookingService.getBookings(this.userId)
+        mergeMap((locations: Location[]) => this.bookingService.getBookingsIfFP(this.userId, this.bookableServices, this.userRole === UserRole.Judicial)
           .pipe(
             map((bookings: Booking[]) => this.addBookingLocations(locations, bookings)),
           )
@@ -129,7 +129,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         jurisdictions.push(roleJurisdiction);
       }
       if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
-        && roleAssignment.bookable === true
+        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
         ) {
         this.bookableServices.push(roleJurisdiction);
       }

@@ -251,11 +251,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     };
     let baseLocation = null;
     // if there are no booking locations selected then check for base location for salary judge
-    if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.location) {
-      const location: Location = this.route.snapshot.data.location;
-      if (location) {
-        baseLocation = [location];
-      }
+    if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.locations) {
+      baseLocation = this.route.snapshot.data.locations;
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: 'locations',

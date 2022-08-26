@@ -7,7 +7,6 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
-
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
 import { TaskListComponent } from '..';
@@ -15,9 +14,10 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { getMockTasks } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 import { AllocateRoleService } from 'src/role-access/services';
+import { CaseRoleDetails } from 'src/role-access/models';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @Component({
@@ -99,8 +99,9 @@ describe('AllWorkTaskComponent', () => {
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
+    const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
-    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -170,7 +171,18 @@ describe('AllWorkTaskComponent', () => {
     expect(searchRequest.search_parameters).not.toContain({key: 'person', operator: 'IN', values: []});
     expect(searchRequest.search_parameters).toContain({key: 'role_category', operator: 'IN', values: ['JUDICIAL']});
     // expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'IN', values: ['High']});
-  })
+  });
+
+  it('should show judicial names when available', () => {
+    const firstMockTask = component.tasks[0];
+    const secondMockTask = component.tasks[1];
+
+    expect(firstMockTask.assignee).not.toBe(undefined);
+    expect(firstMockTask.assigneeName).toBe('Mr Test');
+
+    expect(secondMockTask.assignee).toBe(null);
+    expect(secondMockTask.assigneeName).toBe('Sir Testing');
+  });
 
   afterEach(() => {
     fixture.destroy();

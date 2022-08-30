@@ -2049,6 +2049,7 @@ export const initialState = {
           hearingRequester: null,
           leadJudgeContractType: null,
           amendReasonCodes: null,
+          listingAutoChangeReasonCode: null
         },
         caseDetails: {
           hmctsServiceCode: null,
@@ -2232,6 +2233,7 @@ export const initialState = {
           hearingRequester: null,
           leadJudgeContractType: null,
           amendReasonCodes: null,
+          listingAutoChangeReasonCode: null
         },
         caseDetails: {
           hmctsServiceCode: null,

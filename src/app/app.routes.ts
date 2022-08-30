@@ -1,5 +1,5 @@
 import { ExtraOptions, Routes } from '@angular/router';
-import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleGuard, RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
 import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
 import { BookingSystemErrorComponent } from 'src/booking/containers/utils/booking-system-error/booking-system-error.component';
 import {
@@ -51,8 +51,13 @@ export const ROUTES: Routes = [
   },
   {
     path: 'staff-ref-data',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../staff-ref-data/staff-ref-data.module#StaffRefDataModule'
+    canActivate: [AuthGuard, AcceptTermsGuard, RoleGuard],
+    loadChildren: '../staff-ref-data/staff-ref-data.module#StaffRefDataModule',
+    data: {
+      needsRole: ['case-allocator'],
+      roleMatching: RoleMatching.ALL,
+      noRoleMatchRedirect: '/'
+    }
   },
   {
     path: 'role-access',

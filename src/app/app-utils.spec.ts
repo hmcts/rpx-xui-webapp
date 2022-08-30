@@ -101,15 +101,6 @@ describe('setActiveLink', () => {
     expect(ITEMS[0].active).toEqual(false);
   });
 
-  it('should not show menu items, if the current url has bookings', () => {
-    const ITEMS: NavigationItem[] = [
-      { href: '/a', active: false, text: 'A' }
-    ];
-    const CURRENT_URL: string = '/booking';
-    const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
-    expect(result.length).toEqual(0);
-  });
-
   it('should correctly deactivate a previously active item', () => {
     const ITEMS: NavigationItem[] = [
       { href: '/a', active: true, text: 'A' },

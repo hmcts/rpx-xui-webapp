@@ -1744,6 +1744,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     hearingRequester: '',
     leadJudgeContractType: '',
     amendReasonCodes: [],
+    listingAutoChangeReasonCode: null
   },
   caseDetails: {
     hmctsServiceCode: 'BBA3',

@@ -59,6 +59,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -277,6 +278,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -484,6 +486,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -691,6 +694,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -898,6 +902,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1105,6 +1110,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1313,6 +1319,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1520,6 +1527,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1727,6 +1735,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1934,6 +1943,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -2069,6 +2079,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -2204,6 +2215,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -2406,6 +2418,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingRequester: '',
       leadJudgeContractType: '',
       amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',

@@ -43,7 +43,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
   };
 
   beforeEach(async(() => {
-    searchService = createSpyObj<SearchService>('searchService', ['retrieveState', 'storeState']);
+    searchService = createSpyObj<SearchService>('searchService', ['getResults','retrieveState', 'storeState']);
     searchService.retrieveState.and.returnValue(searchParameters);
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({

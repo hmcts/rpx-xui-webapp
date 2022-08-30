@@ -132,9 +132,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  private isHearingAllRequiredDaysCovered(): boolean {
+  public isHearingAllRequiredDaysCovered(): boolean {
     let isAllDaysCovered: boolean = true;
-    const isActualHearingDaysAvailable = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
+    const isActualHearingDaysAvailable = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
+      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
     if (isActualHearingDaysAvailable) {
       this.actualHearingDays.forEach((actualHearingDay) => {
         if (!actualHearingDay.notRequired && !this.isDetailsProvidedForDay(actualHearingDay)) {
@@ -166,16 +167,21 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public isHearingActualsDaysAvailable(hearingDate: string) {
-    const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays.find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
+    const hearingInfo = this.hearingActualsMainModel.hearingActuals  && this.hearingActualsMainModel.hearingActuals.actualHearingDays
+      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
+      && this.hearingActualsMainModel.hearingActuals.actualHearingDays
+        .find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
     return !!hearingInfo && this.isAcutalTimingAvailable(hearingInfo);
   }
 
   public isHearingActualsPartiesAvailable(hearingDate: string): boolean {
-    const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays.find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
+    const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
+      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
+      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
     return hearingInfo && (hearingInfo.notRequired || hearingInfo.actualDayParties.length > 0);
   }
 
-  private isAllHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
+  public isAllHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
     const hasAllActualDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
       && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
     return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
@@ -187,6 +193,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.validationErrors = [];
     this.hearingTimingResultErrorMessage = '';
     this.successBanner = true;
+
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     const updatedActuals = {
       hearingDate: hearingDay.hearingDate,
@@ -207,6 +214,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.validationErrors = [];
     this.hearingPartiesResultErrorMessage = '';
     this.successBanner = true;
+
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 
     const updatedActuals = {

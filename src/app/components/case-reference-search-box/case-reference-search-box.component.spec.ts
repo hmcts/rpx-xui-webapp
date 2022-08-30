@@ -49,17 +49,17 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
         moreResultsToGo: false
     },
     results: [{
-        stateId: "CASE_PROGRESSION",
-        processForAccess: "NONE",
-        caseReference: "1234123412341234",
+        stateId: 'CASE_PROGRESSION',
+        processForAccess: 'NONE',
+        caseReference: '1234123412341234',
         otherReferences: [],
-        baseLocationId: "214320",
-        regionId: "4",
-        regionName: "North West",
-        CCDJurisdictionId: "CIVIL",
-        CCDJurisdictionName: "Civil",
-        CCDCaseTypeId: "CIVIL",
-        CCDCaseTypeName: "Civil"
+        baseLocationId: '214320',
+        regionId: '4',
+        regionName: 'North West',
+        CCDJurisdictionId: 'CIVIL',
+        CCDJurisdictionName: 'Civil',
+        CCDCaseTypeId: 'CIVIL',
+        CCDCaseTypeName: 'Civil'
     }]
 }
 

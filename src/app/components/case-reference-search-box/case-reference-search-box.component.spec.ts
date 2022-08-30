@@ -42,9 +42,32 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     dateOfDeath: '2020-02-02'
   };
 
+  const result = {
+    resultInfo: {
+        casesReturned: 1,
+        caseStartRecord: 1,
+        moreResultsToGo: false
+    },
+    results: [{
+        stateId: "CASE_PROGRESSION",
+        processForAccess: "NONE",
+        caseReference: "1234123412341234",
+        otherReferences: [],
+        baseLocationId: "214320",
+        regionId: "4",
+        regionName: "North West",
+        CCDJurisdictionId: "CIVIL",
+        CCDJurisdictionName: "Civil",
+        CCDCaseTypeId: "CIVIL",
+        CCDCaseTypeName: "Civil"
+    }]
+}
+
   beforeEach(async(() => {
     searchService = createSpyObj<SearchService>('searchService', ['getResults', 'retrieveState', 'storeState']);
     searchService.retrieveState.and.returnValue(searchParameters);
+    searchService.getResults.and.returnValue(Observable.of(result));
+
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       declarations: [ CaseReferenceSearchBoxComponent ],
@@ -91,6 +114,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     component.onSubmit();
 
     expect(searchService.storeState).toHaveBeenCalledTimes(1);
+    expect(searchService.getResults).toHaveBeenCalledTimes(1);
     expect(component.formGroup.get('caseReference').invalid).toBe(false);
     expect(store.dispatch).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
@@ -102,6 +126,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
 
     // The case reference entered should be stored as a parameter even if it is invalid
     expect(searchService.storeState).toHaveBeenCalledTimes(1);
+    expect(searchService.getResults).toHaveBeenCalledTimes(1);
     expect(component.formGroup.get('caseReference').invalid).toBe(true);
     expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: route });
   });

@@ -77,11 +77,10 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
 
     this.searchService.getResults().subscribe( result => {
 
-      //after backedn api fixed by backend team code should be as below
-      //   if ( !result.resultInfo.casesReturned && result.resultInfo.casesReturned === 0) {
-      //     this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
-      //     return;
-      //   }
+      if (!result.resultInfo.casesReturned && result.resultInfo.casesReturned === 0) {
+        this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
+        return;
+      }
 
 
     // If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page

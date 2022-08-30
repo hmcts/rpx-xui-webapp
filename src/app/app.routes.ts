@@ -50,11 +50,6 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard, AcceptTermsGuard]
   },
   {
-    path: 'staff-ref-data',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../staff-ref-data/staff-ref-data.module#StaffRefDataModule'
-  },
-  {
     path: 'role-access',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../role-access/role-access.module#RoleAccessModule'

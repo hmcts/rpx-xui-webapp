@@ -1,5 +1,5 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
+import { FilterPersistence, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
 import { Theme, UserTypeRole } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
@@ -226,5 +226,10 @@ export class AppUtils {
     } else {
       return 'LegalOps';
     }
+  }
+
+  public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {
+    const { roleAssignmentInfo, userInfo } = userDetails;
+    return userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some( roleAssignment => 'bookable' in roleAssignment && roleAssignment.bookable === true);
   }
 }

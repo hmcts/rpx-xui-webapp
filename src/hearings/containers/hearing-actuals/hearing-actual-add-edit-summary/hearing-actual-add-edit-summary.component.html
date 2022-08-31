@@ -49,7 +49,6 @@
       </dl>
     </div>
     <br>
-    <h1 class="govuk-heading-m">{{ getHearingDateText() }}</h1>
     <h1 class="govuk-heading-m">Paper hearing</h1>
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
@@ -73,11 +72,11 @@
         {{hearingTimingResultErrorMessage.length ? hearingTimingResultErrorMessage : hearingPartiesResultErrorMessage}}
       </div>
 
-      <div class="govuk-error-message" *ngIf="hearingDaysRequiredErrorMessage !== ''">
+      <div class="govuk-error-message" *ngIf="!isHearingAllRequiredDaysCovered()">
         {{hearingDaysRequiredErrorMessage}}
       </div>
       <div
-        [ngClass]="{'govuk-form-group govuk-form-group--error': hearingDaysRequiredErrorMessage !== '' || hearingTimingResultErrorMessage !== '' || hearingPartiesResultErrorMessage !== ''}"
+        [ngClass]="{'govuk-form-group govuk-form-group--error': !isHearingAllRequiredDaysCovered() || hearingTimingResultErrorMessage !== '' || hearingPartiesResultErrorMessage !== ''}"
         id="actual-hearing-dates">
         <details *ngFor="let actualHearingDay of actualHearingDays; let i = index" class="govuk-details"
           data-module="govuk-details" [open]="hearingDatesAccordion[actualHearingDay.hearingDate]">

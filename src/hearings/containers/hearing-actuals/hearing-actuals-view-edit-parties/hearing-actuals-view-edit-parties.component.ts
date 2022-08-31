@@ -263,6 +263,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     }
     if (valid) {
       const actualParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
+      const localHearingOutcome = {
+        ...this.hearingActualsMainModel.hearingActuals.hearingOutcome,
+        hearingType: this.hearingActualsMainModel.hearingPlanned.plannedHearingType
+      };
       const hearingActuals = {
         ...this.hearingActualsMainModel.hearingActuals,
         actualHearingDays: [
@@ -271,6 +275,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
             actualDayParties: actualParties,
           }
         ],
+        hearingOutcome: localHearingOutcome
       };
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
         hearingId: this.id,

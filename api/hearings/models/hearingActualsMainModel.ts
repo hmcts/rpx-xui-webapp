@@ -11,10 +11,8 @@ export interface ActualIndividualDetailsModel {
   lastName: string;
 }
 
-export interface IndividualDetailsModel {
+export interface IndividualDetailsModel extends ActualIndividualDetailsModel {
   title: string;
-  firstName: string;
-  lastName: string;
 }
 
 export interface OrganisationDetailsModel {

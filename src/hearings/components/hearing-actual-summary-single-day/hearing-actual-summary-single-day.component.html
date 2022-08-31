@@ -38,8 +38,8 @@
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">Names</dt>
       <dd class="govuk-summary-list__value">
-        <div *ngFor="let participant of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate)">
-          {{ participant.individualDetails.firstName }} {{ participant.individualDetails.lastName }}
+        <div *ngFor="let party of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate)">
+          {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}
         </div>
       </dd>
     </div>
@@ -48,8 +48,8 @@
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">How participants will attend</dt>
         <dd class="govuk-summary-list__value">
-          <div *ngFor="let participant of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate)">
-            {{ participant.individualDetails.firstName }} {{ participant.individualDetails.lastName }}: {{participant.partyChannelSubType | convertToValue: partyChannels}}
+          <div *ngFor="let party of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate)">
+            {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}: {{party.partyChannelSubType | convertToValue: partyChannels}}
           </div>
         </dd>
       </div>

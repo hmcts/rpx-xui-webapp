@@ -9,11 +9,11 @@ suite('\'Hearings -> Get Hearing details\'', function() {
           response.status.should.be.eql(200);
         }));
 
-  // test('GET Hearing details', () => generateAPIRequest ('GET', '/api/hearings/getHearing?hearingId=2000000019')
-  // // console.log('response', response.headers.get('cache-control'))
-  //   .then(response => {
-  //     response.status.should.be.eql(200);
-  //   }));
+  test('GET Hearing details', () => generateAPIRequest ('GET', '/api/hearings/getHearing?hearingId=2000000019')
+  // console.log('response', response.headers.get('cache-control'))
+    .then(response => {
+      response.status.should.be.eql(200);
+    }));
 
 
   // test('GET Linked Cases', () => generateAPIRequest ('POST', '/api/hearings/loadServiceLinkedCases')

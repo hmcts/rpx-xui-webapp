@@ -29,7 +29,7 @@ class CcdFields {
     await BrowserWaits.waitForCondition(async () => {
       let isUploadDone = await this.uploadDone.isPresent();
       console.log("file upload status : " + isUploadDone);
-      await browser.sleep(2000);
+      await browser.sleep(5000);
       return !isUploadDone;
     });
   }

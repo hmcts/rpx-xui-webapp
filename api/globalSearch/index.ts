@@ -16,16 +16,14 @@ import { EnhancedRequest } from '../lib/models';
 export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     // Return global search services from session if available
-    if (req.session.globalSearchServices) {
+    if (req.session.globalSearchServices && req.session.globalSearchServices.length !== 0) {
       return res.json(req.session.globalSearchServices);
     }
 
     // Retrieve jurisdictions from session if available
     // Else perform api call to get jurisdictions
     let services: any;
-    if (req.session.jurisdictions) {
-      services = generateServices(req.session.jurisdictions as Jurisdiction[]);
-    }
+    services = generateServices(req.session.jurisdictions as Jurisdiction[]);
 
     // Store generated global search services to session
     req.session.globalSearchServices = services;
@@ -59,10 +57,6 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
  */
 export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchService[] {
 
-  if (!jurisdictions) {
-    return [];
-  }
-
   // Retrieve global search services id from config
   const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
   const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
@@ -70,9 +64,11 @@ export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchSer
   // Generate global search services
   const globalSearchServices: GlobalSearchService[] = [];
   globalSearchServiceIdsArray.forEach(serviceId => {
-    const jurisdiction = jurisdictions.find(x => x.id === serviceId);
-    if (jurisdiction !== undefined) {
+    const jurisdiction = jurisdictions ? jurisdictions.find(x => x.id === serviceId) : null;
+    if (jurisdiction) {
       globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
+    } else {
+      globalSearchServices.push({ serviceId, serviceName: serviceId });
     }
   });
 

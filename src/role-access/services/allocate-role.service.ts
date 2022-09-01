@@ -85,10 +85,6 @@ export class AllocateRoleService {
     return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getSpecificAccessApproved`);
   }
 
-  public getNewCasesCount(): Observable<{count}> {
-    return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getNewCasesCount`);
-  }
-
   public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
     return this.http.post<string[]>(`${AllocateRoleService.roleUrl}/manageLabellingRoleAssignment/${caseId}`, {});
   }

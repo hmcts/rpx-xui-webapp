@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
-import { confirmAllocateRole,
+import {
+  confirmAllocateRole,
   createSpecificAccessApprovalRole,
   deleteRoleByCaseAndRoleId,
   getAccessRolesByCaseId,

@@ -21,7 +21,7 @@ import { ServiceRefData } from '../models/common';
 import { Caseworker, Location, LocationsByService } from '../models/dtos';
 import { CaseworkerDataService } from '../services';
 import { ServiceRefDataService } from '../services/service-ref-data.service';
-import { addLocationToLocationsByService, addLocationToLocationsByServiceCode, getServiceFromServiceCode, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
+import { addLocationToLocationsByService, getServiceFromServiceCode, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, Subscription } from 'rxjs';
@@ -250,16 +250,20 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [],
-      sorting_parameters: [this.getSortParameter()],
+      sorting_parameters: this.getSortParameter(),
       pagination_parameters: this.getPaginationParameter()
     };
   }
 
-  public getSortParameter(): SortParameter {
-    return {
-      sort_by: this.sortedBy.fieldName,
-      sort_order: this.sortedBy.order
-    };
+  public getSortParameter(): SortParameter[] {
+    if (this.sortedBy.fieldName !== 'priority') {
+      return [{
+        sort_by: this.sortedBy.fieldName,
+        sort_order: this.sortedBy.order
+      }];
+    }
+
+    return [];
   }
 
   public getPaginationParameter(): PaginationParameter {

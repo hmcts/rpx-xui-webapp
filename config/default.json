@@ -53,7 +53,7 @@
     },
     "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
-    "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/",
+    "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal",
     "idam": {
       "idamApiUrl": "https://idam-api.platform.hmcts.net",
       "idamClientID": "xuiwebapp",

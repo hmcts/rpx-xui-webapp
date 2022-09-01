@@ -13,7 +13,7 @@ export class SearchService {
   constructor(private readonly http: HttpClient) { }
 
   public getServices(): Observable<GlobalSearchService[]> {
-    return this.http.get<GlobalSearchService[]>(`api/globalsearch/services`);
+    return this.http.get<GlobalSearchService[]>(`/api/globalSearch/services`);
   }
 
   public getResults(): Observable<SearchResult> {

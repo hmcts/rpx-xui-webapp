@@ -51,12 +51,21 @@ describe('HearingAdditionalInstructionsComponent', () => {
   });
 
   it('should check AutoListFlag', () => {
-    component.hearingRequestMainModel.hearingDetails.listingComments = null;
-    component.hearingRequestMainModel.hearingDetails.autolistFlag = true;
     component.initForm();
+    component.instructionsForm.controls['instructions'].setValue(null);
+    component.serviceHearingValuesModel.autoListFlag = true;
     expect(component.getAutoListFlag()).toBeTruthy();
     component.instructionsForm.controls['instructions'].setValue('instructions');
     expect(component.getAutoListFlag()).toBeFalsy();
+  });
+
+  it('should getListingAutoChangeReasonCode', () => {
+    component.instructionsForm.controls['instructions'].setValue(null);
+    component.serviceHearingValuesModel.autoListFlag = true;
+    component.initForm();
+    expect(component.getListingAutoChangeReasonCode()).toBeNull();
+    component.instructionsForm.controls['instructions'].setValue('instructions');
+    expect(component.getListingAutoChangeReasonCode()).toBe('user-added-comments');
   });
 
   afterEach(() => {

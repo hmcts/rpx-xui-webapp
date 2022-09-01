@@ -39,7 +39,7 @@ const workTypeInfo =
   `[{"key":"hearing_work","label":"Hearing work"},
     {"key":"routine_work","label":"Routine work"},
     {"key":"decision_making_work","label":"Decision-making work"},
-    {"key":"applications","label":"Applications"}]`
+    {"key":"applications","label":"Applications"}]`;
 
 describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
@@ -170,7 +170,9 @@ describe('MyTasksComponent', () => {
     for (let i = 0; i < fields.length; i++) {
       // ensure derivedIcon has no header and every other field does
       if (fields[i].columnLabel) {
-        expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        if (fields[i].columnLabel !== 'Priority') {
+          expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        }
       } else {
         expect(headerCells[i].textContent).toEqual('');
       }

@@ -1,6 +1,6 @@
+import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Location as AngularLocation } from '@angular/common';
 import {
   FilterConfig,
   FilterError,
@@ -251,8 +251,11 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     };
     let baseLocation = null;
     // if there are no booking locations selected then check for base location for salary judge
-    if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.locations) {
-      baseLocation = this.route.snapshot.data.locations;
+    if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.location) {
+      const location: Location = this.route.snapshot.data.location;
+      if (location) {
+        baseLocation = [location];
+      }
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: 'locations',

@@ -133,7 +133,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return {
       service: TaskService.IAC,
       defaultSortDirection: SortOrder.ASC,
-      defaultSortFieldName: this.getDateField('dueDate'),
+      defaultSortFieldName: 'priority',
       fields: this.fields
     };
   }
@@ -352,7 +352,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, this.selectedServices).pipe(switchMap(((judicialUserData) => {
         result.tasks.map(task => {
           const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
-          task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
+          task.assigneeName = judicialAssignedData ? judicialAssignedData.known_as : task.assigneeName;
         });
         return of(result);
       })));

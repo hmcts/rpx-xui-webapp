@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TaskPriority, PriorityLimits } from '../../enums';
+import { PriorityLimits, TaskPriority } from '../../enums';
 
 @Component({
   selector: 'exui-priority-field',
@@ -23,9 +23,9 @@ export class PriorityFieldComponent {
       return TaskPriority.HIGH;
     } else if (this.majorPriority === PriorityLimits.High) {
       if (dCount < 0) {
-        return TaskPriority.HIGH
+        return TaskPriority.HIGH;
       } else if (dCount === 0) {
-        return TaskPriority.MEDIUM
+        return TaskPriority.MEDIUM;
       }
     }
     return TaskPriority.LOW;

@@ -1,6 +1,8 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
-
-import { FieldType } from '../../enums';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
+import { SessionStorageService } from '../../../app/services';
+import { FieldType, PriorityLimits } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 
@@ -10,7 +12,8 @@ import { Task } from '../../models/tasks';
   styleUrls: ['task-field.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TaskFieldComponent {
+export class TaskFieldComponent implements OnInit {
+
   /**
    * The configuration for this particular field, which is needed
    * to obtain the correct value from the task and determine how it
@@ -24,9 +27,16 @@ export class TaskFieldComponent {
    */
   @Input() public task: Task;
 
+  public isUserJudicial: boolean;
+  public isTaskUrgent: boolean;
+
   // This is here for the ngSwitch in the template so we don't have
   // hard-coded strings floating around the place.
   protected fieldType = FieldType;
+
+
+  constructor( private readonly sessionStorageService: SessionStorageService) {
+}
 
   /**
    * Convert a string, number, or Date to date object.
@@ -39,4 +49,14 @@ export class TaskFieldComponent {
     return null;
   }
 
+  ngOnInit(): void {
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      this.isUserJudicial = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+    }
+    if (this.task && this.task.major_priority) {
+      this.isTaskUrgent = this.task.major_priority <= PriorityLimits.Urgent ? true : false;
+    }
+  }
 }

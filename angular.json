@@ -76,7 +76,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "rpx-exui:build",
-             "proxyConfig": "./proxy.config.json"
+            "proxyConfig": "./proxy.config.json"
           },
           "configurations": {
             "production": {
@@ -107,11 +107,11 @@
           "options": {
             "codeCoverage": true,
             "codeCoverageExclude": [
-                "**/*.spec.ts",
-                "**/*.spec.js",
-                "test/**",
-                "config/**",
-                "src/environments/**"
+              "**/*.spec.ts",
+              "**/*.spec.js",
+              "test/**",
+              "config/**",
+              "src/environments/**"
             ],
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
@@ -182,5 +182,8 @@
     "@schematics/angular:component": {
       "style": "scss"
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

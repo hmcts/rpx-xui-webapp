@@ -67,7 +67,7 @@ export const ROUTES: Routes = [
   {
     path: 'hearings',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../hearings/hearings.module#HearingsModule'
+    loadChildren: () => import('../hearings/hearings.module').then(m => m.HearingsModule)
   },
   {
     path: 'cookies',

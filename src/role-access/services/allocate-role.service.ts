@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
-import { Actions, AllocateRoleStateData, CaseRole, Period, Role, RoleCategory, RolesByService, SpecificAccessStateData } from '../models';
+import { Actions, AllocateRoleStateData, CaseRole, Period, Role, RolesByService, SpecificAccessStateData } from '../models';
 import { CaseRoleDetails } from '../models/case-role-details.interface';
 import { getAllRolesFromServices, getRoleSessionStorageKeyForServiceId, setRoles } from '../utils';
 
@@ -82,10 +82,6 @@ export class AllocateRoleService {
 
   public getSpecificAccessApproved(): Observable<{count}> {
     return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getSpecificAccessApproved`);
-  }
-
-  public getNewCasesCount(): Observable<{count}> {
-    return this.http.get<{count}>(`${AllocateRoleService.roleUrl}/getNewCasesCount`);
   }
 
   public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {

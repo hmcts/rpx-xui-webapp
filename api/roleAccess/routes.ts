@@ -1,16 +1,17 @@
 import { Router } from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
-import { confirmAllocateRole,
+import {
+  confirmAllocateRole,
   createSpecificAccessApprovalRole,
-  manageLabellingRoleAssignment,
   deleteRoleByCaseAndRoleId,
   getAccessRolesByCaseId,
   getJudicialUsers,
   getRolesByCaseId,
   getSpecificAccessApproved,
-  reallocateRole,
-  getNewCasesCount} from './index';
+  manageLabellingRoleAssignment,
+  reallocateRole
+} from './index';
 import { getPossibleRoles } from './roleAssignmentService';
 
 const router = Router({ mergeParams: true });
@@ -30,7 +31,6 @@ router.post('/roles/access-get', getAccessRolesByCaseId);
 router.post('/roles/getJudicialUsers', getJudicialUsers);
 
 router.get('/roles/getSpecificAccessApproved', getSpecificAccessApproved );
-router.get('/roles/getNewCasesCount', getNewCasesCount );
 router.post('/roles/manageLabellingRoleAssignment/:caseId', manageLabellingRoleAssignment );
 
 router.post('/allocate-role/specific-access-approval', createSpecificAccessApprovalRole);

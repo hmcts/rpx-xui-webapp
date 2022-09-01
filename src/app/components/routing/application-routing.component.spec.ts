@@ -18,20 +18,13 @@ describe('ApplicationRoutingComponent', () => {
     router = jasmine.createSpyObj('router', ['navigate']);
     waFeatureService = jasmine.createSpyObj('service', ['getActiveWAFeature']);
     mockStore = jasmine.createSpyObj('store', ['pipe']);
+    router.url = '/';
     featureToggleMock.isEnabled.and.returnValue(of(true));
     component = new ApplicationRoutingComponent(router, waFeatureService, mockStore, featureToggleMock);
-    router.url = '/';
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should navigateBasedOnUserRole caseworker-civil', () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
-    component.navigateBasedOnUserRole();
-    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   });
 
   it('should navigateUrlBasedOnFeatureToggle WorkAllocationRelease1', () => {
@@ -64,6 +57,13 @@ describe('ApplicationRoutingComponent', () => {
   it('should navigateBasedOnUserRole caseworker-ia-iacjudge', async () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-ia-iacjudge']}}));
+    component.navigateBasedOnUserRole();
+    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
+  });
+
+  it('should navigateBasedOnUserRole caseworker-civil', () => {
+    featureToggleMock.getValueOnce.and.returnValue(of(true));
+    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   });

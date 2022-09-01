@@ -60,9 +60,9 @@ describe('HearingAdditionalInstructionsComponent', () => {
   });
 
   it('should getListingAutoChangeReasonCode', () => {
+    component.initForm();
     component.instructionsForm.controls['instructions'].setValue(null);
     component.serviceHearingValuesModel.autoListFlag = true;
-    component.initForm();
     expect(component.getListingAutoChangeReasonCode()).toBeNull();
     component.instructionsForm.controls['instructions'].setValue('instructions');
     expect(component.getListingAutoChangeReasonCode()).toBe('user-added-comments');

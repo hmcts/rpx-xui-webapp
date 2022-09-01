@@ -1,14 +1,13 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
-import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
-import { http } from '../lib/http';
-import { setHeaders } from '../lib/proxy';
 import { getConfigValue } from '../configuration';
 import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
+import { http } from '../lib/http';
+import { setHeaders } from '../lib/proxy';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { postTaskCompletionForAccess } from '../workAllocation';
-import { getFullLocationsForServices } from '../workAllocation/locationService';
+import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 
 export async function getBookings(req, resp: Response, next: NextFunction) {
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
@@ -31,7 +30,7 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
     });
     return resp.status(bookings.status).send(bookingAndLocationName);
   } catch (error) {
-      next(error)
+      next(error);
   }
 }
 
@@ -46,7 +45,7 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
     const response = await http.post(fullPath, {"bookingRequest": req.body }, { headers });
     return resp.status(response.status).send(response.data);
   } catch (error) {
-      next(error)
+      next(error);
   }
 }
 

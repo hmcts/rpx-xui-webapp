@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/rpx-exui",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -62,6 +63,10 @@
                   "type": "initial",
                   "maximumWarning": "6mb",
                   "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -175,7 +180,7 @@
   "defaultProject": "rpx-exui",
   "schematics": {
     "@schematics/angular:component": {
-      "styleext": "scss"
+      "style": "scss"
     }
   }
 }

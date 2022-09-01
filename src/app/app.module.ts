@@ -8,7 +8,7 @@ import {
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+//import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import {
   LoadingService,
   CookieService,
@@ -101,7 +101,7 @@ export function launchDarklyClientIdFactory(
     SharedModule,
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
-    PaymentLibModule,
+    //PaymentLibModule,
   ],
   providers: [
     NGXLogger,

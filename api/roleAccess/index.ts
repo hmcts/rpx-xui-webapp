@@ -15,7 +15,8 @@ import {
   toDenySARoleAssignmentBody,
   toRoleAssignmentBody,
   toSARequestRoleAssignmentBody,
-  toSARoleAssignmentBody } from './dtos/to-role-assignment-dto';
+  toSARoleAssignmentBody
+} from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
@@ -116,26 +117,6 @@ export async function getSpecificAccessApproved(req, resp, next) {
 
 export function getNewAccessCount(roleAssignment: RoleAssignment): boolean {
   return roleAssignment.roleName === 'specific-access-granted' || roleAssignment.attributes.isNew;
-}
-
-export async function getNewCasesCount(req, resp, next) {
-  let count = 0;
-  try {
-    if (!req.session || !req.session.roleAssignmentResponse) {
-      return resp.status(401).send({ count });
-    }
-    const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
-    count = currentUserAssignments.filter(roleAssignment => getNewCaseCount(roleAssignment)).length;
-    count = 3 ;
-    return resp.status(200).send({ count });
-  } catch (error) {
-    next(error);
-  }
-}
-
-function getNewCaseCount(roleAssignment: RoleAssignment): boolean {
-  //return roleAssignment.roleName === 'specific-access-granted' || roleAssignment.attributes.isNew;
-  return true;
 }
 
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {

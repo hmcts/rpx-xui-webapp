@@ -164,6 +164,7 @@ describe('HearingRequirementsComponent', () => {
         hearingRequester: '',
         leadJudgeContractType: '',
         amendReasonCodes: null,
+        listingAutoChangeReasonCode: null
       },
       caseDetails: {
         hmctsServiceCode: 'BBA3',

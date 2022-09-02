@@ -41,6 +41,7 @@ describe('Hearing Request To Compare Reducer', () => {
               hearingRequester: null,
               leadJudgeContractType: null,
               amendReasonCodes: null,
+              listingAutoChangeReasonCode: null
             },
             caseDetails: {
               hmctsServiceCode: 'BBA3',

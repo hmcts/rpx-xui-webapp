@@ -3,12 +3,14 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { ValidationErrors } from '@angular/forms/src/directives/validators';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import {
   ActualDayPartyModel,
   HearingActualsMainModel,
   PlannedDayPartyModel,
+  PlannedHearingDayModel,
 } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingChannelEnum } from '../../../models/hearings.enum';
@@ -269,15 +271,22 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
           {
             ...this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
             actualDayParties: actualParties,
+            hearingDate: this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays)
           }
-        ],
+        ]
       };
+
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
         hearingId: this.id,
         hearingActuals
       }));
       this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
     }
+  }
+
+  public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
+    const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
+    return moment.min(moments).toISOString();
   }
 
   public getRole(value: string): string {

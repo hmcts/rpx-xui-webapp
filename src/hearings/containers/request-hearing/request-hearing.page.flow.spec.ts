@@ -43,6 +43,7 @@ describe('RequestHearingPageFlow', () => {
           hearingInWelshFlag: true,
           amendReasonCodes: null,
           hearingChannels: [],
+          listingAutoChangeReasonCode: null
         },
         partyDetails: []
       },

@@ -51,6 +51,7 @@ describe('Hearing Request Reducer', () => {
               hearingRequester: null,
               leadJudgeContractType: null,
               amendReasonCodes: null,
+              listingAutoChangeReasonCode: null
             },
             caseDetails: {
               hmctsServiceCode: 'BBA3',
@@ -113,6 +114,7 @@ describe('Hearing Request Reducer', () => {
               hearingRequester: null,
               leadJudgeContractType: null,
               amendReasonCodes: null,
+              listingAutoChangeReasonCode: null
             },
             caseDetails: {
               hmctsServiceCode: 'BBA3',

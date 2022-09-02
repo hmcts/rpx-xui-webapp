@@ -271,15 +271,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
           {
             ...this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
             actualDayParties: actualParties,
+            hearingDate: this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays)
           }
         ]
       };
-
-      hearingActuals.actualHearingDays.forEach(item => {
-        if (!item.hearingDate) {
-          item.hearingDate = this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays);
-        }
-      });
 
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
         hearingId: this.id,

@@ -97,12 +97,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       map(hearingListStateData => {
           if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
             let caseHearingModels: HearingListModel[] = [];
-            if (Object.values(EXUISectionStatusEnum).includes(status)) {
+            if (Object.values(EXUISectionStatusEnum).includes(status as EXUISectionStatusEnum)) {
               caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
                 hearing.exuiSectionStatus === status
               );
             }
-            if (Object.values(EXUIDisplayStatusEnum).includes(status)) {
+            if (Object.values(EXUIDisplayStatusEnum).includes(status as EXUIDisplayStatusEnum)) {
               caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
                 hearing.exuiDisplayStatus === status
               );

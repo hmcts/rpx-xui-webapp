@@ -33,7 +33,10 @@ Feature: WA Release 2: My work - My tasks - Manage links
             
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-       
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |

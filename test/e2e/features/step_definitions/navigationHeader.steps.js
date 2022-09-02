@@ -43,6 +43,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    When('I validate primary navigation items count {int}', async function (count) {
+        let actual = await headerPage.getMenuItemsCount();
+        expect(actual, `expected menu items displayed to be ${count} actual ${actual} `).to.equal(count)
+
+    });
+
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
 
         await browserWaits.retryWithActionCallback(async () => {

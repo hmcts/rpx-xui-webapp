@@ -50,13 +50,18 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         listingComments: this.instructionsForm.value.instructions,
-        autolistFlag: this.getAutoListFlag()
+        autolistFlag: this.getAutoListFlag(),
+        listingAutoChangeReasonCode: this.getListingAutoChangeReasonCode(),
       }
     };
   }
 
   public getAutoListFlag(): boolean {
-    return (this.instructionsForm.value.instructions !== null) ? false : this.hearingRequestMainModel.hearingDetails.autolistFlag;
+    return this.instructionsForm.value.instructions ? false : this.serviceHearingValuesModel.autoListFlag;
+  }
+
+  public getListingAutoChangeReasonCode(): string {
+    return this.instructionsForm.value.instructions ? 'user-added-comments' : null;
   }
 
   public isFormValid(): boolean {

@@ -21,4 +21,5 @@ export interface HearingDetailsModel {
   hearingIsLinkedFlag?: boolean;
   amendReasonCodes: string[];
   hearingChannels: string[];
+  listingAutoChangeReasonCode: string;
 }

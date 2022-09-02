@@ -7,7 +7,6 @@ var { defineSupportCode } = require('cucumber');
 const BrowserWaits = require("../../../support/customWaits");
 const headerPage = require("../../pageObjects/headerPage");
 const browserUtil = require("../../../../ngIntegration/util/browserUtil");
-
 const workAccessPage = require('../../pageObjects/workAccessBookingUI/workAccessPage');
 const workAllocationDateUtil = require("../../pageObjects/workAllocation/common/workAllocationDateUtil");
 
@@ -45,7 +44,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see work access page displayed', async function(){
-        expect(await workAccessPage.amOnPage()).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await workAccessPage.amOnPage()).to.be.true;
+        }); 
     });
 
     Then('I see work access radio button {string} displayed', async function(radioButtonName){

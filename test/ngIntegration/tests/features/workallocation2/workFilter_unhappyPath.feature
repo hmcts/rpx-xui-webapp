@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: My work - Work filters - Uhhappy paths
 
     Background: Mock and browser setup
@@ -7,10 +7,29 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
         Given I set MOCK request "/workallocation/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation/my-work/cases" intercept with reference "workallocationCasesRequest"
 
+        Given I set MOCK locations with names in service "IA"
+            | id    | locationName           |
+            | 20001 | IA Court Aldgate Tower |
+            | 20002 | IA Court Birmingham    |
+            | 2003  | IA Court Bradford      |
+            | 20004 | IA Court Glasgow       |
+            | 20005 | IA Court Hatton Cross  |
+            | 20006 | IA Court Newcastle     |
+            | 20007 | IA Court Newport       |
+            | 20008 | IA Court North Shields |
+            | 20009 | IA Court Taylor House  |
 
 
     Scenario Outline:  Work filters api error <responseCode> on apply
-        Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
+        Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator"
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
+        Given I start MockApp
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"

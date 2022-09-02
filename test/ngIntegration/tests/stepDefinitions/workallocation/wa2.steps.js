@@ -294,26 +294,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate work filter get location request body {string}, user locations', async function(requestBodyref, datatable){
         const body = global.scenarioData[requestBodyref];
         const userLocations = body.userLocations;
+        
 
-        const expecteduserLocation = datatable.hashes();
-            
-        for (const serviceLocations  of expecteduserLocation){
-            const service = serviceLocations.service; 
-            const locationIds = serviceLocations.locationIds;
 
-            if (locationIds === ''){
-                const userServiceLocation = userLocations.find(userLocationService => userLocationService.service === service );
-                expect(userServiceLocation === undefined, `${service} location not expected ${JSON.stringify(body)}`).to.be.true
-            }else{
-                const expectedLocationsList = locationIds.split(",");
-                const userServiceLocation = userLocations.find(userLocationService => userLocationService.service === service);
-
-                const actualLocationsList = userServiceLocation.locations.map(loc => loc.id);
-                for (const expectedloc of expectedLocationsList){
-                    expect(actualLocationsList.includes(expectedloc), `${service} location ${expectedloc} not present ${JSON.stringify(body)} `).to.be.true;
-                } 
-            }
+        const expectedBody = datatable.rowsHash();
+        
+        for (const key of Object.keys(expectedBody)){
+            expect(body[key],`body param ${key} does not match expected`).to.equal(expectedBody[key]);
         }
+
 
     });
 

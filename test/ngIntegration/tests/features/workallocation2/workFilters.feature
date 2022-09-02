@@ -49,7 +49,7 @@ Feature: WA Release 2: My work - Work filters
 
         Then I validate my work filter services container displayed
         Then I validate my work filter location search displayed
-      
+
 
 
         When I click work location filter Apply button
@@ -116,18 +116,19 @@ Feature: WA Release 2: My work - Work filters
         Examples:
             | UserType       | Roles                                                            |
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
-# | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+    # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
-    Scenario Outline:  Work filters mandatory field validations
+    Scenario Outline:  Work filters mandatory field validations and filter selection
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
-            | true            | IA           | 12345           |
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"
@@ -137,13 +138,12 @@ Feature: WA Release 2: My work - Work filters
         # Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
         When I click work filter button to "Show" filter
-        When I unselect service "SSCS" in my work filter
+        When I unselect service "Social security and child support" in my work filter
         When I unselect service "Immigration and Asylum" in my work filter
         When I click work location filter Apply button
         Then I see error message "Select a service" for service work filter in my work page
         Then I see error message of type "message" displayed with message "Select a service"
 
-        When I select service "SSCS" in my work filter
         When I select service "Immigration and Asylum" in my work filter
 
         When I remove slected location "IA Court" from my work filters
@@ -161,13 +161,15 @@ Feature: WA Release 2: My work - Work filters
         Then I see location "IA Court Taylor House" selected in my work filter
         When I click work location filter Apply button
         Then I validate my work filter services container not displayed
-
+        Then I validate work filter get location request body "workFilterLocationsRequest", user locations
+            | serviceIds   | IA              |
+            | locationType | case-management |
+            | searchTerm   | IA Court Taylor |
 
         Examples:
             | UserType       | Roles                                                            |
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
-
 
     Scenario Outline: Work filters locations based on organisation role and base location
 
@@ -196,20 +198,20 @@ Feature: WA Release 2: My work - Work filters
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be14 | caseworker14 | cw       | caseworker_user14@gov.uk | LEGAL_OPERATIONS |
 
         Given I set MOCK caseworkers for service "IA", base location
-            | email                    | locationId        |
+            | email                   | locationId        |
             | caseworker_user1@gov.uk | <IA_baseLocation> |
 
         Given I set MOCK caseworkers for service "SSCS", base location
-            | email                    | locationId          |
+            | email                   | locationId          |
             | caseworker_user1@gov.uk | <SSCS_baseLocation> |
 
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | substantive |
-            | <IA_is_organisationa_role>  | IA           |Y|
-            | <SSCS_is_organisation_role> | SSCS         |Y|
+            | jurisdiction | substantive | roleType        |
+            | IA           | Y           | <IA_roleType>   |
+            | SSCS         | Y           | <SSCS_roleType> |
 
 
         Given I start MockApp
@@ -225,7 +227,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate my work filter location search displayed
 
         When I remove all selected locations from my work filters
-       
+
         Given I reset reference "workFilterLocationsRequest" value to null
 
         When I search for location text "Court" in my work filters
@@ -233,16 +235,16 @@ Feature: WA Release 2: My work - Work filters
         When I wait for reference "workFilterLocationsRequest" value not null
 
         Then I validate work filter get location request body "workFilterLocationsRequest", user locations
-        |service|locationIds|
-            | IA | <IA_baseLocation> |
-            | SSCS | <SSCS_baseLocation> |
+            | serviceIds   | <searchableServices> |
+            | locationType | case-management      |
+            | searchTerm   | Court                |
 
         Then I see location search results returned <resultCount> results in my work filter
 
 
         Examples:
-            | IA_is_organisationa_role | IA_baseLocation | SSCS_is_organisation_role | SSCS_baseLocation | resultCount |
-            | true                     |                 | true                      |                   | 18          |
-            | false                    | 20001           | false                     | 20010             | 2           |
-            | true | 20001 | faltruese | 20010 | 2 |
+            | IA_roleType  | IA_baseLocation | SSCS_roleType | SSCS_baseLocation | resultCount | searchableServices |
+            | ORGANISATION |                 | ORGANISATION  |                   | 18          | IA,SSCS            |
+            | CASE         | 20001           | ORGANISATION  | 20010             | 9           | SSCS               |
+            | ORGANISATION | 20001           | CASE          | 20010             | 9           | IA                 |
 

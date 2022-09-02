@@ -140,6 +140,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
             })
 
+            if (roleKeys.includes('roleType') ){
+                roleAssignment.isCaseAllocator = roleAssignment.roleType === 'ORGANISATION'
+            }
             roleAssignmentArr.push(roleAssignment);
         }
         userDetails.roleAssignmentInfo = roleAssignmentArr;

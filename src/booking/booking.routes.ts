@@ -1,5 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { LocationResolver } from '../work-allocation/resolvers/location-resolver.service';
 import { BookingHomeComponent, BookingWrapperComponent } from './containers';
 import { BookingGuard } from './guards/booking-guard';

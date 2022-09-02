@@ -1,7 +1,6 @@
 import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard, RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
-import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
-import { BookingSystemErrorComponent } from 'src/booking/containers/utils/booking-system-error/booking-system-error.component';
+import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import {
   AccessibilityComponent,
   ApplicationRoutingComponent,

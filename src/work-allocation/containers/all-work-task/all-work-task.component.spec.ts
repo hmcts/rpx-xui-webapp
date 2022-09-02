@@ -8,16 +8,16 @@ import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common
 import { StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
 
+import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
-import { TaskListComponent } from '..';
+import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
-import { AllocateRoleService } from 'src/role-access/services';
 
 @Component({
   template: `

@@ -39,7 +39,6 @@ export class AllocateRoleService {
     return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/delete`, body);
   }
 
-
   public getValidRoles(serviceIds: string[]): Observable<Role[]> {
     const storedServices = [];
     const newServices = [];

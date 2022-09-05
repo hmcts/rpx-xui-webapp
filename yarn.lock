@@ -460,6 +460,7 @@
   version "4.18.16-EUI-6309-mandatory-field-issue"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.16-EUI-6309-mandatory-field-issue.tgz#702b7b59c82a17cc487817ba3519df586a386d84"
   integrity sha512-zOTtlTZznBVO/tBuRUZJJSSAGBTDk38Jh1kJuZOtuwbGA8DtWNzSlioQaWZ6VUA6w6RNbGwpO7+4M1b6/whe4g==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

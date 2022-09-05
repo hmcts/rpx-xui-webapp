@@ -213,7 +213,7 @@ describe('Work allocation Release 2:  Case roles', () => {
             'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length
         };
 
-        const response = await Request.post(`workallocation2/my-work/cases`, caseRequestObj.getRequestBody(), headers, 200);
+        const response = await Request.post(`workallocation/my-work/cases`, caseRequestObj.getRequestBody(), headers, 200);
         return response;
     }
 

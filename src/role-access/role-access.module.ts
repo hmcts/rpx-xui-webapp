@@ -9,7 +9,7 @@ import { StoreModule } from '@ngrx/store';
 
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
-import { CaseworkerDataService } from '../work-allocation-2/services';
+import { CaseworkerDataService } from '../work-allocation/services';
 import * as fromComponents from './components';
 import { ChooseRadioOptionComponent } from './components';
 import * as fromContainers from './containers';

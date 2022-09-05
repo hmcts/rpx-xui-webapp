@@ -47,7 +47,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             })
             
         }
-        MockApp.onGet("/workallocation2/location", (req,res) => {
+        MockApp.onGet("/workallocation/location", (req,res) => {
             res.send(locationsResponseBody);
         })
     });

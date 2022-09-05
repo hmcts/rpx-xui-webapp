@@ -74,7 +74,7 @@ xdescribe("Locations ref data api, get all locations for service", () => {
                 return configValues[prop];
             });
 
-            const { getLocations } = requireReloaded('../../../../workAllocation2/locationController');
+            const { getLocations } = requireReloaded('../../../../work/locationController');
 
             const req = mockReq({
                 headers: {

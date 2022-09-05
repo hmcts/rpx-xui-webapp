@@ -100,7 +100,7 @@ xdescribe("Caseworker ref data api, get all caseworkers", () => {
                 return configValues[prop];
             });
 
-            const { getAllCaseWorkers } = requireReloaded('../../../../workAllocation2/index');
+            const { getAllCaseWorkers } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

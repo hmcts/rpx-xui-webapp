@@ -140,7 +140,7 @@ describe("Task management api, Search task", () => {
                 return configValues[prop];
             });
             
-            const { searchTask } = requireReloaded('../../../../workAllocation2/index');
+            const { searchTask } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers:{

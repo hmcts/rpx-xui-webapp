@@ -6,7 +6,7 @@ import { SessionStorageService } from '../../../app/services';
 import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { FilterConstants } from '../constants';
+import { FilterConstants } from '../../components/constants';
 
 @Component({
   selector: 'exui-available-tasks-filter',

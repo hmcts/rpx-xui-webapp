@@ -13,7 +13,7 @@ import { EnhancedRequest } from '../lib/models';
 import { createSpecificAccessDenyRole, deleteSpecificAccessRequestedRole } from '../roleAccess/index';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { postTaskCompletionForAccess } from '../workAllocation2';
+import { postTaskCompletionForAccess } from '../workAllocation';
 
 export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
   let createAmRoleResponse: AxiosResponse;

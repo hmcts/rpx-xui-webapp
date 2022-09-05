@@ -7,7 +7,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '../../components';
-import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
+import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
 import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';

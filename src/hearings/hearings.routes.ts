@@ -484,4 +484,4 @@ export const ROUTES: Routes = [
   }
 ];
 
-export const hearingsRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const hearingsRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

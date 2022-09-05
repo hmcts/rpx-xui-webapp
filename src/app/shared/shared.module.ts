@@ -21,14 +21,14 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
 @NgModule( {
   imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule],
   declarations: [
-    ...fromAppComponents.components,
-    ...fromAppContainers.containers,
-    ...fromAppDirectives.directives
-  ],
-  exports: [
-    ...fromAppComponents.components,
     ...fromAppContainers.containers,
     ...fromAppDirectives.directives,
+    ...fromAppComponents.components,
+  ],
+  exports: [
+    ...fromAppContainers.containers,
+    ...fromAppDirectives.directives,
+    ...fromAppComponents.components,
     ...GOV_UI_COMPONENTS
   ],
   providers: [

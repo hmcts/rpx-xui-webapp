@@ -23,6 +23,7 @@ export class StaffSearchComponent implements OnInit {
     enableDisabledButton: false,
     showCancelFilterButton: false
   };
+
   constructor() { }
 
   public ngOnInit() {

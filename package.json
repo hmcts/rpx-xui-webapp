@@ -70,6 +70,8 @@
     "@angular/material": "11.2.13",
     "@angular/platform-browser": "^11.2.14",
     "@angular/platform-browser-dynamic": "^11.2.14",
+    "@angular-material-components/datetime-picker": "6.0.0",
+    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/router": "^11.2.14",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccd-case-ui-toolkit": "5.0.16-angular11-upgrade",

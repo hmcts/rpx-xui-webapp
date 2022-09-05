@@ -1,6 +1,7 @@
-import { Input } from '@angular/core';
+import { Injectable, Input } from '@angular/core';
 import { AbstractFormFieldComponent } from './abstract-form-field.component';
 
+@Injectable()
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent {
 
   @Input()

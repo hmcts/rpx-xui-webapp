@@ -15,12 +15,27 @@ module.exports = {
         '/workallocation/location': (req, res) => {
             res.send(workAllocationMockData.getLocationList(20));
         },
+        '/workallocation/location': (req, res) => {
+            res.send(workAllocationMockData.getLocationList(20));
+        },
+        '/workallocation/location/:locationId': (req, res) => {
+            res.send(workAllocationMockData.getLocation(req.params.locationId));
+        },
+        '/workallocation/task/:taskId': (req, res) => {
+            res.status(200).send(workAllocationMockData.getTaskDetails());
+        },
         '/workallocation/task/:taskId': (req, res) => {
             const body = workAllocationMockData.taskDetails
             res.status(200).send(body);
         },
         '/workallocation/caseworker': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(20));
+        },
+        '/workallocation/caseworker': (req, res) => {
+            res.send(workAllocationMockData.getCaseworkersList(20));
+        },
+        '/workallocation/caseworker/location/:locId': (req, res) => {
+            res.send(workAllocationMockData.getCaseworkersList(10));
         },
         '/workallocation/exclusion/rolesCategory': (req, res)=>{
             res.send(workAllocationMockData.getExclusionRoleCategories());
@@ -76,7 +91,7 @@ module.exports = {
 
             let cases = [];
             if (requestedView === "mycases" || requestedView === "allworkcases") {
-                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize * 5 : 125);
+                cases = global.scenarioData && global.scenarioData[`workallocation.${requestedView}`] ? global.scenarioData[`workallocation.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize * 5 : 125);
             } else {
                 throw new Error("Unrecognised case list view : " + requestedView);
             }
@@ -112,6 +127,18 @@ module.exports = {
         },
        
         '/workallocation/task': (req, res) => {
+
+            if (req.body.view === "MyTasks"){
+                res.send(workAllocationMockData.getMyTasks(10));
+            } else if (req.body.view === "AvailableTasks") {
+                res.send(workAllocationMockData.getAvailableTasks(10));
+            } else if (req.body.view === "TaskManager") {
+                res.send(workAllocationMockData.getTaskManagerTasks(10));
+            }else{
+                throw new Error("Unrecognised task list view : "+req.body.view);
+            }
+        },
+        '/workallocation/task': (req, res) => {
            
             const requestedView = req.body.view;
             let tasks = [];
@@ -145,15 +172,42 @@ module.exports = {
             const requestedView = req.body.view;
             let tasks = [];
             if (requestedView === "MyTasks") {
-                tasks = global.scenarioData && global.scenarioData['workallocation2.mytasks'] ? global.scenarioData['workallocation2.mytasks'] : workAllocationMockData.getMyWorkMyTasks(pageSize * 5);
-                // global.scenarioData['workallocation2.mytasks'] = tasks;
+                tasks = global.scenarioData && global.scenarioData['workallocation1.mytasks'] ? global.scenarioData['workallocation1.mytasks'] : workAllocationMockData.getMyTasks(200);
             } else if (requestedView === "AvailableTasks") {
-                tasks = global.scenarioData && global.scenarioData['workallocation2.availabletasks'] ? global.scenarioData['workallocation2.availabletasks'] : workAllocationMockData.getMyWorkAvailableTasks(pageSize * 5);
-                // global.scenarioData['workallocation2.availabletasks'] = tasks;
+                tasks = global.scenarioData && global.scenarioData['workallocation1.availabletasks'] ? global.scenarioData['workallocation1.availabletasks'] : workAllocationMockData.getAvailableTasks(200);
+            } else if (requestedView === "TaskManager" ) {
+                tasks = global.scenarioData && global.scenarioData['workallocation1.taskmanager'] ? global.scenarioData['workallocation1.taskmanager'] : workAllocationMockData.getTaskManagerTasks(200);
+            } else {
+                throw new Error("Unrecognised task list view : " + requestedView);
+            }
+            try {
+                if (req.body.searchRequest.pagination_parameters){
+                    const pageNum = req.body.searchRequest.pagination_parameters.page_number;
+                    const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+                    res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                }else{
+                    res.send(tasks); 
+                }
+
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured', stack: e.stack });
+            }
+        },
+        '/workallocation/taskWithPagination': (req, res) => {
+            
+
+            const requestedView = req.body.view;
+            let tasks = [];
+            if (requestedView === "MyTasks") {
+                tasks = global.scenarioData && global.scenarioData['workallocation.mytasks'] ? global.scenarioData['workallocation.mytasks'] : workAllocationMockData.getMyWorkMyTasks(pageSize * 5);
+                // global.scenarioData['workallocation.mytasks'] = tasks;
+            } else if (requestedView === "AvailableTasks") {
+                tasks = global.scenarioData && global.scenarioData['workallocation.availabletasks'] ? global.scenarioData['workallocation.availabletasks'] : workAllocationMockData.getMyWorkAvailableTasks(pageSize * 5);
+                // global.scenarioData['workallocation.availabletasks'] = tasks;
 
             } else if (requestedView === "TaskManager" || requestedView.includes("AllWork")) {
-                tasks = global.scenarioData && global.scenarioData['workallocation2.allwork'] ? global.scenarioData['workallocation2.allwork'] : workAllocationMockData.getAllWorkTasks(pageSize * 5);
-                // global.scenarioData['workallocation2.allwork'] = tasks;
+                tasks = global.scenarioData && global.scenarioData['workallocation.allwork'] ? global.scenarioData['workallocation.allwork'] : workAllocationMockData.getAllWorkTasks(pageSize * 5);
+                // global.scenarioData['workallocation.allwork'] = tasks;
 
             } else {
                 throw new Error("Unrecognised task list view : " + requestedView);
@@ -173,7 +227,22 @@ module.exports = {
             }
         },
         '/workallocation/task/:taskId/assign': (req, res) => {
-            res.status(204).send();
+            res.send();
+        },
+        '/workallocation/task/:taskId/assign': (req, res) => {
+            res.send(204);
+        },
+        '/workallocation/task/:taskId/claim' : (req,res) => {
+            res.send();
+        },
+        '/workallocation/task/:taskId/claim': (req, res) => {
+            res.status(204).send('success');
+        },
+        '/workallocation/task/:taskId/unclaim': (req, res) => {
+            res.status(204).send('success');
+        },
+        '/workallocation/task/:taskId/unclaim': (req, res) => {
+            res.status(204).send('success');
         },
         '/workallocation/task/:taskId/complete': (req, res) => {
             res.status(204).send();

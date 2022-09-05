@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FieldType, TaskView } from '../../enums';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
-import { Task } from './../../models/tasks';
+import { Task } from '../../models/tasks';
 import { FieldConfig } from '../../models/common';
 import { WorkFieldComponent } from './work-field.component';
 

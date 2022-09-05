@@ -105,7 +105,6 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
         Then I validate work allocation cases table pagination controls, is displayed state is "false"
 
-
         Then I validate "My work" tasks columns sorting with taskRequest url "workallocation/my-work/cases" on page 3 for user type "<UserType>"
             | ColumnHeader  | Caseworker | Judge | FieldId      |
             | Hearing date | Yes | Yes | hearing_date |

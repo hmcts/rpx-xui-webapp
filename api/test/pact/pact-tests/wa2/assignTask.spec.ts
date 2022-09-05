@@ -65,7 +65,7 @@ describe("Task management api, assign a task to user", () => {
                 return configValues[prop];
             });
 
-            const { postTaskAction } = requireReloaded('../../../../workAllocation2/index');
+            const { postTaskAction } = requireReloaded('../../../../work/index');
 
             const req = mockReq({
                 headers: {

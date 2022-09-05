@@ -31,8 +31,8 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
 
-        Given I set MOCK request "/workallocation2/task/:taskId" intercept with reference "taskDetails"
-        Given I set MOCK request "/workallocation2/task/:taskId" response log to report
+        Given I set MOCK request "/workallocation/task/:taskId" intercept with reference "taskDetails"
+        Given I set MOCK request "/workallocation/task/:taskId" response log to report
 
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"

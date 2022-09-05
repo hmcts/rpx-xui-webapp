@@ -5,7 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
-import { JurisdictionsService } from '../../../work-allocation-2/services/juridictions.service';
+import { JurisdictionsService } from '../../../work-allocation/services/juridictions.service';
 import { SearchFormControl, SearchFormErrorMessage, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';

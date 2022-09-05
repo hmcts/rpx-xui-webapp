@@ -6,7 +6,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { AppConstants } from '../../../app/app.constants';
-import { WorkAllocationFeatureService } from '../../../work-allocation-2/services';
+import { WorkAllocationFeatureService } from '../../../work-allocation/services';
 import * as fromActions from '../../store';
 
 

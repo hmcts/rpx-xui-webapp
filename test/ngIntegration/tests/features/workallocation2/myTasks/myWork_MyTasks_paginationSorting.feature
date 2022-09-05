@@ -25,7 +25,7 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -62,7 +62,7 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
             | Caseworker | Due date     |
             | Judge      | Task created |
 
-        Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation2/task/" on page 3 for user type "<UserType>"
+        Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation/task/" on page 3 for user type "<UserType>"
             | ColumnHeader  | Caseworker | Judge | FieldId      |
             | Case name     | Yes        | Yes   | caseName     |
             | Case category | Yes        | Yes   | caseCategory |
@@ -89,7 +89,7 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
             | Permissions | Count |
             | Manage      | 10    |
             | Read        | 10    |
-        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -112,7 +112,7 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
             | Permissions | Count |
             | Manage      | 0     |
             | Read        | 0     |
-        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page

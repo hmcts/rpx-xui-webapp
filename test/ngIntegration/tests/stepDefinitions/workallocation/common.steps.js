@@ -177,7 +177,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 res.send(persons);
             });
         } else if (forRelease === "2"){
-            MockApp.onGet('workallocation2/caseworker', (req, res) => {
+            MockApp.onGet('workallocation/caseworker', (req, res) => {
                 res.send(persons);
             });
         } else{

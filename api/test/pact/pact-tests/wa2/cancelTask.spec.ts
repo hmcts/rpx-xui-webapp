@@ -66,7 +66,7 @@ describe("Task management api, cancel a task", () => {
                 return configValues[prop];
             });
            
-            const { postTaskAction } = requireReloaded('../../../../workAllocation2/index');
+            const { postTaskAction } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

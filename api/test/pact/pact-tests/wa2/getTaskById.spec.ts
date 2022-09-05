@@ -91,7 +91,7 @@ describe("Task management api, get task by id", () => {
                 return configValues[prop];
             });
             
-            const { getTask } = requireReloaded('../../../../workAllocation2/index');
+            const { getTask } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

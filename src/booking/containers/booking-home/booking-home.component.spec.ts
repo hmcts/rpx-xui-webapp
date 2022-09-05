@@ -6,7 +6,7 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
-import { LocationDataService } from '../../../work-allocation-2/services';
+import { LocationDataService } from '../../../work-allocation/services';
 import { BookingProcess } from '../../models';
 import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';

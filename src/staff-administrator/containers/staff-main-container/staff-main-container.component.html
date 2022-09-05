@@ -1,0 +1,31 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <exui-page-wrapper [title]="'Users'">
+
+        <div class="hmcts-filter-layout__filter staff-filters">
+          <div class="container-fluid govuk-!-margin-top-4">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 class="govuk-fieldset__heading">
+                User search
+              </h1>
+            </legend>
+
+            <hr>
+
+            <exui-staff-search></exui-staff-search>
+          </div>
+        </div>
+
+        <div class="hmcts-filter-layout__content">
+            <exui-staff-user-list></exui-staff-user-list>
+        </div>
+
+      </exui-page-wrapper>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>
+
+

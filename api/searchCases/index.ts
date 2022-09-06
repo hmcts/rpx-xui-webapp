@@ -23,12 +23,11 @@ export function modifyRequest(proxyReq, req) {
 
     // Write out body changes to the proxyReq stream
     proxyReq.write(body);
-
-    // Remove body-parser body object from the request
-    delete req.body;
-    proxyReq.end();
-    proxyReq.end();
   }
+  
+  // Remove body-parser body object from the request
+  delete req.body;
+  proxyReq.end();
 }
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {

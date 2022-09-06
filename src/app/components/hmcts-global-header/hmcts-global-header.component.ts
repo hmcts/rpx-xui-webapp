@@ -61,7 +61,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     this.isUserCaseManager$ = this.userDetails$.pipe(
       map(details => details.userInfo.roles),
       map(roles => {
-        const givenRoles = ['pui-case-manager', "caseworker-ia-legalrep-solicitor", "caseworker-ia-homeofficeapc", "caseworker-ia-respondentofficer", "caseworker-ia-homeofficelart", "caseworker-ia-homeofficepou"];
+        const givenRoles = ['pui-case-manager', 'caseworker-ia-legalrep-solicitor', 'caseworker-ia-homeofficeapc', 'caseworker-ia-respondentofficer', 'caseworker-ia-homeofficelart', 'caseworker-ia-homeofficepou'];
         return givenRoles.filter(x => roles.includes(x)).length > 0;
       })
     );

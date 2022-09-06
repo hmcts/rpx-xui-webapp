@@ -93,7 +93,7 @@ describe('Work allocation Release 2:  Cases', () => {
 
 
     function getSearchCaseReqBody(view, users,locations,userType) {
-        // const response = await Request.get('api/user/details', null, 200); 
+        // const response = await Request.get('api/user/details', null, 200);
 
         const caseRequestBody = new CaseRequestBody();
         caseRequestBody.inView(view);
@@ -102,7 +102,7 @@ describe('Work allocation Release 2:  Cases', () => {
                 caseRequestBody.searchWithlocation(loc);
             });
         }
- 
+
         switch (view) {
             case 'MyCases':
                 if (users) {

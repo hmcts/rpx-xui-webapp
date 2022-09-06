@@ -3,7 +3,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AllocateRoleService } from '.';
-import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, RoleCategory, RolesByService, SpecificAccessState, SpecificAccessStateData } from '../models';
+import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, RoleCategory, SpecificAccessState, SpecificAccessStateData } from '../models';
 import { CaseRoleDetails } from '../models/case-role-details.interface';
 import { AccessReason, DurationType } from '../models/enums';
 

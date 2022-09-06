@@ -1,7 +1,7 @@
-import { of } from 'rxjs';
 import { ApplicationRoutingComponent } from './application-routing.component';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 
 describe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;
@@ -25,6 +25,13 @@ describe('ApplicationRoutingComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should navigateBasedOnUserRole caseworker-civil', () => {
+    featureToggleMock.getValueOnce.and.returnValue(of(true));
+    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
+    component.navigateBasedOnUserRole();
+    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   });
 
   it('should navigateUrlBasedOnFeatureToggle WorkAllocationRelease1', () => {

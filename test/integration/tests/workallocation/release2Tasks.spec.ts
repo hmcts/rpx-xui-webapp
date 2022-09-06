@@ -211,7 +211,7 @@ describe('Work allocations Release 2: Tasks', () => {
         let taskWithAssignee = null;
         for (const task of tasksRes.data.tasks){
             if (task.assignee){
-                taskWithAssignee = task.id; 
+                taskWithAssignee = task.id;
             }
         }
         if (taskWithAssignee) {
@@ -220,7 +220,7 @@ describe('Work allocations Release 2: Tasks', () => {
         } else {
             reporterMsg('No tasks retuened with assignee, complete task can be performed only on already assigned tasks. skipping complete task step in tests due to data unavailability');
         }
-       
+
 
     });
 
@@ -293,7 +293,7 @@ describe('Work allocations Release 2: Tasks', () => {
     }
 
     function getSearchTaskReqBody(view, users, locations ,userType) {
-        // const response = await Request.get('api/user/details', null, 200); 
+        // const response = await Request.get('api/user/details', null, 200);
 
         const taskRequestBody = new TaskRequestBody();
         taskRequestBody.inView(view);
@@ -337,7 +337,7 @@ describe('Work allocations Release 2: Tasks', () => {
             default:
                 throw new Error(`${view} is not recognized or not implemented in test`);
         }
-       
+
         return taskRequestBody;
     }
 

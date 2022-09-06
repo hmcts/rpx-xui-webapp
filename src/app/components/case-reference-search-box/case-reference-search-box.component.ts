@@ -71,21 +71,28 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
       dateOfBirth: null,
       dateOfDeath: null
     };
-
     // Store the search parameters to session
     this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
 
-    // If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page
-    if (this.formGroup.get(this.CASE_REF_FIELD).invalid) {
-      this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
-      return;
-    }
+    this.searchService.getResults().subscribe( result => {
 
-    // Do not decorate 16-digit case reference search box with error class
-    this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
+      if (!result.resultInfo.casesReturned && result.resultInfo.casesReturned === 0) {
+        this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
+        return;
+      }
 
-    // Navigate to case details page, ensuring the case reference is sanitised, i.e. has been stripped of separators (spaces and '-' characters)
-    this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+      // If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page
+      if (this.formGroup.get(this.CASE_REF_FIELD).invalid) {
+        this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
+        return;
+      }
+
+      // Do not decorate 16-digit case reference search box with error class
+      this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
+
+      // Navigate to case details page, ensuring the case reference is sanitised, i.e. has been stripped of separators (spaces and '-' characters)
+      this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+    })
   }
 
   public ngOnDestroy(): void {

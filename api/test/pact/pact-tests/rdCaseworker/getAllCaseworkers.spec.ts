@@ -81,7 +81,7 @@ xdescribe("Caseworker ref data api, get all caseworkers", () => {
         it("returns the correct response", async () => {
             MockApp.setServerPort(8080);
             MockApp.init();
-            
+
             MockApp.onPost('/am/role-assignments/query', (req , res) => {
                 res.send({
                     roleAssignmentResponse : [
@@ -90,10 +90,10 @@ xdescribe("Caseworker ref data api, get all caseworkers", () => {
                     ]
                 });
             });
-            await MockApp.startServer(); 
+            await MockApp.startServer();
             const configValues = getCaseworkerRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl)
             configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
-            
+
 
             configValues['waSupportedJurisdictions'] = ['IA'];
             sandbox.stub(config, 'get').callsFake((prop) => {

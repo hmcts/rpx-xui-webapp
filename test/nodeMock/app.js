@@ -4,7 +4,7 @@ const express = require('express');
 var bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const minimist = require('minimist');
-
+const fs = require('fs');
 const axios = require('axios');
 const http = axios.create({})
 axios.defaults.headers.common['Content-Type'] = 'application/json'
@@ -29,7 +29,10 @@ class MockApp{
     constructor(){
         this.logMessageCallback = null;
         this.logJSONCallback = null;
+        this.routesLogFile = `${__dirname}/RUNTIME_ROUTES.txt`;
+        this.uniqueRoutesCalled = new Set(); 
     }
+
 
     init(clientPortStart){
         this.requestLogs = [];
@@ -102,9 +105,16 @@ class MockApp{
     }
 
     async onRequest(endPoint, method,req,res,callback){
+        let scenarioMockPort; 
         try{
+            
             const scenarioId = this.getCookieFromRequest(req, "scenarioId");
-            const scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
+            scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
+            const path = req.path;
+            if (nodeMockPort === this.serverPort && !this.uniqueRoutesCalled.has(path)) {
+                this.uniqueRoutesCalled.add(path);
+                fs.appendFileSync(this.routesLogFile, `${req.path}\n`);
+            }
             // this.logMessage(` => ${scenarioMockPort} => ${req.method}: ${req.originalUrl}`);
 
             if (scenarioMockPort && this.serverPort !== parseInt(scenarioMockPort)) {
@@ -113,8 +123,8 @@ class MockApp{
                 callback(req, res);
             }
         }catch(err){
-            if(port !== nodeMockPort){
-                await http.post(`http://localhost:${port}/mockerror`, { error: err })
+            if (scenarioMockPort !== nodeMockPort){
+                await http.post(`http://localhost:${nodeMockPort}/mockerror`, { error: err })
             }
             console.log(err);
             const logErrorMessge = { message: 'MOCK onRequest error', err: err.message, stack: err.stack };
@@ -296,6 +306,9 @@ class MockApp{
         await this.stopServer();
         this.server = await app.listen(this.serverPort);
 
+        if (nodeMockPort === this.serverPort){
+            fs.writeFileSync(this.routesLogFile,'')
+        }
 
 
         console.log("mock server started on port : " + this.serverPort);
@@ -352,7 +365,7 @@ const args = minimist(process.argv)
 if (args.standalone){
     mockInstance.setServerPort(3001);
     mockInstance.init();
-    nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles("IAC_Judge_WA_R2", "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator");
+    nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles("IAC_CaseOfficer_R2", "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator");
     // bookingsMockData.bookingResponse = [];
     // setUpcaseConfig();
     // getDLCaseConfig();

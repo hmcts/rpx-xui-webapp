@@ -1,10 +1,11 @@
-import { AppUtils } from '../../../app/app-utils';
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
+import { SessionStorageService } from '../../../app/services';
 import { FieldType, PriorityLimits } from '../../enums';
 import { FieldConfig } from '../../models/common';
-import { SessionStorageService } from '../../../app/services';
 import { Task } from '../../models/tasks';
-import { UserInfo, UserRole } from '../../../app/models';
 
 @Component({
   selector: 'exui-task-field',

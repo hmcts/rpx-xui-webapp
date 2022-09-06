@@ -22,7 +22,7 @@ describe('BookingService', () => {
   describe('getBookings()', () => {
 
     it('should make a post call', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
-      service.getBookings('21334a2b-79ce-44eb-9168-2d49a744be9c').subscribe(response => {
+      service.getBookings('21334a2b-79ce-44eb-9168-2d49a744be9c', ['CIVIL']).subscribe(response => {
         expect(response).toBeNull();
       });
 

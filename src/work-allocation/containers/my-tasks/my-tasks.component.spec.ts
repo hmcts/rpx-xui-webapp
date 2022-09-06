@@ -39,7 +39,7 @@ const workTypeInfo =
   `[{"key":"hearing_work","label":"Hearing work"},
     {"key":"routine_work","label":"Routine work"},
     {"key":"decision_making_work","label":"Decision-making work"},
-    {"key":"applications","label":"Applications"}]`
+    {"key":"applications","label":"Applications"}]`;
 
 describe('MyTasksComponent', () => {
   let component: MyTasksComponent;

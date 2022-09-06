@@ -1,14 +1,12 @@
-@ng  
+@ng
 Feature: WA Release 2: My work - Work filters - Uhhappy paths
 
     Background: Mock and browser setup
         Given I init MockApp
-     
         Given I set MOCK request "/workallocation/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation/my-work/cases" intercept with reference "workallocationCasesRequest"
 
 
-   
     Scenario Outline:  Work filters api error <responseCode> on apply
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
         Given I start MockApp

@@ -50,7 +50,7 @@ class CaseDetailsTaskTab{
             }
         }
         if (returnVal === null){
-            throw new Error(`Task with name ${taskName} not found. ${tasksInPage.join(',')}`);
+            throw new Error(`Task with name ${name} not found. ${tasksInPage.join(',')}`);
         }
         return returnVal;
     }

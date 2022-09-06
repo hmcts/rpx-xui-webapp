@@ -15,7 +15,8 @@ import {
   toDenySARoleAssignmentBody,
   toRoleAssignmentBody,
   toSARequestRoleAssignmentBody,
-  toSARoleAssignmentBody } from './dtos/to-role-assignment-dto';
+  toSARoleAssignmentBody
+} from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';

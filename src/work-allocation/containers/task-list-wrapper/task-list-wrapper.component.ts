@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, Subscription } from 'rxjs';
@@ -255,7 +255,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     };
   }
 
-  public getSortParameter(): Array<SortParameter> {
+  public getSortParameter(): SortParameter[] {
     if (this.sortedBy.fieldName !== 'priority') {
       return [{
         sort_by: this.sortedBy.fieldName,

@@ -49,7 +49,7 @@ Feature: WA Release 2: My work - Work filters
 
         Then I validate my work filter services container displayed
         Then I validate my work filter location search displayed
-      
+
 
 
         When I click work location filter Apply button
@@ -225,7 +225,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate my work filter location search displayed
 
         When I remove all selected locations from my work filters
-       
+
         Given I reset reference "workFilterLocationsRequest" value to null
 
         When I search for location text "Court" in my work filters

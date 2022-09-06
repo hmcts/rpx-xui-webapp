@@ -1,6 +1,6 @@
 import { AssignHintText } from './assign-hint-text';
-import { CaseService } from './case-service';
 import { CaseActionIds } from './case-action-ids';
+import { CaseService } from './case-service';
 import { FieldType } from './field-type';
 import { InfoMessage } from './info-message';
 import { InfoMessageType } from './info-message-type';
@@ -20,12 +20,12 @@ export {
   FieldType,
   InfoMessage,
   InfoMessageType,
+  PriorityLimits,
   SortOrder,
   TaskActionIds,
   TaskActionType,
   TaskService,
   TaskSort,
   TaskPriority,
-  TaskView,
-  PriorityLimits
+  TaskView
 };

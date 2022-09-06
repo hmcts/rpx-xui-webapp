@@ -11,26 +11,23 @@ import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery';
 export function modifyRequest(proxyReq, req) {
   const userInfo = getUserInfoFromRequest(req);
 
-  if (!userInfo) {
+  if (userInfo) {
+    const request = prepareElasticQuery(req.query, req.body, userInfo);
+
+    // Write out body changes to the proxyReq stream
+    const body = JSON.stringify(request);
+
+    // Update header
+    proxyReq.setHeader('content-type', 'application/json');
+    proxyReq.setHeader('content-length', body.length);
+
+    // Write out body changes to the proxyReq stream
+    proxyReq.write(body);
+
+    // Remove body-parser body object from the request
     delete req.body;
     proxyReq.end();
   }
-
-  const request = prepareElasticQuery(req.query, req.body, userInfo);
-
-  // Write out body changes to the proxyReq stream
-  const body = JSON.stringify(request);
-
-  // Update header
-  proxyReq.setHeader('content-type', 'application/json');
-  proxyReq.setHeader('content-length', body.length);
-
-  // Write out body changes to the proxyReq stream
-  proxyReq.write(body);
-
-  // Remove body-parser body object from the request
-  delete req.body;
-  proxyReq.end();
 }
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
@@ -40,7 +37,7 @@ export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
     .indexOf(role.toLowerCase()) >= 0).length > 0;
 }
 
-export function prepareElasticQuery(queryParams: { page? }, body: any, user: UserInfo): ElasticSearchQuery {
+export function prepareElasticQuery(queryParams: { page?}, body: any, user: UserInfo): ElasticSearchQuery {
   const metaCriteria: { [key: string]: string } = queryParams;
   let caseCriteria = {};
   let nativeEsQuery: {};

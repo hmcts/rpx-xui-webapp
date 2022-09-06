@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import { AppConstants } from '../../../app/app.constants';
 import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
-import * as fromRoot from '../../store';
-import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppConstants } from '../../../app/app.constants';
 import { UserDetails } from '../../../app/models/user-details.model';
+import * as fromRoot from '../../store';
 
 @Component({
     selector: 'exui-get-help',

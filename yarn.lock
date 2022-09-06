@@ -1266,10 +1266,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@2.1.3-angular-upgrade-11":
-  version "2.1.3-angular-upgrade-11"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.3-angular-upgrade-11.tgz#f6c2c54514d8991bb9323895cefcb531737e7271"
-  integrity sha512-1B/kq4YGXIpSPcWK2Cp+R50tPuNvRqQG2gPYphv8AdT7DgzA1FgyBkOYtf8eNTHxspBAH6SIkp6YxF1tz88STg==
+"@hmcts/rpx-xui-common-lib@2.1.4-angular-upgrade-11":
+  version "2.1.4-angular-upgrade-11"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.4-angular-upgrade-11.tgz#5dede3cb352b49c0c9b152b3b72bbffd82a38aef"
+  integrity sha512-ZWKBFzMiJwfeaGtqVS5oDYYo3pK9bnVxJayoJ1XMBbxS8xmT8BVE+oNw/eC94TrNpnUBMt+Js2+3tTIcl14nMQ==
   dependencies:
     tslib "^2.0.0"
 

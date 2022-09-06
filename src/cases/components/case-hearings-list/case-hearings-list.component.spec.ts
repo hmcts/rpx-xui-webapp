@@ -1,18 +1,18 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
-import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
-import { initialState } from '../../../hearings/hearing.test.data';
-import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
-import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
-import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {FeatureUser} from '@hmcts/rpx-xui-common-lib';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {Observable, of} from 'rxjs';
+import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import {initialState} from '../../../hearings/hearing.test.data';
+import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
+import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType} from '../../../hearings/models/hearings.enum';
+import {HearingsPipesModule} from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
-import { CaseHearingsListComponent } from './case-hearings-list.component';
+import {CaseHearingsListComponent} from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
@@ -71,7 +71,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -105,7 +105,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -154,7 +154,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -188,7 +188,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -237,7 +237,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -286,7 +286,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -335,7 +335,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -363,7 +363,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -412,7 +412,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -472,7 +472,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -521,7 +521,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
     hearingVenueId: 'venue 11',
     hearingRoomId: 'room 11',
     hearingJudgeId: 'hearingJudgeId1',
-    panelMemberId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
     attendees: [
       {
         partyID: 'P1',
@@ -590,7 +590,7 @@ describe('CaseHearingsListComponent', () => {
       ],
       declarations: [CaseHearingsListComponent],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -830,7 +830,7 @@ describe('CaseHearingsListComponent', () => {
     const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({mode: 'view'})));
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
   });
 

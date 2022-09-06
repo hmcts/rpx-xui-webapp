@@ -1818,7 +1818,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       hearingVenueId: '815833',
       hearingRoomId: 'room 4',
       hearingJudgeId: 'p1000002',
-      panelMemberId: 'p1000001',
+      panelMemberIds: ['p1000001'],
       attendees: [
         {
           partyID: 'P1',
@@ -2169,7 +2169,7 @@ export const initialState = {
             hearingVenueId: '',
             hearingRoomId: 'room 3',
             hearingJudgeId: 'p1000002',
-            panelMemberId: 'p1000001',
+            panelMemberIds: ['p1000001'],
             attendees: [
               {
                 partyID: 'P1',

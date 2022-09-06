@@ -65,8 +65,6 @@ describe('SearchFormComponent', () => {
 
   it('should have called ngOnInit and populate the Services list', () => {
     expect(component.ngOnInit).toBeTruthy();
-    expect(component.searchServiceSubscription$).toBeTruthy();
-    expect(jurisdictionsService.getJurisdictions).toHaveBeenCalled();
     expect(searchService.getServices).toHaveBeenCalled();
     expect(component.services.length).toEqual(3);
     expect(component.services).toEqual([
@@ -75,14 +73,6 @@ describe('SearchFormComponent', () => {
       { label: 'Another test service', value: 'TEST2', id: 'TEST2' }
     ]);
     expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('ALL');
-  });
-
-  it('should unsubscribe subscriptions onDestroy', () => {
-    component.searchServiceSubscription$ = new Observable().subscribe();
-    spyOn(component.searchServiceSubscription$, 'unsubscribe').and.callThrough();
-
-    component.ngOnDestroy();
-    expect(component.searchServiceSubscription$.unsubscribe).toHaveBeenCalled();
   });
 
   it('should store search parameters, set start record number, and navigate to Search Results page on form submission', () => {

@@ -1,14 +1,13 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
-import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
-import { postTaskCompletionForAccess } from '../workAllocation';
-import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
-import { setHeaders } from '../lib/proxy';
-import { http } from '../lib/http';
 import { getConfigValue } from '../configuration';
 import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
-import { commonGetFullLocation } from '../workAllocation/locationService';
+import { http } from '../lib/http';
+import { setHeaders } from '../lib/proxy';
+import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { postTaskCompletionForAccess } from '../workAllocation';
+import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 
 export async function getBookings(req, resp: Response, next: NextFunction) {
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
@@ -19,9 +18,9 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
 
   try {
     const bookings = await http.post(fullPath, {"queryRequest" : {"userIds" : [req.body.userId]}}, { headers });
-    const fullLocations: any = await commonGetFullLocation(req);
+    const fullLocations = await (req);
     const bookingAndLocationName = bookings.data.bookings.map(booking => {
-      const location = fullLocations.data.court_venues.filter(thisLocation =>
+      const location = fullLocations.filter(thisLocation =>
         booking.locationId === thisLocation.epimms_id);
       const locationName = location && location.length !== 0 ? location[0].site_name : null;
       return {
@@ -31,7 +30,7 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
     });
     return resp.status(bookings.status).send(bookingAndLocationName);
   } catch (error) {
-      next(error)
+      next(error);
   }
 }
 
@@ -46,7 +45,7 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
     const response = await http.post(fullPath, {"bookingRequest": req.body }, { headers });
     return resp.status(response.status).send(response.data);
   } catch (error) {
-      next(error)
+      next(error);
   }
 }
 

@@ -1,4 +1,4 @@
-@ng @known_bug @EUI-4837  
+@ng @known_bug @EUI-4837 
 Feature: WA Release 2: Roles and access tab (EUI-4837)
         https://tools.hmcts.net/jira/browse/EUI-3782 ???
         known bug EUI-4837
@@ -230,9 +230,9 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
     #     | Start      |
     #     | End        |
 
-    Scenario: Case with roles - Validate non task-supervisor user - columns and data displayed
+    Scenario: Case with roles - Validate non case allocator user - columns and data displayed
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | false           | IA           | 12345           |
@@ -241,7 +241,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
             | actorId                              | name        | roleCategory     | roleName      | email                 | start | end |
             | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | user1 judge | JUDICIAL         | Lead judge    | judge_lead_1@gov.uk   | 1     | 1   |
             | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | user1 judge | JUDICIAL         | Hearing judge | judge_lead_1@gov.uk   | 10    | 10  |
-            |                                      | user1 legal | LEGAL_OPERATIONS | Case manager  | case_manager_1@gov.uk | 10    | 20  |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be87 | user1 legal | LEGAL_OPERATIONS | Case manager | case_manager_1@gov.uk | 10 | 20 |
 
         Given I set MOCK case role exclusions
 
@@ -260,7 +260,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
 
-        Then I validate add link for role category "Judicial" is displayed in Roles and access page
+        Then I validate add link for role category "Judicial" is not displayed in Roles and access page
         Then I validate add link for role category "Legal Ops" is not displayed in Roles and access page
         Then I validate add link for role category "Exclusion" is displayed in Roles and access page
 

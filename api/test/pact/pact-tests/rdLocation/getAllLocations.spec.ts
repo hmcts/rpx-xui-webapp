@@ -74,7 +74,7 @@ xdescribe("Locations ref data api, get all locations for service", () => {
                 return configValues[prop];
             });
 
-            const { getLocations } = requireReloaded('../../../../work/locationController');
+            const { getLocations } = requireReloaded('../../../../workAllocation/locationController');
 
             const req = mockReq({
                 headers: {
@@ -109,6 +109,6 @@ xdescribe("Locations ref data api, get all locations for service", () => {
 function assertResponses(dto: any) {
     expect(dto[0].id).to.be.equal("12345");
     expect(dto[0].locationName).to.be.equal("siteName1");
-   
+
 }
 

@@ -26,7 +26,7 @@ withNightlyPipeline(type, product, component) {
     enableFullFunctionalTest(120)
     //enableSecurityScan()
     enableMutationTest()
-    // enableCrossBrowserTest() // Temporarily commented till EUI-6578 is resolved
+    enableCrossBrowserTest()
 
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
   

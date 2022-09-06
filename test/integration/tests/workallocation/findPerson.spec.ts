@@ -10,8 +10,8 @@ import Request from '../utils/request';
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2: Find person', () => {
-    const caseOfficer = 'xui_auto_co_r2@justice.gov.uk';
-    const caseofficerPass = 'Welcome01';
+    const caseOfficer = 'CRD_func_test_aat_stcw@justice.gov.uk';
+    const caseofficerPass = 'AldgateT0wer';
 
     beforeEach(function () {
         setTestContext(this);
@@ -25,8 +25,11 @@ describe('Work allocation Release 2: Find person', () => {
 
         const reqBody = {
             searchOptions : {
-                jurisdiction : 'All',
-                searchTerm : 'pri'
+                searchTerm : 'pri',
+                userRole:'Judicial',
+                services:['IA'],
+                userIncluded:false,
+                assignedUser:null
             }
         };
 

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Booking, BookingRequest, BookingResponseError, BookingResponseSuccess } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -8,7 +8,15 @@ export class BookingService {
 
   constructor(private readonly http: HttpClient) { }
 
-  public getBookings(userId: string): Observable< Booking[]> {
+  public getBookings(userId: string, bookableServices: string[]): Observable< Booking[]> {
+    return this.http.post<Booking[]>(`/am/getBookings`, { userId, bookableServices });
+  }
+
+  // only get bookings if the user is a FP judge, stops unnecessary calls
+  public getBookingsIfFP(userId: string, bookableServices: string[], isJudicial): Observable< Booking[]> {
+    if ((!bookableServices || bookableServices.length === 0) || !isJudicial) {
+      return of([]);
+    }
     return this.http.post<Booking[]>(`/am/getBookings`, { userId });
   }
 

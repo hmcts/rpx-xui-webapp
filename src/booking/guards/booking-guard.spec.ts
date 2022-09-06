@@ -17,7 +17,8 @@ describe('BookingGuard', () => {
       primaryLocation: '',
       jurisdiction: '',
       isCaseAllocator: true,
-      bookable: true
+      // note: bookable can be boolean or string
+      bookable: 'true'
     }],
     userInfo: {
       id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',

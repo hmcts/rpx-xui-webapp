@@ -50,7 +50,7 @@ describe('Search Service', () => {
       expect(response).toEqual(dummyResponse);
     });
 
-    const req = httpMock.expectOne('api/globalsearch/services');
+    const req = httpMock.expectOne('/api/globalSearch/services');
     expect(req.request.method).toEqual('GET');
     req.flush(dummyResponse);
   });

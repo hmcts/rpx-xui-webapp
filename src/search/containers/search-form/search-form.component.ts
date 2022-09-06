@@ -2,8 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
-import { Subscription } from 'rxjs';
-import { JurisdictionsService } from '../../../work-allocation/services/juridictions.service';
 import { DateCategoryType, SearchFormControl, SearchFormErrorMessage, SearchFormErrorType, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters, SearchValidationError } from '../../models';
 import { SearchService } from '../../services/search.service';
@@ -14,7 +12,7 @@ import { SearchValidators } from '../../utils';
   templateUrl: './search-form.component.html',
   styleUrls: ['./search-form.component.scss']
 })
-export class SearchFormComponent implements OnInit, OnDestroy {
+export class SearchFormComponent implements OnInit {
 
   public formGroup: FormGroup;
   public caseRefConfig: GovUiConfigModel;
@@ -27,7 +25,6 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   public dateOfDeathConfig: GovUiConfigModel;
   public servicesConfig: GovUiConfigModel;
   public services: SearchFormServiceListItem[];
-  public searchServiceSubscription$: Subscription;
   public searchValidationErrors: SearchValidationError[];
   public caseRefErrorMessage: ErrorMessagesModel;
   public emailErrorMessage: ErrorMessagesModel;
@@ -36,7 +33,6 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   public dateOfDeathErrorMessage: ErrorMessagesModel;
 
   constructor(private readonly fb: FormBuilder,
-              private readonly jurisdictionsService: JurisdictionsService,
               private readonly searchService: SearchService,
               private readonly router: Router,
               private readonly route: ActivatedRoute) {
@@ -127,11 +123,9 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       validators: [SearchValidators.dateComparisonValidator(), SearchValidators.searchFormValidator()]
     });
 
-    this.jurisdictionsService.getJurisdictions().subscribe(jur => {
-      this.searchServiceSubscription$ = this.searchService.getServices().subscribe(services => {
-        services.forEach(service => {
-          this.services.push({ label: service.serviceName, value: service.serviceId, id: service.serviceId });
-        });
+    this.searchService.getServices().subscribe(services => {
+      services.forEach(service => {
+        this.services.push({ label: service.serviceName, value: service.serviceId, id: service.serviceId });
       });
     });
 
@@ -324,12 +318,6 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
     // Date format expected by API endpoint is yyyy-mm-dd
     return `${year}-${month}-${day}`;
-  }
-
-  public ngOnDestroy(): void {
-    if (this.searchServiceSubscription$) {
-      this.searchServiceSubscription$.unsubscribe();
-    }
   }
 }
 

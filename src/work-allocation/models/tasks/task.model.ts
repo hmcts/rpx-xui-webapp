@@ -17,7 +17,7 @@ export default interface Task {
   derivedIcon?: string;
   jurisdiction?: string;
   isNew?: boolean;
-  major_priority?: number
+  major_priority?: number;
 }
 
 export interface TaskResponse {

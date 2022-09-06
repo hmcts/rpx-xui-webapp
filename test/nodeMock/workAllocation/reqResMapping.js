@@ -1,6 +1,6 @@
 const workAllocationMockData = require('./mockData');
 const bookingsMockData = require('./bookingsData');
-
+const rolesAccessMockData = require('./rolesAccess');
 const CucumberReporter = require('../../e2e/support/reportLogger');
 const MockApp = require('../app');
 
@@ -125,6 +125,7 @@ module.exports = {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
+       
         '/workallocation/task': (req, res) => {
 
             if (req.body.view === "MyTasks"){
@@ -164,6 +165,7 @@ module.exports = {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
+        
         '/workallocation/taskWithPagination': (req, res) => {
             
 
@@ -245,12 +247,12 @@ module.exports = {
         '/workallocation/task/:taskId/complete': (req, res) => {
             res.status(204).send();
         },
-        '/workallocation/task/:taskId/complete': (req, res) => {
+        '/workallocation/task/:taskId/claim': (req, res) => {
             res.status(204).send();
-        },
-        '/workallocation/task/:taskId/cancel': (req, res) => {
+        }, 
+        '/workallocation/task/:taskId/unclaim': (req, res) => {
             res.status(204).send();
-        },
+        },   
         '/workallocation/task/:taskId/cancel': (req, res) => {
             res.status(204).send();
         },
@@ -360,6 +362,12 @@ module.exports = {
         '/am/getBookings': (req, res) => {
             res.send(bookingsMockData.getBookings());
         },
+        '/api/role-access/roles/access-get': (req, res) => {
+            res.send(workAllocationMockData.caseRoles);
+        },
+        '/api/am/specific-access-approval':(req,res) =>{
+            res.send({});
+        }
     }
    
 }

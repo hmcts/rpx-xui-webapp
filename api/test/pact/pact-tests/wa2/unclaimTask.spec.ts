@@ -29,7 +29,7 @@ describe("Task management api, Unclaim a task", () => {
         });
 
         before(async () => {
-            
+
             await pactSetUp.provider.setup()
             const interaction = {
                 state: "unclaim a task using taskId",

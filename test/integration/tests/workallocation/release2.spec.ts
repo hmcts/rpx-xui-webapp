@@ -42,7 +42,7 @@ describe('Work allocations Release 2', () => {
         }else{
             reporterMsg(`No locations returned`);
         }
-        
+
     });
 
     it('case officer,get caseworkers /workallocation/caseworker', async function () {

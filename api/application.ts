@@ -19,7 +19,7 @@ import * as tunnel from './lib/tunnel';
 import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
-import workAllocationRouter from './routes';
+import workAllocationRouter from './workAllocation/routes';
 
 export const app = express();
 

@@ -31,8 +31,22 @@ class CreateCaseStartPage {
      
   }
 
-  async selectCaseType(option){
-    var e = element(by.xpath('//*[@id = "cc-case-type"]/option[text() = "' + option + '"]'));
+  async selectCaseType(caseType){
+    
+    let locatorString = "//*[@id = 'cc-case-type']/option[";
+    let i = 0;
+    const options = caseType.split('|'); 
+    for (const option of options) {
+      if (i === 0) {
+        locatorString += `contains(text(), '${option.trim()}')`;
+      } else {
+        locatorString += ` or contains(text(), '${option.trim()}')`;
+      }
+      i++;
+    }
+    locatorString = locatorString + ']';
+
+    var e = element(by.xpath(locatorString));
      await BrowserWaits.waitForElement(e);
     await e.click(); 
 

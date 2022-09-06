@@ -1,3 +1,18 @@
+
+const prToTestInDemo = [
+    { 
+        previewUrl: 'https://xui-webapp-pr-1774.service.core-compute-preview.internal', 
+        demoUrl:'https://manage-case-wa-int.demo.platform.hmcts.net' 
+    }
+];
+
+const mathingPreviewToDemo = prToTestInDemo.filter(conf => process.env.TEST_URL.includes(conf.previewUrl));
+if (mathingPreviewToDemo.length === 1){
+    process.env.TEST_ENV='demo';
+    process.env.TEST_URL = mathingPreviewToDemo.demoUrl; 
+} 
+
+
 const data = {
     testEnv: process.env.TEST_ENV !== undefined && (process.env.TEST_ENV.includes('aat') || process.env.TEST_ENV.includes('demo') ) ? process.env.TEST_ENV : 'aat',  
     users: {
@@ -104,8 +119,9 @@ const data = {
         demo: [
             {
                 idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
-                email: "lukesuperuserxui@mailnesia.com",
-                release: "general", userIdentifier: "PROD_LIKE"
+                email: "peterxuisuperuser@mailnesia.com",
+                release: "general", userIdentifier: "PROD_LIKE",
+                key: "Monday01"
             },
             {
                 idamId: "12b6a360-7f19-4985-b065-94320a891eaa",

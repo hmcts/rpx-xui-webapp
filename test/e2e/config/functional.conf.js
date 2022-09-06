@@ -8,17 +8,13 @@ const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
-
+const apptTestConfig = require('./appTestConfig');
 
 const isParallelExecution = argv.parallel ? argv.parallel === "true" : true;;
 const chromeOptArgs = ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
 
 if (!argv.head) {
     chromeOptArgs.push('--headless');
-}
-
-if (process.env.TEST_ENV === 'demo'){
-    process.env.TEST_URL ="https://manage-case-wa-int.demo.platform.hmcts.net/";
 }
 
 const jenkinsConfig = [
@@ -131,6 +127,11 @@ function getBDDTags(){
     } else {
         tags = ["@fullfunctional", "~@ignore"];
     }
+    if (apptTestConfig.testEnv === 'demo') {
+        tags.push("~@aat")
+    }else{
+        tags.push("~@demo") 
+    } 
     return tags;
 }
 

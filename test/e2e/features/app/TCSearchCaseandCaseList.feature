@@ -1,4 +1,4 @@
-@_fullfunctional
+@fullfunctional @aat
 Feature: Test case type case list and find case workflow
 
   Background:

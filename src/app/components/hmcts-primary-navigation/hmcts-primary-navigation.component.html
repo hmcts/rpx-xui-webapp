@@ -2,7 +2,7 @@
   <div class="hmcts-primary-navigation__container">
     <div class="govuk-header__logo" *ngIf="logoIsUsed"></div>
     <div class="hmcts-primary-navigation__nav">
-      <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
+      <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of items" >
             <a class="hmcts-primary-navigation__link" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>

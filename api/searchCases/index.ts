@@ -27,6 +27,7 @@ export function modifyRequest(proxyReq, req) {
     // Remove body-parser body object from the request
     delete req.body;
     proxyReq.end();
+    proxyReq.end();
   }
 }
 

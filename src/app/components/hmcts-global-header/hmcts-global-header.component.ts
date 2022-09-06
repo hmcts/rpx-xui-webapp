@@ -12,9 +12,9 @@ import { FlagDefinition, NavigationItem, UserNavModel } from '../../models';
 import { UserService } from '../../services/user/user.service';
 
 @Component({
-    selector: 'exui-hmcts-global-header',
-    templateUrl: './hmcts-global-header.component.html',
-    styleUrls: ['./hmcts-global-header.component.scss']
+  selector: 'exui-hmcts-global-header',
+  templateUrl: './hmcts-global-header.component.html',
+  styleUrls: ['./hmcts-global-header.component.scss']
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
@@ -23,7 +23,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
   @Input() public items: NavigationItem[];
   @Input() public logoIsUsed: boolean;
-  @Input() public headerTitle: {name: string; url: string};
+  @Input() public headerTitle: { name: string; url: string };
   @Input() public navigation: UserNavModel;
   @Input() public logo: string;
   @Input() public currentUrl: string;
@@ -61,7 +61,8 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     this.isUserCaseManager$ = this.userDetails$.pipe(
       map(details => details.userInfo.roles),
       map(roles => {
-        return roles.includes('pui-case-manager');
+        const givenRoles = ['pui-case-manager', "caseworker-ia-legalrep-solicitor", "caseworker-ia-homeofficeapc", "caseworker-ia-respondentofficer", "caseworker-ia-homeofficelart", "caseworker-ia-homeofficepou"];
+        return givenRoles.filter(x => roles.includes(x)).length > 0;
       })
     );
 
@@ -102,7 +103,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     });
   }
 
-  private splitNavItems(items: NavigationItem[]): {right: NavigationItem[], left: NavigationItem[]} {
+  private splitNavItems(items: NavigationItem[]): { right: NavigationItem[], left: NavigationItem[] } {
     items = items || [];
     return {
       right: items.filter(item => item.align && item.align === 'right'),
@@ -123,7 +124,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    const flags: {[flag: string]: boolean | string} = {};
+    const flags: { [flag: string]: boolean | string } = {};
     const obs: Observable<boolean>[] = [];
     items.forEach(
       item => (item.flags || []).concat(item.notFlags || []).forEach(

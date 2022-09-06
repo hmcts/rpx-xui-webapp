@@ -56,7 +56,7 @@ describe('Hearing List Effects', () => {
         hearingVenueId: 'venue 1',
         hearingRoomId: 'room 1',
         hearingJudgeId: 'hearingJudgeId1',
-        panelMemberId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
         attendees: [],
       };
       const CASE_HEARING_1: HearingListModel = {

@@ -32,14 +32,17 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
   public getUsersByPanelRequirements$(): Observable<string[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
       map(hearingRequest => {
+        let hearingJudgeId: string;
         let panelMemberIds: string[] = [];
-        let hearingJudgeIds: string[] = [];
-        if (hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule) {
-          panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.map(member => member.panelMemberId).filter(memberId => memberId) || [];
-          hearingJudgeIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.map(judge => judge.hearingJudgeId).filter(judgeId => judgeId) || [];
-          panelMemberIds = [...panelMemberIds, ...hearingJudgeIds];
+        let allJudgeIds: string[] = [];
+        if (hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse
+          && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
+          && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length === 1) {
+          hearingJudgeId = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId;
+          panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].panelMemberIds  || [];
+          allJudgeIds = [hearingJudgeId, ...panelMemberIds];
         }
-        return panelMemberIds;
+        return allJudgeIds;
       })
     );
   }

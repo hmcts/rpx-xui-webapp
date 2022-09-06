@@ -132,6 +132,8 @@ class CaseListPage{
             await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
             CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.", LOG_LEVELS.Debug);
             await this.searchApplyBtn.click();
+            await BrowserWaits.waitForSpinnerToDissappear();
+
         });
     }
 

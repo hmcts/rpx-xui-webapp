@@ -22,9 +22,9 @@ const data = {
             },
             {
                 idamId: "3db21928-cbbc-4364-bd91-137c7031fe17",
-                email: "xui_auto_co_r2@justice.gov.uk",
+                email: "CRD_func_test_aat_tcw@justice.gov.uk",
                 release: "wa_release_2", userIdentifier: "IAC_CaseOfficer_R2",
-                key: "Welcome01"
+                key: "AldgateT0wer"
             },
             {
                 idamId: "7cfa4921-ecbe-4a0c-ba67-543201b9cde9",
@@ -119,7 +119,7 @@ const data = {
             },
             {
                 idamId: "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-                email: "CRD_func_test_demo_user@justice.gov.uk",
+                email: "CRD_func_test_demo_stcw@justice.gov.uk",
                 release: "wa_release_2", userIdentifier: "IAC_CaseOfficer_R2",
                 key:"AldgateT0wer"
             },

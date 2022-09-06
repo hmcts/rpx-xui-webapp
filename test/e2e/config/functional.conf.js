@@ -17,6 +17,9 @@ if (!argv.head) {
     chromeOptArgs.push('--headless');
 }
 
+if (process.env.TEST_ENV === 'demo'){
+    process.env.TEST_URL ="https://manage-case-wa-int.demo.platform.hmcts.net/";
+}
 
 const jenkinsConfig = [
 

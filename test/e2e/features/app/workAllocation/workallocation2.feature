@@ -1,4 +1,4 @@
-@fullfunctional @wa2
+@fullfunctional @wa2 
 Feature: WA Release 2: : Work allocations My work, All work
 
     Scenario Outline: View tasks, E2E journey of Caseworker-ia-officer user
@@ -7,7 +7,6 @@ Feature: WA Release 2: : Work allocations My work, All work
         Then I validate I am on My work page
 
         Then I see primary navigation tabs "<mainHeaders>" in main header
-        Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
         
         Then I validate My work sub navigations displayed
             | Tab             |
@@ -20,7 +19,7 @@ Feature: WA Release 2: : Work allocations My work, All work
         Examples:
             | useridentifier     | roles                                              | mainHeaders                               | rightColumnHeaders  |
             | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | My work, All work ,Case list, Create case | Find case           |
-            | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker    | My work, All work                         | Case list,Find case |
+            # | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker    | My work, All work                         | Case list,Find case |
 
 
     Scenario: My work tabs
@@ -58,11 +57,12 @@ Feature: WA Release 2: : Work allocations My work, All work
         Then I validate work allocation cases table columns displayed
             | ColumnHeader  |
             | Case name     |
-            | Jurisdiction  |
+            | Service  |
             | Case category |
             | Case role     |
             | Start         |
             | End           |
+            | Hearing date |
 
 
     Scenario: My work tabs
@@ -92,6 +92,8 @@ Feature: WA Release 2: : Work allocations My work, All work
             | Location      |
             | Role          |
             | Person        |
+            | Hearing date |
+
 
 
 
@@ -102,7 +104,7 @@ Feature: WA Release 2: : Work allocations My work, All work
         Then I validate I am on My work page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
 
-        When I select search criteria jurisdiction "Immigration & Asylum" case type "Appeal* RIA-4747" state "Any" in case list page
+        When I select search criteria jurisdiction "Immigration & Asylum" case type "Appeal* RIA-4747|Appeal* master|Appeal" state "Any" in case list page
         When I click search Apply in case list page
         When I open first case in case list page
         Then I see case details page

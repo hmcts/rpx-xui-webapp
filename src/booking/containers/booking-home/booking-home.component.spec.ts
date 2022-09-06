@@ -6,7 +6,6 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
-import { LocationDataService } from '../../../work-allocation/services';
 import { BookingProcess } from '../../models';
 import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
@@ -133,8 +132,8 @@ describe('BookingHomeComponent', () => {
     fixture.detectChanges();
 
     const totalItems = fixture.debugElement.nativeElement.querySelectorAll('div.govuk-grid-column-one-third').length;
-    const firstItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[1].querySelector('p .govuk-hint');
-    const firstItemLocationMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[1].querySelector('p').childNodes[0];
+    const firstItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[2].querySelector('p .govuk-hint');
+    const firstItemLocationMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[2].querySelector('p').childNodes[0];
     const secondItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[2].querySelector('p .govuk-hint');
     // const thirdItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[3].querySelector('p .govuk-hint');
     expect(totalItems).toEqual(DUMMY_BOOKINGS.length);

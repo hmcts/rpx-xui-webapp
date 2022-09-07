@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { AlertService, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/session';
 
 @Component({
   selector: 'exui-case-details-home',

@@ -28,7 +28,10 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storeFreeze } from 'ngrx-store-freeze';
 import {
   LoggerModule,
+  NGXLogger,
+  NGXLoggerHttpService,
   NgxLoggerLevel,
+  NGXMapperService,
 } from 'ngx-logger';
 import { environment } from '../environments/environment';
 import {
@@ -81,7 +84,7 @@ export function launchDarklyClientIdFactory(
     RouterModule.forRoot(ROUTES, routingConfiguration),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
-    StoreRouterConnectingModule,
+    StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({
       logOnly: environment.production,
     }),
@@ -95,6 +98,9 @@ export function launchDarklyClientIdFactory(
     PaymentLibModule,
   ],
   providers: [
+    NGXLogger,
+    NGXLoggerHttpService,
+    NGXMapperService,
     {
       provide: RouterStateSerializer,
       useClass: CustomSerializer

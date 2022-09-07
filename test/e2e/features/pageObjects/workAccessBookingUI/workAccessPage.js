@@ -56,6 +56,16 @@ class WorkAccessPage{
         return await this.existingBookings.count();
     }
 
+    async getBookingDetails(index){
+        const allBookings = await this.getExistingBookingsDetails();
+        const bookingAtIndex = allBookings[index];
+        return {
+            location: bookingAtIndex.location,
+            fromDate: bookingAtIndex.fromDate,
+            toDate: bookingAtIndex.toDate 
+        } 
+    }
+
     async getMatchingBookings(location, fromDate, toDate){
         const allBookings = await this.getExistingBookingsDetails();
         const matchingBookings = allBookings.filter(booking =>

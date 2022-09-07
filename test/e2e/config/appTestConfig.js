@@ -195,7 +195,12 @@ const data = {
                 email: "test@mailnesia.com",
                 release: "general", userIdentifier: "WA2_GLOBAL-SEARCH"
             },
-
+            {
+                idamId: "7381c1ae-9cc9-4251-b283-727feef94a3d",
+                email: "271205EMP-@ejudiciary.net",
+                release: "bookingui-WA3", userIdentifier: "BOOKING_UI-FT-ON",
+                key: "Hmcts1234"
+            }
 
 
         ] 

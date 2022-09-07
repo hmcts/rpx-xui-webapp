@@ -1,18 +1,3 @@
-<fieldset class="govuk-fieldset">
-  <div class="govuk-form-group">
-    <label class="govuk-label govuk-!-font-weight-bold govuk-!-padding-bottom-2" for="name-of-the-user">
-      Search for a user by name
-    </label>
-    <input class="govuk-input" id="name-of-the-user" name="name-of-the-user" type="text">
-  </div>
-</fieldset>
-
-<div>
-  <a href="#">Advanced search</a>
-</div>
-
-<hr>
-
-<button class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">
-  Search
-</button>
+<xuilib-generic-filter
+  [config]="filterConfig"
+></xuilib-generic-filter>

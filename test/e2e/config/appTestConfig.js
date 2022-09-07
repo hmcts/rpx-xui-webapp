@@ -9,7 +9,7 @@ const prToTestInDemo = [
 const mathingPreviewToDemo = prToTestInDemo.filter(conf => process.env.TEST_URL.includes(conf.previewUrl));
 if (mathingPreviewToDemo.length === 1){
     process.env.TEST_ENV='demo';
-    process.env.TEST_URL = mathingPreviewToDemo.demoUrl; 
+    process.env.TEST_URL = mathingPreviewToDemo[0].demoUrl; 
 } 
 
 

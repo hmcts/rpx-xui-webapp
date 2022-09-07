@@ -11,7 +11,7 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
-
+const appTestConfig = require('../../e2e/config/appTestConfig');
 const {LOG_LEVELS} = require("../../e2e/support/constants");
 
 process.env['LOG_LEVEL'] = LOG_LEVELS.Info
@@ -181,7 +181,9 @@ function getBDDTags() {
     console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_ENV_URL']}`);
     console.log(`*********************** process.env['TEST_ENV_URL'] : ${process.env['TEST_ENV_URL']}`);
     if (process.env['TEST_ENV_URL'].includes("pr-") ||
-        process.env['TEST_ENV_URL'].includes("localhost")) { 
+        process.env['TEST_ENV_URL'].includes("localhost") || 
+        appTestConfig.testEnv === "demo"
+        ) { 
         if (argv.tags){
             tags = argv.tags.split(',');
         }else{

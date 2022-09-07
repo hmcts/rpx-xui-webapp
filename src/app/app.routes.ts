@@ -49,9 +49,9 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard, AcceptTermsGuard]
   },
   {
-    path: 'staff-ref-data',
+    path: 'staff',
     canActivate: [AuthGuard, AcceptTermsGuard, RoleGuard],
-    loadChildren: '../staff-ref-data/staff-ref-data.module#StaffRefDataModule',
+    loadChildren: '../staff-administrator/staff-administrator.module#StaffAdministratorModule',
     data: {
       needsRole: ['case-allocator'],
       roleMatching: RoleMatching.ALL,

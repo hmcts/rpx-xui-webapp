@@ -1,13 +1,12 @@
-@__fullfunctional  
+@fullfunctional @wa2 @demo
 Feature: WA Release 2: : Work allocations My work, All work
 
-    Scenario Outline: View tasks, E2E journey of "<useridentifier>" user
+    Scenario Outline: View tasks, E2E journey of Caseworker-ia-officer user
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "<useridentifier>"
         Then I validate I am on My work page
 
         Then I see primary navigation tabs "<mainHeaders>" in main header
-        Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
         
         Then I validate My work sub navigations displayed
             | Tab             |
@@ -20,7 +19,7 @@ Feature: WA Release 2: : Work allocations My work, All work
         Examples:
             | useridentifier     | roles                                              | mainHeaders                               | rightColumnHeaders  |
             | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | My work, All work ,Case list, Create case | Find case           |
-            | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker    | My work, All work                         | Case list,Find case |
+            # | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker    | My work, All work                         | Case list,Find case |
 
 
     Scenario: My work tabs
@@ -63,9 +62,11 @@ Feature: WA Release 2: : Work allocations My work, All work
             | Case role     |
             | Start         |
             | End           |
+            | Hearing date |
 
 
     Scenario: All work tabs
+
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "IAC_CaseOfficer_R2"
         Then I validate I am on My work page
@@ -91,13 +92,7 @@ Feature: WA Release 2: : Work allocations My work, All work
             | Location      |
             | Role          |
             | Person        |
-        When I navigate to My work sub navigation tab "My cases"
-        Then I validate work allocation cases table columns displayed
-            | ColumnHeader  |
-            | Case name     |
-            | Service       |
-            | Case category |
-            | Case role     |
-            | Start         |
-            | End           |
+            | Hearing date |
+
+
 

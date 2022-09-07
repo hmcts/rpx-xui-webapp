@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.16-EUI-6309-mandatory-field-issue-rc1":
-  version "4.18.16-EUI-6309-mandatory-field-issue-rc1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.16-EUI-6309-mandatory-field-issue-rc1.tgz#50382867632bae29bdfde0bb878c40f717ccbeae"
-  integrity sha512-baagDo3JK93V01P5bw04fUaUThwor4SpvBdy6qPow5Ts8tAOGGb9sLkD5KS2FcY6vgn/U5eiIX7MA+TV0W7/cw==
+"@hmcts/ccd-case-ui-toolkit@4.18.16-EUI-6309-mandatory-field-issue":
+  version "4.18.16-EUI-6309-mandatory-field-issue"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.16-EUI-6309-mandatory-field-issue.tgz#702b7b59c82a17cc487817ba3519df586a386d84"
+  integrity sha512-zOTtlTZznBVO/tBuRUZJJSSAGBTDk38Jh1kJuZOtuwbGA8DtWNzSlioQaWZ6VUA6w6RNbGwpO7+4M1b6/whe4g==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

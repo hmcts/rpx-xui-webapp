@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { CdkTableModule } from '@angular/cdk/table';
 import { StaffUserListComponent } from './staff-user-list.component';
 
 describe('StaffUserListComponent', () => {
@@ -8,7 +9,8 @@ describe('StaffUserListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StaffUserListComponent ]
+      declarations: [ StaffUserListComponent ],
+      imports: [CdkTableModule]
     })
     .compileComponents();
   }));

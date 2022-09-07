@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import {
   APP_INITIALIZER,
@@ -10,17 +11,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import {
-  LoadingService,
-  CookieService,
-  FilterService,
   ExuiCommonLibModule,
   FeatureToggleService,
-  GoogleTagManagerService,
   LaunchDarklyService,
-  RoleService,
-  TimeoutNotificationsService,
-  FeatureToggleGuard,
-  CaseSharingStateService
+  TimeoutNotificationsService
 } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
@@ -34,15 +28,12 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storeFreeze } from 'ngrx-store-freeze';
 import {
   LoggerModule,
-  NGXLogger,
-  NGXLoggerHttpService,
   NgxLoggerLevel,
-  NGXMapperService
 } from 'ngx-logger';
 import { environment } from '../environments/environment';
 import {
-  EnvironmentConfig,
-  ENVIRONMENT_CONFIG
+  ENVIRONMENT_CONFIG,
+  EnvironmentConfig
 } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 // app routes
@@ -79,10 +70,6 @@ export function launchDarklyClientIdFactory(
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    LoggerModule.forRoot({
-      level: NgxLoggerLevel.TRACE,
-      disableConsoleLogging: false,
-    }),
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -98,47 +85,41 @@ export function launchDarklyClientIdFactory(
     StoreDevtoolsModule.instrument({
       logOnly: environment.production,
     }),
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.TRACE,
+      disableConsoleLogging: false,
+    }),
     SharedModule,
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
   ],
   providers: [
-    NGXLogger,
-    NGXLoggerHttpService,
-    NGXMapperService,
     {
       provide: RouterStateSerializer,
-      useClass: CustomSerializer,
+      useClass: CustomSerializer
     },
     {
       provide: APP_INITIALIZER,
       useFactory: initApplication,
       deps: [Store, ENVIRONMENT_CONFIG],
-      multi: true,
+      multi: true
     },
     CryptoWrapper,
     MonitoringService,
     LoggerService,
     {
       provide: AbstractAppInsights,
-      useClass: AppInsightsWrapper,
+      useClass: AppInsightsWrapper
     },
     {
       provide: ErrorHandler,
-      useClass: DefaultErrorHandler,
+      useClass: DefaultErrorHandler
     },
     AcceptTermsService,
     CaseShareService,
-    CaseSharingStateService,
     { provide: FeatureToggleService, useClass: LaunchDarklyService },
-    TimeoutNotificationsService,
-    RoleService,
-    GoogleTagManagerService,
-    CookieService,
-    LoadingService,
-    FilterService,
-    FeatureToggleGuard
+    TimeoutNotificationsService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

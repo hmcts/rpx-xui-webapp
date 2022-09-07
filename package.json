@@ -168,6 +168,7 @@
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/mocha": "^8.0.3",
+    "@types/mime": "3.0.0",
     "@types/node": "12.12.70",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",

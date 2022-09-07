@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { CdkTableModule } from '@angular/cdk/table';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StaffSearchComponent } from '../../components/staff-search/staff-search.component';
@@ -28,7 +30,9 @@ describe('StaffMainContainerComponent', () => {
         StaffUserListComponent
       ],
       imports: [
+        HttpClientTestingModule,
         ExuiCommonLibModule,
+        CdkTableModule,
       ],
     })
     .compileComponents();

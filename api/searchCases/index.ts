@@ -24,7 +24,7 @@ export function modifyRequest(proxyReq, req) {
     // Write out body changes to the proxyReq stream
     proxyReq.write(body);
   }
-  
+
   // Remove body-parser body object from the request
   delete req.body;
   proxyReq.end();

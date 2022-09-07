@@ -1,4 +1,4 @@
-@__fullfunctional
+@fullfunctional @demo @test
 Feature: WA Release 2: : Task Assign/Reassign
 
     Scenario: Reassign task from All work
@@ -16,32 +16,36 @@ Feature: WA Release 2: : Task Assign/Reassign
         Given I capture task details at row 1 with reference "taskDetails"
 
         When I open Manage link for task at row 1
-        Then I see action link "Reassign" is present for task with Manage link open
-        When I click action link "Reassign" on task with Manage link open
-        Then In workflow "Reassign task", I see select role type page displayed with header "Choose a role type"
-        Then In workflow "Reassign task", I see select role type page displayed with caption "Reassign task"
-        Then In workflow "Reassign task", I see select role type radio options "Legal Ops,Judicial"
-        Then In workflow "Reassign task", I select role type radio options "Legal Ops"
-        When In workflow "Reassign task", I click continue
+
+        Given I unassign the task at row 1
+
+        When I open Manage link for task at row 1
+        Then I see action link "Assign task" is present for task with Manage link open
+        When I click action link "Assign task" on task with Manage link open
+        Then In workflow "Assign task", I see select role type page displayed with header "Choose a role type"
+        Then In workflow "Assign task", I see select role type page displayed with caption "Assign task"
+        Then In workflow "Assign task", I see select role type radio options "Legal Ops,Judicial"
+        Then In workflow "Assign task", I select role type radio options "Legal Ops"
+        When In workflow "Assign task", I click continue
 
 
-        Then In workflow "Reassign task", I see find person page displayed with caption "Reassign task"
+        Then In workflow "Assign task", I see find person page displayed with caption "Assign task"
 
         Given I have a caseworker details other than logged in user with reference "ReassignToCaseworker" for service "IA"
 
-        When In workflow "Reassign task", I enter search term with caseworker reference "ReassignToCaseworker" in find person input text
+        When In workflow "Assign task", I enter search term with caseworker reference "ReassignToCaseworker" in find person input text
 
-        When In workflow "Reassign task", I select find person result with caseworker reference "ReassignToCaseworker"
-        Then In workflow "Reassign task", I see find person is selected with caseworker reference "ReassignToCaseworker"
+        When In workflow "Assign task", I select find person result with caseworker reference "ReassignToCaseworker"
+        Then In workflow "Assign task", I see find person is selected with caseworker reference "ReassignToCaseworker"
 
-        When In workflow "Reassign task", I click continue
+        When In workflow "Assign task", I click continue
 
 
-        Then I see task check your changes page for action "Reassign task" displayed
+        Then I see task check your changes page for action "Assign task" displayed
  
-        When I click submit button "Reassign" in task check your changes page
+        When I click submit button "Assign" in task check your changes page
         Then I see navigation header tab page "All work"
         Then I validate notification message banner is displayed in "All work" page
         Then I validate notification banner messages displayed in "All work" page
             | message         |
-            | Task assigned |
+            | You've assigned a task. It will be in the selected person's My tasks. |

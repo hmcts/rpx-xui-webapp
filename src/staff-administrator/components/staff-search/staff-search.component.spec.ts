@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StaffSearchComponent } from './staff-search.component';
 
 describe('StaffSearchComponent', () => {
@@ -8,7 +10,11 @@ describe('StaffSearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StaffSearchComponent ]
+      declarations: [ StaffSearchComponent ],
+      imports: [
+        HttpClientTestingModule,
+        ExuiCommonLibModule
+      ]
     })
     .compileComponents();
   }));

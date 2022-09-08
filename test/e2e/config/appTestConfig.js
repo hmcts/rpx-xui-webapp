@@ -12,9 +12,13 @@ if (mathingPreviewToDemo.length === 1){
     process.env.TEST_URL = mathingPreviewToDemo[0].demoUrl; 
 } 
 
+function getTestENVFromEnvironment(){
+    return process.env.TEST_ENV !== undefined && (process.env.TEST_ENV.includes('aat') || process.env.TEST_ENV.includes('demo')) ? process.env.TEST_ENV : 'aat'
+}
 
 const data = {
-    testEnv: process.env.TEST_ENV !== undefined && (process.env.TEST_ENV.includes('aat') || process.env.TEST_ENV.includes('demo') ) ? process.env.TEST_ENV : 'aat',  
+    getTestEnvFromEnviornment: getTestENVFromEnvironment, 
+    testEnv: getTestENVFromEnvironment(),  
     users: {
         aat: [
             {

@@ -14,6 +14,8 @@ const customReporter = require('../../e2e/support/reportLogger');
 const appTestConfig = require('../../e2e/config/appTestConfig');
 const {LOG_LEVELS} = require("../../e2e/support/constants");
 
+appTestConfig.testEnv = 'aat';
+
 process.env['LOG_LEVEL'] = LOG_LEVELS.Info
 
 

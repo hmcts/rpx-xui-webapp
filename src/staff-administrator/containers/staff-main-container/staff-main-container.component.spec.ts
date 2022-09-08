@@ -41,7 +41,6 @@ describe('StaffMainContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffMainContainerComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

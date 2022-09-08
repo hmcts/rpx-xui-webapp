@@ -15,7 +15,6 @@ export const httpMock = HttpMock.getInstance();
  * @param req
  */
 export async function handleGet(path: string, req: EnhancedRequest): Promise<AxiosResponse> {
-
   try {
     logger.info('handle get method', path);
     const headers = setHeaders(req);

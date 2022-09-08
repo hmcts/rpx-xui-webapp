@@ -55,6 +55,10 @@ main {
   padding-right: 210px;
 }
 
+.mat-autocomplete-panel-extend {
+  max-height: 470px!important;
+}
+
 @media (max-width: 991px) {
 
   // Add bottom margin when column are stacked up
@@ -109,7 +113,6 @@ table.form-table {
 }
 .tooltip {
   position: relative;
-  text-decoration: underline;
 }
 .tooltip .tooltiptext {
   visibility: hidden;
@@ -344,6 +347,7 @@ form.check-your-answers table  td .markdown p {
     height: 41px;
     display:flex;
     align-items:center;
+    text-decoration: underline;
   }
 }
 

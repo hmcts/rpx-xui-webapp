@@ -1,16 +1,18 @@
 import * as express from 'express';
-import { router as caseShareRoutes } from './caseshare/routes';
-import { getConfigValue, showFeature } from './configuration';
-import { APP_INSIGHTS_KEY } from './configuration/references';
+import {router as caseShareRoutes} from './caseshare/routes';
+import {getConfigValue, showFeature} from './configuration';
+import {APP_INSIGHTS_KEY} from './configuration/references';
 import healthCheck from './healthCheck';
+import {router as hearingsRouter} from './hearings/routes';
 import authInterceptor from './lib/middleware/auth';
-import { router as nocRouter } from './noc/routes';
-import { router as organisationRouter } from './organisations';
-import { router as serviceRefDataRouter } from './serviceRefData';
-import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
+import {router as locationsRouter} from './locations/routes';
+import {router as nocRouter} from './noc/routes';
+import {router as organisationRouter} from './organisations';
+import {router as prdRouter} from './prd/routes';
 import roleAccessRouter from './roleAccess/routes';
+import {router as serviceRefDataRouter} from './serviceRefData';
 import userRouter from './user/routes';
-import { router as locationsRouter } from './locations/routes';
+import {router as waSupportedJurisdictionRouter} from './waSupportedJurisdictions';
 
 const router = express.Router({mergeParams: true});
 
@@ -37,6 +39,8 @@ router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
 router.use('/service-ref-data', serviceRefDataRouter);
+router.use('/prd', prdRouter);
+router.use('/hearings', hearingsRouter);
 
 // @ts-ignore
 export default router;

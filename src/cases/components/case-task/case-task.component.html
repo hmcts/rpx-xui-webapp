@@ -35,7 +35,7 @@
         <dd class="govuk-summary-list__value">
             <ng-container *ngFor="let option of manageOptions">
                 <a [routerLink]="" tabindex="0" (click)="onActionHandler(task, option)" class="right"
-                  [id]="'action_' + option.id">{{option.text}}</a>
+                  [id]="'action_' + option.id">{{option.title}}</a>
             </ng-container>
         </dd>
     </div>
@@ -44,7 +44,7 @@
             <span class="row-padding">Next steps</span>
         </dt>
         <dd class="govuk-summary-list__value">
-            <ccd-markdown [content]="task?.description"></ccd-markdown>
+          <ccd-markdown [content]="task?.description" [markdownUseHrefAsRouterLink]="true" (clicked)="onClick($event)"></ccd-markdown>
         </dd>
     </div>
 </dl>

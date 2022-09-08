@@ -189,6 +189,22 @@ describe('RemoveRoleComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
   });
 
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when removal is confirmed', () => {
+      component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
+      expect(component.showSpinner).toBeTruthy();
+    });
+
+    it('should be false when exclusion navigation is not handled', () => {
+      expect(() => component.onNavEvent(RemoveAllocationNavigationEvent.BACK)).toThrow();
+      expect(component.showSpinner).toBeFalsy();
+    });
+  });
+
   describe('navigationHandler cancel', () => {
     it('on cancel event', () => {
       fixture.detectChanges();

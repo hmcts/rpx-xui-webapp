@@ -1,3 +1,4 @@
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { NextFunction, Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
 import {
@@ -142,6 +143,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       sortParam.sort_by = 'dueDate';
     }
     delete searchRequest.pagination_parameters;
+    delete searchRequest.search_by;
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
@@ -185,12 +187,12 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
         sort_order: 'asc',
       },
     ],
-    search_by: 'caseworker',
   };
   try {
     const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
-    const currentUser = req.body.currentUser ? req.body.currentUser : '';
-    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.MY_TASKS, currentUser);
+    const currentUser: UserInfo = req.session.passport.user.userinfo;
+    const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
     return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);
@@ -200,10 +202,17 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
 export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
   const eventId = req.params.eventId;
+  const caseType = req.params.caseType;
+  const jurisdiction = req.params.jurisdiction;
   try {
-    const payload = { caseId, eventId };
-    const { status, data } = await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req);
-    return res.send(data).status(status);
+    const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
+    const jurisdictions = getWASupportedJurisdictionsList();
+    let status;
+    let data;
+    jurisdictions.includes(jurisdiction) ? {status, data} =
+     await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
+     : (status = 200, data = []);
+    return res.status(status).send(data);
   } catch (e) {
     next(e);
   }
@@ -221,17 +230,16 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
         completion_options: {
            assign_and_complete: true,
          },
-      }
+      };
+    } else {
+      delete req.body.hasNoAssigneeOnComplete;
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
-    if (req.params.action === 'complete' && error && error.status === 403) {
-      // handle gracefully EUI-4998
-      return res.status(201).send('complete');
-    }
+    // 5528 - removed error handling for 403 errors
     next(error);
   }
 }
@@ -423,8 +431,10 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
     if (data.hasOwnProperty(jurisdiction)) {
       for (const caseType in data[jurisdiction]) {
         if (data[jurisdiction].hasOwnProperty(caseType)) {
-          const query = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
-          casePromises.push(searchCasesById(caseType, query, req));
+          const queries = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
+          queries.forEach(query => {
+            casePromises.push(searchCasesById(caseType, query, req));
+          });
         }
       }
     }

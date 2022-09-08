@@ -69,7 +69,7 @@ export class TasksContainerComponent implements OnInit {
     const assignedJudicialUsers: string[] = [];
     this.tasks.forEach(task => {
       task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
-      if (!task.assigneeName) {
+      if (!task.assigneeName && task.assignee) {
         assignedJudicialUsers.push(task.assignee);
       }
     });
@@ -78,10 +78,10 @@ export class TasksContainerComponent implements OnInit {
     }));
   }
 
-  private getJudicialNamedTasks(judicialUserData: CaseRoleDetails[]): Observable<Task[]> {
+  public getJudicialNamedTasks(judicialUserData: CaseRoleDetails[]): Observable<Task[]> {
     this.tasks.forEach(task => {
       const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
-      task.assigneeName = judicialAssignedData ? judicialAssignedData.known_as : task.assigneeName;
+      task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
     });
     return of(this.tasks);
   }

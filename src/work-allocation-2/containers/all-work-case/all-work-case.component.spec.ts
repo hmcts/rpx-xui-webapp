@@ -23,7 +23,7 @@ import {
   WorkAllocationCaseService,
   WorkAllocationFeatureService
 } from '../../services';
-import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockCases, MockRouter } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';
 
@@ -41,7 +41,7 @@ describe('AllWorkCaseComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
-  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
+  const routerMock = new MockRouter();
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
@@ -120,7 +120,7 @@ describe('AllWorkCaseComponent', () => {
     const secondMockCase = component.cases[1];
 
     expect(firstMockCase.assignee).not.toBe(undefined);
-    expect(firstMockCase.actorName).toBe('Test');
+    expect(firstMockCase.actorName).toBe('Mr Test');
 
     expect(secondMockCase.assignee).toBe(undefined);
     expect(secondMockCase.actorName).toBe(null);

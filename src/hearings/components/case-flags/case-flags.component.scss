@@ -1,0 +1,13 @@
+.govuk-table__header {
+  &_name {
+    width: 30%
+  }
+
+  &_comments {
+    width: 50%
+  }
+
+  &_flag-status {
+    width: 20%
+  }
+}

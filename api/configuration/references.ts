@@ -34,6 +34,9 @@ export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = 'services.case.judicialwork
 export const SERVICES_CASE_JUDICIAL_REF_PATH = 'services.case.judicialApi';
 export const SERVICES_LOCATION_API_PATH = 'services.location_api';
 
+export const SERVICES_HEARINGS_COMPONENT_API = 'services.hearings.serviceApi';
+export const SERVICES_HMC_HEARINGS_COMPONENT_API = 'services.hearings.hmcApi';
+
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api';
 export const SERVICES_DOCUMENTS_API_PATH_V2 = 'services.documentsv2.api';
 export const SERVICES_EM_HRS_API_PATH = 'services.em_hrs_api';
@@ -53,9 +56,12 @@ export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions';
 
 export const SERVICES_PAYMENTS_URL = 'services.payments';
 
-export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url'
+export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
+export const SERVICES_PRD_LOCATION_API = 'services.prd.locationApi';
+export const SERVICES_PRD_JUDICIAL_API = 'services.prd.judicialApi';
+export const SERVICES_PRD_COMMONDATA_API = 'services.prd.commondataApi';
 
 export const SERVICES_REFUNDS_API_URL = 'services.refunds';
 export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';

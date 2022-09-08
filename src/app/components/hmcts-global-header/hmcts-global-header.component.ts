@@ -3,10 +3,11 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { UserInfo } from 'src/app/models';
+import { SessionStorageService } from 'src/app/services';
 import * as fromNocStore from '../../../noc/store';
 import { FlagDefinition, NavigationItem } from '../../models/theming.model';
 import { UserNavModel } from '../../models/user-nav.model';
-import { UserService } from '../../services/user/user.service';
 
 @Component({
     selector: 'exui-hmcts-global-header',
@@ -43,8 +44,8 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   constructor(
     public nocStore: Store<fromNocStore.State>,
-    private readonly userService: UserService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly sessionStorageService: SessionStorageService,
   ) { }
 
   public ngOnInit(): void {
@@ -89,9 +90,10 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    return this.userService.getUserDetails().pipe(
-      map(details => details.userInfo.roles),
-      map(roles => {
+    const userDetails$: Observable<UserInfo> = of(JSON.parse(this.sessionStorageService.getItem('userDetails')));
+    return userDetails$.pipe(
+      map((userInfo: UserInfo) => userInfo.roles),
+      map((roles: string[]) => {
         const i = items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true));
         return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true))
       })

@@ -253,4 +253,28 @@ describe('RolesContainerComponent', () => {
       expect(roles[0].roleCategory).toEqual('JUDICIAL');
     });
   });
+  it('loadExclusions', () => {
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
+
+    const jurisdiction = {value: 'ia'};
+    const exclusions = [
+      {
+        actorId: 'ret',
+        id: 'id23',
+        type: 'err',
+        name: '',
+        userType: 'JUDICIAL',
+        notes: '',
+        added: new Date(),
+        email: ''
+      }
+    ];
+    const caseDetails = { case_id: '12344', case_type: {id: '345'}} as CaseView;
+    component.caseDetails = caseDetails;
+    roleExclusionsService.getCurrentUserRoleExclusions.and.returnValue(of(exclusions));
+    component.loadExclusions(jurisdiction);
+    component.exclusions$.subscribe(() => {
+      expect(allocateService.getCaseRolesUserDetails).toHaveBeenCalled();
+    });
+  });
 });

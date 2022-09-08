@@ -155,7 +155,8 @@ class BrowserWaits{
         let retryCounter = 0;
         let isSuccess = false;
         let error = null;
-        while (retryCounter <= this.retriesCount) {
+        let totalTries = retryTryAttempts ? retryTryAttempts : this.retriesCount 
+        while (retryCounter <= totalTries) {
             CucumberReporter.AddMessage(`Sleeping for ${retryCounter * 5}sec before performing action.`);  
             await this.waitForSeconds(retryCounter*5);
             try {
@@ -169,7 +170,7 @@ class BrowserWaits{
                     await CucumberReporter.AddScreenshot(global.screenShotUtils); 
                 }
                 CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
-                CucumberReporter.AddMessage(`************** [ Retrying attempt ${retryCounter}. ] **************`); 
+                CucumberReporter.AddMessage(`************** [ Retrying attempt ${retryCounter} of ${totalTries} ] **************`); 
                 error = err
                 retryCounter += 1;
                

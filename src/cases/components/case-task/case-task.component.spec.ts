@@ -8,160 +8,17 @@ import { CaseTaskComponent } from './case-task.component';
 describe('CaseTaskComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'warning']);
   const mockSessionStorage = jasmine.createSpyObj('mockSessionStorage', ['getItem']);
-  const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+  const mockRouter = jasmine.createSpyObj('router', ['navigate', 'url']);
   const mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
   mockRouter.url = '/case-details/123243430403904/tasks';
   const component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService);
-  it('getManageOptions no assignee no permissions', () => {
-    const task: Task = {
-      assignee: null,
-      assigneeName: '',
-      permissions: [],
-      id: null,
-      description: null,
-      case_id: null,
-      caseName: null,
-      caseCategory: null,
-      location: null,
-      taskName: null,
-      dueDate: new Date(),
-      actions: [],
-      warnings: false,
-      derivedIcon: null
-    };
-    task.assignee = null;
-    task.permissions = [];
-    let options = component.getManageOptions(task);
-    expect(options).toEqual([]);
-    task.permissions = ['Manage'];
-    options = component.getManageOptions(task);
-    expect(options).toEqual([]);
-  });
 
-  it('getManageOptions no assignee with Own, Execute, Manage', () => {
-    const task: Task = {
-      assignee: null,
-      assigneeName: '',
-      permissions: { values: ['Own', 'Execute', 'Manage'] },
-      id: null,
-      description: null,
-      case_id: null,
-      caseName: null,
-      caseCategory: null,
-      location: null,
-      taskName: null,
-      dueDate: new Date(),
-      actions: [],
-      warnings: false,
-      derivedIcon: null
-    };
-    let options = component.getManageOptions(task);
-    expect(options[0].text).toEqual('Assign to me');
-    task.permissions.values = ['Own'];
-    options = component.getManageOptions(task);
-    expect(options[0].text).toEqual('Assign to me');
-    task.permissions.values = ['Execute'];
-    options = component.getManageOptions(task);
-    expect(options[0].text).toEqual('Assign to me');
-  });
-
-  it('getManageOptions assignee TaskAssignedToCurrentUser', () => {
-    const task: Task = {
-      assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
-      assigneeName: 'Some Name',
-      permissions: { values: ['Own', 'Execute', 'Manage'] },
-      id: null,
-      description: null,
-      case_id: null,
-      caseName: null,
-      caseCategory: null,
-      location: null,
-      taskName: null,
-      dueDate: new Date(),
-      actions: [{ id: 'reassign', title: 'Reassign task'}, { id: 'unclaim', title: 'Unassign task'}],
-      warnings: false,
-      derivedIcon: null
-    };
-    const spyOnIsTaskAssignedToCurrentUser = spyOn(component, 'isTaskAssignedToCurrentUser');
-    spyOnIsTaskAssignedToCurrentUser.and.returnValue(true);
-    const options = component.getManageOptions(task);
-    expect(options.length).toEqual(2);
-    expect(options[0].text).toEqual('Reassign task');
-    expect(options[1].text).toEqual('Unassign task');
-  });
-
-  it('getManageOptions assignee Task not AssignedToCurrentUser with Execute and Manage permissions', () => {
-    const task: Task = {
-      assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
-      assigneeName: 'Some Name',
-      permissions: { values: ['Own', 'Execute', 'Manage'] },
-      id: null,
-      description: null,
-      case_id: null,
-      caseName: null,
-      caseCategory: null,
-      location: null,
-      taskName: null,
-      dueDate: new Date(),
-      actions: [],
-      warnings: false,
-      derivedIcon: null
-    };
-    const spyOnIsTaskAssignedToCurrentUser = spyOn(component, 'isTaskAssignedToCurrentUser');
-    spyOnIsTaskAssignedToCurrentUser.and.returnValue(false);
-    const options = component.getManageOptions(task);
-    expect(options.length).toEqual(3);
-    expect(options[0].text).toEqual('Assign to me');
-    expect(options[1].text).toEqual('Reassign task');
-    expect(options[2].text).toEqual('Unassign task');
-  });
-
-  it('getManageOptions assignee Task not AssignedToCurrentUser with Manage but not Execute permissions', () => {
-    const task: Task = {
-      assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
-      assigneeName: 'Some Name',
-      permissions: { values: ['Own', 'Manage'] },
-      id: null,
-      description: null,
-      case_id: null,
-      caseName: null,
-      caseCategory: null,
-      location: null,
-      taskName: null,
-      dueDate: new Date(),
-      actions: [],
-      warnings: false,
-      derivedIcon: null
-    };
-    const spyOnIsTaskAssignedToCurrentUser = spyOn(component, 'isTaskAssignedToCurrentUser');
-    spyOnIsTaskAssignedToCurrentUser.and.returnValue(false);
-    const options = component.getManageOptions(task);
-    expect(options.length).toEqual(2);
-    expect(options[0].text).toEqual('Reassign task');
-    expect(options[1].text).toEqual('Unassign task');
-  });
-
-  it('getManageOptions assignee Task not AssignedToCurrentUser with no Manage and no Execute permissions', () => {
-    const task: Task = {
-      assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
-      assigneeName: 'Some Name',
-      permissions: { values: ['Own'] },
-      id: null,
-      description: null,
-      case_id: null,
-      caseName: null,
-      caseCategory: null,
-      location: null,
-      taskName: null,
-      dueDate: new Date(),
-      actions: [],
-      warnings: false,
-      derivedIcon: null
-    };
-    const spyOnIsTaskAssignedToCurrentUser = spyOn(component, 'isTaskAssignedToCurrentUser');
-    spyOnIsTaskAssignedToCurrentUser.and.returnValue(false);
-    const options = component.getManageOptions(task);
-    expect(options.length).toEqual(0);
+  it('ngOnInit', () => {
+    component.task = {} as Task;
+    component.task.actions = [{id: 'id', title: 'actionName'}]
+    component.ngOnInit();
+    expect(component.manageOptions[0].id).toEqual('id');
+    expect(component.manageOptions[0].title).toEqual('actionName');
   });
 
   it('isTaskAssignedToCurrentUser when no userDetails in sessionStorage', () => {
@@ -202,8 +59,13 @@ describe('CaseTaskComponent', () => {
       warnings: false,
       derivedIcon: null
     };
-    mockSessionStorage.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
-    const result = component.isTaskAssignedToCurrentUser(task);
+    let userIdType = 'uid';
+    mockSessionStorage.getItem.and.returnValue(`{\"sub\":\"juser8@mailinator.com\",\"${userIdType}\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}`);
+    let result = component.isTaskAssignedToCurrentUser(task);
+    expect(result).toBeTruthy();
+    userIdType = 'id';
+    mockSessionStorage.getItem.and.returnValue(`{\"sub\":\"juser8@mailinator.com\",\"${userIdType}\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}`);
+    result = component.isTaskAssignedToCurrentUser(task);
     expect(result).toBeTruthy();
   });
 
@@ -337,6 +199,35 @@ describe('CaseTaskComponent', () => {
       expect(refreshTasksSpy).toHaveBeenCalled();
       expect(mockAlertService.warning).toHaveBeenCalled();
     });
+  });
+
+  describe('toDate()', () => {
+
+    it('should return null if there is no value', () => {
+      expect(component.toDate(undefined)).toBe(null);
+      expect(component.toDate(null)).toBe(null);
+    });
+
+    it('should return null if there is no date value', () => {
+      expect(component.toDate('')).toBe(null);
+    });
+
+    it('should return a date if there is a date value', () => {
+      const firstDate = new Date('01-01-2000');
+      const secondDate = new Date('03-12-2020');
+      expect(component.toDate('01-01-2000').toDateString()).toBe(firstDate.toDateString());
+      expect(component.toDate(new Date('03-12-2020')).toDateString()).toEqual(secondDate.toDateString());
+    });
+
+  });
+
+  describe('onClick()', () => {
+
+    it('should navigate correctly on click', () => {
+      component.onClick('exampleUrl(firstUrlPart?secondUrlPart=equalPart)end');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['firstUrlPart'], {queryParams: {tid: 'equalPart'}});
+    });
+
   });
 
 });

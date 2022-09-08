@@ -141,27 +141,33 @@ class WorkAllocationModels {
         }
     }
 
-    getRelease2TaskActions(permissions, view, assignState) {
+    getRelease2TaskActions(permissions, forView, assignState) {
         const actions = [];
         let actionsView = {};
-        view = view.toLowerCase();
+        const view = forView.toLowerCase();
         assignState = assignState ? assignState.toLowerCase() : '';
-        if (taskActionsMatrix[view] === undefined) {
+        if (taskActionsMatrix[view] === undefined && taskActionsMatrix[forView] === undefined) {
             throw new Error(`View ${view} is not modeled in Mock data model. test requires update`);
         }
         if (view.includes('my')) {
             actionsView = taskActionsMatrix['mytasks'];
         } else if (view.includes('available')) {
             actionsView = taskActionsMatrix['availabletasks'];
-        } if (view.includes('all')) {
+        }else if (view.includes('all')) {
             actionsView = taskActionsMatrix['allwork'];
             actionsView = assignState.includes('un') ? taskActionsMatrix['allwork']['unassigned'] : taskActionsMatrix['allwork']['assigned'];
+        } else if (forView.includes('ActiveTasksAssignedCurrentUser')) {
+            actionsView = taskActionsMatrix['ActiveTasksAssignedCurrentUser'];
+        } else if (forView.includes('ActiveTasksAssignedOtherUser')) {
+            actionsView = taskActionsMatrix['ActiveTasksAssignedOtherUser'];
+        } else if (forView.includes('ActiveTasksUnassigned')) {
+            actionsView = taskActionsMatrix['ActiveTasksUnassigned'];
         }
 
         let allowedActions = {};
         for (let i = 0; i < permissions.length; i++) {
             if (actionsView[permissions[i]] === undefined) {
-                throw new Error(`Permission ${permissions[i]} is not modeled in Mock data model. test requires update`);
+                throw new Error(`Permission ${permissions[i]} is not modeled in Mock data model. test requires update ${JSON.stringify(actionsView)}`);
             }
             let permissionActions = actionsView[permissions[i]];
 
@@ -319,6 +325,13 @@ class WorkAllocationModels {
             ]
         }
     }
+
+    getCaseEventTasksCompletable(){
+        return {
+            task_required_for_event:false,
+            tasks:[]
+        }
+    }
 }
 
 
@@ -340,6 +353,28 @@ const CASE_ACTIONS = {
     RemoveAllocation: { id: 'remove', title: 'Remove' },
 }
 const taskActionsMatrix = {
+    ActiveTasksAssignedCurrentUser: {
+        Read: [], Refer: [], Manage: [],
+        Cancel: [ACTIONS.Cancel],
+        Own: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.MarkAsDone],
+        Execute: [ACTIONS.MarkAsDone],
+
+    },
+    ActiveTasksAssignedOtherUser: {
+        Read: [], Refer: [], Manage: [],
+        Cancel: [ACTIONS.Cancel],
+        Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.MarkAsDone],
+        Own: [ACTIONS.AssignToMe],
+        Execute: [],
+
+    },
+    ActiveTasksUnassigned: {
+        Read: [], Refer: [], Manage: [],
+        Cancel: [ACTIONS.Cancel],
+        Execute: [ACTIONS.AssignToMe],
+        Manage: [ACTIONS.Assign],
+        Own: [ACTIONS.AssignToMe, ACTIONS.MarkAsDone],
+    },
     mytasks: {
         Read: [],
         Refer: [],

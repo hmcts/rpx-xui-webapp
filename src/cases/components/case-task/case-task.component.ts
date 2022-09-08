@@ -6,12 +6,11 @@ import { InfoMessage } from '../../../work-allocation-2/enums';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
-import { replaceAll } from '../../../cases/utils/utils';
-import { AllocateRoleService } from '../../../role-access/services';
+import { Utils} from '../../../cases/utils/utils';
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
-import { Task, TaskPermission } from '../../../work-allocation-2/models/tasks';
+import { Task } from '../../../work-allocation-2/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation-2/services';
-import { getAssigneeName, handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
+import { handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
@@ -28,7 +27,7 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
-  public manageOptions: {id: string, text: string }[];
+  public manageOptions: {id: string, title: string }[];
   public isUserJudicial: boolean;
   private pTask: Task;
 
@@ -70,14 +69,14 @@ export class CaseTaskComponent implements OnInit {
 
     return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
       if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
-        return replaceAll(description, variable, task.id);
+        return Utils.replaceAll(description, variable, task.id);
       }
-      return replaceAll(description, variable, task.case_id);
+      return Utils.replaceAll(description, variable, task.case_id);
     }, task.description);
   }
 
   public ngOnInit(): void {
-    this.manageOptions = this.getManageOptions(this.task);
+    this.manageOptions = this.task.actions;
   }
 
   public getAssigneeName(task: Task): string {
@@ -102,7 +101,7 @@ export class CaseTaskComponent implements OnInit {
   public onActionHandler(task: Task, option: any): void {
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
-        this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS)
+        this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
         this.taskRefreshRequired.emit();
       }, error => {
         this.claimTaskErrors(error.status);
@@ -133,48 +132,21 @@ export class CaseTaskComponent implements OnInit {
     }
   }
 
-  public getManageOptions(task: Task): {id: string, text: string} [] {
-    const permissions = task && task.permissions && task.permissions.values ? task.permissions.values : [];
-    if (!task.assignee) {
-      if (permissions.length === 0 || (permissions.length === 1 && permissions.includes(TaskPermission.MANAGE))) {
-        return [];
-      } else {
-        return [{id: 'claim', text: 'Assign to me'}];
-      }
-    }
-
-    if (this.isTaskAssignedToCurrentUser(task)) {
-      const taskActions = [];
-      if (task.actions.find(action => action.id === 'reassign')) {
-        taskActions.push({id: 'reassign', text: 'Reassign task'});
-      }
-      if (task.actions.find(action => action.id === 'unclaim')) {
-        taskActions.push({id: 'unclaim', text: 'Unassign task'});
-      }
-      return taskActions;
-    } else {
-      if (permissions.includes(TaskPermission.EXECUTE) && permissions.includes(TaskPermission.MANAGE)) {
-        return [
-          {id: 'claim', text: 'Assign to me'},
-          {id: 'reassign', text: 'Reassign task'},
-          {id: 'unclaim', text: 'Unassign task'}
-        ];
-      } else if (permissions.includes(TaskPermission.MANAGE)) {
-        return [
-          {id: 'reassign', text: 'Reassign task'},
-          {id: 'unclaim', text: 'Unassign task'}
-        ];
-      } else {
-        return [];
-      }
-    }
-  }
-
-    public toDate(value: string | number | Date): Date {
+  public toDate(value: string | number | Date): Date {
     if (value) {
       const d = new Date(value);
       return isNaN(d.getTime()) ? null : d;
     }
     return null;
+  }
+
+  public onClick(event: string) {
+    const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
+    const urls = url.split('?');
+    this.router.navigate([urls[0]], {
+      queryParams: {
+        tid: urls[1].split('=')[1]
+      }
+    });
   }
 }

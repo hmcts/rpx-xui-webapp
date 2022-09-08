@@ -1,4 +1,4 @@
-import { NavigationExtras } from '@angular/router';
+import { NavigationExtras, RouterEvent } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { CaseRoleDetails } from 'src/role-access/models/case-role-details.interface';
 
@@ -115,7 +115,7 @@ export function getMockCases(): Case[] {
 export function getMockTasks(): Task[] {
   return [
     {
-      assignee: null,
+      assignee: '123456789',
       assigneeName: null,
       id: '1549476532065586',
       jurisdiction: 'IA',
@@ -199,6 +199,8 @@ export function getMockTaskServiceConfig(): TaskServiceConfig {
 }
 
 export class MockRouter {
+  public navigateByUrl = jasmine.createSpy();
+  public events = {subscribe(): Observable<RouterEvent> { return of(null); }}
   private pUrl: string = 'bob';
   public get url(): string {
     return this.pUrl;

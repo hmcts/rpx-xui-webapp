@@ -8,7 +8,7 @@ import { http } from '../lib/http';
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { Role } from '../roleAccess/models/roleType';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
+import { ASSIGN, CANCEL, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import { Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
@@ -22,6 +22,7 @@ import {
   constructRoleAssignmentQuery,
   filterByLocationId,
   getActionsByPermissions,
+  getActionsFromMatrix,
   getCaseAllocatorLocations,
   getCaseIdListFromRoles,
   getCaseName,
@@ -455,22 +456,24 @@ describe('workAllocation.utils', () => {
       expect(tasksWithActions[0].actions[2]).to.be.equal(RELEASE);
 
       const tasksWithActionsAllWorkAssigned = assignActionsToTasks(myTasks, 'AllWork', '');
-      expect(tasksWithActionsAllWorkAssigned[0].actions[0]).to.be.equal(GO);
-      expect(tasksWithActionsAllWorkAssigned[0].actions[1]).to.be.equal(REASSIGN);
-      expect(tasksWithActionsAllWorkAssigned[0].actions[2]).to.be.equal(RELEASE);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[0]).to.be.equal(COMPLETE);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[1]).to.be.equal(GO);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[2]).to.be.equal(REASSIGN);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[3]).to.be.equal(RELEASE);
 
       const tasksWithActionsAllWorkUnassigned = assignActionsToTasks(availableTasks, 'AllWork', '');
       expect(tasksWithActionsAllWorkUnassigned[0].actions[0]).to.be.equal(ASSIGN);
-      expect(tasksWithActionsAllWorkUnassigned[0].actions[1]).to.be.equal(GO);
+      expect(tasksWithActionsAllWorkUnassigned[0].actions[1]).to.be.equal(COMPLETE);
+      expect(tasksWithActionsAllWorkUnassigned[0].actions[2]).to.be.equal(GO);
 
       const tasksWithActionsActiveTasksAssignedCurrentUser = assignActionsToTasks(
         myTasks, 'ActiveTasks', '49db7670-09b3-49e3-b945-b98f4e5e9a99');
-      expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[0]).to.be.equal(CLAIM);
+      expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[0]).to.be.equal(COMPLETE);
       expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[1]).to.be.equal(REASSIGN);
       expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[2]).to.be.equal(RELEASE);
 
       const tasksWithActionsActiveTasksUnassigned = assignActionsToTasks(availableTasks, 'ActiveTasks', 'Not the current user');
-      expect(tasksWithActionsActiveTasksUnassigned[1].actions[0]).to.be.equal(CLAIM);
+      expect(tasksWithActionsActiveTasksUnassigned[1].actions[0]).to.be.equal(ASSIGN);
     });
   });
 
@@ -757,8 +760,7 @@ describe('workAllocation.utils', () => {
     });
 
     it('should get correct actions for all work tasks for certain permissions', () => {
-      expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.MANAGE])).to.deep.equal([GO, REASSIGN, RELEASE]);
-      expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.EXECUTE])).to.deep.equal([COMPLETE]);
+      expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.MANAGE])).to.deep.equal([COMPLETE, GO, REASSIGN, RELEASE]);
       expect(getActionsByPermissions('AllWorkUnassigned', [TaskPermission.MANAGE, TaskPermission.EXECUTE]))
         .to.deep.equal([ASSIGN, COMPLETE, GO]);
       // EUI-5046 - ensure test includes check that own gives correct actions as well
@@ -773,23 +775,44 @@ describe('workAllocation.utils', () => {
       expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.MANAGE])).to.deep.equal([]);
       expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.EXECUTE])).to.deep.equal([]);
       expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [
-        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
+        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([COMPLETE, REASSIGN, RELEASE]);
       expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [
-        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.OWN])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
+        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.OWN])).to.deep.equal([COMPLETE, REASSIGN, RELEASE]);
+      expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [
+        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL])).to.deep.equal([CANCEL, COMPLETE, REASSIGN, RELEASE]);
 
-      expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.MANAGE])).to.deep.equal([REASSIGN, RELEASE]);
+      expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.MANAGE])).to.deep.equal([COMPLETE, REASSIGN, RELEASE]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.EXECUTE])).to.deep.equal([]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [
-        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, REASSIGN, RELEASE,
+        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, COMPLETE, REASSIGN, RELEASE,
+      ]);
+      expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [
+        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL])).to.deep.equal([CANCEL, CLAIM, COMPLETE, REASSIGN, RELEASE,
       ]);
 
-      expect(getActionsByPermissions('ActiveTasksUnassigned', [TaskPermission.MANAGE])).to.deep.equal([]);
-      expect(getActionsByPermissions('ActiveTasksUnassigned', [TaskPermission.EXECUTE])).to.deep.equal([]);
+      expect(getActionsByPermissions('ActiveTasksUnassigned', [TaskPermission.MANAGE])).to.deep.equal([ASSIGN]);
+      expect(getActionsByPermissions('ActiveTasksUnassigned', [TaskPermission.EXECUTE])).to.deep.equal([CLAIM]);
       expect(getActionsByPermissions('ActiveTasksUnassigned', [
         TaskPermission.MANAGE, TaskPermission.EXECUTE,
-      ])).to.deep.equal([CLAIM]);
+      ])).to.deep.equal([ASSIGN, CLAIM, COMPLETE]);
+      expect(getActionsByPermissions('ActiveTasksUnassigned', [
+        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL
+      ])).to.deep.equal([ASSIGN, CANCEL, CLAIM, COMPLETE]);
     });
 
+  });
+
+  describe('getActionsFromMatrix', () => {
+    it('should concatenate the list with the list within the actions matrix', () => {
+      let actions = [];
+      let view = 'MyTasks';
+      let permission = TaskPermission.MANAGE;
+      expect(getActionsFromMatrix(view, permission, actions)).to.deep.equal([REASSIGN, RELEASE, GO]);
+      actions = [CANCEL];
+      view = 'AvailableTasks';
+      permission = TaskPermission.EXECUTE;
+      expect(getActionsFromMatrix(view, permission, actions)).to.deep.equal([CANCEL, CLAIM, CLAIM_AND_GO]);
+    });
   });
 
   describe('applySearchFilter', () => {
@@ -872,13 +895,13 @@ describe('workAllocation.utils', () => {
     it('should create a query with at least three case ids', () => {
       const caseIds = [1589185982594513, 1589185060514243, 1589185060514243];
       const result = constructElasticSearchQuery(caseIds, 0, 1000);
-      expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
+      expect(result[0].native_es_query.query.terms).to.deep.equal({reference: caseIds});
     });
 
     it('should create a query with no case ids', () => {
-      const caseIds = [];
+      const caseIds = ['234'];
       const result = constructElasticSearchQuery(caseIds, 0, 1000);
-      expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
+      expect(result[0].native_es_query.query.terms).to.deep.equal({reference: caseIds});
     });
   });
 

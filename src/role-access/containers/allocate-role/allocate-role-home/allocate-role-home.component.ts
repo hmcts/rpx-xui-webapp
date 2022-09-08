@@ -82,6 +82,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public typeOfRole: SpecificRole;
   public action: string;
 
+  public showSpinner: boolean = false;
+
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly store: Store<fromFeature.State>,
               private readonly allocateRoleService: AllocateRoleService,
@@ -93,7 +95,10 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       }
     );
     if (this.route.snapshot.queryParams) {
-      this.caseId = this.route.snapshot.queryParams.caseId ? this.route.snapshot.queryParams.caseId : null;
+      const { caseId } = this.route.snapshot.queryParams;
+      if (caseId) {
+        this.caseId = caseId.replace(/-/g, '');
+      }
       this.jurisdiction = this.route.snapshot.queryParams.jurisdiction ? this.route.snapshot.queryParams.jurisdiction : null;
       this.assignmentId = this.route.snapshot.queryParams.assignmentId ? this.route.snapshot.queryParams.assignmentId : null;
       this.roleCategory = this.route.snapshot.queryParams.roleCategory ? this.route.snapshot.queryParams.roleCategory : null;
@@ -292,9 +297,11 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       case AllocateRoleNavigationEvent.CONFIRM: {
         switch (this.navigationCurrentState) {
           case AllocateRoleState.CHECK_ANSWERS:
+            this.showSpinner = true;
             this.checkAnswersComponent.navigationHandler(navEvent);
             break;
           default:
+            this.showSpinner = false;
             throw new Error('Invalid allocation state');
         }
         break;

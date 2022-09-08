@@ -1,4 +1,4 @@
-@ng  @wa2 @wa 
+@ng  @wa2 @wa @test 
 Feature: WA Release 2: My cases
 
     Background: Mock and browser setup
@@ -23,8 +23,11 @@ Feature: WA Release 2: My cases
             | ColumnHeader |
             | Case name    |
 
+        Then I validate work allocation case table column "Case name" width less than or equal to 200
         When I click work allocation case column link "Case name" at row 1
         Then I see case details page
+
+
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |

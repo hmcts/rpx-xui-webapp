@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, Subscription } from 'rxjs';
@@ -45,6 +45,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasks: Task[] = [];
   private selectedLocationsSubscription: Subscription;
   private pTasksTotal: number;
+  public routeEventsSubscription: Subscription;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -334,14 +335,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       const assignedJudicialUsers: string[] = [];
       result.tasks.forEach(task => {
         task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
-        if (!task.assigneeName) {
+        if (!task.assigneeName && task.assignee) {
           assignedJudicialUsers.push(task.assignee);
         }
       });
       return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, this.selectedServices).pipe(switchMap(((judicialUserData) => {
         result.tasks.map(task => {
           const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
-          task.assigneeName = judicialAssignedData ? judicialAssignedData.known_as : task.assigneeName;
+          task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
         });
         return of(result);
       })));

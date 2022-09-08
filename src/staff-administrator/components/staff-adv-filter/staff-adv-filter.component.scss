@@ -2,3 +2,20 @@
   display: flex;
   align-items: center;
 }
+
+// This needs to be moved inside xuilib-generic-filter of ExuiCommonLibModule
+::ng-deep {
+  xuilib-find-location {
+    .search-location {
+      display: flex;
+      .auto-complete-container {
+        min-width: unset;
+        width: calc(100% - 4px);
+      }
+    }
+
+    exui-search-location {
+      flex: 1 0 auto;
+    }
+  }
+}

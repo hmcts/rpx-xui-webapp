@@ -17,6 +17,8 @@ if (!argv.head) {
     chromeOptArgs.push('--headless');
 }
 
+apptTestConfig.testEnv = apptTestConfig.getTestEnvFromEnviornment();
+
 const jenkinsConfig = [
 
     {

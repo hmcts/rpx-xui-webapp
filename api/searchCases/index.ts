@@ -14,15 +14,8 @@ export function modifyRequest(proxyReq, req) {
   if (userInfo) {
     const request = prepareElasticQuery(req.query, req.body, userInfo);
 
-  console.log('request', req)
-
     // Write out body changes to the proxyReq stream
     const body = JSON.stringify(request);
-
-    // Update header
-    proxyReq.setHeader('content-type', 'application/json');
-    proxyReq.setHeader('content-length', body.length);
-
 
     // Update header
     proxyReq.setHeader('content-type', 'application/json');

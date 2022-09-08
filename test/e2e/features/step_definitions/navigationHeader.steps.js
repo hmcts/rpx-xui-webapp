@@ -226,4 +226,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(tabsDisplayed.length).to.equal(0);
     });
 
+    When('I enter {string} in  case ref in header 16 digit ref search', async function (input) {
+        await browserWaits.waitForSpinnerToDissappear();
+        await headerPage.headerCaseRefSearch.searchInput(input);
+    });
+
+    When('I click find in case ref in header 16 digit ref search', async function () {
+        await browserWaits.retryWithActionCallback(async () => {
+            await headerPage.headerCaseRefSearch.clickFind();
+        });
+    });
+
 });

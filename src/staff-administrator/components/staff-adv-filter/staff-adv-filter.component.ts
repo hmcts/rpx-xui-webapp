@@ -20,14 +20,14 @@ export class StaffAdvFilterComponent implements OnInit {
   this.filterConfig = {
     id: 'staff-advanced-filters',
     fields: [{
-        name: 'user-location',
-        title: 'Search by location',
-        subTitle: 'Enter a location name',
+        name: 'user-services',
+        title: 'Services',
+        subTitle: '',
         options: [],
         minSelected: 0,
         maxSelected: 0,
-        type: 'find-location',
-        enableAddLocationButton: true
+        type: 'find-service',
+        enableAddButton: true
     },
     {
       name: 'user-location',
@@ -37,7 +37,7 @@ export class StaffAdvFilterComponent implements OnInit {
       minSelected: 0,
       maxSelected: 0,
       type: 'find-location',
-      enableAddLocationButton: true
+      enableAddButton: true
     },
     {
         name: 'user-type',
@@ -65,18 +65,6 @@ export class StaffAdvFilterComponent implements OnInit {
       },
       {
         name: 'user-role',
-        title: 'Skills',
-        options: [
-          {label: 'Case Allocator', key: 'case-allocator'},
-          {label: 'Task supervisor', key: 'task-supervisor'},
-          {label: 'Staff administrator', key: 'Staff administrator'}
-        ],
-        minSelected: 0,
-        maxSelected: 0,
-        type: 'select',
-      },
-      {
-        name: 'user-role',
         title: 'Role',
         options: [
           {label: 'Case Allocator', key: 'case-allocator'},
@@ -84,8 +72,8 @@ export class StaffAdvFilterComponent implements OnInit {
           {label: 'Staff administrator', key: 'Staff administrator'}
         ],
         minSelected: 0,
-        maxSelected: 0,
-        type: 'select',
+        maxSelected: 3,
+        type: 'checkbox-large',
       },
     ],
     persistence: 'session',

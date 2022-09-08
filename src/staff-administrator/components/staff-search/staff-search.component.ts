@@ -8,19 +8,20 @@ import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
 })
 export class StaffSearchComponent implements OnInit {
   public filterConfig: FilterConfig = {
+    persistence: 'session',
     id: 'staff-filters',
     fields: [{
-      name: 'user-type',
-      title: 'Search for a user by name',
+      name: 'find-service',
+      title: 'Services',
       options: [],
       minSelected: 0,
       maxSelected: 0,
-      type: 'find-person'
+      type: 'find-service',
+      enableAddButton: true
     }],
-    persistence: 'session',
-    applyButtonText: 'Search',
     cancelButtonText: '',
-    enableDisabledButton: false,
+    applyButtonText: 'Search',
+    cancelSetting: null,
     showCancelFilterButton: false
   };
 

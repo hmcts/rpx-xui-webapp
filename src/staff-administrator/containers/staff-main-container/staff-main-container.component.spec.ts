@@ -8,7 +8,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StaffAdvFilterComponent } from '../../components/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from '../../components/staff-search/staff-search.component';
 import { StaffUserListComponent } from '../../components/staff-user-list/staff-user-list.component';
-import { StaffFilterOptions } from '../../test-data/staff-filter-options.test.data';
+import { staffFilterOptionsTestData } from '../../test-data/staff-filter-options.test.data';
 import { StaffMainContainerComponent } from './staff-main-container.component';
 
 describe('StaffMainContainerComponent', () => {
@@ -44,7 +44,7 @@ describe('StaffMainContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                staffFilters: StaffFilterOptions
+                staffFilters: staffFilterOptionsTestData
               }
             },
           }

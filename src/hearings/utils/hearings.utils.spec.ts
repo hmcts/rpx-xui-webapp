@@ -1,5 +1,5 @@
 import {KEY_MODE} from '../models/hearingConditions';
-import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
+import {HearingDayScheduleModel} from '../models/hearingDaySchedule.model';
 import {Mode} from '../models/hearings.enum';
 import {HearingsUtils} from './hearings.utils';
 
@@ -23,7 +23,7 @@ describe('HearingsUtils', () => {
         hearingVenueId: '372653',
         hearingRoomId: 'Cardiff SSCS - Hearing Room 01',
         hearingJudgeId: null,
-        panelMemberId: null,
+        panelMemberIds: [],
         attendees: [
           {
             hearingSubChannel: 'APEL',
@@ -40,7 +40,7 @@ describe('HearingsUtils', () => {
         hearingVenueId: '372653',
         hearingRoomId: 'Cardiff SSCS - Hearing Room 02',
         hearingJudgeId: null,
-        panelMemberId: null,
+        panelMemberIds: [],
         attendees: [
           {
             hearingSubChannel: 'APEL',
@@ -57,7 +57,7 @@ describe('HearingsUtils', () => {
         hearingVenueId: '372653',
         hearingRoomId: 'Cardiff SSCS - Hearing Room 03',
         hearingJudgeId: null,
-        panelMemberId: null,
+        panelMemberIds: [],
         attendees: [
           {
             hearingSubChannel: 'APEL',
@@ -73,9 +73,8 @@ describe('HearingsUtils', () => {
       hearingDaySchedule[0],
       hearingDaySchedule[2],
       hearingDaySchedule[1]
-    ]
+    ];
     const sortedResult = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
-    console.log('SORT RESULT', sortedResult);
     expect(sortedResult).toEqual(expectedResult);
   });
 

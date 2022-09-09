@@ -4,6 +4,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StaffAdvFilterComponent } from './staff-adv-filter.component';
+import { ActivatedRoute } from '@angular/router';
+import { StaffFilterOptions } from '../../test-data/staff-filter-options.test.data';
 
 describe('StaffAdvFilterComponent', () => {
   let component: StaffAdvFilterComponent;
@@ -17,6 +19,18 @@ describe('StaffAdvFilterComponent', () => {
         HttpClientTestingModule,
         ExuiCommonLibModule,
       ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                staffFilters: StaffFilterOptions
+              }
+            },
+          }
+        },
+      ]
     })
     .compileComponents();
   }));

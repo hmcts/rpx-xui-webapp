@@ -11,7 +11,7 @@ const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
   hearingVenueId: 'venue 1',
   hearingRoomId: 'room 1',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -45,7 +45,7 @@ const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
   hearingVenueId: 'venue 2',
   hearingRoomId: 'room 2',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -79,7 +79,7 @@ const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
   hearingVenueId: 'venue 3',
   hearingRoomId: 'room 3',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -108,7 +108,7 @@ const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
   hearingVenueId: '815833',
   hearingRoomId: 'room 4',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -142,7 +142,7 @@ const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
   hearingVenueId: 'venue 5',
   hearingRoomId: 'room 5',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -171,7 +171,7 @@ const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
   hearingVenueId: 'venue 1',
   hearingRoomId: 'room 1',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -205,7 +205,7 @@ const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
   hearingVenueId: 'venue 2',
   hearingRoomId: 'room 2',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -239,7 +239,7 @@ const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
   hearingVenueId: 'venue 3',
   hearingRoomId: 'room 3',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -273,7 +273,7 @@ const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
   hearingVenueId: '815833',
   hearingRoomId: 'room 4',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -307,7 +307,7 @@ const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
   hearingVenueId: 'venue 5',
   hearingRoomId: 'room 5',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -341,7 +341,7 @@ const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
   hearingVenueId: 'venue 11',
   hearingRoomId: 'room 11',
   hearingJudgeId: 'child',
-  panelMemberId: 'child',
+  panelMemberIds: ['child'],
   attendees: [
     {
       partyID: 'P1',
@@ -375,7 +375,7 @@ const HEARING_DAY_SCHEDULE_13: HearingDayScheduleModel = {
   hearingVenueId: '815833',
   hearingRoomId: 'room 5',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',
@@ -409,7 +409,7 @@ const HEARING_DAY_SCHEDULE_14: HearingDayScheduleModel = {
   hearingVenueId: '815833',
   hearingRoomId: 'room 5',
   hearingJudgeId: 'hearingJudgeId1',
-  panelMemberId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
   attendees: [
     {
       partyID: 'P1',

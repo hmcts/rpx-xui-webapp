@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StaffAdvFilterComponent } from './staff-adv-filter.component';
 
@@ -12,6 +13,7 @@ describe('StaffAdvFilterComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ StaffAdvFilterComponent ],
       imports: [
+        RouterTestingModule,
         HttpClientTestingModule,
         ExuiCommonLibModule,
       ],

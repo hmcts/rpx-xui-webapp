@@ -83,7 +83,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectLocation=search',
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
-      enableAddLocationButton: false,
+      enableAddButton: false,
       type: 'find-location',
       radioSelectionChange: 'selectLocation=search',
       bookingCheckType: BookingCheckType.NO_CHECK

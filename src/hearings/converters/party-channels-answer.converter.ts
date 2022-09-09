@@ -27,16 +27,16 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
         const partyChannels = this.route.snapshot.data.partyChannels;
         const partiesFromRequest = state.hearingRequest.hearingRequestMainModel.partyDetails;
         const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties;
-        return partiesFromRequest.filter(party => party.partyType === PartyType.IND)
-          .reduce((acc: string, party: PartyDetailsModel, index: number) => {
+        let strReturn = '<ul>';
+        partiesFromRequest.filter(party => party.partyType === PartyType.IND)
+          .forEach((party: PartyDetailsModel) => {
             const foundPartyFromService = partiesFromServiceValue.find(pty => pty.partyID === party.partyID);
             const name = party.partyName ? party.partyName : (foundPartyFromService ? foundPartyFromService.partyName : '');
             const value = PartyChannelsAnswerConverter.getPartyChannelValue(partyChannels, party);
-            if (index === 0) {
-              return `<ul><li>${name} - ${value}</li>`;
-            }
-            return index === partiesFromRequest.length - 1 ? `${acc}<li>${name} - ${value}</li></ul>` : `${acc}<li>${name} - ${value}</li>`;
-          }, '');
+            strReturn += `<li>${name} - ${value}</li>`;
+          });
+        strReturn += '<ul>';
+        return strReturn;
       })
     );
   }

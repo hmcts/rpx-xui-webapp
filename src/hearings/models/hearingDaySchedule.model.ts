@@ -7,6 +7,6 @@ export interface HearingDayScheduleModel {
   hearingVenueId: string;
   hearingRoomId: string;
   hearingJudgeId: string;
-  panelMemberId: string;
+  panelMemberIds: string[];
   attendees: PartyDetailsModel[];
 }

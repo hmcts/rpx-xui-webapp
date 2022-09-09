@@ -35,7 +35,7 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
             const value = PartyChannelsAnswerConverter.getPartyChannelValue(partyChannels, party);
             strReturn += `<li>${name} - ${value}</li>`;
           });
-        strReturn += '<ul>';
+        strReturn += '</ul>';
         return strReturn;
       })
     );

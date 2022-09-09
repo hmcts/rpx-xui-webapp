@@ -129,7 +129,7 @@ describe('HearingAnswersPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform party flags', () => {
+  it('should transform how party attend', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE), 0);
     const partyFlags = '<ul><li>Jane and Smith - In person</li></ul>';
     const expected = cold('(b|)', {b: partyFlags});

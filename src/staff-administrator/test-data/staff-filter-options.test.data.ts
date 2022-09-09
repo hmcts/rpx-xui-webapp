@@ -1,4 +1,4 @@
-export const StaffFilterOptions = {
+export const staffFilterOptionsTestData = {
   userTypes: [{label: 'User Types', key: 'userType'}],
   jobTitles: [{label: 'Job Titles', key: 'jobTitle'}],
   skills: [{label: 'Skills', key: 'skill'}],

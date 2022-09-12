@@ -32,7 +32,7 @@ Feature: Work access page
             | BOOKING_UI-FT-ON | caseworker-ia-iacjudge,caseworker-ia,caseworker | false       |
     # | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge | true       |
 
-    Scenario: Work access options, with bookable sttribute as string
+    Scenario: Work access options, with bookable attribute as string
         Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction |

@@ -128,7 +128,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I set MOCK user with reference {string} roleAssignmentInfo', async function (userDetailsRef, roleAssignments) {
-        const boolAttributes = ['isCaseAllocator', 'bookable'];
+        const boolAttributes = ['isCaseAllocator'];
         const userDetails = global.scenarioData[userDetailsRef];
         const roleAssignmentArr = [];
         for (let roleAssignment of roleAssignments.hashes()) {
@@ -139,7 +139,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     roleAssignment[attr] = roleAssignment[attr] === "true";
                 }
             })
+            if (roleKeys.includes('bookable')){
+                const valueTypeAndValue = roleAssignment[attr].split(",");
+                if (valueTypeAndValue.length > 0 && valueTypeAndValue[1].includes('string')){
+                    roleAssignment[attr] = valueTypeAndValue[0]
+                }else{
+                    roleAssignment[attr] = roleAssignment[attr] === "true" 
 
+                } 
+            }
             if (roleKeys.includes('roleType') ){
                 roleAssignment.isCaseAllocator = roleAssignment.roleType === 'ORGANISATION'
             }

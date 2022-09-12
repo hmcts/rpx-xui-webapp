@@ -20,7 +20,6 @@ import {
   RoleService,
   TimeoutNotificationsService,
   FeatureToggleGuard,
-  CaseSharingStateService
 } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
@@ -130,7 +129,6 @@ export function launchDarklyClientIdFactory(
     },
     AcceptTermsService,
     CaseShareService,
-    CaseSharingStateService,
     { provide: FeatureToggleService, useClass: LaunchDarklyService },
     TimeoutNotificationsService,
     RoleService,

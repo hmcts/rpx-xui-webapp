@@ -184,7 +184,7 @@ function getBDDTags() {
     console.log(`*********************** process.env['TEST_ENV_URL'] : ${process.env['TEST_ENV_URL']}`);
     if (process.env['TEST_ENV_URL'].includes("pr-") ||
         process.env['TEST_ENV_URL'].includes("localhost") || 
-        appTestConfig.testEnv === "demo"
+        appTestConfig.testEnv === "aat"
         ) { 
         if (argv.tags){
             tags = argv.tags.split(',');

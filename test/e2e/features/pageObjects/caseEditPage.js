@@ -355,9 +355,9 @@ class caseEditPage {
             case "DateTime":
                 var fieldDate = new Date(field.value).toLocaleString('en-UK', { hour12: true });
                 let time = fieldDate.split(", ")
-                var date1 = new Date(fieldDate);
-                date1.setDate(date1.getDate());
-                date1 = date1.getDate() + " " + monthNames[date1.getMonth()] + " " + date1.getFullYear() + ", " + time[1];
+                var date1 = time[0].split("/");
+                // date1.setDate(date1.getDate());
+                date1 = date1[0] + " " + monthNames[parseInt(date1[1]) - 1] + " " + date1[2] + ", " + time[1].toUpperCase();
                 return date1;
             default: return field.value;
         }

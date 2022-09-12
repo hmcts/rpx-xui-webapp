@@ -183,9 +183,10 @@ const data = {
                 release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1_withoutPagination"
             },
             {
-                idamId: "ba02568f-6a46-478d-9f1a-1ce4dea496aa",
-                email: "test@mailnesia.com",
-                release: "general", userIdentifier: "CASEWORKER_GLOBALSEARCH"
+                idamId: "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+                email: "CRD_func_test_demo_stcw@justice.gov.uk",
+                release: "general", userIdentifier: "CASEWORKER_GLOBALSEARCH",
+                key: "AldgateT0wer"
             },
 
             {

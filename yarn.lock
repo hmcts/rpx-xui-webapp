@@ -1219,15 +1219,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/frontend@0.0.39-alpha":
-  version "0.0.39-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
-  integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
-
-"@hmcts/media-viewer@2.7.18-RC.1":
-  version "2.7.18-RC.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.18-RC.1.tgz#ba2808db613da5869d1950b7377bce0425e18b71"
-  integrity sha512-Ae9MMxh7o+IRakA6CMAK6dQ4pXosk1ux55YHlv5gC6kvMRbcd7vk8ZYBVOAO0VQdnkpCXgt4uMwMSef6zdyU+g==
+"@hmcts/media-viewer@2.7.18-RC.3":
+  version "2.7.18-RC.3"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.18-RC.3.tgz#941c578358dba61545d3381118418759522d9675"
+  integrity sha512-UmGC9Kx3hdQQotXJ5/7YmLewTDtUYlIGdLElQ0hShdcHooo9opQcuY8JwMaL8kbm76DB150hHKyH2VUXrJG+HA==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"

@@ -140,11 +140,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
             })
             if (roleKeys.includes('bookable')){
-                const valueTypeAndValue = roleAssignment[attr].split(",");
+                const valueTypeAndValue = roleAssignment['bookable'].split(",");
                 if (valueTypeAndValue.length > 0 && valueTypeAndValue[1].includes('string')){
-                    roleAssignment[attr] = valueTypeAndValue[0]
+                    roleAssignment['bookable'] = valueTypeAndValue[0]
                 }else{
-                    roleAssignment[attr] = roleAssignment[attr] === "true" 
+                    roleAssignment['bookable'] = roleAssignment['bookable'] === "true" 
 
                 } 
             }

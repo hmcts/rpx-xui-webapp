@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StaffAdvFilterComponent } from '../../components/staff-adv-filter/staff-adv-filter.component';
@@ -37,6 +37,7 @@ describe('StaffMainContainerComponent', () => {
         HttpClientTestingModule,
         ExuiCommonLibModule,
         CdkTableModule,
+        ReactiveFormsModule
       ],
       providers: [
         {

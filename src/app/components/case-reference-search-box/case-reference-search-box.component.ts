@@ -28,7 +28,8 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
   public searchSubscription$: Subscription;
   private readonly CASE_REF_FIELD = 'caseReference';
 
-  constructor(private readonly store: Store<fromActions.State>,
+  constructor(
+    private readonly store: Store<fromActions.State>,
     private readonly fb: FormBuilder,
     private readonly searchService: SearchService,
     private readonly router: Router,

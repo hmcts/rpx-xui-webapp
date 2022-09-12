@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
+import { FormControl, Validators } from '@angular/forms';
+import { StaffDataFilterService } from '../../services/staff-data-filter.service';
 
 @Component({
   selector: 'exui-staff-search',
@@ -7,25 +8,25 @@ import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
   styleUrls: ['./staff-search.component.scss']
 })
 export class StaffSearchComponent implements OnInit {
-  public filterConfig: FilterConfig = {
-    id: 'staff-filters',
-    fields: [{
-      name: 'user-type',
-      title: 'Search for a user by name',
-      options: [],
-      minSelected: 0,
-      maxSelected: 0,
-      type: 'find-person'
-    }],
-    persistence: 'session',
-    applyButtonText: 'Search',
-    cancelButtonText: '',
-    enableDisabledButton: false,
-    showCancelFilterButton: false
-  };
+  public userNameControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
+  public error = false;
 
-  constructor() { }
+  constructor(private staffDataFilterService: StaffDataFilterService) { }
 
   public ngOnInit() {
+  }
+
+  public onSearch() {
+    this.error = false;
+
+    if (this.userNameControl.valid) {
+      this.staffDataFilterService.filterByPartialName(this.userNameControl.value).subscribe();
+    } else {
+      this.error = true;
+      this.staffDataFilterService.setErrors([{
+        error: 'Enter staff details',
+        name: 'user-name',
+      }]);
+    }
   }
 }

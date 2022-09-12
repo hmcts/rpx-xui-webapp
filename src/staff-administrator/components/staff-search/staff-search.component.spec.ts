@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StaffSearchComponent } from './staff-search.component';
 
@@ -13,7 +13,8 @@ describe('StaffSearchComponent', () => {
       declarations: [ StaffSearchComponent ],
       imports: [
         HttpClientTestingModule,
-        ExuiCommonLibModule
+        ExuiCommonLibModule,
+        ReactiveFormsModule
       ]
     })
     .compileComponents();

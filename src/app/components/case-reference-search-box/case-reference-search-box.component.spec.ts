@@ -44,24 +44,24 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
 
   const result = {
     resultInfo: {
-        casesReturned: 1,
-        caseStartRecord: 1,
-        moreResultsToGo: false
+      casesReturned: 1,
+      caseStartRecord: 1,
+      moreResultsToGo: false
     },
     results: [{
-        stateId: 'CASE_PROGRESSION',
-        processForAccess: 'NONE',
-        caseReference: '1234123412341234',
-        otherReferences: [],
-        baseLocationId: '214320',
-        regionId: '4',
-        regionName: 'North West',
-        CCDJurisdictionId: 'CIVIL',
-        CCDJurisdictionName: 'Civil',
-        CCDCaseTypeId: 'CIVIL',
-        CCDCaseTypeName: 'Civil'
+      stateId: 'CASE_PROGRESSION',
+      processForAccess: 'NONE',
+      caseReference: '1234123412341234',
+      otherReferences: [],
+      baseLocationId: '214320',
+      regionId: '4',
+      regionName: 'North West',
+      CCDJurisdictionId: 'CIVIL',
+      CCDJurisdictionName: 'Civil',
+      CCDCaseTypeId: 'CIVIL',
+      CCDCaseTypeName: 'Civil'
     }]
-}
+  }
 
   beforeEach(async(() => {
     searchService = createSpyObj<SearchService>('searchService', ['retrieveState', 'storeState']);
@@ -69,16 +69,16 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
 
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
-      declarations: [ CaseReferenceSearchBoxComponent ],
-      schemas: [ NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA ],
-      imports: [ HttpClientTestingModule, RouterTestingModule ],
+      declarations: [CaseReferenceSearchBoxComponent],
+      schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
+      imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         { provide: Store, useValue: storeMock },
         { provide: SearchService, useValue: searchService },
         { provide: FormBuilder, useValue: formBuilder }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

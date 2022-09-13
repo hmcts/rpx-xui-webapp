@@ -85,13 +85,97 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   },
 };
 
+export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
+  // This matrix is for configuring permissions and actions defined in the work allocation permission table
+  // Similar to above, except for release 4 which required multiple changes
+  ActiveTasksAssignedCurrentUser: {
+    Assign: [REASSIGN],
+    Cancel: [CANCEL],
+    CancelOwn: [CANCEL],
+    Complete: [COMPLETE],
+    CompleteOwn: [COMPLETE],
+    Default: [GO],
+    Unassign: [RELEASE],
+    UnclaimAssign: [REASSIGN],
+    UnassignAssign: [REASSIGN],
+  },
+  ActiveTasksAssignedOtherUser: {
+    Assign: [REASSIGN],
+    Cancel: [CANCEL],
+    Complete: [COMPLETE],
+    Default: [GO],
+    Claim: [CLAIM],
+    Unassign: [RELEASE],
+    UnassignAssign: [REASSIGN],
+  },
+  ActiveTasksUnassigned: {
+    Assign: [ASSIGN],
+    Claim: [CLAIM],
+    Default: [GO], // Note: was not specified so assumed default
+  },
+  AllCases: {
+    Manage: [RE_ALLOCATE, REMOVE_ALLOCATE],
+  },
+  AllWorkAssignedCurrentUser: {
+    Assign: [REASSIGN],
+    Cancel: [CANCEL],
+    CancelOwn: [CANCEL],
+    Complete: [COMPLETE],
+    CompleteOwn: [COMPLETE],
+    Default: [GO],
+    Unassign: [RELEASE],
+    UnclaimAssign: [RELEASE],
+    UnassignAssign: [REASSIGN],
+  },
+  AllWorkAssignedOtherUser: {
+    Assign: [REASSIGN],
+    Cancel: [CANCEL],
+    Complete: [COMPLETE],
+    Default: [GO],
+    Claim: [CLAIM],
+    Unassign: [RELEASE],
+    UnassignAssign: [REASSIGN],
+  },
+  AllWorkUnassigned: {
+    Assign: [ASSIGN],
+    Claim: [CLAIM],
+    Default: [GO], // Note: was not specified so assumed default
+  },
+  AvailableTasks: {
+    Execute: [CLAIM, CLAIM_AND_GO],
+  },
+  MyCases: {
+    Manage: [REASSIGN, RELEASE, GO],
+  },
+  MyTasks: {
+    Default: [GO], // not permission but go needed to be added
+    UnclaimAssign: [REASSIGN],
+    Unclaim: [RELEASE],
+    Complete: [COMPLETE],
+    CompleteOwn: [COMPLETE],
+    Cancel: [CANCEL],
+    CancelOwn: [CANCEL],
+  },
+};
+
 export enum TaskPermission {
+  DEFAULT = 'Default', // Added default in scenario where there are no permission restrictions for an action
   READ = 'Read',
   REFER = 'Refer',
   MANAGE = 'Manage',
   OWN = 'Own',
   EXECUTE = 'Execute',
   CANCEL = 'Cancel',
+  UNCLAIM = 'Unclaim',
+  ASSIGN = 'Assign',
+  UNASSIGN = 'Unassign',
+  UNCLAIMASSIGN = 'UnclaimAssign',
+  COMPLETE = 'Complete',
+  COMPLETEOWN = 'CompleteOwn',
+  CANCELOWN = 'CancelOwn',
+  CLAIM = 'Claim',
+  UNASSIGNASSIGN = 'UnassignAssign',
+  UNASSIGNCLAIM = 'UnclaimAssign'
 }
 
 export enum ViewType {
@@ -101,6 +185,8 @@ export enum ViewType {
   ACTIVE_TASKS_UNASSIGNED = 'ActiveTasksUnassigned',
   ALL_WORK = 'AllWork',
   ALL_WORK_ASSIGNED = 'AllWorkAssigned',
+  ALL_WORK_ASSIGNED_CURRENT = 'AllWorkAssignedCurrentUser',
+  ALL_WORK_ASSIGNED_OTHER = 'AllWorkAssignedOtherUser',
   ALL_WORK_UNASSIGNED = 'AllWorkUnassigned',
   AVAILABLE_TASKS = 'AvailableTasks',
   MY_TASKS = 'MyTasks',

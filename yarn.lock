@@ -545,11 +545,10 @@
     "@hmcts/nodejs-logging" "^3.0.0"
     lodash "^4.17.11"
     path "^0.12.7"
-
-"@hmcts/rpx-xui-common-lib@1.7.22":
-  version "1.7.22"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.22.tgz#19720fbc7cfe27b3f3f490f541e7d6dd2b8993d6"
-  integrity sha512-9/ixcYJ+aH6GI7/jP1zq84NrtlWAcLEuU2WzVNiQ1XbZ+dSA9S4Aj15rmq4/Pw2X2vWnPI5uEigOtxy8Kwr/Tg==
+"@hmcts/rpx-xui-common-lib@1.7.28":
+  version "1.7.28"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.28.tgz#55d123eb7edfe6ea3319993e33123ffda7772152"
+  integrity sha512-qxOniRLOz6fhorxVMFU/8CaEZWMrc09Fvd+OP+Mjm8Ho1sD06WITp/4S3wvYWz1odM3oZl6YXCbTwLjuFaTR0g==
   dependencies:
     tslib "^1.9.0"
 

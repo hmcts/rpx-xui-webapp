@@ -20,14 +20,14 @@ export class StaffAdvFilterComponent implements OnInit {
   this.filterConfig = {
     id: 'staff-advanced-filters',
     fields: [{
-        name: 'user-services',
-        title: 'Services',
-        subTitle: '',
-        options: [],
-        minSelected: 0,
-        maxSelected: 0,
-        type: 'find-service',
-        enableAddButton: true
+      name: 'user-services',
+      title: 'Services',
+      subTitle: '',
+      options: [],
+      minSelected: 0,
+      maxSelected: 0,
+      type: 'find-service',
+      enableAddButton: true,
     },
     {
       name: 'user-location',
@@ -40,41 +40,45 @@ export class StaffAdvFilterComponent implements OnInit {
       enableAddButton: true
     },
     {
-        name: 'user-type',
-        title: 'User Type',
-        options: [...staffFilters.userTypes],
-        minSelected: 0,
-        maxSelected: 0,
-        type: 'select',
+      name: 'user-type',
+      title: 'User Type',
+      options: [...staffFilters.userTypes],
+      minSelected: 0,
+      maxSelected: 0,
+      type: 'select',
+      lineBreakBefore: true
     },
     {
-        name: 'user-job-title',
-        title: 'Job title',
-        options: [...staffFilters.jobTitles],
-        minSelected: 0,
-        maxSelected: 0,
-        type: 'select',
-      },
-      {
-        name: 'user-skills',
-        title: 'Skills',
-        options: [...staffFilters.skills],
-        minSelected: 0,
-        maxSelected: 0,
-        type: 'select',
-      },
-      {
-        name: 'user-role',
-        title: 'Role',
-        options: [
-          {label: 'Case Allocator', key: 'case-allocator'},
-          {label: 'Task supervisor', key: 'task-supervisor'},
-          {label: 'Staff administrator', key: 'Staff administrator'}
-        ],
-        minSelected: 0,
-        maxSelected: 3,
-        type: 'checkbox-large',
-      },
+      name: 'user-job-title',
+      title: 'Job title',
+      options: [...staffFilters.jobTitles],
+      minSelected: 0,
+      maxSelected: 0,
+      type: 'select',
+      lineBreakBefore: true
+    },
+    {
+      name: 'user-skills',
+      title: 'Skills',
+      options: [...staffFilters.skills],
+      minSelected: 0,
+      maxSelected: 0,
+      type: 'select',
+      lineBreakBefore: true
+    },
+    {
+      name: 'user-role',
+      title: 'Role',
+      options: [
+        {label: 'Case Allocator', key: 'case-allocator'},
+        {label: 'Task supervisor', key: 'task-supervisor'},
+        {label: 'Staff administrator', key: 'Staff administrator'}
+      ],
+      minSelected: 0,
+      maxSelected: 3,
+      type: 'checkbox',
+      lineBreakBefore: true
+    }
     ],
     persistence: 'session',
     applyButtonText: 'Search',

@@ -38,6 +38,7 @@ import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } f
 import {
   assignActionsToCases,
   assignActionsToTasks,
+  assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
@@ -138,6 +139,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
+    const refined = req.body.refined;
     let prioritySortParameter;
     searchRequest.sorting_parameters.find((sort, index) => {
       if (sort.sort_by === 'priority') {
@@ -172,15 +174,58 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-      data = mockTaskPrioritisation(data, prioritySortParameter, searchRequest)
+      data = mockTaskPrioritisation(data, prioritySortParameter, searchRequest);
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+      if (refined) {
+        data = mockTaskPermissions(data);
+        returnData = { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+      } else {
+        returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+      }
     }
     res.send(returnData);
   } catch (error) {
     next(error);
   }
+}
+
+// mocks permissions to test fine-grained task permissions
+function mockTaskPermissions(data) {
+  console.log(data.tasks);
+  let permissions = [];
+  if (data.tasks) {
+    for (let i = 0; i < data.tasks.length; i++) {
+      if (i === 7) {
+        break;
+      }
+      switch(i) {
+        case 0: {
+          permissions = ['Unclaim', 'Assign', 'CompleteOwn', 'CancelOwn'];
+        }
+        case 1: {
+          permissions = ['UnclaimAssign', 'Complete', 'Cancel'];
+        }
+        case 2: {
+          permissions = [];
+        }
+        case 3: {
+          permissions = ['Execute', 'Assign'];
+        }
+        case 4: {
+          permissions = ['Own', 'Claim'];
+        }
+        case 5: {
+          permissions = ['UnassignAssign']
+        }
+        case 6: {
+          permissions = ['UnassignClaim'];
+        }
+      }
+      data.tasks[i].permissions.values = permissions;
+    }
+  }
+  return data;
 }
 
 function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {

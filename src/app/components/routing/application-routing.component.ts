@@ -12,27 +12,15 @@ import * as fromActions from '../../store';
 
 
 @Component({ templateUrl: './application-routing.component.html'})
-export class ApplicationRoutingComponent implements OnInit {
+export class ApplicationRoutingComponent {
   constructor(
     private readonly router: Router,
-    private readonly workAllocationFeatureService: WorkAllocationFeatureService,
     private readonly store: Store<fromActions.State>,
     private readonly featureToggleService: FeatureToggleService
   ) {}
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
   public static bookingUrl: string = '../booking';
-  public ngOnInit(): void {
-    this.workAllocationFeatureService.getActiveWAFeature().subscribe((currentWAFeatureName) =>
-        this.navigateUrlBasedOnFeatureToggle(currentWAFeatureName)
-      );
-  }
-
-  public navigateUrlBasedOnFeatureToggle(currentWAFeatureName: string): void {
-    currentWAFeatureName === 'WorkAllocationRelease2'
-      ? this.navigateBasedOnUserRole()
-      : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
-  }
 
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));

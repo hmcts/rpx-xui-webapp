@@ -4,6 +4,7 @@ import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
+import { AppConstants } from 'src/app/app.constants';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -47,6 +48,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private myWorkSubscription: Subscription;
   private pTasksTotal: number;
   public routeEventsSubscription: Subscription;
+  public isUpdatedTaskPermissions$: Observable<boolean>;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -66,6 +68,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService
   ) {
+    this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
 
   public get tasks(): Task[] {
@@ -238,9 +241,16 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.doLoad();
   }
 
-  public performSearchPagination(): Observable<TaskResponse> {
+  public performSearchUpdatedTaskPermissions(): Observable<TaskResponse> {
+    console.log('doing it 1');
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view });
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: true });
+  }
+
+  public performSearchPreviousTaskPermissions(): Observable<TaskResponse> {
+    console.log('doing it 2');
+    const searchRequest = this.getSearchTaskRequestPagination();
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: false });
   }
 
   /**
@@ -337,7 +347,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    const tasksSearch$ = this.performSearchPagination();
+    const tasksSearch$ = this.isUpdatedTaskPermissions$.pipe(mergeMap(enabled => enabled ? this.performSearchUpdatedTaskPermissions() : this.performSearchPreviousTaskPermissions()))
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
       const assignedJudicialUsers: string[] = [];
       result.tasks.forEach(task => {

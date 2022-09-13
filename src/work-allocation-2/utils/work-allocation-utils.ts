@@ -141,15 +141,16 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
   const roleCategories = taskRoles.filter(role => role.role_category
     && (roleIncludes(role.permissions, TaskPermission.OWN) || roleIncludes(role.permissions, TaskPermission.EXECUTE))).
     map(taskRole => taskRole.role_category as RoleCategory);
-
   // Decide the category to be selected by default
   const roleCategoryToSelectByDefault = getRoleCategoryToBeSelectedByDefault(taskRoles, sessionStorageService);
-  roleCategories.forEach(roleCategory => {
+  roleCategories.forEach((roleCategory: RoleCategory) => {
     if (!options.find(option => option.optionId === roleCategory)) {
       let label;
       try {
-        label = this.getLabel(roleCategory);
-      } catch (error) {}
+        label = getLabel(roleCategory);
+      } catch (error) {
+        console.warn(error);
+      }
       const option: OptionsModel = {
         optionId: roleCategory,
         optionValue: roleCategory,

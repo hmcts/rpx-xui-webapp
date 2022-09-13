@@ -18,7 +18,7 @@ export class StaffDataFilterService {
   });
 
   public tableData$ = this.tableData.asObservable();
-  public error$ = this.errors.asObservable();
+  public errors$ = this.errors.asObservable();
 
   constructor(private staffDataAccessService: StaffDataAccessService) {}
 

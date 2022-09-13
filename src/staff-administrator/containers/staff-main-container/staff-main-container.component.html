@@ -3,8 +3,8 @@
   <div class="page">
     <main id="content" role="main">
       <exui-page-wrapper [title]="'Users'">
-        <ng-container *ngIf="(staffDataFilterService.error$ | async).errors.length">
-          <exui-error-message [error]="staffDataFilterService.error$ | async"></exui-error-message>
+        <ng-container *ngIf="(staffDataFilterService.errors$ | async).errors.length">
+          <exui-error-message [error]="staffDataFilterService.errors$ | async"></exui-error-message>
         </ng-container>
 
         <div class="hmcts-filter-layout__filter staff-filters">

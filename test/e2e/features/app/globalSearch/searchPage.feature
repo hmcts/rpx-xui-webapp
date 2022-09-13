@@ -1,4 +1,4 @@
-@ng
+@fullfunctional
 Feature: Global search
 
 

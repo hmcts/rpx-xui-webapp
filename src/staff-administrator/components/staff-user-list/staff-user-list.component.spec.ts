@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CdkTableModule } from '@angular/cdk/table';
+import { StaffDataFilterService } from '../../services/staff-data-filter.service';
 import { StaffUserListComponent } from './staff-user-list.component';
 
 describe('StaffUserListComponent', () => {
@@ -10,7 +11,8 @@ describe('StaffUserListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ StaffUserListComponent ],
-      imports: [CdkTableModule]
+      imports: [CdkTableModule],
+      providers: [StaffDataFilterService]
     })
     .compileComponents();
   }));

@@ -5,6 +5,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { SharedModule } from '../../../app/shared/shared.module';
 import { StaffAdvFilterComponent } from '../../components/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from '../../components/staff-search/staff-search.component';
 import { StaffUserListComponent } from '../../components/staff-user-list/staff-user-list.component';
@@ -37,7 +38,8 @@ describe('StaffMainContainerComponent', () => {
         HttpClientTestingModule,
         ExuiCommonLibModule,
         CdkTableModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        SharedModule
       ],
       providers: [
         {

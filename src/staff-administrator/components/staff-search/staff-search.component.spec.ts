@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { StaffDataFilterService } from '../../services/staff-data-filter.service';
 import { StaffSearchComponent } from './staff-search.component';
 
 describe('StaffSearchComponent', () => {
@@ -15,7 +16,8 @@ describe('StaffSearchComponent', () => {
         HttpClientTestingModule,
         ExuiCommonLibModule,
         ReactiveFormsModule
-      ]
+      ],
+      providers: [StaffDataFilterService]
     })
     .compileComponents();
   }));

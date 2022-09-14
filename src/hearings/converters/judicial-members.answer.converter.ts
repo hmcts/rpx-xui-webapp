@@ -21,7 +21,7 @@ export class JudicialMembersAnswerConverter implements AnswerConverter {
         hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
         const hearingJudgeId = hearingDaySchedule[index || 0].hearingJudgeId;
         const judicialUserInfo = judicialUsersList.find(judicialUser => judicialUser.personalCode === hearingJudgeId);
-        return judicialUserInfo ? judicialUserInfo.knownAs : '';
+        return judicialUserInfo ? judicialUserInfo.fullName : '';
       })
     );
   }

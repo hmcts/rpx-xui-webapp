@@ -1,6 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldType, TaskView } from '../../enums';
 import { FieldConfig } from '../../models/common';

@@ -25,6 +25,24 @@ function HeaderSearch(){
   this.label = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//span"));
   this.input = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//input[@id='caseReference']"));
   this.button = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//button"));
+  
+  this.waitForContainer = async function() {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.container);
+    });
+  }
+
+  this.searchInput = async function(input) {
+    await this.waitForContainer()
+    await this.input.clear()
+    await this.input.sendKeys(input);
+  }
+
+  this.clickFind = async function() {
+    await this.waitForContainer()
+
+    await this.button.click();
+  }
 
 }
 
@@ -38,13 +56,16 @@ function HeaderPage() {
     
     this.primaryNavBar = element(by.css(".hmcts-primary-navigation__container"));
     this.primaryNavBar_NavItems = element(by.css(".hmcts-primary-navigation__nav ul"));
+    
+    this.headerMenuItems = $$('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
     this.primaryNavBar_rightSideItems = element(by.css(".hmcts-primary-navigation__search ul"));
 
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
 
-    this.headerAppLogoLink = $('.hmcts-header__logo a');
+    this.headerAppLogoLink = $('.hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link');
     this.headerBanner = $('exui-header header > div');
 
+    this.headerCaseRefSearch = new HeaderSearch(); 
 
     this.navigateToRoute = async function(route){
       let currentUrl = await browser.getCurrentUrl();
@@ -59,13 +80,16 @@ function HeaderPage() {
       await this.waitForPrimaryNavDisplay(); 
     }
 
+    this.getMenuItemsCount = async function(){
+      return await this.headerMenuItems.count();
+    }
+
     this.refreshBrowser = async function(){
       await browser.get(await browser.getCurrentUrl());
       await browserUtil.waitForLD();
       await this.waitForPrimaryNavDisplay();
     }
 
-    this.headerSearch = new HeaderSearch();
 
     this.amOnPage = async function(){
       return await this.headerAppLogoLink.isPresent();

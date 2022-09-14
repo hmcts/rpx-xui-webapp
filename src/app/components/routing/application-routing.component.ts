@@ -4,8 +4,8 @@ import { FeatureToggleService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { AppUtils } from '../../../app/app-utils';
+
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationFeatureService } from '../../../work-allocation/services';
 import * as fromActions from '../../store';
@@ -43,6 +43,9 @@ export class ApplicationRoutingComponent implements OnInit {
       const { roleAssignmentInfo, userInfo } = userDetails;
       const isBookableAndJudicialRole = userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some( roleAssignment => 'bookable' in roleAssignment && roleAssignment.bookable === true );
       if (bookingFeatureToggle && isBookableAndJudicialRole) {
+        return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
+      }
+      if (bookingFeatureToggle && AppUtils.isBookableAndJudicialRole(userDetails)) {
         return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
       }
       if (bookingFeatureToggle && AppUtils.isBookableAndJudicialRole(userDetails)) {

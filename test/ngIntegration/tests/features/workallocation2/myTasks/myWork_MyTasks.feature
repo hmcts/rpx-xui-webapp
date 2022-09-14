@@ -1,4 +1,4 @@
-@ng 
+@ng
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
@@ -20,7 +20,10 @@ Feature: WA Release 2: My work - My Tasks
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
-
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -103,6 +106,10 @@ Feature: WA Release 2: My work - My Tasks
         Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -135,7 +142,10 @@ Feature: WA Release 2: My work - My Tasks
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
-
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

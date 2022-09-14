@@ -1,5 +1,4 @@
-
-@ng 
+@ng
 Feature: Work access page
 
     Background: Setup bookings data
@@ -21,7 +20,7 @@ Feature: Work access page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction |
-            | true     | true            | Y           | IA           |
+            | false     | true            | Y           | IA           |
 
 
         Given I start MockApp
@@ -33,6 +32,31 @@ Feature: Work access page
             | BOOKING_UI-FT-ON | caseworker-ia-iacjudge,caseworker-ia,caseworker | false       |
     # | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge | true       |
 
+    Scenario: Work access options, with bookable attribute as string
+        Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | bookable | isCaseAllocator | substantive | jurisdiction |
+            | true,string    | true            | Y           | IA           |
+
+        Given I start MockApp
+        When I navigate to home page
+
+        Then I see work access page displayed
+        Then I validate primary navigation items count 0
+        Then I see work access radio button "View existing bookings" displayed
+        Then I see work access radio button "Create new booking" displayed
+        Then I see work access radio button "View tasks and cases" displayed
+        Then I see work access continue button not displayed
+
+        When I select work access radio button "View existing bookings"
+        Then I see work access continue button not displayed
+
+        When I select work access radio button "Create new booking"
+        Then I see work access continue button displayed
+
+        When I select work access radio button "View task and cases"
+        Then I see work access continue button displayed
+
 
     Scenario: Work access options
         Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
@@ -43,11 +67,8 @@ Feature: Work access page
         Given I start MockApp
         When I navigate to home page
 
-
-        Given I navigate page route "booking", wait for locator "exui-booking-home"
-
-
         Then I see work access page displayed
+        Then I validate primary navigation items count 0
         Then I see work access radio button "View existing bookings" displayed
         Then I see work access radio button "Create new booking" displayed
         Then I see work access radio button "View tasks and cases" displayed
@@ -72,11 +93,8 @@ Feature: Work access page
         Given I start MockApp
         When I navigate to home page
 
-
-        Given I navigate page route "booking", wait for locator "exui-booking-home"
-
-
         Then I see work access page displayed
+        Then I validate primary navigation items count 0
         Then I see work access radio button "View existing bookings" displayed
         Then I see work access radio button "Create new booking" displayed
         Then I see work access radio button "View tasks and cases" displayed
@@ -102,10 +120,8 @@ Feature: Work access page
         Given I start MockApp
         When I navigate to home page
 
-        Given I navigate page route "booking", wait for locator "exui-booking-home"
-
-
         Then I see work access page displayed
+        Then I validate primary navigation items count 0
         Then I see work access radio button "View existing bookings" displayed
         Then I see work access radio button "Create new booking" displayed
         Then I see work access radio button "View tasks and cases" displayed
@@ -129,10 +145,8 @@ Feature: Work access page
         When I navigate to home page
 
 
-        Given I navigate page route "booking", wait for locator "exui-booking-home"
-
-
         Then I see work access page displayed
+        Then I validate primary navigation items count 0
         Then I see work access radio button "View existing bookings" displayed
         Then I see work access radio button "Create new booking" displayed
         Then I see work access radio button "View tasks and cases" displayed
@@ -153,10 +167,8 @@ Feature: Work access page
         Given I start MockApp
         When I navigate to home page
 
-        Given I navigate page route "booking", wait for locator "exui-booking-home"
-
-
         Then I see work access page displayed
+        Then I validate primary navigation items count 0
         Then I see work access radio button "View existing bookings" displayed
         Then I see work access radio button "Create new booking" displayed
         Then I see work access radio button "View tasks and cases" displayed

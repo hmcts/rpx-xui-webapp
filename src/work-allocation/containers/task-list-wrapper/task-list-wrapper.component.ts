@@ -352,7 +352,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, this.selectedServices).pipe(switchMap(((judicialUserData) => {
         result.tasks.map(task => {
           const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
-          task.assigneeName = judicialAssignedData ? judicialAssignedData.known_as : task.assigneeName;
+          task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
         });
         return of(result);
       })));

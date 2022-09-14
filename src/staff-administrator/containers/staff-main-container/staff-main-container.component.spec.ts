@@ -10,7 +10,7 @@ import { ErrorMessageComponent } from '../../../app/components';
 import { StaffAdvFilterComponent } from '../../components/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from '../../components/staff-search/staff-search.component';
 import { StaffUserListComponent } from '../../components/staff-user-list/staff-user-list.component';
-import { StaffDataAccessService } from '../../services/staff-data-access.service';
+import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffDataFilterService } from '../../services/staff-data-filter.service';
 import { staffFilterOptionsTestData } from '../../test-data/staff-filter-options.test.data';
 import { StaffMainContainerComponent } from './staff-main-container.component';

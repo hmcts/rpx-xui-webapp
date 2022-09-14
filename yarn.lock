@@ -460,6 +460,7 @@
   version "4.18.16-EUI-2831-dynamic-multiselect-3"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.16-EUI-2831-dynamic-multiselect-3.tgz#3d9c68e43739d093f70699c2bc2ce8fa4aa18307"
   integrity sha512-lqPIyrfPEeVn0CIh2sSEOkzC33333gY39nxnrvvzbIYKgJME36bmztFAYzt69S7aukrQ9RZlYS6C/KYIozS+DA==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

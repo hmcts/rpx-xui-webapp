@@ -1,6 +1,6 @@
-import { StaffRefDataUser } from '../models/staff-ref-data-user.model';
+import { StaffDataUser } from '../models/staff-data-user.model';
 
-export const STAFF_REF_USERS_LIST: StaffRefDataUser[] = [
+export const STAFF_REF_USERS_LIST: StaffDataUser[] = [
   {
     firstName: "Kevin",
     lastName: "Silver",

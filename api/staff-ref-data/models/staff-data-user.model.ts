@@ -1,4 +1,4 @@
-export interface StaffRefDataUser {
+export interface StaffDataUser {
   firstName: string;
   lastName: string;
   userCategory: string;

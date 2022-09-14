@@ -1,8 +1,7 @@
-<ng-container *ngIf="(staffDataFilterService.tableData$ | async).totalItems">
+<ng-container *ngIf="(staffDataFilterService.tableData$ | async).results.length">
   <div class="govuk-!-margin-bottom-4">
-    Displaying <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).results.length }}</span> of <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).totalItems }}</span> users
+    Displaying <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).results.length }}</span> of <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).results.length }}</span> users
   </div>
-
 
   <div class="govuk-!-margin-bottom-6">
     <div class="container-fluid">

@@ -9,7 +9,7 @@ import { StaffDataAccessService } from './staff-data-access/staff-data-access.se
   providedIn: 'root'
 })
 export class StaffDataFilterService {
-  private tableData = new BehaviorSubject<{ results: StaffUser[]; totalItems: number; }>({ results: [], totalItems: 0 });
+  private tableData = new BehaviorSubject<{ results: StaffUser[]; }>({ results: [] });
   private errors = new BehaviorSubject<ErrorMessage>({
     title: 'There is a problem',
     description: '',
@@ -26,8 +26,7 @@ export class StaffDataFilterService {
     this.setErrors([]);
     return this.staffDataAccessService.getUsersByPartialName(partialName).pipe(
       tap((tableData) => this.tableData.next({
-        results: tableData.results,
-        totalItems: tableData.totalItems
+        results: tableData.results
       }))
     );
   }

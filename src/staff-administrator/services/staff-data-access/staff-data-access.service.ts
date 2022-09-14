@@ -14,7 +14,7 @@ export class StaffDataAccessService {
   }
 
   public getUsersByPartialName(partialName: string) {
-    return this.http.get<{results: StaffUser[], totalItems: number}>(`${this.API_PATH}/getUsersByPartialName`, { params: {search: partialName} });
+    return this.http.get<{results: StaffUser[]}>(`${this.API_PATH}/getUsersByPartialName`, { params: {search: partialName} });
   }
 
   public getUserTypes() {

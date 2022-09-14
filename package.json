@@ -41,7 +41,7 @@
     "test:functional": "npm-run-all -s -c -l test:ngIntegration  test:api  test:functionalE2E",
     "test:functionalE2E": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
-    "test:functional:local": "yarn test:ngIntegration &&  webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js --local",
+    "test:functional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js --local",
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
     "test:fullfunctional": "npm-run-all -s -c -l test:ngIntegration  test:api  test:functionalE2E",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",

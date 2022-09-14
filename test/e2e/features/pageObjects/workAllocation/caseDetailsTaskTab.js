@@ -1,6 +1,3 @@
-
-
-
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 class CaseDetailsTaskTab{
 
@@ -56,7 +53,7 @@ class CaseDetailsTaskTab{
 
 
     async isAttributeDisplayedForTaskAtPos(pos, attributeName){
-        const taskAttributes = await this.getAttributeElementssDisplayedForTaskAtPos(pos); 
+        const taskAttributes = await this.getAttributeElementssDisplayedForTaskAtPos(pos);
         return Object.keys(taskAttributes).includes(attributeName);
     }
 

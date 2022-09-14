@@ -34,12 +34,12 @@ const localConfig = [
         browserName: 'chrome',
         acceptInsecureCerts: true,
         chromeOptions: { args: chromeOptArgs },
-        proxy: {
-            proxyType: 'manual',
-            httpProxy: 'proxyout.reform.hmcts.net:8080',
-            sslProxy: 'proxyout.reform.hmcts.net:8080',
-            noProxy: 'localhost:3000'
-        }
+        // proxy: {
+        //     proxyType: 'manual',
+        //     httpProxy: 'proxyout.reform.hmcts.net:8080',
+        //     sslProxy: 'proxyout.reform.hmcts.net:8080',
+        //     noProxy: 'localhost:3000'
+        // }
     }
 ];
 
@@ -126,7 +126,7 @@ function getBDDTags(){
     if (argv.tags) {
         tags = argv.tags.split(',');
     } else {
-        tags = ["@fullfunctional", "~@ignore"];
+        tags = ["@hearings"];
     }
     return tags;
 }

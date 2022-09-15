@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -54,10 +54,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   public constructor(private readonly fb: FormBuilder,
                      private readonly validators: ValidatorsUtils,
                      private readonly hearingStore: Store<fromHearingStore.State>,
-                     private readonly lovRefDataService: LovRefDataService,
                      private readonly route: ActivatedRoute,
                      private readonly renderer: Renderer2,
                      private readonly router: Router,
+                     private readonly ngZone: NgZone
   ) {
     this.form = this.fb.group({
       parties: this.fb.array([], [Validators.maxLength(50)]),
@@ -279,7 +279,12 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         hearingId: this.id,
         hearingActuals
       }));
-      this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+
+      if (this.id) {
+        this.ngZone.run(() => {
+          this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+        });
+      }
     }
   }
 

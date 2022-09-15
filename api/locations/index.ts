@@ -22,7 +22,7 @@ const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
  * @example searchTerm = any search term for postcode | site name | venue name |court name | court address etc.
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const searchTerm = req.query.searchTerm;
+  const searchTerm = req.query.searchTerm  as string;
   const serviceIds = req.query.serviceIds as string;
   const locationType = req.query.locationType;
   const serviceIdArray = serviceIds.split(',');

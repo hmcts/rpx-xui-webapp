@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -31,7 +31,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
                      private readonly hearingStore: Store<fromHearingStore.State>,
                      private readonly router: Router,
                      private readonly route: ActivatedRoute,
-                     private readonly hearingsService: HearingsService,
+                     private readonly ngZone: NgZone,
                      private readonly validatorsUtils: ValidatorsUtils,
   ) {
   }
@@ -171,7 +171,12 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       hearingId: this.id,
       hearingActuals,
     }));
-    this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+
+    if (this.id) {
+      this.ngZone.run(() => {
+        this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+      });
+    }
   }
 
   public updateControl(event: any, control: AbstractControl): void {

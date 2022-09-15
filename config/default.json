@@ -82,12 +82,12 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
     "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net/",
-    "judicialBookingsApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
+    "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
   },
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL",
+  "globalSearchServices": "IA, CIVIL",
   "waSupportedJurisdictions": ["IA", "SSCS", "CIVIL"],
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}],

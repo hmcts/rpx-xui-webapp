@@ -33,7 +33,7 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       const caseId = attributes.caseId;
       const jurisdiction = attributes.jurisdiction;
       const caseType = attributes.caseType;
-      const taskType = 'followUpOverdueRespondentEvidence';
+      const taskType = 'reviewSpecificAccessRequestJudiciary';
       const dueDate = '2022-04-23T16:21:41.320086';
       const taskName = 'Process Application';
       const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName });

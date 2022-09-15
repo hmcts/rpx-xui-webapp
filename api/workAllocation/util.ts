@@ -14,7 +14,12 @@ import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
 import {exists, reflect} from '../lib/util';
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
+import {
+  TaskPermission,
+  VIEW_PERMISSIONS_ACTIONS_MATRIX,
+  ViewType,
+  VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED
+} from './constants/actions';
 import {getCaseListPromises} from "./index";
 import {Case, CaseList} from './interfaces/case';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
@@ -116,7 +121,7 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
- export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser: string): any[] {
+export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser: string): any[] {
   const allWorkView = ViewType.ALL_WORK;
   const activeTasksView = ViewType.ACTIVE_TASKS;
   const tasksWithActions: any[] = [];
@@ -330,50 +335,52 @@ export function getRoleIdsFromRoles(roles: Role[]): string[] {
  * @param permissions The list of permissions the user holds.
  * @return actionList:Action[] the list of total actions user holds.
  */
- export function getActionsByRefinedPermissions(view, permissions: TaskPermission[]): Action[] {
-  let actionList: Action[] = getActionsFromMatrix(view, TaskPermission.DEFAULT, []);
+export function getActionsByRefinedPermissions(view, permissions: TaskPermission[]): Action[] {
+  let actionList: Action[] = [];
+  actionList = getActionsFromRefinedMatrix(view, TaskPermission.DEFAULT, actionList);
   permissions.forEach(permission => {
     switch (permission) {
       case TaskPermission.UNCLAIM:
         // unassign from self
-        actionList = getActionsFromMatrix(view, permission, actionList);
+        actionList = getActionsFromRefinedMatrix(view, permission, actionList);
         if (permissions.includes(TaskPermission.ASSIGN)) {
           // reassign task assigned to me
-          actionList = getActionsFromMatrix(view, TaskPermission.UNCLAIMASSIGN, actionList);
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.UNCLAIMASSIGN, actionList);
         }
         if (view.includes(ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT) || view.includes(ViewType.ALL_WORK_ASSIGNED_CURRENT)) {
           // unassign from self
-          actionList = getActionsFromMatrix(view, TaskPermission.UNASSIGN, actionList);
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.UNASSIGN, actionList);
         }
         break;
       case TaskPermission.CLAIM:
-        if (permissions.includes(TaskPermission.OWN) || permissions.includes(TaskPermission.EXECUTE)) {
+        if ((permissions.includes(TaskPermission.OWN) || permissions.includes(TaskPermission.EXECUTE))
+          && !view.includes('Other')) {
           // assign to me
-          actionList = getActionsFromMatrix(view, permission, actionList);
+          actionList = getActionsFromRefinedMatrix(view, permission, actionList);
         }
         break;
       case TaskPermission.ASSIGN:
         if (permissions.includes(TaskPermission.OWN) || permissions.includes(TaskPermission.EXECUTE)) {
           // assign to me
-          actionList = getActionsFromMatrix(view, TaskPermission.CLAIM, actionList);
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.CLAIM, actionList);
         }
         if (view.includes(ViewType.ACTIVE_TASKS_UNASSIGNED) || view.includes(ViewType.ALL_WORK_UNASSIGNED)) {
           // assign to someone else
-          actionList = getActionsFromMatrix(view, permission, actionList);
+          actionList = getActionsFromRefinedMatrix(view, permission, actionList);
         }
         break;
       case TaskPermission.UNASSIGN:
         if (permissions.includes(TaskPermission.ASSIGN)) {
           // reassign to someone else
-          actionList = getActionsFromMatrix(view, TaskPermission.ASSIGN, actionList);
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.ASSIGN, actionList);
         }
         if ((permissions.includes(TaskPermission.ASSIGN) || permissions.includes(TaskPermission.CLAIM))
           && (permissions.includes(TaskPermission.OWN) || permissions.includes(TaskPermission.EXECUTE))) {
           // assign to me (previously assigned to someone else)
-          actionList = getActionsFromMatrix(view, TaskPermission.CLAIM, actionList);
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.CLAIM, actionList);
         }
         // unassign task
-        actionList = getActionsFromMatrix(view, permission, actionList);
+        actionList = getActionsFromRefinedMatrix(view, permission, actionList);
         break;
       case TaskPermission.CANCEL:
       case TaskPermission.CANCELOWN:
@@ -382,28 +389,28 @@ export function getRoleIdsFromRoles(roles: Role[]): string[] {
       case TaskPermission.UNCLAIMASSIGN:
         // Completing or cancelling (or unclaiming and assigning) simply uses matrix direct actions
         // as does not depend on other permissions
-        actionList = getActionsFromMatrix(view, permission, actionList);
+        actionList = getActionsFromRefinedMatrix(view, permission, actionList);
         break;
       case TaskPermission.UNASSIGNASSIGN:
         // reassign task
-        actionList = getActionsFromMatrix(view, permission, actionList);
+        actionList = getActionsFromRefinedMatrix(view, permission, actionList);
         if (permissions.includes(TaskPermission.EXECUTE) || permissions.includes(TaskPermission.OWN)) {
           // assign task to me
-          actionList = getActionsFromMatrix(view, TaskPermission.CLAIM, actionList);
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.CLAIM, actionList);
         }
         break;
       case TaskPermission.UNASSIGNCLAIM:
         if (permissions.includes(TaskPermission.EXECUTE) || permissions.includes(TaskPermission.OWN)) {
           // assign task to me
-          actionList = getActionsFromMatrix(view, TaskPermission.CLAIM, actionList);
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.CLAIM, actionList);
         }
         break;
       case TaskPermission.EXECUTE:
       case TaskPermission.OWN:
         // Available task action permissions
-        if (permissions.includes(TaskPermission.ASSIGN || TaskPermission.CLAIM)) {
+        if (permissions.includes(TaskPermission.ASSIGN) || permissions.includes(TaskPermission.CLAIM)) {
           // claim task
-          actionList = getActionsFromMatrix(view, TaskPermission.EXECUTE, actionList);
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.EXECUTE, actionList);
         }
         break;
       default:
@@ -453,6 +460,12 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
 
 export function getActionsFromMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
   const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][permission]);
+  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  return currentActionList;
+}
+
+export function getActionsFromRefinedMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
+  const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED[view][permission]);
   currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
   return currentActionList;
 }

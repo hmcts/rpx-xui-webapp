@@ -242,13 +242,11 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public performSearchUpdatedTaskPermissions(): Observable<TaskResponse> {
-    console.log('doing it 1');
     const searchRequest = this.getSearchTaskRequestPagination();
     return this.taskService.searchTask({ searchRequest, view: this.view, refined: true });
   }
 
   public performSearchPreviousTaskPermissions(): Observable<TaskResponse> {
-    console.log('doing it 2');
     const searchRequest = this.getSearchTaskRequestPagination();
     return this.taskService.searchTask({ searchRequest, view: this.view, refined: false });
   }

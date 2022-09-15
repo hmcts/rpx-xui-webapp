@@ -133,7 +133,7 @@ describe('AllWorkTaskComponent', () => {
 
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = {searchRequest, view: component.view};
+    const payload = {searchRequest, view: component.view, refined: false};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(mockRoleService.getCaseRolesUserDetails).toHaveBeenCalled();
     expect(component.tasks).toBeDefined();
@@ -247,7 +247,7 @@ describe('AllWorkTaskComponent', () => {
       const navigateSpy = spyOn(router, 'navigate');
       component.getSearchTaskRequestPagination();
       const searchRequest = component.onPaginationEvent(1);
-      const payload = { searchRequest, view: component.view };
+      const payload = { searchRequest, view: component.view, refined: false };
       expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);

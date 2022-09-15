@@ -26,7 +26,7 @@ export class AdditionalFacilitiesResolver extends RefDataResolver implements Res
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     route.data = {
       ...route.data,
-      category: HearingCategory.AdditionalFacilities
+      category: HearingCategory.Facilities
     };
 
     return super.resolve(route);

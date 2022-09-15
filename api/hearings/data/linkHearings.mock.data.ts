@@ -6,19 +6,19 @@ import {
 
 export const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [
   {
-    caseReference: '4652724902696213',
-    caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Linked for a hearing'],
+    caseReference: '1546589340228619',
+    caseName: 'Jane and Smith vs DWP',
+    reasonsForLink: ['CLRC017'],
   },
   {
-    caseReference: '5283819672542864',
-    caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
+    caseReference: '1546589642998505',
+    caseName: 'Jane and Smith vs DWP',
+    reasonsForLink: ['CLRC017', 'CLRC016'],
   },
   {
-    caseReference: '8254902572336147',
-    caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+    caseReference: '1584618195804035',
+    caseName: 'Jane and Smith vs DWP',
+    reasonsForLink: ['CLRC005', 'CLRC006', 'CLRC017'],
   },
 ];
 
@@ -31,15 +31,13 @@ export const LINKED_HEARING_GROUP: LinkedHearingGroupMainModel = {
   },
   hearingsInGroup: [
     {
-      hearingId: 'h1000000',
-      hearingOrder: 1,
-    },
-    {
-      hearingId: 'h1000001',
+      hearingId: 'h100001',
       hearingOrder: 2,
+      caseRef: '4652724902696213',
     },
     {
-      hearingId: 'h1000002',
-      hearingOrder: 3,
+      hearingId: 'h100003',
+      hearingOrder: 1,
+      caseRef: '8254902572336147',
     }],
 };

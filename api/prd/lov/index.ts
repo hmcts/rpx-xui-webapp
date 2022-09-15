@@ -13,14 +13,14 @@ const prdUrl: string = getConfigValue(SERVICES_PRD_COMMONDATA_API);
  */
 export async function getLovRefData(req: EnhancedRequest, res: Response) {
   // @ts-ignore
-  const service = req.query.service as string; 
-  const category = req.query.category as string; 
-  const isChildRequired = req.query.isChildRequired as string; 
+  const service = req.query.service as string;
+  const category = req.query.category as string;
+  const isChildRequired = req.query.isChildRequired as string;
 
   const params = new URLSearchParams({ service, isChildRequired });
   const markupPath: string = `${prdUrl}/refdata/commondata/lov/categories/${category}?${params}`;
   try {
-    const {status, data}: { status: number, data: LovRefDataByServiceModel } = await sendGet(markupPath, req);
+    const { status, data }: { status: number, data: LovRefDataByServiceModel } = await sendGet(markupPath, req);
     res.status(status).send(data.list_of_values);
   } catch (error) {
     // in order to not break the hearing journey, if the LoV is not defined from RD we will use the ExUI default value set.

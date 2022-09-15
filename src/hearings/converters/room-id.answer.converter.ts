@@ -9,7 +9,7 @@ export class RoomIdAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map(state => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
-        return hearingResponse && hearingResponse.hearingDaySchedule.hearingRoomId;
+        return hearingResponse && hearingResponse.hearingDaySchedule[0] && hearingResponse.hearingDaySchedule[0].hearingRoomId;
       })
     );
   }

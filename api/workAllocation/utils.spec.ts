@@ -22,6 +22,7 @@ import {
   constructRoleAssignmentQuery,
   filterByLocationId,
   getActionsByPermissions,
+  getActionsByRefinedPermissions,
   getActionsFromMatrix,
   getCaseAllocatorLocations,
   getCaseIdListFromRoles,
@@ -822,6 +823,53 @@ describe('workAllocation.utils', () => {
       permission = TaskPermission.EXECUTE;
       expect(getActionsFromMatrix(view, permission, actions)).to.deep.equal([CANCEL, CLAIM, CLAIM_AND_GO]);
     });
+  });
+
+  describe('getActionsByRefinedPermissions', () => {
+
+    it('should get correct actions for my tasks for certain permissions', () => {
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.UNCLAIM, TaskPermission.ASSIGN]))
+        .to.deep.equal([GO, REASSIGN, RELEASE]);
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.UNCLAIMASSIGN]))
+        .to.deep.equal([GO, REASSIGN]);
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.EXECUTE])).to.deep.equal([GO]);
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.COMPLETEOWN]))
+        .to.deep.equal([COMPLETE, GO]);
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.CANCEL]))
+        .to.deep.equal([CANCEL, GO]);
+    });
+
+    it('should get correct actions for available tasks for certain permissions', () => {
+      expect(getActionsByRefinedPermissions('AvailableTasks', [TaskPermission.EXECUTE]))
+        .to.deep.equal([]);
+      expect(getActionsByRefinedPermissions('AvailableTasks', [TaskPermission.EXECUTE, TaskPermission.ASSIGN])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+      expect(getActionsByRefinedPermissions('AvailableTasks', [TaskPermission.OWN, TaskPermission.CLAIM])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+    });
+
+    it('should get correct actions for all work tasks for certain permissions', () => {
+      expect(getActionsByRefinedPermissions('AllWorkUnassigned', [TaskPermission.ASSIGN, TaskPermission.OWN])).to.deep.equal([ASSIGN, CLAIM, GO]);
+      expect(getActionsByRefinedPermissions('AllWorkAssignedCurrentUser', [TaskPermission.UNASSIGNASSIGN]))
+        .to.deep.equal([GO, REASSIGN]);
+      // EUI-5046 - ensure test includes check that own gives correct actions as well
+      expect(getActionsByRefinedPermissions('AllWorkAssignedCurrentUser', [TaskPermission.UNASSIGN, TaskPermission.CLAIM, TaskPermission.COMPLETEOWN, TaskPermission.OWN]))
+        .to.deep.equal([COMPLETE, GO, RELEASE]);
+      // ensure that in unlikely scenario of below that no duplication occurs
+      expect(getActionsByRefinedPermissions('AllWorkAssignedOtherUser', [TaskPermission.UNCLAIM, TaskPermission.CLAIM, TaskPermission.OWN]))
+        .to.deep.equal([GO]);
+    });
+
+    it('should get correct actions for active tasks for certain permissions', () => {
+      expect(getActionsByRefinedPermissions('ActiveTasksUnassigned', [TaskPermission.ASSIGN, TaskPermission.OWN])).to.deep.equal([ASSIGN, CLAIM, GO]);
+      expect(getActionsByRefinedPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.UNASSIGNASSIGN, TaskPermission.CANCEL]))
+        .to.deep.equal([CANCEL, GO, REASSIGN]);
+      // EUI-5046 - ensure test includes check that own gives correct actions as well
+      expect(getActionsByRefinedPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.UNCLAIM, TaskPermission.CLAIM, TaskPermission.COMPLETEOWN, TaskPermission.OWN]))
+        .to.deep.equal([COMPLETE, GO, RELEASE]);
+      // ensure that in unlikely scenario of below that no duplication occurs
+      expect(getActionsByRefinedPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.UNASSIGN, TaskPermission.ASSIGN, TaskPermission.OWN]))
+        .to.deep.equal([CLAIM, GO, REASSIGN, RELEASE]);
+    });
+
   });
 
   describe('applySearchFilter', () => {

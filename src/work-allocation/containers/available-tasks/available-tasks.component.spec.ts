@@ -112,6 +112,7 @@ describe('AvailableTasksComponent', () => {
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
+    component.isUpdatedTaskPermissions$ = of(true);
     spyOn(mockRouter, 'navigate');
     fixture.detectChanges();
   });

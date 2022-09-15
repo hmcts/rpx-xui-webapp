@@ -175,7 +175,7 @@ export enum TaskPermission {
   CANCELOWN = 'CancelOwn',
   CLAIM = 'Claim',
   UNASSIGNASSIGN = 'UnassignAssign',
-  UNASSIGNCLAIM = 'UnclaimAssign'
+  UNASSIGNCLAIM = 'UnassignClaim',
 }
 
 export enum ViewType {

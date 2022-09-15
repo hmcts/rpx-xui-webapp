@@ -139,6 +139,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
+    // determines whether should use release 3 or release 4 permission logic
     const refined = req.body.refined;
     let prioritySortParameter;
     searchRequest.sorting_parameters.find((sort, index) => {
@@ -179,7 +180,8 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       // These should be mocked as if we were getting them from the user themselves
       if (refined) {
         data = mockTaskPermissions(data);
-        returnData = { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+        returnData = {
+          tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
       } else {
         returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
       }
@@ -192,37 +194,49 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 
 // mocks permissions to test fine-grained task permissions
 function mockTaskPermissions(data) {
-  console.log(data.tasks);
-  let permissions = [];
   if (data.tasks) {
     for (let i = 0; i < data.tasks.length; i++) {
+      let permissions = [];
       if (i === 7) {
         break;
       }
-      switch(i) {
+      switch (i) {
         case 0: {
-          permissions = ['Unclaim', 'Assign', 'CompleteOwn', 'CancelOwn'];
+          permissions = ['Unclaim', 'Assign', 'CompleteOwn', 'CancelOwn', 'Own', 'Unassign'];
+          break;
         }
         case 1: {
           permissions = ['UnclaimAssign', 'Complete', 'Cancel'];
+          break;
         }
         case 2: {
           permissions = [];
+          break;
         }
         case 3: {
           permissions = ['Execute', 'Assign'];
+          break;
         }
         case 4: {
           permissions = ['Own', 'Claim'];
+          break;
         }
         case 5: {
-          permissions = ['UnassignAssign']
+          permissions = ['UnassignAssign'];
+          break;
         }
         case 6: {
           permissions = ['UnassignClaim'];
+          break;
+        }
+        case 7: {
+          permissions = ['UnclaimAssign'];
+          break;
         }
       }
-      data.tasks[i].permissions.values = permissions;
+      if (data.tasks[i].permissions) {
+        data.tasks[i].permissions.values = permissions;
+      }
     }
   }
   return data;

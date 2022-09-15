@@ -207,15 +207,16 @@ describe('HearingPanelComponent', () => {
     const STATE = _.cloneDeep(initialState);
     STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS,
-      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-001']
+      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-001', 'BBA3-MQPM1-001'],
+      roleType: ['BBA3-RMM', 'BBA3-DQPM', 'BBA3-MQPM1']
     };
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingPanelComponent, HearingJudgeNamesListComponent],
       providers: [
-        provideMockStore({initialState: STATE}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState: STATE }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {

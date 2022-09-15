@@ -27,14 +27,15 @@ describe('Hearing Request Reducer', () => {
             hearingDetails: {
               duration: null,
               hearingType: null,
+              hearingChannels: [],
               hearingLocations: [{
                 locationId: '196538',
                 locationType: HMCLocationType.COURT,
               },
-                {
-                  locationId: '219164',
-                  locationType: HMCLocationType.COURT,
-                },
+              {
+                locationId: '219164',
+                locationType: HMCLocationType.COURT,
+              },
               ],
               hearingIsLinkedFlag: false,
               hearingWindow: null,
@@ -49,6 +50,8 @@ describe('Hearing Request Reducer', () => {
               listingComments: null,
               hearingRequester: null,
               leadJudgeContractType: null,
+              amendReasonCodes: null,
+              listingAutoChangeReasonCode: null
             },
             caseDetails: {
               hmctsServiceCode: 'BBA3',
@@ -87,14 +90,15 @@ describe('Hearing Request Reducer', () => {
             hearingDetails: {
               duration: null,
               hearingType: null,
+              hearingChannels: [],
               hearingLocations: [{
                 locationId: '196538',
                 locationType: HMCLocationType.COURT,
               },
-                {
-                  locationId: '219164',
-                  locationType: HMCLocationType.COURT,
-                },
+              {
+                locationId: '219164',
+                locationType: HMCLocationType.COURT,
+              },
               ],
               hearingIsLinkedFlag: false,
               hearingWindow: null,
@@ -109,6 +113,8 @@ describe('Hearing Request Reducer', () => {
               listingComments: null,
               hearingRequester: null,
               leadJudgeContractType: null,
+              amendReasonCodes: null,
+              listingAutoChangeReasonCode: null
             },
             caseDetails: {
               hmctsServiceCode: 'BBA3',

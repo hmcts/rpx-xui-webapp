@@ -22,8 +22,8 @@ describe('HearingAdditionalInstructionsComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [HearingAdditionalInstructionsComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -48,6 +48,24 @@ describe('HearingAdditionalInstructionsComponent', () => {
     component.instructionsForm.controls['instructions'].setValue('instructions');
     component.executeAction(ACTION.CONTINUE);
     expect(component.isFormValid()).toBeTruthy();
+  });
+
+  it('should check AutoListFlag', () => {
+    component.initForm();
+    component.instructionsForm.controls['instructions'].setValue(null);
+    component.serviceHearingValuesModel.autoListFlag = true;
+    expect(component.getAutoListFlag()).toBeTruthy();
+    component.instructionsForm.controls['instructions'].setValue('instructions');
+    expect(component.getAutoListFlag()).toBeFalsy();
+  });
+
+  it('should getListingAutoChangeReasonCode', () => {
+    component.initForm();
+    component.instructionsForm.controls['instructions'].setValue(null);
+    component.serviceHearingValuesModel.autoListFlag = true;
+    expect(component.getListingAutoChangeReasonCode()).toBeNull();
+    component.instructionsForm.controls['instructions'].setValue('instructions');
+    expect(component.getListingAutoChangeReasonCode()).toBe('user-added-comments');
   });
 
   afterEach(() => {

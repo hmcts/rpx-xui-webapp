@@ -5,7 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import { HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -95,7 +95,7 @@ describe('HearingStageResultComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.sub = of().subscribe();
+    component.sub = new Observable().subscribe();
     spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.sub.unsubscribe).toHaveBeenCalled();

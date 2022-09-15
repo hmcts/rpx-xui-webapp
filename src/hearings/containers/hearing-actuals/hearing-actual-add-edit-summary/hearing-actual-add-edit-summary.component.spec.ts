@@ -457,7 +457,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.sub = of().subscribe();
+    component.sub = new Observable().subscribe();
     spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.sub.unsubscribe).toHaveBeenCalled();

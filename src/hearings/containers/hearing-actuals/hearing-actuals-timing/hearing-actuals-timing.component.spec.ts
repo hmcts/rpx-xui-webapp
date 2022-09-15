@@ -10,7 +10,7 @@ import {HearingsService} from '../../../services/hearings.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
 import {HearingActualsTimingComponent} from './hearing-actuals-timing.component';
 
-describe('HearingTimingComponent', () => {
+describe('HearingActualsTimingComponent', () => {
   const hearingsService = jasmine.createSpyObj('HearingsService', ['updateHearingActuals']);
   let store: Store<any>;
   let component: HearingActualsTimingComponent;

@@ -10,7 +10,7 @@ import * as fromHearingStore from '../store';
 @Injectable({
   providedIn: 'root'
 })
-export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserModel[]> {
+export class PanelMemberSearchResponseResolver implements Resolve<JudicialUserModel[]> {
   constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
@@ -20,11 +20,11 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
   public resolve(route?: ActivatedRouteSnapshot): Observable<JudicialUserModel[]> {
     return this.getUsersByPanelRequirements$()
       .pipe(
-        switchMap(judicialMemberIds => {
-          return of(judicialMemberIds);
+        switchMap(panelMemberIds => {
+          return of(panelMemberIds);
         }), take(1),
-        switchMap((judicialMemberIds) => {
-          return judicialMemberIds && judicialMemberIds.length ? this.getUsersData$(judicialMemberIds) : of([]);
+        switchMap((panelMemberIds) => {
+          return panelMemberIds && panelMemberIds.length ? this.getUsersData$(panelMemberIds) : of([]);
         })
       );
   }
@@ -32,19 +32,19 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
   public getUsersByPanelRequirements$(): Observable<string[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
       map(hearingRequest => {
-        const hearingJudgeIds: string[] = [];
+        let panelMemberIds: string[] = [];
         if (hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse
           && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
           && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length === 1) {
-          hearingJudgeIds.push(hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId);
+          panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].panelMemberIds || [];
         }
-        return hearingJudgeIds;
+        return panelMemberIds;
       })
     );
   }
 
-  public getUsersData$(judgePersonalCodesList: string[]): Observable<JudicialUserModel[]> {
-    return this.judicialRefDataService.searchJudicialUserByPersonalCodes(judgePersonalCodesList).pipe(
+  public getUsersData$(panelMemberIds: string[]): Observable<JudicialUserModel[]> {
+    return this.judicialRefDataService.searchJudicialUserByPersonalCodes(panelMemberIds).pipe(
       catchError(() => {
         return [];
       })

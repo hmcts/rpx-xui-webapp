@@ -41,7 +41,7 @@ describe('HearingJudgeNamesListComponent', () => {
   });
 
   it('should check displayed Judge Name', () => {
-    expect(component.displayedJudgeName(judgeDetails)).toBe(`Hearing Judge (jacky.collins@judicial.com)`);
+    expect(component.displayedJudgeName(judgeDetails)).toBe('Jacky Collins (jacky.collins@judicial.com)');
   });
 
   it('should remove selected Judge', () => {

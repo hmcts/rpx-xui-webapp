@@ -1,9 +1,11 @@
 import { Action } from '@ngrx/store';
 import { HttpError } from '../../../models/httpError.model';
-import { HearingActualsMainModel, HearingActualsModel } from '../../models/hearingActualsMainModel';
+import { ActualHearingDayModel, HearingActualsMainModel, HearingActualsModel } from '../../models/hearingActualsMainModel';
 
 export const RESET_HEARING_ACTUALS = '[HEARING ACTUALS] Reset Hearing Actuals';
+export const SAVE_HEARING_ACTUALS_PLANNED_DAYS = '[HEARING ACTUALS PLANNED] Save Hearing Actuals Planned Days';
 export const UPDATE_HEARING_ACTUALS = '[HEARING ACTUALS] Update Hearing Actuals';
+export const UPDATE_HEARING_ACTUALS_STAGE = '[HEARING ACTUALS] Update Hearing Actuals Stage';
 export const UPDATE_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Update Hearing Actuals Success';
 export const GET_HEARING_ACTUALS = '[HEARING ACTUALS] Get Hearing Actuals';
 export const GET_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Get Hearing Actuals success';
@@ -14,6 +16,13 @@ export const RESET_HEARING_ACTUALS_LAST_ERROR = '[HEARING ACTUALS] Reset Hearing
 
 export class ResetHearingActuals implements Action {
   public readonly type = RESET_HEARING_ACTUALS;
+}
+
+export class SaveHearingActualsPlannedDays implements Action {
+  public readonly type = SAVE_HEARING_ACTUALS_PLANNED_DAYS;
+
+  constructor(public actualHearingDays: ActualHearingDayModel[]) {
+  }
 }
 
 export class GetHearingActuals implements Action {
@@ -33,7 +42,14 @@ export class GetHearingActualsSuccess implements Action {
 export class UpdateHearingActuals implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS;
 
-  constructor(public payload: { hearingActuals: HearingActualsModel, hearingId: string }) {
+  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {
+  }
+}
+
+export class UpdateHearingActualsStage implements Action {
+  public readonly type = UPDATE_HEARING_ACTUALS_STAGE;
+
+  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {
   }
 }
 
@@ -66,14 +82,16 @@ export class SubmitHearingActualsFailure implements Action {
 }
 
 export class ResetHearingActualsLastError implements Action {
-  public readonly type = RESET_HEARING_ACTUALS_LAST_ERROR
+  public readonly type = RESET_HEARING_ACTUALS_LAST_ERROR;
 }
 
 export type HearingActualsAction =
   | ResetHearingActuals
+  | SaveHearingActualsPlannedDays
   | GetHearingActuals
   | GetHearingActualsSuccess
   | UpdateHearingActuals
+  | UpdateHearingActualsStage
   | UpdateHearingActualsSuccess
   | SubmitHearingActuals
   | SubmitHearingActualsSuccess

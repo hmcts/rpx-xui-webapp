@@ -15,7 +15,7 @@ describe('NotListedHiddenConverter', () => {
 
   it('should transform hidden of true answer', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.laCaseStatus = LaCaseStatus.CASE_CLOSED;
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.laCaseStatus = LaCaseStatus.CLOSED;
     const result$ = notListedHiddenConverter.transformHidden(of(STATE));
     const showAnswer = true;
     const expected = cold('(b|)', {b: showAnswer});

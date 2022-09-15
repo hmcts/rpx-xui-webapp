@@ -23,7 +23,7 @@ describe('HearingJudgeComponent', () => {
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
   const judgeTypes: LovRefDataModel[] = [
     {
-      key: 'tribunalJudge',
+      key: 'Tribunal',
       value_en: 'Tribunal Judge',
       value_cy: '',
       hint_text_en: 'Tribunal',
@@ -37,7 +37,7 @@ describe('HearingJudgeComponent', () => {
       from: 'exui-default',
     },
     {
-      key: 'deputyTribunalJudge',
+      key: 'dtj',
       value_en: 'Deputy Tribunal Judge',
       value_cy: '',
       hint_text_en: 'Deputy',
@@ -51,7 +51,7 @@ describe('HearingJudgeComponent', () => {
       from: 'exui-default',
     },
     {
-      key: 'regionalTribunalJudge',
+      key: 'rtj',
       value_en: 'Regional Tribunal Judge',
       value_cy: '',
       hint_text_en: 'Regional',

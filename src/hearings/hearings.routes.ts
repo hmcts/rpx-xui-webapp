@@ -61,7 +61,7 @@ import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 export const ROUTES: Routes = [
   {
     path: 'cancel/:hearingId',
-    resolve: { hearingCancelOptions: RefDataResolver },
+    resolve: {hearingCancelOptions: RefDataResolver},
     component: CancelHearingComponent,
     canActivate: [HealthCheckGuard, HearingsEditGuard],
     data: {
@@ -79,9 +79,11 @@ export const ROUTES: Routes = [
   },
   {
     path: 'link/:caseId/:hearingId',
+    resolve: {
+      hearingStageOptions: HearingStageResolver,
+    },
     component: LinkedHearingsComponent,
     canActivate: [HealthCheckGuard, HearingsEditGuard],
-    resolve: { linkedCase: LinkedCaseResolver },
     children: [
       {
         path: '',
@@ -95,6 +97,55 @@ export const ROUTES: Routes = [
         component: HowLinkedHearingsBeHeardComponent,
         data: {
           title: 'HMCTS Hearings | Linked Hearings | Group Selection'
+        }
+      },
+      {
+        path: 'check-your-answers',
+        component: LinkedHearingsCheckYourAnswersComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Check your answers'
+        }
+      },
+      {
+        path: 'final-confirmation',
+        component: LinkedHearingsFinalConfirmationComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Final confirmation'
+        }
+      }
+    ]
+  },
+  {
+    path: 'manage-links/:caseId/:hearingGroupRequestId/:hearingId',
+    resolve: {
+      hearingStageOptions: HearingStageResolver,
+    },
+    component: LinkedHearingsComponent,
+    data: {
+      mode: Mode.MANAGE_HEARINGS
+    },
+    children: [
+      {
+        path: '',
+        component: LinkedHearingsCheckYourAnswersComponent,
+        canActivate: [HealthCheckGuard, HearingsEditGuard],
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Selected Hearings'
+        }
+      },
+      {
+        path: 'selected-hearings',
+        component: LinkedHearingsWithCaseComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Cases'
+        }
+      },
+      {
+        path: 'group-selection',
+        component: HowLinkedHearingsBeHeardComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Group Selection',
+          mode: Mode.MANAGE_HEARINGS,
         }
       },
       {
@@ -129,7 +180,7 @@ export const ROUTES: Routes = [
         path: 'hearing-actual-add-edit-summary',
         resolve: {
           hearingTypes: RefDataResolver,
-          adjournHearingActualReasons: AdjournHearingActualReasonResolver,
+          actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
           cancelHearingActualReasons: CancelHearingActualReasonResolver
         },
         component: HearingActualAddEditSummaryComponent,
@@ -149,8 +200,8 @@ export const ROUTES: Routes = [
         path: 'hearing-stage-result',
         resolve: {
           hearingTypes: RefDataResolver,
-          adjournHearingActualReasons: AdjournHearingActualReasonResolver,
-          cancelHearingActualReasons: CancelHearingActualReasonResolver
+          actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
+          actualCancellationReasonCodes: CancelHearingActualReasonResolver
         },
         component: HearingStageResultComponent,
         data: {
@@ -188,10 +239,14 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-requirements',
-        resolve: { caseFlags: CaseFlagsResolver },
+        resolve: {
+          caseType: CaseTypesResolver,
+          caseFlags: CaseFlagsResolver
+        },
         component: HearingRequirementsComponent,
         data: {
-          title: 'HMCTS Hearings | Request Hearing | Hearing Requirement'
+          title: 'HMCTS Hearings | Request Hearing | Hearing Requirement',
+          isChildRequired: [HearingCategory.CaseType]
         }
       },
       {
@@ -202,13 +257,13 @@ export const ROUTES: Routes = [
         },
         component: HearingFacilitiesComponent,
         data: {
-          category: HearingCategory.AdditionalFacilities,
+          category: HearingCategory.Facilities,
           title: 'HMCTS Hearings | Request Hearing | Additional Facilities'
         }
       },
       {
         path: 'hearing-stage',
-        resolve: { hearingStages: RefDataResolver },
+        resolve: {hearingStages: RefDataResolver},
         component: HearingStageComponent,
         data: {
           title: 'HMCTS Hearings | Request Hearing | Hearing Stage',
@@ -265,7 +320,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-timing',
-        resolve: { hearingPriorities: RefDataResolver },
+        resolve: {hearingPriorities: RefDataResolver},
         component: HearingTimingComponent,
         data: {
           title: 'HMCTS Hearings | Request Hearing | Hearing Timing',
@@ -290,6 +345,7 @@ export const ROUTES: Routes = [
         path: 'hearing-create-edit-summary',
         resolve: {
           hearingPriorities: RefDataResolver,
+          caseType: CaseTypesResolver,
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
@@ -301,13 +357,14 @@ export const ROUTES: Routes = [
         component: HearingCreateEditSummaryComponent,
         data: {
           title: 'HMCTS Hearings | Request Hearing | Check Answers',
-          isChildRequired: [HearingCategory.PanelMemberType]
+          isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
         }
       },
       {
         path: 'hearing-view-edit-summary',
         resolve: {
           hearingPriorities: RefDataResolver,
+          caseType: CaseTypesResolver,
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
@@ -321,16 +378,16 @@ export const ROUTES: Routes = [
         component: HearingViewEditSummaryComponent,
         data: {
           title: 'HMCTS Hearings | Amend Hearing | Check Answers',
-          isChildRequired: [HearingCategory.PanelMemberType]
+          isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
         }
       },
       {
         path: 'hearing-change-reason',
         resolve: {
           hearingTypes: RefDataResolver,
-          hearingChangeReason: HearingChangeReasonResolver
+          hearingChangeReasons: HearingChangeReasonResolver
         },
-        component: HearingChangeReasonComponent,
+        component: HearingChangeReasonsComponent,
         data: {
           title: 'HMCTS Hearings | Amend Hearing | Change reason'
         }
@@ -360,6 +417,7 @@ export const ROUTES: Routes = [
         path: 'hearing-view-summary',
         resolve: {
           hearingPriorities: RefDataResolver,
+          caseType: CaseTypesResolver,
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
@@ -373,7 +431,7 @@ export const ROUTES: Routes = [
         component: HearingViewSummaryComponent,
         data: {
           title: 'HMCTS Hearings | View Hearing | Summary',
-          isChildRequired: [HearingCategory.PanelMemberType]
+          isChildRequired: [HearingCategory.PanelMemberType, HearingCategory.CaseType]
         }
       },
       {
@@ -389,6 +447,7 @@ export const ROUTES: Routes = [
           judicialResponseUsers: JudicialUserSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
+          cancelHearingReasons: CancelHearingRequestReasonResolver,
         },
         component: HearingCancellationSummaryComponent,
         data: {
@@ -396,8 +455,11 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-cancelled-summary',
+        path: 'hearing-cancelled-summary/:id',
         resolve: {
+          actualSummary: ActualSummaryResponseResolver,
+          cancelHearingReasons: CancelHearingRequestReasonResolver,
+          cancelHearingActualReasons: CancelHearingActualReasonResolver,
           hearingPriorities: RefDataResolver,
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
@@ -422,6 +484,7 @@ export const ROUTES: Routes = [
           judicialResponseUsers: JudicialUserSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          hearingRoles: HearingActualRoleResolverService,
         },
         component: HearingCompletedSummaryComponent,
         data: {
@@ -437,6 +500,8 @@ export const ROUTES: Routes = [
           judicialResponseUsers: JudicialUserSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          hearingRoles: HearingActualRoleResolverService,
+          adjournReasons: AdjournHearingActualReasonResolver,
         },
         component: HearingCompletedSummaryComponent,
         data: {

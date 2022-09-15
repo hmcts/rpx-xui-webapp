@@ -26,5 +26,6 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+    this.store.dispatch(new actions.ResetHearingActuals());
   }
 }

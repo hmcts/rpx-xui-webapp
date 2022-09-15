@@ -14,7 +14,7 @@ describe('CourtLocationAnswerConverter', () => {
   let listedVenueAnswerConverter: CourtLocationAnswerConverter;
   let store: Store<any>;
   let router: any;
-  const COURT_LOCATION: LocationModel = {
+  const COURT_LOCATION: LocationModel[] = [{
     court_venue_id: '164',
     epimms_id: '815833',
     is_hearing_location: 'N',
@@ -31,7 +31,7 @@ describe('CourtLocationAnswerConverter', () => {
     open_for_public: 'No',
     court_address: '54 HAGLEY ROAD, EDGBASTON ',
     postcode: 'B16 8PE'
-  };
+  }];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -57,7 +57,7 @@ describe('CourtLocationAnswerConverter', () => {
   it('should transform type', () => {
     const STATE: State = initialState.hearings;
     const result$ = listedVenueAnswerConverter.transformAnswer(of(STATE));
-    const type = COURT_LOCATION.site_name;
+    const type = COURT_LOCATION[0].site_name;
     const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);
   });

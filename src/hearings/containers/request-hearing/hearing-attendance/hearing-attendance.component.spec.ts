@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { IndividualDetailsModel } from '../../../../hearings/models/individualDetails.model';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -25,7 +26,7 @@ describe('HearingAttendanceComponent', () => {
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
-  const lovRefDataService = new LovRefDataService(mockedHttpClient);
+  const lovRefDataService = jasmine.createSpyObj('lovRefDataService', ['getListOfValues']);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
@@ -33,9 +34,9 @@ describe('HearingAttendanceComponent', () => {
       imports: [ReactiveFormsModule],
       declarations: [HearingAttendanceComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
-        {provide: LovRefDataService, useValue: lovRefDataService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
+        { provide: LovRefDataService, useValue: lovRefDataService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -53,6 +54,7 @@ describe('HearingAttendanceComponent', () => {
     spyOn(component, 'initialiseFromHearingValues').and.callThrough();
     spyOn(component, 'prepareHearingRequestData').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();
+    lovRefDataService.getListOfValues.and.returnValue(of([]));
     fixture.detectChanges();
   });
   it('should create', () => {
@@ -92,6 +94,11 @@ describe('HearingAttendanceComponent', () => {
     component.initialiseFromHearingValues();
     expect(component.initialiseFromHearingValues).toHaveBeenCalled();
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
+  });
+
+  it('should set Hearing Preferred Channel', () => {
+    const individualDetails: IndividualDetailsModel = { preferredHearingChannel: 'notAttending' } as IndividualDetailsModel;
+    expect(component.setHearingPreferredChannel(individualDetails)).toBe('notAttending');
   });
 
   afterEach(() => {

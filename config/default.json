@@ -130,7 +130,7 @@
     "redisEnabled": false,
     "oidcEnabled": false,
     "workAllocationEnabled": false,
-    "updatedTaskPermissionsEnabled": false,
+    "updatedTaskPermissionsEnabled": true,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,

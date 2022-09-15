@@ -5,6 +5,8 @@
       Hearing details
     </h1>
     <exui-listing-information-summary></exui-listing-information-summary>
-    <exui-hearing-actual-summary [hearingActualsMainModel]="hearingActualsMainModel"></exui-hearing-actual-summary>
+    <ng-container *ngIf="hearingActualsMainModel">
+      <exui-hearing-actual-summary [hearingActualsMainModel]="hearingActualsMainModel"></exui-hearing-actual-summary>
+    </ng-container>
   </div>
 </div>

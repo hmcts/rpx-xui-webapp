@@ -1,14 +1,16 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
-import { initialState } from '../../../hearing.test.data';
-import { ACTION } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
-import { HearingLinkComponent } from './hearing-link.component';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import {initialState} from '../../../hearing.test.data';
+import {ACTION} from '../../../models/hearings.enum';
+import {CaseReferencePipe} from '../../../pipes/case-reference.pipe';
+import {HearingsService} from '../../../services/hearings.service';
+import {HearingLinkComponent} from './hearing-link.component';
 
 describe('HearingLinkComponent', () => {
   let component: HearingLinkComponent;
@@ -16,8 +18,7 @@ describe('HearingLinkComponent', () => {
   let mockStore: any;
   const mockActivatedRoute = {
     snapshot: {
-      data: {
-      },
+      data: {},
     },
     fragment: of('point-to-me'),
   };
@@ -27,8 +28,8 @@ describe('HearingLinkComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [HearingLinkComponent],
+      imports: [RouterTestingModule, ReactiveFormsModule],
+      declarations: [CaseReferencePipe, HearingLinkComponent],
       providers: [
         provideMockStore({initialState}),
         {provide: ActivatedRoute, useValue: mockActivatedRoute},
@@ -69,5 +70,5 @@ describe('HearingLinkComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
-  })
+  });
 });

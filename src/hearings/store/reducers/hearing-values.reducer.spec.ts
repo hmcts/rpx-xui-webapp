@@ -4,16 +4,17 @@ import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.mod
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
 import * as fromHearingValuesReducer from './hearing-values.reducer';
 
-describe('Hearing Values Reducer', () => {describe('Actions', () => {
+describe('Hearing Values Reducer', () => {
+  describe('Actions', () => {
     // Check testing
-  describe('Reset action', () => {
-    it('should set correct object', () => {
+    describe('Reset action', () => {
+      it('should set correct object', () => {
         const initialState = fromHearingValuesReducer.initialHearingValuesState;
         const action = new fromHearingValuesActions.ResetHearingValues();
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
+      });
     });
-  });
 
     describe('Load service hearing values success action', () => {
       it('should set correct object', () => {
@@ -142,23 +143,23 @@ describe('Hearing Values Reducer', () => {describe('Actions', () => {
         expect(hearingsState.serviceHearingValuesModel).toEqual(SERVICE_HEARING_VALUES);
       });
 
-    it('should call error response action', () => {
-      const initialHearingValuesState: HearingValuesStateData = {
-        serviceHearingValuesModel: null,
-        lastError: {
-          status: 403,
-          errors: null,
-          message: 'Http failure response: 403 Forbidden'
-        },
-      };
-      const action = new fromHearingValuesActions.LoadHearingValuesFailure(initialHearingValuesState.lastError);
-      const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);
-      expect(hearingsState).toEqual(initialHearingValuesState);
+      it('should call error response action', () => {
+        const initialHearingValuesState: HearingValuesStateData = {
+          serviceHearingValuesModel: null,
+          lastError: {
+            status: 403,
+            errors: null,
+            message: 'Http failure response: 403 Forbidden'
+          },
+        };
+        const action = new fromHearingValuesActions.LoadHearingValuesFailure(initialHearingValuesState.lastError);
+        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);
+        expect(hearingsState).toEqual(initialHearingValuesState);
+      });
     });
-  });
 
-  describe('reset hearing actuals last error action', () => {
-    it('should set correct object', () => {
+    describe('reset hearing actuals last error action', () => {
+      it('should set correct object', () => {
         const initialHearingValuesState: HearingValuesStateData = {
           serviceHearingValuesModel: null,
           lastError: {

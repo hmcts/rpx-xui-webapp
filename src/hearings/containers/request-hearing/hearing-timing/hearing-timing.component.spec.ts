@@ -1,20 +1,20 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { provideMockStore } from '@ngrx/store/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {Component, Input, NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {provideMockStore} from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { of } from 'rxjs';
-import { ErrorMessage } from '../../../../app/models';
-import { initialState } from '../../../hearing.test.data';
-import { ACTION, HearingDatePriorityEnum, RadioOptions, UnavailabilityType } from '../../../models/hearings.enum';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
-import { HearingsService } from '../../../services/hearings.service';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
-import { HearingTimingComponent } from './hearing-timing.component';
+import {of} from 'rxjs';
+import {ErrorMessage} from '../../../../app/models';
+import {initialState} from '../../../hearing.test.data';
+import {ACTION, HearingDatePriorityEnum, RadioOptions, UnavailabilityType} from '../../../models/hearings.enum';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {UnavailabilityRangeModel} from '../../../models/unavailabilityRange.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
+import {HearingTimingComponent} from './hearing-timing.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',

@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./staff-main-container.component.scss']
 })
 export class StaffMainContainerComponent {
-  constructor() { }
+  public advancedSearchEnabled = false;
+
+  constructor() {
+  }
 }

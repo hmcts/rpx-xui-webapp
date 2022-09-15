@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, Subscription } from 'rxjs';
@@ -53,7 +53,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   private readonly defaultCaseServiceConfig: CaseServiceConfig = {
     service: CaseService.IAC,
     defaultSortDirection: SortOrder.ASC,
-    defaultSortFieldName: 'hearing_date',
+    defaultSortFieldName: 'startDate',
     fields: this.fields,
   };
   private pCasesTotal: number;

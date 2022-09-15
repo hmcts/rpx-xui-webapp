@@ -19,4 +19,7 @@ export interface HearingDetailsModel {
   listingComments?: string;
   hearingRequester?: string;
   leadJudgeContractType?: string;
+  amendReasonCodes: string[];
+  hearingChannels: string[];
+  listingAutoChangeReasonCode: string;
 }

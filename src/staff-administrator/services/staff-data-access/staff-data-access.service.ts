@@ -13,6 +13,10 @@ export class StaffDataAccessService {
     return this.http.post<StaffUser[]>(`${this.API_PATH}/getFilteredUsers`, searchFilters);
   }
 
+  public getUsersByPartialName(partialName: string) {
+    return this.http.get<{results: StaffUser[]}>(`${this.API_PATH}/getUsersByPartialName`, { params: {search: partialName} });
+  }
+
   public getUserTypes() {
     return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getUserTypes`);
   }

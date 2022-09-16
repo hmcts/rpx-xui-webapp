@@ -1,19 +1,19 @@
 
-// var HearingsPage = require("../pageObjects/hearings/hearingPage");
-const CucumberReportLogger = require('../../support/reportLogger');
+var HearingsPage = require("../../pageObjects/hearings/hearingPage");
+const CucumberReportLogger = require('../../../support/reportLogger');
 
 
 var { defineSupportCode } = require('cucumber');
 const { browser } = require("protractor");
-const BrowserWaits = require("../../support/customWaits");
-const headerPage = require("../pageObjects/headerPage");
-const browserUtil = require("../../../ngIntegration/util/browserUtil");
+const BrowserWaits = require("../../../support/customWaits");
+const headerPage = require("../../pageObjects/headerPage");
+const browserUtil = require("../../../../ngIntegration/util/browserUtil");
 
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
-  var hearingsPage = new hearingsPage();
+  var hearingsPage = new HearingsPage();
 
-  Then('I am on case list page', async function () {
+  When('I select a case and click on hearing Tab and see hearings Summary', async function () {
     expect(await caseListPage.amOnPage()).to.be.true;
   });
 
@@ -35,13 +35,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
   });
 
-  When('I select search criteria jurisdiction {string} case type {string} state {string} in case list page and click apply',
+  When('I select search criteria jurisdiction {string} case type {string} Region {string} Benefit {string} Issue {CE} in case list page and click apply',
     async function (jurisdiction, caseType, state) {
 
     await BrowserWaits.retryWithActionCallback(async () => {
       try {
         await caseListPage.selectJurisdiction(jurisdiction);
     await caseListPage.selectCaseType(caseType);
+    await caseListPage.selectState(state);
     await caseListPage.selectState(state);
     await caseListPage.clickSearchApplyBtn();
   } catch (err) {
@@ -56,32 +57,32 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
   });
 
-  When('I click search Apply in case list page', async function(){
-    await BrowserWaits.retryWithActionCallback(async  () => {
-      await caseListPage.clickSearchApplyBtn();
-  });
-
-  });
+  // When('I click search Apply in case list page', async function(){
+  //   await BrowserWaits.retryWithActionCallback(async  () => {
+  //     await caseListPage.clickSearchApplyBtn();
+  // });
+  //
+  // });
 
   When('I click search Reset in case list page', async function () {
     await caseListPage.clickSearchResetBtn();
     await BrowserWaits.waitForSpinnerToDissappear();
   });
 
-  Then('I wait to see case results displayed', {timeout : 180*1000} ,async function(){
-    await BrowserWaits.retryWithActionCallback(async () => {
-      try{
-        await CucumberReportLogger.AddMessage("Step started");
-    await caseListPage.waitForCaseResultsToDisplay();
+  // Then('I wait to see case results displayed', {timeout : 180*1000} ,async function(){
+  //   await BrowserWaits.retryWithActionCallback(async () => {
+  //     try{
+  //       await CucumberReportLogger.AddMessage("Step started");
+  //   await caseListPage.waitForCaseResultsToDisplay();
+  //
+  // }catch(err){
+  //     await caseListPage.clickSearchApplyBtn();
+  //     throw new Error(err);
+  //   }
+  // });
 
-  }catch(err){
-      await caseListPage.clickSearchApplyBtn();
-      throw new Error(err);
-    }
-  });
 
-
-  });
+ // });
 
   When('I open first case in case list page', async function () {
     await caseListPage.clickFirstCaseLink();

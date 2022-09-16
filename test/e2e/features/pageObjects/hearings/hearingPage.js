@@ -1,7 +1,7 @@
-const BrowserWaits = require('../../support/customWaits');
-const TaskMessageBanner = require("./messageBanner");
-const RuntimeTestData = require('../../support/runtimeTestData');
-const CucumberReportLogger = require('../../support/reportLogger');
+const BrowserWaits = require('../../../support/customWaits');
+// const TaskMessageBanner = require("./messageBanner");
+const RuntimeTestData = require('../../../support/runtimeTestData');
+const CucumberReportLogger = require('../../../support/reportLogger');
 class hearingPage{
 
   constructor(){
@@ -42,9 +42,12 @@ class hearingPage{
 
     this.loadingSpinner = $(".loading-spinner-in-action");
 
-    this.taskInfoMessageBanner = new TaskMessageBanner(".case-list-component");
+   // this.taskInfoMessageBanner = new TaskMessageBanner(".case-list-component");
 
   }
+
+
+
 
   async amOnPage(){
     await BrowserWaits.waitForElement(this.caselistComponent);
@@ -100,16 +103,16 @@ class hearingPage{
     }
   }
 
-  async selectCaseType(caseType) {
-    await BrowserWaits.waitForSeconds(1);
-    await BrowserWaits.waitForSpinnerToDissappear();
-    await this._waitForSearchComponent();
-    CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
-    await this.caseTypeSelectElement.element(this._getOptionSelectorWithText(caseType)).click();
-    CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
-    RuntimeTestData.workbasketInputs.casetype = caseType;
-
-  }
+  // async selectCaseType(caseType) {
+  //   await BrowserWaits.waitForSeconds(1);
+  //   await BrowserWaits.waitForSpinnerToDissappear();
+  //   await this._waitForSearchComponent();
+  //   CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
+  //   await this.caseTypeSelectElement.element(this._getOptionSelectorWithText(caseType)).click();
+  //   CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
+  //   RuntimeTestData.workbasketInputs.casetype = caseType;
+  //
+  // }
 
   async selectState(state) {
     await BrowserWaits.waitForSpinnerToDissappear();
@@ -262,9 +265,6 @@ class hearingPage{
     await this.shareCaseButton.click();
   }
 
-
-
-
 }
 
-module.exports = CaseListPage;
+module.exports = hearingPage;

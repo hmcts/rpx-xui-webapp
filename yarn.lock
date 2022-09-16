@@ -1183,10 +1183,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.16-EUI-5696-upload-error-fix":
-  version "4.18.16-EUI-5696-upload-error-fix"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.16-EUI-5696-upload-error-fix.tgz#b877b7dfa13eb1e1c93920919d5ff30f90a6c26a"
-  integrity sha512-OPsenKioQNKzMm5oFWokB6Vadpmd4MfvN61v47D9pgBh9c4IJkqfdKcYUddnHEWua2wkpcvh4CQHIpRXl+BQdQ==
+"@hmcts/ccd-case-ui-toolkit@4.18.17-EUI-5696-upload-error-fix":
+  version "4.18.17-EUI-5696-upload-error-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.17-EUI-5696-upload-error-fix.tgz#7010ed0d2d687cf0e28b232e4c8a35c0038cd910"
+  integrity sha512-dHMfsuQpo/zoxGsr8W1BtazdC16AhbRvbcSSvIZ2gALaqxDhnvTvfY+yOARxl5f72itsq7JD0xXUCGTO+IL5Og==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

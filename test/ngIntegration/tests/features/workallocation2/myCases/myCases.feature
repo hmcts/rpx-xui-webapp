@@ -18,7 +18,6 @@ Feature: WA Release 2: My cases
             | Case role     |
             | Start         |
             | End           |
-            | Hearing date |
 
         Then I validate work allocation table columns are links
             | ColumnHeader |

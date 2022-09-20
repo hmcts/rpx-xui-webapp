@@ -34,7 +34,6 @@ module.exports = {
                 // reportLogger.AddJson(nodeAppMockData.userDetails.userInfo);
                 res.send(nodeAppMockData.userDetails);
 
-
             },1) 
         },
         '/auth/logout': (req,res) => {

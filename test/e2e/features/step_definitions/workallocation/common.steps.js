@@ -350,7 +350,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
             }  
         });
-         
     });
 
     Then('If user type {string} is {string}, I validate task details displayed in task action page', async function (currentUserType,stepForUserType,taskDetailsDatatable){

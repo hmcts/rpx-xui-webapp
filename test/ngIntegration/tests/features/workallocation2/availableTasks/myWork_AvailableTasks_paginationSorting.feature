@@ -76,7 +76,6 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | Task created  | No         | Yes   | created_date |
             | Due date      | Yes        | No    | dueDate      |
             | Priority      | Yes        | No    | dueDate      |
-            | Hearing date | Yes | Yes | hearing_date |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |

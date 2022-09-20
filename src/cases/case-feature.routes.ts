@@ -21,6 +21,7 @@ import { RolesAndAccessContainerComponent } from './containers/roles-and-access-
 import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
+import { HearingStageResolver } from '../hearings/resolvers/hearing-stage.resolver';
 
 export const ROUTES: Routes = [
   {
@@ -124,6 +125,7 @@ export const ROUTES: Routes = [
               },
               {
                 path: 'hearings',
+                resolve: {hearingStageOptions: HearingStageResolver},
                 component: CaseHearingsComponent,
               }
             ]

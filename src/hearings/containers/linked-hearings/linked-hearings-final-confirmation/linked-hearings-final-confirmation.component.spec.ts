@@ -44,11 +44,16 @@ describe('LinkedHearingsFinalConfirmationComponent', () => {
     expect(component.caseId).toEqual('1111-2222-3333-4444');
   });
 
-  it('should unsubscribe', () => {
-    component.sub = new Observable().subscribe();
-    spyOn(component.sub, 'unsubscribe').and.callThrough();
-    component.ngOnDestroy();
-    expect(component.sub.unsubscribe).toHaveBeenCalled();
+  it('should set correct heading text', () => {
+    component.linkedHearingsCount = null;
+    component.ngOnInit();
+    expect(component.heading).toBe('All hearings are now unlinked');
+    component.linkedHearingsCount = 1;
+    component.ngOnInit();
+    expect(component.heading).toBe('1 hearing is now linked');
+    component.linkedHearingsCount = 2;
+    component.ngOnInit();
+    expect(component.heading).toBe('2 hearings are now linked');
   });
 
   afterEach(() => {

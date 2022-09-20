@@ -9,7 +9,8 @@ export class HearingPriorityAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) { }
 
   private static getHearingPriorityDisplayValue(hearingPriorities: LovRefDataModel[], key: string): string {
-    return hearingPriorities.find(stage => stage.key === key).value_en;
+    const lovData: LovRefDataModel = hearingPriorities.find(priority => priority.key === key);
+    return lovData ? lovData.value_en : '';
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {

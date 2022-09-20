@@ -1,5 +1,5 @@
-import { FieldConfig } from '../common';
 import { SortOrder, TaskService } from '../../enums';
+import { FieldConfig } from '../common';
 
 export default interface TaskServiceConfig {
   service: TaskService;

@@ -43,6 +43,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    When('I validate primary navigation items count {int}', async function (count) {
+        let actual = await headerPage.getMenuItemsCount();
+        expect(actual, `expected menu items displayed to be ${count} actual ${actual} `).to.equal(count)
+
+    });
+
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
 
         await browserWaits.retryWithActionCallback(async () => {
@@ -218,6 +224,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate primary navigation headers not displayed', async function () {
         const tabsDisplayed = await headerPage.getPrimaryTabsDisplayed();
         expect(tabsDisplayed.length).to.equal(0);
+    });
+
+    When('I enter {string} in  case ref in header 16 digit ref search', async function (input) {
+        await browserWaits.waitForSpinnerToDissappear();
+        await headerPage.headerCaseRefSearch.searchInput(input);
+    });
+
+    When('I click find in case ref in header 16 digit ref search', async function () {
+        await browserWaits.retryWithActionCallback(async () => {
+            await headerPage.headerCaseRefSearch.clickFind();
+        });
     });
 
 });

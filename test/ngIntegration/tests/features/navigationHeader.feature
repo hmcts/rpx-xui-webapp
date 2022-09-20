@@ -1,5 +1,6 @@
 @ng
 Feature: Navigation header tabs
+    https://tools.hmcts.net/confluence/display/EUI/Global+Search
 
     Scenario Outline: Primanry nav headers for user "<roleType>" "<useridentifier>" and roles "<rolesIdentifiers>"
         Then I Log to report launch darkly feature toggle values
@@ -35,7 +36,7 @@ Feature: Navigation header tabs
             | Notice of change |
 
         Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
-        # Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
+        Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
 
         Examples:
             | roleType   | useridentifier    | rolesIdentifiers                            | mainHeaders                                                         | rightColumnHeaders | 16-digitCaseRef |

@@ -7,9 +7,10 @@ var { defineSupportCode } = require('cucumber');
 const BrowserWaits = require("../../../support/customWaits");
 const headerPage = require("../../pageObjects/headerPage");
 const browserUtil = require("../../../../ngIntegration/util/browserUtil");
-
 const workAccessPage = require('../../pageObjects/workAccessBookingUI/workAccessPage');
 const workAllocationDateUtil = require("../../pageObjects/workAllocation/common/workAllocationDateUtil");
+
+const createNewBookingWorkflow = require('../../pageObjects/workAccessBookingUI/createNewBookingWorkflow');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -40,12 +41,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     }
 
     Then('I validate work access page isDisplayed is {string}', async function(isDisplayedString){
-        const expectedDisplayStatus = isDisplayedString.toLowerCase().includes('true') || isDisplayedString.toLowerCase().includes('yes') 
-        expect(await workAccessPage.amOnPage()).to.equal(expectedDisplayStatus); 
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const expectedDisplayStatus = isDisplayedString.toLowerCase().includes('true') || isDisplayedString.toLowerCase().includes('yes')
+            expect(await workAccessPage.amOnPage()).to.equal(expectedDisplayStatus); 
+        });
     });
 
     Then('I see work access page displayed', async function(){
-        expect(await workAccessPage.amOnPage()).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await workAccessPage.amOnPage()).to.be.true;
+        }); 
     });
 
     Then('I see work access radio button {string} displayed', async function(radioButtonName){
@@ -105,6 +110,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
+    Then('I validate work access existing bookings', async function () {
+        const displayedBookingsCount = await workAccessPage.getExistingBooksingCount();
+        for (let i = 0; i < displayedBookingsCount; i++ ){
+            const bookingDetails = await workAccessPage.getBookingDetails(i);
+            expect(bookingDetails.location.length > 0, `Booking location at index ${i} is not displayed or empty`).to.be.true
+            expect(bookingDetails.fromDate.length > 0, `Booking from date at index ${i} is not displayed or empty`).to.be.true 
+            expect(bookingDetails.toDate.length > 0, `Booking to date at index ${i} is not displayed or empty`).to.be.true 
+        } 
+    });
+
+
     When('I click continue for any existing booking in work access page', async function(){
         const allBookings = await workAccessPage.getExistingBookingsDetails();
         if (allBookings.length === 0){
@@ -123,4 +139,36 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await bookingsForLocation[0].continueBtnElement.click(); 
     });
 
+    When('I enter location search text {string} in create booking page', async function(locationSearch){
+        await createNewBookingWorkflow.searchLocation.waitForPage()
+        await createNewBookingWorkflow.searchLocation.inputLocationText(locationSearch);
+    });
+
+    When('I select location at index {int} in create booking location search', async function (index) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await createNewBookingWorkflow.searchLocation.selectResultLocationAtIndex(index);
+        });
+    })
+
+    When('I click continue in create new booking work flow', async function(){
+        await createNewBookingWorkflow.continueButton.click();
+    });
+
+    Then('I see create booking duration selection page', async function(){
+        await createNewBookingWorkflow.chooseDurationPage.waitforPage()
+    });
+
+    When('I select duartion option {string} in create booking page', async function (option) {
+        await createNewBookingWorkflow.chooseDurationPage.waitForPage();
+        await createNewBookingWorkflow.chooseDurationPage.selectRadioOption(option)
+    });
+
+    Then('I see create booking summary details', async function(){
+        await createNewBookingWorkflow.checkAnswersPage.waitForPage();
+        const details = await createNewBookingWorkflow.checkAnswersPage.getSummaryListDetails();
+            
+        for(const bookingDetails of details){
+            expect(bookingDetails.value.length > 0, `Create booking details ${bookingDetails.key} is not displayed`).to.be.true
+        }
+    });
 });

@@ -1,4 +1,4 @@
-
+const browserWaits = require('../../../support/customWaits');
 class LocationPage {
     constructor() {
         this.pageContainer = $('exui-booking-location');
@@ -10,6 +10,12 @@ class LocationPage {
 
         this.searchResults = $$('.mat-autocomplete-panel mat-option span');
 
+    }
+    async waitForPage(){
+        await browserWaits.waitForElement(this.pageContainer);
+    }
+    async isDisplayed(){
+        return await this.pageContainer.isDisplayed(); 
     }
 
     async inputLocationText(location) {
@@ -39,8 +45,20 @@ class LocationPage {
         return searchResults.find(result => result.label.includes(loc))
     }
 
+    async getSearchResultsCount(){
+        return (await this.getSearchResultElements()).length; 
+    }
+
+    async selectResultLocationAtIndex(index){
+        const searchResults = await this.getSearchResultElements();
+        if (index >= searchResults.length){
+            throw Error(`location search returned ${searchResults.length} results, cannot select result at index ${index}`);
+        }
+        await searchResults[index].element.click();
+    } 
+
     async selectSearchResult(resultToSelect) {
-        const searchResults = this.getSearchResultElements();
+        const searchResults = await this.getSearchResultElements();
         const toSelect = await this.getResultWithLocation(resultToSelect)
         if (toSelect) {
             await toSelect.element.click();

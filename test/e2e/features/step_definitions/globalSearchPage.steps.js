@@ -59,7 +59,7 @@ defineSupportCode(function ({ Given, When, Then }) {
             case 'other reference':
                 await globalSearchPage.otherReference.inputText(fieldValue);
                 break;
-            case 'full name':
+            case 'name':
                 await globalSearchPage.fullName.inputText(fieldValue);
                 break;
             case 'first line of address':
@@ -228,6 +228,13 @@ defineSupportCode(function ({ Given, When, Then }) {
         });
     });
 
+
+    Then('I validate global search results displayed', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect((await globalSearchResultsPage.getTableRowsCount()) > 0, 'No results returned or displayed').to.be.true;
+        });
+    });
+
     Then('I validate global search results values', async function(datatable){
         const datatableHashes = datatable.hashes();
         for (const tableHash of datatableHashes){
@@ -247,6 +254,21 @@ defineSupportCode(function ({ Given, When, Then }) {
                 }
             }
         }
+    });
+
+    Then('I validate global search results values displayed', async function (datatable) {
+        const datatableHashes = datatable.hashes();
+        for (const tableHash of datatableHashes) {
+            const column = tableHash.name; 
+
+            const coltext = await globalSearchResultsPage.getTableRowColumnValue(1, column);
+            expect(coltext.length > 0, `Column ${column} value not displayed`).to.be.true
+        }
+        const linkElement = await globalSearchResultsPage.getTableRowColumnElement(1, "ACTION_LINK_COLUMN");
+        const linkText = await linkElement.getText();
+
+        const possibleLinks = ["Challenged access", "Specific access","View"]
+        expect(possibleLinks.includes(linkText), `Link displayed as ${linkText}, expected one of ${possibleLinks}`).to.be.true
     });
 
 

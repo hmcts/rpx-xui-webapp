@@ -1,5 +1,6 @@
-import { UserInfo } from '../auth/interfaces/UserInfo';
+import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
@@ -66,7 +67,6 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
-import { AxiosResponse } from 'axios';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -163,7 +163,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const payload = req.body;
     const sortingParameters = payload.searchRequest.sorting_parameters;
     if (sortingParameters && sortingParameters.length > 0) {
-      sortingParameters.forEach(sortParameter => {
+      sortingParameters.forEach( sortParameter => {
         if (sortParameter.sort_by === 'hearing_date') {
           sortParameter.sort_by = 'caseName'
         }

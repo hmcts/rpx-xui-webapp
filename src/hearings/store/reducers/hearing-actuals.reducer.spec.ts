@@ -1,3 +1,4 @@
+import { HearingActualsStateData } from 'src/hearings/models/hearingActualsStateData.model';
 import { HttpError } from '../../../models/httpError.model';
 import { hearingActualsMainModel } from '../../hearing.test.data';
 import * as fromHearingActualsActions from '../actions/hearing-actuals.action';
@@ -19,6 +20,25 @@ describe('Hearing Actuals Reducer', () => {
         const action = new fromHearingActualsActions.GetHearingActualsSuccess(hearingActualsMainModel);
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(fromHearingActualsReducer.initialHearingActualsState, action);
         expect(hearingsState.hearingActualsMainModel).toEqual(hearingActualsMainModel);
+      });
+    });
+
+    describe('save hearing actuals action', () => {
+      it('should save correct object', () => {
+        const initialHearingActualsState: HearingActualsStateData = {
+          hearingActualsMainModel: {
+            hearingActuals: {
+              hearingOutcome: null,
+              actualHearingDays: [],
+            },
+            hearingPlanned: null,
+            hmcStatus: null,
+            caseDetails: null,
+          }
+        };
+        const action = new fromHearingActualsActions.SaveHearingActualsPlannedDays([]);
+        const hearingsState = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);
+        expect(hearingsState.hearingActualsMainModel).not.toEqual(hearingActualsMainModel);
       });
     });
 

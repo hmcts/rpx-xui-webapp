@@ -26,7 +26,7 @@ export class HearingChangeReasonResolver extends RefDataResolver implements Reso
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     route.data = {
       ...route.data,
-      category: HearingCategory.HearingChangeReason
+      category: HearingCategory.HearingChangeReasons
     };
     return super.resolve(route);
   }

@@ -8,4 +8,5 @@ export interface ResponseDetailsModel {
 export interface RequestDetailsModel extends ResponseDetailsModel {
   hearingGroupRequestId?: string;
   partiesNotified?: string;
+  cancellationReasonCodes?: string[];
 }

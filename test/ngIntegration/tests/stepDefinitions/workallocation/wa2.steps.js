@@ -303,7 +303,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(body[key],`body param ${key} does not match expected`).to.equal(expectedBody[key]);
         }
 
-
     });
 
     function getDateValueForDays(days){

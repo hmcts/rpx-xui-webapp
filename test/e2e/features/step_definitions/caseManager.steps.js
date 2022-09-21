@@ -77,7 +77,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see case details page', async function () {
         await caseManager.AmOnCaseDetailsPage();
-
     });
 
     Then('I am on check your answers page', async function () {

@@ -30,13 +30,18 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       && data.roleAssignmentResponse.requestedRoles
       && data.roleAssignmentResponse.requestedRoles[0].attributes) {
       const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
+      const roleAssignmentId = data.roleAssignmentResponse.requestedRoles[0].id;
+      const roleCategory = data.roleAssignmentResponse.requestedRoles[0].roleCategory;
       const caseId = attributes.caseId;
       const jurisdiction = attributes.jurisdiction;
       const caseType = attributes.caseType;
-      const taskType = 'followUpOverdueRespondentEvidence';
-      const dueDate = '2022-04-23T16:21:41.320086';
-      const taskName = 'Process Application';
-      const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName });
+      const taskType = getTaskType(roleCategory);
+      const dueDateWork = new Date();
+      dueDateWork.setMonth(dueDateWork.getMonth() + 1);
+      const dueDate = dueDateWork.toISOString();
+      const taskName = 'Review Specific Access Request';
+      const taskResponse = await postCreateTask(req, next,
+         { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
       if (!taskResponse || taskResponse.status !== 204) {
         const assignmentId = data.roleAssignmentResponse.roleRequest.id;
         const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -75,7 +80,7 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
 }
 
 // tslint:disable-next-line:max-line-length
-export async function postCreateTask(req: EnhancedRequest, next: NextFunction, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name }): Promise<any> {
+export async function postCreateTask(req: EnhancedRequest, next: NextFunction, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name, roleAssignmentId }): Promise<any> {
   try {
     const waWorkFlowApi = getConfigValue(SERVICES_WA_WORKFLOW_API_URL);
     const id = uuidv4();
@@ -103,12 +108,17 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
           value: createTask.name,
           type: 'String',
         },
-        taskType: {
+        // TODO: Needs to be changed back to taskType eventually
+        taskId: {
           value: createTask.taskType,
           type: 'String',
         },
         caseType: {
           value: createTask.caseType,
+          type: 'String',
+        },
+        roleAssignmentId: {
+          value: createTask.roleAssignmentId,
           type: 'String',
         },
       },
@@ -145,5 +155,19 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;
+  }
+}
+
+export function getTaskType(roleCategory: string): string {
+  switch (roleCategory) {
+    case 'JUDICIAL': {
+      return 'reviewSpecificAccessRequestJudiciary';
+    }
+    case 'LEGAL_OPERATIONS': {
+      return 'reviewSpecificAccessRequestLegalOps';
+    }
+    case 'ADMIN': {
+      return 'reviewSpecificAccessRequestAdmin';
+    }
   }
 }

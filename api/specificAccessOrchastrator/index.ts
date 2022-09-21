@@ -36,7 +36,9 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       const jurisdiction = attributes.jurisdiction;
       const caseType = attributes.caseType;
       const taskType = getTaskType(roleCategory);
-      const dueDate = '2022-09-22T12:17:57.875785';
+      const dueDateWork = new Date();
+      dueDateWork.setMonth(dueDateWork.getMonth()+1);
+      const dueDate = dueDateWork.toISOString();
       const taskName = 'Review Specific Access Request';
       const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
       if (!taskResponse || taskResponse.status !== 204) {
@@ -105,7 +107,8 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
           value: createTask.name,
           type: 'String',
         },
-        taskType: {
+        // TODO: Needs to be changed back to taskType eventually
+        taskId: {
           value: createTask.taskType,
           type: 'String',
         },
@@ -153,7 +156,8 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
     throw e;
   }
 }
-function getTaskType(roleCategory: string): string {
+
+export function getTaskType(roleCategory: string): string {
   switch(roleCategory) {
     case 'JUDICIAL': {
       return 'reviewSpecificAccessRequestJudiciary';

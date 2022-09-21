@@ -37,10 +37,11 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       const caseType = attributes.caseType;
       const taskType = getTaskType(roleCategory);
       const dueDateWork = new Date();
-      dueDateWork.setMonth(dueDateWork.getMonth()+1);
+      dueDateWork.setMonth(dueDateWork.getMonth() + 1);
       const dueDate = dueDateWork.toISOString();
       const taskName = 'Review Specific Access Request';
-      const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
+      const taskResponse = await postCreateTask(req, next,
+         { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
       if (!taskResponse || taskResponse.status !== 204) {
         const assignmentId = data.roleAssignmentResponse.roleRequest.id;
         const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -158,7 +159,7 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
 }
 
 export function getTaskType(roleCategory: string): string {
-  switch(roleCategory) {
+  switch (roleCategory) {
     case 'JUDICIAL': {
       return 'reviewSpecificAccessRequestJudiciary';
     }
@@ -170,4 +171,3 @@ export function getTaskType(roleCategory: string): string {
     }
   }
 }
-

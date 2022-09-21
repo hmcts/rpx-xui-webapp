@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
-import {catchError, map, switchMap, take} from 'rxjs/operators';
-import {JudicialUserModel} from '../models/judicialUser.model';
-import {JudicialRefDataService} from '../services/judicial-ref-data.service';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
+import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { JudicialUserModel } from '../models/judicialUser.model';
+import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
 
 @Injectable({
@@ -32,12 +32,17 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
   public getUsersByPanelRequirements$(): Observable<string[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
       map(hearingRequest => {
+        let hearingJudgeId: string;
         let panelMemberIds: string[] = [];
-        if (hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule) {
-          panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.panelMemberIds || [];
-          panelMemberIds = [...panelMemberIds, hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingJudgeId];
+        let allJudgeIds: string[] = [];
+        if (hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse
+          && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
+          && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length === 1) {
+          hearingJudgeId = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId;
+          panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].panelMemberIds  || [];
+          allJudgeIds = [hearingJudgeId, ...panelMemberIds];
         }
-        return panelMemberIds;
+        return allJudgeIds;
       })
     );
   }

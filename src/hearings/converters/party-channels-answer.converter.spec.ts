@@ -1,14 +1,15 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState, partyChannelsRefData} from '../hearing.test.data';
-import {MemberType, PartyType, RequirementType} from '../models/hearings.enum';
-import {State} from '../store';
-import {PartyChannelsAnswerConverter} from './party-channels-answer.converter';
+import { of } from 'rxjs';
+import { initialState, partyChannelsRefData } from '../hearing.test.data';
+import { PartyType } from '../models/hearings.enum';
+import { PartyDetailsModel } from '../models/partyDetails.model';
+import { State } from '../store';
+import { PartyChannelsAnswerConverter } from './party-channels-answer.converter';
 
 describe('PartyChannelsAnswerConverter', () => {
 
@@ -70,5 +71,35 @@ describe('PartyChannelsAnswerConverter', () => {
     const option = '<ul><li>Jane and Smith - In person</li></ul>';
     const expected = cold('(b|)', {b: option});
     expect(result$).toBeObservable(expected);
+  });
+
+  it('should return party id if party name is null', () => {
+    const party: PartyDetailsModel = {
+      partyID: 'P001', partyRole: 'appellant', partyType: PartyType.IND
+    };
+    const foundPartyFromService: PartyDetailsModel = {
+      partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG
+    }
+    expect(converter.getPartyName(party, foundPartyFromService)).toEqual('P002');
+  });
+
+  it('should return party name if party name from party is not null', () => {
+    const party: PartyDetailsModel = {
+      partyID: 'P001', partyRole: 'appellant', partyType: PartyType.IND, partyName: 'Smith'
+    };
+    const foundPartyFromService: PartyDetailsModel = {
+      partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG, partyName: 'Jack'
+    }
+    expect(converter.getPartyName(party, foundPartyFromService)).toEqual('Smith');
+  });
+
+  it('should return party name if party name from party is null whereas foundPartyFromService is not null', () => {
+    const party: PartyDetailsModel = {
+      partyID: 'P001', partyRole: 'appellant', partyType: PartyType.IND
+    };
+    const foundPartyFromService: PartyDetailsModel = {
+      partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG, partyName: 'Jack'
+    }
+    expect(converter.getPartyName(party, foundPartyFromService)).toEqual('Jack');
   });
 });

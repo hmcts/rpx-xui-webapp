@@ -108,8 +108,7 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
           value: createTask.name,
           type: 'String',
         },
-        // TODO: Needs to be changed back to taskType eventually
-        taskId: {
+        taskType: {
           value: createTask.taskType,
           type: 'String',
         },

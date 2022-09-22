@@ -48,7 +48,8 @@ export class ApplicationRoutingComponent implements OnInit {
       (userDetails.userInfo.roles.includes('caseworker-ia-iacjudge')
       || userDetails.userInfo.roles.includes('caseworker-ia-caseofficer')
       || userDetails.userInfo.roles.includes('caseworker-ia-admofficer')
-      || userDetails.userInfo.roles.includes('caseworker-civil'))
+      || userDetails.userInfo.roles.includes('caseworker-civil')
+      || userDetails.userInfo.roles.includes('caseworker-privatelaw'))
       ? this.router.navigate([ApplicationRoutingComponent.defaultWAPage]) : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
     })).subscribe();
 

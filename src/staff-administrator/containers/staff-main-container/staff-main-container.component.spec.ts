@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { StaffStatusComponent } from 'src/staff-administrator/components/staff-status/staff-status.component';
 import { ErrorMessageComponent } from '../../../app/components';
 import { StaffAdvFilterComponent } from '../../components/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from '../../components/staff-search/staff-search.component';
@@ -37,7 +38,8 @@ describe('StaffMainContainerComponent', () => {
         StaffUserListComponent,
         StaffAdvFilterComponent,
         StaffUserListComponent,
-        ErrorMessageComponent
+        ErrorMessageComponent,
+        StaffStatusComponent
       ],
       imports: [
         RouterTestingModule,

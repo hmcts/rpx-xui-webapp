@@ -6,12 +6,14 @@ export const STAFF_REF_USERS_LIST: StaffDataUser[] = [
     lastName: "Silver",
     userCategory: "",
     userType: "",
-    jobTitle: "",
+    jobTitle: "Job Title",
     locations: [
-      "562808",
+      "Location 1",
+      "Location 2",
     ],
     region: "North East",
     services: [
+      "Mock Service",
       "Mock Service",
     ],
     suspended: false,
@@ -21,9 +23,9 @@ export const STAFF_REF_USERS_LIST: StaffDataUser[] = [
     lastName: "Patton",
     userCategory: "",
     userType: "",
-    jobTitle: "",
+    jobTitle: "Job Title",
     locations: [
-      "386417",
+      "Locatin Y",
     ],
     region: "London",
     services: [

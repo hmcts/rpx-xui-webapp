@@ -20,9 +20,9 @@ export const init = () => {
   });
 
   mock.onGet(getUsersByPartialName).reply(config => {
-    const searchParam = config.params.search;
+    const searchParam = config.params.search.toLowerCase();
     const filteredUsers = STAFF_REF_USERS_LIST
-      .filter(item => item.firstName.includes(searchParam) || item.lastName.includes(searchParam));
+      .filter(item => item.firstName.toLowerCase().includes(searchParam) || item.lastName.toLowerCase().includes(searchParam));
 
     return [
       200,

@@ -46,7 +46,7 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
         const assignmentId = data.roleAssignmentResponse.roleRequest.id;
         const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
         const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-        const deleteBody = { assigmentId: assignmentId };
+        const deleteBody = { assignmentId };
         const deleteResponse = await sendDelete(`${basePath}/${assignmentId}`, deleteBody, req);
         if (!deleteResponse || deleteResponse.status !== 204) {
           return res.status(deleteResponse.status).send(deleteResponse);

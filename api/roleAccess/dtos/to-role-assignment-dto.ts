@@ -30,25 +30,23 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
   const todayDate = new Date();
   const allocateRoleData = specificAccessData.specificAccessStateData;
   const period = specificAccessData.period;
-  const requestedRole = allocateRoleData.requestedRole !== 'specific-access-judicial'
-   ? allocateRoleData.requestedRole : 'specific-access-judiciary';
   return {
     roleRequest: {
       assignerId: currentUserId,
       replaceExisting: true,
       process: 'specific-access',
-      reference: `${allocateRoleData.caseId}/${requestedRole}/${allocateRoleData.actorId}`,
+      reference: `${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.actorId}`,
     },
     requestedRoles: [{
       roleType: 'CASE',
       readOnly: true,
       grantType: 'BASIC',
-      classification: 'PRIVATE',
+      classification: 'PUBLIC',
       attributes: {
         caseId: allocateRoleData.caseId,
-        requestedRole,
+        requestedRole: allocateRoleData.requestedRole,
       },
-      roleName: 'specific-access-granted',
+      roleName: 'specific-access-approved',
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.actorId,
@@ -56,11 +54,9 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       endTime: period.endDate
       ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
-      notes: [
-      {comment: "{\"specificReason\":\"Testing testing testing\"}",
-      time: "2023-05-T16:34:18.763Z",
-      userId: allocateRoleData.actorId},
-    ],
+      notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
+      time: "2022-05-10T16:34:18.763Z",
+      userId: allocateRoleData.actorId}],
     },
     {
       roleType: 'CASE',
@@ -69,20 +65,18 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       classification: 'RESTRICTED',
       attributes: {
         caseId: allocateRoleData.caseId,
-        requestedRole,
+        requestedRole: allocateRoleData.requestedRole,
       },
-      roleName: requestedRole,
+      roleName: allocateRoleData.requestedRole,
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.actorId,
       beginTime: period.startDate,
       endTime: period.endDate,
       // TODO: Include notes once we have that information
-      notes: [
-      {comment: "{\"specificReason\":\"Testing testing testing\"}",
+      notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
       time: "2022-05-10T16:34:18.763Z",
-      userId: allocateRoleData.actorId},
-      ],
+      userId: allocateRoleData.actorId}, ],
     }],
   };
 }

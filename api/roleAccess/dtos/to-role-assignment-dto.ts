@@ -30,7 +30,8 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
   const todayDate = new Date();
   const allocateRoleData = specificAccessData.specificAccessStateData;
   const period = specificAccessData.period;
-  const requestedRole = allocateRoleData.requestedRole !== 'specific-access-judicial' ? allocateRoleData.requestedRole : 'specific-access-judiciary';
+  const requestedRole = allocateRoleData.requestedRole !== 'specific-access-judicial'
+   ? allocateRoleData.requestedRole : 'specific-access-judiciary';
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -58,7 +59,7 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       notes: [
       {comment: "{\"specificReason\":\"Testing testing testing\"}",
       time: "2023-05-T16:34:18.763Z",
-      userId: allocateRoleData.actorId}
+      userId: allocateRoleData.actorId},
     ],
     },
     {
@@ -80,7 +81,7 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       notes: [
       {comment: "{\"specificReason\":\"Testing testing testing\"}",
       time: "2022-05-10T16:34:18.763Z",
-      userId: allocateRoleData.actorId}
+      userId: allocateRoleData.actorId},
       ],
     }],
   };

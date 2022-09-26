@@ -4,6 +4,8 @@
       <span class="govuk-caption-l">{{hearingActualsMainModel?.caseDetails.publicCaseName}}</span>
       Hearing details
     </h1>
-    <exui-hearing-actual-summary [hearingActualsMainModel]="hearingActualsMainModel"></exui-hearing-actual-summary>
+    <ng-container *ngIf="hearingActualsMainModel">
+      <exui-hearing-actual-summary [hearingActualsMainModel]="hearingActualsMainModel"></exui-hearing-actual-summary>
+    </ng-container>
   </div>
 </div>

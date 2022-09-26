@@ -5,11 +5,11 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { Observable, of } from 'rxjs';
-import { HttpError } from '../../../models/httpError.model';
 import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
+import { HttpError } from '../../../models/httpError.model';
 import { GroupLinkType } from '../../models/hearings.enum';
-import { ServiceLinkedCasesModel } from '../../models/linkHearings.model';
+import { ServiceLinkedCasesModel, ServiceLinkedCasesWithHearingsModel } from '../../models/linkHearings.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingLinksActions from '../actions/hearing-links.action';
 import { HearingLinksEffects } from './hearing-links.effects';
@@ -17,10 +17,10 @@ import { HearingLinksEffects } from './hearing-links.effects';
 describe('Hearing Links Effects', () => {
   let actions$;
   let store: Store<fromHearingStore.State>;
-
   let effects: HearingLinksEffects;
+  const hearingGroupRequestId = 'g1000000';
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'loadServiceLinkedCases', 'postLinkedHearingGroup'
+    'loadServiceLinkedCases', 'loadLinkedCasesWithHearings', 'postLinkedHearingGroup', 'deleteLinkedHearingGroup', 'putLinkedHearingGroup'
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const initialState = {
@@ -64,11 +64,31 @@ describe('Hearing Links Effects', () => {
         reasonsForLink: ['reason3', 'reason4']
       }];
       hearingsServiceMock.loadServiceLinkedCases.and.returnValue(of(SERVICE_LINKED_CASES));
-      const action = new hearingLinksActions.LoadServiceLinkedCases({caseReference: '1111222233334446', hearingId: 'h100000'});
+      const action = new hearingLinksActions.LoadServiceLinkedCases({ caseReference: '1111222233334446', hearingId: 'h100000' });
       const completion = new hearingLinksActions.LoadServiceLinkedCasesSuccess(SERVICE_LINKED_CASES);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadServiceLinkedCases$).toBeObservable(expected);
+    });
+  });
+
+  describe('loadServiceLinkedCasesWithHearing$', () => {
+    it('should return a response with hearings list', () => {
+      const SERVICE_LINKED_CASES: ServiceLinkedCasesWithHearingsModel[] = [{
+        caseRef: '1111222233334444',
+        caseName: 'Jane Smith',
+        reasonsForLink: ['reason1', 'reason2']
+      }, {
+        caseRef: '1111222233334445',
+        caseName: 'Pete Smith',
+        reasonsForLink: ['reason3', 'reason4']
+      }];
+      hearingsServiceMock.loadLinkedCasesWithHearings.and.returnValue(of(SERVICE_LINKED_CASES));
+      const action = new hearingLinksActions.LoadServiceLinkedCasesWithHearings({ caseReference: '1111222233334446', caseName: 'Pete Smith' });
+      const completion = new hearingLinksActions.LoadServiceLinkedCasesWithHearingsSuccess(SERVICE_LINKED_CASES);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadServiceLinkedCasesWithHearing$).toBeObservable(expected);
     });
   });
 
@@ -97,13 +117,13 @@ describe('Hearing Links Effects', () => {
       };
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
-      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(of({hearingGroupRequestId: 'g1000000'}));
-      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId});
-      actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: {hearingGroupRequestId: 'g1000000'}});
+      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(of({ hearingGroupRequestId }));
+      const action = new hearingLinksActions.SubmitLinkedHearingGroup({ linkedHearingGroup, caseId, hearingGroupRequestId, hearingId, isManageLink: true });
+      actions$ = cold('-a', { a: action });
+      const expected = cold('-b', { b: { hearingGroupRequestId } });
       expect(effects.submitLinkedHearingGroup$).toBeObservable(expected);
       expect(hearingsServiceMock.postLinkedHearingGroup).toHaveBeenCalled();
-      expect(mockRouter.navigate).toHaveBeenCalledWith([ '/', 'hearings', 'link', '1111222233334444', 'h100002', 'final-confirmation' ]);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '1111222233334444', hearingGroupRequestId, 'h100002', 'final-confirmation']);
     });
 
     it('should error submitting linked hearing group', () => {
@@ -136,11 +156,38 @@ describe('Hearing Links Effects', () => {
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
       hearingsServiceMock.postLinkedHearingGroup.and.returnValue(Observable.throwError(error));
-      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId});
-      actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: error});
+      const action = new hearingLinksActions.SubmitLinkedHearingGroup({ linkedHearingGroup, caseId, hearingGroupRequestId, hearingId, isManageLink: true });
+      actions$ = cold('-a', { a: action });
+      const expected = cold('-b', { b: error });
       expect(effects.submitLinkedHearingGroup$).toBeObservable(expected);
       expect(hearingsServiceMock.postLinkedHearingGroup).toHaveBeenCalled();
+      expect(dispatchSpy).toHaveBeenCalledWith(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
+    });
+  });
+
+  describe('manageLinkedHearingGroup$', () => {
+
+    it('should error managing linked hearing group', () => {
+      const error: HttpError = {
+        status: 403,
+        message: 'Http failure response: 403 Forbidden',
+      };
+      const payload = {
+        linkedHearingGroup: {
+          groupDetails: null,
+          hearingsInGroup: []
+        },
+        caseId: 'string',
+        hearingGroupRequestId: 'string',
+        hearingId: 'string'
+      };
+      const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.deleteLinkedHearingGroup.and.returnValue(Observable.throwError(error));
+      const action = new hearingLinksActions.ManageLinkedHearingGroup(payload);
+      actions$ = cold('-a', { a: action });
+      const expected = cold('-b', { b: error });
+      expect(effects.manageLinkedHearingGroup$).toBeObservable(expected);
+      expect(hearingsServiceMock.deleteLinkedHearingGroup).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
     });
   });

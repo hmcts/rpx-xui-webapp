@@ -8,6 +8,8 @@ import { StaffAdvFilterComponent } from './components/staff-adv-filter/staff-adv
 import { StaffSearchComponent } from './components/staff-search/staff-search.component';
 import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
 import { StaffUserListComponent } from './components/staff-user-list/staff-user-list.component';
+import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
+import { StaffEditUserComponent } from './containers/staff-edit-user/staff-edit-user.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
 import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffFilterOptionsResolverService } from './resolvers/staff-filter-options-resolver.service';
@@ -25,7 +27,9 @@ import { StaffStatusComponent } from './components/staff-status/staff-status.com
     StaffAdvFilterComponent,
     StaffUserDetailsComponent,
     StaffUserDetailsContainerComponent,
-    StaffStatusComponent
+    StaffStatusComponent,
+    StaffAddUserComponent,
+    StaffEditUserComponent,
   ],
   imports: [
     CommonModule,

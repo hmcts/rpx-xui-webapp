@@ -1,6 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
+import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
 import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffFilterOptionsResolverService } from './resolvers/staff-filter-options-resolver.service';
@@ -28,6 +29,10 @@ export const ROUTES: Routes = [
     resolve: {
       staffFilters: StaffFilterOptionsResolverService
     }
+  },
+  {
+    path: 'add-user',
+    component: StaffAddUserComponent
   }
 ];
 export const staffAdministratorRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

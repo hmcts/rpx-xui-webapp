@@ -33,8 +33,8 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "serviceApi": "hearing-service-prod.service.core-compute-prod.internal",
-      "hmcApi": "hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
+      "serviceApi": "http://jurisdiction-hearings-api-prod.service.core-compute-prod.internal",
+      "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
@@ -82,7 +82,7 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
     "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net/",
-    "judicialBookingsApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
+    "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
   },
   "protocol": "https",
   "microservice": "xui_webapp",

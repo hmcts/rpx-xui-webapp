@@ -13,10 +13,10 @@ import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery
 import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
-import {exists, reflect} from '../lib/util';
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
-import {getCaseListPromises} from "./index";
-import {Case, CaseList} from './interfaces/case';
+import { exists, reflect } from '../lib/util';
+import { TaskPermission, ViewType, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
+import { getCaseListPromises } from "./index";
+import { Case, CaseList } from './interfaces/case';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import {
   Action,
@@ -94,14 +94,6 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
   // Assign actions to the tasks on the data from the API.
   if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
-    const sortingParameters = req.body.searchRequest.sorting_parameters;
-    if (sortingParameters && sortingParameters.length > 0) {
-      sortingParameters.forEach( sortParam => {
-        if (sortParam.sort_by === 'hearing_date') {
-          sortParam.sort_by = 'caseName';
-        }
-      });
-    }
     const paginationConfig = req.body.searchRequest.pagination_parameters;
     const pageSize = paginationConfig.page_size;
     const pageNumber = (paginationConfig.page_number - 1) * pageSize;

@@ -35,27 +35,33 @@ describe('Hearing Values Effects', () => {
   describe('loadHearingValue$', () => {
     const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       hmctsServiceID: 'BBA3',
-      caseName: 'Jane Smith vs DWP',
+      hmctsInternalCaseName: 'Jane Smith vs DWP',
+      publicCaseName: 'Jane Smith vs DWP',
       autoListFlag: false,
       hearingType: 'Final',
+      hearingChannels: [],
       caseAdditionalSecurityFlag: false,
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
+          categoryValue: 'BBA3-002',
         }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
         }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
         }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
-        },
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
+        }
       ],
       caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
       caserestrictedFlag: false,
+      externalCaseReference: '',
       caseManagementLocationCode: '196538',
       caseSLAStartDate: '2021-05-05T09:00:00.000Z',
       hearingWindow: {
@@ -72,6 +78,7 @@ describe('Hearing Values Effects', () => {
       listingComments: '',
       hearingRequester: '',
       privateHearingRequiredFlag: false,
+      caseInterpreterRequiredFlag: false,
       panelRequirements: null,
       leadJudgeContractType: '',
       judiciary: {
@@ -161,16 +168,16 @@ describe('Hearing Values Effects', () => {
       const action$ = HearingValuesEffects.handleError({
         status: 500,
         message: 'error'
-      });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
+      }, '1111222233334444');
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/cases/case-details/1111222233334444/hearings']})));
     });
 
     it('should handle 4xx related errors', () => {
       const action$ = HearingValuesEffects.handleError({
         status: 403,
         message: 'error'
-      });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
+      }, '1111222233334444');
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/cases/case-details/1111222233334444/hearings']})));
     });
   });
 });

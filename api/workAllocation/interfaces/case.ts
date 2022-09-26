@@ -31,7 +31,6 @@ export interface Case {
   assigneeName: string;
   name: string;
   isNew?: boolean;
-  hearing_date?: string;
 }
 
 export interface CaseAction {

@@ -25,18 +25,19 @@ export const routingConfiguration: ExtraOptions = {
 export const ROUTES: Routes = [
   {
     path: '',
+    canActivate: [AuthGuard],
     component: ApplicationRoutingComponent,
     pathMatch: 'full'
-  },
-  {
-    path: 'booking',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../booking/booking.module#BookingModule'
   },
   {
     path: 'cases',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../cases/cases.module#CasesModule'
+  },
+  {
+    path: 'booking',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../booking/booking.module#BookingModule'
   },
   {
     path: 'work',

@@ -296,8 +296,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public onActionHandler(taskAction: InvokedTaskAction): void {
     try {
       if (taskAction.action.id === TaskActionIds.GO) {
-        const goToCaseUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
-        this.router.navigate([goToCaseUrl]);
+        const goToTaskUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
+        this.router.navigate([goToTaskUrl]);
         return;
       }
       if (this.returnUrl.includes('manager') && taskAction.action.id === TaskActionIds.RELEASE) {

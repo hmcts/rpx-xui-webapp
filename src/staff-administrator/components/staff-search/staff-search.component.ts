@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { StaffDataFilterService } from '../../services/staff-data-filter.service';
 
 @Component({
@@ -8,23 +8,8 @@ import { StaffDataFilterService } from '../../services/staff-data-filter.service
   styleUrls: ['./staff-search.component.scss']
 })
 export class StaffSearchComponent implements OnInit {
-  public filterConfig: FilterConfig = {
-    persistence: 'session',
-    id: 'staff-filters',
-    fields: [{
-      name: 'find-service',
-      title: 'Services',
-      options: [],
-      minSelected: 0,
-      maxSelected: 0,
-      type: 'find-service',
-      enableAddButton: true
-    }],
-    cancelButtonText: '',
-    applyButtonText: 'Search',
-    cancelSetting: null,
-    showCancelFilterButton: false
-  };
+  public error = false;
+  public userNameControl = new FormControl();
 
   constructor(private staffDataFilterService: StaffDataFilterService) { }
 

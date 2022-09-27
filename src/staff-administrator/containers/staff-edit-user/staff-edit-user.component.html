@@ -119,8 +119,14 @@
       </fieldset>
     </div>
   </div>
-</div>
 
-<button class="govuk-button" data-module="govuk-button">
-  Continue
-</button>
+  <div>
+    <button type="submit" (click)="onSubmit()" class="govuk-button govuk-!-margin-right-4" data-module="govuk-button">
+      Continue
+    </button>
+
+    <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button" [routerLink]="['/staff']">
+      Cancel
+    </button>
+  </div>
+</div>

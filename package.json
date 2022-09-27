@@ -57,7 +57,8 @@
     "test:ngIntegrationMockEnv" : "node -e 'require(`./test/nodeMock/availablePortFinder.js`).configureTestProxyPort()'",
     "test:ngIntegration": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:ngIntegrationDebug": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js --debug",
-    "test:nodeMock": "nodemon test/nodeMock/app --standalone"
+    "test:nodeMock": "nodemon test/nodeMock/app --standalone",
+    "build:audit": "yarn audit --groups dependencies --json | grep auditAdvisory > yarn-audit-known-issues"
   },
   "private": true,
   "dependencies": {

@@ -2,7 +2,7 @@
   Enter the details of the user you want to add.
 </div>
 
-<div class="govuk-label govuk-label--m govuk-!-margin-bottom-6 ">Personal information</div>
+<div class="govuk-label govuk-label--m govuk-!-margin-bottom-7">Personal information</div>
 <div class="govuk-!-margin-bottom-6" [formGroup]="formGroup">
   <div class="edit-user-form-group edit-user-form-group--limitedWidth">
     <div class="edit-user-form-group__personalInformation">
@@ -49,7 +49,7 @@
           </div>
         </legend>
 
-        <xuilib-find-location [enableAddLocationButton]="true" [field]="fieldConfig.primaryLocation"></xuilib-find-location>
+        <xuilib-find-location [enableAddLocationButton]="true" [field]="locationFieldConfig.primaryLocation"></xuilib-find-location>
       </fieldset>
     </div>
 
@@ -61,7 +61,7 @@
           </h1>
         </legend>
 
-        <xuilib-find-location [enableAddLocationButton]="true" [field]="fieldConfig.additionalLocations"></xuilib-find-location>
+        <xuilib-find-location [enableAddLocationButton]="true" [field]="locationFieldConfig.additionalLocations"></xuilib-find-location>
       </fieldset>
     </div>
   </div>
@@ -92,9 +92,9 @@
     </xuilib-gov-uk-checkboxes>
   </div>
 
-  <hr>
+  <ng-container *ngIf="formGroup.controls.userType.value === 'ctsc'">
+    <hr>
 
-  <div>
     <div class="edit-user-form-group__skills">
       <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -118,9 +118,15 @@
         </div>
       </fieldset>
     </div>
+  </ng-container>
+
+  <div>
+    <button type="submit" (click)="onSubmit()" class="govuk-button govuk-!-margin-right-2" data-module="govuk-button">
+      Continue
+    </button>
+
+    <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button" [routerLink]="['/staff']">
+      Cancel
+    </button>
   </div>
 </div>
-
-<button class="govuk-button" data-module="govuk-button">
-  Continue
-</button>

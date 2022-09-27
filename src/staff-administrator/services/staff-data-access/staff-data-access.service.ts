@@ -28,4 +28,8 @@ export class StaffDataAccessService {
   public getSkills() {
     return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getSkills`);
   }
+
+  public getServices() {
+    return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getServices`);
+  }
 }

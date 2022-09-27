@@ -10,7 +10,11 @@ import { StaffUserListComponent } from './components/staff-user-list/staff-user-
 import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
 import { StaffEditUserComponent } from './containers/staff-edit-user/staff-edit-user.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
-import { StaffFilterOptionsResolverService } from './resolvers/staff-filter-options-resolver.service';
+import { StaffUserCheckAnswersComponent } from './containers/staff-user-check-answers/staff-user-check-answers.component';
+import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
+import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
+import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
+import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
 import { StaffDataAccessService } from './services/staff-data-access/staff-data-access.service';
 import { StaffDataFilterService } from './services/staff-data-filter.service';
 import { staffAdministratorRouting } from './staff-administrator.routes';
@@ -23,6 +27,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffAdvFilterComponent,
     StaffAddUserComponent,
     StaffEditUserComponent,
+    StaffUserCheckAnswersComponent,
   ],
   imports: [
     CommonModule,
@@ -35,7 +40,10 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
   providers: [
     StaffDataAccessService,
     StaffDataFilterService,
-    StaffFilterOptionsResolverService,
+    StaffFilterOptionsServicesResolver,
+    StaffFilterOptionsSkillsResolver,
+    StaffFilterOptionsJobTitlesResolver,
+    StaffFilterOptionsUserTypesResolver
   ],
   exports: []
 })

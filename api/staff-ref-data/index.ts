@@ -51,6 +51,17 @@ export async function getSkills(req, res: Response, next: NextFunction) {
   }
 }
 
+export async function getServices(req, res: Response, next: NextFunction) {
+  const markupPath: string = `/refdata/case-worker/services`;
+
+  try {
+    const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(markupPath, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function getUsersByPartialName(req, res: Response, next: NextFunction) {
   const searchParam = req.query.search ? req.query.search : '';
   const markupPath: string = `/refdata/case-worker/profile/search?search=${searchParam}`;

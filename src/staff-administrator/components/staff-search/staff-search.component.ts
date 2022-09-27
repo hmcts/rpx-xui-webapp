@@ -12,6 +12,7 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
   public filterConfig: FilterConfig;
   private readonly FILTER_NAME = 'staff-search-filter';
   private filterSub: Subscription;
+  private filterErrorsSub: Subscription;
 
   constructor(private staffDataFilterService: StaffDataFilterService, private filterService: FilterService) { }
 
@@ -45,9 +46,16 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
           }
         }
     });
+
+    this.filterErrorsSub = this.filterService.givenErrors.subscribe((filterErrors) => {
+      if (filterErrors && filterErrors.length) {
+        this.staffDataFilterService.setErrors([...filterErrors]);
+      }
+    });
   }
 
   public ngOnDestroy() {
     this.filterSub.unsubscribe();
+    this.filterErrorsSub.unsubscribe();
   }
 }

@@ -85,6 +85,19 @@ export const judicailUsersRefData: JudicialUserModel[] = [{
   title: 'Mr'
 }];
 
+export const panelMembersRefData: JudicialUserModel[] = [{
+  emailId: '7007496EMP-@ejudiciary.net',
+  fullName: 'Ramon Herrera',
+  idamId: 'a229ec37-d84d-4eed-bd7f-0c77a6721da6',
+  isJudge: '',
+  isMagistrate: '',
+  isPanelMember: '',
+  knownAs: 'Ramon',
+  personalCode: '7007496',
+  surname: 'Herrera',
+  title: 'Mr'
+}];
+
 export const judgeRefData: JudicialUserModel[] = [
   {
     emailId: 'jacky.collins@judicial.com',

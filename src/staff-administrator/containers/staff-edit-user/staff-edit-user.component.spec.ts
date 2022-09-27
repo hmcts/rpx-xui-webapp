@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StaffEditUserComponent } from './staff-edit-user.component';
 
@@ -15,7 +16,8 @@ describe('StaffEditUserComponent', () => {
       imports: [
         ReactiveFormsModule,
         ExuiCommonLibModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        RouterTestingModule
       ]
     })
     .compileComponents();

@@ -65,10 +65,10 @@
         Update
       </button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
-        Copy
+        {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
       </button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
-        {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
+        Copy
       </button>
     </div>
     

@@ -55,6 +55,7 @@ import {HearingStageResolver} from './resolvers/hearing-stage.resolver';
 import {JudgeTypesResolverService} from './resolvers/judge-types-resolver.service';
 import {JudicialUserSearchResolver} from './resolvers/judicial-user-search-resolver.resolve';
 import {JudicialUserSearchResponseResolver} from './resolvers/judicial-user-search-response-resolver.resolve';
+import {PanelMemberSearchResponseResolver} from './resolvers/panel-member-search-response-resolver';
 import {PanelRolesResolverService} from './resolvers/panel-roles-resolver.service';
 import {PartyChannelsResolverService} from './resolvers/party-channels-resolver.service';
 import {RefDataResolver} from './resolvers/ref-data-resolver.resolve';
@@ -373,6 +374,7 @@ export const ROUTES: Routes = [
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
           judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
         },
@@ -426,6 +428,7 @@ export const ROUTES: Routes = [
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
           judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
         },
@@ -446,6 +449,7 @@ export const ROUTES: Routes = [
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
           judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
           cancelHearingReasons: CancelHearingRequestReasonResolver,
@@ -469,6 +473,7 @@ export const ROUTES: Routes = [
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
           judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
         },
@@ -483,6 +488,7 @@ export const ROUTES: Routes = [
           actualSummary: ActualSummaryResponseResolver,
           hearingStageOptions: HearingStageResolver,
           judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
           hearingRoles: HearingActualRoleResolverService,
@@ -499,6 +505,7 @@ export const ROUTES: Routes = [
           actualSummary: ActualSummaryResponseResolver,
           hearingStageOptions: HearingStageResolver,
           judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
           hearingRoles: HearingActualRoleResolverService,
@@ -516,6 +523,7 @@ export const ROUTES: Routes = [
           actualSummary: ActualSummaryResponseResolver,
           hearingStageOptions: HearingStageResolver,
           judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
           hearingRoles: HearingActualRoleResolverService,
@@ -531,6 +539,7 @@ export const ROUTES: Routes = [
         resolve: {
           hearingStageOptions: HearingStageResolver,
           judicialResponseUsers: JudicialUserSearchResponseResolver,
+          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
         },

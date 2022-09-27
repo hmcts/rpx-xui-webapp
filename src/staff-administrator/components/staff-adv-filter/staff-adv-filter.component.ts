@@ -11,12 +11,13 @@ export class StaffAdvFilterComponent implements OnInit {
   public filterConfig: FilterConfig;
 
   constructor(private route: ActivatedRoute) {
-  const staffFilters = {
-    userTypes: this.route.snapshot.data.staffFilters.userTypes,
-    jobTitles: this.route.snapshot.data.staffFilters.jobTitles,
-    skills: this.route.snapshot.data.staffFilters.skills,
-    services: this.route.snapshot.data.staffFilters.services,
+    const staffFilters = {
+      userTypes: this.route.snapshot.data.userTypes,
+      jobTitles: this.route.snapshot.data.jobTitles,
+      skills: this.route.snapshot.data.skills
+      services: this.route.snapshot.data.services,
   };
+
   this.filterConfig = {
     id: 'staff-advanced-filters',
     fields: [{

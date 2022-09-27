@@ -13,6 +13,7 @@ export const init = () => {
   const getUserTypes = /refdata\/case-worker\/user-type/;
   const getJobTitles = /refdata\/case-worker\/job-title/;
   const getSkills = /refdata\/case-worker\/skill/;
+  const getServices = /refdata\/case-worker\/services/;
 
   mock.onPost(getFilteredUsers).reply(() => {
     return [
@@ -49,21 +50,45 @@ export const init = () => {
   mock.onGet(getUserTypes).reply(() => {
     return [
       200,
-      [{label: 'User Types', key: 'userType'}],
+      [
+        {label: 'User Types', value: 'userType'},
+        {label: 'CTSC', value: 'ctsc'},
+      ],
     ];
   });
 
   mock.onGet(getJobTitles).reply(() => {
     return [
       200,
-      [{label: 'Job Titles', key: 'jobTitle'}],
+      [{label: 'Job Titles', value: 'jobTitle'}],
     ];
   });
 
   mock.onGet(getSkills).reply(() => {
     return [
       200,
-      [{label: 'Skills', key: 'skill'}],
+      [{label: 'Skills', value: 'skill'}],
+    ];
+  });
+
+  mock.onGet(getServices).reply(() => {
+    return [
+      200,
+      [
+        { id: 'family-public-law', label: 'Family Public Law', value: 'family-public-law' },
+        { id: 'family-private-law', label: 'Family Private Law', value: 'family-private-law' },
+        { id: 'adoption', label: 'Adoption', value: 'adoption' },
+        { id: 'employment-tribunals', label: 'Employment Tribunals', value: 'employment-tribunals' },
+        { id: 'financial-remedy', label: 'Financial Remedy', value: 'financial-remedy' },
+        { id: 'immigration-and-asylum', label: 'Immigration and Asylum', value: 'immigration-and-asylum' },
+        { id: 'civil', label: 'Civil', value: 'civil' },
+        { id: 'special-tribunals', label: 'Special Tribunals', value: 'special-tribunals' },
+        { id: 'divorce', label: 'Divorce', value: 'divorce' },
+        { id: 'social-security-and-child-support', label: 'Social security and child support',
+          value: 'social-security-and-child-support' },
+        { id: 'housing-possessions', label: 'Housing Possessions', value: 'housing-possessions' },
+        { id: 'probate', label: 'Probate', value: 'probate' },
+      ],
     ];
   });
 

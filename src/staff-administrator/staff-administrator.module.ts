@@ -30,6 +30,7 @@ import { StaffStatusComponent } from './components/staff-status/staff-status.com
     StaffStatusComponent,
     StaffAddUserComponent,
     StaffEditUserComponent,
+    StaffUserCheckAnswersComponent,
   ],
   imports: [
     CommonModule,
@@ -42,8 +43,10 @@ import { StaffStatusComponent } from './components/staff-status/staff-status.com
   providers: [
     StaffDataAccessService,
     StaffDataFilterService,
-    StaffFilterOptionsResolverService,
-    StaffUserDetailsResolverService
+    StaffFilterOptionsServicesResolver,
+    StaffFilterOptionsSkillsResolver,
+    StaffFilterOptionsJobTitlesResolver,
+    StaffFilterOptionsUserTypesResolver
   ],
   exports: []
 })

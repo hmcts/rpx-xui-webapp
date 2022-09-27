@@ -1,4 +1,5 @@
 export interface StaffFilterOption {
-  key: string;
+  value: string;
   label: string;
+  id: string;
 }

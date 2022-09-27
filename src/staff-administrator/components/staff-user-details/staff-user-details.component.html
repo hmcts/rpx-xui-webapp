@@ -1,5 +1,5 @@
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds-from-desktop">
+  <div class="govuk-grid-column-two-thirds-from-desktop"><br><br>
     <h2 class="govuk-heading-m">User details</h2>
     
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -7,52 +7,52 @@
         <dt class="govuk-summary-list__key">Name</dt>
         <dd class="govuk-summary-list__value">{{userDetails.firstName}} {{userDetails.lastName}}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Email address</dt>
         <dd class="govuk-summary-list__value">{{ userDetails.email }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Services</dt>
         <dd class="govuk-summary-list__value">{{ userDetails.services }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Region</dt>
         <dd class="govuk-summary-list__value">{{ userDetails.region }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Primary location</dt>
         <dd class="govuk-summary-list__value">{{ userDetails.primaryLocation }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Additional locations</dt>
         <dd class="govuk-summary-list__value">{{ userDetails.locations }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">User type</dt>
         <dd class="govuk-summary-list__value">{{ userDetails.userType }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Roles</dt>
         <dd class="govuk-summary-list__value">{{ userDetails.roles }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Job title</dt>
         <dd class="govuk-summary-list__value">{{ userDetails.jobTitle }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Skills</dt>
         <dd class="govuk-summary-list__value">{{ userDetails.skills }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-      </div>
+      </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Status</dt>
         <dd class="govuk-summary-list__value"><exui-staff-status [status]="userDetails.suspended" ></exui-staff-status></dd>
@@ -65,10 +65,10 @@
         Update
       </button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
-        Suspend
+        Copy
       </button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
-        Copy
+        {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
       </button>
     </div>
     

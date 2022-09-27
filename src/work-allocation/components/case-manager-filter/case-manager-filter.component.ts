@@ -8,7 +8,6 @@ import { filter, map } from 'rxjs/operators';
 import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { AppUtils } from '../../../app/app-utils';
 import * as fromAppStore from '../../../app/store';
-import { Location } from '../../models/dtos';
 
 @Component({
   selector: 'exui-case-manager-filter',

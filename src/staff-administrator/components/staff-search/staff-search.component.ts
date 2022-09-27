@@ -8,8 +8,23 @@ import { StaffDataFilterService } from '../../services/staff-data-filter.service
   styleUrls: ['./staff-search.component.scss']
 })
 export class StaffSearchComponent implements OnInit {
-  public userNameControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  public error = false;
+  public filterConfig: FilterConfig = {
+    persistence: 'session',
+    id: 'staff-filters',
+    fields: [{
+      name: 'find-service',
+      title: 'Services',
+      options: [],
+      minSelected: 0,
+      maxSelected: 0,
+      type: 'find-service',
+      enableAddButton: true
+    }],
+    cancelButtonText: '',
+    applyButtonText: 'Search',
+    cancelSetting: null,
+    showCancelFilterButton: false
+  };
 
   constructor(private staffDataFilterService: StaffDataFilterService) { }
 

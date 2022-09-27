@@ -545,6 +545,7 @@
     "@hmcts/nodejs-logging" "^3.0.0"
     lodash "^4.17.11"
     path "^0.12.7"
+
 "@hmcts/rpx-xui-common-lib@1.7.28":
   version "1.7.28"
   resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.28.tgz#55d123eb7edfe6ea3319993e33123ffda7772152"

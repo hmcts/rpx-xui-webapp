@@ -3,6 +3,9 @@
   <div class="page">
     <main id="content" role="main">
       <exui-page-wrapper [title]="'Users'">
+        <ng-container *ngIf="(staffDataFilterService.errors$ | async).errors.length">
+          <exui-error-message [error]="staffDataFilterService.errors$ | async"></exui-error-message>
+        </ng-container>
 
         <div class="hmcts-filter-layout__filter staff-filters">
           <div class="container-fluid govuk-!-margin-top-4">
@@ -14,7 +17,19 @@
 
             <hr>
 
-            <exui-staff-search></exui-staff-search>
+            <div class="govuk-!-margin-bottom-4">
+              <ng-container *ngIf="!advancedSearchEnabled; else advFilter">
+                <exui-staff-search></exui-staff-search>
+              </ng-container>
+
+              <ng-template #advFilter>
+                <exui-staff-adv-filter></exui-staff-adv-filter>
+              </ng-template>
+            </div>
+
+            <div>
+              <a href="javascript:void(0)" (click)="advancedSearchEnabled = !advancedSearchEnabled">{{ !advancedSearchEnabled ? 'Advanced search' : 'Hide advanced search' }}</a>
+            </div>
           </div>
         </div>
 

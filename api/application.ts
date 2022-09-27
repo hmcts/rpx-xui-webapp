@@ -10,7 +10,7 @@ import {
   FEATURE_HELMET_ENABLED,
   HELMET,
   PROTOCOL,
-  SESSION_SECRET,
+  SESSION_SECRET
 } from './configuration/references';
 import * as health from './health';
 import * as log4jui from './lib/log4jui';

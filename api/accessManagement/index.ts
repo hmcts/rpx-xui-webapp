@@ -62,7 +62,7 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
     // 201
     if (!firstRoleResponse || firstRoleResponse.status !== 201) {
       return firstRoleResponse && firstRoleResponse.status
-       ? res.status(firstRoleResponse.status).send(firstRoleResponse) : res.status(400);
+       ? res.status(firstRoleResponse.status) : res.status(400);
     }
     const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.specificAccessStateData.requestId);
     const rolesToDelete: RoleAssignment[] = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
@@ -92,17 +92,17 @@ export async function deleteSpecificAccessRoles(req, res: Response, next: NextFu
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+       ? res.status(previousResponse.status) : res.status(400);
     }
     // Note - the functionality is present but this does not currently work due to AM team restrictions - gives 422 error
     const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id);
     if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+       ? res.status(previousResponse.status): res.status(400);
     }
     return previousResponse && previousResponse.status
-     ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+     ? res.status(previousResponse.status): res.status(400);
   } catch (error) {
     next(error);
     return res.status(error.status).send(error);
@@ -117,7 +117,7 @@ export async function restoreDeletedRole(req, res: Response, next: NextFunction,
     if (!restoreResponse || restoreResponse.status !== 201) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+       ? res.status(previousResponse.status) : res.status(400);
     }
     return deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete);
   } catch (error) {

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FilterConfig, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { Subscription } from 'rxjs';
 import { StaffDataFilterService } from '../../services/staff-data-filter.service';
 
 @Component({
@@ -7,41 +8,54 @@ import { StaffDataFilterService } from '../../services/staff-data-filter.service
   templateUrl: './staff-search.component.html',
   styleUrls: ['./staff-search.component.scss']
 })
-export class StaffSearchComponent implements OnInit {
-  public filterConfig: FilterConfig = {
-    persistence: 'session',
-    id: 'staff-filters',
-    fields: [{
-      name: 'find-service',
-      title: 'Services',
-      options: [],
-      minSelected: 0,
-      maxSelected: 0,
-      type: 'find-service',
-      enableAddButton: true
-    }],
-    cancelButtonText: '',
-    applyButtonText: 'Search',
-    cancelSetting: null,
-    showCancelFilterButton: false
-  };
+export class StaffSearchComponent implements OnInit, OnDestroy {
+  public filterConfig: FilterConfig;
+  private readonly FILTER_NAME = 'staff-search-filter';
+  private filterSub: Subscription;
+  private filterErrorsSub: Subscription;
 
-  constructor(private staffDataFilterService: StaffDataFilterService) { }
+  constructor(private staffDataFilterService: StaffDataFilterService, private filterService: FilterService) { }
 
   public ngOnInit() {
+    this.filterConfig = {
+      id: this.FILTER_NAME,
+      fields: [{
+        name: 'user-partial-name',
+        title: 'Search for a user by name',
+        subTitle: '',
+        options: [],
+        minSelected: 3,
+        minSelectedError: 'Enter staff details',
+        displayMinSelectedError: true,
+        maxSelected: 99,
+        type: 'text-input',
+      }],
+      persistence: 'session',
+      applyButtonText: 'Search',
+      cancelButtonText: '',
+      enableDisabledButton: false,
+      showCancelFilterButton: false
+    };
+
+    this.filterSub = this.filterService.getStream(this.FILTER_NAME)
+      .subscribe(filterConfig => {
+        if (filterConfig) {
+          const userPartialName = filterConfig.fields.find(item => item.name === 'user-partial-name').value[0];
+          if (userPartialName) {
+            this.staffDataFilterService.filterByPartialName(userPartialName).subscribe();
+          }
+        }
+    });
+
+    this.filterErrorsSub = this.filterService.givenErrors.subscribe((filterErrors) => {
+      if (filterErrors && filterErrors.length) {
+        this.staffDataFilterService.setErrors([...filterErrors]);
+      }
+    });
   }
 
-  public onSearch() {
-    this.error = false;
-
-    if (this.userNameControl.valid) {
-      this.staffDataFilterService.filterByPartialName(this.userNameControl.value).subscribe();
-    } else {
-      this.error = true;
-      this.staffDataFilterService.setErrors([{
-        error: 'Enter staff details',
-        name: 'user-name',
-      }]);
-    }
+  public ngOnDestroy() {
+    this.filterSub.unsubscribe();
+    this.filterErrorsSub.unsubscribe();
   }
 }

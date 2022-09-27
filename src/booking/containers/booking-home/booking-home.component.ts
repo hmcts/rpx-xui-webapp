@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { combineLatest, Observable, of, Subscription, } from 'rxjs';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
@@ -12,7 +12,8 @@ import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 @Component({
   selector: 'exui-booking-home',
-  templateUrl: './booking-home.component.html'
+  templateUrl: './booking-home.component.html',
+  styleUrls: ['./booking-home.component.scss']
 })
 export class BookingHomeComponent implements OnInit, OnDestroy {
 

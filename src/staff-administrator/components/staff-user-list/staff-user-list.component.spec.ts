@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CdkTableModule } from '@angular/cdk/table';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
+import { StaffDataFilterService } from '../../services/staff-data-filter.service';
 import { StaffUserListComponent } from './staff-user-list.component';
 
 describe('StaffUserListComponent', () => {
@@ -10,7 +14,15 @@ describe('StaffUserListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ StaffUserListComponent ],
-      imports: [CdkTableModule]
+      imports: [
+        HttpClientTestingModule,
+        CdkTableModule,
+        RouterTestingModule
+      ],
+      providers: [
+        StaffDataFilterService,
+        StaffDataAccessService
+      ]
     })
     .compileComponents();
   }));

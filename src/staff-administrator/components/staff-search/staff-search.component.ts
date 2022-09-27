@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
+import { FormControl, Validators } from '@angular/forms';
+import { StaffDataFilterService } from '../../services/staff-data-filter.service';
 
 @Component({
   selector: 'exui-staff-search',
@@ -25,8 +26,22 @@ export class StaffSearchComponent implements OnInit {
     showCancelFilterButton: false
   };
 
-  constructor() { }
+  constructor(private staffDataFilterService: StaffDataFilterService) { }
 
   public ngOnInit() {
+  }
+
+  public onSearch() {
+    this.error = false;
+
+    if (this.userNameControl.valid) {
+      this.staffDataFilterService.filterByPartialName(this.userNameControl.value).subscribe();
+    } else {
+      this.error = true;
+      this.staffDataFilterService.setErrors([{
+        error: 'Enter staff details',
+        name: 'user-name',
+      }]);
+    }
   }
 }

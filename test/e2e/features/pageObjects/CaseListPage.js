@@ -61,23 +61,18 @@ class CaseListPage{
 
     _getOptionSelectorWithText(optionText){
         let elementLocator = null;
-        if (optionText.includes('|')){
-            const options = optionText.split('|');
-            let locatorString = "//option[";
-             let i = 0;   
-            for (const option of options){
-                if( i === 0){
-                    locatorString += `contains(text(), '${option.trim()}')`;
-                }else{
-                    locatorString += `or contains(text(), '${option.trim()}')`;
-                }
-                i++; 
-            } 
-            elementLocator = by.xpath(locatorString +']');
-
-        }else{
-            elementLocator = by.xpath("//option[text() = '" + optionText + "']");
+        const options = optionText.split('|');
+        let locatorString = "//option[";
+        let i = 0;
+        for (const option of options) {
+            if (i === 0) {
+                locatorString += `contains(text(), '${option.trim()}')`;
+            } else {
+                locatorString += `or contains(text(), '${option.trim()}')`;
+            }
+            i++;
         }
+        elementLocator = by.xpath(locatorString + ']');
 
         return elementLocator
     }
@@ -132,6 +127,8 @@ class CaseListPage{
             await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
             CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.", LOG_LEVELS.Debug);
             await this.searchApplyBtn.click();
+            await BrowserWaits.waitForSpinnerToDissappear();
+
         });
     }
 

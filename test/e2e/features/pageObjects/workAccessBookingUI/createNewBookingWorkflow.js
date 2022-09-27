@@ -7,14 +7,16 @@ const checkAnswersPage = require('./checkAnswersPage');
 class CreateNewBookingWorkFlow{
 
     constructor(){
-        this.searchLocation = new LocationPage();
-        this.chooseDurationPage = new ChooseDurationPage();
-        this.checkAnswersPage = new CheckAnswersPage();
+        this.searchLocation = LocationPage;
+        this.chooseDurationPage = ChooseDurationPage;
+        this.checkAnswersPage = checkAnswersPage;
 
-        this.continueButton = $('');
+        this.continueButton = $('exui-booking-location button,exui-booking-date button ,exui-booking-check button');
         this.cancelLink = $('');
-        this.backLink = $('');
+        this.backLink = $('.govuk-back-link');
     }
+
+
 
 }
 

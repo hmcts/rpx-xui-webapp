@@ -22,6 +22,9 @@ class WAListTable {
         this.tableFooter = $(`${this.baseCssLocator} table tfoot td`);
         this.actionsRows = $$(`${this.baseCssLocator} table tbody>tr.actions-row`);
         this.selectedActioRow = $(`${this.baseCssLocator} table tbody>tr.actions-row.selected`)
+
+        this.selectedActions = $$(`${this.baseCssLocator} table tbody>tr.actions-row.selected .task-action a`)
+
         this.displayedActionRow = $('tr.actions-row[aria-hidden=false]');
 
         this.paginationContainer = $('ccd-pagination');
@@ -233,12 +236,11 @@ class WAListTable {
     async isRowActionPresent(rowAction) {
         await BrowserWaits.waitForElement(this.displayedActionRow);
         const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`))
-        return actionLink.isPresent();
+        return await actionLink.isPresent();
     }
 
     async clickRowAction(action) {
-
-        await BrowserWaits.waitForConditionAsync(async () => await this.isRowActionPresent(action), 5000);
+        expect(await this.isRowActionPresent(action), 'action row not displayed').to.be.true;
         await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`, LOG_LEVELS.Debug)
         const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`))
         await browser.executeScript('arguments[0].scrollIntoView()',
@@ -363,6 +365,28 @@ class WAListTable {
         const isNonClickableElementPresent = await headerElementNonClickable.isPresent();
 
         return isClickableElementPresent && !isNonClickableElementPresent
+    }
+
+
+    async getRowActionLinksTexts(){
+        const links = await this.getRowActionLinks();
+        const linkTexts = []
+        for(const link of links){
+            linkTexts.push(await link.getText());
+        } 
+        return linkTexts;
+    }
+
+
+
+    async getRowActionLinks(){
+        const linksCount = await this.selectedActions.count();
+        const links = [];
+        for (let i = 0; i < linksCount; i++){
+            const e = await await this.selectedActions.get(i);
+            links.push(e);   
+        }
+        return links; 
     }
 }
 

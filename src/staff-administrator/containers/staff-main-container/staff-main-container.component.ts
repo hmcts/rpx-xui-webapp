@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { StaffDataFilterService } from '../../services/staff-data-filter.service';
 
 @Component({
   selector: 'exui-staff-main-container',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./staff-main-container.component.scss']
 })
 export class StaffMainContainerComponent {
-  constructor() { }
+  public advancedSearchEnabled = false;
+
+  constructor(public staffDataFilterService: StaffDataFilterService) { }
 }

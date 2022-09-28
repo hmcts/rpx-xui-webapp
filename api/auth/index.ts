@@ -1,7 +1,6 @@
 import { AUTH, AuthOptions, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import { NextFunction, Response } from 'express';
 import { EnhancedRequest } from '../lib/models';
-
 import { getConfigValue, showFeature } from '../configuration';
 import {
   COOKIES_TOKEN,
@@ -51,13 +50,13 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
 };
 
 export const failureCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
-  const errorMsg = `Auth Error: ${res.locals.message}`;
+    const errorMsg = `Auth Error: ${res.locals.message}`;
 
-  logger.warn(errorMsg);
+    logger.warn(errorMsg);
 
-  if (client) {
-      client.trackEvent({name: errorMsg});
-  }
+    if (client) {
+        client.trackEvent({name: errorMsg});
+    }
 }
 
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)

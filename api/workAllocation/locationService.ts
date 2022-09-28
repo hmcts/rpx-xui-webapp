@@ -31,8 +31,8 @@ export async function commonGetFullLocation(req: EnhancedRequest) {
     courtVenues = [...courtVenues, ...response.data.court_venues];
   }
   courtVenues = courtVenues.filter((value, index, self) =>
-    index === self.findIndex((t) => (
-      t.epimms_id === value.epimms_id && t.site_name === value.site_name
+    index === self.findIndex(location => (
+      location.epimms_id === value.epimms_id && location.site_name === value.site_name
     ))
   );
   return courtVenues;

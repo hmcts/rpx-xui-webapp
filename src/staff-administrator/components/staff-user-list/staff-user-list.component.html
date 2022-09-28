@@ -26,12 +26,20 @@
 
       <ng-container cdkColumnDef="services">
         <th cdk-header-cell *cdkHeaderCellDef>Services</th>
-        <td cdk-cell *cdkCellDef="let element"> {{element.services}} </td>
+        <td cdk-cell *cdkCellDef="let element">
+          <div *ngFor="let service of element.services">
+            {{ service }}
+          </div>
+        </td>
       </ng-container>
 
       <ng-container cdkColumnDef="locations">
         <th cdk-header-cell *cdkHeaderCellDef>Locations</th>
-        <td cdk-cell *cdkCellDef="let element"> {{element.locations}} </td>
+        <td cdk-cell *cdkCellDef="let element">
+          <div *ngFor="let location of element.locations">
+            {{ location }}
+          </div>
+        </td>
       </ng-container>
 
       <ng-container cdkColumnDef="jobTitle">

@@ -9,10 +9,12 @@ export const STAFF_REF_USERS_LIST: StaffDataUser[] = [
     userType: "Officer1",
     jobTitle: "Case worker",
     locations: [
-      "562808",
+      "Location 1",
+      "Location 2",
     ],
     region: "North East",
     services: [
+      "Mock Service",
       "Mock Service",
     ],
     suspended: false,
@@ -27,7 +29,7 @@ export const STAFF_REF_USERS_LIST: StaffDataUser[] = [
     userType: "Officer2",
     jobTitle: "Solicitor",
     locations: [
-      "386417",
+      "Locatin Y",
     ],
     region: "London",
     services: [

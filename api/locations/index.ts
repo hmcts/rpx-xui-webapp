@@ -119,7 +119,7 @@ function getLocationIdsFromLocationList(locations: any): string[] {
 
 function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
   const courtTypeIdsArray = serviceIdArray.map(serviceId => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
-    .reduce(concatCourtTypeWithoutDuplicates, []);
+    .reduce(concatCourtTypeWithoutDuplicates);
   if (courtTypeIdsArray) {
     return courtTypeIdsArray;
   }
@@ -127,7 +127,9 @@ function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
 }
 
 function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
-  return array2 ? array1.concat(array2.filter(item => array1.indexOf(item) < 0)) : array1;
+  array1 = array1 ? array1 : [];
+  array2 = array2 ? array2 : [];
+  return array1.concat(array2.filter(item => array1.indexOf(item) < 0));
 }
 
 function mapCourtVenuesToLocationModels(courtVenues: CourtVenue[]): CourtVenue {

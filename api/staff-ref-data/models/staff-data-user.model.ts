@@ -1,4 +1,5 @@
 export interface StaffDataUser {
+  id?: number;
   firstName: string;
   lastName: string;
   userCategory: string;
@@ -8,4 +9,8 @@ export interface StaffDataUser {
   region: string;
   services: string[];
   suspended: boolean;
+  email: string;
+  primaryLocation: string;
+  roles?: string
+  skills?: string[];
 }

@@ -20,7 +20,7 @@
       <ng-container cdkColumnDef="name">
         <th cdk-header-cell *cdkHeaderCellDef>Name</th>
         <td cdk-cell *cdkCellDef="let element">
-          <a href="">{{element.firstName}} {{element.lastName}}</a>
+          <a href="{{'/staff/users/user-details/' + element.id }}">{{element.firstName}} {{element.lastName}}</a>
         </td>
       </ng-container>
 
@@ -50,17 +50,7 @@
       <ng-container cdkColumnDef="status">
         <th cdk-header-cell *cdkHeaderCellDef>Status</th>
         <td cdk-cell *cdkCellDef="let element">
-          <ng-container *ngIf="element.suspended; else userNotSuspended">
-            <strong class="hmcts-badge hmcts-badge--red">
-              ACTIVE
-            </strong>
-          </ng-container>
-
-          <ng-template #userNotSuspended>
-            <strong class="hmcts-badge hmcts-badge--green">
-              ACTIVE
-            </strong>
-          </ng-template>
+          <exui-staff-status [status]="element.suspended" ></exui-staff-status>
         </td>
       </ng-container>
 

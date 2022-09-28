@@ -62,3 +62,15 @@ export async function getUsersByPartialName(req, res: Response, next: NextFuncti
     next(error);
   }
 }
+
+export async function getStaffRefUserDetails(req, res: Response, next: NextFunction) {
+  const id = req.params.id;
+  const markupPath: string = `/refdata/case-worker/user-details/${id}`;
+
+  try {
+    const {status, data}: { status: number, data: StaffDataUser } = await handleGet(markupPath, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}

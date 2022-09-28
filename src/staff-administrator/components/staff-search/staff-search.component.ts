@@ -8,6 +8,7 @@ import { StaffDataFilterService } from '../../services/staff-data-filter.service
   templateUrl: './staff-search.component.html',
   styleUrls: ['./staff-search.component.scss']
 })
+
 export class StaffSearchComponent implements OnInit, OnDestroy {
   public filterConfig: FilterConfig;
   private readonly FILTER_NAME = 'staff-search-filter';

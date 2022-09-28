@@ -7,6 +7,7 @@ export const init = () => {
 
   const getFilteredUsers = /refdata\/case-worker\/profile/;
   const getUsersByPartialName = /refdata\/case-worker\/profile\/search/;
+  const getStaffRefUserDetails = /refdata\/case-worker\/user-details\/[0-9]/;
 
   const getUserTypes = /refdata\/case-worker\/user-type/;
   const getJobTitles = /refdata\/case-worker\/job-title/;
@@ -51,6 +52,21 @@ export const init = () => {
     return [
       200,
       [{label: 'Skills', key: 'skill'}],
+    ];
+  });
+
+  mock.onGet(getStaffRefUserDetails).reply(config => {
+    const url = config.url;
+    const strId = url.match(/[0-9]/g);
+    const id = parseInt(strId[0], 10);
+    const filteredUser = STAFF_REF_USERS_LIST
+      .filter(item => item.id === id);
+
+    return [
+      200,
+      {
+        results: filteredUser,
+      },
     ];
   });
 };

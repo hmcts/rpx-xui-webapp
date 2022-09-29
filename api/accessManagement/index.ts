@@ -99,10 +99,10 @@ export async function deleteSpecificAccessRoles(req, res: Response, next: NextFu
     if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status): res.status(400);
+       ? res.status(previousResponse.status) : res.status(400);
     }
     return previousResponse && previousResponse.status
-     ? res.status(previousResponse.status): res.status(400);
+     ? res.status(previousResponse.status) : res.status(400);
   } catch (error) {
     next(error);
     return res.status(error.status).send(error);

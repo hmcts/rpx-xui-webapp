@@ -17,7 +17,8 @@
 /***************************************************************************************************
  * BROWSER POLYFILLS
  */
-
+ import 'zone.js/dist/zone';  // Included with Angular CLI.
+ import 'zone.js/dist/zone-error';
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
 import 'eligrey-classlist.js';  // Run `yarn add eligrey-classlist.js`.
 

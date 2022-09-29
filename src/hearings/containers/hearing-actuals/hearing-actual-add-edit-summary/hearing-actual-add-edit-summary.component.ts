@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HttpError } from '../../../../models/httpError.model';

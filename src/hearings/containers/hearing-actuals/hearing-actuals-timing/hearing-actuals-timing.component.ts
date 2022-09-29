@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as moment from 'moment';
+import moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';

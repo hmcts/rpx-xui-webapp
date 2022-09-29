@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { ValidationErrors } from '@angular/forms/src/directives/validators';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as moment from 'moment';
+import moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import {

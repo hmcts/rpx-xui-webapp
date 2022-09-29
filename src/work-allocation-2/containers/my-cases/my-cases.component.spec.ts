@@ -13,6 +13,7 @@ import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationFeature
 import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { MyCasesComponent } from './my-cases.component';
+import { WASupportedJurisdictionsService } from 'src/work-allocation-2/services';
 
 @Component({ template: `<exui-my-cases></exui-my-cases>` })
 
@@ -20,7 +21,7 @@ class WrapperComponent {
   @ViewChild(MyCasesComponent) public appComponentRef: MyCasesComponent;
 }
 
-describe('MyCasesComponent', () => {
+fdescribe('MyCasesComponent', () => {
   let component: MyCasesComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -33,6 +34,7 @@ describe('MyCasesComponent', () => {
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -51,7 +53,8 @@ describe('MyCasesComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
       ]
     }).compileComponents();
   }));
@@ -66,6 +69,7 @@ describe('MyCasesComponent', () => {
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
     fixture.detectChanges();
   });
 

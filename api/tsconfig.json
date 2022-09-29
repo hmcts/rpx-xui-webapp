@@ -2,10 +2,13 @@
     "compileOnSave": false,
     "compilerOptions": {
         "outDir": "../dist/rpx-exui/api",
-        "target": "es5",
+        "target": "es6",
         "types": ["node", "mocha", "rxjs"],
         "baseUrl": ".",
-        "lib": ["es2017", "dom"]
+        "lib": [
+          "es2017",
+          "es6",
+          "dom"]
     },
     "include": ["**/*.ts", "../*.ts"],
     "exclude": ["**/*.spec.ts"]

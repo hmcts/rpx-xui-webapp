@@ -4,6 +4,11 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import { ENVIRONMENT_CONFIG } from './models/environmentConfig.model';
+// import 'core-js/es6/reflect';
+// import 'core-js/es7/reflect';
+// import "core-js/es/reflect";
+// import "core-js/stable/reflect";
+// import "core-js/features/reflect";
 
 if (environment.production) {
   enableProdMode();

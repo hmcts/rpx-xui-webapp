@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
-import * as moment from 'moment';
+import moment from 'moment';
 import {combineLatest, Observable, Subscription} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {UserRole} from '../../../app/models';
@@ -103,16 +103,16 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       map(hearingListStateData => {
           if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
             let caseHearingModels: HearingListModel[] = [];
-            if (Object.values(EXUISectionStatusEnum).includes(status)) {
-              caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
-                hearing.exuiSectionStatus === status
-              );
-            }
-            if (Object.values(EXUIDisplayStatusEnum).includes(status)) {
-              caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
-                hearing.exuiDisplayStatus === status
-              );
-            }
+            // if (Object.values(EXUISectionStatusEnum).includes(status)) {
+            //   caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
+            //     hearing.exuiSectionStatus === status
+            //   );
+            // }
+            // if (Object.values(EXUIDisplayStatusEnum).includes(status)) {
+            //   caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
+            //     hearing.exuiDisplayStatus === status
+            //   );
+            // }
             const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
             return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
           } else {

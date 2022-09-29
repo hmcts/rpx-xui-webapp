@@ -10,15 +10,19 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es5",
+    "target": "es6",
+    "noEmitHelpers": false ,
     "skipLibCheck": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "types": [ "node", "moment" ],
     "typeRoots": [
       "node_modules/@types"
     ],
-    "skipLibCheck": true,
     "lib": [
-      "es2018",
-      "dom"
+
+      "ES2018",
+      "DOM"
     ]
   }
 }

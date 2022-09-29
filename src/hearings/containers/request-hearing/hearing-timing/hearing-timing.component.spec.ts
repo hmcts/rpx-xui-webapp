@@ -5,7 +5,7 @@ import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import * as moment from 'moment';
+import moment from 'moment';
 import {of} from 'rxjs';
 import {ErrorMessage} from '../../../../app/models';
 import {initialState} from '../../../hearing.test.data';

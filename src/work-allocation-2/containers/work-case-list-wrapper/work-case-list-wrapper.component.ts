@@ -146,7 +146,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public ngOnInit(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
-    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService?this.waSupportedJurisdictionsService.getWASupportedJurisdictions():of(['']);
 
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();

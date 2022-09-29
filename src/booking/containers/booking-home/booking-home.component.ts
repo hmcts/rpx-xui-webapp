@@ -10,6 +10,7 @@ import { SessionStorageService } from '../../../app/services/session-storage/ses
 import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
+import * as moment from 'moment';
 @Component({
   selector: 'exui-booking-home',
   templateUrl: './booking-home.component.html',
@@ -51,14 +52,14 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
             if (bookingResults) {
               this.existingBookings = bookingResults as any;
               this.orderByCurrentThenFuture();
-              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any ).filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings).map(p => p.locationId) : null;
+              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter(p => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map(p => p.locationId) : null;
             }
           })).subscribe();
         }
       },
-      err => {
-        this.NavigationErrorHandler(err, this.router)
-      });
+        err => {
+          this.NavigationErrorHandler(err, this.router)
+        });
     }
   }
 
@@ -114,7 +115,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public NavigationErrorHandler = ( error: any, navigator: {navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>} ): void => {
+  public NavigationErrorHandler = (error: any, navigator: { navigate(commands: any[], extras?: NavigationExtras): Promise<boolean> }): void => {
     if (error && error.status) {
       if (error.status >= 500 && error.status < 600) {
         navigator.navigate(['/service-down']);

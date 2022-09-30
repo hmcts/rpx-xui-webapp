@@ -116,7 +116,7 @@ export async function getSpecificAccessApproved(req, resp, next) {
 }
 
 export function getNewAccessCount(roleAssignment: RoleAssignment): boolean {
-  return roleAssignment.roleName === 'specific-access-granted' || roleAssignment.attributes.isNew;
+  return roleAssignment.attributes.isNew;
 }
 
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {

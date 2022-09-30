@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, OnDestroy, Output } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
 import CaseServiceConfig from '../../models/cases/case-service-config.model';
 import { FieldConfig, SortField } from '../../models/common';
 import { Location, PaginationParameter } from '../../models/dtos';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'exui-work-case-list',
@@ -53,7 +54,8 @@ export class WorkCaseListComponent implements OnChanges {
   private selectedCase: Case;
   public newUrl: string;
 
-  constructor(private readonly router: Router) {
+  constructor(private readonly router: Router, private httpClient: HttpClient) {
+
   }
 
   public get showResetSortButton(): boolean {
@@ -132,6 +134,9 @@ export class WorkCaseListComponent implements OnChanges {
     };
 
     this.actionEvent.emit(invokedCaseAction);
+  }
+
+  public onItemClick(item: Case): void {
   }
 
   /**

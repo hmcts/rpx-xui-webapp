@@ -9,7 +9,6 @@ import * as fromAppComponents from '../components';
 import * as fromAppContainers from '../containers';
 import * as fromAppDirectives from '../directives';
 import { TaskSupervisorGuard } from '../guards/task-supervisor.guard';
-import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
 import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
 
@@ -39,7 +38,6 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     ...GOV_UI_COMPONENTS
   ],
   providers: [
-    HealthCheckGuard,
     HealthCheckService,
     WindowService,
     McLaunchDarklyService,

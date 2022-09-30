@@ -1,8 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TaskSupervisorGuard } from '../app/guards/task-supervisor.guard';
-
-import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { TaskActionConstants } from './components/constants';
 import {
   AllWorkCaseComponent,
@@ -28,12 +26,11 @@ export const ROUTES: Routes = [
   {
     path: '',
     component: WorkAllocationHomeComponent,
-    canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
+    canActivate: [ WorkAllocationFeatureToggleGuard ],
     children: [
       {
         path: 'my-work',
         component: TaskHomeComponent,
-        canActivate: [ HealthCheckGuard ],
         resolve: {
           location: LocationResolver
         },
@@ -68,7 +65,7 @@ export const ROUTES: Routes = [
       {
         path: 'all-work',
         component: AllWorkHomeComponent,
-        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard, TaskSupervisorGuard],
+        canActivate: [ WorkAllocationFeatureToggleGuard, TaskSupervisorGuard ],
         data: {
           title: 'HMCTS Manage cases | Task manager'
         },

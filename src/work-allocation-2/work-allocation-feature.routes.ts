@@ -65,7 +65,7 @@ export const ROUTES: Routes = [
       {
         path: 'all-work',
         component: AllWorkHomeComponent,
-        canActivate: [ WorkAllocationFeatureToggleGuard, TaskSupervisorGuard],
+        canActivate: [ WorkAllocationFeatureToggleGuard, TaskSupervisorGuard ],
         data: {
           title: 'HMCTS Manage cases | Task manager'
         },

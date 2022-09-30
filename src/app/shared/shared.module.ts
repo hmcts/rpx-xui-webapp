@@ -40,7 +40,6 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     RpxTranslationModule
   ],
   providers: [
-    HealthCheckGuard,
     HealthCheckService,
     WindowService,
     McLaunchDarklyService,

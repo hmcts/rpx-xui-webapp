@@ -36,7 +36,7 @@ export const ROUTES: Routes = [
       {
         path: 'allocate',
         component: AllocateRoleHomeComponent,
-        canActivate: [ CaseAllocatorGuard],
+        canActivate: [CaseAllocatorGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Allocate a role',
         }

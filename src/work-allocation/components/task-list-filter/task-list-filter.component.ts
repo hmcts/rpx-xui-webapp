@@ -121,9 +121,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   // }
 
   public ngOnInit(): void {
-    // Clear Fileds to prevent duplication of filter 
+    // Clear Fileds to prevent duplication of filter
     this.fieldsConfig.fields = [];
-    
+
     this.setPersistenceAndDefaultLocations();
     // TODO: CAM_BOOKING - are both subscriptions still needed, check this
     // MASTER

@@ -1,6 +1,6 @@
+import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Location as AngularLocation } from '@angular/common';
 import {
   FilterConfig,
   FilterError,
@@ -121,6 +121,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   // }
 
   public ngOnInit(): void {
+    // Clear Fileds to prevent duplication of filter 
+    this.fieldsConfig.fields = [];
+    
     this.setPersistenceAndDefaultLocations();
     // TODO: CAM_BOOKING - are both subscriptions still needed, check this
     // MASTER

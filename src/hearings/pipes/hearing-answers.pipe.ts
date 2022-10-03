@@ -31,6 +31,7 @@ import {NeedWelshAnswerConverter} from '../converters/need-welsh.answer.converte
 import {NumberOfAttendancesAnswerConverter} from '../converters/number-of-attendances-answer.converter';
 import {PanelExclusionAnswerConverter} from '../converters/panel-exclusion.answer.converter';
 import {PanelInclusionAnswerConverter} from '../converters/panel-inclusion.answer.converter';
+import { PanelMembersAnswerConverter } from '../converters/panel-members.answer.converter';
 import {PanelRolesAnswerConverter} from '../converters/panel-roles.answer.converter';
 import {ParticipantAttendenceAnswerConverter} from '../converters/participant-attendence.answer.converter';
 import {PartyChannelsAnswerConverter} from '../converters/party-channels-answer.converter';
@@ -162,6 +163,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.PANEL_EXCLUSION:
         converter = new PanelExclusionAnswerConverter(this.route);
+        break;
+      case AnswerSource.PANEL_MEMBERS:
+        converter = new PanelMembersAnswerConverter(this.route);
         break;
       case AnswerSource.PANEL_ROLES:
         converter = new PanelRolesAnswerConverter(this.route);

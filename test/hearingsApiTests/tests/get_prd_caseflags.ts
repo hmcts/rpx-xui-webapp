@@ -1,9 +1,11 @@
 import {generateAPIRequest,generatePOSTAPIRequest, timeout} from '../utils';
 const should = require('chai').should();
 const payload = {
-  searchString:'ved',
+  searchString:'pra',
   serviceCode:'BBA3'
 };
+
+const payload1 = {"personal_code":["4923393"]};
 
 suite('\'Hearings -> Get Case Flags\'', function() {
   this.timeout(timeout);
@@ -12,7 +14,7 @@ suite('\'Hearings -> Get Case Flags\'', function() {
           response.status.should.be.eql(200);
         }));
 
-  test('GET location by epimms', () => generateAPIRequest ('GET', '/api/prd/location/getLocationById?epimms_id=196538')
+  test('GET location by epimms', () => generateAPIRequest ('GET', '/api/prd/location/getLocationById?epimms_id=372653')
     .then(response => {
       response.status.should.be.eql(200);
       console.log(response.data)
@@ -24,7 +26,7 @@ suite('\'Hearings -> Get Case Flags\'', function() {
       response.status.should.be.eql(200);
     }));
 
-  test('GET participants hearing details', () => generateAPIRequest ('GET', '/api/prd/lov/getLovRefData?category=JudgeType&service=BBA3&isChildRequired=N')
+  test('GET Panel Member details', () => generateAPIRequest ('GET', '/api/prd/lov/getLovRefData?category=PanelMemberType&service=BBA3&isChildRequired=Y')
     .then(response => {
       response.status.should.be.eql(200);
     }));
@@ -44,7 +46,7 @@ suite('\'Hearings -> Get Case Flags\'', function() {
       response.status.should.be.eql(200);
     }));
 
-  test('POST search Judicial by personal codes', () => generateAPIRequest ('POST', '/api/prd/judicial/searchJudicialUserByPersonalCodes')
+  test('POST search Judicial by personal codes', () => generatePOSTAPIRequest ('POST', '/api/prd/judicial/searchJudicialUserByPersonalCodes', payload1)
     .then(response => {
       response.status.should.be.eql(200);
     }));

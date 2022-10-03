@@ -11,6 +11,32 @@ class hearingPage{
     this.caseTypeSelectElement = $("#wb-case-type");
     this.stateSelectElement = $("#wb-case-state");
 
+    this.caseListRegion = $("#region");
+    this.caseBenefitCode = $("#benefitCode");
+    this.caseIssueCode = $("#issueCode");
+    this.caseLinkSSCS = element(by.xpath('//*[@id="search-result"]/ccd-search-result/table/tbody/tr[2]/td[1]/a/ccd-field-read/div/ccd-field-read-label/div/ng-component/span'));
+    this.headerTab= $("body > exui-root > exui-case-home > div > exui-case-details-home > exui-case-viewer-container > ccd-case-viewer > div > ccd-case-full-access-view > div:nth-child(4) > div > mat-tab-group > mat-tab-header > div.mat-tab-header-pagination.mat-tab-header-pagination-after.mat-elevation-z4.mat-ripple");
+    this.requestHearingButton= element(by.xpath('//body/exui-root[1]/exui-case-home[1]/div[1]/exui-case-details-home[1]/exui-case-viewer-container[1]/ccd-case-viewer[1]/div[1]/ccd-case-full-access-view[1]/div[2]/div[1]/exui-case-hearings[1]/div[1]/a[1]'));
+
+    this.currentUpcomingText= element(by.xpath('/html/body/exui-root/exui-case-home/div/exui-case-details-home/exui-case-viewer-container/ccd-case-viewer/div/ccd-case-full-access-view/div[2]/div/exui-case-hearings/div/exui-case-hearings-list[1]/table/thead/tr/th[1]'));
+    this.hearingsTab = element(by.xpath('//*[@id="mat-tab-label-0-12"]'));
+
+   // this.hearingsContinue = element(by.xpath('//button[contains(text(),\'Continue\')]'));
+    this.hearingsContinue = $("#content > button");
+
+    this.hearingsHeading1 = element(by.xpath('//h1[contains(text(),\'Do you require any additional facilities?\')]'));
+    this.hearingsHeadingAttendance = element(by.xpath('//h1[contains(text(),\'How will each participant attend the hearing?\')]'));
+    this.hearingsHeading2 = element(by.xpath('//input[@id=\'BBA3-SUB\']'));
+    this.hearingAttendance = element(by.xpath('//option[contains(text(),\'In Person\')]'));
+    this.hearingsHeading3 = element(by.xpath('//a[contains(text(),\'CARDIFF SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL\')]'));
+    this.hearingsHeading4 = element(by.xpath('//h1[contains(text(),\'Does this hearing need to be in Welsh?\')]'));
+    this.hearingsHeading5 = element(by.xpath('//h1[contains(text(),\'Do you want a specific judge?\')]'));
+
+    this.specificJudge = $("#specificJudgeName");
+    this.enterJudgeName = element(by.xpath('//input[@id=\'inputSelectPerson\']'));
+    this.selectJudge = element(by.xpath('//span[contains(text(),\'Pratik Patel (4923393EMP-@ejudiciary.net)\')]'));
+
+
     this.searchApplyBtn = $("ccd-workbasket-filters form button:not(.button-secondary)");
     this.searchReset = $("ccd-workbasket-filters form button.button-secondary");
 
@@ -114,14 +140,27 @@ class hearingPage{
   //
   // }
 
-  async selectState(state) {
+  async enterRegion(region, benefit, issue) {
     await BrowserWaits.waitForSpinnerToDissappear();
     await this._waitForSearchComponent();
-    CucumberReportLogger.LogTestDataInput(`Case list page event: ${state}`);
+    CucumberReportLogger.LogTestDataInput(`Case list region: ${region}`);
 
-    await this.stateSelectElement.element(this._getOptionSelectorWithText(state)).click();
-    RuntimeTestData.workbasketInputs.state = state;
+    await this.caseListRegion.sendKeys(region);
+  }
 
+  async enterBenefitCode(benefit) {
+    await BrowserWaits.waitForSpinnerToDissappear();
+    await this._waitForSearchComponent();
+    CucumberReportLogger.LogTestDataInput(`Case list benefit: ${benefit}`);
+
+    await this.caseBenefitCode.sendKeys(benefit);
+  }
+
+  async enterIssueCode(issue) {
+    await BrowserWaits.waitForSpinnerToDissappear();
+    await this._waitForSearchComponent();
+    CucumberReportLogger.LogTestDataInput(`Case list issue code: ${issue}`);
+    await this.caseIssueCode.sendKeys(issue);
   }
 
   async clickSearchApplyBtn(){
@@ -142,6 +181,8 @@ class hearingPage{
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.searchReset);
     await this.searchReset.click();
+    await this.caseLinkSSCS.click();
+
   }
 
   async waitForCaseResultsToDisplay(){
@@ -182,6 +223,11 @@ class hearingPage{
 
   async isSelectAllColumnDisplayed(){
     return await this.tableHeaderSelectAllInput.isPresent();
+  }
+
+  async isTextVisible(){
+    return await this.currentUpcomingText.getText();
+
   }
 
   async isSelectCheckboxDisplayedForAllCases(){

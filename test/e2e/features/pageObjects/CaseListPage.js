@@ -11,6 +11,9 @@ class CaseListPage{
         this.jurisdictionSelectElement = $("#wb-jurisdiction");
         this.caseTypeSelectElement = $("#wb-case-type");
         this.stateSelectElement = $("#wb-case-state");
+        this.caseListRegion = $("#region");
+        this.caseBenefitCode = $("#benefitCode");
+        this.caseIssueCode = $("#issueCode");
 
         this.searchApplyBtn = $("ccd-workbasket-filters form button:not(.button-secondary)");
         this.searchReset = $("ccd-workbasket-filters form button.button-secondary");
@@ -30,7 +33,7 @@ class CaseListPage{
         this.previousPageLink = $(".ngx-pagination .pagination-previous a");
         this.nextPageLink = $(".ngx-pagination .pagination-next a");
 
-        this.sortColumnsIconLinks = $$(".search-result-column-sort a.sort-widget");  
+        this.sortColumnsIconLinks = $$(".search-result-column-sort a.sort-widget");
 
         //Case list selection feature elements
         this.tableHeaderSelectAllInput = $("ccd-search-result #select-all");
@@ -50,7 +53,7 @@ class CaseListPage{
     async amOnPage(){
         await BrowserWaits.waitForElement(this.caselistComponent);
         await BrowserWaits.waitForElement(this.searchFilterContainer);
-        return await this.caselistComponent.isPresent(); 
+        return await this.caselistComponent.isPresent();
     }
 
     async _waitForSearchComponent(){
@@ -63,15 +66,15 @@ class CaseListPage{
         if (optionText.includes('|')){
             const options = optionText.split('|');
             let locatorString = "//option[";
-             let i = 0;   
+             let i = 0;
             for (const option of options){
                 if( i === 0){
                     locatorString += `contains(text(), '${option.trim()}')`;
                 }else{
                     locatorString += `or contains(text(), '${option.trim()}')`;
                 }
-                i++; 
-            } 
+                i++;
+            }
             elementLocator = by.xpath(locatorString +']');
 
         }else{
@@ -97,8 +100,8 @@ class CaseListPage{
             const option = await caseTypeElements.get(i);
             const optionText = await option.getText();
             RuntimeTestData.workbasketInputs.casetypes.push(optionText);
- 
-        } 
+
+        }
     }
 
     async selectCaseType(caseType) {
@@ -108,7 +111,7 @@ class CaseListPage{
         CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
         await this.caseTypeSelectElement.element(this._getOptionSelectorWithText(caseType)).click();
         CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
-        RuntimeTestData.workbasketInputs.casetype = caseType; 
+        RuntimeTestData.workbasketInputs.casetype = caseType;
 
     }
 
@@ -118,11 +121,11 @@ class CaseListPage{
         CucumberReportLogger.LogTestDataInput(`Case list page event: ${state}`);
 
         await this.stateSelectElement.element(this._getOptionSelectorWithText(state)).click();
-        RuntimeTestData.workbasketInputs.state = state; 
+        RuntimeTestData.workbasketInputs.state = state;
 
     }
 
-    async clickSearchApplyBtn(){ 
+    async clickSearchApplyBtn(){
         await BrowserWaits.retryWithActionCallback(async () => {
             await this._waitForSearchComponent();
             await BrowserWaits.waitForSpinnerToDissappear();
@@ -135,7 +138,7 @@ class CaseListPage{
     }
 
     async clickSearchResetBtn() {
-        
+
         await this._waitForSearchComponent();
         await browser.executeScript('arguments[0].scrollIntoView()',
             this.searchReset);
@@ -164,12 +167,12 @@ class CaseListPage{
 
         await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
         await BrowserWaits.retryWithActionCallback(async () => {
-            await BrowserWaits.waitForSpinnerToDissappear(); 
+            await BrowserWaits.waitForSpinnerToDissappear();
             await this.caseListRows.get(0).$("td a").click();
-            await BrowserWaits.waitForPageNavigation(currentPageUrl); 
+            await BrowserWaits.waitForPageNavigation(currentPageUrl);
         });
 
-      
+
         await CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
 
     }
@@ -185,7 +188,7 @@ class CaseListPage{
     async isSelectCheckboxDisplayedForAllCases(){
         let casesInPage = await this.getCountOfCasesListedInPage();
         let countOfSelectCheckboxes = await this.caseSelectionCheckboxes.count();
-        return casesInPage === countOfSelectCheckboxes; 
+        return casesInPage === countOfSelectCheckboxes;
     }
 
     async isSelectAllCheckboxSelected(){
@@ -193,7 +196,7 @@ class CaseListPage{
     }
 
     async clickSelectAll(){
-        await this.tableHeaderSelectAllInput.click(); 
+        await this.tableHeaderSelectAllInput.click();
     }
 
     async isCaseSelectCheckboxSelected(rowNum){
@@ -221,14 +224,14 @@ class CaseListPage{
 
     async clickPaginationNextPage(){
        let paginationInfobefore = await this.paginationInfotext.getText();
-        expect(await this.nextPageLink.isPresent(), "Case list next page not present. current page info : " + paginationInfobefore).to.be.true 
-       
+        expect(await this.nextPageLink.isPresent(), "Case list next page not present. current page info : " + paginationInfobefore).to.be.true
+
         await browser.executeScript('arguments[0].scrollIntoView()',
             this.nextPageLink);
         await this.nextPageLink.click();
         await BrowserWaits.waitForCondition(async () => {
             let paginationInfoCurrent = await this.paginationInfotext.getText();
-            return paginationInfobefore === paginationInfoCurrent; 
+            return paginationInfobefore === paginationInfoCurrent;
         });
         await BrowserWaits.waitForElement(this.paginationControlsContainer, undefined, "Data load taking too long on pagination");
     }
@@ -251,7 +254,7 @@ class CaseListPage{
     async clickCaseLinkAtRow(rowNum){
         let caseRow = await this.caseListRows.get(rowNum - 1);
         await caseRow.$(".search-result-column-cell a").click();
-        await BrowserWaits.waitForElement(this.ccdCaseViewer , undefined, "Case view page is not displayed"); 
+        await BrowserWaits.waitForElement(this.ccdCaseViewer , undefined, "Case view page is not displayed");
     }
 
     async sortTableByColAt(colNum){

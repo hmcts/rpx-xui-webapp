@@ -10,8 +10,9 @@ const mocha = new Mocha({
     }
 });
 mocha.addFile('test/hearingsApiTests/tests/get_prd_caseflags.ts');
-// mocha.addFile('test/hearingsApiTests/tests/get_Hearings.ts');
-
+mocha.addFile('test/hearingsApiTests/tests/get_Hearings.ts');
+// mocha.addFile('test/hearingsApiTests/tests/amend_Hearings.ts');
+mocha.addFile('test/hearingsApiTests/tests/delete_Hearings.ts');
 mocha.run( (failures) => {
     process.exitCode = failures ? 1 : 0; // exit with non-zero status if there were failures
 });

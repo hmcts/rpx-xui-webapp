@@ -2,22 +2,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { getMockTasks } from 'src/work-allocation/tests/utils.spec';
 import { UtilsModule } from '../../../../noc/containers/noc-field/utils/utils.module';
-import * as fromFeature from '../../../store';
-import * as fromContainers from '../../add-exclusion';
-import { SpecificAccessHomeComponent } from './specific-access-home.component';
 import { CaseRole, RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { AccessReason, DurationType } from '../../../models/enums';
-import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
-import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { DurationHelperService } from '../../../services';
-import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
-import { getMockTasks } from 'src/work-allocation/tests/utils.spec';
+import * as fromFeature from '../../../store';
+import * as fromContainers from '../../add-exclusion';
+import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
+import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
+import { SpecificAccessHomeComponent } from './specific-access-home.component';
 
 describe('SpecificAccessHomeComponent', () => {
   let component: SpecificAccessHomeComponent;
@@ -29,6 +29,7 @@ describe('SpecificAccessHomeComponent', () => {
   ]);
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRolesUserDetails']);
   const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getCaseworkersForServices']);
+  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   let mockStore: MockStore<fromFeature.State>;
   let mockFormBuilder: FormBuilder;
   let storeDispatchMock: any;
@@ -119,7 +120,7 @@ describe('SpecificAccessHomeComponent', () => {
     });
 
     it('should correctly navigate to the specific access duration page on pressing continue on the specific access review page', () => {
-      component.specificAccessReviewComponent = new SpecificAccessReviewComponent(mockFormBuilder, mockStore, mockAllocateRoleService, mockCaseworkerDataService);
+      component.specificAccessReviewComponent = new SpecificAccessReviewComponent(mockFormBuilder, mockStore, mockAllocateRoleService, mockCaseworkerDataService, mockSupportedJurisdictionsService);
       component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_REVIEW;
       component.specificAccessReviewComponent.reviewOptionControl = new FormControl('', [Validators.required]);
       component.specificAccessReviewComponent.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);

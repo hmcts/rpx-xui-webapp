@@ -2,22 +2,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { getMockTasks } from 'src/work-allocation/tests/utils.spec';
 import { UtilsModule } from '../../../../noc/containers/noc-field/utils/utils.module';
-import * as fromFeature from '../../../store';
-import * as fromContainers from '../../add-exclusion';
-import { SpecificAccessHomeComponent } from './specific-access-home.component';
 import { CaseRole, RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { AccessReason, DurationType } from '../../../models/enums';
-import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
-import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { DurationHelperService } from '../../../services';
-import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
-import { getMockTasks } from 'src/work-allocation/tests/utils.spec';
+import * as fromFeature from '../../../store';
+import * as fromContainers from '../../add-exclusion';
+import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
+import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
+import { SpecificAccessHomeComponent } from './specific-access-home.component';
 
 describe('SpecificAccessHomeComponent', () => {
   let component: SpecificAccessHomeComponent;
@@ -111,6 +111,7 @@ describe('SpecificAccessHomeComponent', () => {
     const continueNavEvent = SpecificAccessNavigationEvent.CONTINUE;
     const returnToMyTasksNavEvent = SpecificAccessNavigationEvent.RETURNTOMYTASKS;
     const returnTasksTab = SpecificAccessNavigationEvent.RETURNTOTASKSTAB;
+    const cancelNavEvent = SpecificAccessNavigationEvent.CANCEL;
 
     it('should correctly navigate to the specific access review page on navigating back', () => {
       component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
@@ -150,5 +151,11 @@ describe('SpecificAccessHomeComponent', () => {
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/cases/case-details/${caseId}/tasks`);
     });
 
+    it('should correctly redirect to the tasks tab on the case details page if the cancel event is triggered', () => {
+      const caseId = '111111';
+      component.caseId = caseId;
+      component.navigationHandler(cancelNavEvent);
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/cases/case-details/${caseId}/tasks`);
+    });
   });
 });

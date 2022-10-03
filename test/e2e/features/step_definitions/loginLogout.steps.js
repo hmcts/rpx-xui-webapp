@@ -373,4 +373,14 @@ defineSupportCode(function ({ Given, When, Then }) {
     browser.sleep(LONG_DELAY);
   });
 
+
+  Given(/^I navigate to Expert UI Url direct link for SSCS$/, async function () {
+    await browser.driver.manage()
+      .deleteAllCookies();
+    const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+    await browser.get(baseUrl + 'cases/case-details/1656073414018376/hearings');
+   // browser.driver.manage().window().maximize();
+  });
+
+
 });

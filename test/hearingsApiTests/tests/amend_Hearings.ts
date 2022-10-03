@@ -1,4 +1,5 @@
-import {generateAPIRequest,generatePOSTAPIRequest, timeout} from '../utils';
+import {generateAPIRequest,generatePOSTAPIRequest,generateApiHearingIdValue,timeout} from '../utils';
+
 const should = require('chai').should();
 const payload = {
   "hearingDetails": {
@@ -124,29 +125,11 @@ suite('\'Hearings -> Get Hearing details\'', function() {
   //       .then(response => {
   //         response.status.should.be.eql(200);
   //       }));
-  //
-  // test('GET Hearing details', () => generateAPIRequest ('GET', '/api/hearings/getHearing?hearingId=2000002474')
-  // // console.log('response', response.headers.get('cache-control'))
-  //   .then(response => {
-  //     response.status.should.be.eql(200);
-  //   }));
-
-  // test('GET Linked Hearing details', () => generateAPIRequest ('GET', '/api/hearings/loadServiceLinkedCases?jurisdictionId=SSCS')
-  // // console.log('response', response.headers.get('cache-control'))
-  //   .then(response => {
-  //     response.status.should.be.eql(200);
-  //   }));
 
 
-  // test('GET Linked Cases', () => generateAPIRequest ('POST', '/api/hearings/loadServiceLinkedCases')
-  // // console.log('response', response.headers.get('cache-control'))
-  //   .then(response => {
-  //     response.status.should.be.eql(200);
-  //   }));
-  //
-  test('POST Submit Hearing Request', () => generatePOSTAPIRequest ('POST', '/api/hearings/submitHearingRequest', payload)
+  test('PUT Update Hearing Request', () => generateApiHearingIdValue ())
   // console.log('response', response.headers.get('cache-control'))
-    .then(response => {
-      response.status.should.be.eql(201);
-    }));
+  //   .then(response => {
+  //     response.status.should.be.eql(201);
+  //   }));
 });

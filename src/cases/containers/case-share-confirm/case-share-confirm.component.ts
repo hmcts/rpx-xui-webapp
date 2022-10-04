@@ -14,6 +14,7 @@ export class CaseShareConfirmComponent implements OnInit {
 
   public shareCases$: Observable<SharedCase[]>;
   public shareCases: SharedCase[];
+  public showSpinner: boolean = true;
 
   constructor(public store: Store<fromCaseList.State>) {
   }
@@ -22,6 +23,7 @@ export class CaseShareConfirmComponent implements OnInit {
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => {
       this.shareCases = shareCases;
+      this.showSpinner = false;
     });
   }
 

@@ -23,6 +23,7 @@ export class TasksContainerComponent implements OnInit {
   public tasksRefreshed: boolean = false;
   public caseworkers: Caseworker[] = [];
   public warningIncluded: boolean;
+  public showSpinner: boolean = true;
 
   constructor(private readonly waCaseService: WorkAllocationCaseService,
               private readonly route: ActivatedRoute,
@@ -50,6 +51,7 @@ export class TasksContainerComponent implements OnInit {
           return this.tasks && this.tasks.length > 0 ? this.getAssignedNamesForTasks() : of(this.tasks);
         })).subscribe(tasks => {
           this.tasks = tasks;
+          this.showSpinner = false;
         });
     this.caseDetails = this.route.snapshot.data.case as CaseView;
   }

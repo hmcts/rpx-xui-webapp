@@ -22,6 +22,7 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
   public isLoading: boolean;
   public completeScreenMode: string;
   public removeUserFromCaseToggleOn$: Observable<boolean>;
+  public showSpinner: boolean = true;
 
   constructor(private readonly store: Store<fromCaseList.State>,
               private readonly featureToggleService: FeatureToggleService) {}
@@ -39,6 +40,7 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
     this.newShareCases$.subscribe(shareCases => {
       this.completeScreenMode = this.checkIfIncomplete(shareCases);
       this.newShareCases = shareCases;
+      this.showSpinner = false;
     });
     this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue(LD_FLAG_REMOVE_USER_FROM_CASE_MC, false);
   }

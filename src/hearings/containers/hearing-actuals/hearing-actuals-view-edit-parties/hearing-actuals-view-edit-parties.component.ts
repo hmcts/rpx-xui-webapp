@@ -51,6 +51,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   private sub: Subscription;
   private formSub: Subscription;
   public window: any = window;
+  public showSpinner: boolean = true;
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly validators: ValidatorsUtils,
@@ -123,6 +124,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         this.setUpRoleLists();
         this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
+        this.showSpinner = false;
       });
   }
 

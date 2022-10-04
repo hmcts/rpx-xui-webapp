@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { AnswerSource, EXUIDisplayStatusEnum, HearingChannelEnum, LaCaseStatus } from '../../models/hearings.enum';
@@ -24,6 +24,7 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public exuiDisplayStatus = EXUIDisplayStatusEnum;
   public isPaperHearing: boolean;
   public displayPanelMembersSection: boolean;
+  public showSpinner: boolean = true;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, public readonly route: ActivatedRoute) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
@@ -43,6 +44,8 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
       const screenFlow = state.hearingValues && state.hearingValues.serviceHearingValuesModel && state.hearingValues.serviceHearingValuesModel.screenFlow;
       this.displayPanelMembersSection = screenFlow && screenFlow.findIndex((screen) => screen.screenName === ListingInformationSummaryComponent.HEARING_PANEL_SCREEN_NAME) !== -1;
+
+      this.showSpinner = false;
     });
   }
 

@@ -25,6 +25,7 @@ export class TasksContainerComponent implements OnInit {
   public caseworkers: Caseworker[] = [];
   public warningIncluded: boolean;
   public isUpdatedTaskPermissions$: Observable<boolean>;
+  public showSpinner: boolean = true;
 
   constructor(private readonly waCaseService: WorkAllocationCaseService,
               private readonly route: ActivatedRoute,
@@ -48,7 +49,6 @@ export class TasksContainerComponent implements OnInit {
           if (tasks && tasks.length > 0) {
             return this.caseworkerService.getCaseworkersForServices([tasks[0].jurisdiction]);
           }
-
           return of([]);
         })).pipe(mergeMap((caseworkers) => {
         this.caseworkers = caseworkers;

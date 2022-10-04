@@ -13,6 +13,7 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingActualsMainModel: HearingActualsMainModel;
   public sub: Subscription;
+  public showSpinner: boolean = true;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
 
@@ -24,6 +25,7 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
 
     this.sub = this.hearingState$.subscribe((state) => {
       this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
+      this.showSpinner = false;
     });
   }
 

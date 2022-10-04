@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../store';
 
@@ -15,12 +15,14 @@ export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
   public additionalDescription: string;
   public caseId: string;
   public sub: Subscription;
+  public showSpinner: boolean = true;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public ngOnInit(): void {
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
-      (hearingList) => {
+      hearingList => {
+        this.showSpinner = false;
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
         this.heading = 'Hearing request submitted';
         this.headingDescription = 'Your hearing request will now be processed';

@@ -60,13 +60,11 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
-    console.log('missisisisis', JSON.stringify(response.data))
     const finalRoles: CaseRole[] = mapResponseToCaseRoles(
       response.data.roleAssignmentResponse,
       req.body.assignmentId,
       req
     );
-    console.log('banaba', finalRoles);
     return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);

@@ -112,6 +112,7 @@ describe('SpecificAccessHomeComponent', () => {
     const continueNavEvent = SpecificAccessNavigationEvent.CONTINUE;
     const returnToMyTasksNavEvent = SpecificAccessNavigationEvent.RETURNTOMYTASKS;
     const returnTasksTab = SpecificAccessNavigationEvent.RETURNTOTASKSTAB;
+    const cancelNavEvent = SpecificAccessNavigationEvent.CANCEL;
 
     it('should correctly navigate to the specific access review page on navigating back', () => {
       component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
@@ -151,5 +152,11 @@ describe('SpecificAccessHomeComponent', () => {
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/cases/case-details/${caseId}/tasks`);
     });
 
+    it('should correctly redirect to the tasks tab on the case details page if the cancel event is triggered', () => {
+      const caseId = '111111';
+      component.caseId = caseId;
+      component.navigationHandler(cancelNavEvent);
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/cases/case-details/${caseId}/tasks`);
+    });
   });
 });

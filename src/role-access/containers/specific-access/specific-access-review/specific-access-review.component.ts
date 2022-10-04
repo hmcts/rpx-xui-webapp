@@ -7,7 +7,7 @@ import { take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
 
 import { UserDetails } from '../../../../app/models';
-import { CaseworkerDataService } from '../../../../work-allocation/services';
+import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../../work-allocation/services';
 import { ERROR_MESSAGE } from '../../../constants';
 import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../../models/enums';
@@ -52,7 +52,8 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private readonly store: Store<fromFeature.State>,
     private readonly allocateRoleService: AllocateRoleService,
-    private readonly caseworkerDataService: CaseworkerDataService
+    private readonly caseworkerDataService: CaseworkerDataService,
+    private waSupportedJurisdictionsService: WASupportedJurisdictionsService
   ) {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
@@ -72,10 +73,13 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
         (caseRoleUserDetails) => { this.requesterName = caseRoleUserDetails[0].known_as; }
       );
     } else {
-      this.caseworkerDataService.getCaseworkersForServices([this.specificAccessStateData.jurisdiction]).subscribe(
-        (caseworkers) => {const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.specificAccessStateData.actorId);
-                          this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`}
-      );
+      this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
+        this.caseworkerDataService.getCaseworkersForServices(services).subscribe(
+          (caseworkers) => {
+            const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.specificAccessStateData.actorId);
+            this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`
+          });
+      });
     }
     this.reviewOptionControl = new FormControl(this.initialAccessReason ? this.initialAccessReason : '', [Validators.required]);
     this.formGroup = this.fb.group({
@@ -122,7 +126,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
             specificAccessState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
             break;
           case AccessReason.REJECT_REQUEST:
-            const  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
+            const rejectedRole = { id: 'specific-access-denied', name: 'specific-access-denied' };
             let specificAccessBody;
             this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccess) => {
               if (specificAccess) {
@@ -136,7 +140,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
                   assigneeId: specificAccess.actorId,
                   caseName: specificAccess.caseName,
                   requestCreated: specificAccess.requestCreated,
-                  person: {id: specificAccess.actorId, name: null, domain: null},
+                  person: { id: specificAccess.actorId, name: null, domain: null },
                 }
               }
             });

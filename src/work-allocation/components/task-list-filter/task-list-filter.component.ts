@@ -338,12 +338,22 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           title: 'Services',
           type: 'checkbox-large'
           };
-        this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-          name: 'services',
-          value: ['services_all', ...filteredServices]
-        }];
+
+        let fieldSetting = this.fieldsSettings.fields.find(field => field.name === 'services');
+        if (fieldSetting){
+          fieldSetting.value = ['services_all', ...filteredServices]; 
+        }else{
+          this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
+            name: 'services',
+            value: ['services_all', ...filteredServices]
+          }];
+        } 
+       
         this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-        this.fieldsConfig.fields.push(field);
+        let fieldConfig = this.fieldsConfig.fields.find(field => field.name ==='services');
+        if (!fieldConfig) {
+          this.fieldsConfig.fields.push(field);
+        } 
       });
     }
 

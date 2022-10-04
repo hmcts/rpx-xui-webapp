@@ -20,6 +20,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   public hearingState$: Observable<fromHearingStore.State>;
   public validationErrors: { id: string, message: string }[] = [];
   public sub: Subscription;
+  public showSpinner: boolean = true;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly router: Router,
@@ -36,6 +37,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
         });
         window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       }
+      this.showSpinner = false;
     });
   }
 

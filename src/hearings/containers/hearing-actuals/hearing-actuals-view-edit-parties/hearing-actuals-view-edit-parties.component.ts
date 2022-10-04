@@ -2,7 +2,7 @@ import { Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import {
   ActualDayPartyModel,
@@ -50,6 +50,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   private formSub: Subscription;
   public window: any = window;
   private plannedDayIndex: number;
+  public showSpinner: boolean = true;
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly validators: ValidatorsUtils,
@@ -142,6 +143,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         this.setUpRoleLists();
         this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
+        this.showSpinner = false;
       });
   }
 

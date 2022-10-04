@@ -16,6 +16,7 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsMainModel: HearingActualsMainModel;
   public adjournReasons: LovRefDataModel[];
   public subscription: Subscription;
+  public showSpinner: boolean = true;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly route: ActivatedRoute) {
@@ -31,6 +32,7 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
     this.subscription = this.hearingState$.subscribe({
       next: (state: fromHearingStore.State) => {
         this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
+        this.showSpinner = false;
       }
     });
   }

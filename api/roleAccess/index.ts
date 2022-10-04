@@ -60,11 +60,13 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
+    console.log('missisisisis', JSON.stringify(response.data))
     const finalRoles: CaseRole[] = mapResponseToCaseRoles(
       response.data.roleAssignmentResponse,
       req.body.assignmentId,
       req
     );
+    console.log('banaba', finalRoles);
     return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);
@@ -163,8 +165,8 @@ export function mapResponseToCaseRoles(
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes: roleAssignment.attributes && roleAssignment.attributes.notes ?
-     roleAssignment.attributes.notes : 'No reason for case access given',
+    notes: roleAssignment.attributes && roleAssignment.attributes.specificAccessReason ?
+     getSpecificReason(roleAssignment.attributes.specificAccessReason) : 'No reason for case access given',
     requestedRole: roleAssignment.attributes && roleAssignment.attributes.requestedRole ?
      roleAssignment.attributes.requestedRole : null,
   }));
@@ -345,4 +347,13 @@ export function getAccessRolesRequestPayload(caseId: string,
       },
     ],
   };
+}
+
+// instances of specific reason appearing as JSON from toolkit versions - this enables both possibilities
+export function getSpecificReason(note: string): string {
+  if (note.charAt(0) !== '{') {
+    return note;
+  }
+  const noteObject = JSON.parse(note);
+  return noteObject ? noteObject.specificReason : null;
 }

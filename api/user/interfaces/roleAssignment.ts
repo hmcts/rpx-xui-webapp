@@ -27,6 +27,7 @@ export interface LocationInfo {
   notes?: Note;
   requestedRole?: string;
   roleType?: string;
+  specificAccessReason?: string;
 }
 
 export interface Note {

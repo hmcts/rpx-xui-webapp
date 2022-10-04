@@ -13,6 +13,7 @@ import * as fromHearingStore from '../../../store';
 export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsModel: HearingActualsMainModel;
   public subscription: Subscription;
+  public showSpinner: boolean = true;
 
   constructor(private readonly store: Store<fromHearingStore.State>) {
   }
@@ -24,6 +25,7 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
       )
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsModel = state.hearingActualsMainModel;
+        this.showSpinner = false;
       });
   }
 

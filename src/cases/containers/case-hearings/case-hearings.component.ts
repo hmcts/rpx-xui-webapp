@@ -44,6 +44,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
   public isOgdRole$: Observable<boolean>;
+  public showSpinner: boolean = true;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
@@ -79,6 +80,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         // Reset the error context if there is no error on subsequent requests
         this.serverError = null;
       }
+      this.showSpinner = false;
     });
 
     this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);

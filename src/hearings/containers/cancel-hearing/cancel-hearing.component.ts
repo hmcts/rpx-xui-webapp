@@ -21,6 +21,8 @@ export class CancelHearingComponent implements OnInit {
   public hearingId: string;
   public caseId: string;
   public caseHearing: HearingListModel;
+  public showSpinner: boolean = true;
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -44,6 +46,7 @@ export class CancelHearingComponent implements OnInit {
           const caseHearings = hearingList.hearingListMainModel.caseHearings.filter(caseHearing => caseHearing.hearingID === this.hearingId);
           this.caseHearing = caseHearings.length ? caseHearings[0] : undefined;
         }
+        this.showSpinner = false;
       });
     this.hearingCancelOptions = this.route.snapshot.data.hearingCancelOptions;
     this.initForm();

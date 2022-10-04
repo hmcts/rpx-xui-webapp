@@ -53,6 +53,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public error$: Observable<HttpError>;
   public partyChannels: LovRefDataModel[] = [];
   public hearingDate: string;
+  public showSpinner: boolean = true;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -90,6 +91,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
         this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
         this.hearingDate = this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays);
+        this.showSpinner = false;
       });
   }
 

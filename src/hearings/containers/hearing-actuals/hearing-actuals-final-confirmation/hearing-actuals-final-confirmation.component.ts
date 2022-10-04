@@ -13,6 +13,7 @@ export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestr
   public subheading: string;
   public caseId: string;
   public sub: Subscription;
+  public showSpinner: boolean = true;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
   }
@@ -23,6 +24,7 @@ export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestr
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
         this.heading = 'You have successfully submitted the hearing details.';
         this.subheading = 'What happens next';
+        this.showSpinner = false;
       });
   }
 

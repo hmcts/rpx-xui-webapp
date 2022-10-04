@@ -17,6 +17,7 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public caseStatusName: string;
   public serviceValueSub: Subscription;
   public exuiDisplayStatus = EXUIDisplayStatusEnum;
+  public showSpinner: boolean = true;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, public readonly route: ActivatedRoute) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
@@ -30,6 +31,7 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
           this.caseStatusName = caseHearing.exuiDisplayStatus;
         }
       });
+      this.showSpinner = false;
     }
     );
   }

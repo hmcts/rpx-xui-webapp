@@ -80,4 +80,10 @@ describe('ApplicationRoutingComponent', () => {
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   });
+
+  it('should navigateBasedOnUserRole pui-case-manager', async () => {
+    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['pui-case-manager']}}));
+    component.navigateBasedOnUserRole();
+    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
+  });
 });

@@ -76,9 +76,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see case details page', async function () {
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await caseManager.AmOnCaseDetailsPage();
-        });
+        await caseManager.AmOnCaseDetailsPage();
+
     });
 
     Then('I am on check your answers page', async function () {

@@ -34,12 +34,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     When('I select Choose the person\'s role option {string} in add exclusion work flow', async function (excludeRoleOption) {
-        await exclusionWorkFlow.choosePersonRole.selectRadioOption(excludeRoleOption);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await exclusionWorkFlow.choosePersonRole.selectRadioOption(excludeRoleOption);
+        });
     });
 
 
     When('I enter description {string} in add exclusion Describe the exclusion page', async function (exclusionDescription) {
-        await exclusionWorkFlow.describeExclusion.enterExclusionDescription(exclusionDescription);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await exclusionWorkFlow.describeExclusion.enterExclusionDescription(exclusionDescription);
+        });
     });
 
     When('I search with text {string} in Find the person page of exclusion work flow', async function (searchText) {

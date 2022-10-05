@@ -7,6 +7,7 @@ import { setHeaders } from '../lib/proxy';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { postTaskCompletionForAccess } from '../workAllocation';
+import { getFullLocationsForServices } from '../workAllocation/locationService';
 import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 
 export async function getBookings(req, resp: Response, next: NextFunction) {
@@ -18,7 +19,7 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
 
   try {
     const bookings = await http.post(fullPath, {"queryRequest" : {"userIds" : [req.body.userId]}}, { headers });
-    const fullLocations = await (req);
+    const fullLocations = await getFullLocationsForServices(req);
     const bookingAndLocationName = bookings.data.bookings.map(booking => {
       const location = fullLocations.filter(thisLocation =>
         booking.locationId === thisLocation.epimms_id);

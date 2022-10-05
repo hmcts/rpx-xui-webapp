@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.1-update-joh-name-to-full-name":
-  version "1.8.1-update-joh-name-to-full-name"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.1-update-joh-name-to-full-name.tgz#8a62ba10949cf4a5155e5115e078a59ba77ea7fd"
-  integrity sha512-eAPPx0q13ehbYxBTQMz0LnWCIZbqy0AxPXaJlsFQjJK9IhnH7blSWkzD51axsl11yK8gecrQMB7OBYZTux0E/A==
+"@hmcts/rpx-xui-common-lib@1.8.3-update-joh-name-to-full-name":
+  version "1.8.3-update-joh-name-to-full-name"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.3-update-joh-name-to-full-name.tgz#e0ac0509217ae7025cbaea5bba1f01748392eb0c"
+  integrity sha512-rRXS5B4bfaiKC9AF7/LRg//5PAu0AwJFy5u1Pd5EVhkRswZw2lINSsKIAyp/AswBuLYrHCcXS9j5kL1e5FQcxw==
   dependencies:
     tslib "^1.9.0"
 

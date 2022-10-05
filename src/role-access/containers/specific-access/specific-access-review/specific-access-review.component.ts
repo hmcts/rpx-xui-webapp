@@ -79,7 +79,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
             const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.specificAccessStateData.actorId);
             if (caseworker) {
               this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`
-            }            
+            }
           });
       });
     }

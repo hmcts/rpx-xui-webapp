@@ -1,4 +1,4 @@
-@ng @wa2 @wa  
+@ng @wa2 @wa 
 Feature: WA Release 2: My work - My tasks - Task assignment
 
     Background: Mock and browser setup
@@ -32,6 +32,10 @@ Feature: WA Release 2: My work - My tasks - Task assignment
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -82,6 +86,10 @@ Feature: WA Release 2: My work - My tasks - Task assignment
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>" cancel in check your changes page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -131,6 +139,10 @@ Feature: WA Release 2: My work - My tasks - Task assignment
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>" cancel in find person page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -172,6 +184,10 @@ Feature: WA Release 2: My work - My tasks - Task assignment
 
     Scenario Outline:  Task assign to unaithorised user "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |

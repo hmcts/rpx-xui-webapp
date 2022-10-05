@@ -17,6 +17,10 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
 
     Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -82,6 +86,10 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
 
     Scenario Outline: My Tasks pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -105,6 +113,10 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
 
     Scenario Outline: My Tasks pagnation control display 0 items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 12345           | ORGANISATION |
+            | SSCS         | 12345           | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |

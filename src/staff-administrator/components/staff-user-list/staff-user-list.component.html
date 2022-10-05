@@ -1,51 +1,61 @@
-<div class="govuk-!-margin-bottom-4">
-  Displaying <span class="govuk-!-font-weight-bold">{{ dataSource.length }}</span> of <span class="govuk-!-font-weight-bold">{{ dataSource.length }}</span> users
-</div>
-
-
-<div class="govuk-!-margin-bottom-6">
-  <div class="govuk-button-group govuk-button-group--right">
-    <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
-      Add new user
-    </button>
+<ng-container *ngIf="(staffDataFilterService.tableData$ | async).results.length">
+  <div class="govuk-!-margin-bottom-4">
+    Displaying <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).results.length }}</span> of <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).results.length }}</span> users
   </div>
 
-</div>
+  <div class="govuk-!-margin-bottom-6">
+    <div class="container-fluid">
+      <div class="govuk-button-group govuk-button-group--right">
+        <button
+          [routerLink]="['/staff/add-user']"
+          class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
+          Add new user
+        </button>
+      </div>
+    </div>
+  </div>
 
-<div>
-  <table class="govuk-table" cdk-table [dataSource]="dataSource">
-    <ng-container cdkColumnDef="name">
-      <th cdk-header-cell *cdkHeaderCellDef>Name</th>
-      <td cdk-cell *cdkCellDef="let element">
-        <a href="">{{element.name}}</a>
-      </td>
-    </ng-container>
+  <div>
+    <table class="govuk-table" cdk-table [dataSource]="(staffDataFilterService.tableData$ | async).results">
+      <ng-container cdkColumnDef="name">
+        <th cdk-header-cell *cdkHeaderCellDef>Name</th>
+        <td cdk-cell *cdkCellDef="let element">
+          <a href="{{'/staff/users/user-details/' + element.id }}">{{element.firstName}} {{element.lastName}}</a>
+        </td>
+      </ng-container>
 
-    <ng-container cdkColumnDef="services">
-      <th cdk-header-cell *cdkHeaderCellDef>Services</th>
-      <td cdk-cell *cdkCellDef="let element"> {{element.services}} </td>
-    </ng-container>
+      <ng-container cdkColumnDef="services">
+        <th cdk-header-cell *cdkHeaderCellDef>Services</th>
+        <td cdk-cell *cdkCellDef="let element">
+          <div *ngFor="let service of element.services">
+            {{ service }}
+          </div>
+        </td>
+      </ng-container>
 
-    <ng-container cdkColumnDef="locations">
-      <th cdk-header-cell *cdkHeaderCellDef>Locations</th>
-      <td cdk-cell *cdkCellDef="let element"> {{element.locations}} </td>
-    </ng-container>
+      <ng-container cdkColumnDef="locations">
+        <th cdk-header-cell *cdkHeaderCellDef>Locations</th>
+        <td cdk-cell *cdkCellDef="let element">
+          <div *ngFor="let location of element.locations">
+            {{ location }}
+          </div>
+        </td>
+      </ng-container>
 
-    <ng-container cdkColumnDef="jobTitle">
-      <th cdk-header-cell *cdkHeaderCellDef>Job title</th>
-      <td cdk-cell *cdkCellDef="let element"> {{element.jobTitle}} </td>
-    </ng-container>
+      <ng-container cdkColumnDef="jobTitle">
+        <th cdk-header-cell *cdkHeaderCellDef>Job title</th>
+        <td cdk-cell *cdkCellDef="let element"> {{element.jobTitle}} </td>
+      </ng-container>
 
-    <ng-container cdkColumnDef="status">
-      <th cdk-header-cell *cdkHeaderCellDef>Status</th>
-      <td cdk-cell *cdkCellDef="let element">
-        <strong class="hmcts-badge hmcts-badge--green">
-          {{element.status}}
-        </strong>
-      </td>
-    </ng-container>
+      <ng-container cdkColumnDef="status">
+        <th cdk-header-cell *cdkHeaderCellDef>Status</th>
+        <td cdk-cell *cdkCellDef="let element">
+          <exui-staff-status [status]="element.suspended" ></exui-staff-status>
+        </td>
+      </ng-container>
 
-    <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-    <tr cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-</div>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</ng-container>

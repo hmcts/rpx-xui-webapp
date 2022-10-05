@@ -6,6 +6,8 @@ export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const getFilteredUsers = /refdata\/case-worker\/profile/;
+  const getUsersByPartialName = /refdata\/case-worker\/profile\/search/;
+  const getStaffRefUserDetails = /refdata\/case-worker\/user-details\/[0-9]/;
 
   const getUserTypes = /refdata\/case-worker\/user-type/;
   const getJobTitles = /refdata\/case-worker\/job-title/;
@@ -15,6 +17,20 @@ export const init = () => {
     return [
       200,
       STAFF_REF_USERS_LIST,
+    ];
+  });
+
+  mock.onGet(getUsersByPartialName).reply(config => {
+    const searchParam = config.params.search.toLowerCase();
+    const filteredUsers = STAFF_REF_USERS_LIST
+      .filter(item => item.firstName.toLowerCase().includes(searchParam) || item.lastName.toLowerCase().includes(searchParam));
+
+    return [
+      200,
+      {
+        totalItems: STAFF_REF_USERS_LIST.length,
+        results: filteredUsers,
+      },
     ];
   });
 
@@ -36,6 +52,21 @@ export const init = () => {
     return [
       200,
       [{label: 'Skills', key: 'skill'}],
+    ];
+  });
+
+  mock.onGet(getStaffRefUserDetails).reply(config => {
+    const url = config.url;
+    const strId = url.match(/[0-9]/g);
+    const id = parseInt(strId[0], 10);
+    const filteredUser = STAFF_REF_USERS_LIST
+      .filter(item => item.id === id);
+
+    return [
+      200,
+      {
+        results: filteredUser,
+      },
     ];
   });
 };

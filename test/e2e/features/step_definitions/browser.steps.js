@@ -42,6 +42,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await BrowserWaits.retryWithActionCallback(async () => {
             await headerPage.waitForPrimaryNavDisplay();
             await browserutil.waitForLD();
+            await headerPage.clickAppLogoLink();  
         });
     });
 

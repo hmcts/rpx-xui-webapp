@@ -1,6 +1,6 @@
 
 
-
+const browserWaits = require('../../../support/customWaits');
 
 class CheckAnswersPage{
     constructor(){
@@ -12,6 +12,10 @@ class CheckAnswersPage{
         this.cancelLink = $('exui-booking-check .govuk-button-group a');
 
         this.summaryList = $$('exui-booking-check .govuk-summary-list .govuk-summary-list__row');
+    }
+
+    async waitForPage(){
+        await browserWaits.waitForElement(this.pageContainer);
     }
 
     async isKeyDisplayed(key){

@@ -1,0 +1,11 @@
+<ng-container *ngIf="!status; else userSuspended">
+  <strong class="hmcts-badge hmcts-badge--green">
+    ACTIVE
+  </strong>
+</ng-container>
+
+<ng-template #userSuspended>
+  <strong class="hmcts-badge hmcts-badge--red">
+    SUSPENDED
+  </strong>
+</ng-template>

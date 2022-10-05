@@ -172,7 +172,11 @@ class BrowserWaits{
                 CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
 
                 error = err
-               
+                
+                const currentRoute = await browser.getCurrentUrl()
+                if (currentRoute.includes('service-down')){
+                    throw new Error('Generic system error displayed: "Sorry, there is a problem with the service"');
+                }
                
             }
             retryCounter += 1;

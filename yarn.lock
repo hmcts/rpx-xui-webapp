@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.19-judiciary-change":
-  version "4.18.19-judiciary-change"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.19-judiciary-change.tgz#c3db8cce77d3cc31e94a96fab54fe9d3d04bed07"
-  integrity sha512-gQHjh9OI09mXU2Xz3/8ClXapyw5HljyhvgfdzRAYjOpFedg2FxDIHxSLAzNJjKICTz65GST4YgGOR2sSW5O5pw==
+"@hmcts/ccd-case-ui-toolkit@4.18.19-judiciary-change--EUI-6839-3":
+  version "4.18.19-judiciary-change--EUI-6839-3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.19-judiciary-change--EUI-6839-3.tgz#2270bcc9068641de1b9525a257859a6370ea2dff"
+  integrity sha512-rc0BOs1nMgEs2cC+qEms6lfUMtslUefdfFs9O9CjZZzNDDFuwG+fUcfkrx97IbizBV1kEgm1Bbfx1a9Ap6ZDxg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

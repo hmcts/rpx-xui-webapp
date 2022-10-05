@@ -7,7 +7,6 @@ import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
 import CaseServiceConfig from '../../models/cases/case-service-config.model';
 import { FieldConfig, SortField } from '../../models/common';
 import { Location, PaginationParameter } from '../../models/dtos';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'exui-work-case-list',
@@ -43,7 +42,7 @@ export class WorkCaseListComponent implements OnChanges {
   @Output() public sortEvent = new EventEmitter<string>();
   @Output() public paginationEvent = new EventEmitter<number>();
   @Output() public actionEvent = new EventEmitter<InvokedCaseAction>();
-
+  @Output() public itemClickEvent = new EventEmitter<Case>();
   /**
    * The datasource is an Observable of data to be displayed, as per LLD.
    */
@@ -54,9 +53,7 @@ export class WorkCaseListComponent implements OnChanges {
   private selectedCase: Case;
   public newUrl: string;
 
-  constructor(private readonly router: Router, private httpClient: HttpClient) {
-
-  }
+  constructor(private readonly router: Router) {}
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
@@ -137,6 +134,7 @@ export class WorkCaseListComponent implements OnChanges {
   }
 
   public onItemClick(item: Case): void {
+    this.itemClickEvent.emit(item);
   }
 
   /**

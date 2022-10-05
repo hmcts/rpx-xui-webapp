@@ -14,7 +14,7 @@ import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
 import { exists, reflect } from '../lib/util';
-import { TaskPermission, ViewType, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
+import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
 import { getCaseListPromises } from "./index";
 import { Case, CaseList } from './interfaces/case';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
@@ -352,6 +352,23 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   let cases = [];
   caseResults.forEach( caseResult => cases = [...cases, ...caseResult.cases]);
   return cases;
+}
+
+export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
+  : Promise<RoleCaseData[]> {
+  const specificRoleAssignments = roleAssignmentList.filter(roleAssignment =>
+    roleAssignment.grantType === 'SPECIFIC'
+    ||
+    roleAssignment.roleName === 'specific-access-requested'
+    ||
+    roleAssignment.roleName === 'specific-access-denied'
+    ||
+    roleAssignment.grantType === 'CHALLENGED'
+  );
+
+  const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
+
+  return mapCasesFromData(cases, specificRoleAssignments);
 }
 
 export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery [] {

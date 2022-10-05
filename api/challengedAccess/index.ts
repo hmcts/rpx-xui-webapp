@@ -12,10 +12,6 @@ export async function challengedAccessRouter(req: EnhancedRequest, resp, next) {
     /* tslint:disable:no-string-literal */
     delete headers['accept'];
     try {
-      if (req.body.requestedRoles && req.body.requestedRoles[0] && req.body.requestedRoles[0].attributes) {
-            req.body.requestedRoles[0].attributes.isNew = true;
-      }
-
       const response = await http.post(fullPath, req.body, { headers });
       await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
 
@@ -25,7 +21,7 @@ export async function challengedAccessRouter(req: EnhancedRequest, resp, next) {
     }
 }
 
-export async function challengedAccessSetIsNewFalse(req: EnhancedRequest, resp, next) {
+export async function challengedAccessUpdateAttributes(req: EnhancedRequest, resp, next) {
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const queryPath = `${basePath}/am/role-assignments/query`;
   const updatePath = `${basePath}/am/role-assignments`;
@@ -34,32 +30,35 @@ export async function challengedAccessSetIsNewFalse(req: EnhancedRequest, resp, 
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
   try {
-    const uid = req.session.passport.user.userinfo.uid;
+    const actorId = req.session.passport.user.userinfo.uid;
     const caseId = req.body.caseId;
 
     const roleAssignmentQueryResponse = await http.post(queryPath, {
-      actorId: [uid],
+      actorId: [actorId],
       attributes: {
         caseId: [caseId],
       },
     }, { headers });
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
-    singleRoleAssignment['attributes'].isNew = false;
-    singleRoleAssignment['notes'] = [
-      {
-        userId: uid,
-        time: '',
-        comment: '',
-      },
-    ];
+
     delete singleRoleAssignment['id'];
+    singleRoleAssignment.attributes = {
+       ...singleRoleAssignment.attributes,
+      ...req.body.attributesToUpdate,
+    };
+
+    singleRoleAssignment.notes = [{
+      userId: actorId,
+      time: new Date(),
+      comment: singleRoleAssignment.attributes.accessReason,
+    }];
 
     const roleAssignmentUpdate = {
       roleRequest: {
-        assignerId: uid,
-        process: "challenged-access",
-        reference: `${caseId}/challenged-access-judiciary/${uid}`,
+        assignerId: actorId,
+        process: 'challenged-access',
+        reference: `${caseId}/${singleRoleAssignment.roleName}/${actorId}`,
         replaceExisting: true,
       },
       requestedRoles: [singleRoleAssignment],

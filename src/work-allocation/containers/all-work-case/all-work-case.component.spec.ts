@@ -23,7 +23,7 @@ import {
   WorkAllocationCaseService,
   WorkAllocationFeatureService
 } from '../../services';
-import { getMockCaseRoles, getMockCases, MockRouter } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';
 
@@ -64,7 +64,6 @@ describe('AllWorkCaseComponent', () => {
       ],
       declarations: [AllWorkCaseComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
-        {provide: Router, useValue: routerMock},
         {provide: WorkAllocationCaseService, useValue: mockCaseService},
         {provide: AlertService, useValue: mockAlertService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},

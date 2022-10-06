@@ -354,6 +354,23 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   return cases;
 }
 
+export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
+  : Promise<RoleCaseData[]> {
+  const specificRoleAssignments = roleAssignmentList.filter(roleAssignment =>
+    roleAssignment.grantType === 'SPECIFIC'
+    ||
+    roleAssignment.roleName === 'specific-access-requested'
+    ||
+    roleAssignment.roleName === 'specific-access-denied'
+    ||
+    roleAssignment.grantType === 'CHALLENGED'
+  );
+
+  const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
+
+  return mapCasesFromData(cases, specificRoleAssignments);
+}
+
 export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery [] {
   const elasticQueries = new Array<ElasticSearchQuery>();
   const chunkSize = 200;

@@ -6,8 +6,6 @@ const should = require('chai').should();
 var hearingID; var count=0;
 const payload = {"cancellationReasonCodes":["exclusio"]};
 
-
-
 suite('\'Hearings -> DELETE Hearing details\'', function() {
   this.timeout(timeout);
 

@@ -5,6 +5,7 @@ export { authenticateAndGetcookies} from './getCookie';
 export {generateApiHearingIdValue} from './generateHearingIdValue' ;
 // export { generateregPOSTAPIRequest } from './generateregPOSTAPI';
 export {generateDeleteRequest} from './generateDeleteAPIRequest' ;
+export { generatePUTAPIRequest } from './generatePUTAPIRequest';
 export const timeout = 90000;
 
 export const payload = {

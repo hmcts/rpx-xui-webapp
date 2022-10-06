@@ -6,6 +6,7 @@ import { MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatNativeDat
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
+import { RouterModule } from '@angular/router';
 import * as fromComponents from '.';
 import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService } from '../services';
@@ -17,6 +18,7 @@ import { PriorityFieldComponentModule } from './priority-field/priority.module';
     CommonModule,
     HttpClientModule,
     ExuiCommonLibModule,
+    RouterModule,
     FormsModule, // TODO: Remove this as it's only needed for testing.
     PipesModule,
     WorkAllocationPipesModule,

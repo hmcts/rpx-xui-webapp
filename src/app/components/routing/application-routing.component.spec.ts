@@ -27,10 +27,16 @@ describe('ApplicationRoutingComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should call navigateBasedOnUserRole on ngOnInit', () => {
+    spyOn(component, 'navigateBasedOnUserRole');
+    component.ngOnInit();
+    expect(component.navigateBasedOnUserRole).toHaveBeenCalled();
+  });
+
   it('should navigateBasedOnUserRole caseworker-civil', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
-    component.navigateBasedOnUserRole();
+    component.ngOnInit();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   });
 
@@ -57,6 +63,13 @@ describe('ApplicationRoutingComponent', () => {
 
   it('should navigateBasedOnUserRole non judge role', () => {
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['somerole']}}));
+    component.navigateBasedOnUserRole();
+    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
+  });
+
+
+  it('should navigate to defaultPage when not loggedIn (no userInfo)', () => {
+    mockStore.pipe.and.returnValue(of({userInfo: {}}));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   });

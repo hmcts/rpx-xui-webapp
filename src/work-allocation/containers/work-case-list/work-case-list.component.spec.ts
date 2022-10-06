@@ -68,16 +68,17 @@ describe('CaseListComponent', () => {
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getCase']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  beforeEach((() => {
+
+  beforeEach(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
+      declarations: [WorkCaseListComponent, WrapperComponent],
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule,
         PaginationModule,
         RouterTestingModule
       ],
-      declarations: [WorkCaseListComponent, WrapperComponent],
       providers: []
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -95,7 +96,7 @@ describe('CaseListComponent', () => {
     mockWorkAllocationService.getCase.and.returnValue(of({}));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     fixture.detectChanges();
-  }));
+  });
 
   // it(`should return the fields as an array with a 'manage' entry, so that we can` +
   //   'display the manage column in the table.', async () => {
@@ -114,7 +115,6 @@ describe('CaseListComponent', () => {
     const displayedColumns = component.addManageColumn(fields);
     // test actual function against mock variables
     expect(component.getDisplayedColumn(caseFieldConfig)).toEqual(displayedColumns);
-    console.log(component.addActionsColumn, caseFieldConfig, fields, displayedColumns);
   });
 
   // required no sorting on EUI-4476 so exclude the test
@@ -413,9 +413,7 @@ describe('CaseListComponent', () => {
       fixture.detectChanges();
       component.setSelectedCase(caseItem);
       expect(component.getSelectedCase()).toEqual(caseItem);
-      console.log(component.newUrl, `bob#manage_${id}`);
-      console.log(typeof(component.newUrl));
-      expect(component.newUrl).toContain(`bob#manage_${id}`);
+      expect(component.newUrl).toContain(`/#manage_${id}`);
     });
 
     it('should handle a location hash for a case that does not exist', () => {
@@ -424,7 +422,7 @@ describe('CaseListComponent', () => {
       fixture.detectChanges();
       component.setSelectedCase(caseItem);
       expect(component.getSelectedCase()).toEqual(caseItem);
-      expect(component.newUrl).toEqual(`bob#manage_${caseItem.id}`);
+      expect(component.newUrl).toEqual(`/#manage_${caseItem.id}`);
     });
   });
 

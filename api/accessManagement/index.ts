@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_JUDICIAL_BOOKING_API_PATH,
@@ -33,7 +34,7 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
     });
     return resp.status(bookings.status).send(bookingAndLocationName);
   } catch (error) {
-      next(error)
+      next(error);
   }
 }
 
@@ -48,20 +49,16 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
     const response = await http.post(fullPath, {"bookingRequest": req.body }, { headers });
     return resp.status(response.status).send(response.data);
   } catch (error) {
-      next(error)
+      next(error);
   }
 }
 
 export async function refreshRoleAssignments(req, res: Response, next: NextFunction): Promise<Response> {
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH);
   const fullPath = `${basePath}/am/role-mapping/judicial/refresh`;
-  const headers = setHeaders(req);
-  /* tslint:disable:no-string-literal */
-  delete headers['accept'];
 
   try {
-    const response = await http.post(fullPath, {'refreshRequest' : {'userIds' : [req.body.userId]}}, { headers });
-
+    const response = await handlePost(fullPath, {'refreshRequest' : {'userIds' : [req.body.userId]}}, req, next);
     return res.status(response.status).send(response.data);
   } catch (error) {
     next(error);

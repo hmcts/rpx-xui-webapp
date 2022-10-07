@@ -20,6 +20,7 @@ describe('ChooseDurationComponent', () => {
   let formBuilder: FormBuilder;
   const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
     caseId: '1111111111111111',
+    jurisdiction: 'IA',
     assignmentId: 'a123456',
     state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
     typeOfRole: {id: 'lead-judge', name: 'Lead judge'},

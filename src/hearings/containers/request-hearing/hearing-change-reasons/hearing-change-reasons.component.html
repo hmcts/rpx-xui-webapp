@@ -1,0 +1,33 @@
+<xuilib-hmcts-error-summary [errorMessages]="errors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <form class="form" [formGroup]="hearingChangeReasonForm">
+      <h1 class="govuk-heading-l">
+        Provide a reason for changing this hearing
+      </h1>
+      <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : !selectionValid}">
+        <fieldset class="govuk-fieldset">
+          <span *ngIf="!selectionValid" id="change-reason-selection-error" class="govuk-error-message">
+            <span>{{ hearingChangeReasonMessages.SELECT_AT_LEAST_ONE_REASON }}</span>
+          </span>
+          <div class="govuk-hint">
+            Select all that apply.
+          </div>
+          <div id="hearing-option-container" class="govuk-checkboxes" formArrayName="reasons"
+            data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item" *ngFor="let reason of hearingChangeReasons;index as pos"
+              [formGroupName]="pos">
+              <input class="govuk-checkboxes__input" id="{{reason.key}}" name="pos" type="checkbox"
+                formControlName="selected" [value]="reason.value_en">
+              <label class="govuk-label govuk-checkboxes__label" for="{{reason.key}}">{{reason.value_en}}</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </form>
+    <p class="govuk-body">
+      <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'request', 'hearing-view-edit-summary']">Go back to
+        hearing summary</a>
+    </p>
+  </div>
+</div>

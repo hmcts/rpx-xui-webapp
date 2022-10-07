@@ -1,4 +1,4 @@
-@ng  @wa2 @wa2 @wa
+@ng @wa2 @wa 
 Feature: WA Release 2: My work - My tasks - Task actions
 
     Background: Mock and browser setup
@@ -7,6 +7,18 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
+        Given I set MOCK locations with names in service "IA"
+            | id    | locationName           |
+            | 20001 | IA Court Aldgate Tower |
+            | 20002 | IA Court Birmingham    |
+            | 2003  | IA Court Bradford      |
+            | 20004 | IA Court Glasgow       |
+            | 20005 | IA Court Hatton Cross  |
+            | 20006 | IA Court Newcastle     |
+            | 20007 | IA Court Newport       |
+            | 20008 | IA Court North Shields |
+            | 20009 | IA Court Taylor House  |
+            
         Given I set MOCK tasks with attributes for view "My tasks"
             | index | permissions                | assignee            | case_name |
             | 0     | Manage,Read,Execute,Cancel |                     | case 1    |
@@ -19,9 +31,14 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
 
-    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK request "/workallocation2/task/:taskId" intercept with reference "taskDetails"
+        Given I set MOCK request "/workallocation2/task/:taskId" response log to report
 
+    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -36,16 +53,6 @@ Feature: WA Release 2: My work - My tasks - Task actions
 
         Then I see "<actionHeader>" task action page
         Then I validate task action page has description "<actionDescription>"
-
-        Then I validate task list table columns displayed for user "<UserType>"
-            | ColumnHeader  | Caseworker | Judge |
-            | Case name     | Yes        | Yes   |
-            | Case category | Yes        | Yes   |
-            | Location      | Yes        | Yes   |
-            | Task          | Yes       | Yes   |
-            | Task created  | No         | Yes   |
-            | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
 
 
         Then I validate task details displayed in task action page
@@ -66,8 +73,10 @@ Feature: WA Release 2: My work - My tasks - Task actions
     # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task as done if something has gone wrong and it has already been completed.            |               |
 
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>" cancel workflow
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
-
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -82,15 +91,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
 
         Then I see "<actionHeader>" task action page
         Then I validate task action page has description "<actionDescription>"
-        Then I validate task list table columns displayed for user "<UserType>"
-            | ColumnHeader  | Caseworker | Judge |
-            | Case name     | Yes        | Yes   |
-            | Case category | Yes        | Yes   |
-            | Location      | Yes        | Yes   |
-            | Task          | Yes       | Yes   |
-            | Task created  | No         | Yes   |
-            | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
+       
 
         Then I validate task details displayed in task action page
             | Case name        | Case category      | Location      |

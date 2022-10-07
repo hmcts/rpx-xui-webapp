@@ -22,7 +22,7 @@ export class ShowAllocateLinkDirective implements OnInit {
   }
 
   private static hasExceededNumberCaseManagerRoles(roles: CaseRole[]): boolean {
-    const caseManagers = roles.filter((role: CaseRole) => role.roleName === TypeOfRole.CaseManager);
+    const caseManagers = roles.filter((role: CaseRole) => role.roleName.toLowerCase() === TypeOfRole.CaseManager.toLowerCase());
     return caseManagers.length >= ShowAllocateLinkDirective.CASE_MANAGERS_LIMIT;
   }
 

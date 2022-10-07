@@ -16,7 +16,7 @@ export enum ACTION {
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationTaskService {
-  public static WorkAllocationUrl = 'workallocation';
+  public static WorkAllocationUrl = 'workallocation2';
 
   constructor(private readonly http: HttpClient) {}
 

@@ -50,7 +50,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     When('I click sub navigation tab Available tasks', async function () {
-        await taskListPage.clickAvailableTasks();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            try{
+                await taskListPage.clickAvailableTasks();
+            }catch(err){
+                await taskListPage.clickMyTasks();
+                throw new Error(err);
+            }
+        });
      });
 
     When('I click sub navigation tab My tasks', async function () {
@@ -59,7 +66,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     Then('I see Available tasks page displayed', async function () {
-        expect(await taskListPage.isAvailableTasksDisplayed(), "Task list Available tasks page is not present").to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            try{
+                expect(await taskListPage.isAvailableTasksDisplayed(), "Task list Available tasks page is not present").to.be.true;
+            }catch(err){
+                await taskListPage.clickMyTasks();
+                await taskListPage.clickAvailableTasks();
+                throw new Error(err);
+            }
+        });
     });
 
 

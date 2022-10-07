@@ -9,30 +9,6 @@ export class RoleExclusionsMockService extends RoleExclusionsService {
     return of('success');
   }
 
-  public deleteExclusion(deletedExclusion: RoleExclusion): Observable<RoleExclusion> {
-    return of({
-      id: '1',
-      added: new Date(2021, 7, 1),
-      name: 'Judge Birch',
-      notes: 'this case been remitted from Upper Tribunal and required different judge',
-      type: 'Other',
-      userType: 'Judicial',
-    });
-  }
-
-  public getCurrentUserRoleExclusions(): Observable<RoleExclusion[]> {
-    return of([
-      {
-        id: '2',
-        added: new Date(2021, 7, 1),
-        name: 'Judge Birch',
-        notes: 'this case been remitted from Upper Tribunal and required different judge',
-        type: 'Other',
-        userType: 'Judicial',
-      }
-    ]);
-  }
-
   public getRolesCategory(): Observable<Role[]> {
     return of([{roleId: 'judicial', roleName: 'Judicial'}]);
   }

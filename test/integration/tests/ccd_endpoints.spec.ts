@@ -6,8 +6,8 @@ import Request from './utils/request';
 import { setTestContext} from './utils/helper';
 
 describe('CCD Endpoints',  () => {
-    const userName = config.users.solicitor;
-    const password = 'Monday01';
+    const userName = config.users[config.testEnv].solicitor.e;
+    const password = config.users[config.testEnv].solicitor.sec;
 
     beforeEach(function ()  {
         this.timeout(120000);
@@ -21,10 +21,10 @@ describe('CCD Endpoints',  () => {
         await Request.withSession(userName, password);
         const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', null,200);
         expect(response.data).to.be.an('array');
-        expect(response.data.map(e => e.name)).to.include.members(['Family Divorce', 'Public Law', 'Immigration & Asylum', 'Manage probate application']);
+        expect(response.data.map(e => e.name)).to.include.members(config.jurisdcitionNames[config.testEnv]);
     });
 
-    const jurisdictions = config.jurisdictions;
+    const jurisdictions = config.jurisdictions[config.testEnv];
     for (const jurisdiction of jurisdictions) {
         for (const caseType of jurisdiction.caseTypeIds) {
             it(`work-basket-input for casetype  ${caseType}`, async () => {

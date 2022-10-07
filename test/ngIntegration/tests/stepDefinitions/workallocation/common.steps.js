@@ -39,6 +39,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
     const waCaseListTable = new CaseListTable();
 
+    const TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY = {
+        'priority': 'Is out of scope and will be removed as part of https://tools.hmcts.net/jira/browse/EUI-4809',
+        'taskType': 'Is to be includes only in 2.1 till the it will be ignored in test'
+    }
+
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
         await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -99,19 +104,24 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const reqSearchParams = reqBody.searchRequest.search_parameters;
         for (let i = 0; i < datatableHash.length; i++) {
             searchHash = datatableHash[i];
+            if (Object.keys(TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY).includes(searchHash.key)){
+                CucumberReporter.AddMessage(`${searchHash.key} is ignored for eeason : ${TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY[searchHash.key]}`);
+                continue;
+            }
             const searchParamObj = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchHash.key);
            
             softAssert.setScenario(`Search param with key ${searchHash.key} is present`);
-            if (searchHash.keyIsPresent){
-                await softAssert.assert(async () => expect(searchParamObj.length > 0).to.equal(searchHash.keyIsPresent.toLowerCase() ==="true"));
-            }else{  
+            if (searchHash.value !== ''){
                 await softAssert.assert(async () => expect(searchParamObj.length > 0).to.be.true);
             }
              
             if (searchParamObj.length > 0) {
                 if (searchHash.value && searchHash.value !== ""){
                     softAssert.setScenario(`Search param with key ${searchHash.key} and values ${searchHash.value} is present`);
-                    await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
+                    if (searchHash.value !== ''){
+                        await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
+                    }
+                    
                 }
 
                 if (searchHash.size) {
@@ -133,6 +143,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const reqSearchParams = reqBody.searchRequest.search_parameters;
         for (let i = 0; i < datatableHash.length; i++) {
             searchHash = datatableHash[i];
+            if (Object.keys(TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY).includes(searchHash.key)) {
+                CucumberReporter.AddMessage(`${searchHash.key} is ignored for eeason : ${TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY[searchHash.key]}`);
+                continue;
+            }
             const searchParamObj = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchHash.key);
             softAssert.setScenario(`Search param with key ${searchHash.key} is present`);
             if (searchParamObj.length > 0) {
@@ -144,6 +158,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
     });
 
+
+    Then('I validate task search request with reference {string} does not have search patameter key {string}', async function (requestReference, searchKey) {
+        const reqBody = global.scenarioData[requestReference];
+
+        const reqSearchParams = reqBody.searchRequest.search_parameters;
+        const searchParametersMatchingType = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchKey);
+
+        expect(searchParametersMatchingType.length, `Search parameter mathcing key "${searchKey}" found in request body ${reqBody} `).to.equal(0); 
+
+    });
 
     Given('I set MOCK case workers for release {string}', async function(forRelease,datatable){
         const persons = getPersonResponse(datatable);

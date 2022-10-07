@@ -1,16 +1,19 @@
-@ng  @wa2 
-Feature: WA Release 2: All work to pagination sorting
+@ng @known_bug @EUI-4804
+Feature: WA Release 2: All work to pagination sorting (EUI-4804)
+        For EUI-4366
+        Bug EUI-4804
+
 
     Background: Mock and browser setup
         Given I init MockApp
 
     Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -53,7 +56,7 @@ Feature: WA Release 2: All work to pagination sorting
             | Caseworker | Due date     |
             | Judge      | Task created |
 
-        Then I validate "All work" tasks columns sorting with taskRequest url "/workallocation2/taskWithPagination/" on page 3 for user type "<UserType>"
+        Then I validate "All work" tasks columns sorting with taskRequest url "/workallocation2/task/" on page 3 for user type "<UserType>"
             | ColumnHeader  | Caseworker | Judge | FieldId      |
             | Case name     | Yes        | Yes   | caseName     |
             | Case category | Yes        | Yes   | caseCategory |
@@ -69,12 +72,12 @@ Feature: WA Release 2: All work to pagination sorting
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: All work tasks pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"
             | Permissions | Count |
             | Manage      | 10    |
             | Read        | 10    |
-        Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -92,12 +95,12 @@ Feature: WA Release 2: All work to pagination sorting
     # For EUI-4366
     @ignore
     Scenario Outline:  All work tasks Tasks pagnation control display 0 items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"
             | Permissions | Count |
             | Manage      | 0     |
             | Read        | 0     |
-        Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page

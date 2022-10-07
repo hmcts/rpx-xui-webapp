@@ -12,14 +12,6 @@ import { AllocateRoleActionTypes, ConfirmAllocation } from '../actions';
 
 @Injectable()
 export class AllocateRoleEffects {
-  private payload: any;
-
-  constructor(
-    private actions$: Actions,
-    private allocateRoleService: AllocateRoleService
-  ) {
-  }
-
   @Effect() public confirmAllocation$ = this.actions$
     .pipe(
       ofType<ConfirmAllocation>(AllocateRoleActionTypes.CONFIRM_ALLOCATION),
@@ -27,12 +19,18 @@ export class AllocateRoleEffects {
         (data) => this.allocateRoleService.confirmAllocation(data.payload)
           .pipe(
             map(() => {
+              const message: any = {
+                type: 'success',
+                message: data.payload.action === RoleActions.Allocate ? RoleAllocationMessageText.Add : RoleAllocationMessageText.Reallocate
+              };
               return new routeAction.CreateCaseGo({
                 path: [this.allocateRoleService.backUrl],
                 caseId: data.payload.caseId,
                 extras: {
                   state: {
                     showMessage: true,
+                    retainMessages: true,
+                    message,
                     messageText: data.payload.action === RoleActions.Allocate ? RoleAllocationMessageText.Add : RoleAllocationMessageText.Reallocate,
                   }
                 }
@@ -45,6 +43,13 @@ export class AllocateRoleEffects {
           )
       )
     );
+  private payload: any;
+
+  constructor(
+    private actions$: Actions,
+    private allocateRoleService: AllocateRoleService
+  ) {
+  }
 
   public static handleError(error: RoleAccessHttpError, action?: string): Observable<Action> {
     if (error && error.status) {
@@ -53,6 +58,10 @@ export class AllocateRoleEffects {
         case 403:
           return of(new routeAction.Go({
             path: [REDIRECTS.NotAuthorised]
+          }));
+        case 422:
+          return of(new routeAction.Go({
+            path: [REDIRECTS.UserNotAssignable]
           }));
         case 400:
         case 500:

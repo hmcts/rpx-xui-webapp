@@ -2,6 +2,7 @@ import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import {
   AccessibilityComponent,
+  ApplicationRoutingComponent,
   CookiePolicyComponent,
   GetHelpComponent,
   MediaViewerWrapperComponent,
@@ -10,13 +11,13 @@ import {
   ServiceDownComponent,
   SignedOutComponent,
 } from './components';
-import { ApplicationRoutingComponent } from './components/routing/application-routing.component';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
 
 export const routingConfiguration: ExtraOptions = {
-  paramsInheritanceStrategy: 'always'
+  paramsInheritanceStrategy: 'always',
+  scrollPositionRestoration: 'enabled'
 };
 
 export const ROUTES: Routes = [
@@ -36,9 +37,17 @@ export const ROUTES: Routes = [
     loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
   },
   {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+    redirectTo: 'work/my-work/list',
+    canActivate: [AuthGuard, AcceptTermsGuard]
+  },
+  {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
+    path: 'tasks/:subRoute',
+    redirectTo: 'work/my-work/list',
+    pathMatch: 'prefix',
+    canActivate: [AuthGuard, AcceptTermsGuard]
   },
   {
     path: 'role-access',
@@ -62,6 +71,11 @@ export const ROUTES: Routes = [
     path: 'noc',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../noc/noc.module#NocModule'
+  },
+  {
+    path: 'hearings',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../hearings/hearings.module#HearingsModule'
   },
   {
     path: 'cookies',

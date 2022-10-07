@@ -38,7 +38,7 @@ const CASE_NAME_AS_TEXT: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const CASE_ROLE: FieldConfig = {
-  name: 'case_role',
+  name: 'role',
   type: FieldType.STRING,
   columnLabel: 'Case role',
   sortName: 'caseRole',
@@ -73,7 +73,7 @@ const CASE_CATEGORY_DISABLE_SORT: FieldConfig = {
 const JURISDICTION: FieldConfig = {
   name: 'jurisdiction',
   type: FieldType.STRING,
-  columnLabel: 'Jurisdiction',
+  columnLabel: 'Service',
   sortName: 'jurisdiction',
   views: TaskView.ALL_VIEWS
 };

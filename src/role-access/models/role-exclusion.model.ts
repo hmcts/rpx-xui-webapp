@@ -1,4 +1,5 @@
 export interface RoleExclusion {
+    actorId?: string;
     id: string;
     type: string;
     name: string;

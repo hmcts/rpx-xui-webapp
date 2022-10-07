@@ -3,7 +3,6 @@
   <tr class="govuk-table__row">
     <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Name</th>
     <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Role</th>
-    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Location</th>
     <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Start</th>
     <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">End</th>
     <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19"></th>
@@ -14,11 +13,10 @@
     <tr class="govuk-table__row" [ngClass]="{'hide-border-bottom ': item.open}">
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.name}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.roleName}}</td>
-      <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.location}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.start | date:'d MMMM yyyy'}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.end | date:'d MMMM yyyy'}}</td>
       <td class="govuk-table__cell">
-        <span (click)="item.open = !item.open" [hidden]="!showAllocateRoleLink">
+        <span (click)="openManageLink(items, item)" [hidden]="!showAllocateRoleLink">
           <a href="javascript:void(0)"
              class="right_m">Manage</a><span
           class="govuk-accordion-wa__icon" [ngClass]="{'plus': !item.open, 'minus': item.open}"></span>
@@ -30,12 +28,11 @@
         <a *ngFor="let action of item.actions"
            href="javascript:void(0)"
            [routerLink]="['/', 'role-access', 'allocate-role', action.id]"
-           [queryParams]="queryParams(item)">{{action.title}}</a>
+           [queryParams]="queryParams(item)" [state]="{backUrl: backUrl}">{{action.title}}</a>
       </td>
     </tr>
   </ng-container>
 </table>
-
 <dl class="govuk-summary-list" *ngIf="!roles ||  !roles.length">
   <div class="govuk-summary-list__row">
     <dd class="govuk-summary-list__value">

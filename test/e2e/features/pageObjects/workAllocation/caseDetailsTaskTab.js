@@ -1,5 +1,7 @@
 
 
+
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 class CaseDetailsTaskTab{
 
     constructor(){
@@ -28,6 +30,7 @@ class CaseDetailsTaskTab{
 
     async getTaskNameForTaskAtPosition(pos){
         const taskContainer = await this.getTaskContainerAtPosition(pos);
+        await browserUtil.scrollToElement(taskContainer);
         const taskName = await taskContainer.$(this.taskNameLocator).getText();
         return taskName;
     }

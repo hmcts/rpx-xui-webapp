@@ -15,10 +15,10 @@ export const CASE_REF_DEFAULT_VALIDATION_ERROR = {
 
 export const AFFIRMATION_DEFAULT_DISAGREE_ERROR = {
   code: 'AFFIRMATION_DEFAULT_DISAGREE_ERROR',
-  message: 'Tick the box to confirm all the information is accurate and matches what is written on the case'
+  message: 'Tick the box to confirm all these details are accurate and match what is written on the case'
 };
 
 export const AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR = {
   code: 'AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR',
-  message: 'Tick the box to confirm you’ve served notice of this change on every party to the claim and on the former legal representative'
+  message: 'Tick the box to confirm you have served notice of this change on every party to the case, including the former legal representative (if there was one)'
 };

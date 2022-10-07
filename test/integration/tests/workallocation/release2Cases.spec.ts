@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 // import mocha from 'mocha';
 import { config } from '../config/config';
 import { getUserId, getXSRFToken } from '../utils/authUtil';
-import { setTestContext } from '../utils/helper';
+import { reporterJson, reporterMsg, setTestContext } from '../utils/helper';
 
 import Request from '../utils/request';
 
@@ -11,11 +11,11 @@ import CaseRequestBody from '../utils/wa/caseRequestBody';
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2:  Cases', () => {
-    const userName = config.users.solicitor;
-    const password = 'Monday01';
+    const userName = config.users[config.testEnv].solicitor.e;
+    const password = config.users[config.testEnv].solicitor.sec;
 
-    const caseOfficer = config.users.caseOfficer_r2;
-    const caseofficerPass = 'Welcome01';
+    const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
+    const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
     beforeEach(function() {
         setTestContext(this);
@@ -27,7 +27,58 @@ describe('Work allocation Release 2:  Cases', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const caseRequestObj = getSearchCaseReqBody('MyCases', ['77f9a4a4-1bf1-4903-aa6c-cab334875d91'], ["698118"], 'caseworker');
+        const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
+
+        const response = await getCases('MyCases', [userDetailsRes.data.userInfo.id]);
+        expect(response.status).to.equal(200);
+
+        const expectedCases = workAllocationDataModels.getRelease2Cases();
+        let expectedCaseKeys = Object.keys(expectedCases.cases[0]);
+        expectedCaseKeys = expectedCaseKeys.filter(key => !['endDate'].includes(key));
+        expect(response.data).to.have.all.keys(Object.keys(expectedCases));
+        if (response.data.cases.length > 0) {
+            const actualKeys = Object.keys(response.data.cases[0]);
+            reporterMsg('Actual vs expected keys of case');
+            reporterJson(actualKeys);
+            reporterJson(expectedCaseKeys);
+            expect(actualKeys).to.include.members(expectedCaseKeys);
+
+        }
+
+    });
+
+    it('Get All work cases', async function () {
+        this.timeout(60000);
+        await Request.withSession(caseOfficer, caseofficerPass);
+        const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
+        const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
+
+        const response = await getCases('AllWorkCases', [userDetailsRes.data.userInfo.id]);
+        expect(response.status).to.equal(200);
+
+        const expectedCases = workAllocationDataModels.getRelease2Cases();
+        let expectedCaseKeys = Object.keys(expectedCases.cases[0]);
+        expectedCaseKeys = expectedCaseKeys.filter(key => !['endDate'].includes(key));
+
+        expect(response.data).to.have.all.keys(Object.keys(expectedCases));
+        if (response.data.cases.length > 0) {
+            const actualKeys = Object.keys(response.data.cases[0]);
+
+            reporterMsg('Actual vs expected keys of case');
+            reporterJson(actualKeys);
+            reporterJson(expectedCaseKeys);
+
+            expect(actualKeys).to.include.members(expectedCaseKeys);
+
+        }
+
+    });
+
+
+    async function getCases(view, users){
+        const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
+
+        const caseRequestObj = getSearchCaseReqBody(view, users, [config.workallocation[config.testEnv].locationId], 'caseworker');
         caseRequestObj.withSearchBy('caseworker')
             .sortWith('startDate', 'asc')
             .withPageNumber(1);
@@ -37,16 +88,8 @@ describe('Work allocation Release 2:  Cases', () => {
         };
 
         const response = await Request.post(`workallocation2/my-work/cases`, caseRequestObj.getRequestBody(), headers, 200);
-        expect(response.status).to.equal(200);
-
-        const expectedCases = workAllocationDataModels.getRelease2Cases();
-        // expect(response.data).to.have.all.keys(Object.keys(expectedCases));
-        // if (response.data.cases.length > 0){
-        //     expect(response.data.cases[0]).to.have.all.keys(Object.keys(expectedCases.cases[0]));
-
-        // }
-
-    });
+        return response;
+    }
 
 
     function getSearchCaseReqBody(view, users,locations,userType) {
@@ -59,7 +102,7 @@ describe('Work allocation Release 2:  Cases', () => {
                 caseRequestBody.searchWithlocation(loc);
             });
         }
-        
+ 
         switch (view) {
             case 'MyCases':
                 if (users) {
@@ -71,12 +114,8 @@ describe('Work allocation Release 2:  Cases', () => {
                 }
                 caseRequestBody.withSearchBy(userType ? userType : 'caseworker');
                 break;
-            case 'AvailableTasks':
-                caseRequestBody.searchWithlocation(null);
-                caseRequestBody.searchWithState('unassigned');
-                break;
 
-            case 'TaskManager':
+            case 'AllWorkCases':
                 caseRequestBody.searchWithlocation(null);
                 caseRequestBody.searchWithUser(null);
                 break;

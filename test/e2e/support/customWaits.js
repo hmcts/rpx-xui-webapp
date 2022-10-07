@@ -6,6 +6,12 @@ class BrowserWaits{
         this.waitTime = 30000; 
         this.pageErrors = $$(".error-summary");
         this.retriesCount = 3;
+
+        this.logLevel = 'DEBUG'
+    }
+
+    setLoglevelINFO(){
+        this.logLevel = 'INFO' 
     }
 
     setDefaultWaitTime(defaultWait){
@@ -102,6 +108,16 @@ class BrowserWaits{
         return await browser.getCurrentUrl();
     }
 
+
+    async waitForPageNavigationOnAction(callback) {
+        const beforeActionUrl = await browser.getCurrentUrl();
+        await callback();
+        await this.waitForPageNavigation(beforeActionUrl); 
+
+         return await browser.getCurrentUrl();
+    }
+
+
     async waitForBrowserReadyState(waitInSec) {
         let resolvedWaitTime = waitInSec ? waitInSec * 1000 : this.waitTime;
 
@@ -139,7 +155,8 @@ class BrowserWaits{
         let retryCounter = 0;
         let isSuccess = false;
         let error = null;
-        while (retryCounter <= this.retriesCount) {
+        let totalTries = retryTryAttempts ? retryTryAttempts : this.retriesCount 
+        while (retryCounter <= totalTries) {
             CucumberReporter.AddMessage(`Sleeping for ${retryCounter * 5}sec before performing action.`);  
             await this.waitForSeconds(retryCounter*5);
             try {
@@ -148,12 +165,15 @@ class BrowserWaits{
                 return retVal;
             }
             catch (err) {
-                await BrowserLogs.printBrowserLogs();
+                if (this.logLevel === 'DEBUG'){
+                    await BrowserLogs.printBrowserLogs();
+                    await CucumberReporter.AddScreenshot(global.screenShotUtils); 
+                }
+                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
+                CucumberReporter.AddMessage(`************** [ Retrying attempt ${retryCounter} of ${totalTries} ] **************`); 
                 error = err
                 retryCounter += 1;
-                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
-                CucumberReporter.AddMessage(`************** [ Retrying attempt ${retryCounter}. ] **************`);
-                await CucumberReporter.AddScreenshot(global.screenShotUtils); 
+               
             }
         }
         if (!isSuccess){

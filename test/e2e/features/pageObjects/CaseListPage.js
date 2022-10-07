@@ -59,14 +59,35 @@ class CaseListPage{
     }
 
     _getOptionSelectorWithText(optionText){
-        return by.xpath("//option[text() = '"+optionText+"']");
+        let elementLocator = null;
+        if (optionText.includes('|')){
+            const options = optionText.split('|');
+            let locatorString = "//option[";
+             let i = 0;   
+            for (const option of options){
+                if( i === 0){
+                    locatorString += `contains(text(), '${option.trim()}')`;
+                }else{
+                    locatorString += `or contains(text(), '${option.trim()}')`;
+                }
+                i++; 
+            } 
+            elementLocator = by.xpath(locatorString +']');
+
+        }else{
+            elementLocator = by.xpath("//option[text() = '" + optionText + "']");
+        }
+
+        return elementLocator
     }
 
     async selectJurisdiction(jurisdiction){
+        await BrowserWaits.waitForSeconds(1);
+        await BrowserWaits.waitForSpinnerToDissappear();
         await this._waitForSearchComponent();
+        CucumberReportLogger.LogTestDataInput(`Case list page Jurisdiction : ${jurisdiction}`);
 
         await this.jurisdictionSelectElement.element(this._getOptionSelectorWithText(jurisdiction)).click();
-        CucumberReportLogger.LogTestDataInput(`Case list page Jurisdiction : ${jurisdiction}`);
 
         RuntimeTestData.workbasketInputs.jurisdiction = jurisdiction;
         const caseTypeElements = this.caseTypeSelectElement.$$("option");
@@ -81,7 +102,10 @@ class CaseListPage{
     }
 
     async selectCaseType(caseType) {
+        await BrowserWaits.waitForSeconds(1);
+        await BrowserWaits.waitForSpinnerToDissappear();
         await this._waitForSearchComponent();
+        CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
         await this.caseTypeSelectElement.element(this._getOptionSelectorWithText(caseType)).click();
         CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
         RuntimeTestData.workbasketInputs.casetype = caseType; 
@@ -89,7 +113,10 @@ class CaseListPage{
     }
 
     async selectState(state) {
+        await BrowserWaits.waitForSpinnerToDissappear();
         await this._waitForSearchComponent();
+        CucumberReportLogger.LogTestDataInput(`Case list page event: ${state}`);
+
         await this.stateSelectElement.element(this._getOptionSelectorWithText(state)).click();
         RuntimeTestData.workbasketInputs.state = state; 
 

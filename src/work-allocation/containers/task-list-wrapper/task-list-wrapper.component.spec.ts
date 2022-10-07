@@ -1,12 +1,11 @@
-import { By } from '@angular/platform-browser';
 import { CdkTableModule } from '@angular/cdk/table';
-import { ChangeDetectorRef} from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of , throwError} from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { WorkAllocationComponentsModule } from '../../../work-allocation/components/work-allocation.components.module';
 import { Task } from '../../../work-allocation/models/tasks';

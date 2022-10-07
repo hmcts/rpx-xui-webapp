@@ -8,6 +8,7 @@ const { browser } = require("protractor");
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const browserutl = require('../../../ngIntegration/util/browserUtil');
+const headerPage = require('../../../e2e/features/pageObjects/headerPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -16,8 +17,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I navigate to page route {string}', async function (pageRoute) {
-        await browser.get(argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'+pageRoute);
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerPage.navigateToRoute(pageRoute);
+        });
     });
 
     Then('I see page with css locator {string}', async function(cssLocator){

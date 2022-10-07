@@ -1,14 +1,14 @@
-import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatNativeDateModule } from '@angular/material';
+import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import * as fromComponents from '.';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService } from '../services';
 import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService } from '../services';
 import { PriorityFieldComponentModule } from './priority-field/priority.module';
 
 // from containers
@@ -30,7 +30,7 @@ import { PriorityFieldComponentModule } from './priority-field/priority.module';
   declarations: [
     ...fromComponents.components,
   ],
-  providers: [CaseworkerDataService, LocationDataService, InfoMessageCommService, WASupportedJurisdictionsService],
+  providers: [CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
     ...fromComponents.components,

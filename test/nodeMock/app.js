@@ -10,21 +10,30 @@ const http = axios.create({})
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 
 
-
-
 let { requestMapping,configurations} = require('./reqResMapping');
 const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 
 const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
 const nodeAppMock = require('./nodeApp/mockData');
-const port = 3001;
 
+const waMockDataService = require('./workAllocation/mockData');
+const CucumberReporter = require('../e2e/support/reportLogger');
 
+const nodeMockConfig = require('./config');
+
+const nodeMockPort = require('./availablePortFinder').getAvailablePort();
+const parallelProxyStartPort = parseInt(nodeMockPort) + 1; 
 class MockApp{
+
+    constructor(){
+        this.logMessageCallback = null;
+        this.logJSONCallback = null;
+    }
+
     init(clientPortStart){
         this.requestLogs = [];
-        this.clientPortCounter = clientPortStart ? clientPortStart : 3002;
+        this.clientPortCounter = clientPortStart ? clientPortStart : parallelProxyStartPort;
         this.scenarios = {};
 
         this.browserScenarioCookieCallback = null;
@@ -39,10 +48,20 @@ class MockApp{
             delete: { ...requestMapping.delete}
         };
         // this.configurations = Object.assign({}, configurations)
-       
-        this.logMessageCallback = null;
+      
+        this.mockDataServices = [];
+
+        for (const mockDataService of requestMapping.mockServiceResetCallbacks) {
+            mockDataService();
+        }
         console.log("Mock Config Initialized");
         return "done";
+    }
+
+
+
+    initialiseMockDataServices(){
+        waMockDataService.init();
     }
 
     setServerPort(port){
@@ -53,17 +72,36 @@ class MockApp{
         this.logMessageCallback = callback;
     }
 
+    setLogJSONCallback(callback) {
+        this.logJSONCallback = callback;
+    }
+
     logMessage(message){
-        const msg = '[NODE_MOCK_'+this.serverPort+"] " + message;
-        this.requestLogs.push(msg);
+        const msg = "[NODE_MOCK] " + message;
         if (this.logMessageCallback){
             this.logMessageCallback(msg);
-        }else{
-            console.log(msg);
+
+        }
+        console.log(msg);
+
+    }
+
+    logJSON(json) {
+        if (this.logJSONCallback) {
+            this.logJSONCallback(json);
+        }
+        console.log(json);
+
+    }
+
+    logRequestDetails(req){
+        this.logMessage(`${req.method} : ${req.originalUrl}`);
+        if (req.method === 'POST' || req.method === 'PUT' ){
+            this.logJSON(req.body);
         }
     }
 
-    onRequest(endPoint, method,req,res,callback){
+    async onRequest(endPoint, method,req,res,callback){
         try{
             const scenarioId = this.getCookieFromRequest(req, "scenarioId");
             const scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
@@ -75,8 +113,15 @@ class MockApp{
                 callback(req, res);
             }
         }catch(err){
-            console.log(err); 
-            res.status(500).send({message:'MOCK error', err:err.message});
+            if(port !== nodeMockPort){
+                await http.post(`http://localhost:${port}/mockerror`, { error: err })
+            }
+            console.log(err);
+            const logErrorMessge = { message: 'MOCK onRequest error', err: err.message, stack: err.stack };
+            this.logMessage(`*********************** Mock onRequest error occured  on server with port ${this.serverPort} ******************** `);
+            this.logJSON(logErrorMessge);
+            this.logMessage("*************************************************************** ");
+            res.status(550).send(logErrorMessge);
         }
     }
 
@@ -97,19 +142,34 @@ class MockApp{
                 reqCallback = () =>  http.put(`http://localhost:${port}${urlPath}`, req.body,{ headers }); 
                 break;
             case 'delete':
-                reqCallback = () =>  http.delete(`http://localhost:${port}${urlPath}`, { headers }); 
+                reqCallback =  () =>  http.delete(`http://localhost:${port}${urlPath}`, { headers }); 
                 break;
             default:
-                res.status(500).send({error: 'mock proxy error'});
+                await http.post(`http://localhost:${port}/mockerror`, { error: err}, { headers })
+                CucumberReporter.AddMessage(`*********************** Mock onProxy unknown method  error occured  on server with port ${this.serverPort} ******************** `);
+                CucumberReporter.AddMessage(err);
+                CucumberReporter.AddMessage("*************************************************************** ");
+                res.status(551).send({ error: 'mock proxy error, unknown req method ' + req.method});
 
         }
-
+        let response = null;
         try{
-            let response = await reqCallback();
+            response = await reqCallback();
             res.status(response.status).send(response.data)
         }
         catch(err){
-            res.status(err.response.status).send(err.response.data);
+
+            if (err.response && err.response.status < 510){
+                res.status(err.response.status ).send(err.response.body);
+                return; 
+            }
+
+            await http.post(`http://localhost:${port}/mockerror`, { error: err}, { headers })
+            console.log(err);
+            CucumberReporter.AddMessage(`*********************** Mock onProxy error occured  on server with port ${this.serverPort} ******************** `);
+            CucumberReporter.AddMessage(err);
+            CucumberReporter.AddMessage("*************************************************************** ");
+            res.status(552).send({ message: 'MOCK onProxy error', err: err.message });
         }
          
     }
@@ -134,7 +194,7 @@ class MockApp{
             return sessionRequestMapping[method][path];
         }else{
 
-            if (this.serverPort !== 3001) {
+            if (this.serverPort !== nodeMockPort) {
                 this.logMessage(Object.keys(this.scenarioRequestCallbacks));
                 if (this.scenarioRequestCallbacks[scenarioId]){
                     this.logMessage(Object.keys(this.scenarioRequestCallbacks[scenarioId]['callbacks'][method]));
@@ -145,10 +205,11 @@ class MockApp{
     }
     
     getNextAvailableClientPort(){
-        return http.get('http://localhost:3001/proxy/port',{});
+        return http.get(`http://localhost:${nodeMockPort}/proxy/port`,{});
     }
 
     async startServer(){
+       
         const app = express();
         app.disable('etag');
         app.use(bodyParser.urlencoded({ extended: false }));
@@ -156,11 +217,21 @@ class MockApp{
         app.use(cookieParser());
         app.use(express.json()); 
 
-
         app.get('/requestLogs',(req,res) =>{
             res.set('content-type', 'application/json');
             res.send(this.requestLogs);
         } );
+
+        app.post('/mockerror', (req,res) => {
+            CucumberReporter.AddMessage(`*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `);
+            console.log(`*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `);
+
+            console.log(req.body);
+            CucumberReporter.AddMessage(req.body);
+            CucumberReporter.AddJson(req.body);
+            CucumberReporter.AddMessage("*************************************************************** "); 
+            res.send(""); 
+        });
 
         app.get('/proxy/port', (req,res) => {
             this.clientPortCounter++;
@@ -169,6 +240,40 @@ class MockApp{
 
         this.intercepts.forEach(intercept =>{
             app.use(intercept.url, intercept.callback);
+        });
+        
+        // app.use('/', (req,res,next) =>{
+        //     this.logMessageCallback(`[ Node Requested ] ${req.method} : ${req.originalUrl}`);
+        //     next();
+        // });
+
+        nodeMockConfig.logRequests.forEach(url => {
+            app.use(url, (req,res,next)=>{
+                this.logRequestDetails(req);
+                next();
+            });
+        });
+        
+        nodeMockConfig.logResponses.forEach(url => {
+            app.use(url, (req, res, next) => {
+                let send = res.send;
+                const logMessagesCallBackLocal = this.logMessageCallback;
+                const logJSONCallbackLocal = this.logJSONCallback;
+                res.send = function (body) {
+
+                    logMessagesCallBackLocal(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort}" ---------------------------`);
+                    logMessagesCallBackLocal('Intercept response on MOCK api ' + url);
+                    logMessagesCallBackLocal('response code ' + res.statusCode);
+                    try {
+                        logJSONCallbackLocal(body)
+                    } catch (err) {
+                        logMessagesCallBackLocal(body)
+                    }
+                    logMessagesCallBackLocal('------------------------------Mock response intercept---------------------------');
+                    send.call(this, body);
+                }
+                next();
+            });
         }); 
 
         for (const [key, value] of Object.entries(this.conf.get)) {
@@ -190,7 +295,7 @@ class MockApp{
 
         await this.stopServer();
         this.server = await app.listen(this.serverPort);
-
+       
       
         
         console.log("mock server started on port : " + this.serverPort);
@@ -244,16 +349,16 @@ module.exports = mockInstance;
 
 
 const args = minimist(process.argv)
-if (args.standalone){
-    mockInstance.setServerPort(3001);
-    mockInstance.init();
+//if (args.standalone){
+    //mockInstance.setServerPort(nodeMockPort);
+    //mockInstance.init();
 
-    setUpcaseConfig();
+    //setUpcaseConfig();
     // getDLCaseConfig();
     // collectionDynamicListeventConfig()
     // createCustomCaseDetails();
-    mockInstance.startServer()
-}
+    //mockInstance.startServer()
+//}
 
 function setUpcaseConfig() {
     const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');
@@ -261,13 +366,28 @@ function setUpcaseConfig() {
         
     //     res.send(caseDetailsLabelShowCondition().getCase());
     // });
+    
+    // const idamid = 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8';
+    const idamid = '519e0c40-d30e-4f42-8a4c-2c79838f0e4e'; //Judicial
+    const workAllocationMockData = require('./workAllocation/mockData');
+    workAllocationMockData.init();
 
+    workAllocationMockData.addCaseworkerWithIdamId(idamid, 'IA');
     mockInstance.onGet('/api/user/details', (req, res) => {
-        const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer'];
-        const idamid = '44d5d2c2-7112-4bef-8d05-baaa610bf463';
-        res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
+        // const roles = ['task-supervisor','case-allocator','caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','task-supervisor','case-allocator'];
+        // const roles = ['caseworker','caseworker-ia','caseworker-ia-caseofficer','task-supervisor'];
+        const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge', 'task-supervisor'];
+        // setTimeout(() => {
+        //     res.send(nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, idamid));
+
+        // },10);
+
+
+        res.send(nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, idamid));
+
 
     });
+
 
 }
 

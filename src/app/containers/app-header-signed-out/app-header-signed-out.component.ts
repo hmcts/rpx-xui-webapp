@@ -1,11 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
-import { Theme } from '../../../app/models/theme.model';
-
-import {AppConstants} from '../../app.constants';
-import {AppTitleModel} from '../../models/app-title.model';
-import {NavItemsModel} from '../../models/nav-item.model';
-import {UserNavModel} from '../../models/user-nav.model';
+import { Component, OnInit } from '@angular/core';
+import { AppConstants } from '../../app.constants';
+import { ApplicationThemeLogo } from '../../enums';
+import { AppTitleModel } from '../../models/app-title.model';
+import { NavItemsModel } from '../../models/nav-item.model';
+import { ApplicationTheme } from '../../models/theming.model';
+import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
   selector: 'exui-app-header-signed-out',
@@ -16,9 +15,8 @@ export class AppHeaderSignedOutComponent implements OnInit {
   public navItems: NavItemsModel[];
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
-  public showFindCase: boolean;
   public backgroundColor: string;
-  public logoType: string;
+  public logo: string;
   public logoIsUsed: boolean;
 
   constructor() {
@@ -26,7 +24,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
 
   public ngOnInit(): void {
 
-    this.setAppHeaderProperties(AppConstants.SIGNED_OUT_THEME);
+    this.setAppHeaderProperties(AppConstants.DEFAULT_USER_THEME);
   }
 
   /**
@@ -34,25 +32,19 @@ export class AppHeaderSignedOutComponent implements OnInit {
    *
    * Set the app header properties, in one function that takes in the application theme.
    */
-  public setAppHeaderProperties(applicationTheme: Theme): void {
+  public setAppHeaderProperties(applicationTheme: ApplicationTheme): void {
 
     const {
       appTitle,
-      accountNavigationItems,
       backgroundColor,
-      logoIsUsed,
-      logoType,
-      navigationItems,
-      showFindCase,
+      logo
     } = applicationTheme;
 
     this.appHeaderTitle = appTitle;
-    this.navItems = navigationItems;
-    this.userNav = accountNavigationItems;
+    this.navItems = [];
+    this.userNav = { label: '', items: [] };
     this.backgroundColor = backgroundColor;
-    this.logoType = logoType;
-    this.logoIsUsed = logoIsUsed;
-
-    this.showFindCase = showFindCase;
+    this.logo = logo;
+    this.logoIsUsed = logo !== ApplicationThemeLogo.NONE;
   }
 }

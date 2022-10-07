@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -30,6 +30,7 @@ const personRoles = [
 const mockAllocateRoleStateData: AllocateRoleStateData = {
   action: Actions.Allocate,
   caseId: '1234',
+  jurisdiction: 'IA',
   state: null,
   typeOfRole: null,
   allocateTo: null,
@@ -53,7 +54,7 @@ describe('ChooseRoleComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChooseRoleComponent],
       imports: [
-        HttpClientModule,
+        HttpClientTestingModule,
         ReactiveFormsModule
       ],
       providers: [
@@ -103,6 +104,16 @@ describe('ChooseRoleComponent', () => {
     component.radioOptionControl.setValue(null);
     component.navigationHandler(navEvent, roleCategory, isLegalOpsOrJudicialRole);
     expect(component.radioOptionControl.errors).toBeTruthy();
+  });
+
+  it('should navigationHandler with success', () => {
+    const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
+    const roleCategory: RoleCategory = RoleCategory.JUDICIAL;
+    const isLegalOpsOrJudicialRole: UserRole = UserRole.Judicial;
+    component.radioOptionControl.setValue('Lead judge');
+    spyOn(component, 'dispatchEvent');
+    component.navigationHandler(navEvent, roleCategory, isLegalOpsOrJudicialRole);
+    expect(component.dispatchEvent).toHaveBeenCalledWith(navEvent, roleCategory, isLegalOpsOrJudicialRole);
   });
 
   it('should dispatchEvent for legal ops assign judicial role', () => {

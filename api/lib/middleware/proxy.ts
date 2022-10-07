@@ -16,12 +16,12 @@ export const onProxyError = (err, req, res) => {
     );
   }
 
-  if (res && typeof (res.status) === 'function') {
-    res.status(500).send({
-      error: 'Error when connecting to remote server',
-      status: 504,
-    });
-  }
+    if (!res.headersSent) {
+      res.status(500).send({
+        error: 'Error when connecting to remote server',
+        status: 504,
+      });
+    }
 };
 
 export const applyProxy = (app, config) => {

@@ -1,0 +1,101 @@
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <exui-hearing-parties-title></exui-hearing-parties-title>
+    <h1 class="govuk-heading-l">
+      Select length, date and priority level of hearing
+    </h1>
+
+    <form class="form" [formGroup]="priorityForm">
+      <div class="govuk-radios govuk-!-padding-bottom-1">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': hearingLengthErrorValue}">
+          <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint" id="hearing-length">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+              <h1 class="govuk-fieldset__heading">Length of hearing</h1>
+            </legend>
+            <span class="govuk-error-message" *ngIf="hearingLengthErrorValue">
+              <span class="govuk-visually-hidden">Error:</span> {{hearingLengthErrorValue}}
+            </span>
+            <div class="govuk-date-input" formGroupName="durationLength">
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="durationhours">Hours</label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="durationhours"
+                    name="durationhours" type="text" inputmode="numeric" value="" formControlName="hours">
+                </div>
+              </div>
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="durationmins">Minutes</label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="durationmins"
+                    name="durationmins" type="text" inputmode="numeric" value="" formControlName="minutes">
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      <div class="govuk-form-group govuk-!-margin-top-3" [ngClass]="{'govuk-form-group--error': hearingPriorityDateError}">
+        <fieldset class="govuk-fieldset" aria-describedby="contact-hint" id="hearing-specific-dates">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            <h3 class="govuk-fieldset__heading">Does the hearing need to take place on a specific date?</h3>
+          </legend>
+          <div class="govuk-hint">Availability of all the parties will be taken into account when scheduling this
+            hearing.</div>
+          <span class="govuk-error-message" *ngIf="hearingPriorityDateError">
+            <span class="govuk-visually-hidden">Error:</span> {{hearingPriorityDateError}}
+          </span>
+          <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="noSpecificDate" name="specificDate" type="radio" value="No"
+                formControlName="specificDate" (change)="showDateAvailability();">
+              <label class="govuk-label govuk-radios__label" for="noSpecificDate">No</label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="hearingSingleDate" name="specificDate" type="radio" value="Yes"
+                formControlName="specificDate" (change)="showDateAvailability();">
+              <label class="govuk-label govuk-radios__label" for="hearingSingleDate">Yes</label>
+            </div>
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
+              <div class="govuk-form-group">
+                <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="firstHearingFormGroup" [errorMessage]="firstDateOfHearingError"></xuilib-gov-uk-date>
+              </div>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="hearingDateRange" name="specificDate" type="radio" value="Choose a date range"
+                formControlName="specificDate" (change)="showDateAvailability();">
+              <label class="govuk-label govuk-radios__label" for="hearingDateRange">Choose a date range</label>
+            </div>
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose a date range'}">
+              <div class="govuk-hint">You can enter either or both dates.</div>
+              <div class="govuk-form-group">
+                <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="earliestHearingFormGroup" [errorMessage]="earliestDateOfHearingError"></xuilib-gov-uk-date>
+              </div>
+              <div class="govuk-form-group">
+                <xuilib-gov-uk-date [config]="latestHearingDate" [formGroup]="latestHearingFormGroup" [errorMessage]="latestDateOfHearingError"></xuilib-gov-uk-date>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <exui-parties-unavailable-dates [unAvailableDates]="partiesNotAvailableDates"></exui-parties-unavailable-dates>
+      <div class="govuk-form-group govuk-!-margin-top-5"  [ngClass]="{'govuk-form-group--error': hearingPriorityError}">
+        <fieldset class="govuk-fieldset" id="hearing-priority">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            <h3 class="govuk-fieldset__heading">What is the priority of this hearing?</h3>
+          </legend>
+          <span class="govuk-error-message" *ngIf="hearingPriorityError">
+            <span class="govuk-visually-hidden">Error:</span> {{hearingPriorityError}}
+          </span>
+          <div class="govuk-radios">
+            <div class="govuk-radios__item" *ngFor="let priority of priorities">
+              <input class="govuk-radios__input" id="{{priority.key}}" name="priority" type="radio" [value]="priority.key" formControlName="priority">
+              <label class="govuk-label govuk-radios__label" [for]="priority.key">{{priority.value_en}}</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </form>
+  </div>
+</div>

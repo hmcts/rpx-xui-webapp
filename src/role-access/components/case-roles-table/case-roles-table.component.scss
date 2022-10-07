@@ -1,9 +1,9 @@
 tr {
-  > th {
-    width: 15%;
+  > th,td {
+    width: 20%;
 
     &:first-child {
-      width: 25%;
+      width: 20%;
     }
   }
 }

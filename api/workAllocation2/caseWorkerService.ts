@@ -3,6 +3,7 @@ import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 
 const logger: JUILogger = log4jui.getLogger('caseworker-service');
 const MAX_RECORDS: number = 5000;
@@ -62,6 +63,25 @@ export async function handlePostRoleAssignments(path: string, payload: any, req:
     return response;
 }
 
+export async function handleCaseWorkersForServicesPost(path: string, payloads: CaseworkerPayload [], req: EnhancedRequest):
+ Promise<ServiceCaseworkerData[]> {
+    const headers = setHeaders(req);
+    headers.pageNumber = 0;
+    headers.size = MAX_RECORDS;
+    const data = new Array<ServiceCaseworkerData>();
+    // sort
+    // direction
+    for (const payload of payloads) {
+        const response: AxiosResponse = await http.post(path, payload, { headers });
+        if (response.data.roleAssignmentResponse.length >= MAX_RECORDS) {
+            logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
+        }
+        const caseworkerService = { jurisdiction: payload.attributes.jurisdiction[0], data: response.data };
+        data.push(caseworkerService);
+    }
+    return data;
+}
+
 export async function handlePostCaseWorkersRefData(path: string, userIds: any, req: EnhancedRequest): Promise<any> {
     const payload = {
         userIds,
@@ -86,5 +106,15 @@ export function getUserIdsFromRoleApiResponse(response: any): string [] {
            userIds = [...userIds, roleAssignment.actorId];
        });
     }
+    return userIds;
+}
+
+export function getUserIdsFromJurisdictionRoleResponse(response: any): string [] {
+    let userIds = new Array<string>();
+    response.forEach(jurisdictionRoleResponse => {
+        jurisdictionRoleResponse.data.roleAssignmentResponse.forEach(roleAssignment => {
+            userIds = [...userIds, roleAssignment.actorId];
+        });
+    });
     return userIds;
 }

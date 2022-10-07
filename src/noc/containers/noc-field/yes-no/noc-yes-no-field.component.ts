@@ -12,7 +12,7 @@ export class NocYesNoFieldComponent extends AbstractFieldWriteComponent implemen
   public yesNoValues = [ 'Yes', 'No' ];
   public yesNoControl: FormControl;
 
-  public constructor(private yesNoService: YesNoService) {
+  public constructor(private readonly yesNoService: YesNoService) {
     super();
   }
 

@@ -1,35 +1,39 @@
 /* tslint:disable */
-import { PersonRole } from "../interfaces/person";
-import  { v4 as uuidv4 } from 'uuid';
+import {Person, PersonRole} from "../interfaces/person";
+import {v4 as uuidv4} from 'uuid';
 
-export const PERSON = [
+export const PERSON: Person[] = [
   {
-    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
     name: 'Jacky Collins',
     email: 'jacky.collins@judicial.com',
     domain: PersonRole.JUDICIAL,
-    knownAs: 'Hearing Judge'
+    knownAs: 'Hearing Judge',
+    personalCode: 'p1000000'
   },
   {
-    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@judicial.com',
     domain: PersonRole.JUDICIAL,
-    knownAs: 'Lead Judge'
+    knownAs: 'Lead Judge',
+    personalCode: 'p1000001'
   },
   {
     id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@judicial.com',
     domain: PersonRole.JUDICIAL,
-    knownAs: 'Lead Judge'
+    knownAs: 'Lead Judge',
+    personalCode: 'p1000002'
   },
   {
-    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4',
     name: 'James Priest',
     email: 'james.priest@judicial.com',
     domain: PersonRole.JUDICIAL,
-    knownAs: 'Hearing Judge'
+    knownAs: 'Hearing Judge',
+    personalCode: 'p1000003'
   },
   {
     id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
@@ -38,25 +42,25 @@ export const PERSON = [
     domain: PersonRole.CASEWORKER
   },
   {
-    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a98',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@legalops.com',
     domain: PersonRole.CASEWORKER
   },
   {
-    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a97',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@legalops.com',
     domain: PersonRole.CASEWORKER
   },
   {
-    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a96',
     name: 'James Priest',
     email: 'James Priest@legalops.com',
     domain: PersonRole.CASEWORKER
   },
   {
-    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a95',
     name: 'Michael Jackson',
     email: 'michael.jackson@legalops.com',
     domain: PersonRole.CASEWORKER
@@ -74,7 +78,6 @@ export const PERSON = [
     domain: PersonRole.ADMIN
   },
 ]
-
 
 export const JUDICIAL_WORKERS_LOCATIONS = [
   {
@@ -20667,4 +20670,94 @@ export const TASK_MANAGER = {
     'caseName': 'Bob Smith',
     'caseCategory': 'Protection'
   }]
+};
+
+export const CASE_EVENT_TASKS = {
+  tasks: [
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
+      task_title: 'Submit your appeal',
+      dueDate: '2021-05-05T16:00:00.000+0000',
+      description: '[Submit your appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)',
+      location_name: 'Birmingham',
+      location_id: '231596',
+      case_id: '1620409659381330',
+      case_category: 'EEA',
+      case_name: 'William Priest',
+      warnings: true,
+      permissions: ['Own', 'Execute', 'Manage'],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
+      task_title: 'Stitching bundle complete',
+      dueDate: '2021-05-12T16:00:00.000+0000',
+      description: '[Stitching bundle complete](/cases/case-details/${[CASE_REFERENCE]}/trigger/asyncStitchingComplete/submit',
+      location_name: 'Glasgow',
+      location_id: '366559',
+      case_id: '1620409659381330',
+      case_category: 'Protection',
+      case_name: 'Jo Fly',
+      permissions: ['Manage', 'Execute'],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',
+      task_title: 'Add case note',
+      dueDate: '2021-05-18T16:00:00.000+0000',
+      description: '[Add case note](/cases/case-details/${[CASE_REFERENCE]}/trigger/addCaseNote/addCaseNoteaddCaseNote',
+      location_name: 'Manchester',
+      location_id: '512401',
+      case_id: '1620409659381330',
+      case_category: 'refusalOfHumanRights',
+      case_name: 'Francis Gigs',
+      permissions: ['Manage'],
+    },
+    {
+      assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+      assigneeName: 'XUI test judge',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc5',
+      task_title: 'End the appeal',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      description: '[End the appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/endAppeal/endAppealendAppeal',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: [],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
+      task_title: 'Cancelled task name',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      description: '[End the appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/endAppeal/endAppealendAppeal',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: [],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
+      task_title: 'Conflict task name',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      description: '[End the appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/endAppeal/endAppealendAppeal',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: [],
+    }
+  ]
 };

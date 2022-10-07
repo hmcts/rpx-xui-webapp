@@ -1,0 +1,47 @@
+.gov-table--middle td {
+  vertical-align: middle;
+}
+
+
+.govuk-table__row {
+
+  > * {
+
+    &:first-child {
+      width: 20%;
+    }
+
+    &:nth-child(2) {
+      width: 20%;
+    }
+
+    &:nth-child(3) {
+      width: 10%;
+    }
+
+    &:nth-child(4) {
+      width: 10%;
+    }
+
+    &:nth-child(5) {
+      width: 20%;
+    }
+
+    &:nth-child(6) {
+      width: 10%;
+    }
+
+    &:last-child(7) {
+      width: 10%;
+    }
+
+  }
+
+}
+
+.table-group-error{
+  position: absolute;
+  border: 2px solid #d4351c;
+  height: 38px;
+  margin-left: -15px;
+}

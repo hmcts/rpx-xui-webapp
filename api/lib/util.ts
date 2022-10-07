@@ -55,3 +55,10 @@ export function isUserTandCPostSuccessful(postResponse: PostUserAcceptTandCRespo
 export function fieldNameMapper(fieldName: string, mapping: {}): string {
     return mapping[fieldName] ? mapping[fieldName] : fieldName;
 }
+
+export function reflect(promise: Promise<any>): Promise<any> {
+  return promise.then(
+    value => ({value, status: 'fulfilled' }),
+    error => ({error, status: 'rejected' })
+  );
+}

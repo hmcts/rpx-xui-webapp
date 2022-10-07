@@ -1,0 +1,144 @@
+  <a class="govuk-back-link" [routerLink]="['../hearing-actual-add-edit-summary']">Back</a>
+  <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+         *ngIf="errors && errors.length"
+         data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li *ngFor="let error of errors">
+            <a [href]="window.location.pathname +'#' + error.id">{{error.message}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <exui-hearing-actuals-case-title *ngIf="caseTitle"
+                                         [caseTitle]="caseTitle"></exui-hearing-actuals-case-title>
+        <h1 class="govuk-heading-l">
+          Participants
+        </h1>
+        <br>
+
+        <form [formGroup]="form">
+
+          <table class="govuk-table gov-table--middle">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header app-custom-class"
+                  *ngFor="let column of columns">{{ column }}</th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            <ng-container formArrayName="parties" *ngFor="let group of parties.controls ; let i=index">
+              <tr class="error-row" *ngIf="submitted && rowHasErrors(i) && !group.hasError('duplicateEntries')">
+                <td colspan="7">
+                  <span class="govuk-error-message govuk-!-margin-top-2">
+                    <span class="govuk-visually-hidden">Error:</span> {{ displayRowErrors(i) }}
+                  </span>
+                </td>
+              </tr>
+
+              <tr class="error-row" *ngIf="submitted && group.hasError('duplicateEntries')">
+                <td colspan="7">
+                  <span class="govuk-error-message govuk-!-margin-top-2">
+                    <span class="govuk-visually-hidden">Error:</span> {{ group.getError('duplicateEntries').message }}
+                  </span>
+                </td>
+              </tr>
+              <tr class="govuk-table__row" *ngIf="group.get('isPlannedParty').value" [formGroupName]="i"
+                  [id]="'participant'+ i">
+                <td class="govuk-table__cell">{{group.get('firstName').value}}</td>
+                <td class="govuk-table__cell">{{group.get('lastName').value}}</td>
+                <td class="govuk-table__cell">{{getRole(group.get('role').value)}}</td>
+                <td class="govuk-table__cell">
+                  <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type"
+                          [ngClass]="{'govuk-select--error': highlightRowError(i, 'attendanceType')}">
+                    <option [ngValue]="null">Please select</option>
+                    <ng-container *ngFor="let reason of partyChannel">
+                      <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
+                      <ng-container *ngIf="reason.child_nodes">
+                        <option *ngFor="let reason_child of reason.child_nodes"
+                                [ngValue]="reason_child.key">{{reason_child.value_en}}</option>
+                      </ng-container>
+                    </ng-container>
+                  </select>
+                </td>
+                <td class="govuk-table__cell" colspan="3"></td>
+              </tr>
+
+              <tr class="govuk-table__row" *ngIf="!group.get('isPlannedParty').value" [formGroupName]="i"
+                  [id]="'participant'+ i">
+                <th scope="row" class="govuk-table__header">
+                  <div [ngClass]="{'table-group-error': submitted && group.hasError('duplicateEntries') && group.getError('duplicateEntries').message}"></div>
+                  <input class="govuk-input" formControlName="firstName" type="text" aria-label="First name"
+                         maxlength="40"
+                         [ngClass]="{'govuk-input--error': highlightRowError(i, 'firstName')}">
+                </th>
+                <th scope="row" class="govuk-table__header">
+                  <input class="govuk-input" formControlName="lastName" type="text" aria-label="Last name"
+                         maxlength="60"
+                         [ngClass]="{'govuk-input--error': highlightRowError(i, 'lastName')}">
+                </th>
+                <td class="govuk-table__cell">
+                  <select class="govuk-select" formControlName="role" aria-label="Attendee role"
+                          [ngClass]="{'govuk-select--error': highlightRowError(i, 'role')}">
+                    <option [ngValue]="null">Please select</option>
+                    <option *ngFor="let role of mutablePartyRoles" [ngValue]="role.key">{{role.value_en}}</option>
+                  </select>
+                </td>
+                <td class="govuk-table__cell">
+                  <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type"
+                          [ngClass]="{'govuk-select--error': highlightRowError(i, 'attendanceType')}">
+                    <option [ngValue]="null">Please select</option>
+                    <ng-container *ngFor="let reason of partyChannel">
+                      <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
+                      <ng-container *ngIf="reason.child_nodes">
+                        <option *ngFor="let reason_child of reason.child_nodes"
+                                [ngValue]="reason_child.key">{{reason_child.value_en}}</option>
+                      </ng-container>
+                    </ng-container>
+                  </select>
+                </td>
+                <td class="govuk-table__cell">
+                  <input class="govuk-input" formControlName="organisation"
+                         type="text"
+                         aria-label="Attendee organisation (optional)">
+                </td>
+                <td class="govuk-table__cell">
+
+                  <select class="govuk-select" formControlName="attendeeRepresenting"
+                          aria-label="Who was this attendee representing?"
+                          [ngClass]="{'govuk-select--error': highlightRowError(i, 'attendeeRepresenting')}">
+                    <option value="Please select">Please select</option>
+                    <option *ngFor="let participant of participants" value="{{ participant.id }}"
+                            selected="">{{ participant.name }}</option>
+                  </select>
+
+                </td>
+                <td class="govuk-table__cell"><a href="#" class="govuk-link btn-remove" (click)="removeRow($event, i)">Remove</a>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+
+          <button class="govuk-button govuk-button--secondary btn-add" data-module="govuk-button"
+                  (click)="addRow($event)" [disabled]="parties.hasError('maxlength')">
+            Add a participant
+          </button>
+
+          <br><br>
+
+          <button class="govuk-button primary" data-module="govuk-button" (click)="submitForm(form.value, form.valid)">
+            Save and continue
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+  </main>

@@ -11,11 +11,16 @@ const divorceCaseActions = require('../caseCreationActions/divorce');
 const MockApp = require('../../nodeMock/app');
 
 const ccdApi = require('../../nodeMock/ccd/ccdApi');
+const nodeAppMockData = require('../../nodeMock/nodeApp/mockData');
 
 describe('Pa11y Accessibility tests', function () {
 
     before(async function (done) {
         MockApp.init()
+
+        nodeAppMockData.init();
+        nodeAppMockData.userDetails.userInfo.roles.push("caseworker-ia");
+
         done();
     });
     after(async function (done) {
@@ -34,7 +39,7 @@ describe('Pa11y Accessibility tests', function () {
 
     });
 
-    it('Case Search Page', async function () {
+    it.skip('Case Search Page', async function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('.search-block'))
@@ -57,7 +62,7 @@ describe('Pa11y Accessibility tests', function () {
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
     });
 
-    it('Confirm Share a case page', async function () {
+    it.skip('Confirm Share a case page', async function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
@@ -71,7 +76,7 @@ describe('Pa11y Accessibility tests', function () {
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
     });
 
-    it('Share Case Submission success', async function () {
+    it.skip('Share Case Submission success', async function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
@@ -87,7 +92,7 @@ describe('Pa11y Accessibility tests', function () {
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
     });
 
-    it('Share Case Submission partial success', async function () {
+    it.skip('Share Case Submission partial success', async function () {
         MockApp.onPost('/api/caseshare/case-assignments', (req, res) => {
             res.send(req.body.sharedCases);
         });
@@ -107,7 +112,7 @@ describe('Pa11y Accessibility tests', function () {
     });
 
 
-    it('Share Case Submission error page', async function () {
+    it.skip('Share Case Submission error page', async function () {
         MockApp.onPost('/api/caseshare/case-assignments', (req, res) => {
             res.status(500).send();
         });

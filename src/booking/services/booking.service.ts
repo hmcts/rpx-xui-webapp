@@ -28,7 +28,7 @@ export class BookingService {
     return this.http.post<BookingResponseSuccess | BookingResponseError>('/am/createBooking', bookingRequest);
   }
 
-  public refreshRoleAssignments(userId: string): Observable<any> {
+  public refreshRoleAssignments(userId: string): Observable<BookingResponseSuccess | BookingResponseError> {
     return this.http.post<BookingResponseSuccess | BookingResponseError>('/am/role-mapping/judicial/refresh', { userId });
   }
 }

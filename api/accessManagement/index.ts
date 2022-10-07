@@ -1,7 +1,10 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
+import {
+  SERVICES_JUDICIAL_BOOKING_API_PATH,
+  SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH
+} from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
@@ -50,27 +53,19 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
 }
 
 export async function refreshRoleAssignments(req, res: Response, next: NextFunction): Promise<Response> {
-
-  const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
-  //const fullPath = `${basePath}/am/ole-mapping/judicial/refresh`;
-  // Path hard coded
-  const fullPath = 'http://am-org-role-mapping-service-demo.service.core-compute-demo.internal/am/role-mapping/judicial/refresh'
-  req.headers.ServiceAuthorization = 'S2S token'
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH);
+  const fullPath = `${basePath}/am/role-mapping/judicial/refresh`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
 
   try {
-    const response = await http.post(fullPath, {"refreshRequest" : {"userIds" : [req.body.userId]}}, { headers });
-    console.log('response ', JSON.stringify(response))
+    const response = await http.post(fullPath, {'refreshRequest' : {'userIds' : [req.body.userId]}}, { headers });
+
     return res.status(response.status).send(response.data);
   } catch (error) {
-    console.log('Dav Err ', error)
-      next(error)
+    next(error);
   }
-
-
-
 }
 
 // node layer logic for approving specific access request

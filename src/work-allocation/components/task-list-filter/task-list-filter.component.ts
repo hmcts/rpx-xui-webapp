@@ -84,7 +84,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     if (this.router.getCurrentNavigation() &&
       this.router.getCurrentNavigation().extras.state &&
       this.router.getCurrentNavigation().extras.state.location) {
-      this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
+      this.bookingLocations = [this.router.getCurrentNavigation().extras.state.location.id];
     }
   }
 
@@ -388,5 +388,4 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       }, 0);
     }
   }
-
 }

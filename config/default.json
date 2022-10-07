@@ -69,7 +69,8 @@
     },
     "refunds": "http://ccpay-refunds-api-prod.service.core-compute-prod.internal",
     "role_assignment": {
-      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal"
+      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal",
+      "roleMappingApi": "http://am-org-role-mapping-service-demo.service.core-compute-demo.internal"
     },
     "case": {
       "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",

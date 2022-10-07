@@ -72,7 +72,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "4.8.3-strategic-activity-tracker-b",
+    "@hmcts/ccd-case-ui-toolkit": "4.8.3-strategic-activity-tracker-a",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "5.0.4",
     "@hmcts/frontend": "0.0.39-alpha",

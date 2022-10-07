@@ -12,7 +12,8 @@ export class StageAnswerConverter implements AnswerConverter {
   }
 
   private static getHearingTypeDisplayValue(hearingStageOptions: LovRefDataModel[], key: string): string {
-    return hearingStageOptions.find(stage => stage.key === key).value_en;
+    const lovData: LovRefDataModel = hearingStageOptions.find(stage => stage.key === key);
+    return lovData ? lovData.value_en : '';
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {

@@ -1,0 +1,27 @@
+.mat-raised-button {
+    margin-right: 20px;
+    background-color: green
+}
+
+
+.mat-raised-button .reset {
+    margin-right: 20px;
+    background-color: gray
+}
+
+.header-text {
+    font-size: 68px;
+}
+
+.filters-text {
+    font-size: 38px;
+}
+
+.text {
+    font-size: 24px;
+    font-weight: normal;
+}
+
+.mat-form-field {
+    min-width: 600px !important;
+}

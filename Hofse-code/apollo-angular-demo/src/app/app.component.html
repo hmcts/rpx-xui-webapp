@@ -1,0 +1,68 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div>
+  <div style="text-align: center">
+    <!-- <h1>Welcome to {{ title }}!</h1> -->
+    <img width="100%" alt="Angular Logo" src="../assets/header.png" />
+  </div>
+
+  <section style="padding-left: 50px">
+    <div style="text-align: left">
+      <h1 class="header-text">Case list</h1>
+
+      <div style="margin-top: 50px">
+        <h2 class="filters-text">Filters</h2>
+        <h3 class="text">Jurisdiction</h3>
+        <mat-form-field appearance="outline">
+          <mat-select
+            [(value)]="selected"
+            (selectionChange)="onJurisdictionChange(selected)"
+          >
+            <mat-option value=""></mat-option>
+            <mat-option
+              *ngFor="let jurisdiction of jurisdictions"
+              [value]="jurisdiction"
+            >
+              {{ jurisdiction.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <h3 class="text">Case type</h3>
+        <mat-form-field appearance="outline">
+          <mat-select
+            [(value)]="caseType"
+            (selectionChange)="onCasetypeChange(caseType)"
+          >
+            <mat-option *ngFor="let case of caseTypes" [value]="case">
+              {{ case.name }}
+            </mat-option>
+            <mat-option value=""></mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <h3 class="text">State</h3>
+        <mat-form-field appearance="outline">
+          <mat-select [(value)]="stateO">
+            <mat-option value=""></mat-option>
+            <mat-option *ngFor="let state of states" [value]="state">
+              {{ state.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onApplyClick()"
+        [disabled]="!selected || !caseType || !stateO"
+      >
+        Apply
+      </button>
+      <button mat-raised-button disabled>Reset</button>
+    </div>
+  </section>
+</div>

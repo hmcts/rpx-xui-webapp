@@ -1,18 +1,21 @@
 import { AxiosResponse } from 'axios';
-import { sendPost } from '../common/crudService';
+import * as express from 'express';
 import { NextFunction, Response } from 'express';
+import { UserInfo } from '../auth/interfaces/UserInfo';
+import { sendPost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { SERVICES_CASE_JUDICIAL_REF_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { JudicialUserDto } from './dtos/judicial-user-dto';
 import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
-import { UserInfo } from '../auth/interfaces/UserInfo';
 import { release2ContentType } from './models/release2ContentType';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+const JUDICIAL_REF_URL = getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH);
 
 export async function findExclusionsForCaseId(req: EnhancedRequest, res: Response, next: NextFunction) {
   const requestPayload = getExclusionRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
@@ -20,7 +23,7 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
   const fullPath = `${basePath}/am/role-assignments/query`;
   const headers = setHeaders(req, release2ContentType);
   try {
-    const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
+    const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
     const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId, req);
     return res.status(response.status).send(roleExclusions);
   } catch (error) {
@@ -35,19 +38,23 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let roleCategory: string;
   let assigneeId: string;
-  if (body.exclusionOption === 'Exclude another person') {
-    roleCategory = body.person.domain === 'Legal Ops' ? 'LEGAL_OPERATIONS' : body.person.domain;
-    assigneeId = body.person.id;
-  } else {
-    roleCategory = currentUser.roleCategory;
-    assigneeId = currentUserId;
-  }
+  try {
+    if (body.exclusionOption === 'Exclude another person') {
+      roleCategory = getCorrectRoleCategory(body.person.domain);
+      assigneeId = body.person.id;
+    } else {
+      roleCategory = currentUser.roleCategory;
+      assigneeId = currentUserId;
+    }
 
-  const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
-  const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-  const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-  const {status, data} = response;
-  return res.status(status).send(data);
+    const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
+    const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    const { status, data } = response;
+    return res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
 }
 
 export function prepareExclusionBody(currentUserId: string, assigneeId: string, body: any, roleCategory: string): any {
@@ -78,7 +85,7 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
   const fullPath = `${basePath}/am/role-assignments/${req.body.roleExclusion.id}`;
   const headers = setHeaders(req);
   try {
-    const response = await http.delete(fullPath, {headers});
+    const response = await http.delete(fullPath, { headers });
     return res.status(response.status).send(req.body.roleExclusion);
   } catch (error) {
     next(error);
@@ -93,6 +100,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
   }
   return roleAssignments.map(roleAssignment => ({
     added: roleAssignment.created,
+    actorId: roleAssignment.actorId,
     email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
     id: roleAssignment.id,
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
@@ -110,6 +118,7 @@ export function getEmail(actorId: string, req: EnhancedRequest): string {
     }
   }
 }
+
 export function getUserName(actorId: string, req: EnhancedRequest): string {
   if (req && req.session && req.session.caseworkers) {
     const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
@@ -123,12 +132,12 @@ export function getExclusionRequestPayload(caseId: string, jurisdiction: string,
   return {
     queryRequests: [
       {
-          attributes: {
-              caseId: [caseId],
-              caseType: [caseType],
-              jurisdiction: [jurisdiction],
-            },
-          grantType: ['EXCLUDED'],
+        attributes: {
+          caseId: [caseId],
+          caseType: [caseType],
+          jurisdiction: [jurisdiction],
+        },
+        grantType: ['EXCLUDED'],
       },
     ],
   };
@@ -140,7 +149,28 @@ export function mapRoleCategory(roleCategory: string): RoleCategory {
       return RoleCategory.LEGAL_OPERATIONS;
     case 'JUDICIAL':
       return RoleCategory.JUDICIAL;
+    case 'ADMIN':
+      return RoleCategory.ADMIN;
     default:
       throw new Error('Invalid roleCategory');
   }
+}
+
+export function getCorrectRoleCategory(domain: string): RoleCategory {
+  switch (domain) {
+    case 'Legal Ops':
+      return RoleCategory.LEGAL_OPERATIONS;
+    case 'Judicial':
+      return RoleCategory.JUDICIAL;
+    case 'Admin':
+      return RoleCategory.ADMIN;
+    default:
+      throw new Error('Invalid roleCategory ' + domain);
+  }
+}
+
+export function
+ getJudicialUsersFromApi(req: express.Request, ids: string[], serviceCode: string): Promise<AxiosResponse<JudicialUserDto[]>> {
+  const headers = setHeaders(req);
+  return http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users`, { sidam_ids: ids, serviceCode }, { headers });
 }

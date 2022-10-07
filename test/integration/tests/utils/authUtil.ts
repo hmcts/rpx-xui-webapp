@@ -55,6 +55,21 @@ export async function getXSRFToken(username, password) {
     return xsrfToken;
 }
 
+export async function getAuthorisation(username, password) {
+    if (!authCookiesForUsers.hasOwnProperty(username)) {
+        authCookiesForUsers[username] = await authenticateAndGetcookies(username, password);
+    }
+    let authToken = '';
+    for (const cookie of authCookiesForUsers[username]) {
+        // console.log(cookie.name);
+        if (cookie.name === '__auth__') {
+            authToken = cookie.value;
+            break;
+        }
+    }
+    return authToken;
+}
+
 export async function getUserId(username, password) {
     if (!authCookiesForUsers.hasOwnProperty(username)) {
         authCookiesForUsers[username] = await authenticateAndGetcookies(username, password);

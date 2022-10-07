@@ -1,0 +1,111 @@
+<div id="hearingDetails">
+  <dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Hearing date</dt>
+      <dd class="govuk-summary-list__value">
+        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+  </dl>
+  <br />
+
+  <h1 class="govuk-heading-m" style="display: inline-block;">Hearing stage and result</h1>
+
+  <dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+      <dt class="govuk-summary-list__key">Hearing stage</dt>
+      <dd class="govuk-summary-list__value">{{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingType | convertToValue : hearingStageOptions}}</dd>
+    </div>
+
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+      <dt class="govuk-summary-list__key">Hearing result</dt>
+      <dd class="govuk-summary-list__value">
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResult}}</dd>
+    </div>
+
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
+      <dt class="govuk-summary-list__key">Adjournment reason</dt>
+      <dd class="govuk-summary-list__value">
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultReasonType | convertToValue : adjournReasons}}</dd>
+    </div>
+
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
+      <dt class="govuk-summary-list__key">Adjournment date</dt>
+      <dd class="govuk-summary-list__value">
+        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
+    </div>
+  </dl>
+  <br />
+
+  <h1 class="govuk-heading-m" style="display: inline-block;">Hearing timings</h1>
+
+  <dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+      <dt class="govuk-summary-list__key">Start time</dt>
+      <dd class="govuk-summary-list__value">{{actualHearingDays?.hearingStartTime | date: dateFormat.DisplayTime}}
+      </dd>
+    </div>
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+      <dt class="govuk-summary-list__key">Finish time</dt>
+      <dd class="govuk-summary-list__value">{{actualHearingDays?.hearingEndTime| date:dateFormat.DisplayTime}}
+      </dd>
+    </div>
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+      <dt class="govuk-summary-list__key">Pause time</dt>
+      <dd class="govuk-summary-list__value">{{actualPauseTime?.pauseStartTime|
+        date:dateFormat.DisplayTime}}</dd>
+    </div>
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+      <dt class="govuk-summary-list__key">Resume time</dt>
+      <dd class="govuk-summary-list__value">{{actualPauseTime?.pauseEndTime|
+        date:dateFormat.DisplayTime}}</dd>
+    </div>
+  </dl>
+  <br />
+  <h1 class="govuk-heading-m" style="display: inline-block;">Participants</h1>
+  <div *ngFor="let party of participants">
+    <h2 class="govuk-heading-s">{{party.individualDetails.firstName}}
+      {{party.individualDetails.lastName}}</h2>
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Role</dt>
+        <dd class="govuk-summary-list__value">{{party.partyRole}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Attendance type</dt>
+        <dd class="govuk-summary-list__value">{{party.partyChannelSubType}}</dd>
+      </div>
+    </dl>
+  </div>
+  <br />
+  <div *ngFor="let party of attendees; let i = index">
+    <h2 class="govuk-heading-s">Attendee {{i+1}}</h2>
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Role</dt>
+        <dd class="govuk-summary-list__value">{{party.partyRole}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">First name</dt>
+        <dd class="govuk-summary-list__value">{{party.individualDetails.firstName}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Last name</dt>
+        <dd class="govuk-summary-list__value">{{party.individualDetails.lastName}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Attendance type</dt>
+        <dd class="govuk-summary-list__value">{{party.partyChannelSubType}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Organisation</dt>
+        <dd class="govuk-summary-list__value">{{party.actualOrganisationName}}</dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">Attendee representing</dt>
+        <dd class="govuk-summary-list__value">{{party.representedParty}}</dd>
+      </div>
+    </dl>
+  </div>
+  <br />
+</div>

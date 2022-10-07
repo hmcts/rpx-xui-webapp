@@ -11,3 +11,8 @@ export interface Location {
   locationName: string;
   services: string[];
 }
+
+export interface ISessionStorageService {
+  getItem(key: string, removeAfterRead?: boolean): string;
+  setItem(key: string, value: string): void;
+}

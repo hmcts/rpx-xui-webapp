@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
@@ -21,6 +22,7 @@ export class WorkCaseListComponent implements OnChanges {
   @Input() public cases: Case[];
   @Input() public locations: Location[] = [];
   @Input() public casesTotal: number;
+  @Input() public uniqueCases: number;
   @Input() public caseServiceConfig: CaseServiceConfig;
   @Input() public sortedBy: SortField;
   @Input() public addActionsColumn: boolean = true;
@@ -30,7 +32,7 @@ export class WorkCaseListComponent implements OnChanges {
   /**
    * The message to display when there are no cases to display in the list.
    */
-  @Input() public emptyMessage: string = ListConstants.EmptyMessage.Default;
+  @Input() public emptyMessage: string = ListConstants.EmptyMessage.DefaultCases;
 
   // TODO: Need to re-read the LLD, but I believe it says pass in the caseServiceConfig into this CaseListComponent.
   // Therefore we will not need this.
@@ -48,6 +50,7 @@ export class WorkCaseListComponent implements OnChanges {
   public displayedColumns: string[];
 
   private selectedCase: Case;
+  public newUrl: string;
 
   constructor(private readonly router: Router) {
   }
@@ -200,7 +203,7 @@ export class WorkCaseListComponent implements OnChanges {
   private addPersonInfoAndLocationInfo(cases: Case[]): Case[] {
     const caseworkers = JSON.parse(sessionStorage.getItem('caseworkers'));
     return cases.map((c: Case) => {
-      if (c.assignee && c.assignee.length) {
+      if (c.assignee && c.assignee.length && caseworkers && caseworkers.length > 0) {
         const actorName = caseworkers.find((caseworker) => caseworker.idamId === c.assignee);
         if (actorName) {
           c.actorName =  `${actorName.firstName} ${actorName.lastName}`;
@@ -225,11 +228,8 @@ export class WorkCaseListComponent implements OnChanges {
     if (this.addActionsColumn) {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
-      if (this.selectedCase) {
-        this.router.navigate([basePath], {fragment: `manage_${this.selectedCase.id}`});
-      } else {
-        this.router.navigate([basePath]);
-      }
+      this.newUrl = this.selectedCase ? `${basePath}#manage_${this.selectedCase.id}` : basePath;
+      window.history.pushState('object', document.title, this.newUrl);
     }
   }
 

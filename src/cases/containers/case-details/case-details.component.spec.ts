@@ -5,12 +5,6 @@ import { of } from 'rxjs/internal/observable/of';
 import { Store } from '@ngrx/store';
 import { CaseDetailsComponent } from './case-details.component';
 
-
-class MockSortService {
-  public features = {};
-  public getFeatureToggle() { }
-  public cgetEditorConfiguration() { }
-}
 describe('CaseDetailsComponent', () => {
   let component: CaseDetailsComponent;
   let fixture: ComponentFixture<CaseDetailsComponent>;
@@ -43,6 +37,7 @@ describe('CaseDetailsComponent', () => {
   it('should assign case id', () => {
     expect(component.caseId).toEqual('dummy');
   });
+
   it('should unsubscribe', () => {
     spyOn(component.$caseIdSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
@@ -63,4 +58,7 @@ describe('CaseDetailsComponent', () => {
     expect(subscription.unsubscribe).not.toHaveBeenCalled();
   });
 
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
 });

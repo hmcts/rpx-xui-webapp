@@ -9,8 +9,8 @@ import { setTestContext } from './utils/helper';
 
 
 describe('Evidence Manager Endpoints', () => {
-    const userName = config.users.solicitor;
-    const password = 'Monday01';
+    const userName = config.users[config.testEnv].solicitor.e;
+    const password = config.users[config.testEnv].solicitor.sec;
 
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
@@ -29,7 +29,7 @@ describe('Evidence Manager Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`documents/${config.em.docId}/binary`, headers, 200);
+        const response = await Request.get(`documents/${config.em[config.testEnv].docId}/binary`, headers, 200);
         expect(response.status).to.equal(200);
     });
 
@@ -40,7 +40,7 @@ describe('Evidence Manager Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`em-anno/metadata/${config.em.docId}`, headers, [200,204]);
+        const response = await Request.get(`em-anno/metadata/${config.em[config.testEnv].docId}`, headers, [200,204]);
         expect(response.status).to.equal(204);
     });
 
@@ -51,7 +51,7 @@ describe('Evidence Manager Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null, 200);
+        const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em[config.testEnv].docId}`, null, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.have.all.keys('createdBy', 'createdByDetails', 'lastModifiedByDetails', 'createdDate', 'lastModifiedBy', 'annotations', 'documentId', 'id','lastModifiedDate');
     });
@@ -72,7 +72,7 @@ describe('Evidence Manager Endpoints', () => {
         const headers = {
             'X-XSRF-TOKEN': xsrfToken
         };
-        const annotationsRes = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null, 200);
+        const annotationsRes = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em[config.testEnv].docId}`, null, 200);
         let annoIdToDelete = '';
         if (annotationsRes.data.annotations.length <= 1) {
             const newannoRes = await Request.put(`em-anno/annotations`, await getAnnotationObject(), headers, 200);
@@ -94,12 +94,12 @@ describe('Evidence Manager Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null, 200);
+        const response = await Request.get(`em-anno/${config.em[config.testEnv].docId}/bookmarks`, null, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('array');
 
         expect(response.data[0]).to.have.all.keys('id', 'name', 'documentId', 'createdBy', 'pageNumber', 'xCoordinate', 'yCoordinate', 'parent', 'previous');
-        expect(response.data[0].documentId).to.equal(config.em.docId);
+        expect(response.data[0].documentId).to.equal(config.em[config.testEnv].docId);
     });
 
     it('Put document bookmark', async () => {
@@ -110,13 +110,13 @@ describe('Evidence Manager Endpoints', () => {
             'X-XSRF-TOKEN': xsrfToken
         };
 
-        const bookmarksCountBefore = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null, 200);
+        const bookmarksCountBefore = await Request.get(`em-anno/${config.em[config.testEnv].docId}/bookmarks`, null, 200);
 
-        const response = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em.docId, 0, null), headers, 200);
+        const response = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em[config.testEnv].docId, 0, null), headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('object');
         expect(response.data).to.have.all.keys('id', 'name', 'documentId', 'createdBy', 'pageNumber', 'xCoordinate', 'yCoordinate', 'parent', 'previous');
-        expect(response.data.documentId).to.equal(config.em.docId);
+        expect(response.data.documentId).to.equal(config.em[config.testEnv].docId);
 
     });
 
@@ -126,10 +126,10 @@ describe('Evidence Manager Endpoints', () => {
         const headers = {
             'X-XSRF-TOKEN': xsrfToken
         };
-        const bookmarksgetResponse = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null, 200);
+        const bookmarksgetResponse = await Request.get(`em-anno/${config.em[config.testEnv].docId}/bookmarks`, null, 200);
         let bookMarkIdToDelete = '';
         if (bookmarksgetResponse.data.length <= 1 ) {
-            const createBookmarkResponse = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em.docId, 0, null), headers, 200);
+            const createBookmarkResponse = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em[config.testEnv].docId, 0, null), headers, 200);
             bookMarkIdToDelete = createBookmarkResponse.data.id;
         } else {
             bookMarkIdToDelete = bookmarksgetResponse.data[0].id;
@@ -160,7 +160,7 @@ describe('Evidence Manager Endpoints', () => {
         const annoId = uuid();
         const rectangleId = uuid();
 
-        const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null, 200);
+        const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em[config.testEnv].docId}`, null, 200);
 
         let annoSetid = '';
         if (response.status === 200) {
@@ -184,7 +184,7 @@ describe('Evidence Manager Endpoints', () => {
                 }
             ],
             type: 'highlight',
-            documentId: config.em.docId,
+            documentId: config.em[config.testEnv].docId,
             annotationSetId: annoSetid
         };
     }

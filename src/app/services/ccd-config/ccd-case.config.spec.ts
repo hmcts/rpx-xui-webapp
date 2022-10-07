@@ -51,8 +51,8 @@ describe('AppConfiguration', () => {
 
   it('should be created', inject([AppConfig], (service: AppConfig) => {
     expect(service).toBeTruthy();
-    expect(mockFeatureToggleService.isEnabled).toHaveBeenCalled();
-    expect(service.workallocationUrl).toBeNull();
+    expect(mockFeatureToggleService.getValue).toHaveBeenCalled();
+    expect(service.workallocationUrl).toEqual('workallocation');
   }));
 
   it('should have load', inject([AppConfig], (service: AppConfig) => {

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
 import { InformationMessage } from '../../models/comms';
-import { InfoMessageCommService } from '../../services';
 
 @Component({
   selector: 'exui-info-message-container',
@@ -12,7 +12,15 @@ export class InfoMessageContainerComponent implements OnInit {
 
   public showInfoMessage: boolean = false;
   public infoMessages: InformationMessage[];
+  public lastMessage: InformationMessage;
   private currentUrl: string;
+  private excludeUrls = ['#manage', 'role-access'];
+
+  constructor(
+    private readonly router: Router,
+    private readonly messageService: InfoMessageCommService
+  ) {
+  }
 
   /**
    * Flag to indicate whether or not messages should be retained at
@@ -26,26 +34,22 @@ export class InfoMessageContainerComponent implements OnInit {
     return false;
   }
 
-  constructor(
-    private readonly router: Router,
-    private readonly messageService: InfoMessageCommService
-  ) { }
-
   public ngOnInit(): void {
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        // keep the current url the navigation started from
-        this.currentUrl = this.router.url;
-      }
-      if (event instanceof NavigationEnd) {
-        // check whether manage link is open
-        // messages should not be cleared when following action via manage link
-        if (!this.currentUrl.includes('#manage')) {
-          // remove current messages when redirected to other page or not part of action
-          this.resetMessages();
+    this.router.events
+      .subscribe(event => {
+        if (event instanceof NavigationStart) {
+          // keep the current url the navigation started from
+          this.currentUrl = this.router.url;
         }
-      }
-    });
+        if (event instanceof NavigationEnd) {
+          // check whether manage link is open
+          // messages should not be cleared when following action via manage link
+          if (!this.excludeUrls.includes(this.currentUrl)) {
+            // remove current messages when redirected to other page or not part of action
+            this.resetMessages();
+          }
+        }
+      });
 
     this.getInfoMessages();
   }
@@ -57,8 +61,13 @@ export class InfoMessageContainerComponent implements OnInit {
 
       // add any additional information messages that have been passed in the state (i.e. role access exclusion)
       if (window && window.history && window.history.state.showMessage && window.history.state.message) {
-        this.infoMessages.push(window.history.state.message);
+        if (this.lastMessage !== window.history.state.message) {
+          // ensure that messages are not duplicated by state
+          this.infoMessages.push(window.history.state.message);
+          this.lastMessage = window.history.state.message;
+        }
       }
+      this.removeDuplicateMessages();
       this.showInfoMessage = (this.infoMessages || []).length > 0;
     });
   }
@@ -69,5 +78,17 @@ export class InfoMessageContainerComponent implements OnInit {
     if (!this.retainMessages) {
       this.messageService.removeAllMessages();
     }
+  }
+
+  private removeDuplicateMessages(): void {
+    // EUI-4754 - intermittent instances of duplicate messages being accumulated
+    // this will stop this from occuring again
+    const refinedMessages = [];
+    this.infoMessages.forEach(infoMessage => {
+      if (!refinedMessages.includes(infoMessage)) {
+        refinedMessages.push(infoMessage);
+      }
+    });
+    this.infoMessages = refinedMessages;
   }
 }

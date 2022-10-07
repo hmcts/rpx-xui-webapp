@@ -1,17 +1,17 @@
-@ng  @wa2 
+@ng 
 Feature: WA Release 2: All work > cases -  pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK request "/workallocation2/my-cases" intercept with reference "caseSearchRequest"
+        Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
 
 
     Scenario Outline: pagnation and sorting for user type "<UserType>" with roles "<Roles>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
-            | case-allocator | 40    |
-            |                | 100    |
+            | case-allocator | 40 |
+            | case-allocator | 100 |
 
         Given I start MockApp
 
@@ -56,10 +56,10 @@ Feature: WA Release 2: All work > cases -  pagination sorting
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
     Scenario Outline: pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
-            | case-allocator | 20    |
+            | case-allocator | 20 |
 
         Given I start MockApp
 
@@ -79,10 +79,10 @@ Feature: WA Release 2: All work > cases -  pagination sorting
     # For EUI-4366
     @ignore
     Scenario Outline: pagnation control display 0 items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
-            | case-allocator | 0    |
+            | case-allocator | 0 |
 
         Given I start MockApp
 
@@ -93,7 +93,7 @@ Feature: WA Release 2: All work > cases -  pagination sorting
         Then I validate work allocation cases table pagination controls, is displayed state is "false"
 
         Then I validate WA cases table footer displayed status is "true"
-        Then I validate WA cases table footer message is "You have no assigned cases"
+        Then I validate WA cases table footer message is "Change your selection to view cases"
 
         Examples:
             | UserIdentifier  | UserType | Roles                                           |

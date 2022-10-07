@@ -25,7 +25,7 @@ export class NocNavigationComponent implements OnInit {
   public nocNavigationEvent = NocNavigationEvent;
 
   constructor(
-    private store: Store<fromFeature.State>,
+    private readonly store: Store<fromFeature.State>,
   ) { }
 
   public ngOnInit() {

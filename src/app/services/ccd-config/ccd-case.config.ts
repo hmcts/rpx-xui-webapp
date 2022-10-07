@@ -174,20 +174,17 @@ export class AppConfig extends AbstractAppConfig {
     return this.workallocationUrl;
   }
 
-  private featureToggleWorkAllocation(): void {
-    this.featureToggleService
-      .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
-      .subscribe(
-        (isFeatureEnabled) =>
-          this.workallocationUrl = AppUtils.getFeatureToggledUrl(
-            isFeatureEnabled,
-            WorkAllocationTaskService.WorkAllocationUrl
-          )
-      );
+  public getRefundsUrl(): string {
+    return 'api/refund';
   }
 
-  public getRefundsUrl(): string {
-    return this.config.refunds_url;
+  private featureToggleWorkAllocation(): void {
+    this.featureToggleService
+    .getValue(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease2')
+      .subscribe(
+        (currentWorkAllocationFeature) =>
+        this.workallocationUrl = currentWorkAllocationFeature === 'WorkAllocationRelease2'
+          ? 'workallocation2' : 'workallocation');
   }
 
   public getAccessManagementMode(): boolean {
@@ -204,5 +201,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCamRoleAssignmentsApiUrl(): string {
     return this.config.cam_role_assignments_api_url;
+  }
+
+  public getPaymentReturnUrl(): string {
+      return this.environmentService.get('paymentReturnUrl');
   }
 }

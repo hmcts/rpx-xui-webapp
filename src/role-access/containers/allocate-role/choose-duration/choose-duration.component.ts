@@ -85,6 +85,7 @@ export class ChooseDurationComponent implements OnInit {
     this.allDurations.find(duration => duration.duration === this.selectedDuration).checked = true;
     this.anotherPeriod = this.selectedDuration === DurationOfRole.ANOTHER_PERIOD;
     if (this.anotherPeriod && roleAllocate.period) {
+      this.radioSelected.setValue(this.selectedDuration);
       if (roleAllocate.period.startDate) {
         this.dayStartDate.setValue(roleAllocate.period.startDate.getDate());
         this.monthStartDate.setValue(roleAllocate.period.startDate.getMonth() + 1);

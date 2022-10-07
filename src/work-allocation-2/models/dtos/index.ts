@@ -21,6 +21,11 @@ export interface Caseworker {
   roleCategory: RoleCategory
 }
 
+export interface CaseworkersByService {
+  service: string;
+  caseworkers: Caseworker[];
+}
+
 export interface JudicialWorker {
   idamId: string;
   firstName: string;
@@ -56,7 +61,7 @@ export interface CaseSearchParameters {
 export interface SearchCaseParameter {
   key: string;
   operator: string;
-  values: string[];
+  values: string[] | string;
 }
 
 export interface SearchCaseRequest {
@@ -69,7 +74,8 @@ export interface SearchCaseRequest {
 export interface SearchTaskParameter {
   key: string;
   operator: string;
-  values: string[];
+  values?: any;
+  value?: any;
 }
 
 export interface SortParameter {

@@ -1,8 +1,8 @@
 import { initialMockState } from '../role-access/testing/app-initial-state.mock';
 import { AppUtils } from './app-utils';
 import { AppConstants, LEGAL_OPS_ROLE_LIST } from './app.constants';
-import { NavItemsModel } from './models/nav-item.model';
 import { Theme } from './models/theme.model';
+import { NavigationItem } from './models/theming.model';
 import { UserRole } from './models/user-details.model';
 
 describe('getEnvironment', () => {
@@ -84,7 +84,7 @@ describe('getCookieRolesAsArray', () => {
 describe('setActiveLink', () => {
 
   it('should correctly flag an item as being active', () => {
-    const ITEMS: NavItemsModel[] = [
+    const ITEMS: NavigationItem[] = [
       { href: '/a', active: false, text: 'A' },
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
@@ -101,7 +101,7 @@ describe('setActiveLink', () => {
   });
 
   it('should correctly deactivate a previously active item', () => {
-    const ITEMS: NavItemsModel[] = [
+    const ITEMS: NavigationItem[] = [
       { href: '/a', active: true, text: 'A' },
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
@@ -119,7 +119,7 @@ describe('setActiveLink', () => {
   });
 
   it('should correctly deactivate all items when the URL matches none of them', () => {
-    const ITEMS: NavItemsModel[] = [
+    const ITEMS: NavigationItem[] = [
       { href: '/a', active: true, text: 'A' },
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
@@ -140,7 +140,7 @@ describe('setActiveLink', () => {
     expect(AppUtils.pad('1', 3)).toEqual('001');
   });
 
-  const mockItems: NavItemsModel[] = [
+  const mockItems: NavigationItem[] = [
     // fill with actual mock data
     { href: '/tasks', active: false, text: 'A' },
     { href: '/tasks/task-manager', active: false, text: 'B' },
@@ -201,8 +201,23 @@ describe('isLegalOpsOrJudicial', () => {
   });
 
   it('should return null if user has no judicial or legal ops role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker']);
     expect(isLegalOpsOrJudicial).toBeNull();
+  });
+
+  it('should return legal ops role if user is an task supervisor', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['task-supervisor']);
+    expect(isLegalOpsOrJudicial).toBe('legalops');
+  });
+
+  it('should return legal ops role if user is an caseworker-ia', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
+    expect(isLegalOpsOrJudicial).toBe('legalops');
+  });
+
+  it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-admofficer']);
+    expect(isLegalOpsOrJudicial).toBe('legalops');
   });
 
   it('should return the judicial domain from the user list', () => {
@@ -227,7 +242,7 @@ describe('setThemeBasedOnUserType', () => {
     AppUtils.setThemeBasedOnUserType('Judicial', theme);
     expect(theme.appTitle.name).toEqual('Judicial Case Manager');
     expect(theme.backgroundColor).toEqual( '#8d0f0e');
-    expect(theme.logoType).toEqual('judicial');
+    expect(theme.logo).toEqual('judicial');
   });
 
   it('LegalOps User', () => {
@@ -235,7 +250,7 @@ describe('setThemeBasedOnUserType', () => {
     AppUtils.setThemeBasedOnUserType('LegalOps', theme);
     expect(theme.appTitle.name).toEqual('Manage cases');
     expect(theme.backgroundColor).toEqual('#202020');
-    expect(theme.logoType).toEqual('');
+    expect(theme.logo).toEqual('');
   });
 
   it('Solicitor User', () => {
@@ -243,7 +258,7 @@ describe('setThemeBasedOnUserType', () => {
     AppUtils.setThemeBasedOnUserType('Solicitor', theme);
     expect(theme.appTitle.name).toEqual('Manage cases');
     expect(theme.backgroundColor).toEqual('#202020');
-    expect(theme.logoType).toEqual('myhmcts');
+    expect(theme.logo).toEqual('myhmcts');
   });
 });
 

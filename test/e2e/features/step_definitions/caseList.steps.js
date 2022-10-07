@@ -45,8 +45,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     await caseListPage.selectState(state);
                     await caseListPage.clickSearchApplyBtn();
                 } catch (err) {
-                    await headerPage.clickManageCases();
+                    await headerPage.refreshBrowser();
                     await browserUtil.waitForLD();
+                    await BrowserWaits.waitForSpinnerToDissappear();
                     await headerPage.clickCaseList();
                     throw new Error(err);
                 }

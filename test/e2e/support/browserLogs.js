@@ -15,6 +15,11 @@ class BrowserLogs {
             
         ];
 
+        this.ignoreItemsList = [
+            "activity/cases",
+            "/api/monitoring-tools"
+        ];
+
     }
 
     clearLogs() {

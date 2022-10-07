@@ -18,6 +18,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     Then('I see Check your answers page has total {int} questions', async function (expectedQuestionsCount) {
+
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await checkYourAnswersPage.getTotalQuestionsCount()).to.equal(expectedQuestionsCount);
+        });
         expect(await checkYourAnswersPage.getTotalQuestionsCount()).to.equal(expectedQuestionsCount);
     });
 

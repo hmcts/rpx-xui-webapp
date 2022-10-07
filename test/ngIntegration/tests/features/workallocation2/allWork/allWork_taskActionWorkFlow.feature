@@ -1,4 +1,4 @@
-@ng  @wa2
+@ng
 Feature: WA Release 2: All work - Task action work flows
 
     Background: Mock and browser setup
@@ -20,7 +20,7 @@ Feature: WA Release 2: All work - Task action work flows
             | Allwork test scr | auto test category | London QA lab |
 
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
         Given I navigate to home page
@@ -36,15 +36,6 @@ Feature: WA Release 2: All work - Task action work flows
 
         Then I see "<actionHeader>" task action page
         Then I validate task action page has description "<actionDescription>"
-        Then I validate task list table columns displayed for user "<UserType>"
-            | ColumnHeader  | Caseworker | Judge |
-            | Case name     | Yes        | Yes   |
-            | Case category | Yes        | Yes   |
-            | Location      | Yes        | Yes   |
-            | Task          | Yes        | Yes   |
-            | Task created  | No         | Yes   |
-            | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
 
         Then I validate task details displayed in task action page
             | Case name        | Case category      | Location      |
@@ -60,5 +51,5 @@ Feature: WA Release 2: All work - Task action work flows
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink    | actionHeader          | submitBtnLabel | actionDescription                                                                             | bannermessage |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Unassign task | Unassign task         | Unassign       | Unassign this task. This will send it back to the available task list for someone to pick up. |               |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Cancel task   | Cancel a task         | Cancel task    | Cancel a task that has not been completed, but is no longer needed.                                                     |               |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task as done if something has gone wrong and it has already been completed.            |               |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Cancel task   | Cancel a task         | Cancel task    | Cancel a task that has not been completed, but is no longer needed.                           |               |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task done if it has already been completed                                             |               |

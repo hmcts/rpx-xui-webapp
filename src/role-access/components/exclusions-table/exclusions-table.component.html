@@ -16,7 +16,7 @@
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.notes}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.added | date:'d MMMM yyyy'}}</td>
       <td>
-        <a [routerLink]="['/role-access/delete-exclusion']" [queryParams]="queryParams(exclusion)"
+        <a *ngIf="isCaseAllocator" [routerLink]="['/role-access/delete-exclusion']" [queryParams]="queryParams(exclusion)"
            href="javascript:void(0)">Delete</a>
       </td>
     </tr>

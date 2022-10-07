@@ -790,7 +790,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/1`);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/1/tasks`);
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -798,7 +798,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEW CASE REFERENCE`);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEW CASE REFERENCE/tasks`);
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -811,7 +811,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference`);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference/tasks`);
 
       // Make task.link null.
       task.case_id = null;

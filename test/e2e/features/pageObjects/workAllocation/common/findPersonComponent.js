@@ -66,29 +66,38 @@ class FindPersonComponent{
     }
 
     async getPersonsReturned(){
-        const results = this.searchResultsContainer.$$(".mat-option-text");
-        const resultCount = await results.count();
-        const resulttexts = [];
-        for(let i = 0; i < resultCount; i++){
-            const resultItem = await results.get(i);
-            resulttexts.push(await resultItem.getText());
-        }
-        return resulttexts;
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            const results = this.searchResultsContainer.$$(".mat-option-text");
+            const resultCount = await results.count();
+            const resulttexts = [];
+            for (let i = 0; i < resultCount; i++) {
+                const resultItem = await results.get(i);
+                resulttexts.push(await resultItem.getText());
+            }
+            return resulttexts;
+        });
+        
     }
 
-    getResultElementWithText(resulttext){
+    async getResultElementWithText(resulttext){
+        const elementWithResulst = element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]`));
+        CucumberReporter.AddMessage(await elementWithResulst.getText())
         return element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]//mat-option//*[contains(@class,'mat-option-text') and contains(text(),'${resulttext}')]`));
     }
 
     async isPersonReturned(result){
-        const resultElement = this.getResultElementWithText(result);
+        CucumberReporter.AddMessage(`Checking is person returned "${result}"`)
+
+        const resultElement = await this.getResultElementWithText(result);
         return await resultElement.isPresent() && resultElement.isDisplayed()
 
     }
 
     async selectPerson(result){
-        expect(await this.isPersonReturned(result),'Result is not found').to.be.true;
-        await this.getResultElementWithText(result).click();
+        CucumberReporter.AddMessage(` Select person "${result}"`)
+
+        expect(await this.isPersonReturned(result), `Result is not found "${result}"`).to.be.true;
+        await (await this.getResultElementWithText(result)).click();
     }
 
     async isPersonSelected(personText){

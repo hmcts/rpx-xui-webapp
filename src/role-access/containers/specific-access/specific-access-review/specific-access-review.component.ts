@@ -70,7 +70,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     );
     if (this.specificAccessStateData.roleCategory === RoleCategory.JUDICIAL) {
       this.allocateRoleService.getCaseRolesUserDetails([this.specificAccessStateData.actorId], [this.specificAccessStateData.jurisdiction]).subscribe(
-        (caseRoleUserDetails) => { this.requesterName = caseRoleUserDetails[0].known_as; }
+        (caseRoleUserDetails) => { this.requesterName = caseRoleUserDetails[0].full_name; }
       );
     } else {
       this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {

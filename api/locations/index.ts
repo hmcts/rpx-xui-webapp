@@ -65,7 +65,11 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
         results = filterOutResults(results, locationIds, courtTypes);
       }
     });
-    response.data.results = results;
+    response.data.results = results.filter((locationInfo, index, self) =>
+      index === self.findIndex((location) => (
+        location.epimms_id === locationInfo.epimms_id
+      ))
+    );
     res.status(response.status).send(response.data.results);
   } catch (error) {
     next(error);
@@ -75,7 +79,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 
 export function filterOutResults(locations: LocationModel[], locationIds: string[], courtTypes: string[]): LocationModel[] {
   return locations.filter(location => !(courtTypes.includes(location.court_type_id))
-            || (locationIds.includes(location.epimms_id) || (!locationIds || locationIds.length === 0)));
+    || (locationIds.includes(location.epimms_id) || (!locationIds || locationIds.length === 0)));
 }
 
 /**
@@ -88,7 +92,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
     const locationModels = [];
     let responseStatus;
     for (const location of locations) {
-      const id = location.id;
+      const id = location.locationId;
       const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
       const path: string = prepareGetSpecificLocationUrl(basePath, id);
       // no longer LocationResponse but CourtVenue

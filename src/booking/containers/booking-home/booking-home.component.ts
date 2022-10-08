@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import * as moment from 'moment';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
@@ -10,7 +11,6 @@ import { SessionStorageService } from '../../../app/services/session-storage/ses
 import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
-import * as moment from 'moment';
 @Component({
   selector: 'exui-booking-home',
   templateUrl: './booking-home.component.html',
@@ -99,7 +99,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public onExistingBookingSelected(locationId) {
-    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments().subscribe(response => {
+    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments(this.userId).subscribe(response => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
       this.router.navigate(
@@ -107,7 +107,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
         {
           state: {
             location: {
-              id: locationId
+              ids: [locationId]
             }
           }
         }

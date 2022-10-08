@@ -5,6 +5,7 @@ import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-x
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
+import { HttpClient } from '@angular/common/http';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -80,7 +81,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly featureToggleService: FeatureToggleService,
     protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected readonly jurisdictionsService: JurisdictionsService,
-    protected readonly rolesService: AllocateRoleService
+    protected readonly rolesService: AllocateRoleService,
+    protected readonly httpClient: HttpClient
   ) {
   }
 

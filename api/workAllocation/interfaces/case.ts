@@ -43,6 +43,7 @@ export interface CaseInternalData {
   hmctsCaseCategory?: string;
   caseManagementLocation?: CaseManagementLocation;
   hmctsCaseNameInternal?: string;
+  caseNameHmctsInternal?: string;
 }
 
 export interface CaseManagementLocation {

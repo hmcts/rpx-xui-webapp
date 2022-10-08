@@ -6,18 +6,18 @@ class WorkAllocationMockData {
 
     constructor() {
         this.locationIdCounter = 10000; 
-
+        this.locationsByServices = [];
         this.WorkAllocationDataModels = WorkAllocationDataModels;
         this.init(); 
     }
 
     init(){
+        this.updateWASupportedJurisdictions(['IA', 'SSCS']);
         this.setDefaultData();
     }
 
     setDefaultData(){
         this.findPersonsAllAdata = [];
-        this.waSupportedJusridictions = ['IA', 'SSCS'];
 
         this.locationsByServices = this.getLocationsByServices(this.waSupportedJusridictions);
 
@@ -60,6 +60,8 @@ class WorkAllocationMockData {
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
     }
+
+
 
     setTaskDetails(task){
         Object.keys(task).forEach(taskkey => {
@@ -262,7 +264,7 @@ class WorkAllocationMockData {
 
     updateWASupportedJurisdictions(jurisdictions){
         this.waSupportedJusridictions = jurisdictions;
-        this.caseworkersByService = this.getCaseworkersByService(this.waSupportedJusridictions);
+        this.setDefaultData();
     }
 
     getCaseworkersByService(services){
@@ -881,27 +883,13 @@ class WorkAllocationMockData {
         const serviceIds = reqBody.serviceIds.split(",");
         const searchTerm = reqBody.searchTerm;
 
-        const usersServiceLocations = reqBody.userLocations;
-
         let mathcingLocation = [];
         for (const locationsByService of this.locationsByServices) {
             if (!serviceIds.includes(locationsByService.service)){
                 continue;
             }
-            const filteredByUserLocation = locationsByService.locations.filter(serviceLocation => {
-                if (!usersServiceLocations){
-                    return true;
-                }
-                let userLocationsForService = usersServiceLocations.find(userServiceloc => userServiceloc.service === locationsByService.service ); 
-                if (!userLocationsForService){
-                    return true;
-                }else{
-                    let locationIds = userLocationsForService.locations.map(loc => loc.id);
-                    return locationIds.includes(serviceLocation.epimms_id); 
-                }
-                
-            });
-            mathcingLocation.push(...filteredByUserLocation);
+           
+            mathcingLocation.push(...locationsByService.locations);
         }
 
         mathcingLocation = mathcingLocation.filter(location => location.court_name.includes(searchTerm));

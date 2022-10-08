@@ -1,18 +1,18 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
-import { WorkCaseListComponent } from './work-case-list.component';
-import { FieldConfig, SortField } from '../../models/common';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ConfigConstants } from '../../components/constants';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { CaseService, SortOrder } from '../../enums';
 import { Case, CaseAction, CaseServiceConfig } from '../../models/cases';
+import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter } from '../../models/dtos';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { getMockCases, MockRouter } from '../../tests/utils.spec';
-import { ConfigConstants } from '../../components/constants';
+import { getMockCases } from '../../tests/utils.spec';
+import { WorkCaseListComponent } from './work-case-list.component';
 
 @Component({
   template: `
@@ -65,22 +65,21 @@ describe('CaseListComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   let routerSpy: jasmine.SpyObj<any>;
-  const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getCase']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  beforeEach((() => {
+
+  beforeEach(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
+      declarations: [WorkCaseListComponent, WrapperComponent],
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule,
-        PaginationModule
+        PaginationModule,
+        RouterTestingModule
       ],
-      declarations: [WorkCaseListComponent, WrapperComponent],
-      providers: [
-        { provide: Router, useValue: mockRouter }
-      ]
+      providers: []
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -97,16 +96,16 @@ describe('CaseListComponent', () => {
     mockWorkAllocationService.getCase.and.returnValue(of({}));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     fixture.detectChanges();
-  }));
-
-  it(`should return the fields as an array with a 'manage' entry, so that we can` +
-    'display the manage column in the table.', async () => {
-
-    const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'case', 'dueDate'];
-    const fieldsWithManage = [...fields, 'manage'];
-
-    expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
   });
+
+  // it(`should return the fields as an array with a 'manage' entry, so that we can` +
+  //   'display the manage column in the table.', async () => {
+  //
+  //   const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'case', 'dueDate'];
+  //   const fieldsWithManage = [...fields, 'manage'];
+  //
+  //   expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
+  // });
 
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
 
@@ -114,10 +113,8 @@ describe('CaseListComponent', () => {
     const caseFieldConfig = getFields();
     const fields = caseFieldConfig.map(field => field.name);
     const displayedColumns = component.addManageColumn(fields);
-
     // test actual function against mock variables
     expect(component.getDisplayedColumn(caseFieldConfig)).toEqual(displayedColumns);
-
   });
 
   // required no sorting on EUI-4476 so exclude the test
@@ -416,7 +413,7 @@ describe('CaseListComponent', () => {
       fixture.detectChanges();
       component.setSelectedCase(caseItem);
       expect(component.getSelectedCase()).toEqual(caseItem);
-      expect(component.newUrl).toContain(`bob#manage_${id}`);
+      expect(component.newUrl).toContain(`/#manage_${id}`);
     });
 
     it('should handle a location hash for a case that does not exist', () => {
@@ -425,7 +422,7 @@ describe('CaseListComponent', () => {
       fixture.detectChanges();
       component.setSelectedCase(caseItem);
       expect(component.getSelectedCase()).toEqual(caseItem);
-      expect(component.newUrl).toEqual(`bob#manage_${caseItem.id}`);
+      expect(component.newUrl).toEqual(`/#manage_${caseItem.id}`);
     });
   });
 

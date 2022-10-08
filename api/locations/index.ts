@@ -66,7 +66,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       }
     });
     response.data.results = results.filter((locationInfo, index, self) =>
-      index === self.findIndex((location) => (
+      index === self.findIndex(location => (
         location.epimms_id === locationInfo.epimms_id
       ))
     );

@@ -39,9 +39,7 @@ module.exports = {
         '/workallocation/judicialworker' : (req,res) => {
             res.send(workAllocationMockData.judgeUsers);
         },
-        '/api/wa-supported-jurisdiction/get': (req,res) => {
-            res.send(['IA']);
-        },
+      
         '/workallocation/task/:taskId/roles' : (req,res) => {
             res.send(workAllocationMockData.getTaskRoles());
         },
@@ -298,6 +296,9 @@ module.exports = {
         },
         '/api/am/specific-access-approval':(req,res) =>{
             res.send({});
+        },
+        '/am/role-mapping/judicial/refresh':(req,res) => {
+            res.send({ "message": "Role assignments have been refreshed successfully" })
         }
     }
 

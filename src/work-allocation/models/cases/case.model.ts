@@ -16,4 +16,5 @@ export default interface Case {
   dueDate: Date;
   actions: CaseAction[];
   derivedIcon?: string;
+  isNew?: boolean;
 }

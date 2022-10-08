@@ -55,7 +55,9 @@
         <h1 class="column-label" *ngIf="field.disableSort">{{field.columnLabel}}</h1>
       </th>
       <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
-        <exui-roundel-badge [isNew]="rowData.isNew" [rowData]="rowData" [config]="field"></exui-roundel-badge>
+        <exui-work-field [ngClass]="{'govuk-!-font-weight-bold': rowData.isNew}" [workField]="rowData" [config]="field"
+          (itemClick)="onItemClick($event)"
+        ></exui-work-field>
       </td>
     </ng-container>
   </ng-container>
@@ -73,7 +75,9 @@
         <h1 class="column-label" *ngIf="field.disableSort">{{field.columnLabel}}</h1>
       </th>
       <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
-        <exui-roundel-badge [isNew]="rowData.isNew" [rowData]="rowData" [config]="field"></exui-roundel-badge>
+        <exui-work-field [ngClass]="{'govuk-!-font-weight-bold': rowData.isNew}" [workField]="rowData" [config]="field"
+                         (itemClick)="onItemClick($event)">
+        </exui-work-field>
       </td>
     </ng-container>
   </ng-container>

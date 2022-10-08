@@ -9,16 +9,14 @@ import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import { LocationModel } from '../../../api/locations/models/location.model';
 import { AppUtils } from '../../app/app-utils';
-import { RoleAssignmentInfo, UserDetails, UserRole } from '../../app/models';
+import { UserDetails, UserRole } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { Booking } from '../../booking/models';
 import { BookingService } from '../../booking/services';
-import { AllocateRoleService } from '../../role-access/services';
 import { ServiceRefData } from '../models/common';
 import { Location, LocationsByService } from '../models/dtos';
-import { CaseworkerDataService } from '../services';
 import { ServiceRefDataService } from '../services/service-ref-data.service';
 import { addLocationToLocationsByService, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
@@ -37,8 +35,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     private readonly store: Store<fromCaseList.State>,
     private readonly router: Router,
     private readonly http: HttpClient,
-    private readonly caseworkerDataService: CaseworkerDataService,
-    private readonly allocateRoleService: AllocateRoleService,
     private readonly bookingService: BookingService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly serviceRefDataService: ServiceRefDataService
@@ -51,12 +47,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         first(),
         mergeMap((userDetails: UserDetails) => this.serviceRefDataService.getServiceRefData()
           .pipe(
-            map((serviceRefData) => this.saveServiceRefData(serviceRefData, userDetails))
-          )
-        ),
-        mergeMap((userDetails: UserDetails) => this.getJudicialWorkersOrCaseWorkers(userDetails)
-          .pipe(
-            map((roleAssignments) => this.extractLocationFromRoleAssignment(roleAssignments)),
+            map((serviceRefData) => this.getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails))
           )
         ),
         mergeMap((locations: Location[]) => this.userRole.toLocaleLowerCase() === UserRole.Judicial ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([])
@@ -76,12 +67,20 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     return this.store.pipe(select(fromRoot.getUserDetails));
   }
 
-  private extractLocationFromRoleAssignment(roleAssignments: RoleAssignmentInfo[]): Location[] {
+  private getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails: UserDetails): Location[] {
+    this.serviceRefData = serviceRefData;
+    this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
+    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
     let userLocationsByService: LocationsByService[] = [];
     const locations: Location[] = [];
     const locationServices = new Set<string>();
-    roleAssignments.forEach(roleAssignment => {
+    userDetails.roleAssignmentInfo.forEach(roleAssignment => {
       const roleJurisdiction = roleAssignment.jurisdiction;
+      if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
+        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
+      ) {
+        this.bookableServices.push(roleJurisdiction);
+      }
       if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION'
         && roleAssignment.primaryLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
         if (!locations.find((location) => location.id === roleAssignment.primaryLocation)) {
@@ -99,26 +98,8 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       }
     });
     this.sessionStorageService.setItem('userLocations', JSON.stringify(userLocationsByService));
-    return locations;
-  }
-
-  private getJudicialWorkersOrCaseWorkers(userDetails: UserDetails): Observable<any[]> {
-    this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
-    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-    const jurisdictions: string[] = [];
-    userDetails.roleAssignmentInfo.forEach(roleAssignment => {
-      const roleJurisdiction = roleAssignment.jurisdiction;
-      if (roleJurisdiction && !jurisdictions.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION') {
-        jurisdictions.push(roleJurisdiction);
-      }
-      if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
-        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
-      ) {
-        this.bookableServices.push(roleJurisdiction);
-      }
-    });
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
-    return of(userDetails.roleAssignmentInfo); // this.userRole.toLocaleLowerCase() === UserRole.Judicial ? this.allocateRoleService.getCaseRolesUserDetails([this.userId], jurisdictions) : this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
+    return locations;
   }
 
   private addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
@@ -147,11 +128,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     // Note: currently we do not immediately show booking locations - the only way to automatically show booking locations currently
     // is to navigate via the booking screens. We can add them (if necessary in this)
     this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(bookingLocations)));
-  }
-
-  private saveServiceRefData(serviceRefData: any, userDetails: UserDetails): UserDetails {
-    this.serviceRefData = serviceRefData;
-    return userDetails;
   }
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {

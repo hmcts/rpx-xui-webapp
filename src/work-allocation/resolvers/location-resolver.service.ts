@@ -89,7 +89,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
           locations.push(location);
           locationServices.add(roleAssignment.jurisdiction);
           userLocationsByService = this.bookableServices.includes(roleAssignment.jurisdiction) ? addLocationToLocationsByService(userLocationsByService, location, roleAssignment.jurisdiction, true) : addLocationToLocationsByService(userLocationsByService, location, roleAssignment.jurisdiction);
-          this.saveBookingLocation([roleAssignment.primaryLocation]);
         }
       }
     });

@@ -81,7 +81,7 @@ export class BookingCheckComponent implements OnInit {
       this.router.navigate(['/work/my-work/list'], {
         state: {
           location: {
-            id: this.bookingProcess.location.epimms_id
+            ids: [this.bookingProcess.location.epimms_id]
           }
         }
       });

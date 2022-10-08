@@ -107,7 +107,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
         {
           state: {
             location: {
-              id: locationId
+              ids: [locationId]
             }
           }
         }

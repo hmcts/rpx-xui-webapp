@@ -7,7 +7,7 @@ import { SessionStorageService } from '../../../app/services/session-storage/ses
 import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { BookingNavigationEvent, BookingProcess, BookingRequest } from '../../models';
 import { BookingService } from '../../services';
-import { CreateBookingHandleError, RefreshBookingHandleError} from '../utils/booking-error-handler';
+import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/booking-error-handler';
 
 @Component({
   selector: 'exui-booking-check',
@@ -63,7 +63,7 @@ export class BookingCheckComponent implements OnInit {
     }
     this.bookingService.createBooking(payload).pipe(
       switchMap(() => {
-        return this.bookingService.refreshRoleAssignments().pipe(
+        return this.bookingService.refreshRoleAssignments(this.userId).pipe(
           catchError(err => {
             return throwError({...err, case : 'refreshRoleAssignments'});
           })
@@ -81,7 +81,7 @@ export class BookingCheckComponent implements OnInit {
       this.router.navigate(['/work/my-work/list'], {
         state: {
           location: {
-            id: this.bookingProcess.location.epimms_id
+            ids: [this.bookingProcess.location.epimms_id]
           }
         }
       });

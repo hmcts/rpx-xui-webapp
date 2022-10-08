@@ -388,5 +388,4 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       }, 0);
     }
   }
-
 }

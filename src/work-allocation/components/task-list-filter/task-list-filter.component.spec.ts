@@ -199,11 +199,11 @@ describe('TaskListFilterComponent', () => {
 
   it('should set booking locations', () => {
     mockRouter = TestBed.get(Router);
-    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {location: {id: '231596'}}}});
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {location: {ids: ['231596', '231596']}}}});
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    expect(component.bookingLocations.length).toEqual(1);
+    expect(component.bookingLocations.length).toEqual(2);
   });
 
   it('should show types of work filter with all types of work filters selected', () => {

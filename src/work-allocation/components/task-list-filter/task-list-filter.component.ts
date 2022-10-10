@@ -2,6 +2,7 @@ import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
+  BookingCheckType,
   FilterConfig,
   FilterError,
   FilterFieldConfig,
@@ -257,7 +258,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       displayMinSelectedError: true,
       minSelectedError: 'Search for a location by name',
       type: 'find-location',
-      enableAddLocationButton: true
+      enableAddLocationButton: true,
+      bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
     };
     let baseLocation = null;
     // if there are no booking locations selected then check for base location for salary judge

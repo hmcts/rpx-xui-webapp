@@ -53,6 +53,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
               this.existingBookings = bookingResults as any;
               this.orderByCurrentThenFuture();
               this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter(p => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map(p => p.locationId) : null;
+              this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(new Set(this.bookingProcess.selectedBookingLocationIds))));
             }
           })).subscribe();
         }

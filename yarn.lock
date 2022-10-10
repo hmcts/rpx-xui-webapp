@@ -456,15 +456,16 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.8.3-strategic-activity-tracker-a":
-  version "4.8.3-strategic-activity-tracker-a"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.8.3-strategic-activity-tracker-a.tgz#345a62f0e2f5baef7b4f3e08d4226bffabec7512"
-  integrity sha512-9NLjkWTY3/DpP7EuD207VgVV9OKnawx47cGc06znbiIhizX6J6mGijFgW2nFRuyEU5IpMLPDCxwu/NgPDNTpvg==
+"@hmcts/ccd-case-ui-toolkit@4.8.3-strategic-activity-tracker-c":
+  version "4.8.3-strategic-activity-tracker-c"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.8.3-strategic-activity-tracker-c.tgz#dce29f55118baa1160e105f3f471deb377620846"
+  integrity sha512-N3sPy5CvMiRwdQJ78LkMU+r7dCD59NC681afSWUbw+6DmkbMhwhktcrni96/mvF4AXk2QO1aeY82bFwriAaLxQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
+    "@edium/fsm" "^2.1.2"
     braces "^2.3.1"
     enhanced-resolve "3.3.0"
     file-saver "^2.0.2"

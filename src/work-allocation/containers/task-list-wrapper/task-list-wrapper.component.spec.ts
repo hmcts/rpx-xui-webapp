@@ -5,7 +5,9 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
+import * as fromActions from '../../../app/store';
 
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
@@ -32,6 +34,8 @@ describe('TaskListWrapperComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  let store: Store<fromActions.State>;
   const mockFilterService: any = {
     getStream: () => of(null),
     get: () => SELECTED_LOCATIONS,
@@ -43,6 +47,7 @@ describe('TaskListWrapperComponent', () => {
     }
   };
   beforeEach((() => {
+    storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
@@ -64,7 +69,8 @@ describe('TaskListWrapperComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: FilterService, useValue: mockFilterService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
-        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService }
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
+        { provide: Store, useValue: storeMock },
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
@@ -76,6 +82,7 @@ describe('TaskListWrapperComponent', () => {
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue('1');
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
+    store = TestBed.get(Store);
     fixture.detectChanges();
   }));
 

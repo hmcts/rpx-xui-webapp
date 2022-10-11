@@ -4,13 +4,13 @@ import { select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
-import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import * as fromActions from '../../../app/store';
 
 @Component({
   selector: 'exui-all-work-tasks',

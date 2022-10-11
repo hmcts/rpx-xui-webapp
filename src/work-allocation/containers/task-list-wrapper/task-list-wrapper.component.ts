@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
-
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -25,6 +25,7 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import * as fromActions from '../../../app/store';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -64,7 +65,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected locationService: LocationDataService,
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
-    protected rolesService: AllocateRoleService
+    protected rolesService: AllocateRoleService,
+    protected store: Store<fromActions.State>
   ) {
   }
 

@@ -82,7 +82,9 @@ class AllWork extends TaskList {
             throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
         }
         if (this.selectOrRadioFilterItems.includes(filterItem)) {
-            return await this.FILTER_ITEMS[filterItem].getOptions();
+            let options = await this.FILTER_ITEMS[filterItem].getOptions();
+            options = options.filter(opt => opt !== "");
+            return options; 
         } else {
             throw new Error(`filter item ${filterItem} is not a select or a Radio item.`);
         }

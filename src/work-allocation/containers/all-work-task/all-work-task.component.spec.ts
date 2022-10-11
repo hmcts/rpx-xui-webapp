@@ -7,18 +7,18 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
-import { CaseRoleDetails } from 'src/role-access/models';
-import { AllocateRoleService } from 'src/role-access/services';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
+import { CaseRoleDetails } from '../../../role-access/models';
+import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
-import { AllWorkTaskComponent } from './all-work-task.component';
 import * as fromActions from '../../../app/store';
+import { AllWorkTaskComponent } from './all-work-task.component';
 
 @Component({
   template: `

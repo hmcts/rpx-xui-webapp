@@ -231,9 +231,12 @@ describe('AllWorkTaskComponent', () => {
     const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
     const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
     const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
-
+    let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+    let store: Store<fromActions.State>;
 
     beforeEach(async(() => {
+      storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
+      storeMock.pipe.and.returnValue(of(USER_DETAILS));
       mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
       mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
       const tasks: Task[] = getMockTasks();
@@ -267,11 +270,12 @@ describe('AllWorkTaskComponent', () => {
           { provide: LoadingService, useValue: mockLoadingService },
           { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           { provide: LocationDataService, useValue: mockLocationService },
-          { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService }
+          { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
+          { provide: Store, useValue: storeMock },
         ]
       }).compileComponents();
 
-
+      store = TestBed.get(Store);
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;

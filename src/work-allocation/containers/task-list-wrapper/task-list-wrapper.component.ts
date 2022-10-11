@@ -5,10 +5,12 @@ import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-x
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
+import {Store} from '@ngrx/store';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskListFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
@@ -64,7 +66,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected locationService: LocationDataService,
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
-    protected rolesService: AllocateRoleService
+    protected rolesService: AllocateRoleService,
+    protected store: Store<fromActions.State>
   ) {
   }
 

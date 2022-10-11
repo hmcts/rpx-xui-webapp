@@ -16,6 +16,7 @@ export interface RoleAssignmentInfo {
   isCaseAllocator: boolean;
   bookable?: boolean | string;
   roleType?: string;
+  roleName?: string;
 }
 
 export interface RoleAssignmentInfo {

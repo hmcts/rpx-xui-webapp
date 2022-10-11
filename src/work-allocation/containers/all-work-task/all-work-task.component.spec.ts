@@ -5,22 +5,20 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { StoreModule } from '@ngrx/store';
-import { Store } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
-import * as fromActions from '../../../app/store';
-
+import { CaseRoleDetails } from 'src/role-access/models';
+import { AllocateRoleService } from 'src/role-access/services';
+import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
-import { TaskListComponent } from '..';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
-import { AllocateRoleService } from 'src/role-access/services';
-import { CaseRoleDetails } from 'src/role-access/models';
+import * as fromActions from '../../../app/store';
 
 @Component({
   template: `

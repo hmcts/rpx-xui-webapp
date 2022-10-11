@@ -68,8 +68,8 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.waSupportedJurisdictions$ = Observable.combineLatest(
       [userRoles$,
         waJurisdictions$]
-    ).map(data => {
-      return data[0].includes(null) ? data[1] : data[0];
+    ).map(jurisdictions => {
+      return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
     });
   }
 

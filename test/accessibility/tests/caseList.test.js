@@ -39,7 +39,7 @@ describe('Pa11y Accessibility tests', function () {
 
     });
 
-    it('Case Search Page', async function () {
+    it.skip('Case Search Page', async function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('.search-block'))

@@ -24,13 +24,9 @@ export const routingConfiguration: ExtraOptions = {
 export const ROUTES: Routes = [
   {
     path: '',
+    canActivate: [AuthGuard],
     component: ApplicationRoutingComponent,
     pathMatch: 'full'
-  },
-  {
-    path: 'booking',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../booking/booking.module#BookingModule'
   },
   {
     path: 'cases',
@@ -38,9 +34,27 @@ export const ROUTES: Routes = [
     loadChildren: '../cases/cases.module#CasesModule'
   },
   {
+    path: 'booking',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../booking/booking.module#BookingModule'
+  },
+  {
     path: 'work',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+  },
+  {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
+    path: 'tasks',
+    redirectTo: 'work/my-work/list',
+    canActivate: [AuthGuard, AcceptTermsGuard]
+  },
+  {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
+    path: 'tasks/:subRoute',
+    redirectTo: 'work/my-work/list',
+    pathMatch: 'prefix',
+    canActivate: [AuthGuard, AcceptTermsGuard]
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks

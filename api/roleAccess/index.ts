@@ -10,6 +10,7 @@ import { getServiceRefDataMappingList } from '../serviceRefData';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation/interfaces/caseRole';
+import { getMyAccessMappedCaseList } from '../workAllocation/util';
 import {
   toDenySADletionRequestedRoleBody,
   toDenySARoleAssignmentBody,
@@ -85,7 +86,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
     if (services.includes(serviceRef.service)) {
       serviceCodes = [...serviceCodes, ...serviceRef.serviceCodes];
     }
-  })
+  });
   let searchResult: any[] = [];
   try {
     for (const serviceCode of serviceCodes) {
@@ -101,22 +102,20 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
   }
 }
 
-export async function getSpecificAccessApproved(req, resp, next) {
-  let count = 0;
+export async function getMyAccessNewCount(req, resp, next) {
   try {
     if (!req.session || !req.session.roleAssignmentResponse) {
-      return resp.status(401).send({ count });
+      return resp.status(401).send();
     }
-    const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
-    count = currentUserAssignments.filter(roleAssignment => getNewAccessCount(roleAssignment)).length;
-    return resp.status(200).send({ count });
+
+    const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
+    const cases = await getMyAccessMappedCaseList(roleAssignments, req);
+    const newAssignments = cases.filter(item => item.isNew);
+
+    return resp.status(200).send({count: newAssignments.length});
   } catch (error) {
     next(error);
   }
-}
-
-export function getNewAccessCount(roleAssignment: RoleAssignment): boolean {
-  return roleAssignment.roleName === 'specific-access-granted' || roleAssignment.attributes.isNew;
 }
 
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {
@@ -215,6 +214,7 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
     const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body);
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+
     return response;
   } catch (error) {
     next(error);
@@ -237,6 +237,7 @@ export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, re
     data: body,
     headers,
   });
+
   return response;
   } catch (error) {
     next(error);

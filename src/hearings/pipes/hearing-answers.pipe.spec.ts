@@ -1,8 +1,15 @@
 import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
 import {cold} from 'jasmine-marbles';
+import * as _ from 'lodash';
 import {of} from 'rxjs';
-import {caseFlagsRefData, hearingPriorityRefData, initialState, partyChannelsRefData} from '../hearing.test.data';
+import {
+  caseFlagsRefData,
+  caseTypeRefData,
+  hearingPriorityRefData,
+  initialState,
+  partyChannelsRefData
+} from '../hearing.test.data';
 import {AnswerSource, RadioOptions} from '../models/hearings.enum';
 import {LocationByEPIMMSModel} from '../models/location.model';
 import {LocationsDataService} from '../services/locations-data.service';
@@ -55,7 +62,7 @@ describe('HearingAnswersPipe', () => {
     is_case_management_location: '',
     is_hearing_location: ''
   }];
-  const STATE: State = initialState.hearings;
+  const STATE: State = _.cloneDeep(initialState.hearings);
   let hearingAnswersPipe: HearingAnswersPipe;
   let router: any;
   const locationsDataService = jasmine.createSpyObj('LocationsDataService', ['getLocationById']);
@@ -69,6 +76,7 @@ describe('HearingAnswersPipe', () => {
             snapshot: {
               data: {
                 hearingPriorities: hearingPriorityRefData,
+                caseType: caseTypeRefData,
                 caseFlags: caseFlagsRefData,
                 partyChannels: partyChannelsRefData,
               },
@@ -109,14 +117,7 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform type', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.Type, of(STATE));
-    const type = 'Personal Independence Payment \n<ul><li>- Conditions of Entitlement</li><li>- Good cause</li><li>- Rate of Assessment / Payability Issues - complex</li></ul>';
-    const expected = cold('(b|)', {b: type});
-    expect(result$).toBeObservable(expected);
-  });
-
-  it('should transform type from request', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.TYPE_FROM_REQUEST, of(STATE));
-    const type = 'Personal Independence Payment \n<ul><li>- Conditions of Entitlement</li><li>- Good cause</li><li>- Rate of Assessment / Payability Issues - complex</li></ul>';
+    const type = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);
   });
@@ -128,9 +129,9 @@ describe('HearingAnswersPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform party flags', () => {
+  it('should transform how party attend', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE));
-    const partyFlags = '<ul><li>Jane and Smith - In person</li><li>DWP - By video</li></ul>';
+    const partyFlags = '<ul><li>Jane and Smith - In person</li></ul>';
     const expected = cold('(b|)', {b: partyFlags});
     expect(result$).toBeObservable(expected);
   });

@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, OnDestroy, Output } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
@@ -42,7 +42,7 @@ export class WorkCaseListComponent implements OnChanges {
   @Output() public sortEvent = new EventEmitter<string>();
   @Output() public paginationEvent = new EventEmitter<number>();
   @Output() public actionEvent = new EventEmitter<InvokedCaseAction>();
-
+  @Output() public itemClickEvent = new EventEmitter<Case>();
   /**
    * The datasource is an Observable of data to be displayed, as per LLD.
    */
@@ -53,8 +53,7 @@ export class WorkCaseListComponent implements OnChanges {
   private selectedCase: Case;
   public newUrl: string;
 
-  constructor(private readonly router: Router) {
-  }
+  constructor(private readonly router: Router) {}
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
@@ -132,6 +131,10 @@ export class WorkCaseListComponent implements OnChanges {
     };
 
     this.actionEvent.emit(invokedCaseAction);
+  }
+
+  public onItemClick(item: Case): void {
+    this.itemClickEvent.emit(item);
   }
 
   /**

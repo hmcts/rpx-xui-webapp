@@ -4,9 +4,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-
+import { Store, StoreModule } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
@@ -26,6 +25,7 @@ import {
 import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';
+import * as fromActions from '../../../app/store';
 
 @Component({
   template: `
@@ -35,6 +35,25 @@ import { AllWorkCaseComponent } from './all-work-case.component';
 class WrapperComponent {
   @ViewChild(AllWorkCaseComponent) public appComponentRef: AllWorkCaseComponent;
 }
+
+const USER_DETAILS = {
+  canShareCases: true,
+  userInfo: {
+    id: 'someId',
+    forename: 'foreName',
+    surname: 'surName',
+    email: 'email@email.com',
+    active: true,
+    roles: ['pui-case-manager']
+  },
+  roleAssignmentInfo: [
+    {
+      roleName: 'test',
+      jurisdiction: 'service',
+      roleType: 'type'
+    }
+  ]
+};
 
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
@@ -53,7 +72,12 @@ describe('AllWorkCaseComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
+  let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  let store: Store<fromActions.State>;
+
   beforeEach(async(() => {
+    storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
+    storeMock.pipe.and.returnValue(of(USER_DETAILS));
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -74,7 +98,8 @@ describe('AllWorkCaseComponent', () => {
         {provide: LoadingService, useValue: mockLoadingService},
         {provide: FeatureToggleService, useValue: mockFeatureToggleService},
         {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService},
-        { provide: AllocateRoleService, useValue: mockAllocateRoleService }
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService },
+        { provide: Store, useValue: storeMock },
       ]
     }).compileComponents();
   }));
@@ -84,6 +109,7 @@ describe('AllWorkCaseComponent', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
+    store = TestBed.get(Store);
     navigateSpy = spyOn(router, 'navigateByUrl');
 
     const cases: Case[] = getMockCases();

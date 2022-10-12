@@ -33,8 +33,8 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "serviceApi": "hearing-service-prod.service.core-compute-prod.internal",
-      "hmcApi": "hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
+      "serviceApi": "http://jurisdiction-hearings-api-prod.service.core-compute-prod.internal",
+      "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
@@ -69,7 +69,8 @@
     },
     "refunds": "http://ccpay-refunds-api-prod.service.core-compute-prod.internal",
     "role_assignment": {
-      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal"
+      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal",
+      "roleMappingApi": "http://am-org-role-mapping-service-prod.service.core-compute-prod.internal"
     },
     "case": {
       "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
@@ -87,10 +88,10 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL",
-  "waSupportedJurisdictions": ["IA", "SSCS", "CIVIL"],
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW",
+  "waSupportedJurisdictions": ["IA", "SSCS", "CIVIL", "PRIVATELAW"],
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
-  "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}],
+  "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}, {"service": "PRIVATELAW", "serviceCodes": ["ABA5"]}],
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",
@@ -133,7 +134,7 @@
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
-    "accessManagementEnabled": false
+    "accessManagementEnabled": true
   },
   "helmet": {
     "contentSecurityPolicy": {

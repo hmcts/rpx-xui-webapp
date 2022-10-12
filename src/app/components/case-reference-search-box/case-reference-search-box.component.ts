@@ -28,11 +28,12 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
   public searchSubscription$: Subscription;
   private readonly CASE_REF_FIELD = 'caseReference';
 
-  constructor(private readonly store: Store<fromActions.State>,
-              private readonly fb: FormBuilder,
-              private readonly searchService: SearchService,
-              private readonly router: Router,
-              private readonly route: ActivatedRoute
+  constructor(
+    private readonly store: Store<fromActions.State>,
+    private readonly fb: FormBuilder,
+    private readonly searchService: SearchService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) { }
 
   public ngOnInit(): void {
@@ -74,25 +75,17 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     // Store the search parameters to session
     this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
 
-    this.searchService.getResults().subscribe( result => {
+    // If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page
+    if (this.formGroup.get(this.CASE_REF_FIELD).invalid) {
+      this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
+      return;
+    }
 
-      if (!result.resultInfo.casesReturned && result.resultInfo.casesReturned === 0) {
-        this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
-        return;
-      }
+    // Do not decorate 16-digit case reference search box with error class
+    this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
 
-      // If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page
-      if (this.formGroup.get(this.CASE_REF_FIELD).invalid) {
-        this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
-        return;
-      }
-
-      // Do not decorate 16-digit case reference search box with error class
-      this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
-
-      // Navigate to case details page, ensuring the case reference is sanitised, i.e. has been stripped of separators (spaces and '-' characters)
-      this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
-    })
+    // Navigate to case details page, ensuring the case reference is sanitised, i.e. has been stripped of separators (spaces and '-' characters)
+    this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
   }
 
   public ngOnDestroy(): void {

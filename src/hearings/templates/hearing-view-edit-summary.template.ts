@@ -257,4 +257,3 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
 ];
-

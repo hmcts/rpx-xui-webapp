@@ -19,7 +19,7 @@ export class PanelExclusionAnswerConverter implements AnswerConverter {
         const excludedJudgeNames: string[] = [];
         judicialUsersList.forEach(judgeInfo => {
           if (excludedJudges.includes(judgeInfo.personalCode)) {
-            excludedJudgeNames.push(judgeInfo.knownAs ? judgeInfo.knownAs : judgeInfo.fullName);
+            excludedJudgeNames.push(judgeInfo.fullName);
           }
         });
         return excludedJudgeNames.join();

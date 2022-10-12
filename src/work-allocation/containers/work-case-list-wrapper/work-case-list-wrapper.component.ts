@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
+import { HttpClient } from '@angular/common/http';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -53,7 +54,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   private readonly defaultCaseServiceConfig: CaseServiceConfig = {
     service: CaseService.IAC,
     defaultSortDirection: SortOrder.ASC,
-    defaultSortFieldName: 'hearing_date',
+    defaultSortFieldName: 'startDate',
     fields: this.fields,
   };
   private pCasesTotal: number;
@@ -80,7 +81,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly featureToggleService: FeatureToggleService,
     protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected readonly jurisdictionsService: JurisdictionsService,
-    protected readonly rolesService: AllocateRoleService
+    protected readonly rolesService: AllocateRoleService,
+    protected readonly httpClient: HttpClient
   ) {
   }
 

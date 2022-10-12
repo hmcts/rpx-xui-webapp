@@ -176,6 +176,22 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
+    Then('I validate my work filter services listed {string}', async function(servicesListString){
+        const services = servicesListString.split(",");
+        const servicesListed = await myWorkPage.getWorkFilterServicesList();
+        expect(servicesListed).to.contains.members(services)
+ 
+    });
+
+    Then('I Validate my work filter services selected {string}', async function (servicesSelectedString) {
+        const services = servicesSelectedString.split(",");
+        const expectedServicesSelected = await myWorkPage.getWorkFilterServicesList();
+
+        for (const selectedService of expectedServicesSelected) {
+            expect(await myWorkPage.isWorkFilterServiceSelected(selectedService)).to.be.true;
+        }
+    });
+
     Then('I Validate my work filter services selected', async function (expectedServicesDatatable){
          const datatableHashes = expectedServicesDatatable.hashes();
         const expectedServieNames = [];

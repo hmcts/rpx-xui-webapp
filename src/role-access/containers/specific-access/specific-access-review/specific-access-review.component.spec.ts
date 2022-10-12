@@ -6,6 +6,7 @@ import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+import { WASupportedJurisdictionsService } from 'src/work-allocation/services';
 
 import { State } from '../../../../app/store';
 import { RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
@@ -22,6 +23,8 @@ describe('SpecificAccessReviewComponent', () => {
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnStoreDispatch = jasmine.createSpy();
 
+  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -29,7 +32,8 @@ describe('SpecificAccessReviewComponent', () => {
       imports: [ReactiveFormsModule, PipesModule, HttpClientTestingModule],
       providers: [
         provideMockStore(),
-        FormBuilder
+        FormBuilder,
+        {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService}
       ]
     })
       .compileComponents();

@@ -44,6 +44,7 @@ import {
   filterByLocationId,
   getCaseIdListFromRoles,
   getCaseworkerDataForServices,
+  getMyAccessMappedCaseList,
   getRoleAssignmentsByQuery,
   getSessionCaseworkerInfo,
   getSubstantiveRoles,
@@ -257,8 +258,11 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
         assign_and_complete: true,
       },
     };
+    console.log(req.body, 'hannibal');
+    // line added as requests are different for approval/rejection
+    const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
     const getTaskPath: string =
-     preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.body.specificAccessStateData.taskId, 'complete');
+     preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
     const completionResponse = await handleTaskPost(getTaskPath, newRequest, req);
     return completionResponse;
   } catch (error) {
@@ -344,7 +348,7 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
     const caseWorkerReferenceData = getCaseworkerDataForServices(userList.data, jurisdictionData);
     // note have to merge any new service caseworker data for full session as well as services specified in params
     fullCaseworkerByServiceInfo.push(caseWorkerReferenceData);
-  })
+  });
   req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
       [...req.session.caseworkersByService, ...fullCaseworkerByServiceInfo] : fullCaseworkerByServiceInfo;
   return fullCaseworkerByServiceInfo;
@@ -467,19 +471,10 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
   return casePromises;
 }
 
-export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment [];
-  const specificRoleAssignments = roleAssignments.filter(roleAssignment =>
-    roleAssignment.grantType === 'SPECIFIC'
-    ||
-    roleAssignment.roleName === 'specific-access-requested'
-    ||
-    roleAssignment.roleName === 'specific-access-denied'
-    ||
-    roleAssignment.grantType === 'CHALLENGED'
-  );
-  const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
-  const mappedCases = mapCasesFromData(cases, specificRoleAssignments);
+export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
+  const mappedCases = await getMyAccessMappedCaseList(roleAssignments, req);
+
   const result = {
     cases: mappedCases,
     total_records: 0,

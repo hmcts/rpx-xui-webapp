@@ -1,7 +1,7 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
+import { select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
@@ -10,6 +10,7 @@ import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import * as fromActions from '../../../app/store';
 
 @Component({
   selector: 'exui-all-work-tasks',
@@ -59,7 +60,16 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public loadCaseWorkersAndLocations(): void {
-    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).map(userDetails =>
+      userDetails.roleAssignmentInfo.filter(role => role.roleName && role.roleName === 'task-supervisor').map(role => role.jurisdiction || null)
+    );
+    const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    this.waSupportedJurisdictions$ = Observable.combineLatest(
+      [userRoles$,
+        waJurisdictions$]
+    ).map(jurisdictions => {
+      return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
+    });
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {

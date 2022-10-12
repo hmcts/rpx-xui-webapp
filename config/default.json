@@ -69,7 +69,8 @@
     },
     "refunds": "http://ccpay-refunds-api-prod.service.core-compute-prod.internal",
     "role_assignment": {
-      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal"
+      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal",
+      "roleMappingApi": "http://am-org-role-mapping-service-prod.service.core-compute-prod.internal"
     },
     "case": {
       "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
@@ -133,7 +134,7 @@
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
-    "accessManagementEnabled": false
+    "accessManagementEnabled": true
   },
   "helmet": {
     "contentSecurityPolicy": {

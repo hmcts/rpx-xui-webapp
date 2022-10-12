@@ -22,7 +22,7 @@
               *ngFor="let jurisdiction of jurisdictions"
               [value]="jurisdiction"
             >
-              {{ jurisdiction }}
+              {{ jurisdiction.id }}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -35,7 +35,7 @@
             (selectionChange)="onCasetypeChange(caseType)"
           >
             <mat-option *ngFor="let case of caseTypes" [value]="case">
-              {{ case }}
+              {{ case.name }}
             </mat-option>
             <mat-option value=""></mat-option>
           </mat-select>
@@ -47,7 +47,7 @@
           <mat-select [(value)]="stateO">
             <mat-option value=""></mat-option>
             <mat-option *ngFor="let state of states" [value]="state">
-              {{ state }}
+              {{ state.name }}
             </mat-option>
           </mat-select>
         </mat-form-field>

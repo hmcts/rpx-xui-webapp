@@ -28,7 +28,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
-  const bookingLocations = req.body.bookingLocations || [];
+  const bookingLocations = req.body.bookingLocations ? req.body.bookingLocations : [];
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
     res.status(200).send([]);

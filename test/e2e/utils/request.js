@@ -101,7 +101,7 @@ class Request {
      async put(reqpath, data, headers){
         try {
             const config = await this.getRequestConfig(headers); 
-         return await http.put(reqpath, data, config);
+            return await http.put(reqpath, data, config);
         } catch (error) {
             return this.getResponseFromError(error);
 

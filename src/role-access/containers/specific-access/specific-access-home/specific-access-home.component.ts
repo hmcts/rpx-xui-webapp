@@ -4,16 +4,15 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { Task } from '../../../../work-allocation/models/tasks';
-import { CaseworkerDataService } from '../../../../work-allocation/services';
 import { specificAccessApprovedVisibilityStates, specificAccessDeniedVisibilityStates, specificAccessDurationVisibilityStates, specificAccessInformationVisibilityStates, specificAccessReviewVisibilityStates } from '../../../constants';
 import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
-import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
-import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { SpecificAccessApprovedComponent } from '../specific-access-approved/specific-access-approved.component';
-import { SpecificAccessInformationComponent } from '../specific-access-information/specific-access-information.component';
 import { SpecificAccessDeniedComponent } from '../specific-access-denied/specific-access-denied.component';
+import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
+import { SpecificAccessInformationComponent } from '../specific-access-information/specific-access-information.component';
+import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
 
 @Component({
   selector: 'exui-specific-access-home',
@@ -76,6 +75,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessReviewStateData => {
         this.navigationCurrentState = specificAccessReviewStateData.state;
+        this.caseId = specificAccessReviewStateData.caseId;
       }
     );
   }
@@ -156,7 +156,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case SpecificAccessNavigationEvent.CANCEL: {
-        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
+        this.router.navigateByUrl(`cases/case-details/${this.caseId}/tasks`);
         break;
       }
       default:

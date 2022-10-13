@@ -29,7 +29,7 @@ export const ROUTES: Routes = [
   {
     path: '',
     component: WorkAllocationHomeComponent,
-    canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
+    canActivate: [ WorkAllocationFeatureToggleGuard ],
     children: [
       {
         path: 'my-work',

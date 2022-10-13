@@ -1,13 +1,13 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 
+import { Router } from '@angular/router';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
@@ -23,7 +23,7 @@ import {
   WorkAllocationCaseService,
   WorkAllocationFeatureService
 } from '../../services';
-import { getMockCaseRoles, getMockCases, MockRouter } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';
 
@@ -40,8 +40,9 @@ describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  let router: Router;
 
-  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
+  let navigateSpy: jasmine.Spy;
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases', 'getMyAccess']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
@@ -64,7 +65,6 @@ describe('AllWorkCaseComponent', () => {
       ],
       declarations: [AllWorkCaseComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
-        {provide: Router, useValue: routerMock},
         {provide: WorkAllocationCaseService, useValue: mockCaseService},
         {provide: AlertService, useValue: mockAlertService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},
@@ -83,6 +83,9 @@ describe('AllWorkCaseComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
+    router = TestBed.get(Router);
+    navigateSpy = spyOn(router, 'navigateByUrl');
+
     const cases: Case[] = getMockCases();
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockCaseService.getCases.and.returnValue(of({cases}));
@@ -164,7 +167,7 @@ describe('AllWorkCaseComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), {state: {backUrl: 'work/all-work/cases'}});
+    expect(navigateSpy).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), {state: {backUrl: 'work/all-work/cases'}});
   });
 
   afterEach(() => {

@@ -2,7 +2,6 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from '../app/app.constants';
-import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { NocHomeComponent } from './containers/noc-home/noc-home.component';
 
 export const ROUTES: Routes = [
@@ -13,7 +12,7 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: null,
-        canActivate: [ HealthCheckGuard, FeatureToggleGuard ],
+        canActivate: [ FeatureToggleGuard ],
         data: {
           title: 'HMCTS Manage cases | Notice of Change',
           needsFeaturesEnabled: [ AppConstants.FEATURE_NAMES.noticeOfChange ],

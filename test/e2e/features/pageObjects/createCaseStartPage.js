@@ -41,7 +41,7 @@ class CreateCaseStartPage {
     
     var e = element(by.xpath(locatorString));
     await BrowserWaits.waitForElement(e);
-   await e.click(); 
+    await e.click();
      
   }
 
@@ -61,7 +61,7 @@ class CreateCaseStartPage {
     locatorString = locatorString + ']';
 
     var e = element(by.xpath(locatorString));
-     await BrowserWaits.waitForElement(e);
+    await BrowserWaits.waitForElement(e);
     await e.click(); 
 
     // await this._caseType.selectFromDropdownByText(option);

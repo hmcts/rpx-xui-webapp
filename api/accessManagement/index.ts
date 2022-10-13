@@ -1,14 +1,17 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
+import {
+  SERVICES_JUDICIAL_BOOKING_API_PATH,
+  SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH
+} from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { postTaskCompletionForAccess } from '../workAllocation';
 import { getFullLocationsForServices } from '../workAllocation/locationService';
-import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 
 export async function getBookings(req, resp: Response, next: NextFunction) {
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
@@ -51,7 +54,15 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
 }
 
 export async function refreshRoleAssignments(req, res: Response, next: NextFunction): Promise<Response> {
-  return res.send(refreshRoleAssignmentsSuccess);
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH);
+  const fullPath = `${basePath}/am/role-mapping/judicial/refresh`;
+
+  try {
+    const response = await handlePost(fullPath, {'refreshRequest' : {'userIds' : [req.body.userId]}}, req, next);
+    return res.status(response.status).send(response.data);
+  } catch (error) {
+    next(error);
+  }
 }
 
 // node layer logic for approving specific access request

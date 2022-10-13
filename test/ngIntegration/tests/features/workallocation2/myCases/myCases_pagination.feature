@@ -28,19 +28,13 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
             | Person       | No         |
             | Case name    | No        |
             | Case category | No |
-            | Hearing date | Yes |
 
         Then I see work allocation table "cases" reset sort button state isDisplayed is "false"
-        When I click work allocation table "cases" column header "Hearing date"
         Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
         When I click work allocation table "cases" reset sort button
         Then I see work allocation table "cases" reset sort button state isDisplayed is "false"
-        When I click work allocation table "cases" column header "Hearing date"
         Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
 
-        Then I validate "My workcases " tasks columns sorting with taskRequest url "/workallocation/my-work/case" on page 3 for user type "<UserType>"
-            | ColumnHeader  | Caseworker | Judge | FieldId      |
-            | Hearing date | Yes | Yes | hearing_date |
 
         Examples:
             | UserIdentifier  | UserType | Roles                                           |

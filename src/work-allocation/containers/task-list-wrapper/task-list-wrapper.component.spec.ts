@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -16,11 +16,12 @@ import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
+import * as fromActions from '../../../app/store';
 
 describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
-  const SELECTED_LOCATIONS = { id: 'locations', fields: [{ name: 'locations', value: ['231596', '698118'] }, {name: 'services', value: ['IA', 'CIVIL']}] };
+  const SELECTED_LOCATIONS = { id: 'locations', fields: [{ name: 'locations', value: ['231596', '698118'] }, { name: 'services', value: ['IA', 'CIVIL'] }] };
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTask', 'getTask']);
@@ -32,6 +33,8 @@ describe('TaskListWrapperComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  let store: Store<fromActions.State>;
   const mockFilterService: any = {
     getStream: () => of(null),
     get: () => SELECTED_LOCATIONS,
@@ -43,6 +46,7 @@ describe('TaskListWrapperComponent', () => {
     }
   };
   beforeEach((() => {
+    storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
@@ -64,7 +68,8 @@ describe('TaskListWrapperComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: FilterService, useValue: mockFilterService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
-        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService }
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
+        { provide: Store, useValue: storeMock },
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
@@ -76,6 +81,7 @@ describe('TaskListWrapperComponent', () => {
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue('1');
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
+    store = TestBed.get(Store);
     fixture.detectChanges();
   }));
 
@@ -102,7 +108,7 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = {queryParams: {service: 'IA'}, state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
+      const exampleNavigateCall = { queryParams: { service: 'IA' }, state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
 
@@ -118,7 +124,7 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = {queryParams: {service: 'IA'}, state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
+      const exampleNavigateCall = { queryParams: { service: 'IA' }, state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
     it('should go to tasks page on GO', () => {

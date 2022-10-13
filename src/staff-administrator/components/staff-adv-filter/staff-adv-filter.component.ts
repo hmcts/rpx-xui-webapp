@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
-import { CaseUserSearchErrorMessage } from 'src/cases/models/case.enum';
-import { StaffDataFilterService } from 'src/staff-administrator/services/staff-data-filter.service';
+import { CaseUserSearchErrorMessage } from '../../../cases/models/case.enum';
+import { StaffDataFilterService } from '../../../staff-administrator/services/staff-data-filter.service';
+
+
 
 @Component({
   selector: 'exui-staff-adv-filter',

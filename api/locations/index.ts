@@ -28,7 +28,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
-  const bookingLocations = req.body.bookingLocations;
+  const bookingLocations = req.body.bookingLocations || [];
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
     res.status(200).send([]);
@@ -53,15 +53,10 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     userLocations.forEach(userLocation => {
       const courtTypes = getCourtTypeIdsByService([userLocation.service]);
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
-      if (bookingLocations) {
-        // when we are trying to filter out locations when booking location is present - my work
-        if (userLocation.bookable) {
-          results = filterOutResults(results, bookingLocations, courtTypes);
-        } else {
-          results = filterOutResults(results, locationIds, courtTypes);
-        }
-      } else if (userLocation.bookable) {
-        // when we are filtering for any possible booking location - role needs to be bookable - create booking
+      // when we are trying to filter out locations when booking location is present - my work
+      if (userLocation.bookable && bookingLocations.length) {
+        results = filterOutResults(results, bookingLocations, courtTypes);
+      } else {
         results = filterOutResults(results, locationIds, courtTypes);
       }
     });

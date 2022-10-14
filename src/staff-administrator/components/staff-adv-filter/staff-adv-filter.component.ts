@@ -1,11 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
-import { CaseUserSearchErrorMessage } from '../../../cases/models/case.enum';
-import { StaffDataFilterService } from '../../../staff-administrator/services/staff-data-filter.service';
-
-
-
 @Component({
   selector: 'exui-staff-adv-filter',
   templateUrl: './staff-adv-filter.component.html',
@@ -14,19 +9,18 @@ import { StaffDataFilterService } from '../../../staff-administrator/services/st
 export class StaffAdvFilterComponent {
   public filterConfig: FilterConfig;
 
-  constructor(private route: ActivatedRoute,public staffDataFilterService: StaffDataFilterService) {
+  constructor(private route: ActivatedRoute) {
     const staffFilters = {
       userTypes: this.route.snapshot.data.staffFilters.userTypes,
       jobTitles: this.route.snapshot.data.staffFilters.jobTitles,
       skills: this.route.snapshot.data.staffFilters.skills,
     };
-
     this.filterConfig = {
       id: 'staff-advanced-filters',
       fields: [
         {
           name: 'user-services',
-          title: '',
+          title: 'Choose a service',
           subTitle: '',
           options: [
             {
@@ -42,10 +36,12 @@ export class StaffAdvFilterComponent {
               label: '3-label',
             }
           ],
-          minSelected: 0,
+          minSelected: 1,
           maxSelected: 0,
           type: 'find-service',
           enableAddButton: true,
+          minSelectedError: 'Select a service',
+          displayMinSelectedError: true
         },
         {
           name: 'user-location',
@@ -105,12 +101,5 @@ export class StaffAdvFilterComponent {
       enableDisabledButton: false,
       showCancelFilterButton: false,
     };
-  }
-
-  public setError(): void {
-    this.staffDataFilterService.setErrors([{
-      error: CaseUserSearchErrorMessage.SELECT_A_SERVICE,
-      name: CaseUserSearchErrorMessage.SELECT_A_NAME
-    }])
   }
 }

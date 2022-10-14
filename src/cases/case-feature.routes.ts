@@ -21,6 +21,7 @@ import { TasksContainerComponent } from './containers/tasks-container/tasks-cont
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 import { HearingStageResolver } from '../hearings/resolvers/hearing-stage.resolver';
+import { WorkAllocationFeatureToggleGuard } from 'src/work-allocation/guards';
 
 export const ROUTES: Routes = [
   {

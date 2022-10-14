@@ -13,6 +13,7 @@ import * as fromRoot from '../../../app/store';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import {FeatureVariation} from '../../models/feature-variation.model';
 import {Utils} from '../../utils/utils';
+import { WAFeatureConfig } from 'src/work-allocation/models/common/service-config.model';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -62,10 +63,19 @@ export class CaseViewerContainerComponent implements OnInit {
     );
   }
 
-  private enablePrependedTabs(feature: string, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
+  private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
+    console.log(this.caseDetails, 'case details');
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
-    return feature === CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_2
-      && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
+    const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
+    let requiredFeature = false;
+    features.configurations.forEach(serviceConfig => {
+      if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
+          requiredFeature = serviceConfig.releaseVersion === '3.0' ? true : false ;
+      }
+    })
+    console.log(requiredFeature, 'FERATUR');
+    console.log(!!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles), 'haberdashery')
+    return requiredFeature && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
   }
 
   public ngOnInit(): void {
@@ -77,13 +87,13 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {
     return combineLatest([
-      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_1),
+      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null),
       this.userRoles$,
       this.waService.getWASupportedJurisdictions(),
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.excludedRolesForCaseTabs, [])
     ]).pipe(
       // @ts-ignore
-      map(([feature, userRoles, supportedServices, excludedRoles]: [string, string[]]) =>
+      map(([feature, userRoles, supportedServices, excludedRoles]: [WAFeatureConfig, string[]]) =>
         this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : [])
     ).catch(() => this.prependedTabs$ = of([]));
   }

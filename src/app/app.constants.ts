@@ -3,8 +3,7 @@ import { ApplicationThemeLogo } from './enums';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
-  currentWAFeature: 'mc-work-allocation-active-feature',
-  workAllocation: 'MC_Work_Allocation',
+  waServiceConfig: 'wa-service-config',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
   userTypeRoles: 'mc-user-type-roles',

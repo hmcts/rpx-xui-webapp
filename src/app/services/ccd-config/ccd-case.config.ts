@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { WAFeatureConfig } from 'src/work-allocation/models/common/service-config.model';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
 import { EnvironmentService } from '../../shared/services/environment.service';
@@ -24,7 +25,6 @@ export class AppConfig extends AbstractAppConfig {
   ) {
     super();
     this.config = this.appConfigService.getEditorConfiguration() || {};
-    this.featureToggleWorkAllocation();
 
     this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
       next: (val) => this.config = {
@@ -37,6 +37,13 @@ export class AppConfig extends AbstractAppConfig {
       next: (val) => this.config = {
         ...this.config,
         access_management_mode: val
+      }
+    });
+
+    this.featureToggleService.getValue('wa-service-config', null).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        wa_service_config: val
       }
     });
 
@@ -172,16 +179,12 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.refunds_url;
   }
 
-  private featureToggleWorkAllocation(): void {
-    this.featureToggleService
-    .getValue(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease2')
-      .subscribe(
-        (currentWorkAllocationFeature) =>
-        this.workallocationUrl = 'workallocation' );
-  }
-
   public getAccessManagementMode(): boolean {
     return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
+  }
+
+  public getWAServiceConfig(): WAFeatureConfig {
+    return this.config.wa_service_config;
   }
 
   public getAccessManagementBasicViewMock(): {} {

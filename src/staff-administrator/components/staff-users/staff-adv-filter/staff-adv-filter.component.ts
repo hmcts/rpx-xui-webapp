@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
+import { FilterConfig } from '@hmcts/rpx-xui-common-lib';
 
 @Component({
   selector: 'exui-staff-adv-filter',

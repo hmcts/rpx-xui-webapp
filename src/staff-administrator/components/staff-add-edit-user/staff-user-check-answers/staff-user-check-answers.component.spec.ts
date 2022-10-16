@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
 
 describe('StaffUserCheckAnswersComponent', () => {
@@ -8,7 +9,8 @@ describe('StaffUserCheckAnswersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StaffUserCheckAnswersComponent ]
+      declarations: [ StaffUserCheckAnswersComponent ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));

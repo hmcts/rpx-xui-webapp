@@ -1,0 +1,38 @@
+<exui-page-wrapper [title]="'Users'">
+  <ng-container *ngIf="(staffDataFilterService.errors$ | async).errors.length">
+    <exui-error-message [error]="staffDataFilterService.errors$ | async"></exui-error-message>
+  </ng-container>
+
+  <div class="hmcts-filter-layout__filter staff-filters">
+    <div class="container-fluid govuk-!-margin-top-4">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 class="govuk-fieldset__heading">
+          User search
+        </h1>
+      </legend>
+
+      <hr>
+
+      <div class="govuk-!-margin-bottom-4">
+        <ng-container *ngIf="!advancedSearchEnabled; else advFilter">
+          <exui-staff-search></exui-staff-search>
+        </ng-container>
+
+        <ng-template #advFilter>
+          <exui-staff-adv-filter></exui-staff-adv-filter>
+        </ng-template>
+      </div>
+
+      <div>
+        <a href="javascript:void(0)" (click)="advancedSearchEnabled = !advancedSearchEnabled">
+          {{ !advancedSearchEnabled ? 'Advanced search' : 'Hide advanced search' }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hmcts-filter-layout__content">
+    <exui-staff-user-list></exui-staff-user-list>
+  </div>
+</exui-page-wrapper>
+

@@ -1,0 +1,14 @@
+<exui-page-wrapper [backLink]="'/staff'">
+  <div *ngIf="(errors$ | async) as errors">
+    <exui-error-message [error]="errors"></exui-error-message>
+  </div>
+
+  <h1 class="govuk-heading-xl">Add a new user</h1>
+  <div class="govuk-body">
+    Enter the details of the user you want to add.
+  </div>
+
+  <xuilib-generic-filter
+    [config]="filterConfig"
+  ></xuilib-generic-filter>
+</exui-page-wrapper>

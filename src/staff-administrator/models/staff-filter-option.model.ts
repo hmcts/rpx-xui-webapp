@@ -1,5 +1,5 @@
 export interface StaffFilterOption {
-  value: string;
+  key: string;
   label: string;
-  id: string;
+  selectAll?: true;
 }

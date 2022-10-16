@@ -51,8 +51,8 @@ export const init = () => {
     return [
       200,
       [
-        {label: 'User Types', value: 'userType'},
-        {label: 'CTSC', value: 'ctsc'},
+        { key: 'userType', label: 'User Types'},
+        { key: 'ctsc', label: 'CTSC' },
       ],
     ];
   });
@@ -60,14 +60,25 @@ export const init = () => {
   mock.onGet(getJobTitles).reply(() => {
     return [
       200,
-      [{label: 'Job Titles', value: 'jobTitle'}],
+      [
+        { key: 'senior-legal-caseworker', label: 'Senior Legal Caseworker' },
+        { key: 'legal-caseworker', label: 'Legal Caseworker' },
+        { key: 'hearing-centre-team-leader', label: 'Hearing Centre Team Leader' },
+        { key: 'hearing-centre-administrator', label: 'Hearing Centre Administrator' },
+        { key: 'court-clerk', label: 'Court Clerk' },
+
+      ],
     ];
   });
 
   mock.onGet(getSkills).reply(() => {
     return [
       200,
-      [{label: 'Skills', value: 'skill'}],
+      [
+        { key: 'scss-interloc-work', label: 'SCSS - Interloc work' },
+        { key: 'reasonable-adjustment-process', label: 'SCSS - Reasonable Adjustment process' },
+        { key: 'scss-using-optic', label: 'SCSS - Using Optic' },
+      ],
     ];
   });
 
@@ -75,19 +86,11 @@ export const init = () => {
     return [
       200,
       [
-        { id: 'family-public-law', label: 'Family Public Law', value: 'family-public-law' },
-        { id: 'family-private-law', label: 'Family Private Law', value: 'family-private-law' },
-        { id: 'adoption', label: 'Adoption', value: 'adoption' },
-        { id: 'employment-tribunals', label: 'Employment Tribunals', value: 'employment-tribunals' },
-        { id: 'financial-remedy', label: 'Financial Remedy', value: 'financial-remedy' },
-        { id: 'immigration-and-asylum', label: 'Immigration and Asylum', value: 'immigration-and-asylum' },
-        { id: 'civil', label: 'Civil', value: 'civil' },
-        { id: 'special-tribunals', label: 'Special Tribunals', value: 'special-tribunals' },
-        { id: 'divorce', label: 'Divorce', value: 'divorce' },
-        { id: 'social-security-and-child-support', label: 'Social security and child support',
-          value: 'social-security-and-child-support' },
-        { id: 'housing-possessions', label: 'Housing Possessions', value: 'housing-possessions' },
-        { id: 'probate', label: 'Probate', value: 'probate' },
+        { key: 'family-public-law', label: 'Family Public Law' },
+        { key: 'family-private-law', label: 'Family Private Law' },
+        { key: 'adoption', label: 'Adoption' },
+        { key: 'employment-tribunals', label: 'Employment Tribunals' },
+        { key: 'financial-remedy', label: 'Financial Remedy' },
       ],
     ];
   });

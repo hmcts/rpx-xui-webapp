@@ -1,17 +1,1 @@
-<exui-app-header></exui-app-header>
-
-<div class="govuk-width-container">
-  <div class="page">
-    <main id="content" role="main">
-      <a href="javascript:void(0)" class="govuk-back-link" [routerLink]="['../']">Back</a>
-
-      <exui-page-wrapper [title]="'Add a new user'">
-        <exui-staff-edit-user [formGroup]="formGroup"></exui-staff-edit-user>
-      </exui-page-wrapper>
-    </main>
-  </div>
-</div>
-
-<exui-app-footer></exui-app-footer>
-
-
+<exui-staff-add-edit-user-form [formGroup]="formGroup"></exui-staff-add-edit-user-form>

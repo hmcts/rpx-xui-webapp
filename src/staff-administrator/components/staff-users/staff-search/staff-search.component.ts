@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
+import { Subscription } from 'rxjs';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
@@ -7,11 +10,10 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   templateUrl: './staff-search.component.html',
   styleUrls: ['./staff-search.component.scss']
 })
-export class StaffSearchComponent implements OnInit {
+export class StaffSearchComponent implements OnInit, OnDestroy {
   public userNameControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
   public error = false;
 
-export class StaffSearchComponent implements OnInit, OnDestroy {
   public filterConfig: FilterConfig;
   private readonly FILTER_NAME = 'staff-search-filter';
   private filterSub: Subscription;

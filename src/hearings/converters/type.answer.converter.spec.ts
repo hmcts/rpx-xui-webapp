@@ -1,21 +1,39 @@
+import {TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
 import {cold} from 'jasmine-marbles';
 import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
+import {caseTypeRefData, initialState} from '../hearing.test.data';
 import {State} from '../store/reducers';
 import {TypeAnswerConverter} from './type.answer.converter';
 
 describe('TypeAnswerConverter', () => {
 
   let typeAnswerConverter: TypeAnswerConverter;
+  let router: any;
 
   beforeEach(() => {
-    typeAnswerConverter = new TypeAnswerConverter();
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                caseType: caseTypeRefData,
+              },
+            },
+          },
+        }
+      ]
+    });
+    router = TestBed.get(ActivatedRoute);
+    typeAnswerConverter = new TypeAnswerConverter(router);
   });
 
   it('should transform type', () => {
     const STATE: State = initialState.hearings;
     const result$ = typeAnswerConverter.transformAnswer(of(STATE));
-    const type = 'Personal Independence Payment \n<ul><li>- Conditions of Entitlement</li><li>- Good cause</li><li>- Rate of Assessment / Payability Issues - complex</li></ul>';
+    const type = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);
   });

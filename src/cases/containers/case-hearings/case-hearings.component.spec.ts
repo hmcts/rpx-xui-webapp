@@ -344,7 +344,9 @@ describe('CaseHearingsComponent', () => {
         hearingListMainModel: HEARINGS_LIST
       },
       hearingValues: {
-        serviceHearingValuesModel: null,
+        serviceHearingValuesModel: {
+          hmctsServiceID: 'BBA3'
+        },
         lastError: null
       }
     }
@@ -443,7 +445,13 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should create hearing component', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyStore.pipe.and.returnValue(of(initialState.hearings.hearingValues.serviceHearingValuesModel));
+    component.ngOnInit();
     expect(component).toBeTruthy();
+    expect(component.hearingValuesSubscription).toBeDefined();
+    expect(component.refDataSubscription).toBeDefined();
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1234')));
   });
 
   it('should unsubscribe', () => {
@@ -586,6 +594,12 @@ describe('CaseHearingsComponent', () => {
     const cancelledReasonElement: HTMLSelectElement = fixture.nativeElement.querySelector('#reload-hearing-tab');
     cancelledReasonElement.click();
     expect(component.reloadHearings).toHaveBeenCalled();
+  });
+
+  it('should dispatch events to load all hearings and hearing values', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    component.reloadHearings();
+    expect(dispatchSpy).toHaveBeenCalledTimes(2);
   });
 
   afterEach(() => {

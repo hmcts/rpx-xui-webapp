@@ -69,9 +69,10 @@ export class StaffAddEditUserFormComponent implements OnDestroy {
 
   public ngOnDestroy() {
     this.resetForm();
+    this.filterService.givenErrors.next([]);
   }
 
-  resetForm() {
+  private resetForm() {
     this.filterService.clearSessionAndLocalPersistance(this.formId);
   }
 

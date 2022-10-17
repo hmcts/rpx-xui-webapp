@@ -26,6 +26,24 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
   });
 
   When('I click on a file', async function () {
+    try{
+      await browserWaits.waitForElement(hearingRecordingsCase.hearingFilesTabContainer)
+    }catch(err){
+      await browserWaits.retryWithActionCallback(async () => {
+        cucumberReporter.AddMessage("Case hearing tab not displayed, retrying clicking tab again");
+        try {
+          await hearingRecordingsCase.hearingFilesTab();
+          await browserWaits.waitForElement(hearingRecordingsCase.hearingFilesTabContainer)
+          await cucumberReporter.AddScreenshot()
+        } catch (err) {
+          cucumberReporter.AddMessage("Refresing browser to get missing tab");
+          await headerPage.refreshBrowser();
+          throw err;
+        }
+
+      });
+    }
+    
     await browserWaits.retryWithActionCallback(async () => {
       await hearingRecordingsCase.clickFileLink();
     });

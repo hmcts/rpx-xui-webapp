@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.16-rc1":
-  version "4.18.16-rc1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.16-rc1.tgz#0a93e6f16f7ded061717ebb1ee492018627b7cd3"
-  integrity sha512-Z0MTRZkcSLIDxalhPb/z8kws6rf6PS2ZZqCmlekgzcP9vrgE4fW7KbZiZ0u+YqGo0sx3WrZ1xz871vHYBGonEQ==
+"@hmcts/ccd-case-ui-toolkit@4.19.6-rc1":
+  version "4.19.6-rc1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.19.6-rc1.tgz#2376bb038910b45c8be4df169eae8715725c61d5"
+  integrity sha512-yxqL78Eow+GvPFMMA8/ivr4hpNP5Yorc/IoOWleXWispzTPwu1yrGLUpZqZ1FxfniKDGkafinHSnoi2VD97bTg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -496,10 +496,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.7.12":
-  version "2.7.12"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.12.tgz#e5f4030e1bbd9dfab770997a96eec3e5c6beb73a"
-  integrity sha512-GVA1Nw/zidOvbqn5Mg8qB8BupS3/848962zFR0nP3VNi/FfT0SvgGut3/VGU/9KBL4ofy5QjxP/j8ZIzQHz2FA==
+"@hmcts/media-viewer@2.7.19-RC.1":
+  version "2.7.19-RC.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.19-RC.1.tgz#96c3127e878ae909c9724e1f2f863adc6369b2c7"
+  integrity sha512-p+7ASqiCzIIbMxWuazD8Bxe6cfgOoxxLg2BJk8Wzvhw35z9niXSKx8lpWSbAtN17+acuY7jWg9GLwLCL4w9udg==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"
@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.11":
-  version "1.7.11"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.11.tgz#4582d20dbc3683f5367f7bbb8a3bde9676028d87"
-  integrity sha512-BxqBQ5vZjT5huflf3efhVTd4Sv32EHoQTKURjboqIn9p+GwqPfOqaSyAMrsjij0xX6mfMmKxYmS+MAFmr706nQ==
+"@hmcts/rpx-xui-common-lib@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.0.tgz#0ee00b3fe176a9c5de4ee86e8f6ae64849fe92ef"
+  integrity sha512-w6+uYB2jXsLpU+O3oERDieyGiiaGM3TvOOTqfA/16ERm4dGgrqFiWfNNBNDYqdQ9/VKI0h9gIiNXUTCGMjkg4Q==
   dependencies:
     tslib "^1.9.0"
 

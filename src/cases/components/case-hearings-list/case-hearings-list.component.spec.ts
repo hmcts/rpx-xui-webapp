@@ -1,18 +1,19 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
-import {ActivatedRoute, Router, RouterModule} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {FeatureUser} from '@hmcts/rpx-xui-common-lib';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of} from 'rxjs';
-import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
-import {initialState} from '../../../hearings/hearing.test.data';
-import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
-import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType} from '../../../hearings/models/hearings.enum';
-import {HearingsPipesModule} from '../../../hearings/pipes/hearings.pipes.module';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
+import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { initialState } from '../../../hearings/hearing.test.data';
+import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
+import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
+import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
+import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
-import {CaseHearingsListComponent} from './case-hearings-list.component';
+import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
@@ -568,6 +569,48 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
 }];
 
+const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
+  {
+    active_flag: 'Y',
+    category_key: 'HearingType',
+    child_nodes: null,
+    hint_text_cy: '',
+    hint_text_en: '',
+    key: 'BBA3-CHA',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    value_cy: '',
+    value_en: 'Chambers Outcome',
+  },
+  {
+    active_flag: 'Y',
+    category_key: 'HearingType',
+    child_nodes: null,
+    hint_text_cy: '',
+    hint_text_en: '',
+    key: 'BBA3-CHA',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    value_cy: '',
+    value_en: 'Substantive'
+  },
+  {
+    active_flag: 'Y',
+    category_key: 'HearingType',
+    child_nodes: null,
+    hint_text_cy: '',
+    hint_text_en: '',
+    key: 'BBA3-CHA',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    value_cy: '',
+    value_en: 'Direction Hearings'
+  }
+];
+
 describe('CaseHearingsListComponent', () => {
   let component: CaseHearingsListComponent;
   let roleCategoryMappingService: RoleCategoryMappingService;
@@ -597,22 +640,6 @@ describe('CaseHearingsListComponent', () => {
             snapshot: {
               params: {
                 cid: '1111222233334444'
-              },
-              data: {
-                hearingStageOptions: [{
-                  key: 'BBA3-SUB',
-                  value_en: 'Substantive',
-                  value_cy: '',
-                  hint_text_en: 'Substantive',
-                  hint_text_cy: '',
-                  lov_order: 1,
-                  parent_key: null,
-                  category_key: 'HearingType',
-                  parent_category: '',
-                  active_flag: 'Y',
-                  child_nodes: null,
-                  from: 'exui-default'
-                }]
               }
             }
           }
@@ -628,6 +655,7 @@ describe('CaseHearingsListComponent', () => {
     roleCategoryMappingService = new RoleCategoryMappingService(mockFeatureService);
     component = fixture.componentInstance;
     component.hearingList$ = of(UPCOMING_HEARING_LIST);
+    component.hearingStageOptions = HEARING_TYPES_REF_DATA;
     component.actions = [Actions.DELETE];
     fixture.detectChanges();
   });

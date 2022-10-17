@@ -1,10 +1,10 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   BookingCheckType,
   FilterConfig,
-  FilterService
+  FilterService, GenericFilterComponent
 } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -16,7 +16,7 @@ import { StaffFilterOption } from '../../../models/staff-filter-option.model';
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnDestroy {
+export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   @Input() public formGroup: FormGroup;
   public formId: string = 'staff-add-edit-user';
   public staffFilterOptions: {
@@ -28,10 +28,12 @@ export class StaffAddEditUserFormComponent implements OnDestroy {
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
 
+  @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
+
   constructor(
     private activatedRoute: ActivatedRoute,
-    public filterService: FilterService,
-    public router: Router
+    private filterService: FilterService,
+    private router: Router
   ) {
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
@@ -39,7 +41,9 @@ export class StaffAddEditUserFormComponent implements OnDestroy {
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services
     };
+  }
 
+  public ngOnInit() {
     this.initFormConfig();
     this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
@@ -51,7 +55,7 @@ export class StaffAddEditUserFormComponent implements OnDestroy {
       }
     });
 
-    this.errors$ = filterService.givenErrors.pipe(
+    this.errors$ = this.filterService.givenErrors.pipe(
       map((errors) => {
         if (errors) {
           return {
@@ -69,14 +73,14 @@ export class StaffAddEditUserFormComponent implements OnDestroy {
 
   public ngOnDestroy() {
     this.resetForm();
+  }
+
+  public resetForm() {
+    this.filterService.clearSessionAndLocalPersistance(this.formId);
     this.filterService.givenErrors.next([]);
   }
 
-  private resetForm() {
-    this.filterService.clearSessionAndLocalPersistance(this.formId);
-  }
-
-  private initFormConfig() {
+  public initFormConfig() {
     this.filterConfig = {
       id: this.formId,
         fields: [

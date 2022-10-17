@@ -52,8 +52,11 @@ fdescribe('StaffAddEditUserFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have ngOnDestroy() method', () => {
-    expect(component.ngOnDestroy).toBeTruthy();
+  it('should call initForm which sets filterConfig on ngOnInit', () => {
+    const spyOnInitForm = spyOn(component,  'initFormConfig');
+    component.ngOnInit();
+    expect(spyOnInitForm).toHaveBeenCalled();
+    expect(component.filterConfig).toBeDefined();
   });
 
   it('should call resetForm on ngOnDestroy', () => {

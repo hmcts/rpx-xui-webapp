@@ -546,10 +546,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.47-text-input-capitalize":
-  version "1.7.47-text-input-capitalize"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.47-text-input-capitalize.tgz#32a34aa423e26dd3eaab8d62fffb6b252d3a445e"
-  integrity sha512-2rXTfcz8JMnsH1A3UY7KSBtM0Y9rAGpO42NVILiUn/K5/m6gFnq8aRzrbZxuhntfeonj2bYWDiqGpndERSi+Ag==
+"@hmcts/rpx-xui-common-lib@1.7.47-filter-service-fix":
+  version "1.7.47-filter-service-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.47-filter-service-fix.tgz#a77015f5c7ca761c2a7a2a6c3d8fb5b70b7fe435"
+  integrity sha512-m6opfhO5RT6kxqDPbVBv97UZX0nlk70tZh0OdyitNZopDT0VaZqXLumgDfDGYOrbje7q6/tJmKDMP1vTDqaEyg==
   dependencies:
     tslib "^1.9.0"
 

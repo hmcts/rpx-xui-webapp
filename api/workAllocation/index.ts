@@ -344,7 +344,7 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
   const fullCaseworkerByServiceInfo = [];
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIdsByJurisdiction, req);
   userResponse.forEach(userList => {
-    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction = userList.jurisdiction);
+    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction === userList.jurisdiction);
     const caseWorkerReferenceData = getCaseworkerDataForServices(userList.data, jurisdictionData);
     // note have to merge any new service caseworker data for full session as well as services specified in params
     fullCaseworkerByServiceInfo.push(caseWorkerReferenceData);

@@ -120,6 +120,15 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     });
   });
 
+  it('should return to case details page if case found from case details page', () => {
+    component.navigateToCaseDetails(false, '1234123412341234');
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
+    component.navigateToCaseDetails(true, '1234123412341234');
+    router.navigateByUrl('/cases/case-loader').then(() => {
+      expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
+    });
+  });
+
   it('should return to no results page if case reference entered is invalid', () => {
     component.formGroup.get('caseReference').setValue('1234');
     component.onSubmit();

@@ -55,10 +55,10 @@ Feature: Case access management: Approve specific access request
             | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                                                                                            |
             | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2     | thissession | Test 2 user  | -10          | 0        | Own,Manage,Execute                   | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/role-access/ce225260-e7e7-11ec-b0a1-a221429cd2eb/assignment/55968c04-dc8c-42b5-8e35-6687830a0d06/specific-access) |
 
-
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
-            | true            | IA           | 12345           |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -105,10 +105,10 @@ Feature: Case access management: Approve specific access request
             | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                       |
             | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2 | thissession | Test 2 user | -10 | 0 | Own,Manage,Execute | true | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/role-access/ce225260-e7e7-11ec-b0a1-a221429cd2eb/assignment/55968c04-dc8c-42b5-8e35-6687830a0d06/specific-access) |
 
-
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
-            | true            | IA           | 12345           |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -156,11 +156,10 @@ Feature: Case access management: Approve specific access request
             | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                       |
             | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2 | thissession | Test 2 user | -10 | 0 | Own,Manage,Execute | true | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/role-access/ce225260-e7e7-11ec-b0a1-a221429cd2eb/assignment/55968c04-dc8c-42b5-8e35-6687830a0d06/specific-access) |
 
-
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
-            | true            | IA           | 12345           |
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
@@ -205,9 +204,10 @@ Feature: Case access management: Approve specific access request
             | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                       |
             | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2 | thissession | Test 2 user | -10 | 0 | Own,Manage,Execute | true | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/role-access/ce225260-e7e7-11ec-b0a1-a221429cd2eb/assignment/55968c04-dc8c-42b5-8e35-6687830a0d06/specific-access) |
 
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
-            | true            | IA           | 12345           |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -263,10 +263,10 @@ Feature: Case access management: Approve specific access request
             | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                       |
             | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2 | thissession | Test 2 user | -10 | 0 | Own,Manage,Execute | true | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/role-access/ce225260-e7e7-11ec-b0a1-a221429cd2eb/assignment/55968c04-dc8c-42b5-8e35-6687830a0d06/specific-access) |
 
-
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
-            | true            | IA           | 12345           |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page

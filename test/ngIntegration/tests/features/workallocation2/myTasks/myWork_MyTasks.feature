@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
@@ -22,8 +22,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -106,8 +106,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -142,8 +142,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

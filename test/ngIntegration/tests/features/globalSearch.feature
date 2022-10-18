@@ -19,7 +19,7 @@ Feature: Global search
 
         When I input field "16-digit case reference" with value "1234567890123456" in global search Page
         When I input field "Other reference" with value "some test ref" in global search Page
-        When I input field "Full name" with value "Sherlock Holmes" in global search Page
+        When I input field "Name" with value "Sherlock Holmes" in global search Page
         When I input field "First line of address" with value "221B Baker street" in global search Page
         When I click search button in global search page
         Then I see global search results page
@@ -27,7 +27,7 @@ Feature: Global search
         Then I see global search Page
         Then I validate input field "16-digit case reference" has value "1234567890123456" in global search page
         Then I validate input field "Other reference" has value "some test ref" in global search page
-        Then I validate input field "Full name" has value "Sherlock Holmes" in global search page
+        Then I validate input field "Name" has value "Sherlock Holmes" in global search page
         Then I validate input field "First line of address" has value "221B Baker street" in global search page
 
 
@@ -89,7 +89,7 @@ Feature: Global search
 
         Then I validate input field "16-digit case reference" has value "1234567890123456" in global search page
         Then I validate input field "Other reference" has value "some test ref" in global search page
-        Then I validate input field "Full name" has value "Sherlock Holmes" in global search page
+        Then I validate input field "name" has value "Sherlock Holmes" in global search page
         Then I validate input field "First line of address" has value "221B Baker street" in global search page
 
         Then I validate input field "Email address" has value "abc@xyz.com" in global search page
@@ -101,7 +101,7 @@ Feature: Global search
 
         When I input field "16-digit case reference" with value "" in global search Page
         When I input field "Other reference" with value "f" in global search Page
-        When I input field "Full name" with value "s" in global search Page
+        When I input field "Name" with value "s" in global search Page
         When I input field "First line of address" with value "" in global search Page
         When I input field "Postcode" with value "" in global search Page
         When I input field "Email address" with value "" in global search Page
@@ -115,7 +115,7 @@ Feature: Global search
 
         Then I validate input field "16-digit case reference" has value "" in global search page
         Then I validate input field "Other reference" has value "" in global search page
-        Then I validate input field "Full name" has value "" in global search page
+        Then I validate input field "Name" has value "" in global search page
         Then I validate input field "First line of address" has value "" in global search page
 
         Then I validate input field "Email address" has value "" in global search page
@@ -270,33 +270,4 @@ Feature: Global search
 
         When I click action link "Specific access" at row 2 in global search results page
         Then I see case details specific access request page
-
-
-    Scenario: Search from header all valid case refence formats 
-        Given I set global search mock results count 1
-        Given I start MockApp
-
-        Then I validate valid global search case reference searches  
-            | ScenarioDescription                        | caseReference          |
-            | shorter than 16 digit              | 1234123412341234    |
-            | 16 digit with space                | 1234 1234 1234 1234 |
-            | 16 digit with hyphens              | 1234-1234-1234-1234 |
-            | 16 digit with wild card at end     | 123412341234123*    |
-            | 16 digit with wild card            | 12341234123*1234    |
-            | 16 digit with wild card and hyphen | 1234-1234-123*-1234 |
-            | 16 digit with wild card and space  | 1234 1234 123* 1234 |
-
-    Scenario: Search from header all invalid case refence formats
-        Given I set global search mock results count 1
-        Given I start MockApp
-
-        Then I validate invalid global search case reference searches
-            | ScenarioDescription                | caseReference       |
-            | shorter than 16 digit           | 1234                 |
-            | longer than 16 digit            | 12341234123412341234 |
-            | 16 digit with 2 wild card chars | 12341234123412**     |
-            | with Alpha numeric              | 1Abcd67812345678     |
-            | with special character          | 1$%^&@6781234567     |
-
-
 

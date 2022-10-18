@@ -11,6 +11,7 @@ const workAccessPage = require('../../pageObjects/workAccessBookingUI/workAccess
 const workAllocationDateUtil = require("../../pageObjects/workAllocation/common/workAllocationDateUtil");
 
 const createNewBookingWorkflow = require('../../pageObjects/workAccessBookingUI/createNewBookingWorkflow');
+const customWaits = require('../../../support/customWaits');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -101,13 +102,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see work access existing bookings displayed with details', async function(datatable){
         const bookingsHashes = datatable.hashes();
-
-        for (const booking of bookingsHashes){
-            workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.fromDate)
-            const fromDate = workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.fromDate);
-            const toDate = workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.toDate);
-            expect(await workAccessPage.isBookingDisplayed(booking.location, fromDate, toDate),`Booking with details not displayed: ${booking.location}, ${fromDate} to ${toDate}`).to.be.true 
-        }
+        await customWaits.retryWithActionCallback(async () => {
+            for (const booking of bookingsHashes) {
+                workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.fromDate)
+                const fromDate = workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.fromDate);
+                const toDate = workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.toDate);
+                expect(await workAccessPage.isBookingDisplayed(booking.location, fromDate, toDate), `Booking with details not displayed: ${booking.location}, ${fromDate} to ${toDate}`).to.be.true
+            }
+        });
+       
     });
 
     Then('I validate work access existing bookings', async function () {

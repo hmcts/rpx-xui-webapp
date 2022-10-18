@@ -1,8 +1,9 @@
-@ng
+@ng 
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
         Given I init MockApp
+        Given I clear all MOCK location
         Given I set MOCK locations with names in service "IA"
             | id    | locationName           |
             | 20001 | IA Court Aldgate Tower |
@@ -35,7 +36,12 @@ Feature: WA Release 2: My work - Work filters
         Given I set MOCK request "/api/locations/getLocations" intercept with reference "workFilterLocationsRequest"
 
     Scenario Outline:  Work filters show hide button and Apply for "<UserType>"
-        Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"
@@ -65,7 +71,12 @@ Feature: WA Release 2: My work - Work filters
 
 
     Scenario Outline:  Work filters types for selected sub navigation tabs
-        Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"
@@ -118,17 +129,16 @@ Feature: WA Release 2: My work - Work filters
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-
     Scenario Outline:  Work filters mandatory field validations and filter selection
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
-
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation |  |
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"
@@ -149,7 +159,6 @@ Feature: WA Release 2: My work - Work filters
         When I remove slected location "IA Court" from my work filters
 
         When I click work location filter Apply button
-        Then I see error message "Search for a location by name" for location work filter in my work page
         Then I see error message of type "message" displayed with message "Enter a location"
 
         When I search for location text "IA Court Taylor" in my work filters
@@ -161,10 +170,7 @@ Feature: WA Release 2: My work - Work filters
         Then I see location "IA Court Taylor House" selected in my work filter
         When I click work location filter Apply button
         Then I validate my work filter services container not displayed
-        Then I validate work filter get location request body "workFilterLocationsRequest", user locations
-            | serviceIds   | IA              |
-            | locationType | case-management |
-            | searchTerm   | IA Court Taylor |
+
 
         Examples:
             | UserType       | Roles                                                            |
@@ -233,13 +239,6 @@ Feature: WA Release 2: My work - Work filters
         When I search for location text "Court" in my work filters
 
         When I wait for reference "workFilterLocationsRequest" value not null
-
-        Then I validate work filter get location request body "workFilterLocationsRequest", user locations
-            | serviceIds   | <searchableServices> |
-            | locationType | case-management      |
-            | searchTerm   | Court                |
-
-        Then I see location search results returned <resultCount> results in my work filter
 
 
         Examples:

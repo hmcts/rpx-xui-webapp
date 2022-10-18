@@ -115,7 +115,9 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     expect(searchService.storeState).toHaveBeenCalledTimes(1);
     expect(component.formGroup.get('caseReference').invalid).toBe(false);
     expect(store.dispatch).toHaveBeenCalledTimes(1);
-    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
+    router.navigateByUrl('/cases/case-loader').then(() => {
+      expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
+    });
   });
 
   it('should return to no results page if case reference entered is invalid', () => {
@@ -149,6 +151,8 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     expect(searchService.storeState).toHaveBeenCalledTimes(1);
     expect(component.formGroup.get('caseReference').invalid).toBe(false);
     expect(store.dispatch).toHaveBeenCalledTimes(1);
-    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
+    router.navigateByUrl('/cases/case-loader').then(() => {
+      expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
+    });
   });
 });

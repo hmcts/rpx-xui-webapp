@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.16-EUI-2831-dynamic-multiselect-7":
-  version "4.18.16-EUI-2831-dynamic-multiselect-7"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.16-EUI-2831-dynamic-multiselect-7.tgz#c3b07394e38078fa89a72a251223403a8a23bb57"
-  integrity sha512-dWC/uLfO/UD6P/K0bgH+OlGE82fdKOkJBRTX3UKdYFXk+LmN0q3e7wcrNsBVB6b0Q0IL1eUi8BlC+xyK/FcHpg==
+"@hmcts/ccd-case-ui-toolkit@4.18.16-EUI-2831-dynamic-multiselect-5-bug-fix":
+  version "4.18.16-EUI-2831-dynamic-multiselect-5-bug-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.16-EUI-2831-dynamic-multiselect-5-bug-fix.tgz#037784133273fbab8216d16f6d5f687601247cbb"
+  integrity sha512-KQ6P8IY9wj+gUoTHhm3C4ec+naYYaFhpfypw3z5Fr1v8izmjo2GrMNwwUOlNDluOMHnqnjIX18FFAQ55YLe9rg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

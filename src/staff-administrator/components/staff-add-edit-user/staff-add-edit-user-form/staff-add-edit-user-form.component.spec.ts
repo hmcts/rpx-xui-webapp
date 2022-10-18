@@ -9,7 +9,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 
-fdescribe('StaffAddEditUserFormComponent', () => {
+describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
   let fixture: ComponentFixture<StaffAddEditUserFormComponent>;
 

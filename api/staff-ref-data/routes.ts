@@ -1,6 +1,6 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
-import { getFilteredUsers, getJobTitles, getSkills, 
+import { getFilteredUsers, getJobTitles, getSkills,
     getStaffRefUserDetails, getUsersByPartialName, getUserTypes, getServices } from './index';
 
 const router = express.Router({ mergeParams: true });

@@ -41,7 +41,7 @@ export const init = () => {
       [
         {label: 'Service 01', key: '01'},
         {label: 'Service 02', key: '02'},
-        {label: 'Service 03', key: '03'}
+        {label: 'Service 03', key: '03'},
       ],
     ];
   });

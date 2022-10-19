@@ -9,6 +9,7 @@ export const init = () => {
   const getUsersByPartialName = /refdata\/case-worker\/profile\/search/;
   const getStaffRefUserDetails = /refdata\/case-worker\/user-details\/[0-9]/;
 
+  const getServices = /refdata\/case-worker\/service/;
   const getUserTypes = /refdata\/case-worker\/user-type/;
   const getJobTitles = /refdata\/case-worker\/job-title/;
   const getSkills = /refdata\/case-worker\/skill/;
@@ -31,6 +32,17 @@ export const init = () => {
         totalItems: STAFF_REF_USERS_LIST.length,
         results: filteredUsers,
       },
+    ];
+  });
+
+  mock.onGet(getServices).reply(() => {
+    return [
+      200,
+      [
+        {label: 'Service 01', key: '01'},
+        {label: 'Service 02', key: '02'},
+        {label: 'Service 03', key: '03'}
+      ],
     ];
   });
 

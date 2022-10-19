@@ -14,16 +14,16 @@ export class StaffAdvFilterComponent implements OnInit {
   const staffFilters = {
     userTypes: this.route.snapshot.data.staffFilters.userTypes,
     jobTitles: this.route.snapshot.data.staffFilters.jobTitles,
-    skills: this.route.snapshot.data.staffFilters.skills
+    skills: this.route.snapshot.data.staffFilters.skills,
+    services: this.route.snapshot.data.staffFilters.services,
   };
-
   this.filterConfig = {
     id: 'staff-advanced-filters',
     fields: [{
       name: 'user-services',
       title: 'Services',
       subTitle: '',
-      options: [],
+      options: [...staffFilters.services],
       minSelected: 0,
       maxSelected: 0,
       type: 'find-service',

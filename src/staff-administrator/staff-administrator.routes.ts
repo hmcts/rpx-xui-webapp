@@ -15,6 +15,7 @@ import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-opt
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
 import { StaffUserDetailsResolverService } from './resolvers/staff-user-details-resolver.service';
+import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
 
 export const ROUTES: Routes = [
   {
@@ -53,7 +54,7 @@ export const ROUTES: Routes = [
           jobTitles: StaffFilterOptionsJobTitlesResolver
         },
         children: [
-          { path: '', component: StaffAddEditUserFormComponent },
+          { path: '', component: StaffAddUserComponent },
           { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
         ]
       }

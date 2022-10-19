@@ -47,8 +47,10 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
     this.initFormConfig();
     this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
+        console.log(data);
         if (data.reset) {
           this.resetForm();
+          this.router.navigateByUrl('/staff');
         } else {
           this.router.navigateByUrl('/staff/add-user/check-your-answers');
         }
@@ -77,7 +79,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
 
   public resetForm() {
     this.filterService.clearSessionAndLocalPersistance(this.formId);
-    this.filterService.givenErrors.next([]);
+    this.filterService.givenErrors.next(null);
   }
 
   public initFormConfig() {

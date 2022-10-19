@@ -32,6 +32,16 @@
   </div>
 
   <div class="hmcts-filter-layout__content">
+    <div class="govuk-!-margin-bottom-6">
+      <div class="govuk-button-group govuk-button-group--right">
+        <button
+          [routerLink]="['/staff/add-user']"
+          class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
+          Add new user
+        </button>
+      </div>
+    </div>
+
     <exui-staff-user-list></exui-staff-user-list>
   </div>
 </exui-page-wrapper>

@@ -9,6 +9,10 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Scenario Outline: pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 20001           | ORGANISATION |
+            | SSCS         |                 | ORGANISATION |
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | case-allocator | 40 |
@@ -43,6 +47,10 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Scenario Outline: pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 20001           | ORGANISATION |
+            | SSCS         |                 | ORGANISATION |
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | case-allocator | 20 |
@@ -65,6 +73,10 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
     @ignore
     Scenario Outline: pagnation control display 0 items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 20001           | ORGANISATION |
+            | SSCS         |                 | ORGANISATION |
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | case-allocator | 0 |
@@ -87,6 +99,10 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Scenario Outline: My cases sorting
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | primaryLocation | roleType     |
+            | IA           | 20001           | ORGANISATION |
+            | SSCS         |                 | ORGANISATION |
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | case-allocator | 10    |

@@ -195,6 +195,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             if (roleKeys.includes('roleType') ){
                 roleAssignment.isCaseAllocator = roleAssignment.roleType === 'ORGANISATION'
             }
+            roleAssignment.substantive = "Y"
             roleAssignmentArr.push(roleAssignment);
         }
         userDetails.roleAssignmentInfo = roleAssignmentArr;
@@ -322,6 +323,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    Given('I clear all MOCK location', function(){
+        workallocationMockData.locationsByServices = [];
+    })
+
     Given('I set MOCK locations with names in service {string}', async function(service, locationNamesDatatable){
         const locationNamesHashes = locationNamesDatatable.hashes();
         const locationNames = [];
@@ -331,15 +336,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
         const locationsArray = workallocationMockData.getLocationsWithNames(locationNames);
 
-        for (const locationsByService of workallocationMockData.locationsByServices){
-            if (locationsByService.service === service){
-                locationsByService.locations.push(...locationsArray);
-            }else{
-                let locationForThisService = { service: service, locations: [] }
-                locationForThisService.locations.push(...locationsArray); 
-                workallocationMockData.locationsByServices.push(locationForThisService)
-            }
-        }
+        let locationForThisService = { service: service, locations: [] }
+        locationForThisService.locations.push(...locationsArray);
+        workallocationMockData.locationsByServices.push(locationForThisService)
     
     });
 

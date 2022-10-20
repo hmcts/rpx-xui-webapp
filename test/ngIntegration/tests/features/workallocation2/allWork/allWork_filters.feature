@@ -86,7 +86,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario: Tasks filters state, with user role "Caseworker"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -123,7 +125,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario Outline: "Caseworker" Tasks filter, filetr role type <Person_Role_Type>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -191,7 +195,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario: "Judicial" Tasks filters state
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -227,7 +233,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario Outline: "Judicial" Tasks filter selection, with person role type <Person_Role_Type>
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -296,7 +304,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario: "Caseworker" Cases filters state
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "task-supervisor,case-allocator,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -332,7 +342,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario Outline: "Caseworker" Case filter selection, with role type <Role_Type>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -391,7 +403,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario Outline: "Judicial" Case filter selection, with role type <Role_Type>
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page

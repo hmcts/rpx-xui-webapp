@@ -1,14 +1,15 @@
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
-
-import { HttpClient } from '@angular/common/http';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import * as fromActions from '../../../app/store';
 import { Actions, Role, RoleCategory } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants } from '../../components/constants';
@@ -82,7 +83,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected readonly jurisdictionsService: JurisdictionsService,
     protected readonly rolesService: AllocateRoleService,
-    protected readonly httpClient: HttpClient
+    protected readonly httpClient: HttpClient,
+    protected store: Store<fromActions.State>
   ) {
   }
 
@@ -153,13 +155,25 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    // get supported jurisdictions on initialisation in order to get caseworkers by these services
-    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-
+    this.loadSupportedJurisdictions();
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
     this.addSelectedLocationsSubscriber();
+  }
+
+  public loadSupportedJurisdictions(): void {
+    // get supported jurisdictions on initialisation in order to get caseworkers by these services
+    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).map(userDetails =>
+      userDetails.roleAssignmentInfo.filter(role => role.roleName && role.roleName === 'task-supervisor').map(role => role.jurisdiction || null)
+    );
+    const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    this.waSupportedJurisdictions$ = Observable.combineLatest(
+      [userRoles$,
+        waJurisdictions$]
+    ).map(jurisdictions => {
+      return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
+    });
   }
 
   public ngOnDestroy(): void {
@@ -258,11 +272,11 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
     if (this.view === 'AllWorkCases') {
-      return this.caseService.getCases({searchRequest, view: this.view});
+      return this.caseService.getCases({ searchRequest, view: this.view });
     } else if (this.view === 'MyCases') {
-      return this.caseService.getMyCases({searchRequest, view: this.view});
+      return this.caseService.getMyCases({ searchRequest, view: this.view });
     } else {
-      return this.caseService.getMyAccess({searchRequest, view: this.view});
+      return this.caseService.getMyAccess({ searchRequest, view: this.view });
     }
   }
 
@@ -386,7 +400,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   protected setUpLocationsAndJurisdictions(): void {
     this.locations$ = this.locationService.getLocations();
-    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    this.loadSupportedJurisdictions();
   }
 
 }

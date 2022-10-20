@@ -145,7 +145,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     }
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
-    let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.

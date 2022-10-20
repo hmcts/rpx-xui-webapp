@@ -17,13 +17,15 @@ export class StaffFilterOptionsResolverService implements Resolve<{ userTypes: S
     return combineLatest([
       this.staffDataAccessService.getUserTypes(),
       this.staffDataAccessService.getJobTitles(),
-      this.staffDataAccessService.getSkills()
+      this.staffDataAccessService.getSkills(),
+      this.staffDataAccessService.getServices(),
     ]).pipe(
       map(res => {
         return {
           userTypes: res[0],
           jobTitles: res[1],
-          skills: res[2]
+          skills: res[2],
+          services: res[3],
         };
     }));
   }

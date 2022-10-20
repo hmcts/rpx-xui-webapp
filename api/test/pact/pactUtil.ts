@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from 'axios'
+import axios, {AxiosResponse} from 'axios';
 
 export async function getUsers(path: string) {
   const axiosConfig = {

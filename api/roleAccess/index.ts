@@ -194,7 +194,7 @@ export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res
     // @ts-ignore
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const roleAssignmentsBody = toSARoleAssignmentBody(currentUserId, body);
+    const roleAssignmentsBody = toSARoleAssignmentBody(currentUserId, body, {}, {isNew: true});
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
@@ -211,7 +211,7 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     req.body.roleCategory = currentUser.roleCategory;
-    const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body);
+    const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body, {isNew: false});
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
 

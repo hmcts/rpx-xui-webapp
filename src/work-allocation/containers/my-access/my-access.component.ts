@@ -54,7 +54,7 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
           isNew: false
         }).subscribe(() => item.isNew = false);
       } else if (item.role.startsWith('specific-access')) {
-        CasesService.updateChallengedAccessRequestAttributes(this.httpClient, item.case_id, {
+        CasesService.updateSpecificAccessRequestAttributes(this.httpClient, item.case_id, {
           isNew: false
         }).subscribe(() => item.isNew = false);
       }

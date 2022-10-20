@@ -182,7 +182,8 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
   try {
-    const actorId = req.session.passport.user.userinfo.uid;
+    const userInfo = req.session.passport.user.userinfo;
+    const actorId = userInfo.id ? userInfo.id : userInfo.uid;
     const caseId = req.body.caseId;
 
     const roleAssignmentQueryResponse = await http.post(queryPath, {

@@ -26,7 +26,10 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
   };
 }
 
-export function toSARoleAssignmentBody(currentUserId: string, specificAccessData: any): any {
+export function toSARoleAssignmentBody(
+  currentUserId: string, specificAccessData: any, extraAttributesForBasicRole: {[x: string]: string | boolean} = {},
+  extraAttributesForSpecificRole: {[x: string]: string | boolean} = {}
+): any {
   const todayDate = new Date();
   const allocateRoleData = specificAccessData.specificAccessStateData;
   const period = specificAccessData.period;
@@ -47,6 +50,7 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
+        ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-granted',
       roleCategory: allocateRoleData.roleCategory,
@@ -70,6 +74,7 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
+        ...extraAttributesForSpecificRole,
       },
       roleName: requestedRole,
       roleCategory: allocateRoleData.roleCategory,
@@ -87,7 +92,9 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
   };
 }
 
-export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+export function toDenySARoleAssignmentBody(
+  currentUserId: string, allocateRoleData: AllocateRoleData, extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+): any {
   let requestedrole;
   switch ( allocateRoleData.roleCategory) {
     case RoleCategory.JUDICIAL:
@@ -117,6 +124,7 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: requestedrole,
+        ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-denied',
       roleCategory: allocateRoleData.roleCategory,
@@ -144,7 +152,9 @@ export function toDenySADletionRequestedRoleBody(requestId: string): any {
     };
 }
 
-export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData): any {
+export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData,
+                                              extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+): any {
   const todayDate = new Date();
   return {
     roleRequest: {
@@ -161,6 +171,7 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: allocateRoleData.requestedRole,
+        ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-requested',
       roleCategory: allocateRoleData.roleCategory,

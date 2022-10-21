@@ -143,6 +143,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
                   assigneeId: specificAccess.actorId,
                   caseName: specificAccess.caseName,
                   requestCreated: specificAccess.requestCreated,
+                  roleCategory: specificAccess.roleCategory,
                   person: { id: specificAccess.actorId, name: null, domain: null },
                 }
               }

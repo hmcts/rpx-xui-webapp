@@ -211,7 +211,6 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
   try {
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    req.body.roleCategory = currentUser.roleCategory;
     const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body);
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);

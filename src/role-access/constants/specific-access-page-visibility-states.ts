@@ -13,7 +13,7 @@ export const specicAccessCancelButtonVisibilityStates = [
 ];
 
 export const specicAccessReturnToMyTasksButtonVisibilityStates = [
-  SpecificAccessState.SPECIFIC_ACCESS_APPROVED, SpecificAccessState.SPECIFIC_ACCESS_DENIED
+  SpecificAccessState.SPECIFIC_ACCESS_APPROVED, SpecificAccessState.SPECIFIC_ACCESS_DENIED, SpecificAccessState.SPECIFIC_ACCESS_DUPLICATE_RECORD
 ];
 
 export const specicAccessReturnToTasksTabVisibilityStates = [
@@ -24,3 +24,4 @@ export const specificAccessDurationVisibilityStates = [SpecificAccessState.SPECI
 export const specificAccessApprovedVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_APPROVED];
 export const specificAccessInformationVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_INFORMATION];
 export const specificAccessDeniedVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_DENIED];
+export const specificAccessDuplicateRecordVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_DUPLICATE_RECORD];

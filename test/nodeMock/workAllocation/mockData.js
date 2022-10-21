@@ -692,7 +692,8 @@ class WorkAllocationMockData {
                     const testInputWarnings = task[taskAttribute].split(",");
                     const responseWantings = testInputWarnings.map(t =>{
                         return {
-                            text: t
+                            warningText: t,
+                            warningCode: t.split(' ').join('-')
                         }
                     }) 
                     taskTemplate.warning_list.values = responseWantings;

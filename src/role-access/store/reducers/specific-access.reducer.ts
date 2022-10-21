@@ -45,6 +45,7 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
     case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA: {
       return {
         ...currentState,
+        state: action.payload.state,
         caseId: action.payload.caseId,
         taskId: action.payload.taskId,
         requestId: action.payload.requestId,

@@ -22,9 +22,9 @@ export class StaffAdvFilterComponent implements OnInit {
     fields: [{
       name: 'user-services',
       title: 'Services',
-      subTitle: '',
+      subTitle: 'Search for a service by name',
       options: [...staffFilters.services],
-      minSelected: 0,
+      minSelected: 1,
       maxSelected: 0,
       type: 'find-service',
       enableAddButton: true,

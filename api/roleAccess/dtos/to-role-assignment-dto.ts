@@ -1,8 +1,8 @@
 /* tslint:disable:object-literal-sort-keys */
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
-import { AllocateTo, RoleCategory } from '../models/allocate-role.enum';
+import { AllocateTo, Period, RoleCategory } from '../models/allocate-role.enum';
 
-export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData) {
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -27,9 +27,10 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
 }
 
 export function toSARoleAssignmentBody(
-  currentUserId: string, specificAccessData: any, extraAttributesForBasicRole: {[x: string]: string | boolean} = {},
+  currentUserId: string, specificAccessData: { specificAccessStateData: AllocateRoleData, period: Period },
+  extraAttributesForBasicRole: {[x: string]: string | boolean} = {},
   extraAttributesForSpecificRole: {[x: string]: string | boolean} = {}
-): any {
+) {
   const todayDate = new Date();
   const allocateRoleData = specificAccessData.specificAccessStateData;
   const period = specificAccessData.period;
@@ -94,7 +95,7 @@ export function toSARoleAssignmentBody(
 
 export function toDenySARoleAssignmentBody(
   currentUserId: string, allocateRoleData: AllocateRoleData, extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
-): any {
+) {
   let requestedrole;
   switch ( allocateRoleData.roleCategory) {
     case RoleCategory.JUDICIAL:
@@ -138,7 +139,7 @@ export function toDenySARoleAssignmentBody(
   ],
   };
 }
-export function toDenySADletionRequestedRoleBody(requestId: string): any {
+export function toDenySADletionRequestedRoleBody(requestId: string) {
   return {
       pathVariables: {
         process: 'staff-organisational-role-mapping',
@@ -154,7 +155,7 @@ export function toDenySADletionRequestedRoleBody(requestId: string): any {
 
 export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData,
                                               extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
-): any {
+) {
   const todayDate = new Date();
   return {
     roleRequest: {

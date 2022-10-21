@@ -546,10 +546,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.47-cancel-callback-xui-filter":
-  version "1.7.47-cancel-callback-xui-filter"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.47-cancel-callback-xui-filter.tgz#d730e78d6388fd39e35db24dafc82499df8fc2dd"
-  integrity sha512-uVw3yC/KXjNK4QcU0SFDuVUTCHIWTLzbJm0d979pnzJg8X/5cc2jX+Ikyu7WNs9towGacp9pJAUl8PqRJpA0Jg==
+"@hmcts/rpx-xui-common-lib@1.7.47-generic-filter-title-hint":
+  version "1.7.47-generic-filter-title-hint"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.47-generic-filter-title-hint.tgz#768a9eb6a848cb4fb32c9b4774a1c79642af8e3f"
+  integrity sha512-FvQXxiDmwil/fc14kGv+SgYqChnz6TNpxqdREY0GUvFglWpuaNEHvAfTVjjYydH7S2DN5gwbuR7O52I03GIbGw==
   dependencies:
     tslib "^1.9.0"
 

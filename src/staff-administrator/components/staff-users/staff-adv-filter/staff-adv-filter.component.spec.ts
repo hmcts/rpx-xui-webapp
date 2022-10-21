@@ -29,6 +29,7 @@ describe('StaffAdvFilterComponent', () => {
                 userTypes: staffFilterOptionsTestData.userTypes,
                 jobTitles: staffFilterOptionsTestData.jobTitles,
                 skills: staffFilterOptionsTestData.skills,
+                services: staffFilterOptionsTestData.services
               }
             },
           }

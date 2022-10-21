@@ -47,10 +47,8 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
     this.initFormConfig();
     this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
-        console.log(data);
         if (data.reset) {
           this.resetForm();
-          this.router.navigateByUrl('/staff');
         } else {
           this.router.navigateByUrl('/staff/add-user/check-your-answers');
         }
@@ -250,7 +248,10 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
       applyButtonText: 'Continue',
       cancelButtonText: 'Cancel',
       enableDisabledButton: false,
-      showCancelFilterButton: true
+      showCancelFilterButton: true,
+      cancelButtonCallback: () => {
+        this.router.navigateByUrl('/staff');
+      }
     };
   }
 }

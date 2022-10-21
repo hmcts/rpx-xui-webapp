@@ -9,7 +9,6 @@ export const init = () => {
   const getUsersByPartialName = /refdata\/case-worker\/profile\/search/;
   const getStaffRefUserDetails = /refdata\/case-worker\/user-details\/[0-9]/;
 
-  const getServices = /refdata\/case-worker\/service/;
   const getUserTypes = /refdata\/case-worker\/user-type/;
   const getJobTitles = /refdata\/case-worker\/job-title/;
   const getSkills = /refdata\/case-worker\/skill/;

@@ -7,7 +7,6 @@ import { StaffDataAccessService } from '../services/staff-data-access/staff-data
   providedIn: 'root'
 })
 export class StaffFilterOptionsSkillsResolver implements Resolve<StaffFilterOption[]> {
-
   constructor(private staffDataAccessService: StaffDataAccessService) {
   }
 

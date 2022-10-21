@@ -1,23 +1,32 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 
+import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 
+@Component({selector: 'exui-staff-main-container', template: ''})
+class StaffMainContainerStubComponent {}
+
+
 describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
   let fixture: ComponentFixture<StaffAddEditUserFormComponent>;
+  let router: Router;
+  let location: Location;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [StaffAddEditUserFormComponent],
+      declarations: [StaffAddEditUserFormComponent, StaffMainContainerStubComponent],
       imports: [
-        RouterTestingModule,
+        RouterTestingModule.withRoutes([
+          { path: 'staff', component: StaffMainContainerStubComponent }
+        ]),
         ReactiveFormsModule,
         HttpClientTestingModule,
         ExuiCommonLibModule
@@ -43,8 +52,12 @@ describe('StaffAddEditUserFormComponent', () => {
   }));
 
   beforeEach(() => {
+    router = TestBed.get(Router);
+    location = TestBed.get(Location);
     fixture = TestBed.createComponent(StaffAddEditUserFormComponent);
     component = fixture.componentInstance;
+
+    router.initialNavigation();
     fixture.detectChanges();
   });
 
@@ -64,4 +77,13 @@ describe('StaffAddEditUserFormComponent', () => {
     component.ngOnDestroy();
     expect(spyOnForm).toHaveBeenCalled();
   });
+
+  it('should navigate to /staff when calling the cancelCallback from the form config', fakeAsync(() => {
+    component.initFormConfig();
+    component.filterConfig.cancelButtonCallback();
+    tick();
+
+    expect(location.path()).toBe('/staff');
+    flush();
+  }));
 });

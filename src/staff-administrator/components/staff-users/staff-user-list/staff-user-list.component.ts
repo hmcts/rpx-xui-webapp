@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {StaffDataFilterService} from '../services/staff-data-filter/staff-data-filter.service';
+import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
   selector: 'exui-staff-user-list',

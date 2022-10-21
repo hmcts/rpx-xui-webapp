@@ -1,12 +1,10 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
-  StaffAddEditUserFormComponent
-} from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
-import {
   StaffUserCheckAnswersComponent
 } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
+import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
 import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
@@ -15,7 +13,6 @@ import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-opt
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
 import { StaffUserDetailsResolverService } from './resolvers/staff-user-details-resolver.service';
-import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
 
 export const ROUTES: Routes = [
   {
@@ -41,17 +38,18 @@ export const ROUTES: Routes = [
         component: StaffUsersComponent,
         resolve: {
           jobTitles: StaffFilterOptionsJobTitlesResolver,
-          userTypes: StaffFilterOptionsUserTypesResolver,
+          services: StaffFilterOptionsServicesResolver,
           skills: StaffFilterOptionsSkillsResolver,
+          userTypes: StaffFilterOptionsUserTypesResolver,
         },
       },
       {
         path: 'add-user',
         resolve: {
-          skills: StaffFilterOptionsSkillsResolver,
+          jobTitles: StaffFilterOptionsJobTitlesResolver,
           services: StaffFilterOptionsServicesResolver,
+          skills: StaffFilterOptionsSkillsResolver,
           userTypes: StaffFilterOptionsUserTypesResolver,
-          jobTitles: StaffFilterOptionsJobTitlesResolver
         },
         children: [
           { path: '', component: StaffAddUserComponent },

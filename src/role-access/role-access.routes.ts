@@ -1,7 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseAllocatorGuard } from '../app/guards/case-allocator.guard';
-import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { UserNotAssignableComponent } from './components';
 import { DeleteExclusionComponent, RemoveRoleComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
@@ -16,7 +15,6 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: null,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Add Exclusion',
         }
@@ -26,7 +24,7 @@ export const ROUTES: Routes = [
   {
     path: 'delete-exclusion',
     component: DeleteExclusionComponent,
-    canActivate: [HealthCheckGuard, CaseAllocatorGuard],
+    canActivate: [CaseAllocatorGuard],
     data: {
       title: 'HMCTS Manage cases | Role and access | Delete exclusion',
     }
@@ -38,7 +36,7 @@ export const ROUTES: Routes = [
       {
         path: 'allocate',
         component: AllocateRoleHomeComponent,
-        canActivate: [HealthCheckGuard, CaseAllocatorGuard],
+        canActivate: [CaseAllocatorGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Allocate a role',
         }
@@ -46,7 +44,7 @@ export const ROUTES: Routes = [
       {
         path: 'reallocate',
         component: AllocateRoleHomeComponent,
-        canActivate: [HealthCheckGuard, CaseAllocatorGuard],
+        canActivate: [CaseAllocatorGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Reallocate a role',
         }
@@ -54,7 +52,7 @@ export const ROUTES: Routes = [
       {
         path: 'remove',
         component: RemoveRoleComponent,
-        canActivate: [HealthCheckGuard, CaseAllocatorGuard],
+        canActivate: [CaseAllocatorGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Remove a role',
         }

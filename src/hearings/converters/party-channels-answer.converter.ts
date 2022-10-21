@@ -31,7 +31,7 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
         partiesFromRequest.filter(party => party.partyType === PartyType.IND)
           .forEach((party: PartyDetailsModel) => {
             const foundPartyFromService = partiesFromServiceValue.find(pty => pty.partyID === party.partyID);
-            const name = party.partyName ? party.partyName : (foundPartyFromService ? foundPartyFromService.partyName : '');
+            const name = this.getPartyName(party, foundPartyFromService);
             const value = PartyChannelsAnswerConverter.getPartyChannelValue(partyChannels, party);
             strReturn += `<li>${name} - ${value}</li>`;
           });
@@ -39,5 +39,19 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
         return strReturn;
       })
     );
+  }
+
+  public getPartyName(party: PartyDetailsModel, foundPartyFromService: PartyDetailsModel): string {
+    if (party.partyName) {
+      return party.partyName;
+    }
+    if (foundPartyFromService) {
+      if (foundPartyFromService.partyName && foundPartyFromService.partyName !== null) {
+        return foundPartyFromService.partyName;
+      } else {
+        return foundPartyFromService.partyID;
+      }
+    }
+    return '';
   }
 }

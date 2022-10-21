@@ -37,9 +37,17 @@ export const ROUTES: Routes = [
     loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
   },
   {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+    redirectTo: 'work/my-work/list',
+    canActivate: [AuthGuard, AcceptTermsGuard]
+  },
+  {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
+    path: 'tasks/:subRoute',
+    redirectTo: 'work/my-work/list',
+    pathMatch: 'prefix',
+    canActivate: [AuthGuard, AcceptTermsGuard]
   },
   {
     path: 'role-access',

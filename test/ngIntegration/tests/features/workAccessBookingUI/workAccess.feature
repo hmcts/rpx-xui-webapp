@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: Work access page
 
     Background: Setup bookings data
@@ -18,10 +18,11 @@ Feature: Work access page
 
     Scenario Outline: page access to user with roles "<Roles>" is displayed "<isDisplayed>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | bookable | isCaseAllocator | substantive | jurisdiction |
-            | false     | true            | Y           | IA           |
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+            |isCaseAllocator|true|
 
         Given I start MockApp
         When I navigate to home page
@@ -60,9 +61,11 @@ Feature: Work access page
 
     Scenario: Work access options
         Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | bookable | isCaseAllocator | substantive | jurisdiction |
-            | true     | true            | Y           | IA           |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | true |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+            |isCaseAllocator|true|
 
         Given I start MockApp
         When I navigate to home page

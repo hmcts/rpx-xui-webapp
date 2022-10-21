@@ -4,14 +4,23 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { Task } from '../../../../work-allocation/models/tasks';
-import { specificAccessApprovedVisibilityStates, specificAccessDeniedVisibilityStates, specificAccessDurationVisibilityStates, specificAccessInformationVisibilityStates, specificAccessReviewVisibilityStates } from '../../../constants';
+import {
+  specificAccessApprovedVisibilityStates,
+  specificAccessDeniedVisibilityStates,
+  specificAccessDuplicateRecordVisibilityStates,
+  specificAccessDurationVisibilityStates,
+  specificAccessInformationVisibilityStates,
+  specificAccessReviewVisibilityStates
+} from '../../../constants';
 import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 import { SpecificAccessApprovedComponent } from '../specific-access-approved/specific-access-approved.component';
 import { SpecificAccessDeniedComponent } from '../specific-access-denied/specific-access-denied.component';
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
-import { SpecificAccessInformationComponent } from '../specific-access-information/specific-access-information.component';
+import {
+  SpecificAccessInformationComponent
+} from '../specific-access-information/specific-access-information.component';
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
 
 @Component({
@@ -49,30 +58,40 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   public specificAccessApprovedVisibilityStates = specificAccessApprovedVisibilityStates;
   public specificAccessInformationVisibilityStates = specificAccessInformationVisibilityStates;
   public specificAccessDeniedVisibilityStates = specificAccessDeniedVisibilityStates;
+  public specificAccessDuplicateRecordVisibilityStates = specificAccessDuplicateRecordVisibilityStates;
 
   constructor(
     private readonly store: Store<fromFeature.State>,
     private readonly route: ActivatedRoute,
     private readonly router: Router
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.task = this.route.snapshot.data.taskAndRole.task.task;
-    this.role = this.route.snapshot.data.taskAndRole.role[0];
-    this.store.dispatch(new fromFeature.SetSpecificAccessInitData(
-      {caseId: this.task.case_id,
+    this.role = (this.route.snapshot.data.taskAndRole.role && this.route.snapshot.data.taskAndRole.role.length > 0) &&
+      this.route.snapshot.data.taskAndRole.role[0];
+    const isDuplicateSpecificAccessRequestDuplicate = !Boolean(this.role);
+
+    const initData = {
+      state: isDuplicateSpecificAccessRequestDuplicate ? SpecificAccessState.SPECIFIC_ACCESS_DUPLICATE_RECORD : SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+      caseId: this.task.case_id,
       taskId: this.task.id,
-      requestId: this.role.id,
       jurisdiction: this.task.jurisdiction,
       caseName: this.task.case_name,
-      requestCreated: this.role.created,
-      actorId: this.role.actorId,
-      accessReason: this.role.notes,
-      roleCategory: this.role.roleCategory,
-      requestedRole: this.role.requestedRole
-      }));
-    this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
+      requestId: this.role && this.role.id,
+      requestCreated: this.role && this.role.created,
+      actorId: this.role && this.role.actorId,
+      accessReason: this.role && this.role.notes,
+      roleCategory: this.role && this.role.roleCategory,
+      requestedRole: this.role && this.role.requestedRole
+    };
+
+    this.store.dispatch(new fromFeature.SetSpecificAccessInitData(initData));
+
+    this.specificAccessStateDataSub = this.store.pipe(
+      select(fromFeature.getSpecificAccessState),
+    )
+        .subscribe(
       specificAccessReviewStateData => {
         this.navigationCurrentState = specificAccessReviewStateData.state;
         this.caseId = specificAccessReviewStateData.caseId;
@@ -112,7 +131,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         }
       ));
     }
-
     switch (navEvent) {
       case SpecificAccessNavigationEvent.BACK: {
         switch (this.navigationCurrentState) {
@@ -130,6 +148,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         }
         break;
       }
+
       case SpecificAccessNavigationEvent.CONTINUE: {
         switch (this.navigationCurrentState) {
           case SpecificAccessState.SPECIFIC_ACCESS_REVIEW:
@@ -147,6 +166,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         }
         break;
       }
+
       case SpecificAccessNavigationEvent.RETURNTOMYTASKS: {
         this.router.navigateByUrl(`/work/my-work/list`);
         break;
@@ -159,8 +179,9 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(`cases/case-details/${this.caseId}/tasks`);
         break;
       }
-      default:
+      default: {
         throw new Error('Invalid specific access navigation event');
+      }
     }
   }
 

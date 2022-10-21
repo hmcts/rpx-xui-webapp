@@ -228,6 +228,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
   private setPersistenceAndDefaultLocations(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
+    const filterService = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
+    const availableLocations = filterService && filterService.fields && filterService.fields.find(field => field.name === 'locations');
+    const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
     // get booking locations
     if (this.bookingLocations && this.bookingLocations.length > 0) {
       this.defaultLocations = this.bookingLocations;
@@ -240,7 +243,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0 && userDetails.roleAssignmentInfo.filter(p => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable).length === 0;
         if (isFeePaidJudgeWithNoBooking) {
           localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
-        } else {
+        } else if (!isLocationsAvailable) {
           const primaryLocations: string[] = [];
           userDetails.roleAssignmentInfo.forEach(roleAssignment => {
             const roleJurisdiction = roleAssignment.jurisdiction;

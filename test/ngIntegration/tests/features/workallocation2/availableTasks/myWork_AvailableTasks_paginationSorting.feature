@@ -115,8 +115,8 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 0     |

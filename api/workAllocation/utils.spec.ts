@@ -1004,6 +1004,11 @@ describe('workAllocation.utils', () => {
       assignee: 'person1',
       role_category: 'LEGAL_OPERATIONS',
       dateSubmitted: undefined,
+      hasAccess: false,
+      infoRequired: undefined,
+      requestDate: undefined,
+      reviewer: undefined,
+      specificAccessReason: undefined
     },
       {
         access: undefined,
@@ -1023,6 +1028,11 @@ describe('workAllocation.utils', () => {
         assignee: 'person1',
         role_category: 'LEGAL_OPERATIONS',
         dateSubmitted: undefined,
+        hasAccess: false,
+        infoRequired: undefined,
+        requestDate: undefined,
+        reviewer: undefined,
+        specificAccessReason: undefined
       }
     ];
     it('should return empty list if there is nothing given', () => {

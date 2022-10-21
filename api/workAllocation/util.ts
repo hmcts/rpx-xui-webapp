@@ -582,6 +582,11 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     access: getGrantType(roleAssignment),
     dateSubmitted: roleAssignment.created,
     isNew: roleAssignment.attributes.isNew,
+    hasAccess: getAccessStatus(roleAssignment),
+    infoRequired: roleAssignment.attributes.infoRequired,
+    reviewer: roleAssignment.attributes.reviewer,
+    specificAccessReason: roleAssignment.attributes.specificAccessReason,
+    requestDate: roleAssignment.attributes.requestDate
   };
 }
 export function getGrantType(roleAssignment: RoleAssignment) {
@@ -618,6 +623,21 @@ export function getEndDate(roleAssignment: RoleAssignment): Date | string {
     return formatDate(new Date(roleAssignment.endTime));
   }
   return roleAssignment.endTime;
+}
+
+export function getAccessStatus(roleAssignment: RoleAssignment): boolean {
+  // give default access because we need to block only on condition
+  let accessGiven = true;
+  const today = new Date();
+  if (roleAssignment.roleName === 'specific-access-requested' || roleAssignment.roleName === 'specific-access-denied') {
+    return false;
+  } else if (roleAssignment.beginTime) {
+    accessGiven = new Date(roleAssignment.beginTime) <= today;
+    if (accessGiven && roleAssignment.endTime) {
+      accessGiven = new Date(roleAssignment.endTime) >= today;
+    }
+  }
+  return accessGiven;
 }
 
 export function formatDate(date: Date) {

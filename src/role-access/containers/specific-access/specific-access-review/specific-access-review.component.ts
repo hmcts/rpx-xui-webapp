@@ -134,6 +134,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
               if (specificAccess) {
                 specificAccessBody = {
                   accessReason: specificAccess.accessReason,
+                  specificAccessReason: specificAccess.specificAccessReason,
                   typeOfRole: rejectedRole,
                   caseId: specificAccess.caseId,
                   requestId: specificAccess.requestId,

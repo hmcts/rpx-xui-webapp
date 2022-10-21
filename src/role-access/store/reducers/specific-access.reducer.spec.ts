@@ -98,6 +98,8 @@ describe('Specific Access Reducer', () => {
           jurisdiction: 'IA',
           roleCategory: RoleCategory.LEGAL_OPERATIONS,
           requestedRole: 'specific-access-legal-ops',
+          person: null
+
         }
         const action: SpecificAccessAction = {type: SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA, payload: specificAccessStateData};
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);

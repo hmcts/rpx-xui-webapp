@@ -31,6 +31,7 @@ export class SetSpecificAccessInitData implements Action {
     requestCreated: string,
     actorId: string,
     accessReason: string,
+    specificAccessReason: string,
     roleCategory: RoleCategory,
     requestedRole: string }) {
   }

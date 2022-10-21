@@ -53,6 +53,7 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         requestCreated: action.payload.requestCreated,
         actorId: action.payload.actorId,
         accessReason: action.payload.accessReason as AccessReason,
+        specificAccessReason: action.payload.specificAccessReason,
         roleCategory: action.payload.roleCategory,
         requestedRole: action.payload.requestedRole
       };

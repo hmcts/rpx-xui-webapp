@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import * as fromAppComponents from '../components';
 import * as fromAppContainers from '../containers';
 import * as fromAppDirectives from '../directives';
-import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
@@ -33,7 +32,6 @@ import { TaskSupervisorGuard } from '../guards/task-supervisor.guard';
     ...GOV_UI_COMPONENTS
   ],
   providers: [
-    HealthCheckGuard,
     HealthCheckService,
     WindowService,
     McLaunchDarklyService,

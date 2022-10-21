@@ -57,8 +57,8 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
       notes: [
-      {comment: "{\"specificReason\":\"Testing testing testing\"}",
-      time: "2023-05-T16:34:18.763Z",
+      {comment: `{\"specificReason\":${allocateRoleData.accessReason}}`,
+      time: new Date().toISOString(),
       userId: allocateRoleData.actorId},
     ],
     },
@@ -79,8 +79,8 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       endTime: period.endDate,
       // TODO: Include notes once we have that information
       notes: [
-      {comment: "{\"specificReason\":\"Testing testing testing\"}",
-      time: "2022-05-10T16:34:18.763Z",
+      {comment: "{\"specificReason\":\"Request approved\"}",
+      time: new Date().toISOString,
       userId: allocateRoleData.actorId},
       ],
     }],
@@ -170,8 +170,8 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       endTime: allocateRoleData.period && allocateRoleData.period.endDate ? allocateRoleData.period.endDate
        : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
-      notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
-      time: "2022-05-10T16:34:18.763Z",
+      notes: [{comment: `{\"specificReason\":${allocateRoleData.specificReason}}`,
+      time: new Date().toISOString(),
       userId: allocateRoleData.person.id}],
     }],
   };

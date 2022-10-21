@@ -2,7 +2,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { AllocateRoleService } from '.';
+import { AllocateRoleService, DurationHelperService } from '.';
 import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, CaseRoleDetails, DurationOfRole, RoleCategory, SpecificAccessState, SpecificAccessStateData } from '../models';
 import { AccessReason, DurationType } from '../models/enums';
 
@@ -23,10 +23,11 @@ describe('AllocateRoleService', () => {
   let roleAssignmentService: AllocateRoleService;
   let sessionStorageService: any;
   let mockHttp: any;
+  const durationHelperService: DurationHelperService = null;
   beforeEach(() => {
     mockHttp = jasmine.createSpyObj('HttpClient', ['get', 'post']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem']);
-    roleAssignmentService = new AllocateRoleService(mockHttp, sessionStorageService);
+    roleAssignmentService = new AllocateRoleService(mockHttp, sessionStorageService, durationHelperService);
   });
   it('should be able to set judicial and legal ops roles', () => {
     mockHttp.post.and.returnValue(of(mockRolesByService));

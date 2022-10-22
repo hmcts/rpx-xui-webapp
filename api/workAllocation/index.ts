@@ -474,9 +474,15 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
 export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
   const mappedCases = await getMyAccessMappedCaseList(roleAssignments, req);
+  const validCases = mappedCases.filter(item => {
+    const todayDate = (new Date()).setHours(0,0,0,0);
+    const endDate = item.endDate && new Date(item.endDate).setHours(0,0,0,0);
+    let isValidRecord: boolean = endDate ? todayDate <= endDate : true;
+    return isValidRecord;
+  });
 
   const result = {
-    cases: mappedCases,
+    cases: validCases,
     total_records: 0,
     unique_cases: 0,
   };

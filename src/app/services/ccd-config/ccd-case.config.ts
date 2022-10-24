@@ -202,6 +202,10 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getPaymentReturnUrl(): string {
-      return this.environmentService.get('paymentReturnUrl');
+    return this.environmentService.get('paymentReturnUrl');
+  }
+
+  public getCategoriesAndDocumentsUrl(): string {
+    return this.config.categories_and_documents_url;
   }
 }

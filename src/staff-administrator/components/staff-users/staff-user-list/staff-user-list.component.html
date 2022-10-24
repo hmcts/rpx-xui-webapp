@@ -3,18 +3,6 @@
     Displaying <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).results.length }}</span> of <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).results.length }}</span> users
   </div>
 
-  <div class="govuk-!-margin-bottom-6">
-    <div class="container-fluid">
-      <div class="govuk-button-group govuk-button-group--right">
-        <button
-          [routerLink]="['/staff/add-user']"
-          class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
-          Add new user
-        </button>
-      </div>
-    </div>
-  </div>
-
   <div>
     <table class="govuk-table" cdk-table [dataSource]="(staffDataFilterService.tableData$ | async).results">
       <ng-container cdkColumnDef="name">

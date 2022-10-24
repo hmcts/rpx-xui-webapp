@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ErrorMessage, MultipleErrorMessage } from '../../app/models';
-import { StaffUser } from '../models/staff-user.model';
-import { StaffDataAccessService } from './staff-data-access/staff-data-access.service';
+import { ErrorMessage, MultipleErrorMessage } from '../../../../../app/models';
+import { StaffUser } from '../../../../models/staff-user.model';
+import { StaffDataAccessService } from '../../../../services/staff-data-access/staff-data-access.service';
 
 @Injectable({
   providedIn: 'root'

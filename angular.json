@@ -179,7 +179,7 @@
   "defaultProject": "rpx-exui",
   "schematics": {
     "@schematics/angular:component": {
-      "styleext": "scss"
+      "style": "scss"
     }
   }
 }

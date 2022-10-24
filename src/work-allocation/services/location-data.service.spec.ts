@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { of } from 'rxjs';
 import { LocationDataService } from './location-data.service';
 
@@ -17,6 +18,20 @@ describe('WorkAllocation', () => {
       mockHttpService.get.and.returnValue(of([]));
       service.getLocations();
       expect(mockHttpService.get).toHaveBeenCalledWith(LocationDataService.locationUrl);
+    });
+
+    it('getSpecificLocations should make correct api call', () => {
+      const service = new LocationDataService(mockHttpService, sessionStorageService);
+      const options = {
+        params: new HttpParams()
+          .set('serviceCodes', 'CIVIL')
+      };
+      sessionStorageService.getItem.and.returnValue(null);
+      mockHttpService.get.and.returnValue(of([]));
+      service.getSpecificLocations(['213'], ['CIVIL']);
+      expect(mockHttpService.get).toHaveBeenCalledWith(LocationDataService.fullLocationUrl, options);
+      service.getSpecificLocations([], ['CIVIL']);
+      expect(mockHttpService.get).not.toHaveBeenCalledWith(LocationDataService.fullLocationUrl);
     });
   });
 });

@@ -17,8 +17,8 @@ import { exists, reflect } from '../lib/util';
 import {
   TaskPermission,
   VIEW_PERMISSIONS_ACTIONS_MATRIX,
-  ViewType,
-  VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED
+  VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED,
+  ViewType
 } from './constants/actions';
 import { getCaseListPromises } from "./index";
 import { Case, CaseList } from './interfaces/case';
@@ -112,6 +112,7 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
  * in the future - it should do fine for the MVP, though.
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
+ * @param currentUser
  */
 export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser: string): any[] {
   const allWorkView = ViewType.ALL_WORK;

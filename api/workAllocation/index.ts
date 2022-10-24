@@ -39,7 +39,6 @@ import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } f
 import {
   assignActionsToCases,
   assignActionsToTasks,
-  assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
@@ -142,10 +141,8 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const searchRequest = req.body.searchRequest;
     // determines whether should use release 3 or release 4 permission logic
     const refined = req.body.refined;
-    let prioritySortParameter;
     searchRequest.sorting_parameters.find((sort, index) => {
       if (sort.sort_by === 'priority') {
-        prioritySortParameter = sort;
         searchRequest.sorting_parameters.splice(index, 1)
       }
     });
@@ -223,115 +220,6 @@ function mockTaskPermissions(data) {
     }
   }
   return data;
-}
-
-function mockTaskPrioritisation(data, prioritySortParameter, searchRequest) {
-  // TEMPORARY CODE: priority_date and  major_priority parameter is not yet enabled by Task API. to be removed
-  let randomDate = new Date(2022, 0, 1);
-  data.tasks = data.tasks.map((task, index) => {
-    randomDate = mockDate(randomDate)
-    task.priority_date = mockDate(randomDate);
-    task.major_priority = randomInt(index, 0, 5000);
-    return task;
-  });
-
-  if (prioritySortParameter) {
-    data.tasks.sort((a, b) => {
-      if (prioritySortParameter.sort_order === 'asc') {
-        return a.major_priority > b.major_priority ? 1 : -1;
-      } else if (prioritySortParameter.sort_order === 'desc') {
-        return b.major_priority > a.major_priority ? 1 : -1;
-      }
-    });
-  }
-
-  searchRequest.sorting_parameters.map((sort, index) => {
-    if (sort.sort_by === 'caseName') {
-      if (sort.sort_order === 'asc') {
-        data.tasks.sort((a, b) => {
-          return a.case_name.localeCompare(b.case_name) ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      } else if (sort.sort_order === 'desc') {
-        data.tasks.sort((a, b) => {
-          return b.case_name.localeCompare(a.case_name) ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      }
-    }
-    if (sort.sort_by === 'caseCategory') {
-      if (sort.sort_order === 'asc') {
-        data.tasks.sort((a, b) => {
-          return a.case_category.localeCompare(b.case_category) ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      } else if (sort.sort_order === 'desc') {
-        data.tasks.sort((a, b) => {
-          return b.case_category.localeCompare(a.case_category) ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      }
-    }
-    if (sort.sort_by === 'locationName') {
-      if (sort.sort_order === 'asc') {
-        data.tasks.sort((a, b) => {
-          return a.location_name.localeCompare(b.location_name) ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      } else if (sort.sort_order === 'desc') {
-        data.tasks.sort((a, b) => {
-          return b.location_name.localeCompare(a.location_name) ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      }
-    }
-    if (sort.sort_by === 'taskTitle') {
-      if (sort.sort_order === 'asc') {
-        data.tasks.sort((a, b) => {
-          return a.task_title.localeCompare(b.task_title) ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      } else if (sort.sort_order === 'desc') {
-        data.tasks.sort((a, b) => {
-          return b.task_title.localeCompare(a.task_title) ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      }
-    }
-    if (sort.sort_by === 'dueDate') {
-      if (sort.sort_order === 'asc') {
-        data.tasks.sort((a, b) => {
-          return b.due_date - a.due_date ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      } else if (sort.sort_order === 'desc') {
-        data.tasks.sort((a, b) => {
-          return a.due_date - b.due_date ||
-            (+(b.major_priority < a.major_priority) || +(a.major_priority === b.major_priority) - 1);
-        });
-      }
-    }
-  });
-  return data;
-}
-
-function mockDate(start) {
-  const mockStartDate = new Date(start.valueOf());
-  mockStartDate.setDate(mockStartDate.getDate() + 1);
-  return mockStartDate;
-}
-
-function randomInt(index, min, max) {
-  if (index >= 10) {
-    min = Math.ceil(2000);
-    max = Math.floor(5000);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-  if (index < 10) {
-    min = Math.ceil(0);
-    max = Math.floor(2000);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 }
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {

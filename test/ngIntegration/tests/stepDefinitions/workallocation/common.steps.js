@@ -196,6 +196,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
+    Given('I have workallocation on boarded services {string}', async function(onboardedServices){
+        workAllocationMockData.updateWASupportedJurisdictions(onboardedServices.split(",")) ;
+    });
+
     // Given('I set MOCK case roles', async function(datatable){
     //     const caseRoles = [];
     //     const tableRowHashes = datatable.hashes();

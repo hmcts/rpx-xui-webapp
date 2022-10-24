@@ -1643,6 +1643,11 @@ describe('workAllocation.utils', () => {
       const caseName = getCaseName(caseDetail);
       expect(caseName).to.equal('caseName');
     });
+    it('should return caseNameInternal', () => {
+      const caseDetail = { id: '1234', case_data: { caseNameHmctsInternal: 'caseNameInternal'}} as Case;
+      const caseName = getCaseName(caseDetail);
+      expect(caseName).to.equal('caseNameInternal');
+    });
   });
 
   describe('typesOfWork', () => {

@@ -1,6 +1,6 @@
 <p *ngIf="defaultLocations && defaultLocations.length">Access tasks and cases.</p>
 <p *ngIf="defaultLocations && !defaultLocations.length">{{noDefaultLocationMessage}}</p>
-<div class="button-heading">
+<div class="button-heading" [ngClass]="{'hideFilter' : hideFilter}">
   <button class="govuk-button hmcts-button--secondary" type="button" (click)="onToggleFilter(allowTypesOfWorkFilter)">
     {{toggleFilter ? 'Hide': 'Show' }} work filter
   </button>

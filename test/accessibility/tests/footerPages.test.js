@@ -12,7 +12,7 @@ const MockApp = require('../../nodeMock/app');
 
 const ccdApi = require('../../nodeMock/ccd/ccdApi');
 
-describe('Pa11y Accessibility tests', function () {
+describe.skip('Pa11y Accessibility tests', function () {
     before(async function (done) {
         MockApp.init()
         await MockApp.startServer();

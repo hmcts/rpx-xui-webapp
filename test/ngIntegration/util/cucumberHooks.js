@@ -46,9 +46,7 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
         const scenarioId = await BrowserUtil.getScenarioIdCookieValue();
         MockApp.deleteScenarioSession(scenarioId);
         CucumberReportLog.AddMessage("NG Integration test status : " + scenario.result.status);
-        if (scenario.result.status === 'failed'){
-            CucumberReportLog.AddJson(mockNodeApp.userDetails); 
-        }
+        CucumberReportLog.AddJson(mockNodeApp.userDetails); 
         CucumberReportLog.AddJson(MockApp.requestLogs);
     });
 })

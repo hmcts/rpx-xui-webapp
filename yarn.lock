@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.18":
-  version "4.18.18"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.18.tgz#b9aa3957762bbd8a0b31933073370ac3bbee7538"
-  integrity sha512-BknafDKMafEhKEHIaU8Sv/Af1rAF3U5Mj4I+vX74Vk8z+kYyoeDZcCj4YgC6nEHG5fkxqJoxlIOnSKdHc5tLSw==
+"@hmcts/ccd-case-ui-toolkit@4.18.22-specific-access-text-update-fix":
+  version "4.18.22-specific-access-text-update-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.22-specific-access-text-update-fix.tgz#66a8ec3c1792748dcf6e6a92f8a913d830afee97"
+  integrity sha512-zvGhQjo4EqgUKCDL/i5JCOO3MlD7RIpxfWKciEJcm4NVvZILFL50uL3XfdzQ0zd4o0qVIMw8qk8yW2d/Tgs6lw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -496,10 +496,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.7.12":
-  version "2.7.12"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.12.tgz#e5f4030e1bbd9dfab770997a96eec3e5c6beb73a"
-  integrity sha512-GVA1Nw/zidOvbqn5Mg8qB8BupS3/848962zFR0nP3VNi/FfT0SvgGut3/VGU/9KBL4ofy5QjxP/j8ZIzQHz2FA==
+"@hmcts/media-viewer@2.7.19-RC.1":
+  version "2.7.19-RC.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.19-RC.1.tgz#96c3127e878ae909c9724e1f2f863adc6369b2c7"
+  integrity sha512-p+7ASqiCzIIbMxWuazD8Bxe6cfgOoxxLg2BJk8Wzvhw35z9niXSKx8lpWSbAtN17+acuY7jWg9GLwLCL4w9udg==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"
@@ -546,10 +546,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.47":
-  version "1.7.47"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.47.tgz#402c9a0e31c5a8190585b370aca2c4adeff96aa7"
-  integrity sha512-cBcNO2jzfv+KOB6rLfPcFmR3x6x24Y2CusFth8ySKufSOMHsFBGbReOhMib3syt+AgNRnpleq9u4AcD7zw/BXQ==
+"@hmcts/rpx-xui-common-lib@1.7.47-generic-filter-title-hint":
+  version "1.7.47-generic-filter-title-hint"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.47-generic-filter-title-hint.tgz#768a9eb6a848cb4fb32c9b4774a1c79642af8e3f"
+  integrity sha512-FvQXxiDmwil/fc14kGv+SgYqChnz6TNpxqdREY0GUvFglWpuaNEHvAfTVjjYydH7S2DN5gwbuR7O52I03GIbGw==
   dependencies:
     tslib "^1.9.0"
 

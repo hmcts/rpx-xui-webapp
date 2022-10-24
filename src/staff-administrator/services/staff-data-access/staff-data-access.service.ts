@@ -32,4 +32,8 @@ export class StaffDataAccessService {
   public getStaffRefUserDetails(id: number) {
     return this.http.get<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails/${id}`);
   }
+
+  public getServices() {
+    return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getServices`);
+  }
 }

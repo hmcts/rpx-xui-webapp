@@ -77,9 +77,15 @@
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
-      <dt class="govuk-summary-list__key">Judicial members</dt>
+      <dt class="govuk-summary-list__key">Judge</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Panel members</dt>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.PANEL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">

@@ -6,7 +6,7 @@ import {getConfigValue, showFeature} from './configuration';
 import {APP_INSIGHTS_KEY} from './configuration/references';
 import { router as globalSearchRoutes } from './globalSearch/routes';
 import healthCheck from './healthCheck';
-import {router as hearingsRouter} from './hearings/routes';
+import { router as hearingsRouter } from './hearings/routes';
 import authInterceptor from './lib/middleware/auth';
 import { router as locationsRouter } from './locations/routes';
 import { router as nocRouter } from './noc/routes';

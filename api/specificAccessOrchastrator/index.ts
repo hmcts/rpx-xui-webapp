@@ -8,9 +8,9 @@ import { sendDelete } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH, SERVICES_WA_WORKFLOW_API_URL } from '../configuration/references';
 import { http } from '../lib/http';
-import { setHeaders } from '../lib/proxy';
 import { EnhancedRequest } from '../lib/models';
-import { createSpecificAccessDenyRole, deleteSpecificAccessRequestedRole } from '../roleAccess/index';
+import { setHeaders } from '../lib/proxy';
+import { createSpecificAccessDenyRole, deleteSpecificAccessRequestedRole } from '../roleAccess';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { postTaskCompletionForAccess } from '../workAllocation';
@@ -30,18 +30,23 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       && data.roleAssignmentResponse.requestedRoles
       && data.roleAssignmentResponse.requestedRoles[0].attributes) {
       const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
+      const roleAssignmentId = data.roleAssignmentResponse.requestedRoles[0].id;
+      const roleCategory = data.roleAssignmentResponse.requestedRoles[0].roleCategory;
       const caseId = attributes.caseId;
       const jurisdiction = attributes.jurisdiction;
       const caseType = attributes.caseType;
-      const taskType = 'followUpOverdueRespondentEvidence';
-      const dueDate = '2022-04-23T16:21:41.320086';
-      const taskName = 'Process Application';
-      const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName });
+      const taskType = getTaskType(roleCategory);
+      const dueDateWork = new Date();
+      dueDateWork.setMonth(dueDateWork.getMonth() + 1);
+      const dueDate = dueDateWork.toISOString();
+      const taskName = 'Review Specific Access Request';
+      const taskResponse = await postCreateTask(req, next,
+         { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
       if (!taskResponse || taskResponse.status !== 204) {
         const assignmentId = data.roleAssignmentResponse.roleRequest.id;
         const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
         const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-        const deleteBody = { assigmentId: assignmentId };
+        const deleteBody = { assignmentId };
         const deleteResponse = await sendDelete(`${basePath}/${assignmentId}`, deleteBody, req);
         if (!deleteResponse || deleteResponse.status !== 204) {
           return res.status(deleteResponse.status).send(deleteResponse);
@@ -75,7 +80,7 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
 }
 
 // tslint:disable-next-line:max-line-length
-export async function postCreateTask(req: EnhancedRequest, next: NextFunction, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name }): Promise<any> {
+export async function postCreateTask(req: EnhancedRequest, next: NextFunction, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name, roleAssignmentId }): Promise<any> {
   try {
     const waWorkFlowApi = getConfigValue(SERVICES_WA_WORKFLOW_API_URL);
     const id = uuidv4();
@@ -111,15 +116,21 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
           value: createTask.caseType,
           type: 'String',
         },
+        roleAssignmentId: {
+          value: createTask.roleAssignmentId,
+          type: 'String',
+        },
       },
       correlationKeys: null,
       all: false,
-    }
+    };
+
     const headers = setHeaders(req);
     const response = await http.post(url, body, { headers });
+
     return response;
   } catch (error) {
-    next(error)
+    next(error);
     return error;
   }
 }
@@ -129,7 +140,7 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
     const creationOfDenyRoleResponse: AxiosResponse = await createSpecificAccessDenyRole(req, res, next);
     if (!creationOfDenyRoleResponse || creationOfDenyRoleResponse.status !== 201) {
       return creationOfDenyRoleResponse && creationOfDenyRoleResponse.status
-        ? res.status(creationOfDenyRoleResponse.status).send(creationOfDenyRoleResponse) : res.status(400);
+        ? res.status(creationOfDenyRoleResponse.status) : res.status(400);
     }
     const deletionResponse = await deleteSpecificAccessRequestedRole(req, res, next);
     const rolesToDelete: RoleAssignment[] = creationOfDenyRoleResponse.data.roleAssignmentResponse.requestedRoles;
@@ -145,5 +156,71 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;
+  }
+}
+
+export function getTaskType(roleCategory: string): string {
+  switch (roleCategory) {
+    case 'JUDICIAL': {
+      return 'reviewSpecificAccessRequestJudiciary';
+    }
+    case 'LEGAL_OPERATIONS': {
+      return 'reviewSpecificAccessRequestLegalOps';
+    }
+    case 'ADMIN': {
+      return 'reviewSpecificAccessRequestAdmin';
+    }
+  }
+}
+
+export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest, resp, next) {
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const queryPath = `${basePath}/am/role-assignments/query`;
+  const updatePath = `${basePath}/am/role-assignments`;
+
+  const headers = setHeaders(req);
+  /* tslint:disable:no-string-literal */
+  delete headers['accept'];
+  try {
+    const actorId = req.session.passport.user.userinfo.uid;
+    const caseId = req.body.caseId;
+
+    const roleAssignmentQueryResponse = await http.post(queryPath, {
+      actorId: [actorId],
+      attributes: {
+        caseId: [caseId],
+      },
+    }, { headers });
+
+    const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
+
+    delete singleRoleAssignment['id'];
+    singleRoleAssignment.attributes = {
+      ...singleRoleAssignment.attributes,
+      ...req.body.attributesToUpdate,
+    };
+
+    singleRoleAssignment.notes = [{
+      userId: actorId,
+      time: new Date(),
+      comment: singleRoleAssignment.attributes.accessReason,
+    }];
+
+    const roleAssignmentUpdate = {
+      roleRequest: {
+        assignerId: actorId,
+        process: 'specific-access',
+        reference: `${caseId}/${singleRoleAssignment.roleName}/${actorId}`,
+        replaceExisting: true,
+      },
+      requestedRoles: [singleRoleAssignment],
+    };
+
+    const response = await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+
+    return resp.status(response.status).send(response.data);
+  } catch (error) {
+    next(error);
   }
 }

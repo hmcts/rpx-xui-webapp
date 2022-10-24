@@ -160,7 +160,7 @@ export class TaskActionContainerComponent implements OnInit {
         state = {
           showMessage: true,
           messageText: message.message
-        }
+        };
       } else {
         this.messageService.nextMessage(message);
       }

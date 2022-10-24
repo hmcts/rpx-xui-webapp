@@ -25,8 +25,7 @@ export enum ACTION {
 export class WorkAllocationTaskService {
   public currentTasks$: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
 
-  constructor(private readonly http: HttpClient) {
-  }
+  constructor(private readonly http: HttpClient) {}
 
   /**
    * Call the API to complete a task.

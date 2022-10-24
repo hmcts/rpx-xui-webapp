@@ -1,7 +1,8 @@
 import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import {
+  BookingCheckType,
   FilterConfig,
   FilterError,
   FilterFieldConfig,
@@ -20,8 +21,6 @@ import Task from '../../models/tasks/task.model';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { servicesMap } from '../../utils';
-
-
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -67,6 +66,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
+  public hideFilter: boolean;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
@@ -81,11 +81,28 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     private readonly service: WASupportedJurisdictionsService,
     private readonly taskTypesService: TaskTypesService,
     private readonly appStore: Store<fromAppStore.State>) {
-      if (this.router.getCurrentNavigation() &&
-          this.router.getCurrentNavigation().extras.state &&
-          this.router.getCurrentNavigation().extras.state.location) {
-          this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
-      }
+    if (this.router.getCurrentNavigation() &&
+      this.router.getCurrentNavigation().extras.state &&
+      this.router.getCurrentNavigation().extras.state.location) {
+      this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
+    }
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.route.snapshot),
+      map((activatedRoute: ActivatedRouteSnapshot) => {
+        while (activatedRoute.firstChild) {
+          activatedRoute = activatedRoute.firstChild;
+        }
+        return activatedRoute;
+      })
+    )
+      .subscribe((activatedRouteSnapshot: ActivatedRouteSnapshot) => {
+        this.hideFilter = activatedRouteSnapshot.url[0].path && activatedRouteSnapshot.url[0].path.includes('my-access');
+        if (this.hideFilter) {
+          this.toggleFilter = false;
+          this.onToggleFilter(this.toggleFilter);
+        }
+      });
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
@@ -121,6 +138,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   // }
 
   public ngOnInit(): void {
+    // Clear Fileds to prevent duplication of filter
+    this.fieldsConfig.fields = [];
+
     this.setPersistenceAndDefaultLocations();
     // TODO: CAM_BOOKING - are both subscriptions still needed, check this
     // MASTER
@@ -211,6 +231,13 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       const location: Location = history.state.location;
       this.defaultLocations = [location.id];
     }
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
+      userDetails => {
+        const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0 && userDetails.roleAssignmentInfo.filter(p => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable).length === 0;
+        if (isFeePaidJudgeWithNoBooking) {
+          localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
+        }
+      })
   }
 
   private persistFirstSetting(): void {
@@ -247,7 +274,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       displayMinSelectedError: true,
       minSelectedError: 'Search for a location by name',
       type: 'find-location',
-      enableAddButton: true
+      enableAddButton: true,
+      bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
     };
     let baseLocation = null;
     // if there are no booking locations selected then check for base location for salary judge
@@ -301,32 +329,32 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         if (!services.length) {
           return;
         }
-        if ( !userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some(p => p.jurisdiction != undefined)) {
+        if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some(p => p.jurisdiction != undefined)) {
           return;
         }
-        const filteredServices = _.intersection.apply( _, [
-        userDetails.roleAssignmentInfo
-          .filter(p => p.roleType && p.roleType === 'ORGANISATION')
-          .map(item => item.jurisdiction)
-          .filter((value, index, self) => self.indexOf(value) === index && value != undefined ),
-        services
+        const filteredServices = _.intersection.apply(_, [
+          userDetails.roleAssignmentInfo
+            .filter(p => p.roleType && p.roleType === 'ORGANISATION')
+            .map(item => item.jurisdiction)
+            .filter((value, index, self) => self.indexOf(value) === index && value != undefined),
+          services
         ]);
         const field: FilterFieldConfig = {
-        name: 'services',
-        options: [
-          {
-            key: 'services_all',
-            label: 'Select all',
-            selectAll: true
-          },
-          ...filteredServices
-            .sort()
-            .map(service => {
-              return {
-                key: service,
-                label: servicesMap[service] || service
-              };
-            })
+          name: 'services',
+          options: [
+            {
+              key: 'services_all',
+              label: 'Select all',
+              selectAll: true
+            },
+            ...filteredServices
+              .sort()
+              .map(service => {
+                return {
+                  key: service,
+                  label: servicesMap[service] || service
+                };
+              })
           ],
           minSelected: 1,
           maxSelected: null,
@@ -335,15 +363,25 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           minSelectedError: 'Select a service',
           title: 'Services',
           type: 'checkbox-large'
-          };
-        this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-          name: 'services',
-          value: ['services_all', ...filteredServices]
-        }];
+        };
+
+        const fieldSetting = this.fieldsSettings.fields.find(f => f.name === 'services');
+        if (fieldSetting) {
+          fieldSetting.value = ['services_all', ...filteredServices];
+        } else {
+          this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
+            name: 'services',
+            value: ['services_all', ...filteredServices]
+          }];
+        }
+
         this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-        this.fieldsConfig.fields.push(field);
+        const fieldConfig = this.fieldsConfig.fields.find(f => f.name === 'services');
+        if (!fieldConfig) {
+          this.fieldsConfig.fields.push(field);
+        }
       });
-    }
+  }
 
   /**
    * Sets the value of the allowTypesOfWorkFilter boolean determined by provided params
@@ -369,5 +407,4 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       }, 0);
     }
   }
-
 }

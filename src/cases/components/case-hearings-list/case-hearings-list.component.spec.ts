@@ -1,18 +1,18 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
-import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
-import { initialState } from '../../../hearings/hearing.test.data';
-import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
-import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
-import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {FeatureUser} from '@hmcts/rpx-xui-common-lib';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {Observable, of} from 'rxjs';
+import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import {initialState} from '../../../hearings/hearing.test.data';
+import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
+import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType} from '../../../hearings/models/hearings.enum';
+import {HearingsPipesModule} from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
-import { CaseHearingsListComponent } from './case-hearings-list.component';
+import {CaseHearingsListComponent} from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
@@ -33,7 +33,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingListingStatus: 'UPDATE REQUESTED',
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: true,
-  hearingGroupRequestId: null,
+  hearingGroupRequestId: 'g1000000',
   hearingDaySchedule: null,
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
@@ -451,7 +451,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
 }, {
   hearingID: 'h100010',
@@ -500,7 +500,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
       },
     ],
   }],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED
 }, {
   hearingID: 'h100011',
@@ -549,7 +549,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
       },
     ],
   }],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.ADJOURNED
 }, {
   hearingID: 'h100012',
@@ -564,7 +564,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
 }];
 
@@ -590,7 +590,7 @@ describe('CaseHearingsListComponent', () => {
       ],
       declarations: [CaseHearingsListComponent],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -598,6 +598,22 @@ describe('CaseHearingsListComponent', () => {
               params: {
                 cid: '1111222233334444'
               },
+              data: {
+                hearingStageOptions: [{
+                  key: 'BBA3-SUB',
+                  value_en: 'Substantive',
+                  value_cy: '',
+                  hint_text_en: 'Substantive',
+                  hint_text_cy: '',
+                  lov_order: 1,
+                  parent_key: null,
+                  category_key: 'HearingType',
+                  parent_category: '',
+                  active_flag: 'Y',
+                  child_nodes: null,
+                  from: 'exui-default'
+                }]
+              }
             }
           }
         },
@@ -628,8 +644,8 @@ describe('CaseHearingsListComponent', () => {
     expect(heading.nativeElement.innerHTML).toEqual(EXUISectionStatusEnum.UPCOMING);
   });
 
-  it('should hasReadOnlyAction if status is past and cancelled', () => {
-    component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
+  it('should hasReadOnlyAction if status is past or cancelled', () => {
+    component.status = EXUISectionStatusEnum.PAST_OR_CANCELLED;
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.hasReadOnlyAction).toBeTruthy();
@@ -684,10 +700,10 @@ describe('CaseHearingsListComponent', () => {
     expect(viewOrEdit1.textContent).toBe('View or edit');
     const cancel1 = fixture.debugElement.query(By.css('#link-cancel-h100001')).nativeElement;
     expect(cancel1.textContent).toBe('Cancel');
-    const linkHearing1 = fixture.debugElement.query(By.css('#link-hearing-link-h100001')).nativeElement;
-    expect(linkHearing1.textContent).toBe('Link hearing');
-    const manageLinks1 = fixture.debugElement.query(By.css('#link-manage-links-h100001'));
-    expect(manageLinks1).toBeNull();
+    const linkHearing1 = fixture.debugElement.query(By.css('#link-hearing-link-h100001'));
+    expect(linkHearing1).toBeNull();
+    const manageLinks1 = fixture.debugElement.query(By.css('#link-manage-links-h100001')).nativeElement;
+    expect(manageLinks1.textContent).toBe('Manage links');
     const viewDetails1 = fixture.debugElement.query(By.css('#link-view-details-h100001'));
     expect(viewDetails1).toBeNull();
     const addOrEdit1 = fixture.debugElement.query(By.css('#link-add-or-edit-h100001'));
@@ -747,8 +763,8 @@ describe('CaseHearingsListComponent', () => {
 
     const viewOrEdit9 = fixture.debugElement.query(By.css('#link-view-or-edit-h100009'));
     expect(viewOrEdit9).toBeNull();
-    const cancel9 = fixture.debugElement.query(By.css('#link-cancel-h100009')).nativeElement;
-    expect(cancel9.textContent).toBe('Cancel');
+    const cancel9 = fixture.debugElement.query(By.css('#link-cancel-h100009'));
+    expect(cancel9).toBeNull();
     const linkHearing9 = fixture.debugElement.query(By.css('#link-hearing-link-h100009'));
     expect(linkHearing9).toBeNull();
     const manageLinks9 = fixture.debugElement.query(By.css('#link-manage-links-h100009'));
@@ -759,9 +775,9 @@ describe('CaseHearingsListComponent', () => {
     expect(addOrEdit9.textContent).toBe('Add or edit');
   });
 
-  it('should show the right action links for PAST_AND_CANCELLED section', () => {
+  it('should show the right action links for PAST_OR_CANCELLED section', () => {
     component.hearingList$ = of(PAST_HEARING_LIST);
-    component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
+    component.status = EXUISectionStatusEnum.PAST_OR_CANCELLED;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
     component.ngOnInit();
     fixture.detectChanges();
@@ -814,7 +830,7 @@ describe('CaseHearingsListComponent', () => {
     const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({mode: 'view'})));
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
   });
 
@@ -834,8 +850,9 @@ describe('CaseHearingsListComponent', () => {
   });
 
   it('should manageLinks', () => {
-    component.manageLinks('h100000');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', 'h100000']);
+    component.caseId = '1111222233334444';
+    component.manageLinks(UPCOMING_HEARING_LIST[0]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '1111222233334444', 'g1000000', 'h100001']);
   });
 
   it('should check viewDetails', () => {
@@ -859,7 +876,7 @@ describe('CaseHearingsListComponent', () => {
     // CANCELLED
     component.viewDetails(PAST_HEARING_LIST[0]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100008', '/hearings/view/hearing-cancelled-summary');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100008', '/hearings/view/hearing-cancelled-summary/h100008');
     // COMPLETED
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();

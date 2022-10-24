@@ -3,12 +3,12 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
-import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
-import { Observable, of } from 'rxjs';
-import { CaseRoleDetails } from 'src/role-access/models';
-import { AllocateRoleService } from 'src/role-access/services';
-import { CaseworkerDataService, WASupportedJurisdictionsService } from 'src/work-allocation/services';
-import { getMockCaseRoles } from 'src/work-allocation/tests/utils.spec';
+import { of } from 'rxjs';
+
+import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
+import { getMockCaseRoles } from '../../../work-allocation/tests/utils.spec';
+import { CaseRoleDetails, RoleCategory } from '../../models';
+import { AllocateRoleService } from '../../services';
 import { RejectedRequestViewComponent } from '..';
 
 describe('RejectedRequestViewComponent', () => {

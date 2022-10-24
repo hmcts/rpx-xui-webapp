@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { WorkAllocationTaskService } from '../../../work-allocation/services';
-import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import { AppConfigService } from '../config/configuration.services';
@@ -204,6 +202,10 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getPaymentReturnUrl(): string {
-      return this.environmentService.get('paymentReturnUrl');
+    return this.environmentService.get('paymentReturnUrl');
+  }
+
+  public getCategoriesAndDocumentsUrl(): string {
+    return this.config.categories_and_documents_url;
   }
 }

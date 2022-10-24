@@ -61,16 +61,16 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^8.2.14",
+    "@angular/animations": "^9.1.13",
     "@angular/cdk": "^8.2.3",
-    "@angular/common": "^8.2.14",
+    "@angular/common": "^9.1.13",
     "@angular/compiler": "^8.2.14",
-    "@angular/core": "^8.2.14",
-    "@angular/forms": "^8.2.14",
+    "@angular/core": "^9.1.13",
+    "@angular/forms": "^9.1.13",
     "@angular/material": "8.2.3",
     "@angular/platform-browser": "^8.2.14",
     "@angular/platform-browser-dynamic": "^8.2.14",
-    "@angular/router": "^8.2.14",
+    "@angular/router": "^9.1.13",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccd-case-ui-toolkit": "4.18.18-EUI-5696-upload-error-fix",
     "@hmcts/ccpay-web-component": "5.0.4",
@@ -138,7 +138,7 @@
     "web-animations-js": "^2.3.2",
     "xlsx": "^0.15.4",
     "yarn": "^1.22.18",
-    "zone.js": "~0.9.1"
+    "zone.js": "0.10.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.29",

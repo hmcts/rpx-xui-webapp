@@ -78,7 +78,7 @@ describe("Task management api, Search task", () => {
     const mockSearchRequestBody = {
         "search_parameters": [
             {
-                "key": "caseId",
+                "key": "case_id",
                 "operator": "IN",
                 "values": [
                     "f782bde3-8d51-11eb-a9a4-06d032acc76d"

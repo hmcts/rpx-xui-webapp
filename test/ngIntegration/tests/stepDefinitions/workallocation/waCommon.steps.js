@@ -133,17 +133,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
  
     });
 
-    Given('I set Mock user with ref {string}, ORGANISATION roles for services {string}', async function (userDetailsRef, services, roleAttributesDataTable){
-        if (services === ''){
-            return;
-        }
-        const userDetails = global.scenarioData[userDetailsRef]; 
+    function addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable){
+        const userDetails = global.scenarioData[userDetailsRef];
         const roleAssignmentArr = [];
-
-
         const roleAttributes = roleAttributesDataTable.rowsHash()
 
-        for(const service of services.split(",")){
+        for (const service of services.split(",")) {
             const role = {
                 "substantive": "N",
                 "primaryLocation": "455174",
@@ -151,18 +146,30 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 "isCaseAllocator": false,
                 "roleType": "ORGANISATION"
             };
-           
-            for (const attr of Object.keys(roleAttributes)){
-                if (roleAttributes[attr] === ''){
-                    delete role[attr]; 
-                }else{
-                    role[attr] = roleAttributes[attr]; 
+
+            for (const attr of Object.keys(roleAttributes)) {
+                if (roleAttributes[attr] === '') {
+                    delete role[attr];
+                } else {
+                    role[attr] = roleAttributes[attr];
                 }
             }
-            roleAssignmentArr.push(role); 
+            roleAssignmentArr.push(role);
         }
         userDetails.roleAssignmentInfo.push(...roleAssignmentArr);
+    }
+
+    Given('I set Mock user with ref {string}, ORGANISATION roles for services {string}', async function (userDetailsRef, services, roleAttributesDataTable){
+        if (services === ''){
+            return;
+        }
+        addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable) 
     });
+    
+    Given('I set Mock user with ref {string}, ORGANISATION roles for services {string} allow empty service', async function (userDetailsRef, services, roleAttributesDataTable) {
+        addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable)
+    });
+
 
     Given('I set MOCK user with reference {string} roleAssignmentInfo', async function (userDetailsRef, roleAssignments) {
         const boolAttributes = ['isCaseAllocator'];
@@ -188,6 +195,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             if (roleKeys.includes('roleType') ){
                 roleAssignment.isCaseAllocator = roleAssignment.roleType === 'ORGANISATION'
             }
+            roleAssignment.substantive = "Y"
             roleAssignmentArr.push(roleAssignment);
         }
         userDetails.roleAssignmentInfo = roleAssignmentArr;
@@ -315,6 +323,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    Given('I clear all MOCK location', function(){
+        workallocationMockData.locationsByServices = [];
+    })
+
     Given('I set MOCK locations with names in service {string}', async function(service, locationNamesDatatable){
         const locationNamesHashes = locationNamesDatatable.hashes();
         const locationNames = [];
@@ -324,15 +336,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
         const locationsArray = workallocationMockData.getLocationsWithNames(locationNames);
 
-        for (const locationsByService of workallocationMockData.locationsByServices){
-            if (locationsByService.service === service){
-                locationsByService.locations.push(...locationsArray);
-            }else{
-                let locationForThisService = { service: service, locations: [] }
-                locationForThisService.locations.push(...locationsArray); 
-                workallocationMockData.locationsByServices.push(locationForThisService)
-            }
-        }
+        let locationForThisService = { service: service, locations: [] }
+        locationForThisService.locations.push(...locationsArray);
+        workallocationMockData.locationsByServices.push(locationForThisService)
     
     });
 

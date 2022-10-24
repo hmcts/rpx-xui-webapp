@@ -83,13 +83,17 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       }
       if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION'
         && roleAssignment.primaryLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
-        if (!locations.find((location) => location.id === roleAssignment.primaryLocation)) {
+        if (!locations.find((location) => location.id === roleAssignment.primaryLocation && location.services.includes(roleJurisdiction))) {
           const location = { id: roleAssignment.primaryLocation, userId: this.userId, locationId: roleAssignment.primaryLocation, locationName: '', services: [roleAssignment.jurisdiction] };
           locations.push(location);
           locationServices.add(roleAssignment.jurisdiction);
-          userLocationsByService = this.bookableServices.includes(roleAssignment.jurisdiction) ? addLocationToLocationsByService(userLocationsByService, location, roleAssignment.jurisdiction, true) : addLocationToLocationsByService(userLocationsByService, location, roleAssignment.jurisdiction);
         }
       }
+    });
+    locations.forEach(location => {
+      location.services.map((service) => {
+        userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, true) : addLocationToLocationsByService(userLocationsByService, location, service);
+      });
     });
     this.bookableServices.forEach(bookableService => {
       if (!locationServices.has(bookableService)) {

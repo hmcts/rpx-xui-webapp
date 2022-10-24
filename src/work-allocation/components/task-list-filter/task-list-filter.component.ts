@@ -1,6 +1,6 @@
 import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import {
   BookingCheckType,
   FilterConfig,
@@ -56,6 +56,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   };
   public allLocations: string[] = [];
   public defaultLocations: any[] = null;
+  public primaryLocations: string[] = [];
+  public primaryLocationServices: string[] = [];
   public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,
@@ -68,6 +70,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
+  public hideFilter: boolean;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
@@ -87,6 +90,23 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.router.getCurrentNavigation().extras.state.location) {
       this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
     }
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.route.snapshot),
+      map((activatedRoute: ActivatedRouteSnapshot) => {
+        while (activatedRoute.firstChild) {
+          activatedRoute = activatedRoute.firstChild;
+        }
+        return activatedRoute;
+      })
+    )
+      .subscribe((activatedRouteSnapshot: ActivatedRouteSnapshot) => {
+        this.hideFilter = activatedRouteSnapshot.url[0].path && activatedRouteSnapshot.url[0].path.includes('my-access');
+        if (this.hideFilter) {
+          this.toggleFilter = false;
+          this.onToggleFilter(this.toggleFilter);
+        }
+      });
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
@@ -132,7 +152,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.taskTypesService.getTypesOfWork(),
       this.service.getWASupportedJurisdictions(),
       this.taskService.getUsersAssignedTasks(),
-      this.locationService.getSpecificLocations(this.defaultLocations)
+      this.locationService.getSpecificLocations(this.defaultLocations, this.primaryLocationServices)
     ]).subscribe(([typesOfWork, services, assignedTasks, locations]: [any[], string[], Task[], LocationByEPIMMSModel[]]) => {
       this.setUpServicesFilter(services);
       this.setUpLocationFilter(locations);
@@ -208,6 +228,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
   private setPersistenceAndDefaultLocations(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
+    const filterService = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
+    const availableLocations = filterService && filterService.fields && filterService.fields.find(field => field.name === 'locations');
+    const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
     // get booking locations
     if (this.bookingLocations && this.bookingLocations.length > 0) {
       this.defaultLocations = this.bookingLocations;
@@ -220,8 +243,20 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0 && userDetails.roleAssignmentInfo.filter(p => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable).length === 0;
         if (isFeePaidJudgeWithNoBooking) {
           localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
+        } else if (!isLocationsAvailable) {
+          const primaryLocations: string[] = [];
+          userDetails.roleAssignmentInfo.forEach(roleAssignment => {
+            const roleJurisdiction = roleAssignment.jurisdiction;
+            if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION'
+              && roleAssignment.primaryLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
+              primaryLocations.push(roleAssignment.primaryLocation);
+              this.primaryLocationServices = [...this.primaryLocationServices, roleAssignment.jurisdiction];
+            }
+          });
+          this.primaryLocationServices = Array.from(new Set(this.primaryLocationServices));
+          this.defaultLocations = this.defaultLocations && this.defaultLocations.length > 0 ? this.defaultLocations : Array.from(new Set(primaryLocations));
         }
-      })
+      });
   }
 
   private persistFirstSetting(): void {

@@ -162,8 +162,8 @@ export function mapResponseToCaseRoles(
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes: roleAssignment.attributes && roleAssignment.attributes.notes ?
-     roleAssignment.attributes.notes : 'No reason for case access given',
+    notes: roleAssignment.attributes && roleAssignment.attributes.specificAccessReason ?
+     getSpecificReason(roleAssignment.attributes.specificAccessReason) : 'No reason for case access given',
     requestedRole: roleAssignment.attributes && roleAssignment.attributes.requestedRole ?
      roleAssignment.attributes.requestedRole : null,
   }));
@@ -194,7 +194,7 @@ export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res
     // @ts-ignore
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const roleAssignmentsBody = toSARoleAssignmentBody(currentUserId, body);
+    const roleAssignmentsBody = toSARoleAssignmentBody(currentUserId, body, {}, {isNew: true});
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
@@ -210,8 +210,7 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
   try {
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    req.body.roleCategory = currentUser.roleCategory;
-    const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body);
+    const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body, {isNew: true});
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
 
@@ -346,4 +345,13 @@ export function getAccessRolesRequestPayload(caseId: string,
       },
     ],
   };
+}
+
+// instances of specific reason appearing as JSON from toolkit versions - this enables both possibilities
+export function getSpecificReason(note: string): string {
+  if (note.charAt(0) !== '{') {
+    return note;
+  }
+  const noteObject = JSON.parse(note);
+  return noteObject ? noteObject.specificReason : null;
 }

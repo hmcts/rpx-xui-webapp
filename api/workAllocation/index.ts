@@ -68,6 +68,7 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
+import { refreshRoleAssignmentForUser } from '../user';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -258,8 +259,11 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
         assign_and_complete: true,
       },
     };
+    console.log(req.body, 'hannibal');
+    // line added as requests are different for approval/rejection
+    const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
     const getTaskPath: string =
-     preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.body.specificAccessStateData.taskId, 'complete');
+     preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
     const completionResponse = await handleTaskPost(getTaskPath, newRequest, req);
     return completionResponse;
   } catch (error) {
@@ -341,7 +345,7 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
   const fullCaseworkerByServiceInfo = [];
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIdsByJurisdiction, req);
   userResponse.forEach(userList => {
-    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction = userList.jurisdiction);
+    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction === userList.jurisdiction);
     const caseWorkerReferenceData = getCaseworkerDataForServices(userList.data, jurisdictionData);
     // note have to merge any new service caseworker data for full session as well as services specified in params
     fullCaseworkerByServiceInfo.push(caseWorkerReferenceData);
@@ -469,6 +473,8 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
 }
 
 export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+
   const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
   const mappedCases = await getMyAccessMappedCaseList(roleAssignments, req);
 

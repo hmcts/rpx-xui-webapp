@@ -140,7 +140,7 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
     const creationOfDenyRoleResponse: AxiosResponse = await createSpecificAccessDenyRole(req, res, next);
     if (!creationOfDenyRoleResponse || creationOfDenyRoleResponse.status !== 201) {
       return creationOfDenyRoleResponse && creationOfDenyRoleResponse.status
-        ? res.status(creationOfDenyRoleResponse.status).send(creationOfDenyRoleResponse) : res.status(400);
+        ? res.status(creationOfDenyRoleResponse.status) : res.status(400);
     }
     const deletionResponse = await deleteSpecificAccessRequestedRole(req, res, next);
     const rolesToDelete: RoleAssignment[] = creationOfDenyRoleResponse.data.roleAssignmentResponse.requestedRoles;
@@ -182,7 +182,8 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
   try {
-    const actorId = req.session.passport.user.userinfo.uid;
+    const userInfo = req.session.passport.user.userinfo;
+    const actorId = userInfo.id ? userInfo.id : userInfo.uid;
     const caseId = req.body.caseId;
 
     const roleAssignmentQueryResponse = await http.post(queryPath, {

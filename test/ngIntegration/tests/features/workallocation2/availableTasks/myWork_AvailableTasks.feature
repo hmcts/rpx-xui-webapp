@@ -15,16 +15,31 @@ Feature: WA Release 2: My work -  Available tasks
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
             | 20009 | IA Court Taylor House  |
+        Given I set MOCK locations with names in service "SSCS"
+            | id    | locationName           |
+            | 30001 | IA Court Aldgate Tower |
+            | 30002 | IA Court Birmingham    |
+            | 3003  | IA Court Bradford      |
+            | 30004 | IA Court Glasgow       |
+            | 30005 | IA Court Hatton Cross  |
+            | 30006 | IA Court Newcastle     |
+            | 30007 | IA Court Newport       |
+            | 30008 | IA Court North Shields |
+            | 30009 | IA Court Taylor House  |
 
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
+        
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 10001 |
+        
+    
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -94,13 +109,14 @@ Feature: WA Release 2: My work -  Available tasks
 
     Scenario: Available Tasks sort column persist in session with Caseworker user
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
-        Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 10001 |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -136,13 +152,14 @@ Feature: WA Release 2: My work -  Available tasks
 
     Scenario Outline:  Available Tasks, columns width "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 10001 |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

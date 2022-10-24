@@ -85,7 +85,17 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
 
     // Navigate to case details page, ensuring the case reference is sanitised, i.e. has been stripped of separators (spaces and '-' characters)
-    this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+    this.navigateToCaseDetails(this.router.url.includes('case-details'), caseReference);
+  }
+
+  public navigateToCaseDetails(isCaseDetailsPage: boolean, caseReference: string): void {
+    if (isCaseDetailsPage) {
+      this.router.navigateByUrl(`/cases/case-loader`, { skipLocationChange: true }).then(() => {
+        this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+      });
+    } else {
+      this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+    }
   }
 
   public ngOnDestroy(): void {

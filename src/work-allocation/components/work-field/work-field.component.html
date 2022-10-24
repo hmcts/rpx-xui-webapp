@@ -39,7 +39,9 @@
     <exui-case-reference-field [caseReference]="workField[config.name]"></exui-case-reference-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.CASE_NAME">
-    <exui-case-name-field [caseName]="workField[config.name]" [caseId]="workField.case_id"></exui-case-name-field>
+    <exui-case-name-field [caseName]="workField[config.name]" [caseId]="workField.case_id"
+      (click)="clickSubject.next(workField)">
+    </exui-case-name-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.TASK_NAME">
     <exui-task-name-field [taskName]="workField[config.name]" [caseId]="workField.case_id"></exui-task-name-field>

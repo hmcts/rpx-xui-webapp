@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
@@ -22,8 +22,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -56,19 +56,17 @@ Feature: WA Release 2: My work - My Tasks
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
             | Priority      | Yes        | No    |
-            | Hearing date | Yes | Yes |
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
-            | row | Case name | Case category | Location | Task | Task created | Hearing date |
-            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -10          | 20           |
-            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          | 21           |
+            | row | Case name | Case category | Location | Task | Task created | 
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -10          | 
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          | 
 
         Then If current user "<UserType>" is "Caseworker", I validate task table values displayed
-            | row | Case name | Case category | Location | Task | Due date | Priority | Hearing date |
-            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | HIGH     | 20           |
-            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   | 21           |
-            | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      | 22           |
-
+            | row | Case name | Case category | Location | Task | Due date | Priority | 
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | HIGH     | 
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   | 
+            | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      | 
 
         Then I validate work allocation task table column "Task" width less than or equal to 280
         Then I validate work allocation task table column "Case name" width less than or equal to 200
@@ -108,8 +106,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -144,8 +142,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

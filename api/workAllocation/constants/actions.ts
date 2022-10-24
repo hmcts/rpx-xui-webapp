@@ -22,7 +22,7 @@ export const RELEASE: Action = {
 };
 export const CLAIM_AND_GO: Action = {
   id: 'claim-and-go',
-  title: 'Assign to me and go to case',
+  title: 'Assign to me and go to task',
 };
 export const GO: Action = {
   id: 'go',

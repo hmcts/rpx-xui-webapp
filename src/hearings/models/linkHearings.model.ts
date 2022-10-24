@@ -1,23 +1,29 @@
+import {HearingListModel} from './hearingList.model';
 import { GroupLinkType } from './hearings.enum';
 
 export interface ServiceLinkedCasesModel {
   caseReference: string;
   caseName: string;
   reasonsForLink: string[];
-  hearings?: HearingDetailModel[];
 }
 
-export interface HearingDetailModel {
-  hearingId: string;
-  hearingStage: string;
+export interface ServiceLinkedCasesWithHearingsModel {
+  caseRef: string;
+  caseName: string;
+  reasonsForLink: string[];
+  caseHearings?: HearingDetailModel[];
+}
+
+export interface HearingDetailModel extends HearingListModel {
   isSelected: boolean;
-  hearingStatus: string;
-  hearingIsLinkedFlag: boolean;
 }
 
-export interface LinkedHearingGroupMainModel {
-  groupDetails: GroupDetailsModel;
-  hearingsInGroup: LinkedHearingsDetailModel[];
+export interface LinkedCaseHearingsResult {
+  caseRef: string;
+  caseName: string;
+  hearingID: string;
+  hearingType: string;
+  position?: number;
 }
 
 export interface GroupDetailsModel {
@@ -30,8 +36,14 @@ export interface GroupDetailsModel {
 export interface LinkedHearingsDetailModel {
   hearingId: string;
   hearingOrder: number;
+  caseRef?: string;
 }
 
 export interface LinkedHearingGroupResponseModel {
   hearingGroupRequestId: string;
+}
+
+export interface LinkedHearingGroupMainModel {
+  groupDetails: GroupDetailsModel;
+  hearingsInGroup: LinkedHearingsDetailModel[];
 }

@@ -1,7 +1,7 @@
 
 
 const BrowserWaits = require('../../../support/customWaits');
-
+const cucumberReporter = require('../../../support/reportLogger');
 const locators = {
     existingBooking: {
         location:'',
@@ -68,8 +68,10 @@ class WorkAccessPage{
 
     async getMatchingBookings(location, fromDate, toDate){
         const allBookings = await this.getExistingBookingsDetails();
-        const matchingBookings = allBookings.filter(booking =>
-            booking.location.includes(location) && booking.fromDate.includes(fromDate) && booking.toDate.includes(toDate)
+        const matchingBookings = allBookings.filter(booking =>{
+                cucumberReporter.AddMessage(`${location} ${fromDate} to ${toDate}`) 
+                return booking.location.includes(location) && booking.fromDate.includes(fromDate) && booking.toDate.includes(toDate)
+            }
         );
         return matchingBookings; 
     }
@@ -86,7 +88,7 @@ class WorkAccessPage{
             const booking = await this.existingBookings.get(i);
             
             const bookingDatesText = await booking.$('span.govuk-hint').getText();
-            const bookingDateSplit = bookingDatesText.split('to');
+            const bookingDateSplit = bookingDatesText.split(' to ');
             bookings.push({
                 location: await booking.$('span[class*="font-weight-bold"]').getText(),
                 fromDate: bookingDateSplit[0],

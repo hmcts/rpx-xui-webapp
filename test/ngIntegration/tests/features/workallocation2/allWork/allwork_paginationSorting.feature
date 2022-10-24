@@ -65,7 +65,6 @@ Feature: WA Release 2: All work to pagination sorting (EUI-4804)
             | Task created  | No         | Yes   | created_date |
             | Due date      | Yes        | No    | dueDate      |
             | Priority      | Yes        | No    | dueDate      |
-            | Hearing date | Yes | Yes | hearing_date |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |

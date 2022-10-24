@@ -22,4 +22,5 @@ export interface AllocateRoleData {
   originalRequestDate?: Date;
   requestCreated?: Date;
   originalRequestJustification?: RoleRequestPayload;
+  specificReason?: string;
 }

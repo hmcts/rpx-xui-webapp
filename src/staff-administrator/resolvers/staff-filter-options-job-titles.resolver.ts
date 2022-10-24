@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { StaffFilterOption } from '../models/staff-filter-option.model';
+import { StaffFilterOption } from '../../../api/staff-ref-data/models/staff-filter-option.model';
 import { StaffDataAccessService } from '../services/staff-data-access/staff-data-access.service';
 
 @Injectable({

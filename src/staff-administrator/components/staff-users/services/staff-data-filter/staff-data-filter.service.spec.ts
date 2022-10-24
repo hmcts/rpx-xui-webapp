@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { take } from 'rxjs/operators';
-import { StaffDataAccessService } from './staff-data-access/staff-data-access.service';
+import { StaffDataAccessService } from '../../../../services/staff-data-access/staff-data-access.service';
 import { StaffDataFilterService } from './staff-data-filter.service';
 
 describe('StaffDataFilterService', () => {

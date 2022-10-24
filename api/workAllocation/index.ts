@@ -45,6 +45,7 @@ import {
   filterByLocationId,
   getCaseIdListFromRoles,
   getCaseworkerDataForServices,
+  getMyAccessMappedCaseList,
   getRoleAssignmentsByQuery,
   getSessionCaseworkerInfo,
   getSubstantiveRoles,
@@ -157,34 +158,16 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
-    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
-    data.tasks.forEach(task => {
-      task.hearing_date =
-        new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any))).toString()
-    });
-
-    const payload = req.body;
-    const sortingParameters = payload.searchRequest.sorting_parameters;
-    if (sortingParameters && sortingParameters.length > 0) {
-      sortingParameters.forEach( sortParameter => {
-        if (sortParameter.sort_by === 'hearing_date') {
-          sortParameter.sort_by = 'caseName'
-        }
-      });
-    }
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-      data = mockTaskPrioritisation(data, prioritySortParameter, searchRequest);
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
       if (refined) {
         data = mockTaskPermissions(data);
-        returnData = {
-          tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
-      } else {
-        returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
       }
+
+      returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
     }
     res.send(returnData);
   } catch (error) {
@@ -384,21 +367,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const actionedTasks = assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
-    // TEMPORARY CODE: priority_date and  major_priority parameter is not yet enabled by Task API. to be removed
-    let tasks = actionedTasks;
-    if (data) {
-      let randomDate = new Date(2022, 0, 1);
-      tasks = tasks.map((task, index) => {
-        randomDate = mockDate(randomDate)
-        task.priority_date = mockDate(randomDate);
-        task.major_priority = randomInt(index, 0, 5000);
-        return task;
-      });
-
-    }
-    return res.send(tasks).status(status);
-    // TEMPERORY CODE: end
-    // return res.send(actionedTasks).status(status);
+    return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);
   }
@@ -462,7 +431,10 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
         assign_and_complete: true,
       },
     };
-    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.body.taskId, 'complete');
+    // line added as requests are different for approval/rejection
+    const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
+    const getTaskPath: string =
+     preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete');
     const completionResponse = await handleTaskPost(getTaskPath, newRequest, req);
     return completionResponse;
   } catch (error) {
@@ -544,11 +516,11 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
   const fullCaseworkerByServiceInfo = [];
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIdsByJurisdiction, req);
   userResponse.forEach(userList => {
-    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction = userList.jurisdiction);
+    const jurisdictionData = data.find(caseworkerData => caseworkerData.jurisdiction === userList.jurisdiction);
     const caseWorkerReferenceData = getCaseworkerDataForServices(userList.data, jurisdictionData);
     // note have to merge any new service caseworker data for full session as well as services specified in params
     fullCaseworkerByServiceInfo.push(caseWorkerReferenceData);
-  })
+  });
   req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
       [...req.session.caseworkersByService, ...fullCaseworkerByServiceInfo] : fullCaseworkerByServiceInfo;
   return fullCaseworkerByServiceInfo;
@@ -671,19 +643,10 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
   return casePromises;
 }
 
-export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
-  const specificRoleAssignments = roleAssignments.filter(roleAssignment =>
-    roleAssignment.grantType === 'SPECIFIC'
-    ||
-    roleAssignment.roleName === 'specific-access-requested'
-    ||
-    roleAssignment.roleName === 'specific-access-denied'
-    ||
-    roleAssignment.grantType === 'CHALLENGED'
-  );
-  const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
-  const mappedCases = mapCasesFromData(cases, specificRoleAssignments);
+  const mappedCases = await getMyAccessMappedCaseList(roleAssignments, req);
+
   const result = {
     cases: mappedCases,
     total_records: 0,
@@ -697,7 +660,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
     // get 'service' and 'location' filters from search_parameters on request
-    const { search_parameters, sorting_parameters } = req.body.searchRequest;
+    const { search_parameters } = req.body.searchRequest;
     const services = search_parameters.find(searchParam => searchParam.key === 'services');
     const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
 
@@ -741,19 +704,6 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       result.unique_cases = getUniqueCasesCount(mappedCases);
       const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
       result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
-    }
-    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
-    result.cases.forEach(item => {
-      item.hearing_date = new Date(+new Date() + Math.random() *
-      (new Date(2022, 6, 20) as any - (new Date() as any) )).toString();
-    });
-    if ( sorting_parameters &&
-        sorting_parameters.some(parameter => parameter.sort_by === 'hearing_date')) {
-        if ( sorting_parameters.find(parameter => parameter.sort_by === 'hearing_date').sort_order === 'desc' ) {
-          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) > Date.parse(b.hearing_date) ? -1 : 1));
-        } else {
-          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) < Date.parse(b.hearing_date) ? -1 : 1));
-        }
     }
     return res.send(result).status(200);
   } catch (e) {
@@ -803,11 +753,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
     result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
-    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
-    result.cases.forEach(item => {
-      item.hearing_date =
-        new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any))).toString();
-    });
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

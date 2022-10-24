@@ -12,6 +12,7 @@ export const init = () => {
   const getUserTypes = /refdata\/case-worker\/user-type/;
   const getJobTitles = /refdata\/case-worker\/job-title/;
   const getSkills = /refdata\/case-worker\/skill/;
+  const getServices = /refdata\/case-worker\/services/;
 
   mock.onPost(getFilteredUsers).reply(() => {
     return [
@@ -34,24 +35,62 @@ export const init = () => {
     ];
   });
 
+  mock.onGet(getServices).reply(() => {
+    return [
+      200,
+      [
+        {label: 'Service 01', key: '01'},
+        {label: 'Service 02', key: '02'},
+        {label: 'Service 03', key: '03'},
+      ],
+    ];
+  });
+
   mock.onGet(getUserTypes).reply(() => {
     return [
       200,
-      [{label: 'User Types', key: 'userType'}],
+      [
+        { key: 'userType', label: 'User Types'},
+        { key: 'ctsc', label: 'CTSC' },
+      ],
     ];
   });
 
   mock.onGet(getJobTitles).reply(() => {
     return [
       200,
-      [{label: 'Job Titles', key: 'jobTitle'}],
+      [
+        { key: 'senior-legal-caseworker', label: 'Senior Legal Caseworker' },
+        { key: 'legal-caseworker', label: 'Legal Caseworker' },
+        { key: 'hearing-centre-team-leader', label: 'Hearing Centre Team Leader' },
+        { key: 'hearing-centre-administrator', label: 'Hearing Centre Administrator' },
+        { key: 'court-clerk', label: 'Court Clerk' },
+
+      ],
     ];
   });
 
   mock.onGet(getSkills).reply(() => {
     return [
       200,
-      [{label: 'Skills', key: 'skill'}],
+      [
+        { key: 'scss-interloc-work', label: 'SCSS - Interloc work' },
+        { key: 'reasonable-adjustment-process', label: 'SCSS - Reasonable Adjustment process' },
+        { key: 'scss-using-optic', label: 'SCSS - Using Optic' },
+      ],
+    ];
+  });
+
+  mock.onGet(getServices).reply(() => {
+    return [
+      200,
+      [
+        { key: 'family-public-law', label: 'Family Public Law' },
+        { key: 'family-private-law', label: 'Family Private Law' },
+        { key: 'adoption', label: 'Adoption' },
+        { key: 'employment-tribunals', label: 'Employment Tribunals' },
+        { key: 'financial-remedy', label: 'Financial Remedy' },
+      ],
     ];
   });
 

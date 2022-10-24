@@ -269,6 +269,7 @@ class MockApp{
                 let send = res.send;
                 const logMessagesCallBackLocal = this.logMessageCallback;
                 const logJSONCallbackLocal = this.logJSONCallback;
+        
                 res.send = function (body) {
 
                     logMessagesCallBackLocal(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort}" ---------------------------`);

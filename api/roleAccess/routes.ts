@@ -7,8 +7,8 @@ import {
   deleteRoleByCaseAndRoleId,
   getAccessRolesByCaseId,
   getJudicialUsers,
+  getMyAccessNewCount,
   getRolesByCaseId,
-  getSpecificAccessApproved,
   manageLabellingRoleAssignment,
   reallocateRole
 } from './index';
@@ -30,8 +30,8 @@ router.post('/roles/post', getRolesByCaseId);
 router.post('/roles/access-get', getAccessRolesByCaseId);
 router.post('/roles/getJudicialUsers', getJudicialUsers);
 
-router.get('/roles/getSpecificAccessApproved', getSpecificAccessApproved);
-router.post('/roles/manageLabellingRoleAssignment/:caseId', manageLabellingRoleAssignment);
+router.get('/roles/get-my-access-new-count', getMyAccessNewCount);
+router.post('/roles/manageLabellingRoleAssignment/:caseId', manageLabellingRoleAssignment );
 
 router.post('/allocate-role/specific-access-approval', createSpecificAccessApprovalRole);
 

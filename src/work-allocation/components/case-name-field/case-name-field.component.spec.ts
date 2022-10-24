@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
@@ -28,7 +29,7 @@ describe('WorkAllocation', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
       })
       .compileComponents();
     }));
@@ -51,7 +52,7 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}#overview`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
     });
 
     it('should remove the link if case id is changed to undefined', () => {
@@ -65,7 +66,7 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}#overview`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
 
       // Clear out the value of caseId and we should no longer have the anchor.
       wrapper.caseId = undefined;
@@ -84,7 +85,7 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}#overview`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
 
       // Make caseId null and we should no longer have the anchor.
       wrapper.caseId = null;

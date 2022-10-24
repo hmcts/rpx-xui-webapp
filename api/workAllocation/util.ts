@@ -13,15 +13,15 @@ import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery
 import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
-import {exists, reflect} from '../lib/util';
+import { exists, reflect } from '../lib/util';
 import {
   TaskPermission,
   VIEW_PERMISSIONS_ACTIONS_MATRIX,
   ViewType,
   VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED
 } from './constants/actions';
-import {getCaseListPromises} from "./index";
-import {Case, CaseList} from './interfaces/case';
+import { getCaseListPromises } from "./index";
+import { Case, CaseList } from './interfaces/case';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import {
   Action,
@@ -99,14 +99,6 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
   // Assign actions to the tasks on the data from the API.
   if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
-    const sortingParameters = req.body.searchRequest.sorting_parameters;
-    if (sortingParameters && sortingParameters.length > 0) {
-      sortingParameters.forEach( sortParam => {
-        if (sortParam.sort_by === 'hearing_date') {
-          sortParam.sort_by = 'caseName';
-        }
-      });
-    }
     const paginationConfig = req.body.searchRequest.pagination_parameters;
     const pageSize = paginationConfig.page_size;
     const pageNumber = (paginationConfig.page_number - 1) * pageSize;
@@ -509,6 +501,23 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   return cases;
 }
 
+export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
+  : Promise<RoleCaseData[]> {
+  const specificRoleAssignments = roleAssignmentList.filter(roleAssignment =>
+    roleAssignment.grantType === 'SPECIFIC'
+    ||
+    roleAssignment.roleName === 'specific-access-requested'
+    ||
+    roleAssignment.roleName === 'specific-access-denied'
+    ||
+    roleAssignment.grantType === 'CHALLENGED'
+  );
+
+  const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
+
+  return mapCasesFromData(cases, specificRoleAssignments);
+}
+
 export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery [] {
   const elasticQueries = new Array<ElasticSearchQuery>();
   const chunkSize = 200;
@@ -775,8 +784,15 @@ export function getAccessType(roleAssignment: RoleAssignment) {
 }
 
 export function getCaseName(caseDetail: Case): string {
-  return caseDetail.case_data && caseDetail.case_data.hmctsCaseNameInternal ?
-  caseDetail.case_data.hmctsCaseNameInternal : caseDetail.id;
+  let caseName: string = '';
+  if (caseDetail.case_data && caseDetail.case_data.hmctsCaseNameInternal) {
+    caseName = caseDetail.case_data.hmctsCaseNameInternal;
+  } else if (caseDetail.case_data && caseDetail.case_data.caseNameHmctsInternal) {
+    caseName = caseDetail.case_data.caseNameHmctsInternal;
+  } else {
+    caseName = caseDetail.id;
+  }
+  return caseName;
 }
 
 export function getCaseDataFromRoleAssignments(roleAssignments: RoleAssignment[]): CaseDataType {

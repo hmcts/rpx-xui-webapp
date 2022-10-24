@@ -62,7 +62,7 @@ describe('BookingService', () => {
   describe('refreshRoleAssignments()', () => {
 
     it('should make a post to refresh the role assignments', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
-      service.refreshRoleAssignments().subscribe(response => {
+      service.refreshRoleAssignments('userId').subscribe(response => {
         expect(response).toBeNull();
       });
 

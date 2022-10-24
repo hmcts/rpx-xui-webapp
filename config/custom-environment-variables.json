@@ -76,7 +76,8 @@
     },
     "refunds": "SERVICES_REFUNDS_API_URL",
     "role_assignment": {
-      "roleApi": "SERVICES_ROLE_ASSIGNMENT_API"
+      "roleApi": "SERVICES_ROLE_ASSIGNMENT_API",
+      "roleMappingApi": "SERVICES_ROLE_ASSIGNMENT_MAPPING_API"
     },
     "case": {
       "caseworkerApi": "SERVICES_CASE_CASEWORKER_API",

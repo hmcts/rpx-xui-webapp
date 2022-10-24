@@ -108,7 +108,22 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public ngOnInit(): void {
-    this.partyChannel = this.route.snapshot.data.partyChannel.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
+    const partyChannels: LovRefDataModel[] = this.route.snapshot.data.partyChannel.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
+    // Get unique values to display in the dropdown
+    // If a parent does not contain any child nodes then consider the parent
+    const uniquePartyChannels: LovRefDataModel[] = [];
+    partyChannels.forEach(channel => {
+      if (channel.child_nodes) {
+        channel.child_nodes.forEach(childNode => {
+          if (!uniquePartyChannels.map(node => node.key).includes(childNode.key)) {
+            uniquePartyChannels.push(childNode);
+          }
+        });
+      } else {
+        uniquePartyChannels.push(channel);
+      }
+    });
+    this.partyChannel = uniquePartyChannels;
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(

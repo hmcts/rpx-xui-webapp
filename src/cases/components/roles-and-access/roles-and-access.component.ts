@@ -60,7 +60,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   }
 
   public removeCashedCase(): void {
-    this.caseNotifier.cachedCaseView = null;
+    this.caseNotifier.removeCachedCase();
   }
 
   public ngOnChanges(): void {

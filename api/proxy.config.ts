@@ -5,6 +5,7 @@ import { getConfigValue } from './configuration';
 import * as accessManagement from './accessManagement'
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,
   SERVICES_EM_ANNO_API_URL,
@@ -123,20 +124,28 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-      rewrite: true,
-      rewriteUrl: '/refund',
-      source: '/api/refund',
-      target: getConfigValue(SERVICES_REFUNDS_API_URL),
+    rewrite: true,
+    rewriteUrl: '/refund',
+    source: '/api/refund',
+    target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
+
   applyProxy(app, {
     onReq: accessManagement.removeAcceptHeader,
     rewrite: false,
     source: '/am/role-assignments',
     target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
   });
+
   applyProxy(app, {
-      rewrite: false,
-      source: '/refdata/location',
-      target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+    rewrite: false,
+    source: '/refdata/location',
+    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/categoriesAndDocuments',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 }

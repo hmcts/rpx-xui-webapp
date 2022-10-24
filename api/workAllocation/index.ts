@@ -68,6 +68,7 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
+import { refreshRoleAssignmentForUser } from '../user';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -472,6 +473,8 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
 }
 
 export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+
   const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
   const mappedCases = await getMyAccessMappedCaseList(roleAssignments, req);
 

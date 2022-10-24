@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { staffFilterOptionsTestData } from '../../test-data/staff-filter-options.test.data';
+import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffAdvFilterComponent } from './staff-adv-filter.component';
 
 describe('StaffAdvFilterComponent', () => {
@@ -25,12 +26,16 @@ describe('StaffAdvFilterComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                staffFilters: staffFilterOptionsTestData
+                userTypes: staffFilterOptionsTestData.userTypes,
+                jobTitles: staffFilterOptionsTestData.jobTitles,
+                skills: staffFilterOptionsTestData.skills,
+                services: staffFilterOptionsTestData.services
               }
             },
           }
         },
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));

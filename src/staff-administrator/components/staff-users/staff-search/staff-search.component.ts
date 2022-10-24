@@ -1,15 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FilterConfig, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FormControl, Validators } from '@angular/forms';
+import { FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { Subscription } from 'rxjs';
-import { StaffDataFilterService } from '../../services/staff-data-filter.service';
+import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
   selector: 'exui-staff-search',
   templateUrl: './staff-search.component.html',
   styleUrls: ['./staff-search.component.scss']
 })
-
 export class StaffSearchComponent implements OnInit, OnDestroy {
+  public userNameControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
+  public error = false;
+
   public filterConfig: FilterConfig;
   private readonly FILTER_NAME = 'staff-search-filter';
   private filterSub: Subscription;

@@ -1,3 +1,4 @@
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import { NextFunction } from 'express';
@@ -5,10 +6,9 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock'
+import { GlobalSearchService } from '../interfaces/globalSearchService';
+import { http } from '../lib/http';
 import * as globalSearchServices from './index';
-import { http } from '../../api/lib/http';
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
-import { GlobalSearchService } from '../../api/interfaces/globalSearchService';
 
 chai.use(sinonChai);
 
@@ -83,7 +83,7 @@ describe('Jurisdiction', () => {
       {
         caseStartRecord: 1,
         casesReturned: 25,
-        moreResultsToGo: true
+        moreResultsToGo: true,
       },
       [{
         ccdCaseTypeId: '123',
@@ -102,13 +102,13 @@ describe('Jurisdiction', () => {
         processForAccess: '',
         regionId: '',
         regionName: '',
-        stateId: ''
+        stateId: '',
       }]
     );
     const next = sinon.mock().atLeast(1) as NextFunction;
     sandbox.stub(http, 'post').resolves(res);
     sandbox.stub(globalSearchServices, 'getSearchResults').returns(res);
-    const response = await globalSearchServices.getSearchResults(req, res,next);
+    const response = await globalSearchServices.getSearchResults(req, res, next);
     expect(response).to.deep.equal(res);
   });
 });

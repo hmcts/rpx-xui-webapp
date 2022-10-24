@@ -586,7 +586,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     infoRequired: roleAssignment.attributes.infoRequired,
     reviewer: roleAssignment.attributes.reviewer,
     specificAccessReason: roleAssignment.attributes.specificAccessReason,
-    requestDate: roleAssignment.attributes.requestDate
+    requestDate: roleAssignment.attributes.requestDate,
   };
 }
 export function getGrantType(roleAssignment: RoleAssignment) {

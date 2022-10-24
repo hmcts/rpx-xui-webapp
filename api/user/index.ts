@@ -45,7 +45,6 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   delete headers['accept'];
   try {
     const response: AxiosResponse = await http.get(path, { headers });
-    console.log(response.data.roleAssignmentResponse, 'smiling reason');
     locationInfo = getRoleAssignmentInfo(response.data.roleAssignmentResponse);
     const roles = getOrganisationRoles(response.data.roleAssignmentResponse);
     userInfo.roles = userInfo.roles.concat(roles);

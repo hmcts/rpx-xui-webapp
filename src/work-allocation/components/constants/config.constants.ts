@@ -5,7 +5,7 @@ import { DERIVED_ICON_CONSTANTS } from './derived-icon.constants';
 /**
  * The individual fields.
  */
- const ACCESS_VIEW_LINK: FieldConfig = {
+const ACCESS_VIEW_LINK: FieldConfig = {
   name: 'accessView',
   type: FieldType.ACCESS_VIEW,
   columnLabel: null,

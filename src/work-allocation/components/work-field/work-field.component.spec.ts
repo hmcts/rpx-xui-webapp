@@ -724,7 +724,8 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
+        hasAccess: true
       };
 
       // Add the task and it should work (showing the link).

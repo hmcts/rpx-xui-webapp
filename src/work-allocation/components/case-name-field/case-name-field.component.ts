@@ -15,14 +15,12 @@ export class CaseNameFieldComponent implements OnChanges {
   @Input() public caseId: string;
   @Input() public hasAccess: string;
 
-  public keepText: boolean;
-
   private pHref: string;
   public ngOnChanges(): void {
     let href: string;
     if (this.caseId) {
       const caseId = this.caseId;
-      if (caseId && !this.keepText) {
+      if (caseId) {
         href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
       }
     }

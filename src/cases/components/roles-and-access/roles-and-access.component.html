@@ -44,6 +44,7 @@
     <a href="javascript:void(0)"
        [routerLink]="['/', 'role-access', 'add-exclusion']"
        [queryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction}"
+       (click) = "removeCashedCase()"
        class="govuk-link">Add</a>
   </p>
 </div>

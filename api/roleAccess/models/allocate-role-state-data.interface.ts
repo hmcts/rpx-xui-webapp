@@ -25,5 +25,4 @@ export interface AllocateRoleData {
   specificAccessReason?: string;
   originalRequestJustification?: RoleRequestPayload;
   specificReason?: string;
-  accessReason?: string;
 }

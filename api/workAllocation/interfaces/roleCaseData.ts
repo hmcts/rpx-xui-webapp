@@ -37,4 +37,9 @@ export interface RoleCaseData {
     homeOfficeReferenceNumber?: string
   };
   isNew?: boolean;
+  hasAccess?: boolean;
+  infoRequired?: boolean;
+  requestDate?: string;
+  reviewer?: string;
+  specificAccessReason?: string;
 }

@@ -159,7 +159,7 @@ describe('RolesContainerComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule, CaseUIToolkitModule],
       providers: [
-        CasesService, HttpErrorService,HttpErrorService, AuthService, AbstractAppConfig, AlertService,
+        CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
         {
           provide: RoleExclusionsService,
           useClass: RoleExclusionsMockService

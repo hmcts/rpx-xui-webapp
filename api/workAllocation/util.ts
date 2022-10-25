@@ -14,7 +14,7 @@ import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
 import { exists, reflect } from '../lib/util';
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
+import { TaskPermission, ViewType, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
 import { getCaseListPromises } from "./index";
 import { Case, CaseList } from './interfaces/case';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
@@ -621,6 +621,7 @@ export function getEndDate(roleAssignment: RoleAssignment): Date | string {
 }
 
 export function formatDate(date: Date) {
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
   const day = date.toLocaleString('default', { day: '2-digit' });
   const month = date.toLocaleString('default', { month: 'short' });
   const year = date.toLocaleString('default', { year: 'numeric' });

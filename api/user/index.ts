@@ -59,10 +59,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
 
 export function getActiveRoleAssignments(roleAssignments: RoleAssignment[]): RoleAssignment[] {
   const activeRoleAssignments = roleAssignments.filter(rm => {
-    const todayDate = (new Date()).setHours(0, 0, 0, 0);
-    const endDate = rm.endTime && new Date(rm.endTime).setHours(0, 0, 0, 0);
-    const isActiveRecord: boolean = endDate ? todayDate <= endDate : true;
-    return isActiveRecord;
+    return rm.endTime ? new Date() <= new Date(rm.endTime) : true;
   });
   return activeRoleAssignments;
 }

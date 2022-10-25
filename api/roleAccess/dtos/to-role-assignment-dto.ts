@@ -1,8 +1,8 @@
 /* tslint:disable:object-literal-sort-keys */
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
-import { AllocateTo, RoleCategory } from '../models/allocate-role.enum';
+import { AllocateTo, Period, RoleCategory } from '../models/allocate-role.enum';
 
-export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData) {
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -26,7 +26,11 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
   };
 }
 
-export function toSARoleAssignmentBody(currentUserId: string, specificAccessData: any): any {
+export function toSARoleAssignmentBody(
+  currentUserId: string, specificAccessData: { specificAccessStateData: AllocateRoleData, period: Period },
+  extraAttributesForBasicRole: {[x: string]: string | boolean} = {},
+  extraAttributesForSpecificRole: {[x: string]: string | boolean} = {}
+) {
   const todayDate = new Date();
   const allocateRoleData = specificAccessData.specificAccessStateData;
   const period = specificAccessData.period;
@@ -47,6 +51,7 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
+        ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-granted',
       roleCategory: allocateRoleData.roleCategory,
@@ -70,6 +75,7 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
+        ...extraAttributesForSpecificRole,
       },
       roleName: requestedRole,
       roleCategory: allocateRoleData.roleCategory,
@@ -87,7 +93,9 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
   };
 }
 
-export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+export function toDenySARoleAssignmentBody(
+  currentUserId: string, allocateRoleData: AllocateRoleData, extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+) {
   let requestedrole;
   switch ( allocateRoleData.roleCategory) {
     case RoleCategory.JUDICIAL:
@@ -121,6 +129,10 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
         requestDate: allocateRoleData.requestCreated,
         reviewer: currentUserId,
         infoRequired: allocateRoleData.accessReason === 'Request more information',
+        // note: line below added in conflict with lines above
+        // since the lines above are crucial, some are required within the state data
+        // and the development for the above has already been approved by QA this will be kept for now
+        ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-denied',
       roleCategory: allocateRoleData.roleCategory,
@@ -134,7 +146,7 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
   ],
   };
 }
-export function toDenySADletionRequestedRoleBody(requestId: string): any {
+export function toDenySADletionRequestedRoleBody(requestId: string) {
   return {
       pathVariables: {
         process: 'staff-organisational-role-mapping',
@@ -148,7 +160,9 @@ export function toDenySADletionRequestedRoleBody(requestId: string): any {
     };
 }
 
-export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData): any {
+export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData,
+                                              extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+) {
   const todayDate = new Date();
   return {
     roleRequest: {
@@ -165,6 +179,7 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: allocateRoleData.requestedRole,
+        ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-requested',
       roleCategory: allocateRoleData.roleCategory,

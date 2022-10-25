@@ -208,4 +208,8 @@ export class AppConfig extends AbstractAppConfig {
   public getCategoriesAndDocumentsUrl(): string {
     return this.config.categories_and_documents_url;
   }
+
+  public getDocumentDataUrl(): string {
+    return this.config.document_data_url;
+  }
 }

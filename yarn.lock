@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.22.0-judicial-user-typeahead":
-  version "4.22.0-judicial-user-typeahead"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.22.0-judicial-user-typeahead.tgz#fe206e59e8f93e96fd01c44fcda65e4e482a5308"
-  integrity sha512-RuSg4Jx5aBzN4l+tse2yc0KjPVQO+CfSEgB4vTV8DLnwGuDKA7ngcMZsAWFN/161Obta4XIVEeU6b2bjlfBVfw==
+"@hmcts/ccd-case-ui-toolkit@4.22.1-judicial-user-typeahead":
+  version "4.22.1-judicial-user-typeahead"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.22.1-judicial-user-typeahead.tgz#0a217da0b76b4c58a3fec5741b05f497f5f3aa75"
+  integrity sha512-0LuN7l6ded0DmO/D0tuZqueR2GbZ2AKK/L0A7xrw2TQKooZ0I9LF00FWfRoydQ035IwLK2NrJC7m8SJ7zRyBtA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

@@ -193,28 +193,32 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
       },
     }, { headers });
 
-    const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
+    const roleAssignments = roleAssignmentQueryResponse.data.roleAssignmentResponse
+      .map(assignment => {
+        delete assignment['id'];
 
-    delete singleRoleAssignment['id'];
-    singleRoleAssignment.attributes = {
-      ...singleRoleAssignment.attributes,
-      ...req.body.attributesToUpdate,
-    };
+        assignment.attributes = {
+          ...assignment.attributes,
+          ...req.body.attributesToUpdate,
+        };
 
-    singleRoleAssignment.notes = [{
-      userId: actorId,
-      time: new Date(),
-      comment: singleRoleAssignment.attributes.accessReason,
-    }];
+        assignment.notes = [{
+          userId: actorId,
+          time: new Date(),
+          comment: assignment.attributes.accessReason,
+        }];
+
+        return assignment;
+      });
 
     const roleAssignmentUpdate = {
       roleRequest: {
         assignerId: actorId,
         process: 'specific-access',
-        reference: `${caseId}/${singleRoleAssignment.roleName}/${actorId}`,
+        reference: `${caseId}/specific-access-judiciary/${actorId}`,
         replaceExisting: true,
       },
-      requestedRoles: [singleRoleAssignment],
+      requestedRoles: roleAssignments,
     };
 
     const response = await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });

@@ -125,6 +125,13 @@ export function toDenySARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: requestedrole,
+        specificAccessReason: allocateRoleData.specificAccessReason,
+        requestDate: allocateRoleData.requestCreated,
+        reviewer: currentUserId,
+        infoRequired: allocateRoleData.accessReason === 'Request more information',
+        // note: line below added in conflict with lines above
+        // since the lines above are crucial, some are required within the state data
+        // and the development for the above has already been approved by QA this will be kept for now
         ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-denied',

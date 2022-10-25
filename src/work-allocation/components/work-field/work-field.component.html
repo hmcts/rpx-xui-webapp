@@ -39,7 +39,7 @@
     <exui-case-reference-field [caseReference]="workField[config.name]"></exui-case-reference-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.CASE_NAME">
-    <exui-case-name-field [caseName]="workField[config.name]" [caseId]="workField.case_id"
+    <exui-case-name-field [caseName]="workField[config.name]" [caseId]="workField.case_id" [hasAccess]="workField.hasAccess"
       (click)="clickSubject.next(workField)">
     </exui-case-name-field>
   </ng-container>
@@ -48,5 +48,8 @@
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DERIVED_ICON">
     <exui-derived-icon-field [workField]="workField" [sourceColumn]="config.sourceColumn" [matchValue]="config.matchValue"></exui-derived-icon-field>
+  </ng-container>
+  <ng-container *ngSwitchCase="fieldType.ACCESS_VIEW">
+    <exui-access-view-field [workField]="workField" [id]="workField.id"></exui-access-view-field>
   </ng-container>
 </ng-container>

@@ -44,7 +44,7 @@
               <th scope="row" class="govuk-table__header leftLabel" >
                 Reason for case access
               </th>
-              <td class="govuk-table__cell">{{ specificAccessStateData.accessReason }}</td>
+              <td class="govuk-table__cell">{{ specificAccessStateData.initialAccessReason }}</td>
             </tr>
           </tbody>
         </table>
@@ -59,7 +59,7 @@
           <exui-choose-radio-option
             [formGroup]="formGroup"
             radioControlName="radioSelected"
-            
+
             [optionsList]="optionsList"
             [submitted]="submitted"
           >

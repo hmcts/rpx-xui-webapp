@@ -1,4 +1,4 @@
-@import '~@hmcts/ccd-case-ui-toolkit/dist/cut-styles/components/typography';
+@import '_typography';
 @import '~govuk-frontend/govuk/all';
 @import 'shims';
 @import 'conditionals';
@@ -16,7 +16,11 @@ $govuk-compatibility-govukelements: true;
 $govuk-compatibility-govuktemplate: true;
 $govuk-compatibility-govukfrontendtoolkit: true;
 
-@import "govuk-elements";
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss';
+// @import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss';
+
+// @import 'node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss';
+// @import 'node_modules/govuk-elements-sass/public/sass/_elements.scss';
 
 // Organise SASS (TODO / TS)
 @import "./buttons";

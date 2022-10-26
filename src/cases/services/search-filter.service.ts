@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {AbstractAppConfig, HttpService, RequestOptionsBuilder, SearchService} from '@hmcts/ccd-case-ui-toolkit';
+import {HttpService, RequestOptionsBuilder, SearchService} from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit/lib/app.config';
 import {Observable} from 'rxjs';
 import {Utils} from '../utils/utils';
 

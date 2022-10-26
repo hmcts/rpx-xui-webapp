@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import {
   CaseState,
   CaseType,
+  DefinitionsService,
   Jurisdiction,
   PaginationMetadata,
   SearchResultComponent,
@@ -10,7 +11,6 @@ import {
   SearchResultViewItem,
   WindowService
 } from '@hmcts/ccd-case-ui-toolkit';
-import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';

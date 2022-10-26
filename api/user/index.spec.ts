@@ -26,26 +26,63 @@ describe('Index', () => {
 
 
   describe('getActiveRoleAssignments', () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    const yesterday = new Date(today);
+    
     it('should return role assignment if end date is empty', async () => {
-      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments);
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, new Date());
       expect(activeRoleAsignments.length).to.equal(1);
     });
 
     it('should return role assignment if end date is tomorrow (not expired)', async () => {
-      const today = new Date();
-      const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
       roleAssignments[0].endTime = tomorrow;
-      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments);
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, new Date());
       expect(activeRoleAsignments.length).to.equal(1);
     });
 
+    it('should return role assignment if end date is now (not expired)', async () => {
+      roleAssignments[0].endTime = today;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, today);
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
+
+    it('should return role assignment if end date is now (expired)', async () => {
+      roleAssignments[0].endTime = today;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, new Date());
+      expect(activeRoleAsignments.length).to.equal(0);
+    });
+
     it('should return role assignment if end date is yesterday (expired)', async () => {
-      const today = new Date();
-      const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
       roleAssignments[0].endTime = yesterday;
-      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments);
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, new Date());
+      expect(activeRoleAsignments.length).to.equal(0);
+    });
+
+    const filterDate = new Date(2022, 10, 20);
+
+    it('should return role assignment if end date is empty and filter date 20 Oct 2022', async () => {
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, filterDate);
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
+
+    it('should return role assignment if end date is 20 Oct 2022 filter date 20 Oct 2022', async () => {      
+      roleAssignments[0].endTime = filterDate;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, filterDate);
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
+
+    it('should return role assignment if end date is end date is 21 Oct 2022 filter date 20 Oct 2022', async () => {
+      roleAssignments[0].endTime = new Date(2022, 10, 21);
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, filterDate);
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
+
+    it('should return role assignment if end date is is 19 Oct 2022 filter date 20 Oct 2022', async () => {
+      roleAssignments[0].endTime = new Date(2022, 10, 19);;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, filterDate);
       expect(activeRoleAsignments.length).to.equal(0);
     });
   });

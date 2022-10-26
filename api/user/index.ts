@@ -45,7 +45,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   delete headers['accept'];
   try {
     const response: AxiosResponse = await http.get(path, { headers });
-    const activeRoleAssignments = getActiveRoleAssignments(response.data.roleAssignmentResponse)
+    const activeRoleAssignments = getActiveRoleAssignments(response.data.roleAssignmentResponse, new Date());
     locationInfo = getRoleAssignmentInfo(activeRoleAssignments);
     const roles = getOrganisationRoles(activeRoleAssignments);
     userInfo.roles = userInfo.roles.concat(roles);
@@ -57,9 +57,9 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   return locationInfo;
 }
 
-export function getActiveRoleAssignments(roleAssignments: RoleAssignment[]): RoleAssignment[] {
+export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filterDate: Date): RoleAssignment[] {
   const activeRoleAssignments = roleAssignments.filter(rm => {
-    return rm.endTime ? new Date() <= new Date(rm.endTime) : true;
+    return rm.endTime ? filterDate <= new Date(rm.endTime) : true;
   });
   return activeRoleAssignments;
 }

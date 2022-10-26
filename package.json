@@ -61,6 +61,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-material-components/datetime-picker": "2.0.4",
     "@angular/animations": "^9.1.13",
     "@angular/cdk": "^9.2.4",
     "@angular/common": "^9.1.13",
@@ -239,5 +240,8 @@
     "**/**/ssri": "8.0.1",
     "**/**/jose": "1.28.1",
     "**/**/node-gyp": "^8.4.1"
+  },
+  "browser": {
+    "crypto": false
   }
 }

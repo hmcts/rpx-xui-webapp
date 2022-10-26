@@ -4,6 +4,7 @@ import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import {
+  AbstractAppConfig,
   AlertService,
   AuthService as CCDAuthService,
   CaseEditWizardGuard,
@@ -23,7 +24,6 @@ import {
   SearchResultModule,
   WorkbasketFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
-import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit/lib/app.config';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';

@@ -219,7 +219,7 @@ describe('HearingTimingComponent', () => {
     component.firstDateOfHearingError = null;
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('22');
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
-    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2023');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2127');
     component.showChosenDateError();
     expect(component.firstDateOfHearingError).toBe(null);
   });

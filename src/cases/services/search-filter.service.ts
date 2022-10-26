@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {HttpService, RequestOptionsBuilder, SearchService} from '@hmcts/ccd-case-ui-toolkit';
-import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit/lib/app.config';
+import {AbstractAppConfig, HttpService, RequestOptionsBuilder, SearchService} from '@hmcts/ccd-case-ui-toolkit';
 import {Observable} from 'rxjs';
 import {Utils} from '../utils/utils';
 
@@ -11,10 +10,10 @@ export class SearchFilterService {
   public metadataFields: string[];
 
   constructor(
-    private ccdSearchService: SearchService,
-    private appConfig: AbstractAppConfig,
-    private httpService: HttpService,
-    private requestOptionsBuilder: RequestOptionsBuilder,
+    private readonly ccdSearchService: SearchService,
+    private readonly appConfig: AbstractAppConfig,
+    private readonly httpService: HttpService,
+    private readonly requestOptionsBuilder: RequestOptionsBuilder,
   ) { }
 
   public search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {

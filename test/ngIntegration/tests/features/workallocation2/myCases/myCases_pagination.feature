@@ -33,11 +33,11 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
             | Case name    | No        |
             | Case category | No |
 
-        Then I see work allocation table "cases" reset sort button state isDisplayed is "false"
-        Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
-        When I click work allocation table "cases" reset sort button
-        Then I see work allocation table "cases" reset sort button state isDisplayed is "false"
-        Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
+        # Then I see work allocation table "cases" reset sort button state isDisplayed is "false"
+        # Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
+        # When I click work allocation table "cases" reset sort button
+        # Then I see work allocation table "cases" reset sort button state isDisplayed is "false"
+        # Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
 
 
         Examples:

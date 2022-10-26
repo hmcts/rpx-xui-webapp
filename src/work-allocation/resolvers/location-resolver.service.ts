@@ -71,7 +71,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.serviceRefData = serviceRefData;
     this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
     this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-    const userLocationsByService: LocationsByService[] = [];
+    let userLocationsByService: LocationsByService[] = [];
     const locations: Location[] = [];
     const locationServices = new Set<string>();
     userDetails.roleAssignmentInfo.forEach(roleAssignment => {
@@ -92,7 +92,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     });
     locations.forEach(location => {
       location.services.map((service) => {
-        return this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, true) : addLocationToLocationsByService(userLocationsByService, location, service);
+        userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, true) : addLocationToLocationsByService(userLocationsByService, location, service);
       });
     });
     this.bookableServices.forEach(bookableService => {

@@ -7,6 +7,7 @@ import { Case } from '../../models/cases';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-my-access',
@@ -52,11 +53,15 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
       if (item.role.startsWith('challenged-access')) {
         CasesService.updateChallengedAccessRequestAttributes(this.httpClient, item.case_id, {
           isNew: false
-        }).subscribe(() => item.isNew = false);
+        })
+          .pipe(take(1))
+          .subscribe(() => item.isNew = false);
       } else if (item.role.startsWith('specific-access')) {
-        CasesService.updateChallengedAccessRequestAttributes(this.httpClient, item.case_id, {
+        CasesService.updateSpecificAccessRequestAttributes(this.httpClient, item.case_id, {
           isNew: false
-        }).subscribe(() => item.isNew = false);
+        })
+          .pipe(take(1))
+          .subscribe(() => item.isNew = false);
       }
     }
   }

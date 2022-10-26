@@ -5,7 +5,7 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule } from '@angular/form
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { provideMockStore } from '@ngrx/store/testing';

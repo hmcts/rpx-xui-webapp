@@ -1,7 +1,7 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
-import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {caseFlagsRefData, caseTypeRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';

@@ -5,9 +5,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
   CaseUIToolkitModule,
-  ErrorNotifierService
+  ErrorNotifierService,
+  SessionStorageService
 } from '@hmcts/ccd-case-ui-toolkit';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { CaseDetailsHomeComponent } from '..';

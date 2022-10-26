@@ -15,6 +15,7 @@ import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
 import { Location } from '../../models/dtos';
+import { JurisdictionsService } from '../../services/juridictions.service';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -72,6 +73,8 @@ describe('AllWorkCaseComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
+  const mockjurisdictionsService = jasmine.createSpyObj('mockJurisdictionsService', ['getJurisdictions']);
+
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   let store: Store<fromActions.State>;
 
@@ -98,6 +101,7 @@ describe('AllWorkCaseComponent', () => {
         {provide: LoadingService, useValue: mockLoadingService},
         {provide: FeatureToggleService, useValue: mockFeatureToggleService},
         {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService},
+        {provide: JurisdictionsService, useValue: mockjurisdictionsService},
         { provide: AllocateRoleService, useValue: mockAllocateRoleService },
         { provide: Store, useValue: storeMock },
       ]
@@ -120,6 +124,7 @@ describe('AllWorkCaseComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+    mockjurisdictionsService.getJurisdictions.and.returnValue(of(['IA']));
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ));
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
@@ -144,7 +149,7 @@ describe('AllWorkCaseComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  it('should show judicial names when available', () => {
+  it('should show judicial names when availableeee', () => {
     const firstMockCase = component.cases[0];
     const secondMockCase = component.cases[1];
 
@@ -178,7 +183,7 @@ describe('AllWorkCaseComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
-  it('should appropriately handle clicking on a row action', () => {
+  it('should appropriately handle clicking on a row actionss', () => {
     const element = fixture.debugElement.nativeElement;
     // Use the first case.
     const caseItem = component.cases[0];

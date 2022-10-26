@@ -5,6 +5,7 @@ import { map, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
 import { Actions, AllocateRoleStateData, CaseRole, CaseRoleDetails, Period, Role, RolesByService, SpecificAccessStateData } from '../models';
 import { getAllRolesFromServices, getRoleSessionStorageKeyForServiceId, setRoles } from '../utils';
+import { DurationHelperService } from './duration-helper.service';
 
 @Injectable({ providedIn: 'root' })
 export class AllocateRoleService {
@@ -13,7 +14,7 @@ export class AllocateRoleService {
   public static accessManagementUrl = '/api/am';
   public static specificAccessUrl = '/api/specific-access-request';
   public backUrl: string;
-  constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) { }
+  constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService, private durationService: DurationHelperService) { }
 
   public confirmAllocation(allocateRoleStateData: AllocateRoleStateData) {
     const action: Actions = allocateRoleStateData.action;
@@ -25,7 +26,11 @@ export class AllocateRoleService {
     }
   }
 
-  public specificAccessApproval(specificAccessStateData: SpecificAccessStateData, period: Period): Observable<any> {
+  public specificAccessApproval(specificAccessStateData: SpecificAccessStateData, dtperiod: Period): Observable<any> {
+    const period = {
+      startDate : this.durationService.setUTCTimezone(dtperiod.startDate),
+      endDate: this.durationService.setUTCTimezone(dtperiod.endDate)
+    }
     return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, {specificAccessStateData, period});
   }
 

@@ -1,3 +1,4 @@
+import { AccessViewFieldComponent } from './access-view-field/access-view-field.component';
 import { AvailableTasksFilterComponent } from './available-tasks-filter/available-tasks-filter.component';
 import { CaseManagerFilterComponent } from './case-manager-filter/case-manager-filter.component';
 import { CaseNameFieldComponent } from './case-name-field/case-name-field.component';
@@ -14,6 +15,7 @@ import { UrlFieldComponent } from './url-field/url-field.component';
 import { WorkFieldComponent } from './work-field/work-field.component';
 
 export const components: any[] = [
+  AccessViewFieldComponent,
   AvailableTasksFilterComponent,
   CaseNameFieldComponent,
   CaseManagerFilterComponent,

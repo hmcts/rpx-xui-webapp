@@ -221,5 +221,29 @@ describe('DurationHelperService', () => {
 
   });
 
+  describe('setUTCTimezone', () => {
+
+    it('should return null if date is null', () => {
+      const date = null;
+      const result = durationHelperService.setUTCTimezone(date);
+      expect(result).toBe(null);
+    });
+
+    it('should return current date if date is current passed', () => {
+      const date = new Date();
+      const result = durationHelperService.setUTCTimezone(date);
+      expect(result).toBe(date);
+    });
+
+    it('should return correct JSON date if date is passed', () => {
+      const date = new Date(2022, 10, 21);
+      date.setHours(0, 0, 0, 0);
+      expect(JSON.stringify(date)).toBe('"2022-11-21T00:00:00.000Z"');
+      const result = durationHelperService.setUTCTimezone(date);
+      expect(JSON.stringify(result)).toBe('"2022-11-21T00:00:00.000Z"');
+    });
+
+  });
+
 });
 

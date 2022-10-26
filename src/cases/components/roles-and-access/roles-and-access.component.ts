@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation/models/dtos';
@@ -47,12 +47,20 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }
 
+  constructor(
+    private readonly caseNotifier: CaseNotifier) {
+  }
+
   public ngOnInit(): void {
     this.caseId = this.caseDetails.case_id;
     const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     if (jurisdictionField) {
       this.jurisdiction = jurisdictionField.value;
     }
+  }
+
+  public removeCashedCase(): void {
+    this.caseNotifier.removeCachedCase();
   }
 
   public ngOnChanges(): void {

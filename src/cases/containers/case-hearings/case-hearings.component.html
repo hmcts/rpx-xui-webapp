@@ -28,12 +28,14 @@
     <ng-container *ngIf="!(isOgdRole$ | async)">
       <exui-case-hearings-list
         [status]="upcomingStatus"
+        [hearingStageOptions]="hearingStageOptions"
         [hearingList$]="upcomingHearings$"
         [actions]="hearingsActions">
       </exui-case-hearings-list>
 
       <exui-case-hearings-list
         [status]="pastAndCancelledStatus"
+        [hearingStageOptions]="hearingStageOptions"
         [hearingList$]="pastAndCancelledHearings$"
         [actions]="hearingsActions">
       </exui-case-hearings-list>
@@ -42,6 +44,7 @@
     <ng-container *ngIf="isOgdRole$ | async">
       <exui-case-hearings-list
         [status]="upcomingStatus"
+        [hearingStageOptions]="hearingStageOptions"
         [hearingList$]="listedHearings$"
         [actions]="hearingsActions">
       </exui-case-hearings-list>

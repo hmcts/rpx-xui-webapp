@@ -19,6 +19,7 @@ export interface SpecificAccessStateData {
   roleCategory?: RoleCategory;
   requestedRole?: string;
   requestCreated?: string;
+  initialAccessReason?: AccessReason;
   accessReason: AccessReason;
   person: Person;
   requestId: string;

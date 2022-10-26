@@ -33,7 +33,8 @@
     "access_management_basic_view_mock_mode": false,
     "location_ref_api_url": "/refdata/location",
     "cam_role_assignments_api_url": "/am/role-assignments",
-    "categories_and_documents_url": "/categoriesAndDocuments"
+    "categories_and_documents_url": "/categoriesAndDocuments",
+    "document_data_url": "/documentData/caseref"
   },
   "urls": {
     "idam": {

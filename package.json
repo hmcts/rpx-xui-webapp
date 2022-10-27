@@ -217,11 +217,7 @@
     "typescript": "~3.8.3",
     "underscore": "^1.9.1",
     "uuid": "^8.3.1",
-    "webpack": "^5.73.0",
-    "webpack-cli": "^4.4.0",
-    "webpack-dev-server": "^4.9.2",
-    "webpack-node-externals": "^1.7.2",
-    "webpack-source-map-support": "^2.0.1"
+    "webpack": "^4.41.2"
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",

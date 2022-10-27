@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
 import {
   AbstractAppConfig,
   AlertService,
@@ -104,7 +105,7 @@ export class CasesModule {
     CasesModule.forRoot();
   }
 
-  public static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: CasesModule,
       providers: [

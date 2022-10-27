@@ -170,4 +170,4 @@ export const ROUTES: Routes = [
   }
 ];
 
-export const workAllocationRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const workAllocationRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

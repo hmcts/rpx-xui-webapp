@@ -48,10 +48,13 @@ export class RejectedRequestViewComponent implements OnInit {
     this.reviewer = this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewer ?
       this.route.snapshot.queryParams.reviewer : '';
     this.reviewReason = this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired ?
-      RejectionReasonText.MoreInformation : RejectionReasonText.Rejected;
+      this.getRejectReason(JSON.parse(this.route.snapshot.queryParams.infoRequired)) : 'No reason for rejection found';
   }
 
   public ngOnInit(): void {
+    if (!this.reviewer) {
+      return;
+    }
     if (this.roleCategory === RoleCategory.JUDICIAL) {
       this.allocateRoleService.getCaseRolesUserDetails([this.reviewer], [this.jurisdiction]).subscribe(
         (caseRoleUserDetails) => {this.reviewerName = caseRoleUserDetails[0].full_name}
@@ -76,5 +79,9 @@ export class RejectedRequestViewComponent implements OnInit {
   public goToRequest(): void {
     const requestUrl = `/cases/case-details/${this.caseReference}/specific-access-request`;
     this.router.navigate([requestUrl]);
+  }
+
+  private getRejectReason(infoRequired: boolean): string {
+    return infoRequired ? RejectionReasonText.MoreInformation : RejectionReasonText.Rejected;
   }
 }

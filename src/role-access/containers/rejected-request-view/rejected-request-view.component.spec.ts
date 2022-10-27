@@ -45,7 +45,7 @@ describe('RejectedRequestViewComponent', () => {
                     // date of role created is actually date rejected, not originally requested
                     dateRejected: '01-01-2020',
                     infoRequired: false,
-                    reviewer: null,
+                    reviewer: 'example',
                     dateSubmitted: '01-01-2019',
                     specificAccessReason: 'I would like access'
                 },

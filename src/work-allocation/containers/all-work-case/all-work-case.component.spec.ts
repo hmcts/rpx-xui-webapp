@@ -149,7 +149,7 @@ describe('AllWorkCaseComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  it('should show judicial names when availableeee', () => {
+  it('should show judicial names when available', () => {
     const firstMockCase = component.cases[0];
     const secondMockCase = component.cases[1];
 
@@ -183,7 +183,7 @@ describe('AllWorkCaseComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
-  it('should appropriately handle clicking on a row actionss', () => {
+  it('should appropriately handle clicking on a row actions', () => {
     const element = fixture.debugElement.nativeElement;
     // Use the first case.
     const caseItem = component.cases[0];

@@ -14,7 +14,7 @@ import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
 import { exists, reflect } from '../lib/util';
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
+import { TaskPermission, ViewType, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
 import { getCaseListPromises } from "./index";
 import { Case, CaseList } from './interfaces/case';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
@@ -582,6 +582,11 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     access: getGrantType(roleAssignment),
     dateSubmitted: roleAssignment.created,
     isNew: roleAssignment.attributes.isNew,
+    hasAccess: getAccessStatus(roleAssignment),
+    infoRequired: roleAssignment.attributes.infoRequired,
+    reviewer: roleAssignment.attributes.reviewer,
+    specificAccessReason: roleAssignment.attributes.specificAccessReason,
+    requestDate: roleAssignment.attributes.requestDate,
   };
 }
 export function getGrantType(roleAssignment: RoleAssignment) {
@@ -620,7 +625,23 @@ export function getEndDate(roleAssignment: RoleAssignment): Date | string {
   return roleAssignment.endTime;
 }
 
+export function getAccessStatus(roleAssignment: RoleAssignment): boolean {
+  // give default access because we need to block only on condition
+  let accessGiven = true;
+  const today = new Date();
+  if (roleAssignment.roleName === 'specific-access-requested' || roleAssignment.roleName === 'specific-access-denied') {
+    return false;
+  } else if (roleAssignment.beginTime) {
+    accessGiven = new Date(roleAssignment.beginTime) <= today;
+    if (accessGiven && roleAssignment.endTime) {
+      accessGiven = new Date(roleAssignment.endTime) >= today;
+    }
+  }
+  return accessGiven;
+}
+
 export function formatDate(date: Date) {
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
   const day = date.toLocaleString('default', { day: '2-digit' });
   const month = date.toLocaleString('default', { month: 'short' });
   const year = date.toLocaleString('default', { year: 'numeric' });

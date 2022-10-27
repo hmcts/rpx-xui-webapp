@@ -116,7 +116,7 @@ describe('BookingLocationComponent', () => {
     });
 
     it('should compile a comma separated list of unique jurisdictions from the role assignment jurisdictions', () => {
-      userDetails.roleAssignmentInfo = [{ jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '' }, { jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '' }, { jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '' }, { jurisdiction: 'SSCS', isCaseAllocator: true, primaryLocation: '' }];
+      userDetails.roleAssignmentInfo = [{ jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '', bookable: true }, { jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '' }, { jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '' }, { jurisdiction: 'SSCS', isCaseAllocator: true, primaryLocation: '', bookable: true }];
       component.ngOnInit();
       expect(component.jurisdictions).toEqual('IA,SSCS');
     });

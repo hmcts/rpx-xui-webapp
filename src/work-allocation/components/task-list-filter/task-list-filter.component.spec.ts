@@ -89,7 +89,7 @@ describe('TaskListFilterComponent', () => {
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
   locationService.getSpecificLocations.and.returnValue(of([]));
   mockTaskService.currentTasks$.and.returnValue(of([null]));
-  mockStore.pipe.and.returnValue(of({roleAssignmentInfo: [{jurisdiction: 'IA', roleType: 'ORGANISATION'}]}));
+  mockStore.pipe.and.returnValue(of({ roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION' }] }));
   const roleAssignmentInfo = [{
     id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
     actorIdType: 'IDAM',
@@ -199,7 +199,7 @@ describe('TaskListFilterComponent', () => {
 
   it('should set booking locations', () => {
     mockRouter = TestBed.get(Router);
-    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {location: {ids: ['231596', '231596']}}}});
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({ extras: { state: { location: { ids: ['231596', '231596'] } } } });
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -217,7 +217,7 @@ describe('TaskListFilterComponent', () => {
     locationService.getSpecificLocations.and.returnValue(['Location1']);
     component.ngOnInit();
     expect(component.defaultLocations).toBe(component.bookingLocations);
-    expect(locationService.getSpecificLocations).toHaveBeenCalledWith(component.defaultLocations);
+    expect(locationService.getSpecificLocations).toHaveBeenCalled();
   });
 
   it('should set allowTypesOfWorkFilter to true by default', () => {

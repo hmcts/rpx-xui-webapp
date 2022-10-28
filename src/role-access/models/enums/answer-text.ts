@@ -22,3 +22,8 @@ export enum RemoveRoleText {
   hint = 'This will remove the role allocation. You may need to unassign or reassign associated tasks too.',
   infoMessage = 'You\'ve removed a role allocation. You may need to unassign or reassign associated tasks too.'
 }
+
+export enum RejectionReasonText {
+  Rejected = 'Based on the information you have provided, you have not been authorised to view this case.',
+  MoreInformation = 'You have not supplied enough information, can you provide your current case reference number and party details.'
+}

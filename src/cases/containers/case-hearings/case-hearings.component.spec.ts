@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,6 +7,8 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
+import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
+import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -29,6 +32,7 @@ describe('CaseHearingsComponent', () => {
   let mockStore: Store<fromHearingStore.State>;
   let spyStore: any;
   let mockRoleCategoryMappingService: RoleCategoryMappingService;
+  let mockLovRefDataService: any;
   let mockRouter: any;
 
   const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
@@ -277,7 +281,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   };
 
   const CASE_HEARING_9: HearingListModel = {
@@ -292,7 +296,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
   };
 
@@ -308,7 +312,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
   };
 
@@ -325,7 +329,7 @@ describe('CaseHearingsComponent', () => {
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   };
 
   const HEARINGS_LIST: HearingListMainModel = {
@@ -339,8 +343,56 @@ describe('CaseHearingsComponent', () => {
       hearingList: {
         hearingListMainModel: HEARINGS_LIST
       },
+      hearingValues: {
+        serviceHearingValuesModel: {
+          hmctsServiceID: 'BBA3'
+        },
+        lastError: null
+      }
     }
   };
+
+  const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
+    {
+      active_flag: 'Y',
+      category_key: 'HearingType',
+      child_nodes: null,
+      hint_text_cy: '',
+      hint_text_en: '',
+      key: 'BBA3-CHA',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      value_cy: '',
+      value_en: 'Chambers Outcome',
+    },
+    {
+      active_flag: 'Y',
+      category_key: 'HearingType',
+      child_nodes: null,
+      hint_text_cy: '',
+      hint_text_en: '',
+      key: 'BBA3-CHA',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      value_cy: '',
+      value_en: 'Substantive'
+    },
+    {
+      active_flag: 'Y',
+      category_key: 'HearingType',
+      child_nodes: null,
+      hint_text_cy: '',
+      hint_text_en: '',
+      key: 'BBA3-CHA',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      value_cy: '',
+      value_en: 'Direction Hearings'
+    }
+  ];
 
   mockRouter = {
     navigate: jasmine.createSpy('navigate')
@@ -348,9 +400,14 @@ describe('CaseHearingsComponent', () => {
 
   beforeEach(() => {
     mockRoleCategoryMappingService = jasmine.createSpyObj('RoleCategoryMappingService', ['getUserRoleCategory']);
+    mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
+    mockLovRefDataService.getListOfValues.and.returnValue(of(HEARING_TYPES_REF_DATA));
     TestBed.configureTestingModule({
       declarations: [CaseHearingsComponent],
-      imports: [RouterTestingModule],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMockStore({ initialState }),
@@ -371,6 +428,10 @@ describe('CaseHearingsComponent', () => {
         {
           provide: RoleCategoryMappingService,
           useValue: mockRoleCategoryMappingService,
+        },
+        {
+          provide: LovRefDataService,
+          useValue: mockLovRefDataService
         }
       ]
     }).compileComponents();
@@ -384,14 +445,30 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should create hearing component', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyStore.pipe.and.returnValue(of(initialState.hearings.hearingValues.serviceHearingValuesModel));
+    component.ngOnInit();
     expect(component).toBeTruthy();
+    expect(component.hearingValuesSubscription).toBeDefined();
+    expect(component.refDataSubscription).toBeDefined();
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1234')));
   });
 
   it('should unsubscribe', () => {
     component.lastErrorSubscription = new Observable().subscribe();
+    component.roleCatSubscription = new Observable().subscribe();
+    component.hearingValuesSubscription = new Observable().subscribe();
+    component.refDataSubscription = new Observable().subscribe();
     spyOn(component.lastErrorSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.roleCatSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.hearingValuesSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.refDataSubscription, 'unsubscribe').and.callThrough();
+
     component.ngOnDestroy();
     expect(component.lastErrorSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.roleCatSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.hearingValuesSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.refDataSubscription.unsubscribe).toHaveBeenCalled();
   });
 
   it('should set hearings actions', () => {
@@ -517,6 +594,12 @@ describe('CaseHearingsComponent', () => {
     const cancelledReasonElement: HTMLSelectElement = fixture.nativeElement.querySelector('#reload-hearing-tab');
     cancelledReasonElement.click();
     expect(component.reloadHearings).toHaveBeenCalled();
+  });
+
+  it('should dispatch events to load all hearings and hearing values', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    component.reloadHearings();
+    expect(dispatchSpy).toHaveBeenCalledTimes(2);
   });
 
   afterEach(() => {

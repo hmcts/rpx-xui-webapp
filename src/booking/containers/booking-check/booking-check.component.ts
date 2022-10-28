@@ -67,7 +67,7 @@ export class BookingCheckComponent implements OnInit {
       // only replace the time if current status is DST
       if (payload.endDate.getHours() !== payload.endDate.getUTCHours()) {
         payload.endDate = new Date(Date.UTC(
-          givenDate.getFullYear(), givenDate.getMonth(), givenDate.getDate(), 0, 0, 0, 0
+          givenDate.getFullYear(), givenDate.getMonth(), givenDate.getDate(), 23, 59, 59, 999
         ));
       }
     }

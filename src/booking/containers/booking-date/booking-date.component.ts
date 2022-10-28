@@ -183,7 +183,7 @@ export class BookingDateComponent implements OnInit {
       case BookingDateOption.TODAY:
         startDate = new Date();
         const now = new Date();
-        endDate = new Date(now.setUTCHours(23, 59, 59, 999));
+        endDate = new Date(now.setHours(23, 59, 59, 999));
         break;
       case BookingDateOption.WEEK:
         startDate = new Date();

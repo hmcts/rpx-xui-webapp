@@ -61,6 +61,16 @@ export class BookingCheckComponent implements OnInit {
         ));
       }
     }
+    const endDate = payload.endDate;
+    if (endDate) {
+      // issue previously with API rejecting DST because time was today 00:00 but UTC was yesterday 23:00
+      // only replace the time if current status is DST
+      if (payload.endDate.getHours() !== payload.endDate.getUTCHours()) {
+        payload.endDate = new Date(Date.UTC(
+          givenDate.getFullYear(), givenDate.getMonth(), givenDate.getDate(), 0, 0, 0, 0
+        ));
+      }
+    }
     this.bookingService.createBooking(payload).pipe(
       switchMap(() => {
         return this.bookingService.refreshRoleAssignments(this.userId).pipe(

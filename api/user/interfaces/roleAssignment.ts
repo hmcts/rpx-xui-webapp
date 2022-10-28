@@ -29,6 +29,9 @@ export interface LocationInfo {
   roleType?: string;
   specificAccessReason?: string;
   roleName?: string;
+  infoRequired?: boolean;
+  requestDate?: string;
+  reviewer?: string;
 }
 
 export interface Note {

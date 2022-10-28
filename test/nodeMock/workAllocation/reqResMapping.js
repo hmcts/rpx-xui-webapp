@@ -56,7 +56,14 @@ module.exports = {
             res.send(workAllocationMockData.caseEventTasks);
         },
         '/workallocation/full-location':(req,res) => {
-            res.send(bookingsMockData.getAllLocationDetails());
+            const servicesRequested = req.query.serviceCodes;
+            const allLocations = [];
+            for(const locationsByService of workAllocationMockData.locationsByServices){
+                if (servicesRequested.includes(locationsByService.service)){
+                    allLocations.push(...locationsByService.locations) 
+               } 
+            } 
+            res.send(allLocations);
         },
         '/api/role-access/roles/getNewCasesCount':(req,res) =>{
             res.send({count:0})

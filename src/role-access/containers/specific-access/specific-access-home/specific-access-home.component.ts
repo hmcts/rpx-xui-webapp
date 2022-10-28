@@ -82,6 +82,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       requestCreated: this.role && this.role.created,
       actorId: this.role && this.role.actorId,
       accessReason: this.role && this.role.notes,
+      specificAccessReason: this.role.notes,
       roleCategory: this.role && this.role.roleCategory,
       requestedRole: this.role && this.role.requestedRole
     };

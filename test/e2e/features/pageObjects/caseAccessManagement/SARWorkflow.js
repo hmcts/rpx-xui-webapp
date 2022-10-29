@@ -17,6 +17,8 @@ class SpecificAccessRequestWorkflow{
         this.approveConfirmationPage = new ActionConfirmationPage('approved');
         this.rejectConfirmationPage = new ActionConfirmationPage('denied');
 
+        this.requestMoreInfoPage = requestMoreInformationPage;
+
     }
 }
 

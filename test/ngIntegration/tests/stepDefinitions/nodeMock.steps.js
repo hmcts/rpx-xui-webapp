@@ -49,6 +49,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         global.scenarioData[reference] = null;
         MockApp.addIntercept(url,(req,res,next) => {
             CucumberReporter.AddMessage(`Intercepted: ${url}`)
+            CucumberReporter.AddJson(req.body) 
             global.scenarioData[reference] = req.body;
             next();
         })

@@ -156,7 +156,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.loadSupportedJurisdictions();
-    this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
     this.addSelectedLocationsSubscriber();
@@ -375,7 +374,9 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
       }
     }));
 
-    mappedSearchResult$.subscribe(result => {
+    Observable.forkJoin([mappedSearchResult$, this.jurisdictionsService.getJurisdictions()]).subscribe(results => {
+      const result = results[0];
+      this.allJurisdictions = results[1];
       this.loadingService.unregister(loadingToken);
       this.cases = result.cases;
       this.casesTotal = result.total_records;

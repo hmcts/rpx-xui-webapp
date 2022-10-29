@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.24-cancel-link-on-rsa-page":
-  version "4.18.24-cancel-link-on-rsa-page"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.24-cancel-link-on-rsa-page.tgz#a1223a2568a0bad03d51d0a6c58b56e86c3f6712"
-  integrity sha512-RetFh2LdViCUFikKQekXQATnJnxKoyT23yKgvHQT2SCaY1a0VEDA31XQd7EibkWfCBbIprwmmtSbumNTcovWTg==
+"@hmcts/ccd-case-ui-toolkit@4.18.24-set-basic-details":
+  version "4.18.24-set-basic-details"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.24-set-basic-details.tgz#19aeb82d4029be8331a0a418d045587c2328a6f9"
+  integrity sha512-puwhUQwwf/96snsk2QB63FeuLXhaf01p2wyeOIkUMfloNFBnyaSX54nCOCM+irW8PZO+kMSV7L3f3tjIY3ncKw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

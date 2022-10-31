@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
@@ -8,7 +8,7 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
   selector: 'exui-roles-and-access',
   templateUrl: './roles-and-access.component.html'
 })
-export class RolesAndAccessComponent implements OnInit, OnChanges {
+export class RolesAndAccessComponent implements OnChanges {
   public exclusionsNotNamed = false;
   public legalRolesNotNamed = false;
   public legalOpsRoles: CaseRole[] = [];
@@ -42,7 +42,6 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
       this.legalOpsRoles = this.roles.filter(role => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
       this.judicialRoles = this.roles.filter(role => role.roleCategory === RoleCategory.JUDICIAL);
       this.adminRoles = this.roles.filter(role => role.roleCategory === RoleCategory.ADMIN);
-      console.log(this.adminRoles);
     }
     this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }
@@ -51,19 +50,21 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     private readonly caseNotifier: CaseNotifier) {
   }
 
-  public ngOnInit(): void {
-    this.caseId = this.caseDetails.case_id;
-    const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
-    if (jurisdictionField) {
-      this.jurisdiction = jurisdictionField.value;
-    }
-  }
-
   public removeCashedCase(): void {
     this.caseNotifier.removeCachedCase();
   }
 
-  public ngOnChanges(): void {
+  public ngOnChanges(changes: SimpleChanges): void {
+    const caseDetails = changes['caseDetails'];
+    const currentValueCaseDetails = caseDetails.currentValue as CaseView;
+
+    if (currentValueCaseDetails) {
+      this.caseId = currentValueCaseDetails.case_id;
+      const jurisdictionField = currentValueCaseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+      if (jurisdictionField) {
+        this.jurisdiction = jurisdictionField.value;
+      }
+    }
     // All of the below is in order to ensure the name is shown for roles if present
     // if not present this will be ignored
     if (this.legalOpsRoles && this.legalOpsRoles.length > 0 && !this.legalOpsRoles[0].name) {

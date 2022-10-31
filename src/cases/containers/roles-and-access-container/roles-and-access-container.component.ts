@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {CaseView} from '@hmcts/ccd-case-ui-toolkit';
 import {Store} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import {first, map, mergeMap, tap} from 'rxjs/operators';
 import {UserDetails} from '../../../app/models/user-details.model';
 import {SessionStorageService} from '../../../app/services';
@@ -17,7 +17,7 @@ import {Utils} from '../../utils/utils';
   selector: 'exui-roles-and-access-container',
   templateUrl: './roles-and-access-container.component.html'
 })
-export class RolesAndAccessContainerComponent implements OnInit {
+export class RolesAndAccessContainerComponent implements OnInit, OnDestroy {
   public caseDetails: CaseView;
   public showAllocateRoleLink: boolean = false;
   public caseworkers$: Observable<Caseworker[]>;
@@ -25,6 +25,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public roles$: Observable<CaseRole[]>;
   public jurisdictionFieldId = '[JURISDICTION]';
   public caseJurisdiction: string;
+  private routerSubscription: Subscription;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromRoot.State>,
@@ -35,16 +36,18 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-
-    this.caseDetails = this.route.snapshot.data.case as CaseView;
-    this.applyJurisdiction(this.caseDetails);
-    const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
-    // We need this call. No active subscribers are needed
-    // as this will enable the loading caseworkers if not
-    // present in session storage
-    this.caseworkers$ = this.caseworkerDataService.getCaseworkersForServices([jurisdiction.value]).pipe(first());
-    this.loadRoles(jurisdiction);
-    this.loadExclusions(jurisdiction);
+    this.routerSubscription = this.route.data.subscribe((data) => {
+      console.log('test data', data);
+      this.caseDetails = data.case as CaseView;
+      this.applyJurisdiction(this.caseDetails);
+      const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+      // We need this call. No active subscribers are needed
+      // as this will enable the loading caseworkers if not
+      // present in session storage
+      this.caseworkers$ = this.caseworkerDataService.getCaseworkersForServices([jurisdiction.value]).pipe(first());
+      this.loadRoles(jurisdiction);
+      this.loadExclusions(jurisdiction);
+    });
   }
 
   public loadExclusions(jurisdiction: any): void {
@@ -93,5 +96,9 @@ export class RolesAndAccessContainerComponent implements OnInit {
     if (user && user.roleAssignmentInfo) {
       this.showAllocateRoleLink = user.roleAssignmentInfo.some(roleAssignmentInfo => roleAssignmentInfo.isCaseAllocator && roleAssignmentInfo.jurisdiction === caseJurisdiction);
     }
+  }
+
+  public ngOnDestroy() {
+    this.routerSubscription.unsubscribe();
   }
 }

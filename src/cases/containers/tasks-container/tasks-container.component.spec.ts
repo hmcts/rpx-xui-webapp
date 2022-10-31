@@ -1,5 +1,4 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
@@ -133,22 +132,20 @@ describe('TasksContainerComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: {
-              data: {
-                tasks: {
-                  tasks: getMockTasks(),
-                  caseworkers: null
-                },
-                case: CASE_VIEW
+            data: of({
+              tasks: {
+                tasks: getMockTasks(),
+                caseworkers: null
               },
-              paramMap: convertToParamMap({cId: '1234567890123456'}),
-            }
+              case: CASE_VIEW
+            }),
+            paramMap: convertToParamMap({cId: '1234567890123456'})
           }
         },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-      .compileComponents();
+        .compileComponents();
   }));
 
   beforeEach(() => {

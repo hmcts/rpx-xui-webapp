@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {CaseTab, CaseView} from '@hmcts/ccd-case-ui-toolkit';
 import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
-import {combineLatest, of} from 'rxjs';
+import { combineLatest, of, Subscription } from 'rxjs';
 import {Observable} from 'rxjs/Observable';
 import {map} from 'rxjs/operators';
-import { AllocateRoleService } from '../../../role-access/services';
-import {AppUtils} from '../../../app/app-utils';
-import {AppConstants} from '../../../app/app.constants';
+import { AppUtils } from '../../../app/app-utils';
+import { AppConstants } from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
+import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import {FeatureVariation} from '../../models/feature-variation.model';
 import {Utils} from '../../utils/utils';
@@ -19,7 +19,7 @@ import {Utils} from '../../utils/utils';
   templateUrl: './case-viewer-container.component.html',
   styleUrls: ['./case-viewer-container.component.scss']
 })
-export class CaseViewerContainerComponent implements OnInit {
+export class CaseViewerContainerComponent implements OnInit, OnDestroy {
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_1 = 'WorkAllocationRelease1';
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_2 = 'WorkAllocationRelease2';
 
@@ -27,6 +27,8 @@ export class CaseViewerContainerComponent implements OnInit {
   public prependedTabs$: Observable<CaseTab[]>;
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
+
+  private routerSubscription: Subscription;
 
   private readonly prependedTabs: CaseTab[] = [
     {
@@ -69,10 +71,12 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.caseDetails = this.route.snapshot.data.case as CaseView;
-    this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
-    this.prependedTabs$ = this.prependedCaseViewTabs();
-    this.appendedTabs$ = this.appendedCaseViewTabs();
+    this.routerSubscription = this.route.data.subscribe((data) => {
+      this.caseDetails = data.case as CaseView;
+      this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
+      this.prependedTabs$ = this.prependedCaseViewTabs();
+      this.appendedTabs$ = this.appendedCaseViewTabs();
+    });
   }
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {
@@ -103,4 +107,7 @@ export class CaseViewerContainerComponent implements OnInit {
     );
   }
 
+  public ngOnDestroy() {
+    this.routerSubscription.unsubscribe();
+  }
 }

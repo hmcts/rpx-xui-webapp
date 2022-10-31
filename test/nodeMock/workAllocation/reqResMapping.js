@@ -306,6 +306,9 @@ module.exports = {
         },
         '/am/role-mapping/judicial/refresh':(req,res) => {
             res.send({ "message": "Role assignments have been refreshed successfully" })
+        },
+        '/api/specific-access-request/request-more-information' : (req,res) => {
+            res.send('');
         }
     }
 

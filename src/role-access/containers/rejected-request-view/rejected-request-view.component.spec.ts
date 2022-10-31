@@ -12,7 +12,7 @@ import { getMockCaseRoles } from '../../../work-allocation/tests/utils.spec';
 import { CaseRoleDetails, RoleCategory } from '../../models';
 import { AllocateRoleService } from '../../services';
 
-fdescribe('RejectedRequestViewComponent', () => {
+describe('RejectedRequestViewComponent', () => {
   let component: RejectedRequestViewComponent;
   let fixture: ComponentFixture<RejectedRequestViewComponent>;
 
@@ -49,7 +49,6 @@ fdescribe('RejectedRequestViewComponent', () => {
                     reviewer: 'example',
                     dateSubmitted: '01-01-2019',
                     specificAccessReason: 'I would like access'
-
                 },
               },
             }

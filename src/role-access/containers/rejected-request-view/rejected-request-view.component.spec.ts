@@ -4,13 +4,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-import { RejectionReasonText } from 'src/role-access/models/enums/answer-text';
-
-import { RejectedRequestViewComponent } from '..';
 import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { getMockCaseRoles } from '../../../work-allocation/tests/utils.spec';
 import { CaseRoleDetails, RoleCategory } from '../../models';
+import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
+import { RejectedRequestViewComponent } from './rejected-request-view.component';
 
 describe('RejectedRequestViewComponent', () => {
   let component: RejectedRequestViewComponent;

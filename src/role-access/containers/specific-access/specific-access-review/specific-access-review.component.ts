@@ -133,7 +133,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
             this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccess) => {
               if (specificAccess) {
                 specificAccessBody = {
-                  accessReason: specificAccess.accessReason,
+                  accessReason: accessReason,
                   specificAccessReason: specificAccess.specificAccessReason,
                   typeOfRole: rejectedRole,
                   caseId: specificAccess.caseId,

@@ -1,5 +1,6 @@
 import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
+import { MyTasksComponent } from 'src/work-allocation-2/containers';
 import {
   AccessibilityComponent,
   ApplicationRoutingComponent,
@@ -39,15 +40,15 @@ export const ROUTES: Routes = [
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks',
-    redirectTo: 'work/my-work/list',
-    canActivate: [AuthGuard, AcceptTermsGuard]
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    component: MyTasksComponent
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks/:subRoute',
-    redirectTo: 'work/my-work/list',
     pathMatch: 'prefix',
-    canActivate: [AuthGuard, AcceptTermsGuard]
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    component: MyTasksComponent
   },
   {
     path: 'role-access',

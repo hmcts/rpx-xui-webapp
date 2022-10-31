@@ -10,16 +10,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import {
-  LoadingService,
   CookieService,
-  FilterService,
   ExuiCommonLibModule,
+  FeatureToggleGuard,
   FeatureToggleService,
+  FilterService,
   GoogleTagManagerService,
   LaunchDarklyService,
+  LoadingService,
   RoleService,
   TimeoutNotificationsService,
-  FeatureToggleGuard,
 } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START

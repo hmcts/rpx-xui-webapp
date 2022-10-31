@@ -4,7 +4,7 @@ import {CaseTab, CaseView} from '@hmcts/ccd-case-ui-toolkit';
 import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
 import {combineLatest, Observable, of} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 import {AppUtils} from '../../../app/app-utils';
 import {AppConstants} from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
@@ -80,8 +80,9 @@ export class CaseViewerContainerComponent implements OnInit {
     ]).pipe(
       // @ts-ignore
       map(([feature, userRoles, supportedServices, excludedRoles]: [string, string[]]) =>
-        this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : [])
-    ).catch(() => this.prependedTabs$ = of([]));
+        this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []),
+      catchError(() => this.prependedTabs$ = of([]))
+    );
   }
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {

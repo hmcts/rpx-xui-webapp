@@ -72,7 +72,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             reportLogger.AddMessage(`${filterItem} in test ignored for reason : ${filtersToIgnore[filterItem]}`);
             return;
         }
-        await allWorkPage.getFilterSelectOrRadioOptions(filterItem);
+
+        const optionElement = await allWorkPage.setFilterSelectOrRadioOptions(filterItem, option);
 
     });
 

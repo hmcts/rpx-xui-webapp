@@ -99,6 +99,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      When('I wait for reference {string} value not null', async function(reference){
          await BrowserWaits.retryWithActionCallback(async () => {
              expect(global.scenarioData[reference] !== null, `reference ${reference} is null`).to.be.true;
+             try{
+                 reportLogger.AddJson(global.scenarioData[reference]);
+             }catch(err){
+                 reportLogger.AddMessage(global.scenarioData[reference]);
+             }
  
          });
      });

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -636,13 +636,7 @@ describe('CaseHearingsListComponent', () => {
         provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              params: {
-                cid: '1111222233334444'
-              }
-            }
-          }
+          useValue: { paramMap: of(convertToParamMap({ cid: '1111222233334444' })) }
         },
         {
           provide: Router,

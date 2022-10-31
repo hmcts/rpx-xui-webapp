@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig, AlertService, AuthService, CaseNotifier, CasesService, CaseUIToolkitModule, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
@@ -19,7 +20,26 @@ describe('RolesAndAccessComponent', () => {
   const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
   mockNotifierService.cachedCaseView = {};
   component = new RolesAndAccessComponent(mockNotifierService);
-
+  const CASE_DETAILS = {
+    case_id: '1',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test',
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: [],
+    metadataFields: []
+  };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule,
@@ -43,27 +63,11 @@ describe('RolesAndAccessComponent', () => {
     fixture = TestBed.createComponent(RolesAndAccessComponent);
     component = fixture.componentInstance;
     component.roles = CASEROLES as CaseRole[];
-    component.caseDetails = {
-      case_id: '1',
-      case_type: {
-        id: 'TestAddressBookCase',
-        name: 'Test Address Book Case',
-        jurisdiction: {
-          id: 'TEST',
-          name: 'Test',
-        }
-      },
-      channels: [],
-      state: {
-        id: 'CaseCreated',
-        name: 'Case created'
-      },
-      tabs: [],
-      triggers: [],
-      events: [],
-      metadataFields: []
-    };
+    component.caseDetails = CASE_DETAILS;
     component.showAllocateRoleLink = false;
+    component.ngOnChanges({
+      caseDetails: new SimpleChange(CASE_DETAILS, CASE_DETAILS, false)
+    });
     fixture.detectChanges();
   });
 
@@ -158,7 +162,9 @@ describe('RolesAndAccessComponent', () => {
     }];
     component.caseworkers = mockCaseworkers;
     component.legalOpsRoles = mockLegalOpsRoles;
-    component.ngOnChanges();
+    component.ngOnChanges({
+      caseDetails: new SimpleChange(CASE_DETAILS, CASE_DETAILS, false)
+    });
     expect(component.namedLegalRoles).toBeDefined();
     expect(component.namedLegalRoles[0].name).toBe('A Test');
     expect(component.namedLegalRoles[1].name).toBe('B Test');
@@ -209,7 +215,9 @@ describe('RolesAndAccessComponent', () => {
     }];
     component.caseworkers = mockCaseworkers;
     component.exclusions = mockExclusions;
-    component.ngOnChanges();
+    component.ngOnChanges({
+      caseDetails: new SimpleChange(CASE_DETAILS, CASE_DETAILS, false)
+    });
     expect(component.namedExclusions).toBeDefined();
     expect(component.namedExclusions[0].name).toBe('A Test');
     expect(component.namedExclusions[1].name).toBe('B Test');

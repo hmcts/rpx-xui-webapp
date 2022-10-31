@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'exui-case-details-home',
   templateUrl: './case-details-home.component.html',
 })
-export class CaseDetailsHomeComponent implements OnInit {
-
+export class CaseDetailsHomeComponent implements OnInit, OnDestroy {
   private readonly extras: NavigationExtras;
+  private activatedRouteSubscription: Subscription;
 
   constructor(
     private readonly alertService: AlertService,
@@ -28,7 +29,7 @@ export class CaseDetailsHomeComponent implements OnInit {
       this.alertService.setPreserveAlerts(true);
       this.alertService.success(this.extras.state.messageText);
     }
-    this.activatedRoute.data.subscribe(data => {
+    this.activatedRouteSubscription = this.activatedRoute.data.subscribe(data => {
       if (data && data.case && data.case.case_type && data.case.case_type.jurisdiction) {
         const caseInfo = {
           cid: data.case.case_id,
@@ -38,5 +39,9 @@ export class CaseDetailsHomeComponent implements OnInit {
         this.sessionStorageService.setItem('caseInfo', JSON.stringify(caseInfo));
       }
     });
+  }
+
+  public ngOnDestroy() {
+    this.activatedRouteSubscription.unsubscribe();
   }
 }

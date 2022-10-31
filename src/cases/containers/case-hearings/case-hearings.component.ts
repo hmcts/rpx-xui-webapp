@@ -51,21 +51,14 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
+  private activatedRouteSubscription: Subscription;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
               private readonly roleCategoryMappingService: RoleCategoryMappingService,
               private readonly router: Router,
-              private readonly lovRefDataService: LovRefDataService) {
-    this.caseId = this.activatedRoute.snapshot.params.cid;
-    this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
-      map(userDetails => userDetails.userInfo.roles)
-    );
-    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
-    this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
-  }
+              private readonly lovRefDataService: LovRefDataService) {}
 
   public reloadHearings() {
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
@@ -73,43 +66,59 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
-    this.hearingValuesSubscription = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(serviceHearingValuesModel => {
-      if (serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID) {
-        this.refDataSubscription = this.lovRefDataService.getListOfValues(HearingCategory.HearingType, serviceHearingValuesModel.hmctsServiceID, false).subscribe(hearingStageOptions => {
-          this.hearingStageOptions = hearingStageOptions;
-        });
-      }
-    });
-    this.lastErrorSubscription = combineLatest([
-      this.hearingListLastErrorState$,
-      this.hearingValuesLastErrorState$
-    ]).subscribe(([hearingListlastError, hearingValuesLastError]: [fromHearingStore.State, fromHearingStore.State]) => {
-      if (hearingListlastError || hearingValuesLastError) {
-        this.serverError = {
-          id: 'backendError', message: HearingSummaryEnum.BackendError
-        };
-        window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
-      } else {
-        // Reset the error context if there is no error on subsequent requests
-        this.serverError = null;
-      }
-    });
-    this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
-    this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_OR_CANCELLED);
-    this.listedHearings$ = this.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
+    this.activatedRouteSubscription = this.activatedRoute.paramMap.subscribe( (params) => {
+      this.caseId = params.get('cid');
 
-    this.roleCatSubscription = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).subscribe(
-      userRole => {
-        if (userRole === UserRole.LegalOps) {
-          this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
+      // Unsubscribe to all if it exists
+      this.ngOnDestroy();
+
+      this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
+        map(userDetails => userDetails.userInfo.roles)
+      );
+      this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
+      this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
+      this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
+
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+      this.hearingValuesSubscription = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(serviceHearingValuesModel => {
+        if (serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID) {
+          this.refDataSubscription = this.lovRefDataService.getListOfValues(HearingCategory.HearingType, serviceHearingValuesModel.hmctsServiceID, false).subscribe(hearingStageOptions => {
+            this.hearingStageOptions = hearingStageOptions;
+          });
         }
+      });
+
+      this.lastErrorSubscription = combineLatest([
+        this.hearingListLastErrorState$,
+        this.hearingValuesLastErrorState$
+      ]).subscribe(([hearingListlastError, hearingValuesLastError]: [fromHearingStore.State, fromHearingStore.State]) => {
+        if (hearingListlastError || hearingValuesLastError) {
+          this.serverError = {
+            id: 'backendError', message: HearingSummaryEnum.BackendError
+          };
+          window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
+        } else {
+          // Reset the error context if there is no error on subsequent requests
+          this.serverError = null;
+        }
+      });
+
+      this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
+      this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_OR_CANCELLED);
+      this.listedHearings$ = this.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
+
+      this.roleCatSubscription = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).subscribe(
+        userRole => {
+          if (userRole === UserRole.LegalOps) {
+            this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
+          }
+        }
+      );
+      if (this.hearingsActions.includes(Actions.CREATE)) {
+        this.hasRequestAction = true;
       }
-    );
-    if (this.hearingsActions.includes(Actions.CREATE)) {
-      this.hasRequestAction = true;
-    }
-    this.isOgdRole$ = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(map(userRole => userRole === UserRole.Ogd));
+      this.isOgdRole$ = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(map(userRole => userRole === UserRole.Ogd));
+    });
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {

@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 
-import { SpecificAccessStateData, SpecificAccessState, SpecificAccessNavigationEvent } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
 import { SpecificAccessDurationComponent } from './specific-access-duration.component';
@@ -203,15 +203,27 @@ describe('SpecificAccessDurationComponent', () => {
   });
 
   describe('getPeriod', () => {
+    let date: Date;
+    beforeEach(() => {
+      date = new Date();
+    });
 
     it('should return a Period object for SEVEN_DAYS duration type', () => {
       const period = component.getPeriod(DurationType.SEVEN_DAYS);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+      date.setUTCHours(0, 0, 0, 0);
+      expect(period.startDate).toEqual(date);
+      date.setDate(date.getDate() + 7);
+      date.setUTCHours(23, 59, 59, 999);
+      expect(period.endDate).toEqual(date);
     });
 
     it('should return a Period object for INDEFINITE duration type', () => {
       const period = component.getPeriod(DurationType.INDEFINITE);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+      date.setUTCHours(0, 0, 0, 0);
+      expect(period.startDate).toEqual(date);
+      expect(period.endDate).toEqual(null);
     });
 
     it('should return a Period object for ANOTHER_PERIOD duration type', () => {
@@ -228,6 +240,34 @@ describe('SpecificAccessDurationComponent', () => {
 
       const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+      date = new Date(2025, 6, 7);
+      date.setUTCHours(0, 0, 0, 0);
+      expect(period.startDate).toEqual(date);
+      date = new Date(2025, 6, 8);
+      date.setUTCHours(23, 59, 59, 999);
+      expect(period.endDate).toEqual(date);
+    });
+
+    it('should return a Period object for ANOTHER_PERIOD duration type for the same start and end date', () => {
+      // fake form group and form control values
+      component.startDateDayCtrl = new FormControl(7);
+      component.startDateMonthCtrl = new FormControl(7);
+      component.startDateYearCtrl = new FormControl(2025);
+
+      component.endDateDayCtrl = new FormControl(7);
+      component.endDateMonthCtrl = new FormControl(7);
+      component.endDateYearCtrl = new FormControl(2025);
+
+      component.formGroup = new FormGroup({});
+
+      const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
+      expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+      date = new Date(2025, 6, 7);
+      date.setUTCHours(0, 0, 0, 0);
+      expect(period.startDate).toEqual(date);
+      date = new Date(2025, 6, 7);
+      date.setUTCHours(23, 59, 59, 999);
+      expect(period.endDate).toEqual(date);
     });
 
     it('should return control values when getRawData called', () => {

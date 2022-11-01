@@ -16,14 +16,18 @@ import {
   CaseReferencePipe,
   CaseResolver,
   CasesService,
+  CaseViewerModule,
   CreateCaseFiltersModule,
   DocumentManagementService,
   DraftService,
   ErrorNotifierService,
+  FormatTranslatorService,
   HttpErrorService,
   HttpService,
   LoadingModule,
   NavigationNotifierService,
+  OrganisationConverter,
+  OrganisationService,
   PageValidationService,
   PaletteModule,
   PlaceholderService,
@@ -81,7 +85,8 @@ import { effects, reducers } from './store';
     HearingsPipesModule,
     CaseEditorModule,
     CaseListModule,
-    PaletteModule
+    PaletteModule,
+    CaseViewerModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
@@ -110,7 +115,10 @@ import { effects, reducers } from './store';
     CaseResolver,
     ActivityResolver,
     HearingsService,
-    WASupportedJurisdictionsService
+    FormatTranslatorService,
+    WASupportedJurisdictionsService,
+    OrganisationService,
+    OrganisationConverter
   ]
 })
 /**

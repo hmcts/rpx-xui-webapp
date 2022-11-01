@@ -34,8 +34,8 @@ export class RejectedRequestViewComponent implements OnInit {
       this.route.snapshot.queryParams.caseName : '';
     this.caseReference = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseReference ?
       this.route.snapshot.queryParams.caseReference : '';
-    this.roleCategory = this.route.snapshot.queryParams && this.route.snapshot.queryParams.roleCategory ?
-      this.route.snapshot.queryParams.roleCategory : '';
+    this.roleCategory = this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewerRoleCategory ?
+      this.route.snapshot.queryParams.reviewerRoleCategory : '';
     this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
       this.route.snapshot.queryParams.jurisdiction : '';
     this.dateSubmitted = this.route.snapshot.queryParams && this.route.snapshot.queryParams.dateSubmitted ?

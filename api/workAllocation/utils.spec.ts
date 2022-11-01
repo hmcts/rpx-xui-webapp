@@ -1009,6 +1009,7 @@ describe('workAllocation.utils', () => {
       requestDate: undefined,
       reviewer: undefined,
       specificAccessReason: undefined,
+      reviewerRoleCategory: undefined,
       infoRequiredComment: undefined
     },
       {
@@ -1034,6 +1035,7 @@ describe('workAllocation.utils', () => {
         requestDate: undefined,
         reviewer: undefined,
         specificAccessReason: undefined,
+        reviewerRoleCategory: undefined,
         infoRequiredComment: undefined
       }
     ];

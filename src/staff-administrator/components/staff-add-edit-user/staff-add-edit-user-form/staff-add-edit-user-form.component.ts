@@ -184,7 +184,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           name: 'additionalLocations',
           type: 'find-location',
           title: 'Additional locations',
-          titleHint: '(optional)',
           locationTitle: 'Enter a location name',
           enableAddButton: true,
           options: [{key: 'location-1', label: 'Location 1'}, {key: 'location-2', label: 'Location 2'}],
@@ -209,7 +208,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           name: 'roles',
           type: 'checkbox',
           title: 'Roles',
-          titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
           options: [
             { key: 'case-allocator', label: 'Case Allocator' },
@@ -238,7 +236,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           name: 'skills',
           type: 'checkbox',
           title: 'Skills',
-          titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
           options: [...this.staffFilterOptions.skills],
           minSelected: 0,

@@ -11,6 +11,6 @@ export class StaffFilterOptionsSkillsResolver implements Resolve<StaffFilterOpti
   }
 
   public resolve(route?: ActivatedRouteSnapshot) {
-    return this.staffDataAccessService.getSkills();
+    return this.staffDataAccessService.getSkills(['Divorce', 'Privatelaw']);
   }
 }

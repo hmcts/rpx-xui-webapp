@@ -25,8 +25,8 @@ export class StaffDataAccessService {
     return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getJobTitles`);
   }
 
-  public getSkills() {
-    return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getSkills`);
+  public getSkills(services: string[]) {
+    return this.http.post<StaffFilterOption[]>(`${this.API_PATH}/getSkills`, { services });
   }
 
   public getStaffRefUserDetails(id: number) {

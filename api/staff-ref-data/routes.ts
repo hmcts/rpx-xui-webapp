@@ -18,7 +18,7 @@ router.get('/getUsersByPartialName', getUsersByPartialName);
 router.get('/getStaffRefUserDetails/:id', getStaffRefUserDetails);
 router.get('/getUserTypes', getUserTypes);
 router.get('/getJobTitles', getJobTitles);
-router.get('/getSkills', getSkills);
+router.post('/getSkills', getSkills);
 router.get('/getServices', getServices);
 
 export default router;

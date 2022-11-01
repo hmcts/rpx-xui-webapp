@@ -70,14 +70,34 @@ export const init = () => {
     ];
   });
 
-  mock.onGet(getSkills).reply(() => {
+  mock.onPost(getSkills).reply(config => {
+    const body = JSON.parse(config.data);
+    const services = body.services;
+    const skills = [
+      { key: 'Divorce-Caseworker', label: 'Caseworker', service: 'Divorce'},
+      { key: 'Divorce-Underwriter', label: 'Underwriter', service: 'Divorce'},
+      { key: 'Privatelaw-Casemanager', label: 'Casemanager', service: 'Privatelaw'},
+      { key: 'Privatelaw-Caseworker', label: 'Caseworker', service: 'Privatelaw'},
+      { key: 'Privatelaw-Underwriter', label: 'Underwriter', service: 'Privatelaw'},
+    ];
+    const response = [];
+    try {
+      services.forEach(ser => {
+        const filteredSkills = skills.filter(s => s.service === ser);
+        if (filteredSkills) {
+          const res = {
+            group : ser,
+            options : filteredSkills,
+          }
+          response.push(res);
+        }
+      })
+    } catch (error) {
+      console.log('error', error);
+    }
     return [
       200,
-      [
-        { key: 'scss-interloc-work', label: 'SCSS - Interloc work' },
-        { key: 'reasonable-adjustment-process', label: 'SCSS - Reasonable Adjustment process' },
-        { key: 'scss-using-optic', label: 'SCSS - Using Optic' },
-      ],
+      response,
     ];
   });
 

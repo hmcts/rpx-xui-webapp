@@ -20,7 +20,8 @@ import { AuthGuard } from './services/auth/auth.guard';
 
 export const routingConfiguration: ExtraOptions = {
   paramsInheritanceStrategy: 'always',
-  scrollPositionRestoration: 'enabled'
+  scrollPositionRestoration: 'enabled',
+  anchorScrolling: 'enabled'
 };
 
 export const ROUTES: Routes = [

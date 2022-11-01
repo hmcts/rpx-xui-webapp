@@ -6,7 +6,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
+import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -455,10 +457,10 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.lastErrorSubscription = of().subscribe();
-    component.roleCatSubscription = of().subscribe();
-    component.hearingValuesSubscription = of().subscribe();
-    component.refDataSubscription = of().subscribe();
+    component.lastErrorSubscription = new Observable().subscribe();
+    component.roleCatSubscription = new Observable().subscribe();
+    component.hearingValuesSubscription = new Observable().subscribe();
+    component.refDataSubscription = new Observable().subscribe();
     spyOn(component.lastErrorSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.roleCatSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.hearingValuesSubscription, 'unsubscribe').and.callThrough();

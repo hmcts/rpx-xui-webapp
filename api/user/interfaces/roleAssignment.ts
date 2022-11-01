@@ -33,6 +33,7 @@ export interface LocationInfo {
   infoRequiredComment?: string;
   requestDate?: string;
   reviewer?: string;
+  reviewerRoleCategory?: string;
 }
 
 export interface Note {

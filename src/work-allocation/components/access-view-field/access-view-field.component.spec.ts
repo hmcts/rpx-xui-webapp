@@ -81,6 +81,7 @@ describe('WorkAllocation', () => {
         reviewer: 'Mr Test',
         requestDate: '01-01-2021',
         specificAccessReason: 'I want to test',
+        reviewerRoleCategory: 'Judicial',
         infoRequiredComment: 'Need more Infomation'
       }
       component.viewRejection();
@@ -94,6 +95,7 @@ describe('WorkAllocation', () => {
         reviewer: 'Mr Test',
         dateSubmitted: '01-01-2021',
         specificAccessReason: 'I want to test',
+        reviewerRoleCategory: 'Judicial',
         infoRequiredComment: 'Need more Infomation'
       }});
     });

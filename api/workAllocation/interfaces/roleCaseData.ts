@@ -43,4 +43,5 @@ export interface RoleCaseData {
   reviewer?: string;
   specificAccessReason?: string;
   reviewerRoleCategory?: string;
+  infoRequiredComment?: string;
 }

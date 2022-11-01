@@ -55,4 +55,16 @@ describe('Header Component', () => {
         component.emitNavigate(event, emitter);
         expect(emitter.emit).toHaveBeenCalled();
     });
+
+    it('should call checkSkipLink and append #content to url onclick of skip link', () => {
+        component.currentUrl = "/cases";
+        component.checkSkipLink(component.currentUrl);
+        expect(component.skipLinkNavigate).toEqual('/cases#content');
+   });
+
+    it('should call checkSkipLink with #content onclick of skip link', () => {
+        component.currentUrl = "/cases#content";
+        component.checkSkipLink(component.currentUrl);
+        expect(component.skipLinkNavigate).toEqual('/cases#content');
+   });
 });

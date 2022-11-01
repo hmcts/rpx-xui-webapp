@@ -1,5 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
-import { UserInfo } from 'auth/interfaces/UserInfo';
+import { UserInfo } from '../../auth/interfaces/UserInfo';
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
 import { AllocateTo, Period, RoleCategory } from '../models/allocate-role.enum';
 

@@ -29,7 +29,7 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly store: Store<fromRoot.State>,
-    ) {
+  ) {
     this.findLocationFormGroup = this.fb.group({
       locationSelectedFormControl: [null, Validators.required]
     });
@@ -64,7 +64,7 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   }
 
   public getLocationSearchFocus(): void {
-     // TODO: CAM_BOOKING - resolve focus
+    // TODO: CAM_BOOKING - resolve focus
     //   if (this.searchLocationComponent &&
     //     this.searchLocationComponent.autoCompleteInputBox &&
     //     this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
@@ -75,7 +75,7 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   // get a comma separated list of unique jurisdictions from the user role assignment info
   private getJurisdictions(): void {
     this.store.pipe(select(fromRoot.getUserDetails)).subscribe(user => {
-      this.jurisdictions = Array.from(new Set(user.roleAssignmentInfo.map(a => a.jurisdiction))).toString();
+      this.jurisdictions = Array.from(new Set(user.roleAssignmentInfo.filter(role => role.bookable).map(a => a.jurisdiction))).toString();
     });
   }
 }

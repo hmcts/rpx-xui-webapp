@@ -32,7 +32,7 @@
               <th scope="row" class="govuk-table__header leftLabel" >
                 Date submitted
               </th>
-              <td class="govuk-table__cell">{{ specificAccessStateData.requestCreated | date:'dd/MM/yyyy' }}</td>
+              <td class="govuk-table__cell">{{ specificAccessStateData.requestCreated | date:'d MMMM yyyy' }}</td>
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
@@ -44,7 +44,7 @@
               <th scope="row" class="govuk-table__header leftLabel" >
                 Reason for case access
               </th>
-              <td class="govuk-table__cell">{{ specificAccessStateData.accessReason }}</td>
+              <td class="govuk-table__cell">{{ specificAccessStateData.specificAccessReason }}</td>
             </tr>
           </tbody>
         </table>

@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.24-case-exclusion":
-  version "4.18.24-case-exclusion"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.24-case-exclusion.tgz#96a26c4ea82243172a027b863a65572f046893fd"
-  integrity sha512-sBRk32RHbNeffc54viA3JGll3zHuPaUoXhaW9LTb0/SlKJ6A5rkbYBu6T09xM0wNqmkkUK5p27MVjbevIPqTBw==
+"@hmcts/ccd-case-ui-toolkit@4.18.24-set-basic-details":
+  version "4.18.24-set-basic-details"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.24-set-basic-details.tgz#19aeb82d4029be8331a0a418d045587c2328a6f9"
+  integrity sha512-puwhUQwwf/96snsk2QB63FeuLXhaf01p2wyeOIkUMfloNFBnyaSX54nCOCM+irW8PZO+kMSV7L3f3tjIY3ncKw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -546,10 +546,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.18":
-  version "1.7.18"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.18.tgz#ca175770989d6153a5b3a5238c21881252d5e5c0"
-  integrity sha512-rmSdxHyobyQdi4XuhNgGE/nRSyBrkB68eGHHDhOQt8zsMFvqYF9RYfXdqtpmPxImgeXljVKESjC7GHpI4UoqSQ==
+"@hmcts/rpx-xui-common-lib@1.7.19-create-booking":
+  version "1.7.19-create-booking"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.19-create-booking.tgz#1164d1b30a317608974884bc30b0483f4eff1930"
+  integrity sha512-DiUU3JZmnX+rZYF2Ccno6CHENRf8YxILAG3eMzB1aWIlfo5xaqyHpNJPmvveOs6RVw6QxtXtcNSkDfinFm7DzA==
   dependencies:
     tslib "^1.9.0"
 

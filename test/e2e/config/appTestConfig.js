@@ -138,7 +138,7 @@ const data = {
                 release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1"
             },
             {
-                idamId: "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+                idamId: "1db21928-cbbc-4364-bd91-137c7031fe17",
                 email: "CRD_func_test_demo_stcw@justice.gov.uk",
                 release: "wa_release_2", userIdentifier: "IAC_CaseOfficer_R2",
                 key:"AldgateT0wer"

@@ -14,6 +14,7 @@ import { Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi 
 import { PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 
+import { Case } from './interfaces/case';
 import {
   applySearchFilter,
   assignActionsToTasks,
@@ -45,7 +46,6 @@ import {
   prepareSearchTaskUrl,
   prepareServiceRoleApiRequest
 } from './util';
-import { Case } from './interfaces/case';
 
 import * as util from './util';
 
@@ -1004,6 +1004,13 @@ describe('workAllocation.utils', () => {
       assignee: 'person1',
       role_category: 'LEGAL_OPERATIONS',
       dateSubmitted: undefined,
+      hasAccess: false,
+      infoRequired: undefined,
+      requestDate: undefined,
+      reviewer: undefined,
+      specificAccessReason: undefined,
+      reviewerRoleCategory: undefined,
+      infoRequiredComment: undefined
     },
       {
         access: undefined,
@@ -1023,6 +1030,13 @@ describe('workAllocation.utils', () => {
         assignee: 'person1',
         role_category: 'LEGAL_OPERATIONS',
         dateSubmitted: undefined,
+        hasAccess: false,
+        infoRequired: undefined,
+        requestDate: undefined,
+        reviewer: undefined,
+        specificAccessReason: undefined,
+        reviewerRoleCategory: undefined,
+        infoRequiredComment: undefined
       }
     ];
     it('should return empty list if there is nothing given', () => {
@@ -1659,6 +1673,63 @@ describe('workAllocation.utils', () => {
 
     });
 
+  });
+
+  describe('getAccessStatus', () => {
+
+    it('should get the access status true from role assignment when there are limited details', () => {
+      const role: RoleAssignment = {
+        id: 'example',
+        attributes: {}
+      };
+      let accessState = util.getAccessStatus(role);
+      expect(accessState).to.deep.equal(true);
+    });
+
+    it('should get the access status false from role assignment when there are specified role details', () => {
+      const role: RoleAssignment = {
+        id: 'example',
+        roleName: 'specific-access-requested',
+        attributes: {}
+      };
+      let accessState = util.getAccessStatus(role);
+      expect(accessState).to.deep.equal(false);
+    });
+
+    it('should set the access status false from role assignment when begin time is later than date', () => {
+      const role: RoleAssignment = {
+        id: 'example',
+        roleName: 'specific-access-granted',
+        beginTime: new Date('01-01-9999'),
+        attributes: {}
+      };
+      let accessState = util.getAccessStatus(role);
+      expect(accessState).to.deep.equal(false);
+    });
+
+    it('should set the access status false from role assignment when end time is earlier than date', () => {
+      const role: RoleAssignment = {
+        id: 'example',
+        roleName: 'specific-access-granted',
+        beginTime: new Date('01-01-1999'),
+        endTime: new Date('01-01-2010'),
+        attributes: {}
+      };
+      let accessState = util.getAccessStatus(role);
+      expect(accessState).to.deep.equal(false);
+    });
+
+    it('should set the access status true from role assignment when date is between begin start and end times', () => {
+      const role: RoleAssignment = {
+        id: 'example',
+        roleName: 'specific-access-granted',
+        beginTime: new Date('01-01-1999'),
+        endTime: new Date('01-01-9999'),
+        attributes: {}
+      };
+      let accessState = util.getAccessStatus(role);
+      expect(accessState).to.deep.equal(true);
+    });
   });
 
 });

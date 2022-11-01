@@ -13,6 +13,7 @@ export class CaseNameFieldComponent implements OnChanges {
    */
   @Input() public caseName: string;
   @Input() public caseId: string;
+  @Input() public hasAccess: boolean = true;
 
   private pHref: string;
   public ngOnChanges(): void {

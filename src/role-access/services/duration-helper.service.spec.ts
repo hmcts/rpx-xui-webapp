@@ -235,12 +235,6 @@ describe('DurationHelperService', () => {
       expect(result).toBe(date);
     });
 
-    it('should return current date if date is current passed', () => {
-      const date = new Date();
-      const result = durationHelperService.setUTCTimezone(date);
-      expect(result).toBe(date);
-    });
-
     it('should return correct JSON date if date is passed', () => {
       const date = new Date(2022, 10, 21);
       date.setHours(0, 0, 0, 0);

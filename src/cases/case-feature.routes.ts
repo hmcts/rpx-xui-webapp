@@ -122,7 +122,6 @@ export const ROUTES: Routes = [
               },
               {
                 path: 'hearings',
-                resolve: {hearingStageOptions: HearingStageResolver},
                 component: CaseHearingsComponent,
               }
             ]

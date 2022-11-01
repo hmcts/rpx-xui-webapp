@@ -1,4 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
+import { UserInfo } from '../../auth/interfaces/UserInfo';
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
 import { AllocateTo, Period, RoleCategory } from '../models/allocate-role.enum';
 
@@ -94,8 +95,9 @@ export function toSARoleAssignmentBody(
 }
 
 export function toDenySARoleAssignmentBody(
-  currentUserId: string, allocateRoleData: AllocateRoleData, extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+  currentUser: UserInfo, allocateRoleData: AllocateRoleData, extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
 ) {
+  const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let requestedrole;
   switch ( allocateRoleData.roleCategory) {
     case RoleCategory.JUDICIAL:
@@ -125,6 +127,15 @@ export function toDenySARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: requestedrole,
+        specificAccessReason: allocateRoleData.specificAccessReason,
+        requestDate: allocateRoleData.requestCreated,
+        reviewer: currentUserId,
+        reviewerRoleCategory: currentUser.roleCategory,
+        infoRequired: allocateRoleData.accessReason === 'Request more information',
+        infoRequiredComment: allocateRoleData.comment,
+        // note: line below added in conflict with lines above
+        // since the lines above are crucial, some are required within the state data
+        // and the development for the above has already been approved by QA this will be kept for now
         ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-denied',

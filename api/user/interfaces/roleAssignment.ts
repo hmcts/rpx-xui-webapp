@@ -32,6 +32,7 @@ export interface LocationInfo {
   infoRequired?: boolean;
   requestDate?: string;
   reviewer?: string;
+  reviewerRoleCategory?: string;
 }
 
 export interface Note {

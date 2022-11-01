@@ -44,10 +44,32 @@ describe('Header Component', () => {
     expect(component.emitNavigate).toHaveBeenCalled();
   });
 
-  it('should emitNavigate', () => {
-    const event = {};
-    const emitter = jasmine.createSpyObj('emitter', ['emit']);
-    component.emitNavigate(event, emitter);
-    expect(emitter.emit).toHaveBeenCalled();
-  });
+    it('should call emitNavigate with event and this.navigate', () => {
+
+      const event = {};
+      spyOn(component, 'emitNavigate');
+
+      component.onNavigate(event);
+      expect(component.emitNavigate).toHaveBeenCalled();
+    });
+
+    it('should emitNavigate', () => {
+
+        const event = {};
+        const emitter = jasmine.createSpyObj('emitter', ['emit']);
+        component.emitNavigate(event, emitter);
+        expect(emitter.emit).toHaveBeenCalled();
+    });
+
+    it('should call checkSkipLink and append #content to url onclick of skip link', () => {
+        component.currentUrl = "/cases";
+        component.checkSkipLink(component.currentUrl);
+        expect(component.skipLinkNavigate).toEqual('/cases#content');
+   });
+
+    it('should call checkSkipLink with #content onclick of skip link', () => {
+        component.currentUrl = "/cases#content";
+        component.checkSkipLink(component.currentUrl);
+        expect(component.skipLinkNavigate).toEqual('/cases#content');
+   });
 });

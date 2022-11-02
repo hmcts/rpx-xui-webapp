@@ -1,9 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { AccessViewFieldComponent } from './access-view-field.component';
 
@@ -81,7 +80,9 @@ describe('WorkAllocation', () => {
         infoRequired: true,
         reviewer: 'Mr Test',
         requestDate: '01-01-2021',
-        specificAccessReason: 'I want to test'
+        specificAccessReason: 'I want to test',
+        reviewerRoleCategory: 'Judicial',
+        infoRequiredComment: 'Need more Infomation'
       }
       component.viewRejection();
       expect(router.navigate).toHaveBeenCalledWith([REJECTED_REQUEST_URL], {queryParams: {
@@ -93,7 +94,9 @@ describe('WorkAllocation', () => {
         infoRequired: true,
         reviewer: 'Mr Test',
         dateSubmitted: '01-01-2021',
-        specificAccessReason: 'I want to test'
+        specificAccessReason: 'I want to test',
+        reviewerRoleCategory: 'Judicial',
+        infoRequiredComment: 'Need more Infomation'
       }});
     });
 

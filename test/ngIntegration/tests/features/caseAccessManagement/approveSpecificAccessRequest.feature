@@ -1,5 +1,5 @@
 
-@ng
+@ng 
 
 Feature: Case access management: Approve specific access request
 
@@ -79,7 +79,7 @@ Feature: Case access management: Approve specific access request
         Then I validate Review specific access page access request details
             | Case name              | SAR test case       |
             | Case reference         | 1234-5678-1234-5678 |
-            | Date submitted         | 10/10/2022         |
+            | Date submitted         | 10 October 2022         |
             | Reason for case access | Test access        |
 
         Then I validate Review specific access page radio options for actions
@@ -256,7 +256,7 @@ Feature: Case access management: Approve specific access request
     # | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor   | false               | false              | true                   |
 
 
-    Scenario Outline:  Reject specifc access requestion date validations - Happy path
+    Scenario Outline:  Reject specifc access request - Happy path
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK case tasks with userDetails from reference "userDetails"
             | id                                   | task_title | assignee    | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                     |
@@ -286,6 +286,47 @@ Feature: Case access management: Approve specific access request
         When I select SAR action radio option "Reject request"
         When I click continue in specific access request work flow
 
+        Then I see SAR action "Reject" confirmation page
+
+        Examples:
+            | roles                                                                            | PriorityIsDisplayed | DuedateIsDisplayed | TaskcreatedIsDisplayed |
+            | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor | true                | true               | false                  |
+# | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor   | false               | false              | true                   |
+
+
+
+    Scenario Outline:  Request for more info specifc access request - Happy path
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK case tasks with userDetails from reference "userDetails"
+            | id                                   | task_title | assignee    | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                                                                                                          |
+            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                                                                                            |
+            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2     | thissession | Test 2 user  | -10          | 0        | Own,Manage,Execute                   | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/role-access/ce225260-e7e7-11ec-b0a1-a221429cd2eb/assignment/55968c04-dc8c-42b5-8e35-6687830a0d06/specific-access) |
+
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+
+        Given I start MockApp
+        Given I navigate to home page
+        When I click on primary navigation header tab "Case list", I see selected tab page displayed
+
+        When I open first case in case list page
+        Then I see case details page
+        Then I see case details tab label "Tasks" is displayed is "true"
+        When I click tab with label "Tasks" in case details page
+
+        Then I validate case details task tab page is displayed
+        Then I validate task tab active tasks container displayed
+
+        When I click next step "next step 2" for task with name "Task 2"
+
+        Then I see Review specific access page with header "Review specific access request" is displayed
+        When I select SAR action radio option "Request more information"
+        When I click continue in specific access request work flow
+        Then I validate SAR, request more information page displayed
+        When I am in SAR request more information page, enter in text area "More info required"
+        When I click continue in specific access request work flow
         Then I see SAR action "Reject" confirmation page
 
         Examples:

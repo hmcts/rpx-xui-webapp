@@ -34,8 +34,8 @@ export class RejectedRequestViewComponent implements OnInit {
       this.route.snapshot.queryParams.caseName : '';
     this.caseReference = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseReference ?
       this.route.snapshot.queryParams.caseReference : '';
-    this.roleCategory = this.route.snapshot.queryParams && this.route.snapshot.queryParams.roleCategory ?
-      this.route.snapshot.queryParams.roleCategory : '';
+    this.roleCategory = this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewerRoleCategory ?
+      this.route.snapshot.queryParams.reviewerRoleCategory : '';
     this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
       this.route.snapshot.queryParams.jurisdiction : '';
     this.dateSubmitted = this.route.snapshot.queryParams && this.route.snapshot.queryParams.dateSubmitted ?
@@ -48,7 +48,8 @@ export class RejectedRequestViewComponent implements OnInit {
     this.reviewer = this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewer ?
       this.route.snapshot.queryParams.reviewer : '';
     this.reviewReason = this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired ?
-      this.getRejectReason(JSON.parse(this.route.snapshot.queryParams.infoRequired)) : 'No reason for rejection found';
+      this.getRejectReason(JSON.parse(this.route.snapshot.queryParams.infoRequired), this.route.snapshot.queryParams.infoRequiredComment)
+      : 'No reason for rejection found';
   }
 
   public ngOnInit(): void {
@@ -81,7 +82,9 @@ export class RejectedRequestViewComponent implements OnInit {
     this.router.navigate([requestUrl]);
   }
 
-  private getRejectReason(infoRequired: boolean): string {
-    return infoRequired ? RejectionReasonText.MoreInformation : RejectionReasonText.Rejected;
+  public getRejectReason(infoRequired: boolean, infoRequiredComment: string): string {
+    return infoRequired ?
+      infoRequiredComment ? infoRequiredComment : RejectionReasonText.MoreInformation :
+      RejectionReasonText.Rejected;
   }
 }

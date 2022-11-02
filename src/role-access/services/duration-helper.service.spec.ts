@@ -151,8 +151,8 @@ describe('DurationHelperService', () => {
 
       // get date a week from todays date
       const weekFromToday = new Date();
-      weekFromToday.setDate(today.getDate() + 7)
-      weekFromToday.setHours(0, 0, 0, 0);
+      weekFromToday.setDate(today.getDate() + 7);
+      weekFromToday.setHours(23, 59, 59, 999);
 
       // get date a week from today using duration helper service method
       const dateInFuture = durationHelperService.getDateInFuture(7);
@@ -241,6 +241,40 @@ describe('DurationHelperService', () => {
       expect(JSON.stringify(date)).toBe('"2022-11-21T00:00:00.000Z"');
       const result = durationHelperService.setUTCTimezone(date);
       expect(JSON.stringify(result)).toBe('"2022-11-21T00:00:00.000Z"');
+    });
+
+  });
+
+  describe('setStartTimeOfDay', () => {
+
+    it('should return null if date is null', () => {
+      const date = null;
+      const result = durationHelperService.setStartTimeOfDay(date);
+      expect(result).toBe(null);
+    });
+
+    it('should return correct JSON date if date is passed', () => {
+      const date = new Date(2022, 10, 21);
+      const result = durationHelperService.setStartTimeOfDay(date);
+      date.setUTCHours(0, 0, 0, 0);
+      expect(result).toBe(date);
+    });
+
+  });
+
+  describe('setEndTimeOfDay', () => {
+
+    it('should return null if date is null', () => {
+      const date = null;
+      const result = durationHelperService.setEndTimeOfDay(date);
+      expect(result).toBe(null);
+    });
+
+    it('should return correct JSON date if date is passed', () => {
+      const date = new Date(2022, 10, 21);
+      const result = durationHelperService.setEndTimeOfDay(date);
+      date.setUTCHours(23, 59, 59, 999);
+      expect(result).toBe(date);
     });
 
   });

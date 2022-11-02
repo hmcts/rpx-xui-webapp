@@ -1,19 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 
 import {
   DurationTypeDescription,
-  Period,
-  SpecificAccessStateData,
-  SpecificAccessNavigation,
-  SpecificAccessNavigationEvent,
-  SpecificAccessState,
-  TypeOfRole,
-  SpecificRole
+  Period, SpecificAccessNavigation,
+  SpecificAccessNavigationEvent, SpecificAccessStateData
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services/duration-helper.service';
@@ -170,8 +164,11 @@ export class SpecificAccessDurationComponent implements OnInit {
       }
       case DurationType.ANOTHER_PERIOD: {
         // get start and end dates
-        const startDate = this.durationHelper.getDateFromControls(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl);
-        const endDate = this.durationHelper.getDateFromControls(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
+        let startDate = this.durationHelper.getDateFromControls(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl);
+        let endDate = this.durationHelper.getDateFromControls(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
+
+        startDate = this.durationHelper.setStartTimeOfDay(startDate);
+        endDate = this.durationHelper.setEndTimeOfDay(endDate);
 
         // check that both the start and end dates are valid looking dates
         const dateCheck = this.durationHelper.checkDates(

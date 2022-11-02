@@ -1,7 +1,6 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   selector: 'exui-access-view-field',
@@ -15,20 +14,24 @@ export class AccessViewFieldComponent {
   @Input() public id: string;
   @Input() public workField: any;
 
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router) { }
 
   public viewRejection(): void {
     const thisRole = this.workField;
-    const queryParams = {caseName: thisRole.case_name,
-        caseReference: thisRole.case_id,
-        roleCategory: thisRole.role_category,
-        jurisdiction: thisRole.jurisdictionId,
-        // date of role created is actually date rejected, not originally requested
-        dateRejected: thisRole.dateSubmitted,
-        infoRequired: thisRole.infoRequired,
-        reviewer: thisRole.reviewer,
-        dateSubmitted: thisRole.requestDate,
-        specificAccessReason: thisRole.specificAccessReason};
-    this.router.navigate([`/role-access/rejected-request`], {queryParams});
+    const queryParams = {
+      caseName: thisRole.case_name,
+      caseReference: thisRole.case_id,
+      roleCategory: thisRole.role_category,
+      jurisdiction: thisRole.jurisdictionId,
+      // date of role created is actually date rejected, not originally requested
+      dateRejected: thisRole.dateSubmitted,
+      infoRequired: thisRole.infoRequired,
+      reviewer: thisRole.reviewer,
+      dateSubmitted: thisRole.requestDate,
+      specificAccessReason: thisRole.specificAccessReason,
+      reviewerRoleCategory: thisRole.reviewerRoleCategory,
+      infoRequiredComment: thisRole.infoRequiredComment
+    };
+    this.router.navigate([`/role-access/rejected-request`], { queryParams });
   }
 }

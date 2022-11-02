@@ -30,8 +30,10 @@ export interface LocationInfo {
   specificAccessReason?: string;
   roleName?: string;
   infoRequired?: boolean;
+  infoRequiredComment?: string;
   requestDate?: string;
   reviewer?: string;
+  reviewerRoleCategory?: string;
 }
 
 export interface Note {

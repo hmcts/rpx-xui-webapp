@@ -82,12 +82,12 @@ class CaseManager {
                     cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again with browser refresh");
                     retryOnJurisdiction++;
                     await headerPage.refreshBrowser();
-                    throw new Error(error); 
+                    throw new Error(error);
 
                 }
             });
-               
-            
+
+
 
             await this.createCaseStartPage.selectCaseType(caseType);
             await this.createCaseStartPage.selectEvent(event);
@@ -99,7 +99,7 @@ class CaseManager {
                 try {
                     await BrowserWaits.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.clickStartButton();
-                    const nextPageUrl = await BrowserWaits.waitForPageNavigation(thisPageUrl); 
+                    const nextPageUrl = await BrowserWaits.waitForPageNavigation(thisPageUrl);
                 }
                 catch (err) {
                     const nextPageUrl = await BrowserWaits.waitForPageNavigation(thisPageUrl);
@@ -114,9 +114,9 @@ class CaseManager {
                     throw new Error(err);
                 }
             });
-            
-        });    
-   } 
+
+        });
+   }
 
     async createCase( caseData,isAccessibilityTest,tcTypeStatus) {
         this.caseData = caseData;
@@ -191,9 +191,9 @@ class CaseManager {
                 await this.createCaseStartPage.clickStartButton();
                 throw new Error(err);
             }
-            
+
         });
-    }    
+    }
 
     async AmOnChekYourAnswersPage() {
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -237,23 +237,13 @@ class CaseManager {
         console.log("Submitting : " + thisPageUrl )
 
         await BrowserWaits.retryWithActionCallback(async () => {
-
-            try{
-                await continieElement.click();
-                browser.waitForAngular();
-                await BrowserWaits.waitForPageNavigation(thisPageUrl);
-            }catch(err){
-                let isValidationDisplayed = await this.caseEditPage.isValidationErrorDisplayed();
-                cucumberReporter.AddJson(`******* Is Validation error message displayed : ${isValidationDisplayed}`);
-                if (isValidationDisplayed) {
-                    cucumberReporter.AddJson(`******* Validation error message : ${await this.caseEditPage.getValidationErrorMessageDisplayed()}`);
-                }
-
-                throw new Error(err);
-            }
-          
-           
+            await continieElement.click();
+            browser.waitForAngular();
+            await BrowserWaits.waitForPageNavigation(thisPageUrl);
         });
+
+        var nextPageUrl = await browser.getCurrentUrl();
+
 
     }
     async excludeFieldValues(fieldName){
@@ -341,8 +331,8 @@ class CaseManager {
                     await BrowserWaits.waitForElement(addressToSelect);
                     await addressToSelect.click();
                     cucumberReporter.AddMessage(fieldName + " : 2nd option selected");
-                }); 
-                
+                });
+
                 break;
             case "ccd-write-email-field":
                 await ccdField.$('input.form-control').sendKeys("test@autotest.com ");
@@ -390,13 +380,13 @@ class CaseManager {
                 await BrowserWaits.retryWithActionCallback(async () => {
                     var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
                     await ccdField.$('input.form-control').sendKeys(fileToUpload);
-                    const statusMessageELement = ccdField.$("span.error-message") 
+                    const statusMessageELement = ccdField.$("span.error-message")
                     let statusMessage = "";
 
                     await BrowserWaits.waitForCondition(async () => {
                         let isStatusDisplayed = await statusMessageELement.isPresent();
                         if (isStatusDisplayed){
-                            statusMessage = await statusMessageELement.getText(); 
+                            statusMessage = await statusMessageELement.getText();
                         }
                         console.log(`file upload status : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
                         return !isStatusDisplayed || statusMessage.includes("error");
@@ -416,7 +406,7 @@ class CaseManager {
                     }
                     cucumberReporter.AddMessage(fieldName + " : dummy.pdf");
                     this._appendFormPageValues(fieldName1, "dummy.pdf");
-                    await browser.sleep(5000); 
+                    await browser.sleep(5000);
                 });
                 break;
             case "ccd-write-multi-select-list-field":
@@ -472,9 +462,7 @@ class CaseManager {
                 break;
             default:
                 console.log("Unknown field type : " + ccdFileTagName);
-
                 cucumberReporter.AddMessage(fieldName + " : unknown ccd field container " + ccdFileTagName+". Please check if container is missing in test config or changed");
-
         }
     }
 

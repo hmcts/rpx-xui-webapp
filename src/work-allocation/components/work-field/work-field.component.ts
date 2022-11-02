@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { FieldConfig } from '../../models/common';
 import { Case } from '.././../models/cases';
 import { Task } from '.././../models/tasks';
 
 import { FieldType } from '../../enums';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -13,7 +13,7 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./work-field.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class WorkFieldComponent {
+export class WorkFieldComponent implements OnDestroy {
   /**
    * The configuration for this particular field, which is needed
    * to obtain the correct value from the task and determine how it
@@ -32,9 +32,10 @@ export class WorkFieldComponent {
   // hard-coded strings floating around the place.
   protected fieldType = FieldType;
   public clickSubject = new Subject<Task | Case>();
+  private clickSubscription: Subscription;
 
   constructor() {
-    this.clickSubject.pipe(
+    this.clickSubscription = this.clickSubject.pipe(
       take(1)
     ).subscribe(item => this.itemClick.emit(item));
   }
@@ -49,4 +50,7 @@ export class WorkFieldComponent {
     return null;
   }
 
+  public ngOnDestroy() {
+    this.clickSubscription.unsubscribe();
+  }
 }

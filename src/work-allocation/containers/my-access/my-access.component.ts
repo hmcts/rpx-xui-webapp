@@ -55,13 +55,13 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
           isNew: false
         })
           .pipe(take(1))
-          .subscribe(() => item.isNew = false);
+          .subscribe();
       } else if (item.role.startsWith('specific-access')) {
         CasesService.updateSpecificAccessRequestAttributes(this.httpClient, item.case_id, {
           isNew: false
         })
           .pipe(take(1))
-          .subscribe(() => item.isNew = false);
+          .subscribe();
       }
     }
   }

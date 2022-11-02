@@ -2,7 +2,6 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
@@ -34,7 +33,6 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: CaseListComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Case list'
         }
@@ -42,7 +40,6 @@ export const ROUTES: Routes = [
       {
         path: 'case-share',
         component: CaseShareComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Share Cases | Case Share'
         }
@@ -50,7 +47,6 @@ export const ROUTES: Routes = [
       {
         path: 'case-share-confirm',
         component: CaseShareConfirmComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Share Cases | Case Share Confirm'
         }
@@ -58,7 +54,6 @@ export const ROUTES: Routes = [
       {
         path: 'case-share-complete',
         component: CaseShareCompleteComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Share Cases | Case Share Complete'
         }
@@ -66,7 +61,6 @@ export const ROUTES: Routes = [
       {
         path: 'case-filter',
         component: CaseFilterComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Create a case'
         }
@@ -87,7 +81,6 @@ export const ROUTES: Routes = [
             children: editorRouting
           }
         ],
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Create a case'
         }
@@ -96,7 +89,6 @@ export const ROUTES: Routes = [
         path: 'case-search',
         component: CaseSearchComponent,
         children: editorRouting,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Find a case'
         }
@@ -125,13 +117,11 @@ export const ROUTES: Routes = [
               },
               {
                 path: 'hearings',
-                resolve: {hearingStageOptions: HearingStageResolver},
                 component: CaseHearingsComponent,
               }
             ]
           },
           ...caseViewRouting],
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Case Details'
         }

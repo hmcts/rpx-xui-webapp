@@ -41,7 +41,7 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       const dueDate = dueDateWork.toISOString();
       const taskName = 'Review Specific Access Request';
       const taskResponse = await postCreateTask(req, next,
-         { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
+        { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
       if (!taskResponse || taskResponse.status !== 204) {
         const assignmentId = data.roleAssignmentResponse.roleRequest.id;
         const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -193,28 +193,34 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
       },
     }, { headers });
 
-    const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
+    const roleAssignments = roleAssignmentQueryResponse.data.roleAssignmentResponse
+      .map(assignment => {
+        delete assignment['id'];
 
-    delete singleRoleAssignment['id'];
-    singleRoleAssignment.attributes = {
-      ...singleRoleAssignment.attributes,
-      ...req.body.attributesToUpdate,
-    };
+        assignment.attributes = {
+          ...assignment.attributes,
+          ...req.body.attributesToUpdate,
+        };
 
-    singleRoleAssignment.notes = [{
-      userId: actorId,
-      time: new Date(),
-      comment: singleRoleAssignment.attributes.accessReason,
-    }];
+        assignment.notes = [{
+          userId: actorId,
+          time: new Date(),
+          comment: assignment.attributes.specificAccessReason,
+        }];
+
+        return assignment;
+      });
+
+    const specificRoleAssignment = roleAssignments.find(assignment => assignment.grantType === 'SPECIFIC');
 
     const roleAssignmentUpdate = {
       roleRequest: {
-        assignerId: actorId,
+        assignerId: specificRoleAssignment.attributes.reviewer,
         process: 'specific-access',
-        reference: `${caseId}/${singleRoleAssignment.roleName}/${actorId}`,
+        reference: `${caseId}/${specificRoleAssignment.roleName}/${actorId}`,
         replaceExisting: true,
       },
-      requestedRoles: [singleRoleAssignment],
+      requestedRoles: roleAssignments,
     };
 
     const response = await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });

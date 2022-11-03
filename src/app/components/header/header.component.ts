@@ -33,7 +33,7 @@ export class HeaderComponent {
   }
 
   public checkSkipLink(urlSkipLink: string) {
-    if(urlSkipLink.endsWith(this.contentHash)){
+    if (urlSkipLink.endsWith(this.contentHash)) {
       this.skipLinkNavigate = urlSkipLink;
     } else {
       this.skipLinkNavigate = `${urlSkipLink}${this.contentHash}`;

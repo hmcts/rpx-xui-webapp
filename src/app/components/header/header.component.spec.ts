@@ -57,13 +57,13 @@ describe('Header Component', () => {
     });
 
     it('should call checkSkipLink and append #content to url onclick of skip link', () => {
-        component.currentUrl = "/cases";
+        component.currentUrl = '/cases';
         component.checkSkipLink(component.currentUrl);
         expect(component.skipLinkNavigate).toEqual('/cases#content');
    });
 
     it('should call checkSkipLink with #content onclick of skip link', () => {
-        component.currentUrl = "/cases#content";
+        component.currentUrl = '/cases#content';
         component.checkSkipLink(component.currentUrl);
         expect(component.skipLinkNavigate).toEqual('/cases#content');
    });

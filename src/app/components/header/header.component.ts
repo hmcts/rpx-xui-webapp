@@ -27,11 +27,11 @@ export class HeaderComponent implements OnInit {
   @Input() public currentUrl: string;
   @Output() public navigate = new EventEmitter<string>();
 
-  skipLinkNavigate: string = "";
-  contentHash: string = "#content";
+  skipLinkNavigate: string = '';
+  contentHash: string = '#content';
 
   constructor(
-    public store: Store<fromRoot.State>
+    public store: Store<fromRoot.State>,
   ) {}
 
   public ngOnInit() {

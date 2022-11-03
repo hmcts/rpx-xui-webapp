@@ -22,11 +22,11 @@ export class HeaderComponent {
   @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
-  skipLinkNavigate: string = "";
-  contentHash: string = "#content";
+  skipLinkNavigate: string = '';
+  contentHash: string = '#content';
 
   constructor(
-    public store: Store<fromRoot.State>
+    public store: Store<fromRoot.State>,
   ) {}
 
   public ngOnInit() {

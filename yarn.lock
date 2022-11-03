@@ -460,6 +460,7 @@
   version "6.9.0-rc2"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.9.0-rc2.tgz#c58e1edaf51a55e1b79cd227c03a0976c07d3986"
   integrity sha512-s1kxUjpN3Uk4kYCxywTaa8YK8ps4P3OYYZxgTUV8XSs1Ztkc8sgJEYuT0RAQIPVpbs8U/6Rv58+iF1vOB6WIMg==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -541,6 +542,7 @@
   version "1.8.4-rc1"
   resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.4-rc1.tgz#637cebf8cb6d2eddfd6d15222868d9a327d10fd3"
   integrity sha512-2luj91yyj7pCBcJsNEsFMUz3H7ecJhetWbux0fpKXUPNaYCBDjwFaNzn4DxCxjABtWoqAK2EEvg1L26E/eqZCg==
+
   dependencies:
     tslib "^1.9.0"
 

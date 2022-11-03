@@ -456,10 +456,11 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.22.1-judicial-user-typeahead":
-  version "4.22.1-judicial-user-typeahead"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.22.1-judicial-user-typeahead.tgz#0a217da0b76b4c58a3fec5741b05f497f5f3aa75"
-  integrity sha512-0LuN7l6ded0DmO/D0tuZqueR2GbZ2AKK/L0A7xrw2TQKooZ0I9LF00FWfRoydQ035IwLK2NrJC7m8SJ7zRyBtA==
+"@hmcts/ccd-case-ui-toolkit@6.9.0-rc2":
+  version "6.9.0-rc2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.9.0-rc2.tgz#c58e1edaf51a55e1b79cd227c03a0976c07d3986"
+  integrity sha512-s1kxUjpN3Uk4kYCxywTaa8YK8ps4P3OYYZxgTUV8XSs1Ztkc8sgJEYuT0RAQIPVpbs8U/6Rv58+iF1vOB6WIMg==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -537,10 +538,11 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.3-update-joh-name-to-full-name":
-  version "1.8.3-update-joh-name-to-full-name"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.3-update-joh-name-to-full-name.tgz#e0ac0509217ae7025cbaea5bba1f01748392eb0c"
-  integrity sha512-rRXS5B4bfaiKC9AF7/LRg//5PAu0AwJFy5u1Pd5EVhkRswZw2lINSsKIAyp/AswBuLYrHCcXS9j5kL1e5FQcxw==
+"@hmcts/rpx-xui-common-lib@1.8.4-rc1":
+  version "1.8.4-rc1"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.4-rc1.tgz#637cebf8cb6d2eddfd6d15222868d9a327d10fd3"
+  integrity sha512-2luj91yyj7pCBcJsNEsFMUz3H7ecJhetWbux0fpKXUPNaYCBDjwFaNzn4DxCxjABtWoqAK2EEvg1L26E/eqZCg==
+
   dependencies:
     tslib "^1.9.0"
 

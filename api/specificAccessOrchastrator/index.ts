@@ -217,7 +217,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
 
     const roleAssignmentUpdate = {
       roleRequest: {
-        assignerId: roleAssignment.attributes.reviewer,
+        assignerId: roleAssignment.attributes.reviewer ? roleAssignment.attributes.reviewer : actorId,
         process: 'specific-access',
         reference: `${caseId}/${roleAssignment.attributes.requestedRole}/${actorId}`,
         replaceExisting: true,

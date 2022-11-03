@@ -52,6 +52,7 @@ export function toSARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
+        reviewer: currentUserId,
         ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-granted',
@@ -76,6 +77,7 @@ export function toSARoleAssignmentBody(
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole,
+        reviewer: currentUserId,
         ...extraAttributesForSpecificRole,
       },
       roleName: requestedRole,
@@ -183,6 +185,7 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: allocateRoleData.requestedRole,
+        reviewer: allocateRoleData.person.id,
         ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-requested',

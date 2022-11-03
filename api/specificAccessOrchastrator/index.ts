@@ -72,6 +72,7 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
     /* tslint:disable:no-string-literal */
     delete headers['accept'];
     const response = await http.post(fullPath, req.body, { headers });
+
     return response;
   } catch (error) {
     logger.info(error);
@@ -196,6 +197,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
     const roleAssignments = roleAssignmentQueryResponse.data.roleAssignmentResponse
       .map(assignment => {
         delete assignment['id'];
+        delete assignment['created'];
 
         assignment.attributes = {
           ...assignment.attributes,
@@ -211,13 +213,13 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
         return assignment;
       });
 
-    const specificRoleAssignment = roleAssignments.find(assignment => assignment.grantType === 'SPECIFIC');
+    const roleAssignment = roleAssignments[0];
 
     const roleAssignmentUpdate = {
       roleRequest: {
-        assignerId: specificRoleAssignment.attributes.reviewer,
+        assignerId: roleAssignment.attributes.reviewer,
         process: 'specific-access',
-        reference: `${caseId}/${specificRoleAssignment.roleName}/${actorId}`,
+        reference: `${caseId}/${roleAssignment.attributes.requestedRole}/${actorId}`,
         replaceExisting: true,
       },
       requestedRoles: roleAssignments,

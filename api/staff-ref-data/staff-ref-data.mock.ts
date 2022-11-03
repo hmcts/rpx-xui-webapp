@@ -71,7 +71,7 @@ export const init = () => {
     ];
   });
 
-  mock.onGet(getSkills).reply(() => { 
+  mock.onGet(getSkills).reply(() => {
     const skills = [
       { key: 'adoption-caseworker', label: 'Caseworker', service: 'adoption'},
       { key: 'adoption-underwriter', label: 'Underwriter', service: 'adoption'},

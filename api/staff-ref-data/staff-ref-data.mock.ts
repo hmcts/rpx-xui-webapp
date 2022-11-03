@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import * as _ from 'lodash';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
 import { STAFF_REF_USERS_LIST } from './mock-data/staff-ref-users-list.mock.data';
 
@@ -70,16 +71,15 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(getSkills).reply(config => {
-    const body = JSON.parse(config.data);
-    const services = body.services;
+  mock.onGet(getSkills).reply(() => { 
     const skills = [
-      { key: 'Divorce-Caseworker', label: 'Caseworker', service: 'Divorce'},
-      { key: 'Divorce-Underwriter', label: 'Underwriter', service: 'Divorce'},
-      { key: 'Privatelaw-Casemanager', label: 'Casemanager', service: 'Privatelaw'},
-      { key: 'Privatelaw-Caseworker', label: 'Caseworker', service: 'Privatelaw'},
-      { key: 'Privatelaw-Underwriter', label: 'Underwriter', service: 'Privatelaw'},
+      { key: 'adoption-caseworker', label: 'Caseworker', service: 'adoption'},
+      { key: 'adoption-underwriter', label: 'Underwriter', service: 'adoption'},
+      { key: 'family-private-law-casemanager', label: 'Casemanager', service: 'family-private-law'},
+      { key: 'family-private-law-caseworker', label: 'Caseworker', service: 'family-private-law'},
+      { key: 'family-public-law-underwriter', label: 'Underwriter', service: 'family-public-law'},
     ];
+    const services = _.uniq(_.map(skills, 'service'));
     const response = [];
     try {
       services.forEach(ser => {

@@ -42,9 +42,8 @@ export async function getJobTitles(req, res: Response, next: NextFunction) {
 
 export async function getSkills(req, res: Response, next: NextFunction) {
   const markupPath: string = `/refdata/case-worker/skill`;
-  const reqBody = req.body;
   try {
-    const {status, data}: { status: number, data: StaffFilterOption[] } = await handlePost(markupPath, reqBody, req);
+    const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(markupPath, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

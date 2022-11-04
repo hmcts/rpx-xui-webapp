@@ -470,7 +470,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   });
 
   it('should return attending representative', () => {
-    component.hearingActualsMainModel = hearingActualsMainModel;
+    component.hearingActualsMainModel = {...hearingActualsMainModel};
     const attendingRepresentative1 = component.getRepresentingAttendee('1');
     expect(attendingRepresentative1).toEqual('Bob Jones');
     const attendingRepresentative2 = component.getRepresentingAttendee('2');

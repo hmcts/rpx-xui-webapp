@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -23,7 +23,7 @@ describe('CaseSearchComponent', () => {
     getPaginationPageSize: () => 10
   };
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -62,7 +62,7 @@ describe('CaseSearchComponent', () => {
     component.paginationMetadata$ = storePipeMock.and.returnValue(of(new PaginationMetadata()));
     component.metadataFields$ = storePipeMock.and.returnValue(of([]));
     fixture.detectChanges();
-  });
+  }));
 
   describe('applyChangePage()', () => {
 

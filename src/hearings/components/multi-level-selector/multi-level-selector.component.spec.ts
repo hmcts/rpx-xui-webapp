@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MultiLevelSelectorComponent } from '..';
 import { ControlTypeEnum } from '../../models/hearings.enum';
@@ -230,7 +230,7 @@ describe('MultiLevelSelectorComponent', () => {
     },
   ];
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync (() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [MultiLevelSelectorComponent],
@@ -239,6 +239,10 @@ describe('MultiLevelSelectorComponent', () => {
       ]
     })
       .compileComponents();
+
+  }));
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(MultiLevelSelectorComponent);
     component = fixture.componentInstance;
     spyOn(component, 'ngAfterViewInit').and.callFake(() => { });
@@ -257,9 +261,10 @@ describe('MultiLevelSelectorComponent', () => {
       }
     ];
     fixture.detectChanges();
-  });
+});
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(component.controlType).toEqual(component.configLevels[component.level - 1].controlType);
   });

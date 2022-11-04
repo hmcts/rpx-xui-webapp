@@ -78,7 +78,8 @@ describe('HearingJudgeComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingJudgeTypes: judgeTypes
+                hearingJudgeTypes: judgeTypes,
+                judicialUsers: [{personalCode:'p1000000'}]
               }
             },
             fragment: of('point-to-me'),

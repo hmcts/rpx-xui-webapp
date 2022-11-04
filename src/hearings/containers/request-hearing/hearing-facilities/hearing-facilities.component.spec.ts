@@ -15,7 +15,6 @@ describe('HearingFacilitiesComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-
   const ADDITIONAL_FACILITIES_OPTIONS = [
     {
       key: 'immigrationDetentionCentre',
@@ -161,12 +160,15 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should filter selection from previous values', () => {
     component.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag = true;
+
+    const swapValue = component.hearingRequestMainModel.hearingDetails.facilitiesRequired ;
     component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['secureDock', 'witnessScreen'];
     component = fixture.componentInstance;
     component.ngOnInit();
     fixture.detectChanges();
 
     expect(component.hearingFactilitiesForm.controls['addition-security-required'].value).toEqual('Yes');
+    component.hearingRequestMainModel.hearingDetails.facilitiesRequired = swapValue;
   });
 
   afterEach(() => {

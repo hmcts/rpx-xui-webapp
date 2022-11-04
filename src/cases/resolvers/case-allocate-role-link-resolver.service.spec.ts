@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -13,7 +13,7 @@ describe('CaseAllocateRoleLinkResolverService', () => {
   let httpClient: HttpClient;
   const routerSpy = jasmine.createSpy('Router');
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([]),
@@ -26,7 +26,7 @@ describe('CaseAllocateRoleLinkResolverService', () => {
       ]
     });
     httpClient = TestBed.get(HttpClient) as HttpClient;
-  });
+  }));
 
   it('should return a value which tells if the user is allowed to see the allocate role link', async () => {
     spyOn(httpClient, 'get').and.returnValue(of(true));

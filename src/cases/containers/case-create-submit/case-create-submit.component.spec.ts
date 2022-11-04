@@ -12,7 +12,6 @@ import {
   CaseEventTrigger,
   CaseField,
   CasesService,
-  CaseUIToolkitModule,
   createCaseEventTrigger,
   DraftService,
   HttpErrorService,

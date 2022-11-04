@@ -8,7 +8,6 @@ import {
   AuthService as CCDAuthService,
   CaseEditWizardGuard,
   CasesService,
-  CaseUIToolkitModule,
   DocumentManagementService,
   DraftService,
   HttpErrorService,
@@ -47,7 +46,6 @@ describe('CaseCreateComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        CaseUIToolkitModule,
         HttpClientTestingModule,
         StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
         EffectsModule.forRoot([]),

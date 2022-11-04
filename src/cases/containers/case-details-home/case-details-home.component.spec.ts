@@ -4,7 +4,6 @@ import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
-  CaseUIToolkitModule,
   ErrorNotifierService,
   SessionStorageService
 } from '@hmcts/ccd-case-ui-toolkit';
@@ -32,7 +31,6 @@ describe('CaseDetailsHomeComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         RouterTestingModule,
-        CaseUIToolkitModule,
         StoreModule.forRoot({...reducers, cases: combineReducers(fromFeature.reducers)}),
       ],
       declarations: [CaseDetailsHomeComponent],

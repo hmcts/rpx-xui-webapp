@@ -53,8 +53,8 @@ describe('BookingHomeComponent', () => {
         ReactiveFormsModule,
         RouterTestingModule
       ],
-      declarations: [ BookingHomeComponent ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [BookingHomeComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: BookingService,
@@ -72,7 +72,7 @@ describe('BookingHomeComponent', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     bookingService.getBookings.and.returnValue(of(DUMMY_BOOKINGS));
     bookingService.refreshRoleAssignments.and.returnValue(of({}));
@@ -85,7 +85,7 @@ describe('BookingHomeComponent', () => {
   }));
 
   it('should send back the status if it is 400', () => {
-    bookingService.getBookings.and.returnValue(throwError({error}));
+    bookingService.getBookings.and.returnValue(throwError({ error }));
     fixture.detectChanges();
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
@@ -111,7 +111,7 @@ describe('BookingHomeComponent', () => {
     // correct redirect for 404
     error.status = 404;
     component.NavigationErrorHandler(error, mockRouter);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ '/booking-system-error' ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/booking-system-error']);
   });
 
   it('should display bookings list when there are existing bookings and first radio button is clicked', () => {
@@ -123,6 +123,12 @@ describe('BookingHomeComponent', () => {
     fixture.detectChanges();
     const bookingsList = element.querySelector('#conditional-booking-type-0');
     expect(bookingsList).toBeTruthy();
+  });
+
+  it('should get previous date', () => {
+    const date = new Date('2022-12-24T00:00:00Z');
+    const expectedDate = new Date('2022-12-23T00:00:00Z');
+    expect(component.getPreviousDate(date)).toEqual(expectedDate);
   });
 
   it('should display bookings in sorted order when there are existing bookings and first radio button is clicked', () => {
@@ -137,9 +143,9 @@ describe('BookingHomeComponent', () => {
     const secondItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[2].querySelector('p .govuk-hint');
     // const thirdItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[3].querySelector('p .govuk-hint');
     expect(totalItems).toEqual(DUMMY_BOOKINGS.length);
-    expect(firstItemDateMessage.textContent).toContain('14 June 2022 to 20 June 2022');
+    expect(firstItemDateMessage.textContent).toContain('14 June 2022 to 19 June 2022');
     expect(firstItemLocationMessage.textContent).toContain('Glasgow Tribunals Centre');
-    expect(secondItemDateMessage.textContent).toContain('14 June 2022 to 20 June 2022');
+    expect(secondItemDateMessage.textContent).toContain('14 June 2022 to 19 June 2022');
     // expect(thirdItemDateMessage.textContent).toContain('01 January 2029 to 01 March 2029');
   });
 

@@ -95,6 +95,12 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  public getPreviousDate(givenDate: Date): Date {
+    const date = new Date(givenDate);
+    date.setDate(date.getDate() - 1);
+    return date;
+  }
+
   public onEventTrigger() {
     this.eventTrigger.emit(BookingNavigationEvent.HOMECONTINUE);
   }

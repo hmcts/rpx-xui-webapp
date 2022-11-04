@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
-  AlertService, CaseUIToolkitModule,
+  AlertService,
   ErrorNotifierService, HttpError, LoadingService as CCDLoadingService, NavigationNotifierService, NavigationOrigin
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';

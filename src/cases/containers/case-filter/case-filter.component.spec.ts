@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
-  AbstractAppConfig, AlertService, AuthService as CCDAuthService, CaseEditWizardGuard, CasesService, CaseUIToolkitModule, CreateCaseFiltersModule, DocumentManagementService, DraftService, HttpErrorService, HttpService, PageValidationService,
+  AbstractAppConfig, AlertService, AuthService as CCDAuthService, CaseEditWizardGuard, CasesService, CreateCaseFiltersModule, DocumentManagementService, DraftService, HttpErrorService, HttpService, PageValidationService,
   PlaceholderService, RequestOptionsBuilder, RouterHelperService, SearchFiltersModule, SearchService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, StoreModule } from '@ngrx/store';
@@ -28,7 +28,6 @@ describe('Case Filter Component', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        CaseUIToolkitModule,
         HttpClientTestingModule,
         StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
         HttpClientTestingModule,

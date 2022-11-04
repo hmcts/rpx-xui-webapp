@@ -25,7 +25,7 @@ import {
   WorkAllocationCaseService
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
-import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { getAssigneeName, handleFatalErrors, servicesMap, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -387,6 +387,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
         }
         if (this.allJurisdictions && this.allJurisdictions.find(jur => jur.id === item.jurisdiction)) {
           item.jurisdiction = this.allJurisdictions.find(jur => jur.id === item.jurisdiction).name;
+        } else if (servicesMap[item.jurisdiction]) {
+          item.jurisdiction = servicesMap[item.jurisdiction];
         }
         if (this.allRoles && this.allRoles.find(role => role.roleId === item.case_role)) {
           item.role = this.allRoles.find(role => role.roleId === item.case_role).roleName;

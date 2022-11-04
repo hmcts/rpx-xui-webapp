@@ -27,22 +27,13 @@ export class HeaderComponent implements OnInit {
   @Input() public currentUrl: string;
   @Output() public navigate = new EventEmitter<string>();
 
-  skipLinkNavigate: string = '';
-  contentHash: string = '#content';
+  public contentHash: string = '#content';
 
   constructor(
     public store: Store<fromRoot.State>,
   ) {}
 
   public ngOnInit() {
-  }
-
-  public checkSkipLink(urlSkipLink: string) {
-    if (urlSkipLink.endsWith(this.contentHash)) {
-      this.skipLinkNavigate = urlSkipLink;
-    } else {
-      this.skipLinkNavigate = `${urlSkipLink}${this.contentHash}`;
-    }
   }
 
   public onNavigate(event) {

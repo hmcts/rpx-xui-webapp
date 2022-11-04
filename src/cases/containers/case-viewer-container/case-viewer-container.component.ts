@@ -64,17 +64,14 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
-    console.log(this.caseDetails, 'case details');
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
     let requiredFeature = false;
     features.configurations.forEach(serviceConfig => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
-          requiredFeature = serviceConfig.releaseVersion === '3.0' ? true : false ;
+          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 3 ? true : false ;
       }
     })
-    console.log(requiredFeature, 'FERATUR');
-    console.log(!!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles), 'haberdashery')
     return requiredFeature && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
   }
 

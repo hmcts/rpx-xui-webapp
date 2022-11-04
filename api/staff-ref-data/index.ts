@@ -42,6 +42,7 @@ export async function getJobTitles(req, res: Response, next: NextFunction) {
 
 export async function getSkills(req, res: Response, next: NextFunction) {
   const markupPath: string = `/refdata/case-worker/skill`;
+
   try {
     const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(markupPath, req);
     res.status(status).send(data);

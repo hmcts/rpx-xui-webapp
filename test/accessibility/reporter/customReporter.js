@@ -93,8 +93,8 @@ function getTestDetails(test) {
         name: test.title,
         status: test.state,
         error: test.err ? test.err.message : "",
-        a11yResult: test.ctx.a11yResult,
-        screenshots:test.ctx.screenshots
+        a11yResult: test.ctx ? test.ctx.a11yResult : "",
+        screenshots:test.ctx ? test.ctx.screenshots : ""
     };
 
 }

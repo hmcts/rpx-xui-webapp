@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {caseFlagsRefData, caseTypeRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
+import {caseFlagsRefData, caseTypeRefData, initialStateImmutable, serviceHearingValuesModel} from '../../../hearing.test.data';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
@@ -63,7 +63,7 @@ describe('HearingRequirementsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingRequirementsComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({initialState:initialStateImmutable}),
         {provide: HearingsService, useValue: hearingsService},
         {provide: LocationsDataService, useValue: locationsDataService},
         {

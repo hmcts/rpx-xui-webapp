@@ -64,7 +64,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
 
   simplifyFormGroup(obj) {
     Object.keys(obj).forEach((key) => {
-      if (key === 'formGroup') {
+      if (key === 'formGroup' && obj && obj[key]) {
         const copiedValue = obj[key].value;
         delete obj[key];
         obj[key] = {

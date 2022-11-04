@@ -9,7 +9,7 @@ describe('Hearing Actuals Reducer', () => {
     // Check testing
     describe('Reset action', () => {
       it('should set correct object', () => {
-        const initialState = fromHearingActualsReducer.initialHearingActualsState;
+        const initialState = {...fromHearingActualsReducer.initialHearingActualsState};
         const action = new fromHearingActualsActions.ResetHearingActuals();
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);

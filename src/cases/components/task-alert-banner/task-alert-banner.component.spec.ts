@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TaskAlertBannerComponent } from '..';
 
 describe('TaskAlertBannerComponent', () => {
   let component: TaskAlertBannerComponent;
   let fixture: ComponentFixture<TaskAlertBannerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TaskAlertBannerComponent ],
     })

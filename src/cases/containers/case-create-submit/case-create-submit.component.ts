@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 })
 export class CaseCreateSubmitComponent implements OnInit {
 
-  eventTrigger: CaseEventTrigger;
+  eventTrigger: CaseEventTrigger = new CaseEventTrigger();
 
   jurisdictionId: string;
   caseTypeId: string;

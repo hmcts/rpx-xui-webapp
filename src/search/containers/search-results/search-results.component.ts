@@ -120,14 +120,6 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
    *
    */
   private getActionLink(processForAccess: string, caseReference: string): string {
-    if (processForAccess === ProcessForAccessType.SPECIFIC) {
-      return `/cases/case-details/${caseReference}/specific-access-request`;
-    }
-
-    if (processForAccess === ProcessForAccessType.CHALLENGED) {
-      return `/cases/case-details/${caseReference}/challenged-access-request`;
-    }
-
     return `/cases/case-details/${caseReference}`;
   }
 

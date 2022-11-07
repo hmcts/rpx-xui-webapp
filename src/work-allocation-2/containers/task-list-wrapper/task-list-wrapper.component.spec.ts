@@ -17,7 +17,7 @@ import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
 
-xdescribe('TaskListWrapperComponent', () => {
+describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
   const SELECTED_LOCATIONS = { id: 'locations', fields: [{ name: 'locations', value: ['231596', '698118'] }] };
@@ -84,7 +84,7 @@ xdescribe('TaskListWrapperComponent', () => {
     mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   }));
 
-  xdescribe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];
     const secondAction = exampleTask.actions[1];
@@ -147,7 +147,7 @@ xdescribe('TaskListWrapperComponent', () => {
     });
   });
 
-  xdescribe('onPaginationHandler()', () => {
+  describe('onPaginationHandler()', () => {
     it('should handle pagination', () => {
       component.pagination = { page_number: 1, page_size: 25 };
       fixture.detectChanges();

@@ -17,10 +17,10 @@ import { AllWorkHomeComponent } from './all-work-home.component';
     <exui-all-work-home></exui-all-work-home>`
 })
 class WrapperComponent {
-  @ViewChild(AllWorkHomeComponent, {static: false}) public appComponentRef: AllWorkHomeComponent;
+  @ViewChild(AllWorkHomeComponent, {static: true}) public appComponentRef: AllWorkHomeComponent;
 }
 
-xdescribe('AllWorkHomeComponent', () => {
+describe('AllWorkHomeComponent', () => {
   let component: AllWorkHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

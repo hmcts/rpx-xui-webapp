@@ -117,11 +117,6 @@ export const getCaseworkers = (serviceId: string, sessionStorageService: ISessio
   }
 }
 
-export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], sessionStorageService: ISessionStorageService): void => {
-  const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
-  sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
-}
-
 export const getAssigneeName = (caseworkers: any [], assignee: string): string => {
   if (assignee && caseworkers && caseworkers.some(cw => cw.idamId === assignee)) {
     const assignedCW = caseworkers.filter(cw => cw.idamId === assignee)[0];

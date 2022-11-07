@@ -25,7 +25,7 @@ import { TaskActionContainerComponent } from './task-action-container.component'
     <exui-task-action-container></exui-task-action-container>`
 })
 class WrapperComponent {
-  @ViewChild(TaskActionContainerComponent, { static: false }) public appComponentRef: TaskActionContainerComponent;
+  @ViewChild(TaskActionContainerComponent, { static: true }) public appComponentRef: TaskActionContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -36,9 +36,9 @@ class WrapperComponent {
 class NothingComponent {
 }
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  xdescribe('TaskActionContainerComponent', () => {
+  describe('TaskActionContainerComponent', () => {
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

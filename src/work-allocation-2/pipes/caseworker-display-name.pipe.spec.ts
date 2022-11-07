@@ -14,7 +14,7 @@ const mockCaseworker: Caseworker = {
 const mockName = `${mockCaseworker.firstName} ${mockCaseworker.lastName}`;
 const mockNameWithEmail = `${mockName} - ${mockCaseworker.email}`;
 
-xdescribe('CaseworkerDisplayName', () => {
+describe('CaseworkerDisplayName', () => {
   const pipe = new CaseworkerDisplayName();
   it('returns undefined if no caseworker present', () => {
     expect(pipe.transform(null)).toBe(undefined);

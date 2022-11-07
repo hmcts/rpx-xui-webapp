@@ -28,7 +28,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('HearingRequirementsComponent', () => {
+xdescribe('HearingRequirementsComponent', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',

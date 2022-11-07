@@ -1,7 +1,7 @@
 import {NextFunction, Response} from 'express';
 import {sendGet, sendPost} from '../common/crudService';
 import {getConfigValue} from '../configuration';
-import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
+import {SERVICES_PRIVATELAW_HEARINGS_COMPONENT_API, SERVICES_SSCS_HEARINGS_COMPONENT_API} from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import {EnhancedRequest, JUILogger} from '../lib/models';
 import {DEFAULT_SCREEN_FLOW} from './data/defaultScreenFlow.data';
@@ -15,7 +15,6 @@ import {
 import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 const logger: JUILogger = log4jui.getLogger('hearing-service-api');
-const serviceHearingsUrl: string = getConfigValue(SERVICES_HEARINGS_COMPONENT_API);
 
 /**
  * loadServiceHearingValues - get details required to populate the hearing request/amend journey
@@ -23,7 +22,7 @@ const serviceHearingsUrl: string = getConfigValue(SERVICES_HEARINGS_COMPONENT_AP
 export async function loadServiceHearingValues(req: EnhancedRequest, res: Response, next: NextFunction) {
   const jurisdictionId = req.query.jurisdictionId;
   const reqBody = req.body;
-  const servicePath: string = getServicePath(serviceHearingsUrl, jurisdictionId);
+  const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceHearingValues`;
   try {
     const {status, data}: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
@@ -47,7 +46,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
 export async function loadServiceLinkedCases(req: EnhancedRequest, res: Response, next: NextFunction) {
   const jurisdictionId = req.query.jurisdictionId;
   const reqBody = req.body;
-  const servicePath: string = getServicePath(serviceHearingsUrl, jurisdictionId);
+  const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
     const {status, data}: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req);
@@ -82,7 +81,7 @@ export async function getHearings(caseId: string, req: EnhancedRequest) {
 export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Response, next: NextFunction) {
   const jurisdictionId = req.query.jurisdictionId;
   const reqBody = req.body;
-  const servicePath: string = getServicePath(serviceHearingsUrl, jurisdictionId);
+  const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
     const {status, data}: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req);
@@ -130,6 +129,13 @@ function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): 
   return aggregateResult;
 }
 
-function getServicePath(pathTemplate: string, jurisdictionId): string {
-  return pathTemplate.replace(/jurisdiction/g, jurisdictionId.toLowerCase());
+function getServicePath(jurisdictionId): string {
+  switch (jurisdictionId.toLowerCase()) {
+    case 'sscs':
+      return getConfigValue(SERVICES_SSCS_HEARINGS_COMPONENT_API);
+    case 'privatelaw':
+      return getConfigValue(SERVICES_PRIVATELAW_HEARINGS_COMPONENT_API);
+    default:
+      logger.error(`Hearings not configured for this jurisdiction: ${jurisdictionId}`);
+  }
 }

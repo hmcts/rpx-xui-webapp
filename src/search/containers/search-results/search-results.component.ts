@@ -54,7 +54,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
         service: result.CCDJurisdictionName,
         state: this.getStateName(result.stateId, result.CCDJurisdictionId, result.CCDCaseTypeId),
         location: result.baseLocationName,
-        actionLink: this.getActionLink(result.processForAccess, result.caseReference),
+        actionLink: `/cases/case-details/${result.caseReference}`,
         actionLinkText: this.getActionLinkText(result.processForAccess)
       };
 
@@ -113,14 +113,6 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     }
 
     return stateId;
-  }
-
-  /**
-   * Returns the href url for the anchor tag based on process for access and case reference
-   *
-   */
-  private getActionLink(processForAccess: string, caseReference: string): string {
-    return `/cases/case-details/${caseReference}`;
   }
 
   /**

@@ -144,8 +144,8 @@ describe('SearchResultsComponent', () => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getJurisdictions']);
     jurisdictionService.getJurisdictions.and.returnValue(of(jurisdictions));
     TestBed.configureTestingModule({
-      declarations: [SearchResultsComponent, PaginationComponent],
-      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [ SearchResultsComponent, PaginationComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule
@@ -156,7 +156,7 @@ describe('SearchResultsComponent', () => {
         { provide: JurisdictionService, useValue: jurisdictionService }
       ]
     })
-      .compileComponents();
+    .compileComponents();
   }));
 
   beforeEach(() => {
@@ -213,11 +213,6 @@ describe('SearchResultsComponent', () => {
   it('should set \"more results to go\" flag correctly', () => {
     component.onSearchSubscriptionHandler([searchResultWithMoreResultsToGo, jurisdictions]);
     expect(component.moreResultsToGo).toBe(true);
-  });
-
-  it('should unsubscribe subscriptions onDestroy', () => {
-    // @ts-ignore
-    expect(component.getActionLink('', '155667788')).toBe('/cases/case-details/155667788');
   });
 
   it('should decrement the start record, set its new value on the component, and retrieve the search results', () => {

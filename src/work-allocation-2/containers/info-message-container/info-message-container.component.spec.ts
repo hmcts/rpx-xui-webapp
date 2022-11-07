@@ -11,12 +11,12 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
   template: `<exui-info-message-container></exui-info-message-container>`
 })
 class WrapperComponent {
-  @ViewChild(InfoMessageContainerComponent, {static: false}) public appComponentRef: InfoMessageContainerComponent;
+  @ViewChild(InfoMessageContainerComponent, {static: true}) public appComponentRef: InfoMessageContainerComponent;
 }
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  xdescribe('InfoMessageContainerComponent', () => {
+  describe('InfoMessageContainerComponent', () => {
     let router: Router;
     let component: InfoMessageContainerComponent;
     let wrapper: WrapperComponent;

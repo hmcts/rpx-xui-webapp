@@ -29,7 +29,7 @@ import { TaskListComponent } from './task-list.component';
       [pagination]="pagination"></exui-task-list>`
 })
 class WrapperComponent {
-  @ViewChild(TaskListComponent, { static: false }) public appComponentRef: TaskListComponent;
+  @ViewChild(TaskListComponent, { static: true }) public appComponentRef: TaskListComponent;
   @Input() public fields: FieldConfig[];
   @Input() public tasks: Task[];
   @Input() public tasksTotal: number;
@@ -73,7 +73,7 @@ function getTaskService(): TaskServiceConfig {
   };
 }
 
-xdescribe('TaskListComponent', () => {
+describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -442,7 +442,7 @@ xdescribe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('created_date');
   });
 
-  xdescribe('act upon deep linking', () => {
+  describe('act upon deep linking', () => {
     const id = '12345678';
 
     it('should select appropriate task from location hash', () => {
@@ -465,7 +465,7 @@ xdescribe('TaskListComponent', () => {
     });
   });
 
-  xdescribe('pagination display state', () => {
+  describe('pagination display state', () => {
     it('should display pagination', async () => {
       component.tasks = getTasks();
       expect(component.isPaginationEnabled()).toEqual(true);
@@ -477,7 +477,7 @@ xdescribe('TaskListComponent', () => {
     });
   });
 
-  xdescribe('generate pagination summary', () => {
+  describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {

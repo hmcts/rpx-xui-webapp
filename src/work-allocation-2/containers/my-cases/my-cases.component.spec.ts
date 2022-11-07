@@ -17,7 +17,7 @@ import { MyCasesComponent } from './my-cases.component';
 @Component({ template: `<exui-my-cases></exui-my-cases>` })
 
 class WrapperComponent {
-  @ViewChild(MyCasesComponent, {static: false}) public appComponentRef: MyCasesComponent;
+  @ViewChild(MyCasesComponent, {static: true}) public appComponentRef: MyCasesComponent;
 }
 
 xdescribe('MyCasesComponent', () => {

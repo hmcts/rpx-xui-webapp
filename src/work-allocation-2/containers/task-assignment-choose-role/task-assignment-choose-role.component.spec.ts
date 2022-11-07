@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -24,7 +24,7 @@ xdescribe('TaskAssignmentChooseRoleComponent', () => {
     '"caseworker-ia-caseofficer","cwd-user","hmcts-legal-operations",' +
     '"task-supervisor","tribunal-caseworker"],"roleCategory":"LEGAL_OPERATIONS"}');
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([])],
       declarations: [TaskAssignmentChooseRoleComponent, ChooseRadioOptionComponent],

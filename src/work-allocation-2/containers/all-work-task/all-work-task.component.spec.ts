@@ -24,7 +24,7 @@ import { AllWorkTaskComponent } from './all-work-task.component';
     <exui-all-work-tasks></exui-all-work-tasks>`
 })
 class WrapperComponent {
-  @ViewChild(AllWorkTaskComponent, {static: false}) public appComponentRef: AllWorkTaskComponent;
+  @ViewChild(AllWorkTaskComponent, {static: true}) public appComponentRef: AllWorkTaskComponent;
 }
 
 @Component({

@@ -1,22 +1,22 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { CaseNameFieldComponent } from './case-name-field.component';
-
 
 @Component({
   template: `<exui-case-name-field [caseName]="caseName" [caseId]="caseId"></exui-case-name-field>`
 })
 class WrapperComponent {
-  @ViewChild(CaseNameFieldComponent, {static: false}) public appComponentRef: CaseNameFieldComponent;
+  @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
   @Input() public caseName: string;
   @Input() public caseId: string;
 }
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  xdescribe('CaseNameFieldComponent', () => {
+  describe('CaseNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_NAME: string = 'Casename';
     const CASE_ID: string = 'CaseId';
@@ -25,7 +25,7 @@ xdescribe('WorkAllocation', () => {
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ]

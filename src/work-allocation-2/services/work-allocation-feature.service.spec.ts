@@ -1,13 +1,13 @@
 import { of } from 'rxjs';
 import { WorkAllocationFeatureService } from './work-allocation-feature.service';
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
   const mockFeatureToggleService = jasmine.createSpyObj(
     'mockFeatureToggleService',
     ['getValue']
   );
 
-  xdescribe('WorkAllocationFeatureService', () => {
+  describe('WorkAllocationFeatureService', () => {
     it('should be Truthy', () => {
       const service = new WorkAllocationFeatureService(
         mockFeatureToggleService

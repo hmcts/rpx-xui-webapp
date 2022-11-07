@@ -1,7 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { IntegerPipe } from './integer.pipe';
 
-xdescribe('IntegerPipe', () => {
+describe('IntegerPipe', () => {
   const pipe = new IntegerPipe();
   const decimalPipe = new DecimalPipe('en-US');
   it('returns undefined if non-number given', () => {

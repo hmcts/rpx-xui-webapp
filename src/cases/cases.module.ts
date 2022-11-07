@@ -10,6 +10,7 @@ import {
   AuthService as CCDAuthService,
   CaseEditorModule,
   CaseEditWizardGuard,
+  CaseHeaderModule,
   CaseListFiltersModule,
   CaseListModule,
   CaseNotifier,
@@ -17,6 +18,7 @@ import {
   CaseResolver,
   CasesService,
   CaseViewerModule,
+  CcdCYAPageLabelFilterPipe,
   CreateCaseFiltersModule,
   DocumentManagementService,
   DraftService,
@@ -24,12 +26,14 @@ import {
   FormatTranslatorService,
   HttpErrorService,
   HttpService,
+  IsCompoundPipe,
   LoadingModule,
   NavigationNotifierService,
   OrganisationConverter,
   OrganisationService,
   PageValidationService,
   PaletteModule,
+  PipesModule,
   PlaceholderService,
   RequestOptionsBuilder,
   RouterHelperService,
@@ -83,10 +87,12 @@ import { effects, reducers } from './store';
     PriorityFieldComponentModule,
     HearingsModule,
     HearingsPipesModule,
+    CaseHeaderModule,
     CaseEditorModule,
     CaseListModule,
     PaletteModule,
-    CaseViewerModule
+    CaseViewerModule,
+    PipesModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
@@ -118,7 +124,9 @@ import { effects, reducers } from './store';
     FormatTranslatorService,
     WASupportedJurisdictionsService,
     OrganisationService,
-    OrganisationConverter
+    OrganisationConverter,
+    IsCompoundPipe,
+    CcdCYAPageLabelFilterPipe
   ]
 })
 /**

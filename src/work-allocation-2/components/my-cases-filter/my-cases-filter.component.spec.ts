@@ -14,10 +14,10 @@ import { MyCasesFilterComponent } from './my-cases-filter.component';
   template: `<exui-my-cases-filter></exui-my-cases-filter>`
 })
 class WrapperComponent {
-  @ViewChild(MyCasesFilterComponent, {static: false}) public appComponentRef: MyCasesFilterComponent;
+  @ViewChild(MyCasesFilterComponent, {static: true}) public appComponentRef: MyCasesFilterComponent;
 }
 
-xdescribe('MyCasesFilterComponent', () => {
+describe('MyCasesFilterComponent', () => {
   let component: MyCasesFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

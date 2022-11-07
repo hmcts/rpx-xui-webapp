@@ -3,7 +3,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { WorkAllocationFeatureToggleGuard } from './work-allocation-feature-toggle.guard';
 
-xdescribe('WorkAllocationFeatureToggleGuard', () => {
+describe('WorkAllocationFeatureToggleGuard', () => {
     let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
     let guard: WorkAllocationFeatureToggleGuard;
     let routerMock: jasmine.SpyObj<Router>;

@@ -24,10 +24,10 @@ import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.compon
     <exui-task-assignment-confirm></exui-task-assignment-confirm>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentConfirmComponent, {static: false}) public appComponentRef: TaskAssignmentConfirmComponent;
+  @ViewChild(TaskAssignmentConfirmComponent, {static: true}) public appComponentRef: TaskAssignmentConfirmComponent;
 }
 
-xdescribe('TaskAssignmentConfirmComponent', () => {
+describe('TaskAssignmentConfirmComponent', () => {
   let component: TaskAssignmentConfirmComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -274,7 +274,7 @@ xdescribe('TaskAssignmentConfirmComponent', () => {
 });
 
 ['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach(role => {
-  xdescribe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
+  describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
     let component: TaskAssignmentConfirmComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

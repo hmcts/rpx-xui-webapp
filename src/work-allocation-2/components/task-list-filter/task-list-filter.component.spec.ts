@@ -21,10 +21,10 @@ import { TaskListFilterComponent } from './task-list-filter.component';
     <exui-task-list-filter></exui-task-list-filter>`
 })
 class WrapperComponent {
-  @ViewChild(TaskListFilterComponent, {static: false}) public appComponentRef: TaskListFilterComponent;
+  @ViewChild(TaskListFilterComponent, {static: true}) public appComponentRef: TaskListFilterComponent;
 }
 
-xdescribe('TaskListFilterComponent', () => {
+describe('TaskListFilterComponent', () => {
   let component: TaskListFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -157,13 +157,6 @@ xdescribe('TaskListFilterComponent', () => {
   it('should show the toggle filter button', () => {
     const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
     expect(button.nativeElement.innerText).toContain('Show work filter');
-  });
-
-  it('should hide the toggle filter button', () => {
-    const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
-    button.nativeElement.click();
-    fixture.detectChanges();
-    expect(button.nativeElement.innerText).toContain('Hide work filter');
   });
 
   it('should set the persistence to be local storage if the  user is a judicial user', () => {

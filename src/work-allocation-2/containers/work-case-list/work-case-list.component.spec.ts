@@ -25,7 +25,7 @@ import { WorkCaseListComponent } from './work-case-list.component';
       [pagination]="pagination"></exui-work-case-list>`
 })
 class WrapperComponent {
-  @ViewChild(WorkCaseListComponent, { static: false }) public appComponentRef: WorkCaseListComponent;
+  @ViewChild(WorkCaseListComponent, { static: true }) public appComponentRef: WorkCaseListComponent;
   @Input() public fields: FieldConfig[];
   @Input() public cases: Case[];
   @Input() public casesTotal: number;
@@ -60,7 +60,7 @@ function getCaseService(): CaseServiceConfig {
   };
 }
 
-xdescribe('CaseListComponent', () => {
+describe('CaseListComponent', () => {
   let component: WorkCaseListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -407,7 +407,7 @@ xdescribe('CaseListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('startDate');
   });
 
-  xdescribe('act upon deep linking', () => {
+  describe('act upon deep linking', () => {
     const id = '12345678';
 
     it('should select appropriate case from location hash', () => {
@@ -429,7 +429,7 @@ xdescribe('CaseListComponent', () => {
     });
   });
 
-  xdescribe('generate pagination summary', () => {
+  describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {

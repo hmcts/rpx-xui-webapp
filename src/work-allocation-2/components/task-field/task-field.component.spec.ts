@@ -11,14 +11,14 @@ import { TaskFieldComponent } from './task-field.component';
   template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
 })
 class WrapperComponent {
-  @ViewChild(TaskFieldComponent, {static: false}) public appComponentRef: TaskFieldComponent;
+  @ViewChild(TaskFieldComponent, {static: true}) public appComponentRef: TaskFieldComponent;
   @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  xdescribe('TaskFieldComponent', () => {
+  describe('TaskFieldComponent', () => {
     let component: TaskFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

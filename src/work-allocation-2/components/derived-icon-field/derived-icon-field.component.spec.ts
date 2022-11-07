@@ -10,7 +10,7 @@ import { DerivedIconFieldComponent } from './derived-icon-field.component';
   template: `<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>`
 })
 class WrapperComponent {
-  @ViewChild(DerivedIconFieldComponent, {static: false}) public appComponentRef: DerivedIconFieldComponent;
+  @ViewChild(DerivedIconFieldComponent, {static: true}) public appComponentRef: DerivedIconFieldComponent;
   @Input() public task: Task = null;
   @Input() public sourceColumn: string;
   @Input() public matchValue: any;
@@ -23,9 +23,9 @@ function getTasks(): Task[] {
   return getMockTasks();
 }
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  xdescribe('DerivedIconFieldComponent', () => {
+  describe('DerivedIconFieldComponent', () => {
     let component: DerivedIconFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

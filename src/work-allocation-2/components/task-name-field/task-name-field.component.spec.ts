@@ -9,7 +9,7 @@ import { TaskNameFieldComponent } from './task-name-field.component';
   template: `<exui-task-name-field [taskName]="taskName" [caseId]='caseId'></exui-task-name-field>`
 })
 class WrapperComponent {
-  @ViewChild(TaskNameFieldComponent, {static: false}) public appComponentRef: TaskNameFieldComponent;
+  @ViewChild(TaskNameFieldComponent, {static: true}) public appComponentRef: TaskNameFieldComponent;
   @Input() public taskName: string;
   @Input() public caseId: string;
 }

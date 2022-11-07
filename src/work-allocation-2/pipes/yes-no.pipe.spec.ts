@@ -1,6 +1,6 @@
 import { YesNoPipe } from './yes-no.pipe';
 
-xdescribe('YesNoPipe', () => {
+describe('YesNoPipe', () => {
   const pipe = new YesNoPipe();
   it('returns undefined if null given', () => {
     expect(pipe.transform(null)).toBe(undefined);

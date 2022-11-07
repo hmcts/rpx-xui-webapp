@@ -1,9 +1,9 @@
 import JsonConfig from './json-config';
 import { Task } from './tasks';
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  xdescribe('JsonConfig', () => {
+  describe('JsonConfig', () => {
 
     it('should correctly coerce a partial JSON object to a Task', () => {
       const JSON: object = { id: 'Bob' };

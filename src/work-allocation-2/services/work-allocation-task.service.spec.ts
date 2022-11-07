@@ -3,12 +3,12 @@ import { ListConstants } from '../components/constants';
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { ACTION, WorkAllocationTaskService } from './work-allocation-task.service';
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
   mockHttpService.post.and.returnValue(of({}));
 
-  xdescribe('WorkAllocationTaskService', () => {
+  describe('WorkAllocationTaskService', () => {
     it('should be Truthy', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       expect(service).toBeTruthy();

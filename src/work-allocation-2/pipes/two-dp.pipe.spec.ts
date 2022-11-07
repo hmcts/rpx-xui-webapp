@@ -1,7 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { TwoDPPipe } from './two-dp.pipe';
 
-xdescribe('TwoDPPipe', () => {
+describe('TwoDPPipe', () => {
   const pipe = new TwoDPPipe();
   const decimalPipe = new DecimalPipe('en-US');
   it('returns undefined if non-number given', () => {

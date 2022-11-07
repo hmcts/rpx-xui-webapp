@@ -10,7 +10,7 @@ import {
   WILDCARD_SERVICE_DOWN
 } from './work-allocation-utils';
 
-xdescribe('WorkAllocationUtils', () => {
+describe('WorkAllocationUtils', () => {
   let mockRouter: any;
   let sessionStorageService: any;
 

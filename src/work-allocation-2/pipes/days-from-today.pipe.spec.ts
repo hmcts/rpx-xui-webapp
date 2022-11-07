@@ -1,6 +1,6 @@
 import { DaysFromTodayPipe } from './days-from-today.pipe';
 
-xdescribe('DaysFromTodayPipe', () => {
+describe('DaysFromTodayPipe', () => {
   beforeEach(() => {
     jasmine.clock().install();
     jasmine.clock().mockDate(new Date('2020-01-03'));

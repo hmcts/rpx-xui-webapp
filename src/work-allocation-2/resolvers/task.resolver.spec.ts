@@ -5,7 +5,7 @@ import { getMockTasks } from '../tests/utils.spec';
 import { TaskResolver } from './task.resolver';
 
 
-xdescribe('Task Resolver', () => {
+describe('Task Resolver', () => {
 
   it('resolves on success', () => {
     const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);

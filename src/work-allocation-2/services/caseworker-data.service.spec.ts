@@ -1,10 +1,10 @@
 import { of } from 'rxjs';
 import { CaseworkerDataService } from './caseworker-data.service';
 
-xdescribe('WorkAllocation service', () => {
+describe('WorkAllocation service', () => {
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
-  xdescribe('CaseworkerDataService', () => {
+  describe('CaseworkerDataService', () => {
     it('should be Truthy', () => {
       const service = new CaseworkerDataService(mockHttpService, mockSessionStorageService);
       expect(service).toBeTruthy();

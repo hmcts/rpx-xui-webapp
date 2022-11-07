@@ -70,7 +70,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   private getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails: UserDetails): Location[] {
     this.serviceRefData = serviceRefData;
     this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
-    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.getRoleCategory(userDetails.userInfo.roles);
     let userLocationsByService: LocationsByService[] = [];
     const locations: Location[] = [];
     const locationServices = new Set<string>();

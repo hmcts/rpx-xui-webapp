@@ -34,7 +34,8 @@ export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = 'services.case.judicialwork
 export const SERVICES_CASE_JUDICIAL_REF_PATH = 'services.case.judicialApi';
 export const SERVICES_LOCATION_API_PATH = 'services.location_api';
 
-export const SERVICES_HEARINGS_COMPONENT_API = 'services.hearings.serviceApi';
+export const SERVICES_SSCS_HEARINGS_COMPONENT_API = 'services.hearings.sscs.serviceApi';
+export const SERVICES_PRIVATELAW_HEARINGS_COMPONENT_API = 'services.hearings.privateLaw.serviceApi';
 export const SERVICES_HMC_HEARINGS_COMPONENT_API = 'services.hearings.hmcApi';
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api';
@@ -77,6 +78,8 @@ export const ENVIRONMENT = 'environment';
 export const JURISDICTIONS = 'jurisdictions';
 
 export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
+
+export const HEARINGS_SUPPORTED_JURISDICTIONS = 'services.hearings.hearingsJurisdictions';
 
 export const SERVICE_REF_DATA_MAPPING = 'serviceRefDataMapping';
 

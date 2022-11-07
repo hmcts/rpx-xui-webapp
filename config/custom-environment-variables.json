@@ -38,7 +38,13 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "hearings": {
-      "serviceApi": "SERVICES_HEARINGS_COMPONENT_API",
+			"hearingsJurisdictions": "SSCS,PRIVATELAW",
+			"sscs": {
+				"serviceApi": "SERVICES_SSCS_HEARINGS_COMPONENT_API"
+			},
+			"privateLaw": {
+				"serviceApi": "SERVICES_PRIVATELAW_HEARINGS_COMPONENT_API"
+			},
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
     },
     "documents": {

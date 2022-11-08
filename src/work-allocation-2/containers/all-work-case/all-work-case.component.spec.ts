@@ -58,22 +58,22 @@ describe('AllWorkCaseComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        StoreModule.forRoot({...reducers}),
+        StoreModule.forRoot({ ...reducers }),
         WorkAllocationComponentsModule,
         PaginationModule
       ],
       declarations: [AllWorkCaseComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
-        {provide: Router, useValue: routerMock},
-        {provide: WorkAllocationCaseService, useValue: mockCaseService},
-        {provide: AlertService, useValue: mockAlertService},
-        {provide: SessionStorageService, useValue: mockSessionStorageService},
-        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
-        {provide: LocationDataService, useValue: mockLocationService},
-        {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
-        {provide: LoadingService, useValue: mockLoadingService},
-        {provide: FeatureToggleService, useValue: mockFeatureToggleService},
-        {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService},
+        { provide: Router, useValue: routerMock },
+        { provide: WorkAllocationCaseService, useValue: mockCaseService },
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: CaseworkerDataService, useValue: mockCaseworkerService },
+        { provide: LocationDataService, useValue: mockLocationService },
+        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
         { provide: AllocateRoleService, useValue: mockAllocateRoleService }
       ]
     }).compileComponents();
@@ -84,14 +84,15 @@ describe('AllWorkCaseComponent', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     const cases: Case[] = getMockCases();
+    component.isFirsTimeLoad = false;
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
-    mockCaseService.getCases.and.returnValue(of({cases}));
+    mockCaseService.getCases.and.returnValue(of({ cases }));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
-    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ));
+    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
     fixture.detectChanges();
@@ -101,6 +102,7 @@ describe('AllWorkCaseComponent', () => {
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
+    component.isCasesFiltered = true;
     expect(headerCells).toBeDefined();
     expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
     for (let i = 0; i < fields.length; i++) {
@@ -116,6 +118,7 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should show judicial names when available', () => {
+    component.isCasesFiltered = true;
     const firstMockCase = component.cases[0];
     const secondMockCase = component.cases[1];
 
@@ -127,6 +130,7 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should not show the footer when there are cases', () => {
+    component.isCasesFiltered = true;
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
@@ -149,6 +153,12 @@ describe('AllWorkCaseComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
+  it('should show the click Apply button text', () => {
+    const selection = { location: 'string', jurisdiction: 'string', actorId: 'string', role: 'string', person: 'any' };
+    component.onSelectionChanged(selection);
+    expect(component.isFirsTimeLoad).toBeFalsy();
+  });
+
   it('should appropriately handle clicking on a row action', () => {
     const element = fixture.debugElement.nativeElement;
     // Use the first case.
@@ -164,7 +174,7 @@ describe('AllWorkCaseComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), {state: {backUrl: 'work/all-work/cases'}});
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), { state: { backUrl: 'work/all-work/cases' } });
   });
 
   afterEach(() => {

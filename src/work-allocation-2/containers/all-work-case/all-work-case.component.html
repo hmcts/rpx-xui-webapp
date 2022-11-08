@@ -7,20 +7,25 @@
       (selectChanged)="onSelectionChanged($event)"
     ></exui-case-manager-filter>
     <div class="hmcts-filter-layout__content exui-task-list">
-      <exui-work-case-list
-        [caseServiceConfig]="caseServiceConfig"
-        [cases]="cases"
-        [fields]="fields"
-        [locations]="filterLists.locations"
-        [casesTotal]="casesTotal"
-        [uniqueCases]="uniqueCases"
-        [pagination]="pagination"
-        [sortedBy]="sortedBy"
-        [emptyMessage]="emptyMessage"
-        (paginationEvent)="onPaginationEvent($event)"
-        (sortEvent)="onSortHandler($event)"
-        (actionEvent)="onActionHandler($event)">
-      </exui-work-case-list>
+      <ng-container *ngIf="!isCasesFiltered; else showCases">
+        <p>Please filter the list of cases using the filter component on the left and click Apply.</p>
+      </ng-container>
+      <ng-template #showCases>
+        <exui-work-case-list
+          [caseServiceConfig]="caseServiceConfig"
+          [cases]="cases"
+          [fields]="fields"
+          [locations]="filterLists.locations"
+          [casesTotal]="casesTotal"
+          [uniqueCases]="uniqueCases"
+          [pagination]="pagination"
+          [sortedBy]="sortedBy"
+          [emptyMessage]="emptyMessage"
+          (paginationEvent)="onPaginationEvent($event)"
+          (sortEvent)="onSortHandler($event)"
+          (actionEvent)="onActionHandler($event)">
+        </exui-work-case-list>
+      </ng-template>
     </div>
   </ng-container>
 </div>

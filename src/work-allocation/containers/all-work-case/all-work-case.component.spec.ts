@@ -23,6 +23,7 @@ import {
   WorkAllocationCaseService,
   WorkAllocationFeatureService
 } from '../../services';
+import { JurisdictionsService } from '../../services/juridictions.service';
 import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';

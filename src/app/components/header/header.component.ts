@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppTitleModel } from '../../models/app-title.model';
@@ -9,7 +9,8 @@ import { NavItemsModel } from './../../models/nav-item.model';
 
 @Component({
   selector: 'exui-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss']
 })
 
 /**
@@ -26,6 +27,8 @@ export class HeaderComponent implements OnInit {
   @Input() public showNavItems: Observable<boolean>;
   @Input() public currentUrl: string;
   @Output() public navigate = new EventEmitter<string>();
+
+  @HostBinding('attr.tabindex') tabindex = '0';
 
   constructor(
     public store: Store<fromRoot.State>,

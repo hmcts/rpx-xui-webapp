@@ -1,5 +1,6 @@
-import { RoutesRecognized } from '@angular/router';
-import { of } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
+import { NavigationEnd, NavigationStart, RoutesRecognized } from '@angular/router';
+import { BehaviorSubject, of } from 'rxjs';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -13,7 +14,44 @@ describe('AppComponent', () => {
   let cookieService: any;
   let router: any;
   let title: any;
-  let testRoute: RoutesRecognized;
+  const eventsSub = new BehaviorSubject<any>(null);
+
+  const routesRecognized = new RoutesRecognized(1, 'test', 'test', {
+    url: 'test',
+    root: {
+        firstChild: {
+            data: { title: 'Test' },
+            url: [],
+            params: {},
+            queryParams: {},
+            fragment: '',
+            outlet: '',
+            component: '',
+            routeConfig: {},
+            root: null,
+            parent: null,
+            firstChild: null,
+            children: [],
+            pathFromRoot: [],
+            paramMap: null,
+            queryParamMap: null
+        },
+        data: { title: 'Test' },
+        url: [],
+        params: {},
+        queryParams: {},
+        fragment: '',
+        outlet: '',
+        component: '',
+        routeConfig: {},
+        root: null,
+        parent: null,
+        children: [],
+        pathFromRoot: [],
+        paramMap: null,
+        queryParamMap: null
+    }
+  });
 
   beforeEach(() => {
       store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
@@ -23,43 +61,7 @@ describe('AppComponent', () => {
       cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
       loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
       environmentService = jasmine.createSpyObj('environmentService', ['config$']);
-      testRoute = new RoutesRecognized(1, 'test', 'test', {
-          url: 'test',
-          root: {
-              firstChild: {
-                  data: { title: 'Test' },
-                  url: [],
-                  params: {},
-                  queryParams: {},
-                  fragment: '',
-                  outlet: '',
-                  component: '',
-                  routeConfig: {},
-                  root: null,
-                  parent: null,
-                  firstChild: null,
-                  children: [],
-                  pathFromRoot: [],
-                  paramMap: null,
-                  queryParamMap: null
-              },
-              data: { title: 'Test' },
-              url: [],
-              params: {},
-              queryParams: {},
-              fragment: '',
-              outlet: '',
-              component: '',
-              routeConfig: {},
-              root: null,
-              parent: null,
-              children: [],
-              pathFromRoot: [],
-              paramMap: null,
-              queryParamMap: null
-          }
-      });
-      router = { events: of(testRoute) };
+      router = { events: eventsSub };
       title = jasmine.createSpyObj('Title', ['setTitle']);
       appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService);
   });
@@ -69,6 +71,7 @@ describe('AppComponent', () => {
   });
 
   it('Calls title service', () => {
+    eventsSub.next(routesRecognized);
     expect(title.setTitle).toHaveBeenCalled();
   });
 
@@ -290,5 +293,40 @@ describe('AppComponent', () => {
         });
         expect(spy).toHaveBeenCalledWith('dummy');
     });
+  });
+
+  describe('handleTopOfPageFocus()', () => {
+    const navigationStart = new NavigationStart(1, '/', 'popstate');
+    const userNavigatedBack = new NavigationStart(1, '/', 'imperative', {
+      key: '',
+      navigationId: 1
+    });
+    const navigationEnd = new NavigationEnd(1, '/', '/next');
+    const navigationEndWithHash = new NavigationEnd(1, '/', '/#next');
+    const headerElement = 'exui-header';
+    let querySelectorSpy;
+
+    beforeEach(() => {
+      querySelectorSpy = spyOn(document, 'querySelector').and.callThrough();
+    });
+
+    it('should not scroll to top of page as user has navigated back in browser', () => {
+      eventsSub.next(userNavigatedBack);
+      eventsSub.next(navigationEnd);
+      expect(querySelectorSpy).not.toHaveBeenCalledWith(headerElement);
+    });
+
+    it('should not scroll to top of page as user url has a hash', () => {
+      eventsSub.next(navigationStart);
+      eventsSub.next(navigationEndWithHash);
+      expect(querySelectorSpy).not.toHaveBeenCalledWith(headerElement);
+    });
+
+    it('should scroll to top of page', fakeAsync(() => {
+      eventsSub.next(navigationStart);
+      eventsSub.next(navigationEnd);
+      tick(1000);
+      expect(querySelectorSpy).toHaveBeenCalledWith(headerElement);
+    }));
   });
 });

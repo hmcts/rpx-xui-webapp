@@ -1,7 +1,7 @@
+import {HEARINGS_SUPPORTED_JURISDICTIONS} from '../configuration/references';
 import {NextFunction, Response} from 'express';
 import {sendGet, sendPost} from '../common/crudService';
 import {getConfigValue} from '../configuration';
-import {SERVICES_PRIVATELAW_HEARINGS_COMPONENT_API, SERVICES_SSCS_HEARINGS_COMPONENT_API} from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import {EnhancedRequest, JUILogger} from '../lib/models';
 import {DEFAULT_SCREEN_FLOW} from './data/defaultScreenFlow.data';
@@ -130,12 +130,15 @@ function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): 
 }
 
 function getServicePath(jurisdictionId): string {
-  switch (jurisdictionId.toLowerCase()) {
-    case 'sscs':
-      return getConfigValue(SERVICES_SSCS_HEARINGS_COMPONENT_API);
-    case 'privatelaw':
-      return getConfigValue(SERVICES_PRIVATELAW_HEARINGS_COMPONENT_API);
-    default:
-      logger.error(`Hearings not configured for this jurisdiction: ${jurisdictionId}`);
+  if (isJurisdictionSupported(jurisdictionId)) {
+    const configPath = `services.hearings.${jurisdictionId.toLowerCase()}.serviceApi`;
+    return getConfigValue(configPath);
   }
+  logger.error(`Hearings not configured for this jurisdiction: ${jurisdictionId}`);
+  return '';
+}
+
+function isJurisdictionSupported(jurisdictionId): boolean {
+  const supportedJurisdictions = getConfigValue(HEARINGS_SUPPORTED_JURISDICTIONS);
+  return supportedJurisdictions.includes(jurisdictionId);
 }

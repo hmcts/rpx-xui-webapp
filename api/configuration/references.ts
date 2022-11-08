@@ -34,8 +34,6 @@ export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = 'services.case.judicialwork
 export const SERVICES_CASE_JUDICIAL_REF_PATH = 'services.case.judicialApi';
 export const SERVICES_LOCATION_API_PATH = 'services.location_api';
 
-export const SERVICES_SSCS_HEARINGS_COMPONENT_API = 'services.hearings.sscs.serviceApi';
-export const SERVICES_PRIVATELAW_HEARINGS_COMPONENT_API = 'services.hearings.privateLaw.serviceApi';
 export const SERVICES_HMC_HEARINGS_COMPONENT_API = 'services.hearings.hmcApi';
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api';

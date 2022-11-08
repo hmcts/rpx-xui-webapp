@@ -38,15 +38,15 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "hearings": {
-			"hearingsJurisdictions": "SSCS,PRIVATELAW",
-			"sscs": {
-				"serviceApi": "SERVICE_HEARINGS_COMPONENT_API.sscs",
-				"caseTypes": "Appeal"
-			},
-			"privatelaw": {
-				"serviceApi": "SERVICE_HEARINGS_COMPONENT_API.privatelaw",
-				"caseTypes": ""
-			},
+      "hearingsJurisdictions": "SSCS,PRIVATELAW",
+      "sscs": {
+        "serviceApi": "SERVICE_HEARINGS_COMPONENT_API.sscs",
+        "caseTypes": "Benefit"
+      },
+      "privatelaw": {
+        "serviceApi": "SERVICE_HEARINGS_COMPONENT_API.privatelaw",
+        "caseTypes": "PRLAPPS"
+      },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
     },
     "documents": {

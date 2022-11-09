@@ -90,7 +90,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.cookieBannerEnabledSubscription.unsubscribe();
     }
 
-    if(this.subscription) {
+    if (this.subscription) {
       this.subscription.unsubscribe();
     }
   }

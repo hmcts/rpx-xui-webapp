@@ -1,17 +1,19 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { CaseNameFieldComponent } from './case-name-field.component';
 
 @Component({
-  template: `<exui-case-name-field [caseName]="caseName" [caseId]="caseId"></exui-case-name-field>`
+  template: `<exui-case-name-field [caseName]="caseName" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>`
 })
 class WrapperComponent {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
   @Input() public caseName: string;
   @Input() public caseId: string;
+  @Input() public hasAccess: boolean;
 }
 
 describe('WorkAllocation', () => {
@@ -28,7 +30,7 @@ describe('WorkAllocation', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
       })
       .compileComponents();
     }));
@@ -47,11 +49,12 @@ describe('WorkAllocation', () => {
       // Add the caseName and it should work (showing the link).
       wrapper.caseName = CASE_NAME;
       wrapper.caseId = CASE_ID;
+      wrapper.hasAccess = true;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}#overview`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
     });
 
     it('should remove the link if case id is changed to undefined', () => {
@@ -61,11 +64,12 @@ describe('WorkAllocation', () => {
       // Add the caseId and it should work (showing the link).
       wrapper.caseName = CASE_NAME;
       wrapper.caseId = CASE_ID;
+      wrapper.hasAccess = true;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}#overview`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
 
       // Clear out the value of caseId and we should no longer have the anchor.
       wrapper.caseId = undefined;
@@ -80,16 +84,39 @@ describe('WorkAllocation', () => {
       // Add the caseId and it should work (showing the link).
       wrapper.caseName = CASE_NAME;
       wrapper.caseId = CASE_ID;
+      wrapper.hasAccess = true;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}#overview`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
 
       // Make caseId null and we should no longer have the anchor.
       wrapper.caseId = null;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    });
+
+    it('should remove the link if hasAccess is set to false', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseId and it should work (showing the link).
+      wrapper.caseName = CASE_NAME;
+      wrapper.caseId = CASE_ID;
+      wrapper.hasAccess = true;
+      fixture.detectChanges();
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(CASE_NAME);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+
+      // Make hasAccess false and we should no longer have the anchor but instead a label.
+      wrapper.hasAccess = false;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+      const label: HTMLElement = fixture.debugElement.nativeElement.querySelector('label');
+      expect(fixture.debugElement.nativeElement.querySelector('label')).not.toBeNull();
     });
 
   });

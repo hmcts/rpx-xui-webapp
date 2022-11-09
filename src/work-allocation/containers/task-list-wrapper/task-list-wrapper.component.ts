@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 import { AppConstants } from 'src/app/app.constants';
@@ -26,6 +27,7 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import * as fromActions from '../../../app/store';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -66,7 +68,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected locationService: LocationDataService,
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
-    protected rolesService: AllocateRoleService
+    protected rolesService: AllocateRoleService,
+    protected store: Store<fromActions.State>
   ) {
     this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
@@ -308,8 +311,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public onActionHandler(taskAction: InvokedTaskAction): void {
     try {
       if (taskAction.action.id === TaskActionIds.GO) {
-        const goToCaseUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
-        this.router.navigate([goToCaseUrl]);
+        const goToTaskUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
+        this.router.navigate([goToTaskUrl]);
         return;
       }
       if (this.returnUrl.includes('manager') && taskAction.action.id === TaskActionIds.RELEASE) {

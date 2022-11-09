@@ -67,9 +67,8 @@ describe('ApplicationRoutingComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   });
 
-
-  it('should navigate to defaultPage when not loggedIn (no userInfo)', () => {
-    mockStore.pipe.and.returnValue(of({userInfo: {}}));
+  it('should navigateBasedOnUserRole pui-case-manager', async () => {
+    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['pui-case-manager']}}));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   });

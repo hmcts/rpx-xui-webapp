@@ -1,14 +1,17 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_JUDICIAL_BOOKING_API_PATH } from '../configuration/references';
+import {
+  SERVICES_JUDICIAL_BOOKING_API_PATH,
+  SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH
+} from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { postTaskCompletionForAccess } from '../workAllocation';
 import { getFullLocationsForServices } from '../workAllocation/locationService';
-import { refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 
 export async function getBookings(req, resp: Response, next: NextFunction) {
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
@@ -51,7 +54,15 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
 }
 
 export async function refreshRoleAssignments(req, res: Response, next: NextFunction): Promise<Response> {
-  return res.send(refreshRoleAssignmentsSuccess);
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH);
+  const fullPath = `${basePath}/am/role-mapping/judicial/refresh`;
+
+  try {
+    const response = await handlePost(fullPath, {'refreshRequest' : {'userIds' : [req.body.userId]}}, req, next);
+    return res.status(response.status).send(response.data);
+  } catch (error) {
+    next(error);
+  }
 }
 
 // node layer logic for approving specific access request
@@ -62,7 +73,7 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
     // 201
     if (!firstRoleResponse || firstRoleResponse.status !== 201) {
       return firstRoleResponse && firstRoleResponse.status
-       ? res.status(firstRoleResponse.status).send(firstRoleResponse) : res.status(400);
+       ? res.status(firstRoleResponse.status) : res.status(400);
     }
     const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.specificAccessStateData.requestId);
     const rolesToDelete: RoleAssignment[] = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
@@ -92,17 +103,17 @@ export async function deleteSpecificAccessRoles(req, res: Response, next: NextFu
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+       ? res.status(previousResponse.status) : res.status(400);
     }
     // Note - the functionality is present but this does not currently work due to AM team restrictions - gives 422 error
     const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id);
     if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+       ? res.status(previousResponse.status) : res.status(400);
     }
     return previousResponse && previousResponse.status
-     ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+     ? res.status(previousResponse.status) : res.status(400);
   } catch (error) {
     next(error);
     return res.status(error.status).send(error);
@@ -117,7 +128,7 @@ export async function restoreDeletedRole(req, res: Response, next: NextFunction,
     if (!restoreResponse || restoreResponse.status !== 201) {
       // TODO: retry x 3
       return previousResponse && previousResponse.status
-       ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+       ? res.status(previousResponse.status) : res.status(400);
     }
     return deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete);
   } catch (error) {

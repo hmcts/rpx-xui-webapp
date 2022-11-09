@@ -34,8 +34,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -88,8 +88,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -141,8 +141,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -186,8 +186,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |

@@ -22,8 +22,8 @@ Feature: WA Release 2: Task actions
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | primaryLocation | roleType     |
-            | IA           | 12345           | ORGANISATION |
-            | SSCS         | 12345           | ORGANISATION |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions |
             | Manage,Own  |

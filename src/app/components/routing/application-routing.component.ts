@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, iif, Observable } from 'rxjs';
+import { combineLatest, iif, Observable, Subscription } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { mergeMap, tap } from 'rxjs/operators';
 
@@ -10,17 +10,19 @@ import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
 import * as fromActions from '../../store';
 
+@Component({ templateUrl: './application-routing.component.html' })
+export class ApplicationRoutingComponent implements OnInit, OnDestroy {
+  public static defaultWAPage = '/work/my-work/list';
+  public static defaultPage = '/cases';
+  public static bookingUrl: string = '../booking';
 
-@Component({ templateUrl: './application-routing.component.html'})
-export class ApplicationRoutingComponent implements OnInit {
+  private routingSubscription: Subscription;
+
   constructor(
     private readonly router: Router,
     private readonly store: Store<fromActions.State>,
     private readonly featureToggleService: FeatureToggleService,
   ) {}
-  public static defaultWAPage = '/work/my-work/list';
-  public static defaultPage = '/cases';
-  public static bookingUrl: string = '../booking';
 
   public ngOnInit() {
     this.navigateBasedOnUserRole();
@@ -40,8 +42,9 @@ export class ApplicationRoutingComponent implements OnInit {
               if (bookingFeatureToggle && AppUtils.isBookableAndJudicialRole(userDetails)) {
                 return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
               }
-              userDetails && userDetails.userInfo && userDetails.userInfo.roles &&
-              (userDetails.userInfo.roles.includes('caseworker-ia-iacjudge')
+              userDetails && userDetails.userInfo && userDetails.userInfo.roles
+              && !userDetails.userInfo.roles.includes('pui-case-manager')
+              && (userDetails.userInfo.roles.includes('caseworker-ia-iacjudge')
                 || userDetails.userInfo.roles.includes('caseworker-ia-caseofficer')
                 || userDetails.userInfo.roles.includes('caseworker-ia-admofficer')
                 || userDetails.userInfo.roles.includes('caseworker-civil'))
@@ -49,9 +52,14 @@ export class ApplicationRoutingComponent implements OnInit {
                 : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
             })
           ),
-
           of(null).pipe(tap(() => this.router.navigate([ApplicationRoutingComponent.defaultPage])))
         ))
       ).subscribe();
+  }
+
+  public ngOnDestroy() {
+    if (this.routingSubscription) {
+      this.routingSubscription.unsubscribe();
+    }
   }
 }

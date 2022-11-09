@@ -1,17 +1,8 @@
-<exui-app-header></exui-app-header>
-
-<div class="govuk-width-container">
-  <div class="page">
-    <main id="content" role="main">
-      <a href="javascript:void(0)" class="govuk-back-link" [routerLink]="['../']">Back</a>
-
-      <exui-page-wrapper [title]="'Add a new user'">
-        <exui-staff-edit-user [formGroup]="formGroup"></exui-staff-edit-user>
-      </exui-page-wrapper>
-    </main>
+<exui-staff-add-edit-user-form>
+  <div pageHeader>
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">Add a new user</h1>
+    <div class="govuk-body">
+      Enter the details of the user you want to add.
+    </div>
   </div>
-</div>
-
-<exui-app-footer></exui-app-footer>
-
-
+</exui-staff-add-edit-user-form>

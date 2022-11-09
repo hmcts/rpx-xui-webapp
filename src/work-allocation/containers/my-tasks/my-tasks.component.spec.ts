@@ -6,8 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { AllocateRoleService } from '../../../role-access/services';
@@ -17,6 +17,7 @@ import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { MyTasksComponent } from './my-tasks.component';
+import * as fromActions from '../../../app/store';
 
 @Component({
   template: `
@@ -57,8 +58,10 @@ describe('MyTasksComponent', () => {
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
-
+  let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  let store: Store<fromActions.State>;
   beforeEach(async(() => {
+    storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -78,7 +81,8 @@ describe('MyTasksComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
-        { provide: AllocateRoleService, useValue: mockRoleService }
+        { provide: AllocateRoleService, useValue: mockRoleService },
+        { provide: Store, useValue: storeMock },
       ]
     }).compileComponents();
   }));
@@ -88,6 +92,7 @@ describe('MyTasksComponent', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
+    store = TestBed.get(Store);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getCaseworkersForServices.and.returnValue(of([]));

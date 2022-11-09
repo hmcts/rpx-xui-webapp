@@ -44,11 +44,6 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
   return envConfig.launchDarklyClientId || '';
 }
 
-const routerOptions: ExtraOptions = {
-  scrollPositionRestoration: 'enabled',
-  anchorScrolling: 'enabled'
-};
-
 @NgModule({
   declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent  ],
   imports: [

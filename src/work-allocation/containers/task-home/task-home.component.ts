@@ -47,7 +47,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
     this.subNavigationItems.push({text: 'My access', href: '/work/my-work/my-access', active: false});
 
-    this.allocateRoleService.getSpecificAccessApproved().subscribe( (countOfApproval) => {
+    this.allocateRoleService.getMyAccessNewCount().subscribe( (countOfApproval) => {
      const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;
      if ( myAccessNavItem ) {
       myAccessNavItem.roundel = countOfApproval.count ;

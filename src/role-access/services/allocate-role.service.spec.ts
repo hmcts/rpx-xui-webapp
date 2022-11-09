@@ -2,9 +2,8 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { AllocateRoleService } from '.';
-import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, RoleCategory, SpecificAccessState, SpecificAccessStateData } from '../models';
-import { CaseRoleDetails } from '../models/case-role-details.interface';
+import { AllocateRoleService, DurationHelperService } from '.';
+import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, CaseRoleDetails, DurationOfRole, RoleCategory, SpecificAccessState, SpecificAccessStateData } from '../models';
 import { AccessReason, DurationType } from '../models/enums';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
@@ -24,10 +23,11 @@ describe('AllocateRoleService', () => {
   let roleAssignmentService: AllocateRoleService;
   let sessionStorageService: any;
   let mockHttp: any;
+  const durationHelperService: DurationHelperService = null;
   beforeEach(() => {
     mockHttp = jasmine.createSpyObj('HttpClient', ['get', 'post']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem']);
-    roleAssignmentService = new AllocateRoleService(mockHttp, sessionStorageService);
+    roleAssignmentService = new AllocateRoleService(mockHttp, sessionStorageService, durationHelperService);
   });
   it('should be able to set judicial and legal ops roles', () => {
     mockHttp.post.and.returnValue(of(mockRolesByService));
@@ -113,7 +113,7 @@ describe('AllocateRoleService', () => {
       const period = {
         startDate: new Date(),
         endDate: new Date()
-      }
+      };
       const specificAccessStateData: SpecificAccessStateData = {
         state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
         accessReason: AccessReason.APPROVE_REQUEST,
@@ -146,7 +146,8 @@ describe('AllocateRoleService', () => {
             }
           }
         }
-      }
+      };
+
       service.specificAccessApproval(specificAccessStateData, {startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025')}).subscribe(response => {
         expect(response).toBeNull();
       });
@@ -186,7 +187,8 @@ describe('AllocateRoleService', () => {
             }
           }
         }
-      }
+      };
+
       service.requestMoreInformation(specificAccessState).subscribe(response => {
         expect(response).toBeNull();
       });
@@ -239,9 +241,9 @@ describe('AllocateRoleService', () => {
     it('should get specific access approved', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
       const approvedCount = {
         count : 5
-      }
+      };
       mockHttp.post.and.returnValue(of(approvedCount));
-      service.getSpecificAccessApproved().subscribe(response => {
+      service.getMyAccessNewCount().subscribe(response => {
         expect(response).toEqual({count : 5 });
       });
     }));

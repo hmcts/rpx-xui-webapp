@@ -115,6 +115,8 @@ const appHeaderTitle = {name: 'Manage cases', url: '/'};
 // Making the base URL for case details a constant.
 const caseDetailsUrl: string = '/cases/case-details/';
 
+const accessViewUrl: string = '/access-view/';
+
 const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
 const serviceMessageCookie: string = 'service_messages';
 
@@ -130,6 +132,7 @@ export class AppConstants {
   public static DEFAULT_USER_THEME = defaultUserTheme;
   public static FEATURE_NAMES = featureNames;
   public static CASE_DETAILS_URL = caseDetailsUrl;
+  public static ACCESS_VIEW_URL = accessViewUrl;
   public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
   public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
@@ -138,7 +141,7 @@ export class AppConstants {
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
 export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
-export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil'];
-export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge'];
+export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil', 'caseworker-privatelaw'];
+export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge'];
 export const SERVICE_OPTIONS_LIST = [{key: 'IA', label: 'Immigration and Asylum'}, {key: 'SSCS', label: 'Social security and child support'}];
 export const PUI_CASE_MANAGER = 'pui-case-manager';

@@ -86,7 +86,7 @@ defineSupportCode(function ({ Given, When, Then }) {
             case 'other reference':
                 expect(await globalSearchPage.otherReference.getInputFieldValue()).to.includes(fieldValue);
                 break;
-            case 'full name':
+            case 'name':
                 expect(await globalSearchPage.fullName.getInputFieldValue()).to.includes(fieldValue);
                 break;
             case 'first line of address':

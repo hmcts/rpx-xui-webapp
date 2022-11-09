@@ -5,8 +5,7 @@ import { AppConstants } from '../../app/app.constants';
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationFeatureService {
-    constructor(private readonly featureToggleService: FeatureToggleService) {
-    }
+    constructor(private readonly featureToggleService: FeatureToggleService) {}
 
     public getActiveUpdatedTaskPermissionsFeature(): Observable<string> {
         return this.featureToggleService.getValue<string>(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, 'true');

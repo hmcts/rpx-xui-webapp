@@ -48,6 +48,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
         }
         this.specificAccessBody = {
           accessReason: specificAccessState.accessReason,
+          specificAccessReason: specificAccessState.specificAccessReason,
           typeOfRole: this.rejectedRole,
           caseId: specificAccessState.caseId,
           requestId: specificAccessState.requestId,
@@ -56,6 +57,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
           assigneeId: specificAccessState.actorId,
           caseName: specificAccessState.caseName,
           comment: this.infoCtrl.value,
+          roleCategory: specificAccessState.roleCategory,
           requestCreated: specificAccessState.requestCreated,
           person: {id: specificAccessState.actorId, name: null, domain: null},
         }

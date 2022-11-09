@@ -6,8 +6,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { Store } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
-
+import * as fromActions from '../../../app/store';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { AllocateRoleService } from '../../../role-access/services';
@@ -57,8 +58,11 @@ describe('AvailableTasksComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  let store: Store<fromActions.State>;
 
   beforeEach(() => {
+    storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -80,10 +84,12 @@ describe('AvailableTasksComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
-        { provide: AllocateRoleService, useValue: mockRoleService }
+        { provide: AllocateRoleService, useValue: mockRoleService },
+        { provide: Store, useValue: storeMock },
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
+    store = TestBed.get(Store);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
@@ -252,7 +258,7 @@ describe('AvailableTasksComponent', () => {
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
       const firstTask = getMockTasks()[1];
       component.claimTaskAndGo(firstTask);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}`], {
+      expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}/tasks`], {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS

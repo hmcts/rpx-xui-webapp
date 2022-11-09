@@ -36,11 +36,11 @@
       "hearingsJurisdictions": "SSCS,PRIVATELAW",
       "sscs": {
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
-        "caseTypes": "Appeal"
+        "caseTypes": "Benefit"
       },
       "privatelaw": {
         "serviceApi": "http://fis-hmc-api-prod.service.core-compute-prod.internal",
-        "caseTypes": ""
+        "caseTypes": "PRLAPPS"
       },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },

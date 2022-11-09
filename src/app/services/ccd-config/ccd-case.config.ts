@@ -171,7 +171,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWorkAllocationApiUrl(): string {
-    return this.workallocationUrl;
+    return 'workallocation';
   }
 
   public getRefundsUrl(): string {

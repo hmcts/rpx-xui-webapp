@@ -69,7 +69,7 @@ export class CaseViewerContainerComponent implements OnInit {
     let requiredFeature = false;
     features.configurations.forEach(serviceConfig => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
-          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 3 ? true : false ;
+          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2 ? true : false ;
       }
     })
     return requiredFeature && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);

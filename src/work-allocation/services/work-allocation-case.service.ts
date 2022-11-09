@@ -1,10 +1,8 @@
 import { Case } from '../models/cases';
 import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map, switchMap, tap} from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import Task from '../models/tasks/task.model';
 
 const BASE_URL: string = '/workallocation/case';
@@ -18,7 +16,7 @@ export enum ACTION {
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationCaseService {
-  constructor(private readonly http: HttpClient, private readonly featureToggleService: FeatureToggleService) { }
+  constructor(private readonly http: HttpClient) { }
 
   public getCase(caseId: string): Observable<Case> {
     const url = `${BASE_URL}/${caseId}`;

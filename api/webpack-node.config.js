@@ -12,9 +12,7 @@ module.exports = {
         minimize: true,
         minimizer: [
             new TerserPlugin({
-                terserOptions: {
-                    sourceMap: true
-                }
+              sourceMap: true,
             }),
         ],
     },

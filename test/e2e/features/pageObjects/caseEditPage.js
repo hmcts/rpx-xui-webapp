@@ -356,8 +356,9 @@ class caseEditPage {
                 var fieldDate = new Date(field.value).toLocaleString('en-UK', { hour12: true });
                 let time = fieldDate.split(", ")
                 var date1 = time[0].split("/");
-                // date1.setDate(date1.getDate());
-                date1 = date1[0] + " " + monthNames[parseInt(date1[1]) - 1] + " " + date1[2] + ", " + time[1].toUpperCase();
+                // date1.setDate(date1.getDate())
+                CucumberReportLogger.AddMessage(date1);
+                date1 = date1[1] + " " + monthNames[parseInt(date1[0]) - 1] + " " + date1[2] + ", " + time[1].toUpperCase();
                 return date1;
             default: return field.value;
         }

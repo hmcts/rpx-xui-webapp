@@ -1,11 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  BookingCheckType,
-  FilterConfig,
-  FilterService, GenericFilterComponent
-} from '@hmcts/rpx-xui-common-lib';
+import { BookingCheckType, FilterConfig, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
@@ -22,7 +18,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
     jobTitles: StaffFilterOption[],
-    skills: StaffFilterOption[],
+    skills: GroupOptions[],
     services: StaffFilterOption[]
   };
   public filterConfig: FilterConfig;
@@ -240,7 +236,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           title: 'Skills',
           titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [...this.staffFilterOptions.skills],
+          options: [...this.staffFilterOptions.skills.flatMap(s => s.options)],
           minSelected: 0,
           maxSelected: 10,
           maxWidth480px: true,

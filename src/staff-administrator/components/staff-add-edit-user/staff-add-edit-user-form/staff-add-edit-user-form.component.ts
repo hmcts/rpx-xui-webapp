@@ -236,7 +236,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           title: 'Skills',
           titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [...this.staffFilterOptions.skills.map(a => a.options).reduce((a,b) => a.concat(b))],
+          options: [...this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b))],
           minSelected: 0,
           maxSelected: 10,
           maxWidth480px: true,

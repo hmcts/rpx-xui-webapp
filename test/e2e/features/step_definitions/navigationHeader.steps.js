@@ -11,6 +11,7 @@ const config = require('../../config/conf.js');
 const reportLogger = require('../../support/reportLogger');
 const { LOG_LEVELS } = require('../../support/constants');
 
+const appTestData = require('../../config/appTestConfig')
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -226,9 +227,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(tabsDisplayed.length).to.equal(0);
     });
 
-    When('I enter {string} in  case ref in header 16 digit ref search', async function (input) {
-        await browserWaits.waitForSpinnerToDissappear();
-        await headerPage.headerCaseRefSearch.searchInput(input);
+    When('If env is {string}, I enter {string} in  case ref in header 16 digit ref search', async function (env,input) {
+        if (appTestData.getTestEnvFromEnviornment() === env){
+            await browserWaits.waitForSpinnerToDissappear();
+            await headerPage.headerCaseRefSearch.searchInput(input);
+        }
+       
     });
 
     When('I click find in case ref in header 16 digit ref search', async function () {

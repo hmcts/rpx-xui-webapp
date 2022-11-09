@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Router, RoutesRecognized } from '@angular/router';
+import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
+import { SessionStorageService } from 'src/app/services';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -31,6 +32,8 @@ export class AppComponent implements OnInit, OnDestroy {
   public isCookieBannerVisible: boolean = false;
   private cookieBannerEnabledSubscription: Subscription
   private cookieBannerEnabled: boolean = false;
+  private subscription: Subscription;
+  private pageReloading: boolean = false;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -41,7 +44,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly featureService: FeatureToggleService,
     private readonly loggerService: LoggerService,
     private readonly cookieService: CookieService,
-    private readonly environmentService: EnvironmentService
+    private readonly environmentService: EnvironmentService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
 
     this.router.events.subscribe((data) => {
@@ -56,6 +60,13 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.subscription = router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.pageReloading = !router.navigated;
+        this.sessionStorageService.setItem('isPageRefreshed', this.pageReloading.toString());
+      }
+  });
   }
 
   public ngOnInit() {
@@ -77,6 +88,10 @@ export class AppComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     if (this.cookieBannerEnabledSubscription) {
       this.cookieBannerEnabledSubscription.unsubscribe();
+    }
+
+    if(this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 

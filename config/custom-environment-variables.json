@@ -40,11 +40,11 @@
     "hearings": {
       "hearingsJurisdictions": "SSCS,PRIVATELAW",
       "sscs": {
-        "serviceApi": "SERVICE_HEARINGS_COMPONENT_API.sscs",
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API.sscs",
         "caseTypes": "Benefit"
       },
       "privatelaw": {
-        "serviceApi": "SERVICE_HEARINGS_COMPONENT_API.privatelaw",
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API.privatelaw",
         "caseTypes": "PRLAPPS"
       },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"

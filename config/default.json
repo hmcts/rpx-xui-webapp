@@ -38,7 +38,7 @@
         "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Appeal"
       },
-      "privateLaw": {
+      "privatelaw": {
         "serviceApi": "http://fis-hmc-api-prod.service.core-compute-prod.internal",
         "caseTypes": ""
       },

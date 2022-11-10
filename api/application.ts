@@ -115,7 +115,7 @@ app.use('/workallocation', taskRouter);
 app.use('/workallocation2', workAllocation2Router);
 app.use('/external', openRoutes);
 app.use('/api', routes);
-app.use(csrf({ cookie: { key: 'XSRF-TOKEN', secure: true }, ignoreMethods: ["GET"] }));
+app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));
 
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);

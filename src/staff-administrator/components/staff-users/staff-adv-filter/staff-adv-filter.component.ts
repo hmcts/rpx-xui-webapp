@@ -61,31 +61,33 @@ export class StaffAdvFilterComponent implements OnInit {
       {
         name: 'user-skills',
         title: 'Skills',
-        options: [...staffFilters.skills],
+        options: [],
+        groupOptions: staffFilters.skills,
         minSelected: 0,
         maxSelected: 0,
-        type: 'select',
-        lineBreakBefore: true
-      },
-      {
-        name: 'user-role',
-        title: 'Role',
-        options: [
-          {label: 'Case Allocator', key: 'case-allocator'},
-          {label: 'Task supervisor', key: 'task-supervisor'},
-          {label: 'Staff administrator', key: 'Staff administrator'}
-        ],
-        minSelected: 0,
-        maxSelected: 3,
-        type: 'checkbox',
-        lineBreakBefore: true
-      }
+        type: 'group-select',
+        lineBreakBefore: true,
+        disabledText: 'All'
+    },
+    {
+      name: 'user-role',
+      title: 'Role',
+      options: [
+        {label: 'Case Allocator', key: 'case-allocator'},
+        {label: 'Task supervisor', key: 'task-supervisor'},
+        {label: 'Staff administrator', key: 'Staff administrator'}
       ],
-      persistence: 'session',
-      applyButtonText: 'Search',
-      cancelButtonText: '',
-      enableDisabledButton: false,
-      showCancelFilterButton: false
+      minSelected: 0,
+      maxSelected: 3,
+      type: 'checkbox',
+      lineBreakBefore: true
+    }
+    ],
+    persistence: 'session',
+    applyButtonText: 'Search',
+    cancelButtonText: '',
+    enableDisabledButton: false,
+    showCancelFilterButton: false
   };
 }
 

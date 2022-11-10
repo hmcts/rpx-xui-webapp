@@ -1,6 +1,6 @@
 export const staffFilterOptionsTestData = {
   userTypes: [{label: 'User Types', key: 'userType'}],
   jobTitles: [{label: 'Job Titles', key: 'jobTitle'}],
-  skills: [{label: 'Skills', key: 'skill'}],
+  skills: [{label: 'Skills', key: 'skill', service: 'service'}],
   services: [{label: 'Service', key: 'service'}],
 };

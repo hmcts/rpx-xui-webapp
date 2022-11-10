@@ -14,7 +14,7 @@ import { StaffSearchComponent } from './components/staff-users/staff-search/staf
 import { StaffUserListComponent } from './components/staff-users/staff-user-list/staff-user-list.component';
 import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
-import { StaffUserCheckAnswersContainerComponent } from './containers/staff-user-check-answers/staff-user-check-answers.component';
+import { StaffUserCheckAnswersContainerComponent } from './containers/staff-user-check-answers-container/staff-user-check-answers-container.component';
 import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';

@@ -49,7 +49,11 @@ export class WorkAllocationCaseService {
   }
 
   public getTasksByCaseId(caseId: string): Observable<Task[]> {
-    return this.http.get<Task[]>(`${BASE_URL}/task/${caseId}`);
+    return this.http.post<Task[]>(`${BASE_URL}/task/${caseId}`, {refined: false});
+  }
+
+  public getTasksByCaseIdUpdated(caseId: string): Observable<Task[]> {
+    return this.http.post<Task[]>(`${BASE_URL}/task/${caseId}`, {refined: true});
   }
 
   /**

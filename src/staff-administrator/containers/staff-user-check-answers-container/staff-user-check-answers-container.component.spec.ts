@@ -18,7 +18,7 @@ describe('StaffUserCheckAnswersContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
+      declarations: [
         StaffUserCheckAnswersContainerComponent,
         HeaderStubComponent,
         FooterStubComponent

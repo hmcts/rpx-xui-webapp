@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import * as _ from 'lodash';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
 import { STAFF_REF_USERS_LIST } from './mock-data/staff-ref-users-list.mock.data';
 
@@ -71,13 +72,32 @@ export const init = () => {
   });
 
   mock.onGet(getSkills).reply(() => {
+    const skills = [
+      { key: 'adoption-underwriter', label: 'Underwriter', service: 'adoption'},
+      { key: 'adoption-caseworker', label: 'Caseworker', service: 'adoption'},
+      { key: 'family-private-law-caseworker', label: 'Caseworker', service: 'family-private-law'},
+      { key: 'family-private-law-casemanager', label: 'Casemanager', service: 'family-private-law'},
+      { key: 'family-public-law-underwriter', label: 'Underwriter', service: 'family-public-law'},
+    ];
+    const services = _.uniq(_.map(skills, 'service'));
+    const response = [];
+    try {
+      services.forEach(ser => {
+        const filteredSkills = skills.filter(s => s.service === ser);
+        if (filteredSkills) {
+          const res = {
+            group : ser,
+            options : filteredSkills,
+          }
+          response.push(res);
+        }
+      })
+    } catch (error) {
+      console.log('error', error);
+    }
     return [
       200,
-      [
-        { key: 'scss-interloc-work', label: 'SCSS - Interloc work' },
-        { key: 'reasonable-adjustment-process', label: 'SCSS - Reasonable Adjustment process' },
-        { key: 'scss-using-optic', label: 'SCSS - Using Optic' },
-      ],
+      response,
     ];
   });
 

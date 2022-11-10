@@ -66,7 +66,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.pageReloading = !router.navigated;
         this.sessionStorageService.setItem('isPageRefreshed', this.pageReloading.toString());
       }
-  });
+    });
   }
 
   public ngOnInit() {

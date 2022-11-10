@@ -7,6 +7,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
+        Given I set MOCK case details "caseDetails" property "CaseType" as "Asylum"
 
 
         Given I set MOCK case workers

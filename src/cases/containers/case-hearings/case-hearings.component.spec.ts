@@ -7,8 +7,6 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
-import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
-import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';

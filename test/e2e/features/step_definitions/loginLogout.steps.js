@@ -346,8 +346,12 @@ defineSupportCode(function ({ Given, When, Then }) {
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
+    
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForSpinnerToDissappear();
+      await headerPage.clickAppLogoLink();
+    });
    
-    await headerPage.clickAppLogoLink();
   });
 
   Given('I am logged into Expert UI with hrs testes user details', async function () {

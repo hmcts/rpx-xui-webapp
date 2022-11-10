@@ -19,7 +19,7 @@ describe('ApplicationRoutingComponent', () => {
     waFeatureService = jasmine.createSpyObj('service', ['getActiveWAFeature']);
     mockStore = jasmine.createSpyObj('store', ['pipe']);
     featureToggleMock.isEnabled.and.returnValue(of(true));
-    component = new ApplicationRoutingComponent(router, waFeatureService, mockStore, featureToggleMock);
+    component = new ApplicationRoutingComponent(router, mockStore, featureToggleMock);
     router.url = '/';
   });
 
@@ -31,33 +31,6 @@ describe('ApplicationRoutingComponent', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
     component.navigateBasedOnUserRole();
-    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
-  });
-
-  it('should navigateUrlBasedOnFeatureToggle WorkAllocationRelease1', () => {
-    component.navigateUrlBasedOnFeatureToggle('WorkAllocationRelease1');
-    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
-  });
-
-  it('should navigateUrlBasedOnFeatureToggle booking Url', async () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    mockStore.pipe.and.returnValue( of( { userInfo: { roles: ['caseworker-ia-iacjudge'], roleCategory: 'JUDICIAL' },
-    roleAssignmentInfo: [
-      {
-          bookable: true,
-          substantive: 'N',
-          jurisdiction: 'IA',
-          isCaseAllocator: true
-      }
-    ]}));
-    component.navigateUrlBasedOnFeatureToggle('WorkAllocationRelease2');
-    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.bookingUrl]);
-  });
-
-  it('should navigateUrlBasedOnFeatureToggle WorkAllocationRelease2', async () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-ia-iacjudge']}}));
-    component.navigateUrlBasedOnFeatureToggle('WorkAllocationRelease2');
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   });
 

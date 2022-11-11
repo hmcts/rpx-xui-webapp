@@ -12,7 +12,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     name: string;
     value: any[];
   }[];
-  constructor(private filterService: FilterService,) { }
+  constructor(private filterService: FilterService) { }
 
   public ngOnInit() {
     this.filterService.getStream(this.formId).subscribe(data => {

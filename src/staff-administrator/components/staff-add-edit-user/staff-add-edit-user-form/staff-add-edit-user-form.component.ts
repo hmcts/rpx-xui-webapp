@@ -54,7 +54,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
         if (data.reset) {
           this.resetForm();
         } else {
-          if(this.previousUrl !== '/staff/add-user/check-your-answers') {
+          if (this.previousUrl !== '/staff/add-user/check-your-answers') {
             this.router.navigateByUrl('/staff/add-user/check-your-answers');
           }
         }

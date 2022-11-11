@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -27,14 +27,18 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   };
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
+  private previousUrl: string;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId,
     private activatedRoute: ActivatedRoute,
     private filterService: FilterService,
     private router: Router
   ) {
+    this.previousUrl = this.router.getCurrentNavigation().previousNavigation.finalUrl.toString();
+
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
@@ -50,7 +54,9 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
         if (data.reset) {
           this.resetForm();
         } else {
-          this.router.navigateByUrl('/staff/add-user/check-your-answers');
+          if(this.previousUrl !== '/staff/add-user/check-your-answers') {
+            this.router.navigateByUrl('/staff/add-user/check-your-answers');
+          }
         }
       }
     });

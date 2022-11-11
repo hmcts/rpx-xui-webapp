@@ -74,8 +74,8 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Duration of role                  | Indefinite                  |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
-        Then I see All work cases page displayed
-
+        Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
+        When I click Apply filter button in all work page
 
     Scenario:  Legal ops reaallocate case manager case from all work cases
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
@@ -136,8 +136,8 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Duration of role                  | Indefinite                              |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
-        Then I see All work cases page displayed
-
+        Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
+        When I click Apply filter button in all work page
 
 
     Scenario:  Legal ops reaallocate lead judge case from all work cases
@@ -199,7 +199,8 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Duration of role                  | Indefinite                  |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
-        Then I see All work cases page displayed
+        Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
+        When I click Apply filter button in all work page
 
 
     Scenario:  Judge Removes allocation of case from all work cases
@@ -235,8 +236,8 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Person       | user1 j (judge_user1@gov.uk) |
 
         When I click button with label "Remove allocation" in work flow  Check your answers page
-        Then I see All work cases page displayed
-
+        Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
+        When I click Apply filter button in all work page
     Scenario:  Legal ops Removes allocation of case from all work cases
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK find person response for jurisdictions
@@ -271,5 +272,5 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Person       | caseworker_user1@gov.uk |
 
         When I click button with label "Remove allocation" in work flow  Check your answers page
-        Then I see All work cases page displayed
-
+        Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
+        When I click Apply filter button in all work page

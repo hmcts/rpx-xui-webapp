@@ -25,7 +25,7 @@ class AllWork extends TaskList {
 
         //Cases container elements
         this.casesContainer = $('exui-all-work-cases exui-work-case-list');
-
+        this.allworkCasesMessage = $('exui-all-work-cases p')
         this.FILTER_ITEMS = {
             'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/..//select'),
             'Location':  $('.all-work-filter #selectLocation'),

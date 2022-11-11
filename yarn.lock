@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.18.24-wa-service-config-changes":
-  version "4.18.24-wa-service-config-changes"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.24-wa-service-config-changes.tgz#5e0a6f96b35be5c361eae896c8859617f5811d61"
-  integrity sha512-kOFWpveVIxtByMOaalyWFHUMlwYlp3/N9a0h8tsrD49cqRh6oNWrUd3MipiarbM2ZGchzm9irzeoCFBZj0Bntg==
+"@hmcts/ccd-case-ui-toolkit@4.18.24-prevent-wa-call-solicitor":
+  version "4.18.24-prevent-wa-call-solicitor"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.18.24-prevent-wa-call-solicitor.tgz#8171050c78a79f4b5fa1b0f754be9451f1253e7f"
+  integrity sha512-Kd065qpAwsgPAHNQjw8r/PDANAlq9z5hzTxOoXdLU5C9R9vEFCaVBHYvNnydi8Qu/FUtyTkDAyx6HrRoednNhQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

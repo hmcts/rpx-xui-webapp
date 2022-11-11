@@ -23,8 +23,6 @@ import {
   HearingListingStatusEnum,
   HMCStatus
 } from '../../../hearings/models/hearings.enum';
-import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
-import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
 

@@ -1474,12 +1474,12 @@
   dependencies:
     tslib "^2.0.0"
 
-"@hmcts/ccpay-web-component@5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.4.tgz#bca6ed5daf543ee4033ea299b383939f80228b4e"
-  integrity sha512-KVXShRgxkdDITY1ILlzyWpKSUKeCZP/7PiFa62EZ4XYnSRNw2wpIYLayqtgi0CnP2WyhKuSok1oHFOHUF9ErSg==
+"@hmcts/ccpay-web-component@5.0.8-beta14":
+  version "5.0.8-beta14"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.8-beta14.tgz#a5d9668ef533b91d0cfdf42d87fe032b4582eeef"
+  integrity sha512-o+bVn8Xjts142W0pj7nzohOF8LtZWgB5pruAOkf9DBquhUxy3ABzMOObZNvskrSHmQli52sl9W93iAu7wQYHVA==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^1.10.0"
 
 "@hmcts/frontend@0.0.39-alpha":
   version "0.0.39-alpha"

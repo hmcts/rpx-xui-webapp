@@ -10,6 +10,7 @@ import {
   AuthService as CCDAuthService,
   CaseEditorModule,
   CaseEditWizardGuard,
+  CaseFileViewService,
   CaseHeaderModule,
   CaseListFiltersModule,
   CaseListModule,
@@ -126,7 +127,8 @@ import { effects, reducers } from './store';
     OrganisationService,
     OrganisationConverter,
     IsCompoundPipe,
-    CcdCYAPageLabelFilterPipe
+    CcdCYAPageLabelFilterPipe,
+    CaseFileViewService
   ]
 })
 /**

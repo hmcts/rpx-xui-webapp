@@ -259,7 +259,6 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
         assign_and_complete: true,
       },
     };
-    console.log(req.body, 'hannibal');
     // line added as requests are different for approval/rejection
     const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
     const getTaskPath: string =
@@ -420,6 +419,7 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
 
 export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const jurisdictions = getWASupportedJurisdictionsList();
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
     const reqBody = {
       'case_id': req.body.searchRequest.ccdId,
@@ -427,7 +427,10 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_type': req.body.searchRequest.caseTypeId,
       'event_id': req.body.searchRequest.eventId,
     };
-    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
+    let status;
+    let data;
+    jurisdictions.includes(req.body.searchRequest.jurisdiction) ?
+     { status, data } = await handlePostSearch(postTaskPath, reqBody, req) : (status = 200, data = []);
     res.status(status);
     res.send(data);
   } catch (error) {

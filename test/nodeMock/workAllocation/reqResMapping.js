@@ -309,6 +309,9 @@ module.exports = {
         },
         '/api/specific-access-request/request-more-information' : (req,res) => {
             res.send('');
+        },
+        '/api/role-access/roles/manageLabellingRoleAssignment/:caseId': (req, res) => {
+            res.status(204).send();
         }
     }
 

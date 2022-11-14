@@ -4,13 +4,12 @@ import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { initialState } from '../hearing.test.data';
+import { initialStateImmutable } from '../hearing.test.data';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import { JudicialUserSearchResolver } from './judicial-user-search-resolver.resolve';
 
-// TODO: this tests breake other tests after angular upgrade, It needs to be diagnosed after all angular tests problem fixed
-xdescribe('Ref Data Resolver', () => {
+describe('Ref Data Resolver', () => {
   let judicialRefDataService: JudicialRefDataService;
   const dataRef: JudicialUserModel[] = [];
 
@@ -21,7 +20,7 @@ xdescribe('Ref Data Resolver', () => {
           HttpClientTestingModule,
         ],
         providers: [
-          provideMockStore({initialState}),
+          provideMockStore({initialState:initialStateImmutable}),
           JudicialUserSearchResolver,
           JudicialRefDataService,
           {provide: APP_BASE_HREF, useValue: '/'}
@@ -29,6 +28,10 @@ xdescribe('Ref Data Resolver', () => {
       }
     );
     judicialRefDataService = TestBed.get(JudicialRefDataService) as JudicialRefDataService;
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 
   it('should be created', () => {

@@ -19,7 +19,7 @@ import { WorkCaseListComponent } from '../work-case-list/work-case-list.componen
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
 
 
-xdescribe('WorkCaseListWrapperComponent', () => {
+describe('WorkCaseListWrapperComponent', () => {
   let component: WorkCaseListWrapperComponent;
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
@@ -54,7 +54,7 @@ xdescribe('WorkCaseListWrapperComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
-        { provide: AllocateRoleService, useValue: mockAllocateRoleService }
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService },
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WorkCaseListWrapperComponent);
@@ -70,18 +70,20 @@ xdescribe('WorkCaseListWrapperComponent', () => {
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
     spyOn(mockRouter.events, 'subscribe');
+    fixture.whenStable();
     fixture.detectChanges();
   }));
 
   afterEach(() => {
     fixture.destroy();
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
     expect(component).toBeDefined();
   });
 
-  xdescribe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const exampleCase = getMockCases()[0];
     const firstAction = exampleCase.actions[0];
     const secondAction = exampleCase.actions[1];

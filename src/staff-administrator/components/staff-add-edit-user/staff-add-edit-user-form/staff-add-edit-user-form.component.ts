@@ -99,6 +99,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           subTitle: '',
           options: [],
           maxWidth480px: true,
+          maxlength: 255,
         },
         {
           name: 'lastName',
@@ -112,6 +113,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           subTitle: '',
           options: [],
           maxWidth480px: true,
+          maxlength: 255,
         },
         {
           name: 'email',

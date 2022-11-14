@@ -120,10 +120,10 @@ describe('BookingDateComponent', () => {
     radioButton.click();
     component.formGroup.get('startDate_day').patchValue('11');
     component.formGroup.get('startDate_month').patchValue('11');
-    component.formGroup.get('startDate_year').patchValue('2022');
+    component.formGroup.get('startDate_year').patchValue('2023');
     component.formGroup.get('endDate_day').patchValue('11');
     component.formGroup.get('endDate_month').patchValue('11');
-    component.formGroup.get('endDate_year').patchValue('2022');
+    component.formGroup.get('endDate_year').patchValue('2023');
     fixture.detectChanges();
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();

@@ -154,7 +154,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     })
 
     When('I click continue in create new booking work flow', async function(){
-        await createNewBookingWorkflow.continueButton.click();
+        await createNewBookingWorkflow.continueButton.click(); 
+    });
+
+    When('I click continue to submit new booking work flow', async function () {
+        await BrowserWaits.waitForElement(createNewBookingWorkflow.confirmBookingButton)
+        await createNewBookingWorkflow.confirmBookingButton.click();
+        await BrowserWaits.retryWithActionCallback(async () => { 
+            await BrowserWaits.waitForPageNavigation(await browser.getCurrentUrl())
+        })
+
     });
 
     Then('I see create booking duration selection page', async function(){

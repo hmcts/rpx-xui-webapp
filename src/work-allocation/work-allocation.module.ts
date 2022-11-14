@@ -13,7 +13,6 @@ import { RoleAccessModule } from '../role-access/role-access.module';
 import { PriorityFieldComponentModule } from './components/priority-field/priority.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
-import { WorkAllocationFeatureToggleGuard } from './guards';
 import { CaseworkerDataService, ServiceRefDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from './services';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
@@ -37,7 +36,6 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
   declarations: [...fromContainers.containers],
   providers: [
     WorkAllocationTaskService,
-    WorkAllocationFeatureToggleGuard,
     AlertService,
     BookingService,
     CaseworkerDataService,

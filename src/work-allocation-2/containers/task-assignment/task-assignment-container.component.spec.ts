@@ -22,7 +22,6 @@ import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
 
-
 @Component({
   template: `
     <exui-task-container-assignment></exui-task-container-assignment>`
@@ -39,7 +38,7 @@ class WrapperComponent {
 class NothingComponent {
 }
 
-xdescribe('TaskAssignmentContainerComponent2', () => {
+describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -118,9 +117,6 @@ xdescribe('TaskAssignmentContainerComponent2', () => {
     component = wrapper.appComponentRef;
     wrapper.tasks = null;
     window.history.pushState({returnUrl: 'my-work/list', showAssigneeColumn: false}, '', 'my-work/list');
-
-    // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
-    // data with a different verb ("Assign")
   });
 
   afterEach(() => {
@@ -128,7 +124,24 @@ xdescribe('TaskAssignmentContainerComponent2', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeDefined();
+    const activatedRoute: any = fixture.debugElement.injector.get(ActivatedRoute) as any;
+    activatedRoute.snapshot = {
+      paramMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      queryParamMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      data: {
+        taskAndCaseworkers: {
+          task: {task: mockTasks[0]}, caseworkers: []
+        },
+        ...TaskActionConstants.Assign
+      }
+    };
+    fixture.detectChanges();
+    component = wrapper.appComponentRef;
+    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
+    const findPersonControl = new FormControl('test');
+    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
+    expect(component).toBeTruthy();
   });
 
   it('should re-direct to assign task confirmation page', () => {
@@ -203,6 +216,23 @@ xdescribe('TaskAssignmentContainerComponent2', () => {
       roles: ['caseworker-ia-iacjudge']
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+    const activatedRoute: any = fixture.debugElement.injector.get(ActivatedRoute) as any;
+    activatedRoute.snapshot = {
+      paramMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      queryParamMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      data: {
+        taskAndCaseworkers: {
+          task: {task: mockTasks[0]}, caseworkers: []
+        },
+        ...TaskActionConstants.Assign
+      }
+    };
+    fixture.detectChanges();
+    component = wrapper.appComponentRef;
+    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
+    const findPersonControl = new FormControl('test');
+    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     component.isCurrentUserJudicial();
     expect(component.isCurrentUserJudicial()).toEqual(true);
   });
@@ -216,6 +246,23 @@ xdescribe('TaskAssignmentContainerComponent2', () => {
       roles: ['caseworker-allocator']
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+    const activatedRoute: any = fixture.debugElement.injector.get(ActivatedRoute) as any;
+    activatedRoute.snapshot = {
+      paramMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      queryParamMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      data: {
+        taskAndCaseworkers: {
+          task: {task: mockTasks[0]}, caseworkers: []
+        },
+        ...TaskActionConstants.Assign
+      }
+    };
+    fixture.detectChanges();
+    component = wrapper.appComponentRef;
+    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
+    const findPersonControl = new FormControl('test');
+    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     component.isCurrentUserJudicial();
     expect(component.isCurrentUserJudicial()).toEqual(false);
   });

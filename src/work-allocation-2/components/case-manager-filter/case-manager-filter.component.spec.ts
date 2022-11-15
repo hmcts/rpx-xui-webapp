@@ -12,12 +12,13 @@ import * as fromStore from '../../../app/store';
 import { LocationDataService, WorkAllocationCaseService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
 
+/* tslint:disable:component-selector */
 @Component({
   selector: 'xuilib-generic-filter',
   template: '<span></span>',
 })
 class MockGenericFilterComponent {
-  @Input() config;
+  @Input() public config;
 }
 
 

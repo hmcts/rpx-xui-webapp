@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { UrlFieldComponent } from './url-field.component';
 
@@ -14,14 +14,14 @@ class WrapperComponent {
   @Input() public target: string;
 }
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  xdescribe('UrlFieldComponent', () => {
+  describe('UrlFieldComponent', () => {
     let component: UrlFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ]
@@ -38,6 +38,7 @@ xdescribe('WorkAllocation', () => {
 
     it('should show only if there is a link', () => {
       // Expect the nativeElement to be empty (no link yet)
+      component = fixture.componentInstance.appComponentRef;
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
 
@@ -67,6 +68,7 @@ xdescribe('WorkAllocation', () => {
 
     it('should allow replacing a link', () => {
       // Expect the nativeElement to be empty (no link yet)
+      component = fixture.componentInstance.appComponentRef;
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
 
@@ -92,6 +94,7 @@ xdescribe('WorkAllocation', () => {
     });
 
     it('should show the label if the label and href is provided', () => {
+      component = fixture.componentInstance.appComponentRef;
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       const label: string = 'Example label';
@@ -115,6 +118,7 @@ xdescribe('WorkAllocation', () => {
     });
 
     it('should allow a target string to be applied', () => {
+      component = fixture.componentInstance.appComponentRef;
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       const initial: string = '_self';

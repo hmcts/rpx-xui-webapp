@@ -73,7 +73,7 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "5.0.24-case-file-view-folder-document-icons-v3",
+    "@hmcts/ccd-case-ui-toolkit": "5.0.24-case-file-view-error-message-display",
     "@hmcts/ccpay-web-component": "5.0.8-beta14",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.19-RC.1",

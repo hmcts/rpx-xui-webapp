@@ -38,7 +38,7 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
-xdescribe('AvailableTasksComponent', () => {
+describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -117,6 +117,8 @@ xdescribe('AvailableTasksComponent', () => {
   });
 
   it('should make a call to load tasks using the default search request', fakeAsync(() => {
+    component = wrapper.appComponentRef;
+    fixture.detectChanges();
     component.ngOnInit();
     tick(500);
     fixture.detectChanges();
@@ -127,6 +129,8 @@ xdescribe('AvailableTasksComponent', () => {
   it('should allow searching via location', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const exampleLocations = ['location1', 'location2', 'location3'];
+    component = wrapper.appComponentRef;
+    fixture.detectChanges();
     component.selectedLocations = exampleLocations;
     const searchParameter = component.getSearchTaskRequestPagination().search_parameters[0];
     expect(searchParameter.key).toBe('available_tasks_only');
@@ -137,6 +141,8 @@ xdescribe('AvailableTasksComponent', () => {
   it('should allow searching via work types', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
+    component = wrapper.appComponentRef;
+    fixture.detectChanges();
     component.selectedWorkTypes = workTypes;
     const searchParameter = component.getSearchTaskRequestPagination().search_parameters[3];
     expect(searchParameter.key).toBe('work_type');
@@ -146,6 +152,8 @@ xdescribe('AvailableTasksComponent', () => {
   it('should have all column headers, including "Manage +"', () => {
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
+    component = wrapper.appComponentRef;
+    fixture.detectChanges();
     const fields = component.fields;
     expect(headerCells).toBeDefined();
     expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
@@ -162,6 +170,8 @@ xdescribe('AvailableTasksComponent', () => {
   });
 
   it('should not show the footer when there are tasks', fakeAsync(() => {
+    component = wrapper.appComponentRef;
+    fixture.detectChanges();
     component.ngOnInit();
     tick(500);
     fixture.detectChanges();
@@ -174,8 +184,9 @@ xdescribe('AvailableTasksComponent', () => {
   }));
 
   it('should show the footer when there are no tasks', () => {
-    spyOnProperty(component, 'tasks').and.returnValue([]);
+    component = wrapper.appComponentRef;
     fixture.detectChanges();
+    spyOnProperty(component, 'tasks').and.returnValue([]);
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
@@ -187,13 +198,15 @@ xdescribe('AvailableTasksComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
-  xdescribe('claimTask()', () => {
+  describe('claimTask()', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
 
       mockTaskService.claimTask.and.returnValue(of({}));
 
       const taskId = '123456';
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
       component.claimTask(taskId);
 
       expect(mockTaskService.claimTask).toHaveBeenCalledWith(taskId);
@@ -209,6 +222,8 @@ xdescribe('AvailableTasksComponent', () => {
       };
 
       const taskId = '123456';
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
       component.claimTask(taskId);
 
       expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(message);
@@ -216,7 +231,8 @@ xdescribe('AvailableTasksComponent', () => {
 
     it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
       'a task has been unsuccessful.', () => {
-
+        component = wrapper.appComponentRef;
+        fixture.detectChanges();
         const errorStatusCode = 400;
 
         const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
@@ -230,10 +246,11 @@ xdescribe('AvailableTasksComponent', () => {
       });
   });
 
-  xdescribe('claimTaskAndGo()', () => {
+  describe('claimTaskAndGo()', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
-
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
       mockTaskService.claimTask.and.returnValue(of({}));
 
       const firstTask = getMockTasks()[1];
@@ -244,6 +261,8 @@ xdescribe('AvailableTasksComponent', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
       const firstTask = getMockTasks()[1];
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
       component.claimTaskAndGo(firstTask);
       expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}`], {
         state: {
@@ -255,7 +274,8 @@ xdescribe('AvailableTasksComponent', () => {
 
     it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
       'a task has been unsuccessful.', () => {
-
+        component = wrapper.appComponentRef;
+        fixture.detectChanges();
         const errorStatusCode = 400;
 
         const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
@@ -269,51 +289,54 @@ xdescribe('AvailableTasksComponent', () => {
       });
   });
 
-  xdescribe('claimTaskErrors()', () => {
+  describe('claimTaskErrors()', () => {
 
     it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
-
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
       component.claimTaskErrors(500);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/service-down']);
     });
 
     it('should make a call to navigate the user to the /not-authorised page, if the error status code is 401.', () => {
-
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
       component.claimTaskErrors(401);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
     });
 
     it('should make a call to navigate the user to the /not-authorised page, if the error status code is 403.', () => {
-
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
       component.claimTaskErrors(403);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
     });
 
     it('should refresh the tasks if the error status code is 400.', () => {
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
       const refreshTasksSpy = spyOn(component, 'refreshTasks');
       component.claimTaskErrors(400);
       expect(refreshTasksSpy).toHaveBeenCalled();
     });
 
     // TODO: Parking for now, for some reason the fixture.destory is not cleaning up
-    // calls to functions from other tests.
-    // it('should emit the Warning information message, if the error status code is 400.', () => {
-    //
-    //   const message: InformationMessage = {
-    //     type: InfoMessageType.WARNING,
-    //     message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
-    //   };
-    //
-    //   component.claimTaskErrors(400);
-    //
-    //   expect(mockInfoMessageCommService.emitInfoMessageChange).toHaveBeenCalledWith(message);
-    // });
+     // calls to functions from other tests.
+     //  it('should emit the Warning information message, if the error status code is 400.', () => {
+     //    const message: InformationMessage = {
+     //      type: InfoMessageType.WARNING,
+     //      message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+     //    };
+     //    component.claimTaskErrors(400);
+     //
+     //    expect(mockInfoMessageCommService.emitInfoMessageChange).toHaveBeenCalledWith(message);
+     //  });
   });
 
-  xdescribe('onActionHandler()', () => {
+  describe('onActionHandler()', () => {
     const TASK_ID = '2345678901234567';
     const taskAction: InvokedTaskAction = {
       action: {
@@ -338,7 +361,8 @@ xdescribe('AvailableTasksComponent', () => {
       }
     };
     it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
-
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
       const claimTaskSpy = spyOn(component, 'claimTask');
       component.onActionHandler(taskAction);
 
@@ -353,7 +377,8 @@ xdescribe('AvailableTasksComponent', () => {
     ].forEach(scr => {
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
         mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
-
+        component = wrapper.appComponentRef;
+        fixture.detectChanges();
         component.onPaginationEvent(1);
         expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
       });
@@ -371,7 +396,8 @@ xdescribe('AvailableTasksComponent', () => {
     ].forEach(scr => {
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
         mockTaskService.claimTask.and.returnValue(throwError({ status: scr.statusCode }));
-
+        component = wrapper.appComponentRef;
+        fixture.detectChanges();
         taskAction.action.id = scr.action;
         component.onActionHandler(taskAction);
 

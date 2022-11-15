@@ -36,7 +36,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
               private readonly allocateService: AllocateRoleService,
               private readonly caseworkerDataService: CaseworkerDataService,
               private readonly sessionStorageService: SessionStorageService,
-              private readonly featureToggleService: FeatureToggleService,) {
+              private readonly featureToggleService: FeatureToggleService) {
   }
 
   public ngOnInit(): void {

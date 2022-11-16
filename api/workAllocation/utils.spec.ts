@@ -859,15 +859,15 @@ describe('workAllocation.utils', () => {
     });
 
     it('should get correct actions for active tasks for certain permissions', () => {
-      expect(getActionsByRefinedPermissions('ActiveTasksUnassigned', [TaskPermission.ASSIGN, TaskPermission.OWN])).to.deep.equal([ASSIGN, CLAIM, GO]);
+      expect(getActionsByRefinedPermissions('ActiveTasksUnassigned', [TaskPermission.ASSIGN, TaskPermission.OWN])).to.deep.equal([ASSIGN, CLAIM]);
       expect(getActionsByRefinedPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.UNASSIGNASSIGN, TaskPermission.CANCEL]))
-        .to.deep.equal([CANCEL, GO, REASSIGN]);
+        .to.deep.equal([CANCEL, REASSIGN]);
       // EUI-5046 - ensure test includes check that own gives correct actions as well
       expect(getActionsByRefinedPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.UNCLAIM, TaskPermission.CLAIM, TaskPermission.COMPLETEOWN, TaskPermission.OWN]))
-        .to.deep.equal([COMPLETE, GO, RELEASE]);
+        .to.deep.equal([COMPLETE, RELEASE]);
       // ensure that in unlikely scenario of below that no duplication occurs
       expect(getActionsByRefinedPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.UNASSIGN, TaskPermission.ASSIGN, TaskPermission.OWN]))
-        .to.deep.equal([CLAIM, GO, REASSIGN, RELEASE]);
+        .to.deep.equal([CLAIM, REASSIGN, RELEASE]);
     });
 
   });

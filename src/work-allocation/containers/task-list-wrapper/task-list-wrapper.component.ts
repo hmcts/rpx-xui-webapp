@@ -49,6 +49,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasks: Task[] = [];
   private myWorkSubscription: Subscription;
   private pTasksTotal: number;
+  private currentUser: string;
   public routeEventsSubscription: Subscription;
   public isUpdatedTaskPermissions$: Observable<boolean>;
 
@@ -246,12 +247,12 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public performSearchUpdatedTaskPermissions(): Observable<TaskResponse> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view, refined: true });
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: true, currentUser: this.currentUser });
   }
 
   public performSearchPreviousTaskPermissions(): Observable<TaskResponse> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view, refined: false });
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: false, currentUser: this.currentUser});
   }
 
   /**
@@ -346,6 +347,11 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
+    }
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
     const tasksSearch$ = this.isUpdatedTaskPermissions$.pipe(mergeMap(enabled => enabled ? this.performSearchUpdatedTaskPermissions() : this.performSearchPreviousTaskPermissions()))

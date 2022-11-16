@@ -72,12 +72,6 @@ describe('StaffAddEditUserFormComponent', () => {
     expect(component.filterConfig).toBeDefined();
   });
 
-  it('should call resetForm on ngOnDestroy', () => {
-    const spyOnForm = spyOn(component, 'resetForm');
-    component.ngOnDestroy();
-    expect(spyOnForm).toHaveBeenCalled();
-  });
-
   it('should navigate to /staff when calling the cancelCallback from the form config', fakeAsync(() => {
     component.initFormConfig();
     component.filterConfig.cancelButtonCallback();

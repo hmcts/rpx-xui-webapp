@@ -1,16 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
+import { Router } from '@angular/router';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
+import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { SearchCaseRequest } from '../../models/dtos';
+import { AllocateRoleService } from '../../../role-access/services';
+import { JurisdictionsService } from '../../services/juridictions.service';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
-
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationCaseService
+} from '../../services';
 @Component({
   selector: 'exui-my-cases',
   templateUrl: 'my-cases.component.html'
 })
-export class MyCasesComponent extends WorkCaseListWrapperComponent {
+export class MyCasesComponent  extends WorkCaseListWrapperComponent implements OnInit {
 
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyCases;
@@ -29,6 +41,26 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
   }
 
   public backUrl: string = 'work/my-work/my-cases';
+
+  constructor(
+    protected readonly ref: ChangeDetectorRef,
+    protected readonly caseService: WorkAllocationCaseService,
+    protected readonly router: Router,
+    protected readonly infoMessageCommService: InfoMessageCommService,
+    protected readonly sessionStorageService: SessionStorageService,
+    protected readonly alertService: AlertService,
+    protected readonly caseworkerService: CaseworkerDataService,
+    protected readonly loadingService: LoadingService,
+    protected readonly locationService: LocationDataService,
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+    protected readonly jurisdictionsService: JurisdictionsService,
+    protected readonly rolesService: AllocateRoleService
+  ) {
+    super(ref, caseService, router, infoMessageCommService, sessionStorageService,
+      alertService, caseworkerService, loadingService, locationService, featureToggleService, waSupportedJurisdictionsService,
+      jurisdictionsService, rolesService);
+  }
 
   public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');

@@ -132,7 +132,7 @@
     "portfinder": "^1.0.28",
     "protractor-screenshot-utils": "^1.0.5",
     "rx-polling": "1.1.0",
-    "rxjs": "^6.5.3",
+    "rxjs": "^6.5.5",
     "rxjs-compat": "^6.6.7",
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",

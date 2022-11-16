@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule,  ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { BookingDateFormErrorMessage, BookingDateOption, BookingDatePageText, BookingProcess, DateFormControl } from '../../models';
@@ -120,10 +120,10 @@ describe('BookingDateComponent', () => {
     radioButton.click();
     component.formGroup.get('startDate_day').patchValue('11');
     component.formGroup.get('startDate_month').patchValue('11');
-    component.formGroup.get('startDate_year').patchValue('2022');
+    component.formGroup.get('startDate_year').patchValue('2032');
     component.formGroup.get('endDate_day').patchValue('11');
     component.formGroup.get('endDate_month').patchValue('11');
-    component.formGroup.get('endDate_year').patchValue('2022');
+    component.formGroup.get('endDate_year').patchValue('2032');
     fixture.detectChanges();
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();

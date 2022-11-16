@@ -55,7 +55,8 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
         search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
-        pagination_parameters: this.getPaginationParameter()
+        pagination_parameters: this.getPaginationParameter(),
+        request_context: "MY_TASKS"
       };
     }
   }

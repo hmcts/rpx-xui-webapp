@@ -186,11 +186,11 @@ function mockTaskPermissions(data) {
       }
       switch (i) {
         case 0: {
-          permissions = ['Unclaim', 'Assign', 'CompleteOwn', 'CancelOwn', 'Own', 'Unassign'];
+          permissions = ['assign', 'own'];
           break;
         }
         case 1: {
-          permissions = ['UnclaimAssign', 'Complete', 'Cancel'];
+          permissions = ['Unassign'];
           break;
         }
         case 2: {
@@ -255,7 +255,10 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     ],
   };
   try {
-    const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    let { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    if (data && req.body.refined) {
+      data = mockTaskPermissions(data);
+    }
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const actionedTasks = !!req.body.refined

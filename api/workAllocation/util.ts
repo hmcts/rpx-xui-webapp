@@ -424,6 +424,7 @@ export function getActionsByRefinedPermissions(view, permissions: TaskPermission
  */
 export function getActionsByPermissions(view, permissions: TaskPermission[]): Action[] {
   let actionList: Action[] = [];
+  permissions = permissions.map(permission => permission = permission.toString().toLowerCase() as TaskPermission);
   permissions.forEach(permission => {
     switch (permission) {
       case TaskPermission.MANAGE:
@@ -466,7 +467,7 @@ export function getActionsFromRefinedMatrix(view, permission: TaskPermission, cu
 export function getActionsFromAllocatorRole(isAllocator: boolean): Action[] {
   let actionList: Action[] = [];
   if (isAllocator) {
-    actionList = (VIEW_PERMISSIONS_ACTIONS_MATRIX.AllCases.Manage);
+    actionList = (VIEW_PERMISSIONS_ACTIONS_MATRIX.AllCases.manage);
   }
   return actionList;
 }

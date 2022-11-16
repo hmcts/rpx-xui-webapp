@@ -35,10 +35,12 @@ export class StaffAdvFilterComponent implements OnInit {
         title: 'Search by location',
         subTitle: 'Enter a location name',
         options: [],
-        minSelected: 0,
+        minSelected: 1,
         maxSelected: 0,
         type: 'find-location',
-        enableAddButton: true
+        enableAddButton: true,
+        displayMinSelectedError: true,
+        minSelectedError: 'Select a location'
       },
       {
         name: 'user-type',

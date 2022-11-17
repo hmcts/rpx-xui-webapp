@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
+import { StaffJobTitles } from '../../../models/staff-job-titles';
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -30,10 +31,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public additionalLocations;
   public userType: string;
   public roles: string[];
-  public jobTitles: string[];
   public skills: string[];
   public servicePayload;
   public rolesPayload;
+  public jobTitlesPayload = [];
 
   constructor(
     private filterService: FilterService,
@@ -60,13 +61,12 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       this.additionalLocations = this.addUserData[6].value;
       this.userType = this.addUserData[7].value[0];
       this.roles = this.addUserData[8].value;
-      this.jobTitles = this.addUserData[9].value;
       this.skills = this.addUserData[10].value;
     });
 
     const selectedServices = [];
     this.addUserData[4].value.map(service => {
-      selectedServices.push(this.staffFilterOptions.services.find(services => services.key === service))
+      selectedServices.push(this.staffFilterOptions.services.find(services => services.key === service));
     });
     this.servicePayload = selectedServices.map(service => {
       return {
@@ -76,6 +76,19 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     });
     console.log(selectedServices);
     console.log(this.servicePayload);
+
+    const jobTitlesNamePayload = [];
+    this.addUserData[9].value.map(jobTitle => {
+      jobTitlesNamePayload.push(this.staffFilterOptions.jobTitles.find(jobTitles => jobTitles.key === jobTitle));
+    });
+
+    console.log(jobTitlesNamePayload);
+
+    jobTitlesNamePayload.map(jobTitleName => {
+      this.jobTitlesPayload.push(StaffJobTitles.jobTitles.find(jobTitle => jobTitle.role === jobTitleName.label));
+    })
+
+    console.log(this.jobTitlesPayload);
   }
 
   public addNewUser() {
@@ -102,12 +115,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       staff_admin_flag = role === 'staff-administrator';
     });
 
-    // let rolesPayload = [];
-    // this.staffJobTitles.map(jobTitle => {
-    //   this.staffFilterOptions.jobTitles.find(jobTitles => jobTitles.key === jobTitle);
-    // });
-
-
     const addNewUserPayload = {
       email_id: this.email,
       first_name: this.firstName,
@@ -115,18 +122,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       services: this.servicePayload,
       region: this.region,
       region_id: 1,
-      roles: [
-        {
-          role_id: '1',
-          role: 'Senior Legal Caseworker',
-          is_primary: true
-        },
-        {
-          role_id: '2',
-          role: 'Legal Caseworker',
-          is_primary: false
-        }
-      ],
+      roles: this.jobTitlesPayload,
       task_supervisor: task_supervisor_flag,
       case_allocator: case_allocator_flag,
       staff_admin: staff_admin_flag,
@@ -136,11 +132,14 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       skills: [
         {
           skill_id: 1,
-          description: this.skills
+          description: 'Underwriter'
         }
       ]
     };
 
-    this.staffDataAccessService.addNewUser(addNewUserPayload)
+    this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {
+      console.log(res);
+
+    })
   }
 }

@@ -91,8 +91,8 @@
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Job title</div>
           <div class="govuk-summary-list__value">
-            <span *ngFor="let jobTitle of jobTitles; let isLast=last">
-              {{jobTitle}}{{isLast ? '' : ', '}}
+            <span *ngFor="let jobTitle of jobTitlesPayload; let isLast=last">
+              {{jobTitle.role}}{{isLast ? '' : ', '}}
             </span>
           </div>
           <div class="govuk-summary-list__actions">

@@ -73,11 +73,11 @@ export const init = () => {
 
   mock.onGet(getSkills).reply(() => {
     const skills = [
-      { key: 'adoption-underwriter', label: 'Underwriter', service: 'adoption'},
-      { key: 'adoption-caseworker', label: 'Caseworker', service: 'adoption'},
-      { key: 'family-private-law-caseworker', label: 'Caseworker', service: 'family-private-law'},
-      { key: 'family-private-law-casemanager', label: 'Casemanager', service: 'family-private-law'},
-      { key: 'family-public-law-underwriter', label: 'Underwriter', service: 'family-public-law'},
+      { key: 'adoption-underwriter', label: 'Underwriter', service: 'adoption', id: '1'},
+      { key: 'adoption-caseworker', label: 'Caseworker', service: 'adoption', id: '2'},
+      { key: 'family-private-law-caseworker', label: 'Caseworker', service: 'family-private-law', id: '3'},
+      { key: 'family-private-law-casemanager', label: 'Casemanager', service: 'family-private-law', id: '4'},
+      { key: 'family-public-law-underwriter', label: 'Underwriter', service: 'family-public-law', id: '5'},
     ];
     const services = _.uniq(_.map(skills, 'service'));
     const response = [];

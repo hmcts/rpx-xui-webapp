@@ -4,7 +4,7 @@
       <div class="govuk-summary-list govuk-!-margin-bottom-5">
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Name</div>
-          <div class="govuk-summary-list__value">{{addUserData[0].value[0]}} {{addUserData[1].value[0]}}</div>
+          <div class="govuk-summary-list__value">{{firstName}} {{lastName}}</div>
           <div class="govuk-summary-list__actions">
             <a class="govuk-link" routerLink="/staff/add-user">
               Change<span class="govuk-visually-hidden"> name </span>
@@ -13,7 +13,7 @@
         </div>
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Email address</div>
-          <div class="govuk-summary-list__value">{{addUserData[2].value[0]}}</div>
+          <div class="govuk-summary-list__value">{{email}}</div>
           <div class="govuk-summary-list__actions">
             <a class="govuk-link" routerLink="/staff/add-user">
               Change<span class="govuk-visually-hidden"> email </span>
@@ -22,7 +22,11 @@
         </div>
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Services</div>
-          <div class="govuk-summary-list__value">{{addUserData[4].value[0]}}</div>
+          <div class="govuk-summary-list__value">
+            <span *ngFor="let service of servicePayload; let isLast=last">
+              {{service.service}}{{isLast ? '' : ', '}}
+            </span>
+          </div>
           <div class="govuk-summary-list__actions">
             <div routerLink="/staff/add-user">
               <a class="govuk-link" routerLink="/staff/add-user">
@@ -33,7 +37,7 @@
         </div>
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Region</div>
-          <div class="govuk-summary-list__value">{{addUserData[3].value[0]}}</div>
+          <div class="govuk-summary-list__value">{{region}}</div>
           <div class="govuk-summary-list__actions">
             <a class="govuk-link" routerLink="/staff/add-user">
               Change<span class="govuk-visually-hidden"> name</span>
@@ -42,7 +46,7 @@
         </div>
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Primary locations</div>
-          <div class="govuk-summary-list__value">{{addUserData[5].value[0].site_name}}</div>
+          <div class="govuk-summary-list__value">{{primaryLocations.site_name}}</div>
           <div class="govuk-summary-list__actions">
             <a class="govuk-link" routerLink="/staff/add-user">
               Change<span class="govuk-visually-hidden"> name</span>
@@ -52,7 +56,7 @@
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Additional locations</div>
           <div class="govuk-summary-list__value">
-            <span *ngFor="let location of addUserData[6].value; let isLast=last">
+            <span *ngFor="let location of additionalLocations; let isLast=last">
               {{location.site_name}}{{isLast ? '' : ', '}}
             </span>
           </div>
@@ -64,7 +68,7 @@
         </div>
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">User type</div>
-          <div class="govuk-summary-list__value">{{addUserData[7].value[0]}}</div>
+          <div class="govuk-summary-list__value">{{userType}}</div>
           <div class="govuk-summary-list__actions">
             <a class="govuk-link" routerLink="/staff/add-user">
               Change<span class="govuk-visually-hidden"> name</span>
@@ -73,7 +77,11 @@
         </div>
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Roles</div>
-          <div class="govuk-summary-list__value">{{addUserData[8].value[0]}}</div>
+          <div class="govuk-summary-list__value">
+            <span *ngFor="let role of roles; let isLast=last">
+              {{role}}{{isLast ? '' : ', '}}
+            </span>
+          </div>
           <div class="govuk-summary-list__actions">
             <a class="govuk-link" routerLink="/staff/add-user">
               Change<span class="govuk-visually-hidden"> name</span>
@@ -82,7 +90,11 @@
         </div>
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Job title</div>
-          <div class="govuk-summary-list__value">{{addUserData[9].value[0]}}</div>
+          <div class="govuk-summary-list__value">
+            <span *ngFor="let jobTitle of jobTitles; let isLast=last">
+              {{jobTitle}}{{isLast ? '' : ', '}}
+            </span>
+          </div>
           <div class="govuk-summary-list__actions">
             <a class="govuk-link" routerLink="/staff/add-user">
               Change<span class="govuk-visually-hidden"> name</span>
@@ -91,7 +103,11 @@
         </div>
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Skills</div>
-          <div class="govuk-summary-list__value">{{addUserData[10].value[0]}}</div>
+          <div class="govuk-summary-list__value">
+            <span *ngFor="let skill of skills; let isLast=last">
+              {{skill}}{{isLast ? '' : ', '}}
+            </span>
+          </div>
           <div class="govuk-summary-list__actions">
             <a class="govuk-link" routerLink="/staff/add-user">
               Change<span class="govuk-visually-hidden"> name</span>
@@ -111,7 +127,7 @@
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
           <button class="govuk-button govuk-!-margin-right-1 govuk-!-margin-bottom-0"
-            [routerLink]="'/staff'"
+            (click)="addNewUser()"
           >
             Continue
           </button>

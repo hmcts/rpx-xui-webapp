@@ -36,4 +36,8 @@ export class StaffDataAccessService {
   public getServices() {
     return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getServices`);
   }
+
+  public addNewUser(addNewUserBody) {
+    return this.http.post<StaffUser[]>(`${this.API_PATH}/addNewUser`, addNewUserBody);
+  }
 }

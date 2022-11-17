@@ -9,7 +9,8 @@ const featureNames = {
   userTypeRoles: 'mc-user-type-roles',
   booking: 'mc-booking-active',
   mcHearingsFeature: 'mc-hearings-jurisdictions',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs'
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
+  updatedTaskPermission: 'updated-task-permission',
 };
 
 const footerDataNavigation = {

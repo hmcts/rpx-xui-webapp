@@ -64,7 +64,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       this.skills = this.addUserData[10].value;
     });
 
-    let selectedServices = [];
+    const selectedServices = [];
     this.addUserData[4].value.map(service => {
       selectedServices.push(this.staffFilterOptions.services.find(services => services.key === service))
     });
@@ -79,17 +79,17 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public addNewUser() {
-    let locationPayload = [];
+    const locationPayload = [];
     locationPayload.push({
-      "location_id": this.primaryLocations.court_venue_id,
-      "location": this.primaryLocations.site_name,
-      "is_primary": true
+      location_id: this.primaryLocations.court_venue_id,
+      location: this.primaryLocations.site_name,
+      is_primary: true
     });
     this.additionalLocations.map(location => {
       locationPayload.push({
-        "location_id": location.court_venue_id,
-        "location": location.site_name,
-        "is_primary": false
+        location_id: location.court_venue_id,
+        location: location.site_name,
+        is_primary: false
       });
     });
     console.log(locationPayload);
@@ -109,34 +109,34 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
 
     const addNewUserPayload = {
-      "email_id": this.email,
-      "first_name": this.firstName,
-      "last_name": this.lastName,
-      "services": this.servicePayload,
-      "region": this.region,
-      "region_id": 1,
-      "roles": [
+      email_id: this.email,
+      first_name: this.firstName,
+      last_name: this.lastName,
+      services: this.servicePayload,
+      region: this.region,
+      region_id: 1,
+      roles: [
         {
-          "role_id": "1",
-          "role": "Senior Legal Caseworker",
-          "is_primary": true
+          role_id: '1',
+          role: 'Senior Legal Caseworker',
+          is_primary: true
         },
         {
-          "role_id": "2",
-          "role": "Legal Caseworker",
-          "is_primary": false
+          role_id: '2',
+          role: 'Legal Caseworker',
+          is_primary: false
         }
       ],
-      "task_supervisor": task_supervisor_flag,
-      "case_allocator": case_allocator_flag,
-      "staff_admin": staff_admin_flag,
-      "suspended": false,
-      "base_locations": locationPayload,
-      "user_type": this.userType,
-      "skills": [
+      task_supervisor: task_supervisor_flag,
+      case_allocator: case_allocator_flag,
+      staff_admin: staff_admin_flag,
+      suspended: false,
+      base_locations: locationPayload,
+      user_type: this.userType,
+      skills: [
         {
-          "skill_id": 1,
-          "description": this.skills
+          skill_id: 1,
+          description: this.skills
         }
       ]
     };

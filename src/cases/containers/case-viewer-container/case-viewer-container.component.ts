@@ -65,7 +65,7 @@ export class CaseViewerContainerComponent implements OnInit {
   private enablePrependedTabs(feature: string, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     return feature === CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_2
-      && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
+      && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
   }
 
   public ngOnInit(): void {

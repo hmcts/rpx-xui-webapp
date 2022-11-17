@@ -97,4 +97,3 @@ export async function addNewUser(req, res: Response, next: NextFunction) {
     next(error);
   }
 }
-

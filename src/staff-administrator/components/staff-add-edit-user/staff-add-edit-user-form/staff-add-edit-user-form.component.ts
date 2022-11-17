@@ -74,7 +74,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.resetForm();
   }
 
   public resetForm() {

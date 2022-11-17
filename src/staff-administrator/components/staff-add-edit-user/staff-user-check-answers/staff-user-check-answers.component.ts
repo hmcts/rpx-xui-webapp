@@ -39,6 +39,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public servicePayload;
   public rolesPayload;
   public jobTitlesPayload = [];
+  public skillsPayload;
 
   constructor(
     private filterService: FilterService,
@@ -67,8 +68,16 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       this.userType = this.addUserData[7].value[0];
       this.roles = this.addUserData[8].value;
       this.skills = this.addUserData[10].value;
+
+      this.prepareServicesPayload();
+      this.prepareJobTitlesPayload();
+      this.prepareSkillsPayload();
     });
 
+
+  }
+
+  private prepareServicesPayload() {
     const selectedServices = [];
     this.addUserData[4].value.map(service => {
       selectedServices.push(this.staffFilterOptions.services.find(services => services.key === service));
@@ -79,24 +88,20 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         service_code: service.key
       }
     });
-    console.log(selectedServices);
-    console.log(this.servicePayload);
+  }
 
+  private prepareJobTitlesPayload() {
     const jobTitlesNamePayload = [];
     this.addUserData[9].value.map(jobTitle => {
       jobTitlesNamePayload.push(this.staffFilterOptions.jobTitles.find(jobTitles => jobTitles.key === jobTitle));
     });
 
-    console.log(jobTitlesNamePayload);
-
     jobTitlesNamePayload.map(jobTitleName => {
       this.jobTitlesPayload.push(StaffJobTitles.jobTitles.find(jobTitle => jobTitle.role === jobTitleName.label));
     })
-
-    console.log(this.jobTitlesPayload);
   }
 
-  public addNewUser() {
+  private prepareLocationPayload() {
     const locationPayload = [];
     locationPayload.push({
       location_id: this.primaryLocations.court_venue_id,
@@ -110,7 +115,16 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         is_primary: false
       });
     });
-    console.log(locationPayload);
+    return locationPayload;
+  }
+
+  private prepareSkillsPayload() {
+    this.skills.map(service => {
+      this.skillsPayload.push(this.staffFilterOptions.services.find(services => services.key === service));
+    });
+  }
+
+  public addNewUser() {
     let task_supervisor_flag;
     let case_allocator_flag;
     let staff_admin_flag;
@@ -132,7 +146,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       case_allocator: case_allocator_flag,
       staff_admin: staff_admin_flag,
       suspended: false,
-      base_locations: locationPayload,
+      base_locations: this.prepareLocationPayload(),
       user_type: this.userType,
       skills: [
         {
@@ -143,9 +157,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     };
 
     this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {
-      console.log(res);
-
-    })
+      // success banner
+    }, error => {
+      this.router.navigate(['/service-down']);
+    });
   }
 
   public cancel() {

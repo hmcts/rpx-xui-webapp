@@ -85,3 +85,16 @@ export async function getStaffRefUserDetails(req, res: Response, next: NextFunct
     next(error);
   }
 }
+
+export async function addNewUser(req, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `/refdata/case-worker/profile`;
+
+  try {
+    const {status, data}: { status: number, data: StaffDataUser } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+

@@ -6,7 +6,7 @@ import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { SortOrder } from '../../enums';
+import { SortOrder, TaskContext } from '../../enums';
 import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
@@ -93,13 +93,16 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       if (taskTypeParameter) {
         searchParameters.push(taskTypeParameter);
       };
-      return {
+      const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
-        pagination_parameters: this.getPaginationParameter(),
-        request_context: "ALL_WORK"
+        pagination_parameters: this.getPaginationParameter()
       };
+      if (this.updatedTaskPermission) {
+        searchTaskParameter.request_context = TaskContext.ALL_WORK;
+      }
+      return searchTaskParameter;
     }
   }
 

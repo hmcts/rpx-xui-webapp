@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
+import { TaskContext } from '../../../work-allocation/enums';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
@@ -51,13 +51,16 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       if (typesOfWorkParameter) {
         searchParameters.push(typesOfWorkParameter);
       }
-      return {
+      const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
-        pagination_parameters: this.getPaginationParameter(),
-        request_context: "MY_TASKS"
+        pagination_parameters: this.getPaginationParameter()
       };
+      if (this.updatedTaskPermission) {
+        searchTaskParameter.request_context = TaskContext.MY_TASKS;
+      }
+      return searchTaskParameter;
     }
   }
 

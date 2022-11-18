@@ -19,7 +19,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public formId: string = 'staff-add-edit-user';
   public addUserData: {
     name: string;
-    value: any[];
+    value: string[];
   }[];
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
@@ -59,7 +59,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public ngOnInit() {
     this.filterService.getStream(this.formId).subscribe(data => {
       this.addUserData = data.fields;
-      console.log(this.addUserData);
       this.firstName = this.addUserData[0].value[0];
       this.lastName = this.addUserData[1].value[0];
       this.email = this.addUserData[2].value[0];
@@ -127,20 +126,12 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       });
     });
 
-    console.log('**skillsPayload**');
-    console.log(skillsPayload);
-
     skillsPayload.map(skill => {
       this.skillsPayload.push({
         skill_id: skill.id,
         description: skill.label
       })
     });
-
-    console.log('**this.skillsPayload');
-    console.log(this.skillsPayload);
-
-
   }
 
   public addNewUser() {

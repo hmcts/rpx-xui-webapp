@@ -104,7 +104,7 @@
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Skills</div>
           <div class="govuk-summary-list__value">
-            <span *ngFor="let skill of skills; let isLast=last">
+            <span *ngFor="let skill of skillsPayload; let isLast=last">
               {{skill}}{{isLast ? '' : ', '}}
             </span>
           </div>

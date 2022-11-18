@@ -28,7 +28,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId,
     private activatedRoute: ActivatedRoute,
     private filterService: FilterService,
     private router: Router

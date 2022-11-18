@@ -32,6 +32,10 @@ $govuk-compatibility-govukfrontendtoolkit: true;
 @import "./vendor/prism.scss";
 @import "./material";
 
+// Ensure Media Viewer CSS styles and icons are available globally across Manage Cases. Required for correct display
+// of the Media Viewer toolbar when this component is embedded in another CCD Case UI Toolkit component
+@import '../../node_modules/@hmcts/media-viewer/assets/all';
+
 body {
   margin: 0;
   font-family: "nta", Arial, sans-serif;

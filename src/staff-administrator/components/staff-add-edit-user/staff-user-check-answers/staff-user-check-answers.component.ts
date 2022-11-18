@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
+import { StaffAddNewUser } from 'src/staff-administrator/models/staff-add-new-user.model';
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -39,7 +40,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public servicePayload;
   public rolesPayload;
   public jobTitlesPayload = [];
-  public skillsPayload;
+  public skillsPayload = [];
 
   constructor(
     private filterService: FilterService,
@@ -119,9 +120,27 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   private prepareSkillsPayload() {
-    this.skills.map(service => {
-      this.skillsPayload.push(this.staffFilterOptions.services.find(services => services.key === service));
+    let skillsPayload = [];
+    this.skills.map(skill => {
+      this.staffFilterOptions.skills.map(skillgroup => {
+        skillsPayload = skillgroup.options.filter(skills => skills.key === skill);
+      });
     });
+
+    console.log('**skillsPayload**');
+    console.log(skillsPayload);
+
+    skillsPayload.map(skill => {
+      this.skillsPayload.push({
+        skill_id: skill.id,
+        description: skill.label
+      })
+    });
+
+    console.log('**this.skillsPayload');
+    console.log(this.skillsPayload);
+
+
   }
 
   public addNewUser() {
@@ -148,18 +167,13 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       suspended: false,
       base_locations: this.prepareLocationPayload(),
       user_type: this.userType,
-      skills: [
-        {
-          skill_id: 1,
-          description: 'Underwriter'
-        }
-      ]
+      skills: this.skillsPayload
     };
 
     this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {
       // success banner
     }, error => {
-      this.router.navigate(['/service-down']);
+      this.router.navigateByUrl('/service-down');
     });
   }
 

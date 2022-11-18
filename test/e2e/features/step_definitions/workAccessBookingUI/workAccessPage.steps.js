@@ -62,23 +62,32 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see work access radio button {string} not displayed', async function (radioButtonName) {
-        const radioButton = getWorkAccessRadioButton(radioButtonName);
-        expect(await radioButton.isDisplayed()).to.be.false;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const radioButton = getWorkAccessRadioButton(radioButtonName);
+            expect(await radioButton.isDisplayed()).to.be.false;
+        })
+        
     });
 
     When('I select work access radio button {string}', async function (radioButtonName) {
-        const radioButton = getWorkAccessRadioButton(radioButtonName);
-        expect((await radioButton.isPresent() && await radioButton.isDisplayed()), `Radio option ${radioButtonName} is not displayed`).to.be.true;
-        await radioButton.click();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const radioButton = getWorkAccessRadioButton(radioButtonName);
+            expect((await radioButton.isPresent() && await radioButton.isDisplayed()), `Radio option ${radioButtonName} is not displayed`).to.be.true;
+            await radioButton.click();
+        })
+        
     });
 
     Then('I see work access continue button displayed', async function(){
-        const ispresent = await workAccessPage.continueButton.isPresent();
-        if (ispresent) {
-            expect(await workAccessPage.continueButton.isDisplayed()).to.be.true;
-        }else{
-            throw new Error('Assertion failed. expected false to be true');
-        }
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const ispresent = await workAccessPage.continueButton.isPresent();
+            if (ispresent) {
+                expect(await workAccessPage.continueButton.isDisplayed()).to.be.true;
+            } else {
+                throw new Error('Assertion failed. expected false to be true');
+            }
+        })
+       
     });
 
     Then('I see work access continue button not displayed', async function () {
@@ -97,7 +106,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see work access existing bookings list container', async function(){
-        expect(await workAccessPage.existingBookingsList.isDisplayed()).to.be.true
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await workAccessPage.existingBookingsList.isDisplayed()).to.be.true
+        })
+       
     });
 
     Then('I see work access existing bookings displayed with details', async function(datatable){

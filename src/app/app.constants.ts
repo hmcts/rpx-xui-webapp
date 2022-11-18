@@ -3,8 +3,7 @@ import { ApplicationThemeLogo } from './enums';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
-  currentWAFeature: 'mc-work-allocation-active-feature',
-  workAllocation: 'MC_Work_Allocation',
+  waServiceConfig: 'wa-service-config',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
   userTypeRoles: 'mc-user-type-roles',
@@ -77,7 +76,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Immigration and Asylum',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'customer.service@justice.gov.uk',
+    email: 'contactia@justice.gov.uk',
     phone: '0300 123 1711',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   },

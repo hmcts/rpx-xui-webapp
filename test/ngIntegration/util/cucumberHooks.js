@@ -24,6 +24,7 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
     });
 
     Before(async function (scenario) {
+        global.scenarioData = {}
         await CucumberReportLog.setScenarioWorld(this);
         MockApp.setLogMessageCallback((msg) => CucumberReportLog.AddMessage(msg));
         MockApp.setLogJSONCallback((json) => CucumberReportLog.AddJson(json));

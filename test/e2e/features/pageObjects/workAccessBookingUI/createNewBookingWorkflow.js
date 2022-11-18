@@ -11,7 +11,9 @@ class CreateNewBookingWorkFlow{
         this.chooseDurationPage = ChooseDurationPage;
         this.checkAnswersPage = checkAnswersPage;
 
-        this.continueButton = $('exui-booking-location button,exui-booking-date button ,exui-booking-check button');
+        this.continueButton = $('exui-booking-location button,exui-booking-date button')
+        this.confirmBookingButton = $('exui-booking-check button');
+
         this.cancelLink = $('');
         this.backLink = $('.govuk-back-link');
     }

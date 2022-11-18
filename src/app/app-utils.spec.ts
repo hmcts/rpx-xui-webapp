@@ -192,32 +192,32 @@ describe('getFeatureToggledUrl', () => {
 describe('isLegalOpsOrJudicial', () => {
 
   it('should return legal ops role if user has any legal ops role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-caseofficer']);
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker-ia-caseofficer']);
     expect(isLegalOpsOrJudicial).toBe(UserRole.LegalOps);
   });
 
   it('should return judicial role if user has any judicial role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-iacjudge']);
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker-ia-iacjudge']);
     expect(isLegalOpsOrJudicial).toBe(UserRole.Judicial);
   });
 
   it('should return null if user has no judicial or legal ops role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker']);
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker']);
     expect(isLegalOpsOrJudicial).toBeNull();
   });
 
   it('should return legal ops role if user is an task supervisor', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['task-supervisor']);
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['task-supervisor']);
     expect(isLegalOpsOrJudicial).toBe('legalops');
   });
 
   it('should return legal ops role if user is an caseworker-ia', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker-ia']);
     expect(isLegalOpsOrJudicial).toBe('legalops');
   });
 
   it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-admofficer']);
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker-ia-admofficer']);
     expect(isLegalOpsOrJudicial).toBe('legalops');
   });
 

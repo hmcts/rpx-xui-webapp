@@ -113,6 +113,8 @@ export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 
+export const FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED = 'updatedTaskPermissionsEnabled';
+
 export const HELMET = 'helmet';
 
 export const REDIS_KEY_PREFIX = 'redis.prefix';

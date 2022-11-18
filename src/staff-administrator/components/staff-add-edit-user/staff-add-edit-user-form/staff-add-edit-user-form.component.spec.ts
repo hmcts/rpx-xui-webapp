@@ -15,7 +15,7 @@ import { of } from 'rxjs';
 class StaffMainContainerStubComponent {}
 
 
-fdescribe('StaffAddEditUserFormComponent', () => {
+describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
   let fixture: ComponentFixture<StaffAddEditUserFormComponent>;
   let location: Location;

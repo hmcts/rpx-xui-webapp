@@ -45,9 +45,6 @@ export async function getSkills(req, res: Response, next: NextFunction) {
 
   try {
     const {status, data}: { status: number, data } = await handleGet(markupPath, req);
-    console.log("**data**");
-    console.log(JSON.stringify(data));
-
     res.status(status).send(data);
   } catch (error) {
     next(error);

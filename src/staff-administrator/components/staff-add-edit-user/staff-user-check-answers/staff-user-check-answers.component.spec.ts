@@ -5,7 +5,7 @@ import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.compo
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StaffDataAccessService } from 'src/staff-administrator/services/staff-data-access/staff-data-access.service';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 

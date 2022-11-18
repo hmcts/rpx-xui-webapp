@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
-import { StaffAddNewUser } from 'src/staff-administrator/models/staff-add-new-user.model';
 
 @Component({
   selector: 'exui-staff-user-check-answers',

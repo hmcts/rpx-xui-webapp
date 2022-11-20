@@ -12,7 +12,7 @@ import { StaffFilterOption } from '../../../models/staff-filter-option.model';
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
+export class StaffAddEditUserFormComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   public formId: string = 'staff-add-edit-user';
   public staffFilterOptions: {
@@ -70,9 +70,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
         }
       })
     );
-  }
-
-  public ngOnDestroy() {
   }
 
   public resetForm() {
@@ -133,19 +130,19 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           options: [],
           maxWidth480px: true,
         },
-        {
-          name: 'region',
-          type: 'select',
-          title: 'Region',
-          titleClasses: 'govuk-label govuk-label--m',
-          options: [{ key: 'region-1', label: 'Region 1'}],
-          minSelected: 1,
-          maxSelected: 10,
-          minSelectedError: 'Select at least one region',
-          displayMinSelectedError: true,
-          lineBreakBefore: true,
-          maxWidth480px: true,
-        },
+        // {
+        //   name: 'region',
+        //   type: 'select',
+        //   title: 'Region',
+        //   titleClasses: 'govuk-label govuk-label--m',
+        //   options: [{ key: 'region-1', label: 'Region 1'}],
+        //   minSelected: 1,
+        //   maxSelected: 10,
+        //   minSelectedError: 'Select at least one region',
+        //   displayMinSelectedError: true,
+        //   lineBreakBefore: true,
+        //   maxWidth480px: true,
+        // },
         {
           name: 'services',
           type: 'checkbox',

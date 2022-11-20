@@ -1,13 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('StaffUserCheckAnswersComponent', () => {
   let component: StaffUserCheckAnswersComponent;
@@ -21,7 +19,7 @@ describe('StaffUserCheckAnswersComponent', () => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser']);
 
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule, RouterTestingModule ],
+      imports: [ HttpClientTestingModule ],
       declarations: [StaffUserCheckAnswersComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
@@ -235,7 +233,7 @@ describe('StaffUserCheckAnswersComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call addNewUser', () => {
+  it('should call addNewUser and be successful', () => {
     mockStaffDataAccessService.addNewUser.and.returnValue(of({
       id: 2,
       firstName: 'Victoria',
@@ -258,6 +256,40 @@ describe('StaffUserCheckAnswersComponent', () => {
     }));
     component.addNewUser();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
+  });
+
+  it('should call addNewUser and be successful', (done) => {
+    mockStaffDataAccessService.addNewUser.and.returnValue(of({
+      id: 2,
+      firstName: 'Victoria',
+      lastName: 'Patton',
+      userCategory: '',
+      userType: 'Officer2',
+      jobTitle: 'Solicitor',
+      locations: [
+        'Locatin Y',
+      ],
+      region: 'London',
+      services: [
+        'Mock Service 2',
+      ],
+      suspended: true,
+      email: 'victoria@hmcts.com',
+      primaryLocation: 'London',
+      roles: 'Case allocator',
+      skills: ['SCSS'],
+    }));
+    component.addNewUser();
+    done();
+    expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
+  });
+
+  it('should call addNewUser and throw error', (done) => {
+    mockStaffDataAccessService.addNewUser.and.returnValue(throwError({status: 500}));
+    component.addNewUser();
+    done();
+    expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down')
   });
 });
 

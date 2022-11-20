@@ -10,6 +10,7 @@ import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 import { of } from 'rxjs';
+import { StaffUserCheckAnswersComponent } from '../staff-user-check-answers/staff-user-check-answers.component';
 
 @Component({selector: 'exui-staff-main-container', template: ''})
 class StaffMainContainerStubComponent {}
@@ -19,10 +20,10 @@ describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
   let fixture: ComponentFixture<StaffAddEditUserFormComponent>;
   let location: Location;
-  // let mockFilterService: jasmine.SpyObj<FilterService>;
+  let router: Router;
   const mockFilterService: any = {
     getStream: () => of({
-        reset: false,
+        reset: true,
         fields: [
         {
           value: [
@@ -107,28 +108,31 @@ describe('StaffAddEditUserFormComponent', () => {
     get: jasmine.createSpy(),
     persist: jasmine.createSpy(),
     givenErrors: {
-      subscribe: jasmine.createSpy(),
+      pipe: () => null,
+      subscribe: () => of([{ error: 'errorMessage' }]),
       next: () => null,
       unsubscribe: () => null
-    }
+    },
+    clearSessionAndLocalPersistance: jasmine.createSpy()
   };
 
-  beforeEach(async(() => {
-    // mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
+  beforeEach(async () => {
     class routerClass {
       getCurrentNavigation() {
         return { previousNavigation: {finalUrl: '/staff'}}
       }
     }
-    TestBed.configureTestingModule({
-      declarations: [StaffAddEditUserFormComponent, StaffMainContainerStubComponent],
+    await TestBed.configureTestingModule({
+      declarations: [StaffAddEditUserFormComponent, StaffMainContainerStubComponent, StaffUserCheckAnswersComponent],
       imports: [
         RouterTestingModule.withRoutes([
-          { path: 'staff', component: StaffMainContainerStubComponent }
+          { path: 'staff', component: StaffMainContainerStubComponent },
+          { path: 'staff/add-user/check-your-answers', component: StaffUserCheckAnswersComponent }
         ]),
         ReactiveFormsModule,
         HttpClientTestingModule,
-        ExuiCommonLibModule
+        ExuiCommonLibModule,
+
       ],
       providers: [
         { provide: FilterService, useValue: mockFilterService },
@@ -242,116 +246,30 @@ describe('StaffAddEditUserFormComponent', () => {
             },
           },
         },
-        {
-          provide: Router,
-          useClass: routerClass
-        }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
-    // router = TestBed.get(Router);
-
-    // mockFilterService.getStream.and.returnValue(of({
-    //   reset: false,
-    //   fields: [
-    //   {
-    //     value: [
-    //       'Adele'
-    //     ],
-    //     name: 'firstName'
-    //   },
-    //   {
-    //     value: [
-    //       'Adkins'
-    //     ],
-    //     name: 'lastName'
-    //   },
-    //   {
-    //     value: [
-    //       'adele.adkins@dfsd.com'
-    //     ],
-    //     name: 'email'
-    //   },
-    //   {
-    //     value: [
-    //       'region-1'
-    //     ],
-    //     name: 'region'
-    //   },
-    //   {
-    //     value: [
-    //       'family-private-law',
-    //       'employment-tribunals'
-    //     ],
-    //     name: 'services'
-    //   },
-    //   {
-    //     value: [
-    //       {
-    //         court_venue_id: '10453',
-    //         epimms_id: '366796',
-    //         site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
-    //       }
-    //     ],
-    //     name: 'primaryLocation'
-    //   },
-    //   {
-    //     value: [
-    //       {
-    //         court_venue_id: '10253',
-    //         epimms_id: '366559',
-    //         site_name: 'Glasgow Tribunals Centre',
-    //       },
-    //       {
-    //         court_venue_id: '10453',
-    //         epimms_id: '366796',
-    //         site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
-    //       }
-    //     ],
-    //     name: 'additionalLocations'
-    //   },
-    //   {
-    //     value: [
-    //       'ctsc'
-    //     ],
-    //     name: 'userType'
-    //   },
-    //   {
-    //     value: [
-    //       'task-supervisor'
-    //     ],
-    //     name: 'roles'
-    //   },
-    //   {
-    //     value: [
-    //       'hearing-centre-team-leader'
-    //     ],
-    //     name: 'jobTitle'
-    //   },
-    //   {
-    //     value: [
-    //       'family-public-law-underwriter'
-    //     ],
-    //     name: 'skills'
-    //   }]}));
+    router = TestBed.get(Router);
+    spyOn(mockFilterService.givenErrors, 'unsubscribe');
+    spyOn(router, 'getCurrentNavigation').and.returnValues({ previousNavigation: { finalUrl : '/staff'}});
     location = TestBed.get(Location);
     fixture = TestBed.createComponent(StaffAddEditUserFormComponent);
     component = fixture.componentInstance;
-
-    // router.initialNavigation();
+    router.initialNavigation();
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create', fakeAsync(() => {
     expect(component).toBeTruthy();
-  });
+  }));
 
   it('should call initForm which sets filterConfig on ngOnInit', () => {
     const spyOnInitForm = spyOn(component,  'initFormConfig');
+
     component.ngOnInit();
     expect(spyOnInitForm).toHaveBeenCalled();
     expect(component.filterConfig).toBeDefined();

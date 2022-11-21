@@ -58,7 +58,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public ngOnInit() {
     this.filterService.getStream(this.formId).subscribe(data => {
       this.addUserData = data.fields;
-      if(this.addUserData) {
+      if (this.addUserData) {
         this.firstName = this.addUserData[0].value[0];
         this.lastName = this.addUserData[1].value[0];
         this.email = this.addUserData[2].value[0];

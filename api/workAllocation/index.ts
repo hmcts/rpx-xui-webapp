@@ -160,11 +160,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
-      // These should be mocked as if we were getting them from the user themselves
-      if (refined) {
-        data = mockTaskPermissions(data);
-      }
       returnData = !!req.body.refined ?
        { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
         : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
@@ -174,56 +169,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   } catch (error) {
     next(error);
   }
-}
-
-// mocks permissions to test fine-grained task permissions
-function mockTaskPermissions(data) {
-  if (data.tasks) {
-    for (let i = 0; i < data.tasks.length; i++) {
-      let permissions = [];
-      if (i === 7) {
-        break;
-      }
-      switch (i) {
-        case 0: {
-          permissions = ['assign', 'own'];
-          break;
-        }
-        case 1: {
-          permissions = ['Unassign'];
-          break;
-        }
-        case 2: {
-          permissions = [];
-          break;
-        }
-        case 3: {
-          permissions = ['Execute', 'Assign'];
-          break;
-        }
-        case 4: {
-          permissions = ['Own', 'Claim'];
-          break;
-        }
-        case 5: {
-          permissions = ['UnassignAssign'];
-          break;
-        }
-        case 6: {
-          permissions = ['UnassignClaim'];
-          break;
-        }
-        case 7: {
-          permissions = ['UnclaimAssign'];
-          break;
-        }
-      }
-      if (data.tasks[i].permissions) {
-        data.tasks[i].permissions.values = permissions;
-      }
-    }
-  }
-  return data;
 }
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {

@@ -16,6 +16,9 @@ export const LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
 export const CITIZEN_ROLE = 'citizen';
 export const CITIZEN_ROLE_CATEGORY = 'CITIZEN';
 export const CITIZEN_ROLE_NAME = 'citizen';
+export const CTSC_ROLE = 'ctsc';
+export const CTSC_ROLE_CATEGORY = 'CTSC';
+export const CTSC_ROLE_NAME = 'ctsc';
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
@@ -54,6 +57,8 @@ export function getMappedRoleCategory(roles: string[], roleCategories: string[])
       return CITIZEN_ROLE_CATEGORY;
    } else if (this.roleOrCategoryExists(ADMIN_ROLE, ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
       return ADMIN_ROLE_CATEGORY;
+   } else if (this.roleOrCategoryExists(CTSC_ROLE, CTSC_ROLE_CATEGORY, CTSC_ROLE_NAME, roleCategories)) {
+      return CTSC_ROLE_CATEGORY;
    } else {
       return LEGAL_OPERATIONS_ROLE_CATEGORY;
    }

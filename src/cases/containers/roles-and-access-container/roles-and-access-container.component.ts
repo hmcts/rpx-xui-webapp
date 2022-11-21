@@ -5,7 +5,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { first, map, mergeMap, tap } from 'rxjs/operators';
-import { AppConstants } from 'src/app/app.constants';
+import { AppConstants } from '../../../app/app.constants';
 import { UserDetails } from '../../../app/models/user-details.model';
 import { SessionStorageService } from '../../../app/services';
 import * as fromRoot from '../../../app/store';
@@ -88,7 +88,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public loadWaConfig(): void {
-    this.updatedTaskPermission$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermission, null);
+    this.updatedTaskPermission$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

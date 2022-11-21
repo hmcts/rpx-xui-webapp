@@ -5,7 +5,7 @@ import { TaskRole } from '../models/tasks';
 import { TaskRoleResolverService } from './task-role-resolver.service';
 
 
-xdescribe('TaskRoleResolverService', () => {
+describe('TaskRoleResolverService', () => {
   it('resolves on success', () => {
     const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTaskRoles']);
     mockService.getTaskRoles.and.returnValue(of(TASK_ROLES));

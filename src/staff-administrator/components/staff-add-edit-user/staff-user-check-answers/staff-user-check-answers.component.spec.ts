@@ -1,11 +1,12 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
-import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
+import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
+
 
 describe('StaffUserCheckAnswersComponent', () => {
   let component: StaffUserCheckAnswersComponent;

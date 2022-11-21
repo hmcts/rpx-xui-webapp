@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
-import { StaffFilterOption } from '../../../models/staff-filter-option.model';
-import { StaffJobTitles } from '../../../models/staff-job-titles';
 import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
+import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
+import { StaffFilterOption } from '../../../models/staff-filter-option.model';
+import { StaffJobTitles } from '../../../models/staff-job-titles';
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -58,22 +58,22 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public ngOnInit() {
     this.filterService.getStream(this.formId).subscribe(data => {
       this.addUserData = data.fields;
-      this.firstName = this.addUserData[0].value[0];
-      this.lastName = this.addUserData[1].value[0];
-      this.email = this.addUserData[2].value[0];
-      this.region = this.addUserData[3].value[0];
-      this.primaryLocations = this.addUserData[5].value[0];
-      this.additionalLocations = this.addUserData[6].value;
-      this.userType = this.addUserData[7].value[0];
-      this.roles = this.addUserData[8].value;
-      this.skills = this.addUserData[10].value;
+      if(this.addUserData) {
+        this.firstName = this.addUserData[0].value[0];
+        this.lastName = this.addUserData[1].value[0];
+        this.email = this.addUserData[2].value[0];
+        this.region = this.addUserData[3].value[0];
+        this.primaryLocations = this.addUserData[5].value[0];
+        this.additionalLocations = this.addUserData[6].value;
+        this.userType = this.addUserData[7].value[0];
+        this.roles = this.addUserData[8].value;
+        this.skills = this.addUserData[10].value;
 
-      this.prepareServicesPayload();
-      this.prepareJobTitlesPayload();
-      this.prepareSkillsPayload();
+        this.prepareServicesPayload();
+        this.prepareJobTitlesPayload();
+        this.prepareSkillsPayload();
+      }
     });
-
-
   }
 
   private prepareServicesPayload() {

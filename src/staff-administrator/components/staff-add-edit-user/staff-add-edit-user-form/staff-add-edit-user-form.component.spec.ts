@@ -1,5 +1,4 @@
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
@@ -7,10 +6,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
-import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 import { of } from 'rxjs';
 import { StaffUserCheckAnswersComponent } from '../staff-user-check-answers/staff-user-check-answers.component';
+import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
+
 
 @Component({selector: 'exui-staff-main-container', template: ''})
 class StaffMainContainerStubComponent {}

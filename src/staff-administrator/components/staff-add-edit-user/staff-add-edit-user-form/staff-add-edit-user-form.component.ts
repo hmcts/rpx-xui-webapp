@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingCheckType, FilterConfig, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
@@ -49,8 +49,9 @@ export class StaffAddEditUserFormComponent implements OnInit {
         if (data.reset) {
           this.resetForm();
         } else {
-          if (this.previousUrl !== '/staff/add-user/check-your-answers') {
-            this.router.navigateByUrl('/staff/add-user/check-your-answers');
+          const checkYourAnswerUrl = '/staff/add-user/check-your-answers';
+          if (this.previousUrl !== checkYourAnswerUrl) {
+            this.router.navigateByUrl(checkYourAnswerUrl);
           }
         }
       }

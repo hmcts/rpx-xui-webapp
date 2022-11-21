@@ -6,6 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import {
   AbstractAppConfig,
+  AlertModule,
   AlertService,
   AuthService as CCDAuthService,
   CaseEditorModule,
@@ -68,6 +69,7 @@ import { effects, reducers } from './store';
 
 @NgModule({
   imports: [
+    AlertModule,
     CommonModule,
     CreateCaseFiltersModule,
     SearchResultModule,

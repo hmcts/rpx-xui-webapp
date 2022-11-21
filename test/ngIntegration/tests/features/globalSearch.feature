@@ -226,7 +226,7 @@ Feature: Global search
         When I click action link "View" at row 1 in global search results page
         Then I see case details page
 
-@test
+
     Scenario: Case search results view validations challenged access
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
@@ -264,7 +264,7 @@ Feature: Global search
 
         When I click request access button in case basic view page
         Then I see case details challenged access request page
-@test
+
     Scenario: Case search results view validations Specific access
         Given I set MOCK case details with reference "caseDetailsSpecific"
         Given I set MOCK case details "caseDetailsSpecific" property "Jurisdiction" as "Civil"

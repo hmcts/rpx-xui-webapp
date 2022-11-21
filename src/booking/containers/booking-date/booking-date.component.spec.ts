@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule,  ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { BookingDateFormErrorMessage, BookingDateOption, BookingDatePageText, BookingProcess, DateFormControl } from '../../models';

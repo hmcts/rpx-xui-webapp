@@ -39,6 +39,7 @@ import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } f
 import {
   assignActionsToCases,
   assignActionsToTasks,
+  assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
@@ -140,13 +141,20 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
+    // determines whether should use release 3 or release 4 permission logic
+    const refined = req.body.refined;
+    searchRequest.sorting_parameters.find((sort, index) => {
+      if (sort.sort_by === 'priority') {
+        searchRequest.sorting_parameters.splice(index, 1);
+      }
+    });
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
@@ -154,12 +162,68 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+      if (refined) {
+        data = mockTaskPermissions(data);
+      }
+      returnData = !!req.body.refined ?
+       { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
+        : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+
     }
     res.send(returnData);
   } catch (error) {
     next(error);
   }
+}
+
+// mocks permissions to test fine-grained task permissions
+function mockTaskPermissions(data) {
+  if (data.tasks) {
+    for (let i = 0; i < data.tasks.length; i++) {
+      let permissions = [];
+      if (i === 7) {
+        break;
+      }
+      switch (i) {
+        case 0: {
+          permissions = ['assign', 'own'];
+          break;
+        }
+        case 1: {
+          permissions = ['Unassign'];
+          break;
+        }
+        case 2: {
+          permissions = [];
+          break;
+        }
+        case 3: {
+          permissions = ['Execute', 'Assign'];
+          break;
+        }
+        case 4: {
+          permissions = ['Own', 'Claim'];
+          break;
+        }
+        case 5: {
+          permissions = ['UnassignAssign'];
+          break;
+        }
+        case 6: {
+          permissions = ['UnassignClaim'];
+          break;
+        }
+        case 7: {
+          permissions = ['UnclaimAssign'];
+          break;
+        }
+      }
+      if (data.tasks[i].permissions) {
+        data.tasks[i].permissions.values = permissions;
+      }
+    }
+  }
+  return data;
 }
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
@@ -191,10 +255,15 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     ],
   };
   try {
-    const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    let { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    if (data && req.body.refined) {
+      data = mockTaskPermissions(data);
+    }
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
+    const actionedTasks = !!req.body.refined
+      ? assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId)
+      : assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
     return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);

@@ -1,4 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
+import { Component } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
@@ -16,12 +17,12 @@ import {
   DraftService,
   HttpErrorService,
   HttpService,
+  LoadingService,
   OrderService,
   RequestOptionsBuilder,
   SearchService,
-  WorkAllocationService,
-  LoadingService,
-  SessionStorageService
+  SessionStorageService,
+  WorkAllocationService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -29,7 +30,6 @@ import { combineReducers, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { SharedModule } from '../../../app/shared/shared.module';
 import * as fromCases from '../../store/reducers';
 import { CaseCreateSubmitComponent } from './case-create-submit.component';
 
@@ -73,7 +73,14 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   ignore_warning: false
 };
 
-xdescribe('CaseCreateSubmitComponent', () => {
+@Component({
+  selector: 'exui-ccd-connector',
+  template: '<div></div>'
+})
+
+class FakeExuidCcdConnectorComponent {}
+
+describe('CaseCreateSubmitComponent', () => {
   let component: CaseCreateSubmitComponent;
   let fixture: ComponentFixture<CaseCreateSubmitComponent>;
   let casesService: CasesService;
@@ -95,9 +102,8 @@ xdescribe('CaseCreateSubmitComponent', () => {
         HttpClientTestingModule,
         StoreModule.forRoot({...fromCases.reducers, cases: combineReducers(fromCases.reducers)}),
         EffectsModule.forRoot([]),
-        SharedModule
       ],
-      declarations: [CaseCreateSubmitComponent],
+      declarations: [CaseCreateSubmitComponent, FakeExuidCcdConnectorComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

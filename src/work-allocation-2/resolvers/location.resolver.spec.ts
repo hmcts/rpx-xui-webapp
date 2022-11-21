@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
 import { Store, StoreModule } from '@ngrx/store';
 import { LocationModel } from 'api/locations/models/location.model';
 import { of } from 'rxjs/internal/observable/of';
@@ -15,12 +15,16 @@ import { Caseworker } from '../models/dtos';
 import { CaseworkerDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
 
-
-xdescribe('LocationResolver', () => {
+describe('LocationResolver', () => {
 
   let caseworkerDataService: CaseworkerDataService;
   let judicialWorkerDataService: AllocateRoleService;
   let store: Store<fromCaseList.State>;
+
+  class RouterStub {
+    public url = '';
+    public navigate(commands: any[], extras?: any) { }
+  }
 
   const CASE_WORKER: UserDetails = {
     sessionTimeout: {
@@ -91,10 +95,11 @@ xdescribe('LocationResolver', () => {
     TestBed.configureTestingModule({
         imports: [
           StoreModule.forRoot(reducers, {metaReducers}),
-          RouterTestingModule.withRoutes([]),
+          // RouterTestingModule.withRoutes(ROUTES),
           HttpClientTestingModule,
         ],
         providers: [
+          { provide: Router, useClass: RouterStub},
           LocationResolver,
           CaseworkerDataService,
           AllocateRoleService,
@@ -102,16 +107,24 @@ xdescribe('LocationResolver', () => {
         ]
       }
     );
-    caseworkerDataService = TestBed.get(CaseworkerDataService) as CaseworkerDataService;
-    judicialWorkerDataService = TestBed.get(AllocateRoleService) as AllocateRoleService;
-    store = TestBed.get(Store) as Store<fromCaseList.State>;
+    caseworkerDataService = TestBed.inject(CaseworkerDataService);
+    judicialWorkerDataService = TestBed.inject(AllocateRoleService);
+    store = TestBed.inject(Store) as Store<fromCaseList.State>;
 
   });
 
   it('should be created', () => {
-    const service: LocationResolver = TestBed.get(LocationResolver);
+    const service: LocationResolver = TestBed.inject(LocationResolver);
     expect(service).toBeTruthy();
   });
+
+  it('calls getJudicialWorkersOrCaseWorkers', inject([LocationResolver], (service: LocationResolver) => {
+    spyOn(store, 'pipe').and.returnValue(of(CASE_WORKER));
+    spyOn(caseworkerDataService, 'getAll').and.returnValue(of(CASE_WORKERS as unknown as Caseworker[]));
+    service.resolve().subscribe((location: LocationModel) => {
+      expect(location.court_name).toEqual(CASE_WORKERS[0].location.locationName);
+    });
+  }));
 
   it('resolves caseworkers location', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(store, 'pipe').and.returnValue(of(CASE_WORKER));

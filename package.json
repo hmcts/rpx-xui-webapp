@@ -76,7 +76,7 @@
     "@hmcts/ccd-case-ui-toolkit": "5.0.26-angular11-upgrade",
     "@hmcts/ccpay-web-component": "5.0.8-beta16",
     "@hmcts/frontend": "0.0.39-alpha",
-    "@hmcts/media-viewer": "2.7.19-RC.1",
+    "@hmcts/media-viewer": "2.7.18-RC.3",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "2.1.0-angular-upgrade-11",

@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.24-case-file-view-folder-document-icons-v3":
-  version "5.0.24-case-file-view-folder-document-icons-v3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.24-case-file-view-folder-document-icons-v3.tgz#0096ee4b3c47c309f159259e5c6a817fb5748770"
-  integrity sha512-fsKpjjEMvQezC2C/LfHQOqcb2f0Pgfnzjxw4RgRrx1a/UL6U25Mm7c3CcsCpVSsDfu2GPAPAQD2efTul8PKGJg==
+"@hmcts/ccd-case-ui-toolkit@5.0.24-case-file-document-actions-overlay-menu-v3":
+  version "5.0.24-case-file-document-actions-overlay-menu-v3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.24-case-file-document-actions-overlay-menu-v3.tgz#5e448a8091588b62b21edadf1305c5727508bb1a"
+  integrity sha512-PlGVoHlzL+WJnR494YZEmEFzMrhsRzzpkhPMY/mANiNGpMUWkNN/VRgKs79QqvTh4cKrap3yHtkixOZJkIs/MA==
   dependencies:
     tslib "^2.0.0"
 

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { DocumentUrlPipe, WindowService, AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, DocumentUrlPipe, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';

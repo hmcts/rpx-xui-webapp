@@ -14,8 +14,8 @@ describe('HmctsGlobalFooterComponent', () => {
                     [items]="text"></exui-app-hmcts-global-footer>`
     })
     class TestDummyHostComponent {
-        @Input() help: Helper;
-        @Input() navigation: Navigation;
+        @Input() public help: Helper;
+        @Input() public navigation: Navigation;
         @ViewChild(HmctsGlobalFooterComponent, {static: false})
         public hmctsGlobalFooterComponent: HmctsGlobalFooterComponent;
     }

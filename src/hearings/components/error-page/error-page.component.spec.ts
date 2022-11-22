@@ -27,7 +27,7 @@ describe('ErrorPageComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ErrorPageComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

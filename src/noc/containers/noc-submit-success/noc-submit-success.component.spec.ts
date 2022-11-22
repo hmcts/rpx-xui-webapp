@@ -7,7 +7,7 @@ import { NocSubmitSuccessComponent } from './noc-submit-success.component';
 
 
 describe('NocSubmitSuccessComponent', () => {
-  let store: MockStore<fromNocStore.State>;
+  let store;
   let component: NocSubmitSuccessComponent;
   let fixture: ComponentFixture<NocSubmitSuccessComponent>;
 
@@ -22,7 +22,7 @@ describe('NocSubmitSuccessComponent', () => {
       ]
     })
     .compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'pipe').and.callThrough();
   }));
 

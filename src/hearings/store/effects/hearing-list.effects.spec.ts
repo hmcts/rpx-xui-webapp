@@ -42,8 +42,8 @@ describe('Hearing List Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(HearingListEffects);
-    store = TestBed.get(Store) as Store<fromHearingStore.State>;
+    effects = TestBed.inject(HearingListEffects);
+    store = TestBed.inject(Store) as Store<fromHearingStore.State>;
 
   });
 

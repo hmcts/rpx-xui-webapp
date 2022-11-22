@@ -9,7 +9,7 @@ import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
 
 describe('NocCheckYourAnswersComponent', () => {
-  let store: MockStore<fromFeature.State>;
+  let store;
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
   let component: NocCheckYourAnswersComponent;
@@ -30,7 +30,7 @@ describe('NocCheckYourAnswersComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     spyOnPipeToStore.and.returnValue(of('1231123112311231'));

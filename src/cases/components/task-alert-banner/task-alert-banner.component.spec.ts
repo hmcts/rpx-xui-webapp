@@ -25,7 +25,7 @@ describe('TaskAlertBannerComponent', () => {
     const titleElement = document.getElementById(`alertTitle`) as HTMLElement;
     expect(titleElement.innerText).toBe(component.alertTitle);
     const messageElement = document.getElementById(`alertMessage`) as HTMLElement;
-    expect(messageElement.textContent).toBe(`Warning ${component.alertMessage} `)
+    expect(messageElement.textContent).toBe(`Warning ${component.alertMessage} `);
   });
 
 });

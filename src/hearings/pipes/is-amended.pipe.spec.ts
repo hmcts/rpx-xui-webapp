@@ -30,7 +30,7 @@ describe('IsAmendedPipe', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     isAmendedPipe = new IsAmendedPipe(router);
   });
 

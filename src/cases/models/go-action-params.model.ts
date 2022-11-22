@@ -4,6 +4,6 @@ export interface GoActionParams {
     path: any[];
     query?: object;
     extras?: NavigationExtras;
-    callback?: () => void;
-    errorHandler?: (err) => void;
+    callback?(): void;
+    errorHandler?(err): void;
 }

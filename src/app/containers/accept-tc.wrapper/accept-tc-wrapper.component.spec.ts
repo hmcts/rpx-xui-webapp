@@ -8,7 +8,7 @@ describe('Accept Tc Wrapper Component', () => {
     let mockActions: any;
 
     class TestAction implements Action {
-        type: string;
+        public type: string;
     }
 
     beforeEach(() => {

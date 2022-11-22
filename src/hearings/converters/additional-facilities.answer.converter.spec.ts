@@ -26,7 +26,7 @@ describe('AdditionalFacilitiesAnswerConverter', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     converter = new AdditionalFacilitiesAnswerConverter(router);
   });
 

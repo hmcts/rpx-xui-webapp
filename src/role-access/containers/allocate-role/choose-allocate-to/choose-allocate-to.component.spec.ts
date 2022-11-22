@@ -69,7 +69,7 @@ describe('ChooseAllocateToComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ChooseAllocateToComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component = fixture.componentInstance;
     component.formGroup = formGroup;

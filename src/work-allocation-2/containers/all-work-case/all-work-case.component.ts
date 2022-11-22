@@ -60,9 +60,11 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
 
   public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
+
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+
       return {
         search_parameters: [
           {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0]},

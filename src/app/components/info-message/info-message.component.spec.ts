@@ -1,20 +1,21 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import {InfoMessage, InfoMessageType} from '../../../work-allocation/enums';
-import { WorkAllocationComponentsModule } from '../../../work-allocation/components/work-allocation.components.module';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
 import { InfoMessageComponent } from './info-message.component';
 
 @Component({
   template: `<exui-info-message [type]="type" [message]="message"></exui-info-message>`
 })
 class WrapperComponent {
-  @ViewChild(InfoMessageComponent) public appComponentRef: InfoMessageComponent;
   @Input() public type: InfoMessageType;
   @Input() public message: InfoMessage;
+
+  @ViewChild(InfoMessageComponent)
+  public appComponentRef: InfoMessageComponent;
 }
 
-fdescribe('WorkAllocation', () => {
+describe('SharedModule', () => {
 
   describe('InfoMessageComponent', () => {
     let component: InfoMessageComponent;
@@ -23,8 +24,10 @@ fdescribe('WorkAllocation', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        declarations: [ WrapperComponent, InfoMessageComponent ],
+        schemas: [
+          CUSTOM_ELEMENTS_SCHEMA,
+        ]
       })
       .compileComponents();
     }));

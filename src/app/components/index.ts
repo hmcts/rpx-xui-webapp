@@ -51,3 +51,5 @@ export * from './signed-out/signed-out.component';
 export * from './not-authorised/not-authorised.component';
 export * from './routing/application-routing.component';
 export * from './case-reference-search-box/case-reference-search-box.component';
+export * from '../containers/info-message-container/info-message-container.component'
+export * from './info-message/info-message.component';

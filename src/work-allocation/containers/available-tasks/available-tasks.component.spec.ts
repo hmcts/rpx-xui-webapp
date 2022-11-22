@@ -13,7 +13,7 @@ import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { TaskActionIds } from '../../enums';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
@@ -21,6 +21,8 @@ import { getMockLocations, getMockTasks, MockRouter } from '../../tests/utils.sp
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 import { InformationMessage } from 'src/app/shared/models';
+import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
 
 @Component({
   template: `

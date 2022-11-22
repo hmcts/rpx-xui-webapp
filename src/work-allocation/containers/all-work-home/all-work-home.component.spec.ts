@@ -4,9 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
-import { InfoMessageContainerComponent } from 'src/app/containers/info-message-container/info-message-container.component';
-import { ErrorMessageComponent } from '../../../app/components';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
@@ -20,7 +20,7 @@ class WrapperComponent {
   @ViewChild(AllWorkHomeComponent) public appComponentRef: AllWorkHomeComponent;
 }
 
-describe('AllWorkHomeComponent', () => {
+fdescribe('AllWorkHomeComponent', () => {
   let component: AllWorkHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -44,9 +44,10 @@ describe('AllWorkHomeComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        ExuiCommonLibModule
+        StoreModule.forRoot({}),
+        SharedModule
       ],
-      declarations: [AllWorkHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
+      declarations: [AllWorkHomeComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },

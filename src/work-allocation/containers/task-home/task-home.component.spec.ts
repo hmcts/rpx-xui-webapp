@@ -4,11 +4,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { InfoMessageContainerComponent } from 'src/app/containers/info-message-container/info-message-container.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
-import { ErrorMessageComponent } from '../../../app/components';
 import { ErrorMessage } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
@@ -95,8 +95,10 @@ describe('TaskHomeComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
+        SharedModule,
+        StoreModule.forRoot({}) 
       ],
-      declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
+      declarations: [TaskHomeComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         provideMockStore({ initialState: initialMockState }),

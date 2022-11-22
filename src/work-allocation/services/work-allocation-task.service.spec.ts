@@ -68,8 +68,8 @@ describe('WorkAllocation', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       const searchRequest = {} as SearchTaskRequest;
       const view = ListConstants.View.MyTasks;
-      service.searchTask({ searchRequest, view });
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', { searchRequest, view });
+      service.searchTask({ searchRequest, view, currentUser: null, refined: true});
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', { searchRequest, view, currentUser: null, refined: true});
     });
   });
 });

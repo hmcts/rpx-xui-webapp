@@ -6,7 +6,7 @@ import { NocAffirmationComponent } from './noc-affirmation.component';
 
 
 describe('NocAffirmationComponent', () => {
-  let store: MockStore<fromNocStore.State>;
+  let store;
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
   let component: NocAffirmationComponent;
@@ -23,7 +23,7 @@ describe('NocAffirmationComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();

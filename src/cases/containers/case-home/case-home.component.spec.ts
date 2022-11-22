@@ -44,7 +44,7 @@ describe('CaseHomeComponent', () => {
 
   beforeEach(() => {
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     storeDispatchMock = spyOn(store, 'dispatch');
 
     fixture = TestBed.createComponent(CaseHomeComponent);

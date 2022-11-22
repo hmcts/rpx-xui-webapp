@@ -26,7 +26,7 @@ describe('HearingPanelAnswerConverter', () => {
         provideMockStore({ initialState }),
       ]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     converter = new HearingPanelAnswerConverter();
   });
 

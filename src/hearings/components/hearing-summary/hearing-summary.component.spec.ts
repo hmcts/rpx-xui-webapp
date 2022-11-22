@@ -49,7 +49,7 @@ describe('HearingSummaryComponent', () => {
     })
       .compileComponents();
     fixture = TestBed.createComponent(HearingSummaryComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

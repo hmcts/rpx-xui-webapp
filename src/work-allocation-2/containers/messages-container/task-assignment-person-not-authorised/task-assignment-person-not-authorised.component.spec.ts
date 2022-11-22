@@ -7,7 +7,7 @@ import { TaskAssignmentPersonNotAuthorisedComponent } from './task-assignment-pe
 describe('TaskAssignmentPersonNotAuthorised', () => {
   let component: TaskAssignmentPersonNotAuthorisedComponent;
   let fixture: ComponentFixture<TaskAssignmentPersonNotAuthorisedComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -19,7 +19,7 @@ describe('TaskAssignmentPersonNotAuthorised', () => {
   }));
 
   beforeEach(() => {
-    mockRouter = TestBed.get(Router);
+    mockRouter = TestBed.inject(Router);
     spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {returnUrl: '/work'}}} as unknown as Navigation);
     fixture = TestBed.createComponent(TaskAssignmentPersonNotAuthorisedComponent);
     component = fixture.componentInstance;

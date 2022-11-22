@@ -11,13 +11,13 @@ export class CaseAllocatorGuard implements CanActivate {
     constructor(private readonly sessionStorageService: SessionStorageService,
                 private readonly router: Router) {}
 
-    canActivate(): boolean {
+    public canActivate(): boolean {
         const userInfoStr = this.sessionStorageService.getItem('userDetails');
         if (userInfoStr) {
             const userInfo: UserInfo = JSON.parse(userInfoStr);
             const roleExists = userInfo.roles.includes('case-allocator');
             if (!roleExists) {
-                this.router.navigateByUrl('/cases')
+                this.router.navigateByUrl('/cases');
             }
             return roleExists;
         }

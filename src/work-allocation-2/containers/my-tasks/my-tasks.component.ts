@@ -1,22 +1,22 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
+import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
-import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 import {
   CaseworkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { SessionStorageService } from '../../../app/services';
-import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
-import { AllocateRoleService } from '../../../role-access/services';
-import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
-import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
   selector: 'exui-my-tasks',

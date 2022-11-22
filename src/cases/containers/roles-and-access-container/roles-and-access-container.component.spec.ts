@@ -238,7 +238,7 @@ describe('RolesContainerComponent', () => {
         description: '',
       },
       printEnabled: false
-    }
+    };
     component.caseDetails = caseDetails;
     const caseRoles = [{ roleCategory: 'JUDICIAL', actorId: '234' }];
     allocateService.getCaseRoles.and.returnValue(of(caseRoles));

@@ -22,7 +22,7 @@ describe('CaseDetailsHomeComponent', () => {
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
   const mockActivatedRoute = { data: of({case: {case_id: '1234', case_type: {id: 'caseTypeId', jurisdiction: {id: 'IA'}}}})};
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter;
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
 
@@ -47,7 +47,7 @@ describe('CaseDetailsHomeComponent', () => {
   describe('entering page normally', () => {
 
     beforeEach(() => {
-      store = TestBed.get(Store);
+      store = TestBed.inject(Store);
       storeDispatchMock = spyOn(store, 'dispatch');
       fixture = TestBed.createComponent(CaseDetailsHomeComponent);
       component = fixture.componentInstance;
@@ -72,9 +72,9 @@ describe('CaseDetailsHomeComponent', () => {
   describe('redirected from available-tasks assignment', () => {
 
     beforeEach(() => {
-      mockRouter = TestBed.get(Router);
+      mockRouter = TestBed.inject(Router);
       spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({extras: { state: { showMessage: true, messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}}} as unknown as Navigation);
-      store = TestBed.get(Store);
+      store = TestBed.inject(Store);
       storeDispatchMock = spyOn(store, 'dispatch');
       fixture = TestBed.createComponent(CaseDetailsHomeComponent);
       component = fixture.componentInstance;

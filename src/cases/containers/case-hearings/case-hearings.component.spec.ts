@@ -436,7 +436,7 @@ describe('CaseHearingsComponent', () => {
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     component = fixture.componentInstance;
     // @ts-ignore
     mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));

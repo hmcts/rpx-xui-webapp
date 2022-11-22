@@ -45,7 +45,7 @@ describe('AuthGuard', () => {
     authService = jasmine.createSpyObj('authService', ['loginRedirect', 'isAuthenticated', 'setWindowLocationHref']);
     sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem', 'removeItem']);
     windowLocationService = jasmine.createSpyObj('windowLocationService', ['getPathName']);
-  })
+  });
 
   it('canActivate true', () => {
     authService.isAuthenticated.and.returnValue(of(true));
@@ -83,9 +83,9 @@ describe('AuthGuard', () => {
 
       expect(authService.isAuthenticated).toHaveBeenCalled();
       expect(authService.loginRedirect).toHaveBeenCalled();
-      expect(sessionStorageService.setItem).toHaveBeenCalledWith('redirectUrl', '/cases/1234')
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('redirectUrl', '/cases/1234');
     });
-  })
+  });
 
   describe('redirectToStoredUrl', () => {
     it('should not change the path when the users is not on root', () => {

@@ -107,8 +107,8 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LinkedHearingsWithCaseComponent);
-    mockHearingService = TestBed.get(HearingsService);
-    store = TestBed.get(Store);
+    mockHearingService = TestBed.inject(HearingsService);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -206,8 +206,8 @@ describe('PanelRolesAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new PanelRolesAnswerConverter(router);
   });
 

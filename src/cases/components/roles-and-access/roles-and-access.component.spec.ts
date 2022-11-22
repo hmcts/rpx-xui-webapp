@@ -51,7 +51,7 @@ describe('RolesAndAccessComponent', () => {
       events: [],
       metadataFields: []
     };
-    component.showAllocateRoleLink = false
+    component.showAllocateRoleLink = false;
     fixture.detectChanges();
   });
 
@@ -97,7 +97,7 @@ describe('RolesAndAccessComponent', () => {
       location: null,
       roleCategory: RoleCategory.LEGAL_OPERATIONS
     }
-  ]
+  ];
 
   it('should set names for unnamed legal ops roles', () => {
     const mockLegalOpsRoles: CaseRole[] = [{

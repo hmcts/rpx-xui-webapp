@@ -11,7 +11,7 @@ import { NocQAndAComponent } from './noc-q-and-a.component';
 
 describe('NocQAndAComponent', () => {
   const FORM_GROUP = new FormGroup({});
-  let store: MockStore<fromNocStore.State>;
+  let store;
   let component: NocQAndAComponent;
   let fixture: ComponentFixture<NocQAndAComponent>;
 
@@ -28,7 +28,7 @@ describe('NocQAndAComponent', () => {
       ]
     })
       .compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   }));
 

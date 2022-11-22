@@ -17,7 +17,7 @@ describe('ChooseExclusionComponent', () => {
 
   let component: ChooseExclusionComponent;
   let fixture: ComponentFixture<ChooseExclusionComponent>;
-  let store: MockStore<State>;
+  let store;
 
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnStoreDispatch = jasmine.createSpy();
@@ -37,7 +37,7 @@ describe('ChooseExclusionComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnStoreDispatch = spyOn(store, 'dispatch');
     fixture = TestBed.createComponent(ChooseExclusionComponent);

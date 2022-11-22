@@ -447,7 +447,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingActualAddEditSummaryComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

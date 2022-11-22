@@ -2,6 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
+import { HearingStageResolver } from '../hearings/resolvers/hearing-stage.resolver';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
@@ -20,7 +21,6 @@ import { RolesAndAccessContainerComponent } from './containers/roles-and-access-
 import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
-import { HearingStageResolver } from '../hearings/resolvers/hearing-stage.resolver';
 
 export const ROUTES: Routes = [
   {

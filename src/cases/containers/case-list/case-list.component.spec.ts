@@ -16,7 +16,7 @@ import { CaseListComponent } from './case-list.component';
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
   let fixture: ComponentFixture<CaseListComponent>;
-  let store: MockStore<State>;
+  let store;
 
   /**
    * Spies
@@ -60,7 +60,7 @@ describe('CaseListComponent', () => {
       ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnPipeToStore.and.returnValue(of([{}]));

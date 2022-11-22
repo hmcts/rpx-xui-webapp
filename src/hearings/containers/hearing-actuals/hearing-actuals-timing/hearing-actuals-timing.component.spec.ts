@@ -32,7 +32,7 @@ describe('HearingActualsTimingComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingActualsTimingComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

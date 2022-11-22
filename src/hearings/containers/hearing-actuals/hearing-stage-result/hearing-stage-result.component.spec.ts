@@ -79,7 +79,7 @@ describe('HearingStageResultComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingStageResultComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

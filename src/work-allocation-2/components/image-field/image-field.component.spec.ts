@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
 import { ImageFieldComponent } from './image-field.component';
 
@@ -13,14 +13,14 @@ class WrapperComponent {
   @Input() public alt: string;
 }
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
-  xdescribe('ImageFieldComponent', () => {
+  describe('ImageFieldComponent', () => {
     let component: ImageFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ]
@@ -36,6 +36,7 @@ xdescribe('WorkAllocation', () => {
     });
 
     it('should show only if there is an image to show', () => {
+      component = fixture.componentInstance.appComponentRef;
       // Expect the nativeElement to be empty (no image yet)
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
 
@@ -75,6 +76,7 @@ xdescribe('WorkAllocation', () => {
     });
 
     it('should allow swapping of an image', () => {
+      component = fixture.componentInstance.appComponentRef;
       // Expect the nativeElement to be empty (no image yet)
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
 
@@ -110,6 +112,7 @@ xdescribe('WorkAllocation', () => {
     });
 
     it('should show the correct alt text', () => {
+      component = fixture.componentInstance.appComponentRef;
       // Expect the nativeElement to be empty (no image yet)
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
 

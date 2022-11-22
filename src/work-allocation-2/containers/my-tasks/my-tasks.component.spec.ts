@@ -1,6 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -35,7 +36,7 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
-xdescribe('MyTasksComponent', () => {
+describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -52,14 +53,15 @@ xdescribe('MyTasksComponent', () => {
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        PaginationModule
+        PaginationModule,
+        HttpClientTestingModule
       ],
       declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
@@ -103,12 +105,15 @@ xdescribe('MyTasksComponent', () => {
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
+    component = fixture.componentInstance.appComponentRef;
     fixture.detectChanges();
   });
 
-  it('should make a call to load tasks using the default search request', async(() => {
+
+  it('should make a call to load tasks using the default search request', fakeAsync( ()=> {
+    component = fixture.componentInstance.appComponentRef;
     component.ngOnInit();
-    // tick(500);
+    tick(500);
     fixture.detectChanges();
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};
@@ -118,6 +123,7 @@ xdescribe('MyTasksComponent', () => {
   }));
 
   it('should allow searching via state', () => {
+    component = fixture.componentInstance.appComponentRef;
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const searchParameter = component.getSearchTaskRequestPagination().search_parameters[1];
     expect(searchParameter.key).toBe('state');
@@ -125,6 +131,7 @@ xdescribe('MyTasksComponent', () => {
   });
 
   it('should allow searching via location', () => {
+    component = fixture.componentInstance.appComponentRef;
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const exampleLocations = ['location1', 'location2', 'location3'];
     component.selectedLocations = exampleLocations;
@@ -134,6 +141,7 @@ xdescribe('MyTasksComponent', () => {
   });
 
   it('should allow searching via work types', () => {
+    component = fixture.componentInstance.appComponentRef;
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
     component.selectedWorkTypes = workTypes;
@@ -143,6 +151,7 @@ xdescribe('MyTasksComponent', () => {
   });
 
   it('should have all column headers, including "Manage +"', () => {
+    component = fixture.componentInstance.appComponentRef;
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
@@ -161,6 +170,7 @@ xdescribe('MyTasksComponent', () => {
   });
 
   it('should not show the footer when there are tasks', fakeAsync(() => {
+    component = fixture.componentInstance.appComponentRef;
     component.ngOnInit();
     tick(500);
     fixture.detectChanges();
@@ -173,6 +183,7 @@ xdescribe('MyTasksComponent', () => {
   }));
 
   it('should show the footer when there no tasks', () => {
+    component = fixture.componentInstance.appComponentRef;
     spyOnProperty(component, 'tasks').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
@@ -187,6 +198,7 @@ xdescribe('MyTasksComponent', () => {
   });
 
   it('should appropriately handle clicking on a row action', fakeAsync(() => {
+    component = fixture.componentInstance.appComponentRef;
     component.ngOnInit();
     tick(500);
     fixture.detectChanges();
@@ -209,6 +221,7 @@ xdescribe('MyTasksComponent', () => {
   }));
 
   it('should allow setting the release 2 details', () => {
+    component = fixture.componentInstance.appComponentRef;
     // verifying fields best way to check as the elements (apart from column names) on page will not change
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     component.ngOnInit();

@@ -37,9 +37,9 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public roles: string[];
   public skills: string[];
   public servicePayload;
-  public rolesPayload;
+  public rolesPayload = [];
   public jobTitlesPayload = [];
-  public skillsPayload = [];
+  public skillsPayload;
 
   constructor(
     private filterService: FilterService,
@@ -71,6 +71,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
         this.prepareServicesPayload();
         this.prepareJobTitlesPayload();
+        this.prepareRolesPayload();
         this.prepareSkillsPayload();
       }
     });
@@ -97,7 +98,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
     jobTitlesNamePayload.map(jobTitleName => {
       this.jobTitlesPayload.push(StaffJobTitles.jobTitles.find(jobTitle => jobTitle.role === jobTitleName.label));
-    })
+    });
   }
 
   private prepareLocationPayload() {
@@ -117,19 +118,30 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     return locationPayload;
   }
 
+  private prepareRolesPayload() {
+    const roleObj = [
+      { key: 'case-allocator', label: 'Case Allocator' },
+      { key: 'task-supervisor', label: 'Task Supervisor' },
+      { key: 'staff-administrator', label: 'Staff Administrator' }
+    ];
+    this.roles.map(role => {
+      this.rolesPayload.push(roleObj.find(roles => roles.key === role));
+    })
+  }
+
   private prepareSkillsPayload() {
-    let skillsPayload = [];
+    const skillsPayload = [[]];
+    const nonEmptySkillsPayload = [[]];
     this.skills.map(skill => {
       this.staffFilterOptions.skills.map(skillgroup => {
-        skillsPayload = skillgroup.options.filter(skills => skills.key === skill);
+        skillsPayload.push(skillgroup.options.filter(skills => skills.key === skill));
       });
     });
 
-    skillsPayload.map(skill => {
-      this.skillsPayload.push({
-        skill_id: skill.id,
-        description: skill.label
-      })
+    nonEmptySkillsPayload = skillsPayload.filter(skill => skill.length > 0);
+
+    this.skillsPayload = nonEmptySkillsPayload.reduce((a, b) => {
+      return a.concat(b);
     });
   }
 

@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
+import { InfoMessageContainerComponent } from 'src/app/containers/info-message-container/info-message-container.component';
 
 import { ErrorMessageComponent } from '../../../app/components';
 import { ErrorMessage } from '../../../app/models';
@@ -13,7 +14,6 @@ import { SessionStorageService } from '../../../app/services';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
-import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { TaskHomeComponent } from './task-home.component';
 
 @Component({

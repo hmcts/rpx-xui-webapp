@@ -1,11 +1,11 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessageContainerComponent } from '..';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { InfoMessageCommService } from 'src/app/shared/services/info-message-comms.service';
+import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
+import { InfoMessageContainerComponent } from './info-message-container.component';
 
 @Component({
   template: `<exui-info-message-container></exui-info-message-container>`

@@ -2,7 +2,6 @@ import { AllWorkCaseComponent } from './all-work-case/all-work-case.component';
 import { AllWorkHomeComponent } from './all-work-home/all-work-home.component';
 import { AllWorkTaskComponent } from './all-work-task/all-work-task.component';
 import { AvailableTasksComponent } from './available-tasks/available-tasks.component';
-import { InfoMessageContainerComponent } from './info-message-container/info-message-container.component';
 import { MyAccessComponent } from './my-access/my-access.component';
 import { TaskAssignmentPersonNotAuthorisedComponent } from './messages-container/task-assignment-person-not-authorised/task-assignment-person-not-authorised.component';
 import { MyCasesComponent } from './my-cases/my-cases.component';
@@ -21,7 +20,6 @@ import { WorkCaseListComponent } from './work-case-list/work-case-list.component
 
 export const containers: any[] = [
   AvailableTasksComponent,
-  InfoMessageContainerComponent,
   TaskAssignmentChooseRoleComponent,
   MyTasksComponent,
   MyCasesComponent,
@@ -43,7 +41,6 @@ export const containers: any[] = [
 ];
 
 export * from './available-tasks/available-tasks.component';
-export * from './info-message-container/info-message-container.component';
 export * from './my-tasks/my-tasks.component';
 export * from './task-action/task-action-container.component';
 export * from './task-assignment/task-assignment-container.component';

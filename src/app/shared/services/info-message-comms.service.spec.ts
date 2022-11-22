@@ -1,5 +1,5 @@
 import { InfoMessage, InfoMessageType } from '../../../work-allocation/enums';
-import { InformationMessage } from '../../../work-allocation/models/comms/infomation-message.model';
+import { InformationMessage } from '../models';
 import { InfoMessageCommService } from './info-message-comms.service';
 
 describe('WorkAllocation: InfoMessageCommService', () => {

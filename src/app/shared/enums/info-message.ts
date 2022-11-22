@@ -8,5 +8,6 @@ export enum InfoMessage {
   REASSIGNED_TASK = 'You\'ve reassigned a task to somebody else.',
   TASK_NO_LONGER_AVAILABLE = 'The task is no longer available.',
   UNASSIGNED_TASK = 'You\'ve unassigned a task.',
-  UNASSIGNED_TASK_NOW_IN_AVAILABLE_TASKS = 'You\'ve unassigned a task. It\'s now in Available tasks.'
+  UNASSIGNED_TASK_NOW_IN_AVAILABLE_TASKS = 'You\'ve unassigned a task. It\'s now in Available tasks.',
+  ADD_NEW_USER = 'You have added a new user.'
 }

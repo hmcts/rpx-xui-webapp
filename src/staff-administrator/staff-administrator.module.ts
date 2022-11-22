@@ -37,7 +37,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffUserCheckAnswersContainerComponent,
     StaffUserDetailsContainerComponent,
     StaffUserDetailsComponent,
-    StaffStatusComponent
+    StaffStatusComponent,
   ],
   imports: [
     CommonModule,

@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { TaskActionIds } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';

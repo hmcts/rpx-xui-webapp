@@ -6,6 +6,8 @@ import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-x
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -13,7 +15,7 @@ import * as fromActions from '../../../app/store';
 import { Actions, Role, RoleCategory } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants } from '../../components/constants';
-import { CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
+import { CaseService, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';

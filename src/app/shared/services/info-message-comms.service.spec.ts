@@ -1,4 +1,6 @@
-import { InfoMessage, InfoMessageType } from '../../../work-allocation/enums';
+
+import { InfoMessage } from '../enums/info-message';
+import { InfoMessageType } from '../enums/info-message-type';
 import { InformationMessage } from '../models';
 import { InfoMessageCommService } from './info-message-comms.service';
 

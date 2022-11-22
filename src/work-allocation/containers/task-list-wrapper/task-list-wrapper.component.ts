@@ -14,7 +14,7 @@ import { InfoMessageCommService } from '../../../app/shared/services/info-messag
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskListFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
+import { SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
@@ -28,6 +28,8 @@ import {
 } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import * as fromActions from '../../../app/store';
+import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',

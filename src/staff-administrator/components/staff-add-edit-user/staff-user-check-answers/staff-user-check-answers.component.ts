@@ -8,8 +8,9 @@ import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
 import { InfoMessageCommService } from 'src/app/shared/services/info-message-comms.service';
-import { InfoMessage, InfoMessageType } from 'src/work-allocation/enums';
 import { InformationMessage } from 'src/app/shared/models';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
 
 @Component({
   selector: 'exui-staff-user-check-answers',

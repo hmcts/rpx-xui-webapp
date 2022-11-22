@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 describe('StaffUserCheckAnswersComponent', () => {
   let component: StaffUserCheckAnswersComponent;
@@ -25,6 +25,9 @@ describe('StaffUserCheckAnswersComponent', () => {
     TestBed.configureTestingModule({
       declarations: [StaffUserCheckAnswersComponent],
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ 
+        RouterModule.forRoot([]),
+      ],
       providers: [
         { provide: FilterService, useValue: mockFilterService },
         { provide: Router, useValue: mockRouter },

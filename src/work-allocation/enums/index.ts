@@ -1,5 +1,3 @@
-import { InfoMessage } from 'src/app/shared/enums/info-message';
-import { InfoMessageType } from 'src/role-access/models/enums';
 import { AssignHintText } from './assign-hint-text';
 import { CaseActionIds } from './case-action-ids';
 import { CaseService } from './case-service';
@@ -18,8 +16,6 @@ export {
   CaseService,
   CaseActionIds,
   FieldType,
-  InfoMessage,
-  InfoMessageType,
   PriorityLimits,
   SortOrder,
   TaskActionIds,

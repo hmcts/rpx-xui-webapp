@@ -131,7 +131,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
   private prepareSkillsPayload() {
     const skillsPayload = [[]];
-    const nonEmptySkillsPayload = [[]];
+    let nonEmptySkillsPayload = [[]];
     this.skills.map(skill => {
       this.staffFilterOptions.skills.map(skillgroup => {
         skillsPayload.push(skillgroup.options.filter(skills => skills.key === skill));

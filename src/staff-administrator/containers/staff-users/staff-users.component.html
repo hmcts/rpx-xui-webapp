@@ -1,3 +1,4 @@
+<exui-info-message-container></exui-info-message-container>
 <exui-page-wrapper [title]="'Users'">
   <ng-container *ngIf="(staffDataFilterService.errors$ | async).errors.length">
     <exui-error-message [error]="staffDataFilterService.errors$ | async"></exui-error-message>

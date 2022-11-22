@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {InfoMessage, InfoMessageType} from '../../enums';
-import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
+import {InfoMessage, InfoMessageType} from '../../../work-allocation/enums';
+import { WorkAllocationComponentsModule } from '../../../work-allocation/components/work-allocation.components.module';
 import { InfoMessageComponent } from './info-message.component';
 
 @Component({
@@ -14,7 +14,7 @@ class WrapperComponent {
   @Input() public message: InfoMessage;
 }
 
-describe('WorkAllocation', () => {
+fdescribe('WorkAllocation', () => {
 
   describe('InfoMessageComponent', () => {
     let component: InfoMessageComponent;

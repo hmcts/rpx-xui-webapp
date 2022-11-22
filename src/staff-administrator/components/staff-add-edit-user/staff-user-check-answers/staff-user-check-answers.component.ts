@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
+import { InfoMessageCommService } from 'src/app/shared/services/info-message-comms.service';
+import { InfoMessage, InfoMessageType } from 'src/work-allocation/enums';
+import { InformationMessage } from 'src/app/shared/models';
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -45,7 +48,8 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private filterService: FilterService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private staffDataAccessService: StaffDataAccessService
+    private staffDataAccessService: StaffDataAccessService,
+    private messageService: InfoMessageCommService
   ) {
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
@@ -120,7 +124,9 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
   private prepareSkillsPayload() {
     this.skills.map(service => {
-      this.skillsPayload.push(this.staffFilterOptions.services.find(services => services.key === service));
+      if (this.staffFilterOptions.services.find(services => services.key === service) !== undefined) {
+        this.skillsPayload.push(this.staffFilterOptions.services.find(services => services.key === service));
+      }
     });
   }
 
@@ -158,6 +164,11 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
     this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {
       // success banner
+      this.messageService.nextMessage({
+        message: InfoMessage.ADD_NEW_USER,
+        type: InfoMessageType.SUCCESS
+      } as InformationMessage);
+      this.router.navigateByUrl('/staff');
     }, error => {
       this.router.navigate(['/service-down']);
     });

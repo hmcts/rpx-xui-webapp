@@ -5,11 +5,11 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
+import { InfoMessageContainerComponent } from 'src/app/containers/info-message-container/info-message-container.component';
 import { ErrorMessageComponent } from '../../../app/components';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
-import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { AllWorkHomeComponent } from './all-work-home.component';
 
 @Component({

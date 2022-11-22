@@ -199,10 +199,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     ],
   };
   try {
-    let { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
-    if (data && req.body.refined) {
-      data = mockTaskPermissions(data);
-    }
+    const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const actionedTasks = !!req.body.refined

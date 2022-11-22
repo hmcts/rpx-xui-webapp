@@ -1,17 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationTaskService
+} from '../../services';
+import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { AllocateRoleService } from '../../../role-access/services';
+import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-my-tasks',
   templateUrl: 'my-tasks.component.html'
 })
-export class MyTasksComponent extends TaskListWrapperComponent implements OnInit {
+export class MyTasksComponent extends TaskListWrapperComponent {
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyTasks;
   }
@@ -26,6 +37,25 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
 
   public get view(): string {
     return ListConstants.View.MyTasks;
+  }
+
+  constructor(
+    protected ref: ChangeDetectorRef,
+    protected taskService: WorkAllocationTaskService,
+    protected router: Router,
+    protected infoMessageCommService: InfoMessageCommService,
+    protected sessionStorageService: SessionStorageService,
+    protected alertService: AlertService,
+    protected caseworkerService: CaseworkerDataService,
+    protected loadingService: LoadingService,
+    protected featureToggleService: FeatureToggleService,
+    protected locationService: LocationDataService,
+    protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+    protected filterService: FilterService,
+    protected rolesService: AllocateRoleService
+  ) {
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService,
+      loadingService, featureToggleService, locationService, waSupportedJurisdictionsService, filterService, rolesService);
   }
 
   public get fields(): FieldConfig[] {

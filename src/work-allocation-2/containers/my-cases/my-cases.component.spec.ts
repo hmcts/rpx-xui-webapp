@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -13,6 +13,7 @@ import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationFeature
 import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { MyCasesComponent } from './my-cases.component';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
 @Component({ template: `<exui-my-cases></exui-my-cases>` })
 
@@ -20,7 +21,7 @@ class WrapperComponent {
   @ViewChild(MyCasesComponent, {static: true}) public appComponentRef: MyCasesComponent;
 }
 
-xdescribe('MyCasesComponent', () => {
+describe('MyCasesComponent', () => {
   let component: MyCasesComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -33,8 +34,9 @@ xdescribe('MyCasesComponent', () => {
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
-
-  beforeEach(async(() => {
+  const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -46,12 +48,16 @@ xdescribe('MyCasesComponent', () => {
       declarations: [MyCasesComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
         { provide: WorkAllocationCaseService, useValue: mockCaseService },
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        {
+          provide: SessionStorageService, useValue: sessionStorageService
+        }
       ]
     }).compileComponents();
   }));
@@ -66,6 +72,10 @@ xdescribe('MyCasesComponent', () => {
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    sessionStorageService.getItem.and.callFake((key) => {
+      return undefined
+    });
+    fixture.whenStable();
     fixture.detectChanges();
   });
 

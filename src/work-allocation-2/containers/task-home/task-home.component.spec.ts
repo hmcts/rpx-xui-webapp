@@ -6,16 +6,16 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { ErrorMessage } from 'src/app/models';
+import { ErrorMessage, UserInfo } from 'src/app/models';
 import { ErrorMessageComponent } from '../../../app/components';
 import { SessionStorageService } from '../../../app/services';
-import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { TaskHomeComponent } from './task-home.component';
-
+import { State } from '../../../app/store';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 @Component({
   template: `
@@ -25,7 +25,54 @@ class WrapperComponent {
   @ViewChild(TaskHomeComponent, {static: false}) public appComponentRef: TaskHomeComponent;
 }
 
-xdescribe('TaskHomeComponent', () => {
+
+const initialMockState: State = {
+  routerReducer: null,
+  appConfig: {
+    config: {},
+    termsAndCondition: null,
+    loaded: true,
+    loading: true,
+    termsAndConditions: null,
+    isTermsAndConditionsFeatureEnabled: null,
+    useIdleSessionTimeout: null,
+    userDetails: {
+      sessionTimeout: {
+        idleModalDisplayTime: 0,
+        totalIdleTime: 0
+      },
+      canShareCases: true,
+      userInfo: {
+        id: '',
+        active: true,
+        email: 'juser4@mailinator.com',
+        forename: 'XUI test',
+        roles: ['caseworker-ia-iacjudge'],
+        uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+        surname: 'judge'
+      },
+      roleAssignmentInfo: [
+        {
+          primaryLocation: '231596',
+          jurisdiction: 'IA',
+          isCaseAllocator: true
+        },
+        {
+          primaryLocation: '',
+          jurisdiction: 'JUDICIAL',
+          isCaseAllocator: true,
+        },
+        {
+          primaryLocation: '',
+          jurisdiction: 'DIVORCE',
+          isCaseAllocator: false,
+        }
+      ],
+    }
+  }
+};
+
+describe('TaskHomeComponent', () => {
   let component: TaskHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -93,6 +140,7 @@ xdescribe('TaskHomeComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
+        HttpClientTestingModule,
         WorkAllocationComponentsModule,
       ],
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
@@ -111,12 +159,26 @@ xdescribe('TaskHomeComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
+    const userDetails: UserInfo = {
+      id: '1',
+      forename: 'forename',
+      surname: 'surname',
+      email: 'email@email.com',
+      active: true,
+      roles: ['test'],
+      uid: '1133-3435-34545-3435'
+    };
+    sessionStorageService.getItem.and.callFake((key) => {
+      return JSON.stringify(userDetails);
+    });
+    fixture.whenStable();
     fixture.detectChanges();
   });
 
   it('should create', () => {
+    component = fixture.componentInstance.appComponentRef;
     expect(component).toBeDefined();
   });
 
@@ -132,14 +194,16 @@ xdescribe('TaskHomeComponent', () => {
         {name: 'types-of-work', error: 'Select a type of work'}
       ]
     };
-
+    component = fixture.componentInstance.appComponentRef;
     component.errorChangedHandler(error);
+    fixture.whenStable();
+    fixture.detectChanges();
     expect(component.error.errors[1].error).toEqual('Enter a location');
   });
 
   it('should return null if no error message to display', () => {
     const error: ErrorMessage = null;
-
+    component = fixture.componentInstance.appComponentRef;
     component.errorChangedHandler(error);
     expect(component.error).toBeNull();
   });

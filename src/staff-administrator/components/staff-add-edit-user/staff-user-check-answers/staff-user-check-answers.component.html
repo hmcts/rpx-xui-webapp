@@ -78,8 +78,8 @@
         <div class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">Roles</div>
           <div class="govuk-summary-list__value">
-            <span *ngFor="let role of roles; let isLast=last">
-              {{role}}{{isLast ? '' : ', '}}
+            <span *ngFor="let role of rolesPayload; let isLast=last">
+              {{role.label}}{{isLast ? '' : ', '}}
             </span>
           </div>
           <div class="govuk-summary-list__actions">
@@ -105,7 +105,7 @@
           <div class="govuk-summary-list__key">Skills</div>
           <div class="govuk-summary-list__value">
             <span *ngFor="let skill of skillsPayload; let isLast=last">
-              {{skill.description}}{{isLast ? '' : ', '}}
+              {{skill.label}}{{isLast ? '' : ', '}}
             </span>
           </div>
           <div class="govuk-summary-list__actions">

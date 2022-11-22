@@ -119,9 +119,9 @@ export class TaskActionContainerComponent implements OnInit {
           if (userInfoStr) {
             const userInfo: UserInfo = JSON.parse(userInfoStr);
             userId = userInfo.id ? userInfo.id : userInfo.uid;
-          }
-          if (this.tasks[0].assignee !== userId) {
-            action = ACTION.UNASSIGN;
+            if (this.tasks[0].assignee !== userId) {
+              action = ACTION.UNASSIGN;
+            }
           }
         }
         break;

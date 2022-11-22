@@ -8,7 +8,7 @@ import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import * as fromHearingStore from '../store';
-import {ServiceIdResolverResolve} from './service-id-resolver.resolve';
+import { ServiceIdResolverResolve } from './service-id-resolver.resolve';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,9 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
         }), take(1),
         switchMap((serviceId) => {
           const category = route.data['category'] ? route.data['category'] as HearingCategory : HearingCategory.HearingPriority;
-          return this.getReferenceData$(serviceId, category, route.data.isChildRequired && route.data.isChildRequired.includes(route.data['category']));
+          return category === HearingCategory.PanelMemberType
+            ? of(null)
+            : this.getReferenceData$(serviceId, category, route.data.isChildRequired && route.data.isChildRequired.includes(route.data['category']));
         })
       );
   }

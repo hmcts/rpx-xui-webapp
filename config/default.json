@@ -142,7 +142,7 @@
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
-    "accessManagementEnabled": true
+    "accessManagementEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

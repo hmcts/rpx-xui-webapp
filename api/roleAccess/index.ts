@@ -24,9 +24,10 @@ import { release2ContentType } from './models/release2ContentType';
 import { getSubstantiveRoles } from './roleAssignmentService';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+const supportedRoleCategories = ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'];
 
 export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const requestPayload = getLegalAndJudicialRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
+  const requestPayload = getRoleCategoryRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/query`;
   const headers = setHeaders(req, release2ContentType);
@@ -312,9 +313,7 @@ export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Respon
   }
 }
 
-export function getLegalAndJudicialRequestPayload(caseId: string,
-                                                  jurisdiction: string,
-                                                  caseType: string): CaseRoleRequestPayload {
+export function getRoleCategoryRequestPayload(caseId: string, jurisdiction: string, caseType: string): CaseRoleRequestPayload {
   return {
     queryRequests: [
       {
@@ -323,7 +322,7 @@ export function getLegalAndJudicialRequestPayload(caseId: string,
           caseType: [caseType],
           jurisdiction: [jurisdiction],
         },
-        roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL'],
+        roleCategory: supportedRoleCategories,
       },
     ],
   };

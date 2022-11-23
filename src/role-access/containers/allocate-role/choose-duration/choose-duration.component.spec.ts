@@ -1,4 +1,4 @@
-import { async } from '@angular/core/testing';
+import { async, waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { of } from 'rxjs';
 import { UserRole } from '../../../../app/models';
@@ -43,7 +43,7 @@ describe('ChooseDurationComponent', () => {
     },
     roleCategory: RoleCategory.LEGAL_OPERATIONS,
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
     formBuilder = new FormBuilder();
   }));

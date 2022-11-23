@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -29,7 +29,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     disabledFlag: false
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const USERDETAILS = {
       sub: 'Caseworker.ed@mailinator.com',
       uid: '36314153-06c2-400a-8dc3-7d3790660918',

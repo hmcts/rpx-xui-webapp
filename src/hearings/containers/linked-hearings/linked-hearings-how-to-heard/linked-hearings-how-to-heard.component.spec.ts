@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -161,7 +161,7 @@ const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
 describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     ConfigureTestBedModule(hearingsService, mockRouter, Mode.LINK_HEARINGS);
   }));
 
@@ -221,7 +221,7 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
 });
 
 describe('Manage Linking - HowLinkedHearingsBeHeardComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     ConfigureTestBedModule(hearingsService, mockRouter, Mode.MANAGE_HEARINGS);
   }));
 

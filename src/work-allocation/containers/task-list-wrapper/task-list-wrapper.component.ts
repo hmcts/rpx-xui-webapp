@@ -5,6 +5,8 @@ import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-x
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
+import { AppConstants } from 'src/app/app.constants';
+
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -47,7 +49,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasks: Task[] = [];
   private myWorkSubscription: Subscription;
   private pTasksTotal: number;
+  private currentUser: string;
   public routeEventsSubscription: Subscription;
+  public isUpdatedTaskPermissions$: Observable<boolean>;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -68,6 +72,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected rolesService: AllocateRoleService,
     protected store: Store<fromActions.State>
   ) {
+    this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
 
   public get tasks(): Task[] {
@@ -240,9 +245,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.doLoad();
   }
 
-  public performSearchPagination(): Observable<TaskResponse> {
+  public performSearchUpdatedTaskPermissions(): Observable<TaskResponse> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view });
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: true, currentUser: this.currentUser });
+  }
+
+  public performSearchPreviousTaskPermissions(): Observable<TaskResponse> {
+    const searchRequest = this.getSearchTaskRequestPagination();
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: false, currentUser: this.currentUser});
   }
 
   /**
@@ -337,9 +347,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
+    }
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    const tasksSearch$ = this.performSearchPagination();
+    const tasksSearch$ = this.isUpdatedTaskPermissions$.pipe(mergeMap(enabled => enabled ? this.performSearchUpdatedTaskPermissions() : this.performSearchPreviousTaskPermissions()))
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
       const assignedJudicialUsers: string[] = [];
       result.tasks.forEach(task => {

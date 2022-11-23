@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
-import { StaffFilterOption } from '../../../models/staff-filter-option.model';
-import { StaffJobTitles } from '../../../models/staff-job-titles';
 import { Router } from '@angular/router';
 import {
   FilterService
@@ -11,6 +8,9 @@ import { InfoMessageCommService } from 'src/app/shared/services/info-message-com
 import { InformationMessage } from 'src/app/shared/models';
 import { InfoMessage } from 'src/app/shared/enums/info-message';
 import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
+import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
+import { StaffFilterOption } from '../../../models/staff-filter-option.model';
+import { StaffJobTitles } from '../../../models/staff-job-titles';
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -22,7 +22,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public formId: string = 'staff-add-edit-user';
   public addUserData: {
     name: string;
-    value: any[];
+    value: string[];
   }[];
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
@@ -41,7 +41,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public roles: string[];
   public skills: string[];
   public servicePayload;
-  public rolesPayload;
+  public rolesPayload = [];
   public jobTitlesPayload = [];
   public skillsPayload;
 
@@ -63,23 +63,23 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public ngOnInit() {
     this.filterService.getStream(this.formId).subscribe(data => {
       this.addUserData = data.fields;
-      console.log(this.addUserData);
-      this.firstName = this.addUserData[0].value[0];
-      this.lastName = this.addUserData[1].value[0];
-      this.email = this.addUserData[2].value[0];
-      this.region = this.addUserData[3].value[0];
-      this.primaryLocations = this.addUserData[5].value[0];
-      this.additionalLocations = this.addUserData[6].value;
-      this.userType = this.addUserData[7].value[0];
-      this.roles = this.addUserData[8].value;
-      this.skills = this.addUserData[10].value;
+      if (this.addUserData) {
+        this.firstName = this.addUserData[0].value[0];
+        this.lastName = this.addUserData[1].value[0];
+        this.email = this.addUserData[2].value[0];
+        this.region = this.addUserData[3].value[0];
+        this.primaryLocations = this.addUserData[5].value[0];
+        this.additionalLocations = this.addUserData[6].value;
+        this.userType = this.addUserData[7].value[0];
+        this.roles = this.addUserData[8].value;
+        this.skills = this.addUserData[10].value;
 
-      this.prepareServicesPayload();
-      this.prepareJobTitlesPayload();
-      this.prepareSkillsPayload();
+        this.prepareServicesPayload();
+        this.prepareJobTitlesPayload();
+        this.prepareRolesPayload();
+        this.prepareSkillsPayload();
+      }
     });
-
-
   }
 
   private prepareServicesPayload() {
@@ -103,7 +103,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
     jobTitlesNamePayload.map(jobTitleName => {
       this.jobTitlesPayload.push(StaffJobTitles.jobTitles.find(jobTitle => jobTitle.role === jobTitleName.label));
-    })
+    });
   }
 
   private prepareLocationPayload() {
@@ -123,11 +123,30 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     return locationPayload;
   }
 
+  private prepareRolesPayload() {
+    const roleObj = [
+      { key: 'case-allocator', label: 'Case Allocator' },
+      { key: 'task-supervisor', label: 'Task Supervisor' },
+      { key: 'staff-administrator', label: 'Staff Administrator' }
+    ];
+    this.roles.map(role => {
+      this.rolesPayload.push(roleObj.find(roles => roles.key === role));
+    })
+  }
+
   private prepareSkillsPayload() {
-    this.skills.map(service => {
-      if (this.staffFilterOptions.services.find(services => services.key === service) !== undefined) {
-        this.skillsPayload.push(this.staffFilterOptions.services.find(services => services.key === service));
-      }
+    const skillsPayload = [[]];
+    let nonEmptySkillsPayload = [[]];
+    this.skills.map(skill => {
+      this.staffFilterOptions.skills.map(skillgroup => {
+        skillsPayload.push(skillgroup.options.filter(skills => skills.key === skill));
+      });
+    });
+
+    nonEmptySkillsPayload = skillsPayload.filter(skill => skill.length > 0);
+
+    this.skillsPayload = nonEmptySkillsPayload.reduce((a, b) => {
+      return a.concat(b);
     });
   }
 
@@ -155,12 +174,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       suspended: false,
       base_locations: this.prepareLocationPayload(),
       user_type: this.userType,
-      skills: [
-        {
-          skill_id: 1,
-          description: 'Underwriter'
-        }
-      ]
+      skills: this.skillsPayload
     };
 
     this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {
@@ -171,7 +185,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       } as InformationMessage);
       this.router.navigateByUrl('/staff');
     }, error => {
-      this.router.navigate(['/service-down']);
+      this.router.navigateByUrl('/service-down');
     });
   }
 

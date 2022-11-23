@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingCheckType, FilterConfig, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
@@ -12,7 +12,7 @@ import { StaffFilterOption } from '../../../models/staff-filter-option.model';
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
+export class StaffAddEditUserFormComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   public formId: string = 'staff-add-edit-user';
   public staffFilterOptions: {
@@ -28,7 +28,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId,
     private activatedRoute: ActivatedRoute,
     private filterService: FilterService,
     private router: Router
@@ -50,8 +49,9 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
         if (data.reset) {
           this.resetForm();
         } else {
-          if (this.previousUrl !== '/staff/add-user/check-your-answers') {
-            this.router.navigateByUrl('/staff/add-user/check-your-answers');
+          const checkYourAnswerUrl = '/staff/add-user/check-your-answers';
+          if (this.previousUrl !== checkYourAnswerUrl) {
+            this.router.navigateByUrl(checkYourAnswerUrl);
           }
         }
       }
@@ -71,9 +71,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
         }
       })
     );
-  }
-
-  public ngOnDestroy() {
   }
 
   public resetForm() {

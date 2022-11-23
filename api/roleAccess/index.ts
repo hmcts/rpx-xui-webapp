@@ -24,7 +24,7 @@ import { release2ContentType } from './models/release2ContentType';
 import { getSubstantiveRoles } from './roleAssignmentService';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-const supportedRoleCategories = ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'];
+const SUPPORTED_ROLE_CATEGORIES = ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'];
 
 export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const requestPayload = getRoleCategoryRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
@@ -322,7 +322,7 @@ export function getRoleCategoryRequestPayload(caseId: string, jurisdiction: stri
           caseType: [caseType],
           jurisdiction: [jurisdiction],
         },
-        roleCategory: supportedRoleCategories,
+        roleCategory: SUPPORTED_ROLE_CATEGORIES,
       },
     ],
   };

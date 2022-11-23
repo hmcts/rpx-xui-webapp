@@ -1,12 +1,10 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
@@ -20,7 +18,7 @@ class WrapperComponent {
   @ViewChild(AllWorkHomeComponent) public appComponentRef: AllWorkHomeComponent;
 }
 
-fdescribe('AllWorkHomeComponent', () => {
+describe('AllWorkHomeComponent', () => {
   let component: AllWorkHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -44,10 +42,9 @@ fdescribe('AllWorkHomeComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        StoreModule.forRoot({}),
-        SharedModule
       ],
       declarations: [AllWorkHomeComponent, WrapperComponent],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },

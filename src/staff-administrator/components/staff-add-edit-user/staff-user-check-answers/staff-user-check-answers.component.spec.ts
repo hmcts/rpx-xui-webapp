@@ -25,7 +25,7 @@ describe('StaffUserCheckAnswersComponent', () => {
     TestBed.configureTestingModule({
       declarations: [StaffUserCheckAnswersComponent],
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ 
+      imports: [
         RouterModule.forRoot([]),
       ],
       providers: [

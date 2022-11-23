@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { AppConstants } from '../../../app/app.constants';
 import { ApplicationThemeLogo } from '../../enums';
@@ -22,7 +22,7 @@ describe('AppHeaderSignedOutComponent', () => {
   let fixture: ComponentFixture<AppHeaderSignedOutComponent>;
   let store: Store<fromActions.State>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({})

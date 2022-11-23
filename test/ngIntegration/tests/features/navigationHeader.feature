@@ -1,4 +1,4 @@
-@ng
+@ng @ignore
 Feature: Navigation header tabs
     https://tools.hmcts.net/confluence/display/EUI/Global+Search
 

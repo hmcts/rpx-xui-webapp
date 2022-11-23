@@ -1,4 +1,4 @@
-@fullfunctional 
+@fullfunctional @ignore
 Feature: Judicial Booking UI
 
     Scenario: View and create booking

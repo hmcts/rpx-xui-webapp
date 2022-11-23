@@ -1,4 +1,4 @@
-@ng 
+@ng @ignore 
 Feature: Global search
 
     Background: Setup

@@ -1,9 +1,6 @@
 
 const prToTestInDemo = [
-    { 
-        previewUrl: 'https://xui-webapp-pr-1774.service.core-compute-preview.internal', 
-        demoUrl:'https://manage-case-wa-int.demo.platform.hmcts.net' 
-    }
+   
 ];
 
 const mathingPreviewToDemo = prToTestInDemo.filter(conf => process.env.TEST_URL && process.env.TEST_URL.includes(conf.previewUrl));

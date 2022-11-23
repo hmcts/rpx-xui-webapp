@@ -1,13 +1,11 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { SharedModule } from 'src/app/shared/shared.module';
 
 import { ErrorMessage } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -94,14 +92,13 @@ describe('TaskHomeComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
-        SharedModule,
-        StoreModule.forRoot({}) 
+        WorkAllocationComponentsModule
       ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [TaskHomeComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        provideMockStore({ initialState: initialMockState }),
+         provideMockStore({ initialState: initialMockState }),
         // { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         { provide: LocationDataService, useValue: locationDataService },
         {

@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.21.0-no-cases-to-unlink-error-message":
-  version "4.21.0-no-cases-to-unlink-error-message"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.21.0-no-cases-to-unlink-error-message.tgz#ae0b425e2e514f2f4b1badd124dc1308ae1cdbca"
-  integrity sha512-7yWs/FdAdIIbwsugsNOa9I4dnrU2aHWaoTKhmY1e05XHu9Eznub3BbozQzcsBufYFYrGej5qVZtkI4v1HKQ1xw==
+"@hmcts/ccd-case-ui-toolkit@4.20.19-no-cases-to-unlink-error-message":
+  version "4.20.19-no-cases-to-unlink-error-message"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.20.19-no-cases-to-unlink-error-message.tgz#7eb8d4320be40cc61589e89b050434e6b312526f"
+  integrity sha512-UYQux4BwykCiRQL5lQU+8q0j9G6eEAqZO7HXJEP/cj1KSsdQXTL6jq5xU3YpiMxZ2VNPxoWhIFG9h/s9YYPATw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

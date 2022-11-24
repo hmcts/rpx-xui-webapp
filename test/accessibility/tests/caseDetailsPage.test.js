@@ -34,29 +34,29 @@ describe('Case details page', function () {
         done();
     });
 
-    it('Tasks tab', async function () {
-        await MockApp.startServer();
-        const actions = [];
-        actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.container));
-         actions.push(...PallyActions.clickElement(caseDetailsPageLocators.rolesAndAccessTab));
-        actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.rolesAndAccessContainer));
-        actions.push(...PallyActions.clickElement(caseDetailsPageLocators.tasksTab));
-        actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.tasksContainer));
+    // it('Tasks tab', async function () {
+    //     await MockApp.startServer();
+    //     const actions = [];
+    //     actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.container));
+    //      actions.push(...PallyActions.clickElement(caseDetailsPageLocators.rolesAndAccessTab));
+    //     actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.rolesAndAccessContainer));
+    //     actions.push(...PallyActions.clickElement(caseDetailsPageLocators.tasksTab));
+    //     actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.tasksContainer));
 
-        await pa11ytest(this, actions, conf.baseUrl + caseDetailsRoute);
+    //     await pa11ytest(this, actions, conf.baseUrl + caseDetailsRoute);
 
-    });
+    // });
 
-    it('Roles and access tab', async function () {
-        await MockApp.startServer();
-        const actions = [];
-        actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.container));
-        actions.push(...PallyActions.clickElement(caseDetailsPageLocators.rolesAndAccessTab));
-        actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.rolesAndAccessContainer));
+    // it('Roles and access tab', async function () {
+    //     await MockApp.startServer();
+    //     const actions = [];
+    //     actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.container));
+    //     actions.push(...PallyActions.clickElement(caseDetailsPageLocators.rolesAndAccessTab));
+    //     actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.rolesAndAccessContainer));
 
-        await pa11ytest(this, actions, conf.baseUrl + caseDetailsRoute);
+    //     await pa11ytest(this, actions, conf.baseUrl + caseDetailsRoute);
 
-    });
+    // });
 
 
 });

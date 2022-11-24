@@ -28,11 +28,11 @@ describe('HearingActualRoleResolverService', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
   it('should be created', () => {
-    const service: HearingActualRoleResolverService = TestBed.get(HearingActualRoleResolverService);
+    const service: HearingActualRoleResolverService = TestBed.inject(HearingActualRoleResolverService);
     expect(service).toBeTruthy();
   });
 

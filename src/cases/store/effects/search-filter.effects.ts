@@ -39,7 +39,7 @@ export class SearchFilterEffects {
       }));
 
     @Effect()
-    applySearchFiltersForES$ = this.actions$.pipe(
+    public applySearchFiltersForES$ = this.actions$.pipe(
       ofType(caseSearchActions.APPLY_SEARCH_FILTER_FOR_ES),
       map((action: caseSearchActions.ApplySearchFilterForES) => action.payload),
       switchMap(payload => {

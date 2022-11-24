@@ -29,11 +29,11 @@ describe('CaseTypesResolver', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
   it('should be created', () => {
-    const resolver: CaseTypesResolver = TestBed.get(CaseTypesResolver);
+    const resolver: CaseTypesResolver = TestBed.inject(CaseTypesResolver);
     expect(resolver).toBeTruthy();
   });
 

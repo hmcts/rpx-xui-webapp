@@ -27,11 +27,11 @@ describe('Panel Member Search Response Resolver', () => {
         ]
       }
     );
-    judicialRefDataService = TestBed.get(JudicialRefDataService) as JudicialRefDataService;
+    judicialRefDataService = TestBed.inject(JudicialRefDataService) as JudicialRefDataService;
   });
 
   it('should be created', () => {
-    const service: PanelMemberSearchResponseResolver = TestBed.get(PanelMemberSearchResponseResolver);
+    const service: PanelMemberSearchResponseResolver = TestBed.inject(PanelMemberSearchResponseResolver);
     expect(service).toBeTruthy();
   });
 

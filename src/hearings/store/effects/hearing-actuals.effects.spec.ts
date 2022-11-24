@@ -35,7 +35,7 @@ describe('Hearing Actuals Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(HearingActualsEffects);
+    effects = TestBed.inject(HearingActualsEffects);
   });
 
   describe('loadHearingActual$', () => {

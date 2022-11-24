@@ -1,23 +1,23 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { AppUtils } from '../../../app/app-utils';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { SearchCaseRequest } from '../../models/dtos';
-import { AllocateRoleService } from '../../../role-access/services';
-import { JurisdictionsService } from '../../services/juridictions.service';
-import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 import {
   CaseworkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
   WorkAllocationCaseService
 } from '../../services';
+import { JurisdictionsService } from '../../services/juridictions.service';
+import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 @Component({
   selector: 'exui-my-cases',
   templateUrl: 'my-cases.component.html'

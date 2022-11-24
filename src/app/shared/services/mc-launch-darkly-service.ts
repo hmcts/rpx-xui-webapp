@@ -1,8 +1,8 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { FeatureToggleService, FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import * as LDClient from 'launchdarkly-js-client-sdk';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { FeatureUser, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { RootInjectorGuard } from './rootInjectorGuard';
 
 export const MCLAUNCHDARKLYKEY = new InjectionToken<string>('LAUNCHDARKLYKEY');

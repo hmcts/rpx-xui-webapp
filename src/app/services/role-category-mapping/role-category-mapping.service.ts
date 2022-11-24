@@ -15,7 +15,7 @@ export interface RoleMapping {
 })
 export class RoleCategoryMappingService {
   private static readonly ROLE_MAPPING_KEY: string = 'mc-user-role-mapping';
-  private roleMappings$: Observable<RoleMapping>;
+  private readonly roleMappings$: Observable<RoleMapping>;
 
   constructor(private readonly featureToggleService: FeatureToggleService) {
     this.roleMappings$ = this.featureToggleService.getValueOnce<RoleMapping>(RoleCategoryMappingService.ROLE_MAPPING_KEY, null);

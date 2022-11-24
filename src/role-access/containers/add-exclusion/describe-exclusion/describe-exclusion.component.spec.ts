@@ -1,4 +1,4 @@
-import { async } from '@angular/core/testing';
+import { async, waitForAsync } from '@angular/core/testing';
 import { Validators } from '@angular/forms';
 import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { UpdateDescribeExclusionText } from '../../../store';
@@ -9,7 +9,7 @@ describe('DescribeExclusionComponent', () => {
   let mockStore: any;
   let mockFormBuilder: any;
   let formGroup: any;
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('mockFormBuilder', ['pipe', 'dispatch']);
     mockFormBuilder = jasmine.createSpyObj('mockFormBuilder', ['group']);
     formGroup = jasmine.createSpyObj('formGroup', ['get']);

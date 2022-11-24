@@ -72,8 +72,8 @@ export  const config =  {
        }
     },
     configuratioUi: {
-        aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled'],
-        demo: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled']
+        aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled', 'accessManagementEnabled', 'judicialBookingApi','waWorkflowApi'],
+        demo: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled', 'accessManagementEnabled', 'judicialBookingApi', 'waWorkflowApi']
     },
     workallocation:{
         aat:{

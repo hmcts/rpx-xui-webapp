@@ -11,6 +11,14 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
+const appTestConfig = require('../../e2e/config/appTestConfig');
+const {LOG_LEVELS} = require("../../e2e/support/constants");
+
+appTestConfig.testEnv = 'aat';
+
+process.env['LOG_LEVEL'] = LOG_LEVELS.Info
+
+
 if (!process.env['TEST_ENV_URL']){
     process.env['TEST_ENV_URL'] = process.env['TEST_URL']; 
 
@@ -24,7 +32,11 @@ const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-se
 
 
  
-const nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+let  nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
+if (argv.debug){
+    nodeMockPort = 3001; 
+}
 
 const perfLoggingPrefs = {
     'enableNetwork': true,
@@ -128,7 +140,7 @@ const config = {
 
     },
     cucumberOpts: {
-        'fail-fast': true,
+        'fail-fast': argv.failFast ? argv.failFast.includes("true") : false,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
@@ -171,7 +183,9 @@ function getBDDTags() {
     console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_ENV_URL']}`);
     console.log(`*********************** process.env['TEST_ENV_URL'] : ${process.env['TEST_ENV_URL']}`);
     if (process.env['TEST_ENV_URL'].includes("pr-") ||
-        process.env['TEST_ENV_URL'].includes("localhost")) { 
+        process.env['TEST_ENV_URL'].includes("localhost") || 
+        appTestConfig.testEnv === "aat"
+        ) { 
         if (argv.tags){
             tags = argv.tags.split(',');
         }else{

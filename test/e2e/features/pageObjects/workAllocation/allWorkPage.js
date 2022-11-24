@@ -5,6 +5,7 @@ var cucumberReporter = require('../../../support/reportLogger');
 const { Select,GovUKRadios } = require('../../../utils/domElements');
 
 var TaskMessageBanner = require('../messageBanner');
+const { LOG_LEVELS } = require('../../../support/constants');
 
 class AllWork extends TaskList {
 
@@ -31,8 +32,9 @@ class AllWork extends TaskList {
             'Location':  $('.all-work-filter #selectLocation'),
             'Location radios': new GovUKRadios('css', '.all-work-filter #selectLocation .govuk-radios'),
             'Location search': $('.all-work-filter  #location xuilib-find-location .search-location exui-search-location input') ,
-            'Person': new GovUKRadios('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//div[contains(@class,"govuk-radios")]'),
-            'Person role type': new Select('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//select[contains(@id,"select_role")]'),
+            'Person': new GovUKRadios('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//div[contains(@class,"govuk-radios")]'),
+            'Tasks': new GovUKRadios('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Tasks")]/..//div[contains(@class,"govuk-radios")]'),
+            'Tasks by role type': new Select('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//select[contains(@id,"select_role")]'),
             'Person input': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
             'Task type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select'),
             'Priority': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select'),
@@ -40,7 +42,7 @@ class AllWork extends TaskList {
             
         } 
 
-        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Person role type', 'Task type', 'Priority', 'Person', 'Role type','Location radios'];
+        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Tasks by role type', 'Task type', 'Priority', 'Person','Tasks', 'Role type','Location radios'];
 
         this.filterApplyBtn = $('exui-all-work-home xuilib-generic-filter #applyFilter');
         this.filterResetBtn = $('exui-all-work-home xuilib-generic-filter #cancelFilter');
@@ -80,7 +82,9 @@ class AllWork extends TaskList {
             throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
         }
         if (this.selectOrRadioFilterItems.includes(filterItem)) {
-            return await this.FILTER_ITEMS[filterItem].getOptions();
+            let options = await this.FILTER_ITEMS[filterItem].getOptions();
+            options = options.filter(opt => opt !== "");
+            return options; 
         } else {
             throw new Error(`filter item ${filterItem} is not a select or a Radio item.`);
         }
@@ -129,7 +133,7 @@ class AllWork extends TaskList {
             });
             return true;
         } catch (err) {
-            cucumberReporter.AddMessage("All work page not displayed " + err.stack);
+            cucumberReporter.AddMessage("All work page not displayed " + err.stack,LOG_LEVELS.Error);
             return false;
         }
 

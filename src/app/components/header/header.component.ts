@@ -25,6 +25,7 @@ export class HeaderComponent implements OnInit {
   @Input() public logoIsUsed: boolean = false;
   @Input() public showNavItems: Observable<boolean>;
   @Input() public currentUrl: string;
+  @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
   constructor(

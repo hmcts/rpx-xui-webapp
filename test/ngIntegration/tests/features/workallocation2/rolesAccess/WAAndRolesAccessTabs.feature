@@ -1,7 +1,7 @@
-@ng @ignore
+@ng 
 Feature: WA Release 2: Case details - "Tasks", "Roles and access" tabs visibility
 
-    Scenario Outline: WA tab "<TabLabel>"" is displayed "<isDisplayed>"" in case details for user "<UserType>" "<UserIdentifier>"
+    Scenario Outline: WA tab "<TaskTabLabel>" is displayed "<TaskTabLabelisDisplayed>" in case details for user "<UserType>" "<UserIdentifier>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
@@ -12,8 +12,8 @@ Feature: WA Release 2: Case details - "Tasks", "Roles and access" tabs visibilit
         Then I see case details tab label "<RolesAndAccessTabLabel>" is displayed is "<RolesAndAccessTabLabelisDisplayed>"
 
         Examples:
-            | UserIdentifier     | UserType   | Roles                                              | TaskTabLabel | TaskTabLabelisDisplayed | RolesAndAccessTabLabel | RolesAndAccessTabLabelisDisplayed |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | Tasks        | true                    | Roles and access       | true                              |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | Tasks        | true                    | Roles and access       | true                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-test                                 | Tasks        | false                   | Roles and access       | false                             |
+            | UserIdentifier     | UserType   | Roles                                                            | TaskTabLabel | TaskTabLabelisDisplayed | RolesAndAccessTabLabel | RolesAndAccessTabLabelisDisplayed |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer | Tasks        | true                    | Roles and access       | true                              |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    | Tasks        | true                    | Roles and access       | true                              |
+            | SOLICITOR          | Solicitor  | caseworker-divorce,caseworker-divorce-solicitor,pui-case-manager                 | Tasks        | false                   | Roles and access       | false                             |
 

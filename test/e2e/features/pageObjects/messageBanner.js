@@ -1,4 +1,5 @@
 
+const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
 var cucumberReporter = require('../../support/reportLogger');
 const ArrayUtil = require('../../utils/ArrayUtil');
@@ -21,7 +22,7 @@ class MessageBanner{
             await BrowserWaits.waitForElement(this.bannerMessageContainer,5000);
             return true;
         } catch (err) {
-            cucumberReporter.AddMessage("message banner not displayed: " + err);
+            cucumberReporter.AddMessage("message banner not displayed: " + err, LOG_LEVELS.Error);
             return false;
         }
     }
@@ -42,7 +43,7 @@ class MessageBanner{
 
     async isMessageTextDisplayed(expectedMessage){
         const allMessages = await this.getBannerMessagesDisplayed();
-        cucumberReporter.AddMessage(`Case details tasks tab banner messages : ${JSON.stringify(allMessages)}`);
+        cucumberReporter.AddMessage(`Case details tasks tab banner messages : ${JSON.stringify(allMessages)}`,LOG_LEVELS.Info);
         const matchingMessages = await ArrayUtil.filter(allMessages,async (message) => {
             return message.includes(expectedMessage);
         });

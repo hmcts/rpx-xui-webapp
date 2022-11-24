@@ -1,3 +1,4 @@
+import { http } from '../lib/http';
 import * as chai from 'chai';
 import {expect} from 'chai';
 import 'mocha';
@@ -26,6 +27,7 @@ describe('Location Service', () => {
     it('should make a get request', async () => {
       const path = '/location';
       const req = mockReq();
+      const spy = sandbox.stub(http, 'get').resolves(res);
 
       const {data} = await handleLocationGet(path, req);
       expect(data).to.equal(ALL_LOCATIONS);

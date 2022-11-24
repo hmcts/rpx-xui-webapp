@@ -1,11 +1,12 @@
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
+
+import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
+import { CaseRole } from '../../models';
 import { CaseRolesTableComponent } from './case-roles-table.component';
 
 describe('CaseRolesTableComponent', () => {
@@ -122,7 +123,7 @@ describe('CaseRolesTableComponent', () => {
   });
 
   it('should display a list of roles', () => {
-    component.roles = CASEROLES;
+    component.roles = CASEROLES as CaseRole[];
     fixture.detectChanges();
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
@@ -136,11 +137,11 @@ describe('CaseRolesTableComponent', () => {
   it('should display no roles for this case', () => {
     const summaryList: DebugElement = fixture.debugElement.query(By.css('.govuk-summary-list__value'));
     const element: HTMLElement = summaryList.nativeElement as HTMLElement;
-    expect(element.textContent).toBe(' There are no legal ops roles for this case. ');
+    expect(element.textContent).toBe(' There are no legal Ops roles for this case. ');
   });
 
   it('should show the reallocate and remove allocation link', () => {
-    component.roles = CASEROLES;
+    component.roles = CASEROLES as CaseRole[];
     fixture.detectChanges();
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;

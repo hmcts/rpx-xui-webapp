@@ -3,7 +3,7 @@ Feature: WA Release 2: All work > cases -  pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
+        Given I set MOCK request "/workallocation/all-work/cases" intercept with reference "caseSearchRequest"
 
 
     Scenario Outline: pagnation and sorting for user type "<UserType>" with roles "<Roles>"

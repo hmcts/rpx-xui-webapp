@@ -9,8 +9,8 @@ import {SessionStorageService} from '../../../app/services';
 import * as fromRoot from '../../../app/store';
 import {CaseRole, CaseRoleDetails, RoleExclusion} from '../../../role-access/models';
 import {AllocateRoleService, RoleExclusionsService} from '../../../role-access/services';
-import {Caseworker} from '../../../work-allocation-2/models/dtos';
-import {CaseworkerDataService} from '../../../work-allocation-2/services';
+import {Caseworker} from '../../../work-allocation/models/dtos';
+import {CaseworkerDataService} from '../../../work-allocation/services';
 import {Utils} from '../../utils/utils';
 
 @Component({

@@ -28,7 +28,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public caseDetails: CaseView;
   @Input() public caseworkers: Caseworker[];
-  @Input() public updatedTaskPermission: boolean;
+  @Input() public waServiceConfig: WAFeatureConfig;
 
   private pRoles: CaseRole[] = [];
   public jurisdictionFieldId = '[JURISDICTION]';
@@ -90,8 +90,14 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     if (this.caseworkers && this.exclusions && this.exclusions.length > 0) {
       this.namedExclusions = this.checkSetNamedRoles(this.exclusions, this.exclusionsNotNamed);
     }
-    if (this.updatedTaskPermission) {
-      this.isCTSCRoleEnabled = this.updatedTaskPermission;
+    if (this.waServiceConfig) {
+      const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
+      const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
+      this.waServiceConfig.configurations.forEach(serviceConfig => {
+        if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType) && parseFloat(serviceConfig.releaseVersion) >= 3.5) {
+          this.isCTSCRoleEnabled = true;
+        }
+      });
     }
   }
 

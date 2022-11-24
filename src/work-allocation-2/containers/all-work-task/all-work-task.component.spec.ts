@@ -1,264 +1,324 @@
-import { CdkTableModule } from '@angular/cdk/table';
-import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { StoreModule } from '@ngrx/store';
-import { of, throwError } from 'rxjs';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { of } from 'rxjs';
 import { AllocateRoleService } from 'src/role-access/services';
-import { TaskListComponent } from '..';
+import { AppUtils } from '../../../app/app-utils';
+
 import { SessionStorageService } from '../../../app/services';
-import { reducers } from '../../../app/store';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { FieldConfig } from '../../models/common';
-import { Task } from '../../models/tasks';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { getMockTasks } from '../../tests/utils.spec';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationTaskService
+} from '../../services';
 import { AllWorkTaskComponent } from './all-work-task.component';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import {
+  ConfigConstants,
+  FilterConstants,
+  ListConstants,
+  PageConstants,
+  SortConstants
+} from '../../components/constants';
+import { Person } from '@hmcts/rpx-xui-common-lib';
+import { UserRole } from 'src/app/models';
+import { Location } from '../../interfaces/common';
 
-
-@Component({
-  template: `
-    <exui-all-work-tasks></exui-all-work-tasks>`
-})
-class WrapperComponent {
-  @ViewChild(AllWorkTaskComponent, {static: true}) public appComponentRef: AllWorkTaskComponent;
-}
-
-@Component({
-  template: `<div>Nothing</div>`
-})
-class NothingComponent { }
-
-@Component({
-  selector: 'exui-task-field',
-  template: '<div class="xui-task-field">{{task.taskName}}</div>'
-})
-class TaskFieldComponent {
-  @Input() public config: FieldConfig;
-  @Input() public task: Task;
-}
-
-xdescribe('AllWorkTaskComponent', () => {
+describe('AllWorkTaskComponent', () => {
   let component: AllWorkTaskComponent;
-  let wrapper: WrapperComponent;
-  let fixture: ComponentFixture<WrapperComponent>;
 
-  let router: Router;
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
-  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
-  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
-  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
-  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
-  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
-  const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  const initializeComponent = ({
+    changeDetectorRef = {},
+    workAllocationTaskService = {},
+    router = {},
+    infoMessageCommService = {},
+    sessionStorageService = {},
+    alertService = {},
+    caseworkerDataService = {},
+    loadingService = {},
+    featureToggleService = {},
+    locationDataService = {},
+    waSupportedJurisdictionsService = {},
+    filterService = {},
+    allocateRoleService = {}
+  }) => new AllWorkTaskComponent(
+    changeDetectorRef as ChangeDetectorRef,
+    workAllocationTaskService as WorkAllocationTaskService,
+    router as Router,
+    infoMessageCommService as InfoMessageCommService,
+    sessionStorageService as SessionStorageService,
+    alertService as AlertService,
+    caseworkerDataService as CaseworkerDataService,
+    loadingService as LoadingService,
+    featureToggleService as FeatureToggleService,
+    locationDataService as LocationDataService,
+    waSupportedJurisdictionsService as WASupportedJurisdictionsService,
+    filterService as FilterService,
+    allocateRoleService as AllocateRoleService);
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        CdkTableModule,
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        WorkAllocationComponentsModule,
-        PaginationModule,
-        StoreModule.forRoot({...reducers}),
-      ],
-      declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent ],
-      providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: AlertService, useValue: mockAlertService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
-        { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: LocationDataService, useValue: mockLocationService },
-        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
-        { provide: AllocateRoleService, useValue: mockRoleService }
-      ]
-    }).compileComponents();
-  }));
+  const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockChangeDetectorRef = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
+  const mockLoadingService = jasmine.createSpyObj('LoadingService', ['register', 'unregister']);
+  const mockCaseService = jasmine.createSpyObj('CaseworkerDataService', ['searchCase', 'getCases']);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    router = TestBed.inject(Router);
-    const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTask.and.returnValue(of({tasks}));
-    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
-    mockCaseworkerService.getAll.and.returnValue(of([]));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-    component.locations = [{id: 'loc123', locationName: 'Test', services: []}];
-    mockLocationService.getLocations.and.returnValue(of([{id: 'loc123', locationName: 'Test', services: []}]));
-    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
-    fixture.detectChanges();
+  it('should create', () => {
+    component = initializeComponent({})
+
+    expect(component).toBeTruthy();
   });
 
-  it('getSearchTaskRequestPagination caseworker', () => {
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-      id: 'someId',
-      forename: 'fore',
-      surname: 'surName',
-      email: 'email',
-      active: true,
-      roles: ['caseworker-ia-caseofficer'],
-      uid: '1233434'
-    }));
-    const searchRequest = component.getSearchTaskRequestPagination();
-    expect(searchRequest.search_by).toEqual('caseworker');
-    expect(searchRequest.pagination_parameters).toEqual({page_number: 1, page_size: 25});
+  describe('getters', () => {
+    const getters = [
+      {
+        method: 'emptyMessage',
+        result: ListConstants.EmptyMessage.AllWork
+      },
+      {
+        method: 'sortSessionKey',
+        result: SortConstants.Session.AllWork
+      },
+      {
+        method: 'pageSessionKey',
+        result: PageConstants.Session.AllWork
+      },
+      {
+        method: 'view',
+        result: ListConstants.View.AllWork
+      },
+    ]
+    getters.forEach(({ method, result }) => {
+      it(`should return '${result}'`, () => {
+        component = initializeComponent({})
+
+        expect(component[method]).toEqual(result);
+      });
+    });
   });
 
-  it('getSearchTaskRequestPagination judge', () => {
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-      id: 'someId',
-      forename: 'fore',
-      surname: 'surName',
-      email: 'email',
-      active: true,
-      roles: ['caseworker-ia-iacjudge'],
-      uid: '1233434'
-    }));
-    const searchRequest = component.getSearchTaskRequestPagination();
-    expect(searchRequest.search_by).toEqual('judge');
-    expect(searchRequest.pagination_parameters).toEqual({page_number: 1, page_size: 25});
+  describe('fields', () => {
+    it(`should equal ${ConfigConstants.AllWorkTasksForJudicial}`, () => {
+      component = initializeComponent({});
+      spyOn(component, 'isCurrentUserJudicial').and.returnValue(true);
+      const actual = component.fields
+
+      expect(actual).toEqual(ConfigConstants.AllWorkTasksForJudicial);
+    });
+
+    it(`should equal ${ConfigConstants.AllWorkTasksForLegalOps}`, () => {
+      component = initializeComponent({});
+      spyOn(component, 'isCurrentUserJudicial').and.returnValue(false);
+      const actual = component.fields
+
+      expect(actual).toEqual(ConfigConstants.AllWorkTasksForLegalOps);
+    });
   });
 
-  it('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = {searchRequest, view: component.view};
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
-    expect(mockRoleService.getCaseRolesUserDetails).toHaveBeenCalled();
-    expect(component.tasks).toBeDefined();
-    expect(component.tasks.length).toEqual(2);
+  describe('onPaginationEvent', () => {
+    it(`should call 'onPaginationHandler'`, () => {
+      component = initializeComponent({});
+
+      spyOn(component, 'onPaginationHandler');
+
+      component.onPaginationEvent(2);
+
+      expect(component.onPaginationHandler).toHaveBeenCalledWith(2);
+    });
   });
 
-  it('should correctly get filter selections', () => {
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-      id: 'someId',
-      forename: 'fore',
-      surname: 'surName',
-      email: 'email',
-      active: true,
-      roles: ['caseworker-ia-caseofficer'],
-      uid: '1233434'
-    }));
-    const selection = {location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High' };
-    component.onSelectionChanged(selection);
-    const searchRequest = component.getSearchTaskRequestPagination();
-    expect(searchRequest.search_parameters).toContain({key: 'jurisdiction', operator: 'IN', values: ['IA']});
-    expect(searchRequest.search_parameters).toContain({key: 'location', operator: 'IN', values: ['exampleLocation']});
-    // expect(searchRequest.search_parameters).toContain({key: 'taskCategory', operator: 'IN', values: ['All']});
+  describe('loadCaseWorkersAndLocations', () => {
+    it(`should update 'waSupportedJurisdictions$'`, (done) => {
+      component = initializeComponent({ waSupportedJurisdictionsService: mockWASupportedJurisdictionsService });
+      const result = ['string'];
+      mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(result));
 
-    // Confirm that person is not searched for when no person available
-    expect(searchRequest.search_parameters).not.toContain({key: 'person', operator: 'IN', values: []});
-    expect(searchRequest.search_parameters).toContain({key: 'role_category', operator: 'IN', values: ['JUDICIAL']});
-    // expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'IN', values: ['High']});
+      component.loadCaseWorkersAndLocations();
+
+      expect(component.waSupportedJurisdictions$).toBeDefined();
+      component.waSupportedJurisdictions$.subscribe((actual) => {
+        expect(actual).toEqual(result);
+
+        done();
+      })
+    });
   });
 
-  afterEach(() => {
-    fixture.destroy();
+  describe('onSelectionChanged', () => {
+    it(`should update 'pagination' and 'selectedServices' when parameter's person is declared`, () => {
+      component = initializeComponent({ changeDetectorRef: mockChangeDetectorRef, caseworkerDataService: mockCaseService, loadingService: mockLoadingService });
+
+      spyOn(component, 'onPaginationHandler');
+
+      component.onSelectionChanged({
+        location: null,
+        service: 'service',
+        selectPerson: 'selectPerson',
+        person: { id: 'personId' } as unknown as Person,
+        taskType: 'taskType'
+      });
+
+      expect(component.selectedServices).toEqual(['service']);
+      expect(component.onPaginationHandler).toHaveBeenCalledWith(1);
+    });
+
+    // Test added to satisfy onSelectionChanged's ternary operators
+    it(`should update 'pagination' and 'selectedServices' when parameter's person is NOT declared`, () => {
+      component = initializeComponent({ changeDetectorRef: mockChangeDetectorRef, caseworkerDataService: mockCaseService, loadingService: mockLoadingService });
+
+      spyOn(component, 'onPaginationHandler');
+
+      component.onSelectionChanged({
+        location: null,
+        service: 'service',
+        selectPerson: 'selectPerson',
+        person: undefined,
+        taskType: 'taskType'
+      });
+
+      expect(component.selectedServices).toEqual(['service']);
+      expect(component.onPaginationHandler).toHaveBeenCalledWith(1);
+    });
   });
 
-});
+  describe('getSearchTaskRequestPagination', () => {
+    it(`should return a SearchTaskRequest with 'search_by' equal to 'caseworker'`, () => {
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
 
+      const userInfo = { roles: [UserRole.Admin] };
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+      spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Admin);
 
-[
-  { statusCode: 403, routeUrl: '/not-authorised' },
-  { statusCode: 401, routeUrl: '/not-authorised' },
-  { statusCode: 500, routeUrl: '/service-down' },
-  { statusCode: 400, routeUrl: '/service-down' },
-].forEach(scr => {
-  xdescribe('AllWorkTaskComponent negative cases', () => {
-    let component: AllWorkTaskComponent;
-    let wrapper: WrapperComponent;
-    let fixture: ComponentFixture<WrapperComponent>;
+      const actual = component.getSearchTaskRequestPagination();
 
-    let router: Router;
-    const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-    const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
-    const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-    const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
-    const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
-    const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-    const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
-    const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
-    const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
-
-
-    beforeEach(waitForAsync(() => {
-      mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
-      mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
-      const tasks: Task[] = getMockTasks();
-      // mockTaskService.searchTaskWithPagination.and.returnValue(of(throwError({ status: 500 })));
-      mockCaseworkerService.getAll.and.returnValue(of([]));
-      mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-      mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-      mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
-      TestBed.configureTestingModule({
-        imports: [
-          CdkTableModule,
-          ExuiCommonLibModule,
-          RouterTestingModule,
-          WorkAllocationComponentsModule,
-          PaginationModule,
-          StoreModule.forRoot({...reducers}),
-          RouterTestingModule.withRoutes(
-            [
-              { path: 'service-down', component: NothingComponent },
-              { path: 'not-authorised', component: NothingComponent }
-            ]
-          )
+      expect(actual).toEqual(jasmine.objectContaining({
+        search_parameters: [
+          { key: 'jurisdiction', operator: 'IN', values: [] },
+          { key: 'state', operator: 'IN', values: ['assigned', 'unassigned'] },
+          { key: 'location', operator: 'IN', values: ['**ALL LOCATIONS**'] },
         ],
-        declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent, NothingComponent],
-        providers: [
-          { provide: WorkAllocationTaskService, useValue: mockTaskService },
-          { provide: AlertService, useValue: mockAlertService },
-          { provide: SessionStorageService, useValue: mockSessionStorageService },
-          { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-          { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
-          { provide: LoadingService, useValue: mockLoadingService },
-          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-          { provide: LocationDataService, useValue: mockLocationService },
-          { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService }
-        ]
-      }).compileComponents();
-
-
-      fixture = TestBed.createComponent(WrapperComponent);
-      wrapper = fixture.componentInstance;
-      component = wrapper.appComponentRef;
-
-      component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
-      router = TestBed.inject(Router);
-      fixture.detectChanges();
-
-    }));
-
-
-    it(`onPaginationEvent with error response code ${scr.statusCode}`, () => {
-      const navigateSpy = spyOn(router, 'navigate');
-      component.getSearchTaskRequestPagination();
-      const searchRequest = component.onPaginationEvent(1);
-      const payload = { searchRequest, view: component.view };
-      expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
-
-      expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
-
+        sorting_parameters: [{
+          sort_by: component.sortedBy.fieldName,
+          sort_order: component.sortedBy.order
+        }],
+        search_by: 'caseworker',
+        pagination_parameters: { ...component.pagination }
+      }));
     });
 
+    it(`should return a SearchTaskRequest with 'search_by' equal to 'judge'`, () => {
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
 
-    afterEach(() => {
-      fixture.destroy();
+      const userInfo = { roles: [UserRole.Judicial] };
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+      spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Judicial);
+
+      const actual = component.getSearchTaskRequestPagination();
+
+      expect(actual.search_by).toEqual('judge');
     });
 
+    it(`
+        should return a 'SearchTaskRequest' with an added personParameter, taskTypeParameter
+        and search_parameters with a location object
+      `, () => {
+      component = initializeComponent({
+        sessionStorageService: mockSessionStorageService,
+        changeDetectorRef: mockChangeDetectorRef,
+        caseworkerDataService: mockCaseService,
+        loadingService: mockLoadingService
+      });
+
+      const userInfo = { roles: [UserRole.Admin] };
+
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+      spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Admin);
+      spyOn(component, 'onPaginationHandler');
+
+
+      // updated locations to add values to getLocationParameter
+      component.locations = [{ id: 'id1' }, { id: 'id2' }] as unknown as Location[]
+
+      // method allows us to update selectedPerson
+      component.onSelectionChanged({
+        location: FilterConstants.Options.Locations.ALL.id,
+        service: 'service',
+        selectPerson: 'selectPerson',
+        person: { id: 'personId' } as unknown as Person,
+        taskType: 'taskType'
+      });
+
+      const actual = component.getSearchTaskRequestPagination();
+
+      expect(actual).toEqual(jasmine.objectContaining({
+        search_parameters: [
+          { key: 'jurisdiction', operator: 'IN', values: ['service'] },
+          { key: 'state', operator: 'IN', values: ['assigned'] },
+          { key: 'user', operator: 'IN', values: ['personId'] },
+          { key: 'location', operator: 'IN', values: ['id1', 'id2'] },
+          { key: 'role_category', operator: 'IN', values: ['taskType'] },
+        ],
+        sorting_parameters: [{
+          sort_by: component.sortedBy.fieldName,
+          sort_order: component.sortedBy.order
+        }],
+        search_by: 'caseworker',
+        pagination_parameters: { ...component.pagination }
+      }));
+    });
+
+    it(`should return a 'SearchTaskRequest' with search_parameters' state equalling unassigned`, () => {
+      component = initializeComponent({
+        sessionStorageService: mockSessionStorageService,
+        changeDetectorRef: mockChangeDetectorRef,
+        caseworkerDataService: mockCaseService,
+        loadingService: mockLoadingService
+      });
+
+      const userInfo = { roles: [UserRole.Admin] };
+
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+      spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Admin);
+      spyOn(component, 'onPaginationHandler');
+
+      // method allows us to update selectedTaskCategory to 'None / Available tasks'
+      component.onSelectionChanged({
+        location: null,
+        service: 'service',
+        selectPerson: 'None / Available tasks',
+        person: { id: 'personId' } as unknown as Person,
+        taskType: 'taskType'
+      });
+
+      const actual = component.getSearchTaskRequestPagination();
+
+      expect(actual).toEqual(jasmine.objectContaining({
+        search_parameters: [
+          { key: 'jurisdiction', operator: 'IN', values: ['service'] },
+          { key: 'state', operator: 'IN', values: ['unassigned'] },
+          { key: 'user', operator: 'IN', values: ['personId'] },
+          { key: 'role_category', operator: 'IN', values: ['taskType'] },
+        ],
+        sorting_parameters: [{
+          sort_by: component.sortedBy.fieldName,
+          sort_order: component.sortedBy.order
+        }],
+        search_by: 'caseworker',
+        pagination_parameters: { ...component.pagination }
+      }));
+    });
+
+    it(`should NOT return a SearchTaskRequest`, () => {
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService });
+
+      mockSessionStorageService.getItem.and.returnValue(undefined);
+
+      const actual = component.getSearchTaskRequestPagination();
+
+      expect(actual).toEqual(undefined)
+
+    });
   });
 
 });

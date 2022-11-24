@@ -1467,17 +1467,17 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.26-angular11-upgrade":
-  version "5.0.26-angular11-upgrade"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.26-angular11-upgrade.tgz#9943dd3ca0ce29449ca434feaffd188814b537f0"
-  integrity sha512-AGFOZZ7+480+QOQiZuocjRB/ZfAWl8WkQmXs9OJcxrYVCGeQBskha/SMILpcpORMhyLSFSLyo9iDn/r1qfIGPQ==
+"@hmcts/ccd-case-ui-toolkit@5.0.27-angular11-upgrade":
+  version "5.0.27-angular11-upgrade"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.27-angular11-upgrade.tgz#bbe9a17a7ee6230b410948e3d097be86213166e8"
+  integrity sha512-Ke8mglcvjSLnkDvcAM790b/YfHZPsSp1actvIV259DP8QKjDfFSiYCfeeskK8Wz9HshtizSUblF7dtaAF5G3XQ==
   dependencies:
     tslib "^2.0.0"
 
-"@hmcts/ccpay-web-component@5.0.8-beta16":
-  version "5.0.8-beta16"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.8-beta16.tgz#8f600d178e13f83649380eecc5aa173de0e4e842"
-  integrity sha512-+hspyOOQvQH8XyeASAEIdVdrhSnvAQlDoyov11m0Ao/MPRxy1xlpPNYnp72YvWvpnTa8feESWs1AUX+xM4UWEg==
+"@hmcts/ccpay-web-component@5.0.10-beta08":
+  version "5.0.10-beta08"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.10-beta08.tgz#c0b5c07c3efebd658e96bdebd5c6eedfa663712e"
+  integrity sha512-0QdltXAoitIf1tbKP7mN7AoK43RY6X2PI62VqTofmHuAfOWNLNWyUghGce5NhyVlDxLWNQjKzGvsay6oU4KSLw==
   dependencies:
     tslib "^2.0.0"
 

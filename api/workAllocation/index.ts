@@ -146,7 +146,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     }
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
-    delete searchRequest.request_context;
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);

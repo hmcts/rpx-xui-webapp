@@ -134,7 +134,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
       const event = this.getEvent();
-      if ( event != null && !this.elasticSearchFlag) {
+      if ( event !== null && !this.elasticSearchFlag) {
         this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
       }
     }
@@ -196,14 +196,14 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   public findCaseListPaginationMetadata() {
     const event = this.getEvent();
-    if ( event != null) {
+    if ( event !== null) {
       this.store.dispatch(new fromCasesFeature.FindSearchPaginationMetadata(event));
     }
   }
 
   public getElasticSearchResults() {
     const event = this.getEvent();
-    if ( event != null) {
+    if ( event !== null) {
       this.store.dispatch(new fromCasesFeature.ApplySearchFilterForES(event));
     }
   }

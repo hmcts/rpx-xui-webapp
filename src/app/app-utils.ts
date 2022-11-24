@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence, RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
+import { AppConstants, CTSC_ROLE_LIST, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
 import { Theme, UserTypeRole } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
@@ -161,6 +161,8 @@ export class AppUtils {
       return UserRole.Judicial;
     } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
       return UserRole.LegalOps;
+    } else if (userRoles.some(userRole => CTSC_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.CTSC;
     }
     // TODO: When we know roles for Admin we can put this in this method
     return null;
@@ -232,6 +234,6 @@ export class AppUtils {
     const { roleAssignmentInfo, userInfo } = userDetails;
     return userInfo.roleCategory === RoleCategory.JUDICIAL
       && roleAssignmentInfo.some(roleAssignment => 'bookable' in roleAssignment
-      && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
+        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
   }
 }

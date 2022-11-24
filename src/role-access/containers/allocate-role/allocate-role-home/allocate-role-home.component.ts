@@ -208,6 +208,18 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                     throw new Error('Invalid user role');
                 }
                 break;
+              case RoleCategory.CTSC:
+                switch (this.userRole) {
+                  case UserRole.CTSC:
+                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                    break;
+                  case UserRole.Judicial:
+                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+                    break;
+                  default:
+                    throw new Error('Invalid user role');
+                }
+                break;
               case RoleCategory.ADMIN:
                 this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
                 break;
@@ -266,6 +278,28 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                         throw new Error('Invalid role category');
                     }
                     break;
+                  case UserRole.CTSC:
+                  switch (this.roleCategory) {
+                    case RoleCategory.JUDICIAL:
+                    case RoleCategory.ADMIN:
+                      this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                      break;
+                    case RoleCategory.CTSC:
+                      switch (this.allocateTo) {
+                        case AllocateTo.RESERVE_TO_ME:
+                          this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                          break;
+                        case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
+                          this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                          break;
+                        default:
+                          throw new Error('Invalid allocate to');
+                      }
+                      break;
+                    default:
+                      throw new Error('Invalid role category');
+                  }
+                  break;
                   default:
                     throw new Error('invalid user role');
                 }

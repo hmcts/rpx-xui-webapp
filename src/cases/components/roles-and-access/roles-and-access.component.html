@@ -36,6 +36,19 @@
     [showAllocate]="true">
   </exui-role-access-section>
 
+  <exui-role-access-section
+    title="CTSC"
+    [roles]="namedCTSCRoles ? namedCTSCRoles : ctscRoles"
+    [caseDetails]="caseDetails"
+    [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
+    [roleQueryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'CTSC'}"
+    roleCategory="CTSC"
+    [showAllocateRoleLink]="showAllocateRoleLink"
+    linkText="Allocate a ctsc role"
+    [showAllocate]="true"
+    *ngIf="isCTSCRoleEnabled">
+  </exui-role-access-section>
+
   <h2 class="govuk-heading-m">Exclusions</h2>
 
   <exui-exclusions-table [exclusions]="namedExclusions ? namedExclusions : exclusions" [caseDetails]="caseDetails" [isCaseAllocator]="showAllocateRoleLink"></exui-exclusions-table>

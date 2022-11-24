@@ -14,9 +14,12 @@ export const PROFESSIONAL_ROLE_NAME = 'professional';
 export const LEGAL_OPERATIONS_ROLE = 'caseworker';
 export const LEGAL_OPERATIONS_ROLE_CATEGORY = 'LEGAL_OPERATIONS';
 export const LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
+export const TASK_SUPERVISOR = 'task-supervisor';
 export const CITIZEN_ROLE = 'citizen';
 export const CITIZEN_ROLE_CATEGORY = 'CITIZEN';
 export const CITIZEN_ROLE_NAME = 'citizen';
+export const CTSC_ROLE = 'ctsc';
+export const CTSC_ROLE_CATEGORY = 'CTSC';
 export const CTSC_ROLE_NAME = 'ctsc';
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
@@ -57,7 +60,7 @@ export function getUserRoleCategory(roles: string[]): string {
     return ADMIN_ROLE_NAME;
   } else if (hasRoleCategory(roles, CTSC_ROLE_NAME)) {
     return CTSC_ROLE_NAME;
-  } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME)) {
+  } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) || hasRoleCategory(roles, TASK_SUPERVISOR)) {
     return LEGAL_OPERATIONS_ROLE_NAME;
   }
 }

@@ -1,4 +1,4 @@
-@search @fullfunctional 
+@search @ignore
 Feature: search criteria workflow
 
   Background:
@@ -19,6 +19,7 @@ Feature: search criteria workflow
     Examples:
       | Jurisdiction   | CaseType           |
       | Family Divorce | XUI Test Case type |
+
 
 
   Scenario Outline:  search criteria apply workflow from Search Case Page

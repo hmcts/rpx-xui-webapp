@@ -1,0 +1,48 @@
+<div *ngIf="formError" class="govuk-error-summary"
+  aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+  <h2 class="govuk-error-summary__title" id="error-summary-title">
+    There is a problem
+  </h2>
+  <div class="govuk-error-summary__body">
+    <ul class="govuk-list govuk-error-summary__list">
+      <li>
+        <a href="javascript:void(0)" (click)="getLocationSearchFocus()">Enter a valid location</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<form [formGroup]="findLocationFormGroup" class="form">
+  <div class="govuk-form-group">
+    <h1 class="govuk-heading-l">
+      <span class="govuk-caption-l">Work access</span>
+      Select a location
+    </h1>
+    <div [ngClass]="{ 'form-group-error': formError}">
+      <span *ngIf="formError"
+        id="event-name-error" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span> Enter a valid location
+      </span>
+      <div class="govuk-hint">Enter the location name, for example, Taylor House Tribunal Hearing Centre.</div>
+        <!--
+          TODO: CAM_BOOKING - this can be removed later
+          <exui-search-location class="search-location"
+          [control]="findLocationFormGroup.controls.locationSelectedFormControl" [disabled]="false"
+          [serviceIds]="jurisdictions" (locationChanged)="onLocationChanged($event)"></exui-search-location>
+        -->
+        <!-- TODO: CAM_BOOKING what should be passed in here -->
+        <!-- TODO: deteremine serviceIds (don't hardcode) -->
+        <!-- TODO: determine selectedLocations -->
+        <exui-search-location
+          class="search-location"
+          [selectedLocations]="selectedLocations"
+          [singleMode]="true"
+          [delay]="300"
+          [bookingCheck]="bookingCheckType"
+          [serviceIds]="jurisdictions"
+          locationType=""
+          (locationSelected)="onLocationChanged($event)"></exui-search-location>
+
+    </div>
+  </div>
+  <button class="govuk-button govuk-!-margin-right-3" type="button" (click)="onContinueClick()">Continue</button>
+</form>

@@ -1,60 +1,50 @@
 <div class="govuk-!-padding-4">
   <h2 class="govuk-heading-l">Roles and access</h2>
+  <exui-role-access-section
+    title="Judiciary"
+    [roles]="judicialRoles"
+    [caseDetails]="caseDetails"
+    [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
+    [roleQueryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'JUDICIAL'}"
+    roleCategory="JUDICIAL"
+    linkText="Allocate a judicial role"
+    [showAllocateRoleLink]="showAllocateRoleLink"
+    showAllocate="true">
+  </exui-role-access-section>
 
-  <h2 class="govuk-heading-m">Judiciary</h2>
+  <exui-role-access-section
+    title="Legal Ops"
+    [roles]="namedLegalRoles ? namedLegalRoles : legalOpsRoles"
+    [caseDetails]="caseDetails"
+    [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
+    [roleQueryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'LEGAL_OPERATIONS'}"
+    roleCategory="LEGAL_OPERATIONS"
+    [showAllocateRoleLink]="showAllocateRoleLink"
+    linkText="Allocate a legal ops role"
+    [showAllocate]="showLegalOpsAllocate">
+  </exui-role-access-section>
 
-  <exui-case-roles-table [roles]="judicialRoles"
-                         [roleCategory]="judicial"
-                         [caseDetails]="caseDetails"
-                         [showAllocateRoleLink]="showAllocateRoleLink"
-  ></exui-case-roles-table>
-
-  <p>
-    <a href="javascript:void(0)"
-       class="govuk-link"
-       [routerLink]="['/', 'role-access', 'allocate-role', 'allocate']"
-       [queryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'JUDICIAL'}"
-       exuiShowAllocateLink
-       [showAllocateRoleLink]="showAllocateRoleLink"
-       [roles]="judicialRoles"
-       [roleCategory]="judicial"
-    >Allocate a role</a>
-  </p>
-
-  <h2 class="govuk-heading-m">Legal Ops</h2>
-  <div *ngIf="!namedLegalRoles">
-  <exui-case-roles-table [roles]="legalOpsRoles"
-                         [caseDetails]="caseDetails"
-                         [showAllocateRoleLink]="showAllocateRoleLink">
-  </exui-case-roles-table>
-  </div>
-  <div *ngIf="namedLegalRoles">
-  <exui-case-roles-table [roles]="namedLegalRoles"
-                         [caseDetails]="caseDetails"
-                         [showAllocateRoleLink]="showAllocateRoleLink">
-  </exui-case-roles-table>
-  </div>
-  <p>
-    <a *ngIf="showLegalOpsAllocate" 
-       href="javascript:void(0)"
-       class="govuk-link"
-       [routerLink]="['/', 'role-access', 'allocate-role', 'allocate']"
-       [queryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'LEGAL_OPERATIONS'}"
-       exuiShowAllocateLink
-       [showAllocateRoleLink]="showAllocateRoleLink"
-       [roles]="legalOpsRoles"
-       [roleCategory]="legalOps"
-    >Allocate a role</a>
-  </p>
+  <exui-role-access-section
+    title="Admin"
+    [roles]="namedAdminRoles ? namedAdminRoles : adminRoles"
+    [caseDetails]="caseDetails"
+    [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
+    [roleQueryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'ADMIN'}"
+    roleCategory="ADMIN"
+    [showAllocateRoleLink]="showAllocateRoleLink"
+    linkText="Allocate an admin role"
+    [showAllocate]="true">
+  </exui-role-access-section>
 
   <h2 class="govuk-heading-m">Exclusions</h2>
 
-  <exui-exclusions-table [exclusions]="exclusions" [caseDetails]="caseDetails" [isCaseAllocator]="showAllocateRoleLink"></exui-exclusions-table>
+  <exui-exclusions-table [exclusions]="namedExclusions ? namedExclusions : exclusions" [caseDetails]="caseDetails" [isCaseAllocator]="showAllocateRoleLink"></exui-exclusions-table>
 
   <p>
     <a href="javascript:void(0)"
        [routerLink]="['/', 'role-access', 'add-exclusion']"
        [queryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction}"
+       (click) = "removeCashedCase()"
        class="govuk-link">Add</a>
   </p>
 </div>

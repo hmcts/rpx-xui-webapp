@@ -16,3 +16,8 @@ export const getAllocateRoleLastError = createSelector(
   getAllocateRoleState,
   fromFeature.allocateRoleLastErrors
 );
+
+export const getAvailableRolesForService = createSelector(
+  getAllocateRoleState,
+  fromFeature.availableRoles
+);

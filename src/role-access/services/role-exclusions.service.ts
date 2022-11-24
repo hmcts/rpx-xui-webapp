@@ -13,7 +13,7 @@ export class RoleExclusionsService {
   }
 
   public getRolesCategory(): Observable<Role[]> {
-    return this.http.get<Role[]>('workallocation2/exclusion/rolesCategory');
+    return this.http.get<Role[]>('workallocation/exclusion/rolesCategory');
   }
 
   public confirmExclusion(exclusionStateData: ExclusionStateData): Observable<string> {

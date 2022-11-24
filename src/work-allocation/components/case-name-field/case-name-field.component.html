@@ -1,0 +1,4 @@
+<ng-container>
+  <exui-url-field *ngIf="hasAccess" class="xui-case-name-field" [href]="href" [label]="caseName"></exui-url-field>
+  <label *ngIf="!hasAccess">{{caseName}}</label>
+</ng-container>

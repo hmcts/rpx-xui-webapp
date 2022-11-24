@@ -40,8 +40,8 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Admin    | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
             | Admin    | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
-        Given I set MOCK request "/workallocation2/findPerson" response log to report
-        Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findpersonRequest"
+        Given I set MOCK request "/workallocation/findPerson" response log to report
+        Given I set MOCK request "/workallocation/findPerson" intercept with reference "findpersonRequest"
 
 
 
@@ -58,12 +58,37 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      | ADMIN            |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | ADMIN            |
 
-        Given I set MOCK request "/workallocation2/task" intercept with reference "taskSearchRequest"
-        Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
+        Given I set MOCK request "/workallocation/task" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/all-work/cases" intercept with reference "caseSearchRequest"
+
+    Scenario Outline: Tasks filters services displayed based for role assignment on service(s) <roleAssignment_services>
+        Given I have workallocation on boarded services "IA,SSCS,CIVIL,PRIVATELAW"
+
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<roleAssignment_services>" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
+
+        Given I start MockApp
+
+        Given I navigate to home page
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        Then I validate tasks count in page 25
+        Then I validate filter item "Service" select or radio has option "<Services>" in all work page
+        Examples:
+            | roleAssignment_services |       Services                   |
+            |                         | IA,SSCS,CIVIL,PRIVATELAW |
+            | IA                      | IA                       |
+            | IA,                     | IA,SSCS,CIVIL,PRIVATELAW |
+            | IA,SSCS                 | IA,SSCS                  |
+
+
 
     Scenario: Tasks filters state, with user role "Caseworker"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -86,9 +111,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Search for a location |
 
 
-        Then I see filter "Person" is displayed in all work page
+        Then I see filter "Tasks" is displayed in all work page
 
-        Then I see filter "Person role type" is displayed in all work page
+        Then I see filter "Tasks by role type" is displayed in all work page
 
         Then I see filter "Person input" is displayed in all work page
 
@@ -100,7 +125,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario Outline: "Caseworker" Tasks filter, filetr role type <Person_Role_Type>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -129,8 +156,8 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I select location search result "IA Court Taylor House" in all work filter
         Then I see location "IA Court Taylor House" selected in all work filter
 
-        When I select filter item "Person" select or radio option "<Task_Category>" in all work page
-        When I select filter item "Person role type" select or radio option "<Person_Role_Type>" in all work page
+        When I select filter item "Tasks" select or radio option "<Task_Category>" in all work page
+        When I select filter item "Tasks by role type" select or radio option "<Person_Role_Type>" in all work page
 
         When I enter find person search input "<Person_search>" in work flow
 
@@ -154,21 +181,23 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | priority     | <Priority>     |
 
         Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "All" in all work page
+        When I select filter item "Tasks" select or radio option "All" in all work page
         When I select filter item "Location radios" select or radio option "All" in all work page
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "user"
         Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
         Examples:
-            | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                              | person_id                            | Person_Role_Type | Task_type | Priority |
-            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
+            | Jurisdiction | locationName | locationId | Task_Category        | Person_search | Person_name                              | person_id                            | Person_Role_Type | Task_type | Priority |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
 
     Scenario: "Judicial" Tasks filters state
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -189,9 +218,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | All                   |
             | Search for a location |
 
-        Then I see filter "Person" is displayed in all work page
+        Then I see filter "Tasks" is displayed in all work page
 
-        Then I see filter "Person role type" is displayed in all work page
+        Then I see filter "Tasks by role type" is displayed in all work page
 
 
         Then I see filter "Person input" is displayed in all work page
@@ -204,7 +233,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario Outline: "Judicial" Tasks filter selection, with person role type <Person_Role_Type>
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -234,8 +265,8 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see location "IA Court Taylor House" selected in all work filter
 
 
-        When I select filter item "Person" select or radio option "<Task_Category>" in all work page
-        When I select filter item "Person role type" select or radio option "<Person_Role_Type>" in all work page
+        When I select filter item "Tasks" select or radio option "<Task_Category>" in all work page
+        When I select filter item "Tasks by role type" select or radio option "<Person_Role_Type>" in all work page
 
         When I enter find person search input "<Person_search>" in work flow
 
@@ -258,7 +289,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
 
         Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "All" in all work page
+        When I select filter item "Tasks" select or radio option "All" in all work page
         When I select filter item "Location radios" select or radio option "All" in all work page
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
@@ -266,14 +297,16 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
 
         Examples:
-            | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                              | person_id                            | Person_Role_Type | Task_type |
-            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
+            | Jurisdiction | locationName | locationId | Task_Category        | Person_search | Person_name                              | person_id                            | Person_Role_Type | Task_type |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
 
     Scenario: "Caseworker" Cases filters state
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "task-supervisor,case-allocator,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -303,14 +336,15 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
         Then I see filter "Person" is displayed in all work page
 
-        Then I see filter "Person role type" is displayed in all work page
         Then I see filter "Role type" is enabled in all work page
 
         Then I see filter "Person input" is displayed in all work page
 
     Scenario Outline: "Caseworker" Case filter selection, with role type <Role_Type>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page
@@ -369,7 +403,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Scenario Outline: "Judicial" Case filter selection, with role type <Role_Type>
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+            | roleName    | task-supervisor |
+            | substantive | Y               |
         Given I start MockApp
 
         Given I navigate to home page

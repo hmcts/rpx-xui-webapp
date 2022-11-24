@@ -1,4 +1,4 @@
-@ng  
+@ng 
 Feature: WA Release 2: Case events and Task completion and states when task_required is false
 
     Background: Setup
@@ -32,9 +32,8 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      |
 
 
-        Given I set MOCK request "/workallocation2/task/:taskId/:action" intercept with reference "completeTaskRequest"
+        Given I set MOCK request "/workallocation/task/:taskId/:action" intercept with reference "completeTaskRequest"
         Given I set MOCK request "/data/cases/:caseId/events" intercept with reference "submitEvent"
-
 
     Scenario Outline: Event with only one task assigned to this user - Trigger from menu
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"

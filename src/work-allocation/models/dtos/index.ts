@@ -1,3 +1,5 @@
+import { RoleCategory } from '../../../role-access/models';
+
 export interface Assignee {
   userId: string;
   userName?: string;
@@ -16,6 +18,20 @@ export interface Caseworker {
   lastName: string;
   email: string;
   location: Location;
+  roleCategory: RoleCategory
+}
+
+export interface CaseworkersByService {
+  service: string;
+  caseworkers: Caseworker[];
+}
+
+export interface JudicialWorker {
+  idamId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  location: Location;
 }
 
 export interface LocationSummary {
@@ -27,10 +43,70 @@ export interface Location extends LocationSummary {
   services: string[];
 }
 
+export interface LocationByEPIMMSModel {
+  epimms_id: string;
+  site_name: string;
+  court_name?: string;
+  open_for_public?: string;
+  region_id: string;
+  region: string;
+  cluster_id?: string;
+  cluster_name?: string;
+  court_status?: string;
+  court_open_date?: string;
+  closed_date?: string;
+  postcode: string;
+  court_address: string;
+  phone_number?: string;
+  court_location_code?: string;
+  dx_address?: string;
+  welsh_site_name?: string;
+  welsh_court_address?: string;
+  venue_name?: string;
+  is_case_management_location: string;
+  is_hearing_location: string;
+}
+
+export interface LocationsByService {
+  service?: string;
+  serviceCode?: string;
+  bookable?: boolean;
+  locations: Location[];
+}
+
+export interface CaseSearchParameter {
+  ccdId?: string;
+  eventId?: string;
+  jurisdiction?: string[];
+  location?: string[];
+  postEventState?: string;
+  preEventState?: string;
+  state?: string[];
+  user?: string[];
+}
+
+export interface CaseSearchParameters {
+  parameters: CaseSearchParameter[];
+}
+
+export interface SearchCaseParameter {
+  key: string;
+  operator: string;
+  values: string[] | string;
+}
+
+export interface SearchCaseRequest {
+  search_parameters: SearchCaseParameter[];
+  sorting_parameters: SortParameter[];
+  search_by?: string;
+  pagination_parameters?: PaginationParameter;
+}
+
 export interface SearchTaskParameter {
   key: string;
   operator: string;
-  values: string[];
+  values?: any;
+  value?: any;
 }
 
 export interface SortParameter {
@@ -46,6 +122,7 @@ export interface PaginationParameter {
 export interface SearchTaskRequest {
   search_parameters: SearchTaskParameter[];
   sorting_parameters: SortParameter[];
+  search_by?: string;
   pagination_parameters?: PaginationParameter;
 }
 

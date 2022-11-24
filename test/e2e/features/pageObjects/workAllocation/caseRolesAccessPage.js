@@ -6,14 +6,19 @@ const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 class CaseRolesAccessPage{
     constructor(){
         this.pageContainer = $('exui-roles-and-access-container');
-        this.legalOpsRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Legal Ops')]/following-sibling::div/exui-case-roles-table[position()=1]`);
-        this.addLegalOpsRoleLink = element(by.xpath(`//h2[contains(text(),'Legal Ops')]/following-sibling::p[position()=1]/a[contains(text(),'Allocate a role')]`));
+        
+        this.legalOpsRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Legal Ops')]/following-sibling::exui-case-roles-table[position()=1]`);
+        this.addLegalOpsRoleLink = element(by.xpath(`//h2[contains(text(),'Legal Ops')]/following-sibling::p[position()=1]//exui-allocate-a-role-link//a[contains(text(),'Allocate a legal ops role')]`));
+
+        this.adminRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Admin')]/following-sibling::exui-case-roles-table[position()=1]`);
+        this.addAdminRoleLink = element(by.xpath(`//h2[contains(text(),'Admin')]/following-sibling::p[position()=1]//exui-allocate-a-role-link//a[contains(text(),'Allocate an admin role')]`));
 
         this.judicialRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Judiciary')]/following-sibling::exui-case-roles-table[position()=1]`);
-        this.addJudicialRoleLink = element(by.xpath(`//h2[contains(text(),'Judiciary')]/following-sibling::p[position()=1]/a[contains(text(),'Allocate a role')]`));
+        this.addJudicialRoleLink = element(by.xpath(`//h2[contains(text(),'Judiciary')]/following-sibling::p[position()=1]//exui-allocate-a-role-link//a[contains(text(),'Allocate a judicial role')]`));
 
+        
         this.exclusionTable = new CaseRolesTable(`//h2[contains(text(),'Exclusions')]/following-sibling::exui-exclusions-table[position()=1]`);
-        this.addExcluusionLink = element(by.xpath(`//h2[contains(text(),'Exclusions')]/following-sibling::p[position()=1]/a[contains(text(),'Add')]`));
+        this.addExcluusionLink = element(by.xpath(`//h2[contains(text(),'Exclusions')]/following-sibling::p[position()=1]//a[contains(text(),'Add')]`));
 
     }
 
@@ -98,7 +103,9 @@ class CaseRolesAccessPage{
             allLink = this.addJudicialRoleLink;
         } else if (normalisedRoleCategory.includes('exclusion')) {
             allLink = this.addExcluusionLink;
-        } else {
+        } else if (normalisedRoleCategory.includes('admin')) {
+            allLink = this.addAdminRoleLink;
+        }  else {
             throw new Error(`${rolecategory} is not recognized as valid role type`);
         }
         return allLink;

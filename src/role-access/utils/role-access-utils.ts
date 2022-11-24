@@ -1,9 +1,10 @@
 import { NavigationExtras } from '@angular/router';
 
-import { ISessionStorageService } from '../../work-allocation-2/interfaces/common';
+import { ISessionStorageService } from '../../work-allocation/interfaces/common';
 import { Role, RoleAccessHttpError, RolesByService, SpecificRole, TypeOfRole } from '../models';
 import { RoleCaptionText } from '../models/enums/allocation-text';
 import { InfoMessageType } from '../models/enums';
+import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
@@ -14,11 +15,17 @@ export enum REDIRECTS {
   ServiceDown = '/service-down'
 }
 
+export const vowels = ['a', 'e', 'i', 'o', 'u'];
+
 // gets the most detailed title possible based on data available
 export const getTitleText = (role: SpecificRole, action: string, roleCategory: string): string => {
   if (role && role.name) {
-    return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} a ${role.name.toLowerCase()}`;
+    const aOrAn = vowels.includes(role.name.toLowerCase().charAt(0)) ? 'an' : 'a';
+    return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} ${aOrAn} ${role.name.toLowerCase()}`;
   } else {
+    if (roleCategory === RoleCategory.ADMIN) {
+      return `${action} an admin role`;
+    }
     return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
   }
 };

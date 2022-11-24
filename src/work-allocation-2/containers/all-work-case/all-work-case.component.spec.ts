@@ -19,9 +19,6 @@ import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '..
 import { UserRole } from 'src/app/models';
 import { AppUtils } from '../../../app/app-utils';
 
-
-
-
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
 
@@ -164,7 +161,7 @@ describe('AllWorkCaseComponent', () => {
       expect(component.performSearchPagination).toHaveBeenCalledTimes(1);
     });
 
-    // Test added due to onSelectionChanged ternary operators
+    // Test added to satisfy onSelectionChanged's ternary operators
     it(`should update 'pagination' and 'selectedServices' when parameter's location is NOT null and actorId is NOT 'All'`, () => {
       component = new AllWorkCaseComponent(mockChangeDetectorRef as ChangeDetectorRef,
         {} as WorkAllocationCaseService,

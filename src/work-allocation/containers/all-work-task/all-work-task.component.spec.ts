@@ -139,6 +139,7 @@ describe('AllWorkTaskComponent', () => {
       uid: '1233434'
     }));
     const searchRequest = component.getSearchTaskRequestPagination();
+    const payload = {searchRequest, view: component.view, refined: false, currentUser: '1233434'};
     expect(searchRequest.search_by).toEqual('caseworker');
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
@@ -160,7 +161,7 @@ describe('AllWorkTaskComponent', () => {
 
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = { searchRequest, view: component.view };
+    const payload = {searchRequest, view: component.view, refined: false, currentUser: '1233434'};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(mockRoleService.getCaseRolesUserDetails).toHaveBeenCalled();
     expect(component.tasks).toBeDefined();
@@ -289,7 +290,7 @@ describe('AllWorkTaskComponent', () => {
       const navigateSpy = spyOn(router, 'navigate');
       component.getSearchTaskRequestPagination();
       const searchRequest = component.onPaginationEvent(1);
-      const payload = { searchRequest, view: component.view };
+      const payload = { searchRequest, view: component.view, refined: false, currentUser: undefined };
       expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);

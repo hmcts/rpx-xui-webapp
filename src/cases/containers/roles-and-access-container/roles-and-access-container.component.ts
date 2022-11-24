@@ -1,17 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {CaseView} from '@hmcts/ccd-case-ui-toolkit';
-import {Store} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
-import {first, map, mergeMap, tap} from 'rxjs/operators';
-import {UserDetails} from '../../../app/models/user-details.model';
-import {SessionStorageService} from '../../../app/services';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
+import { first, map, mergeMap, tap } from 'rxjs/operators';
+import { AppConstants } from '../../../app/app.constants';
+import { UserDetails } from '../../../app/models/user-details.model';
+import { SessionStorageService } from '../../../app/services';
 import * as fromRoot from '../../../app/store';
-import {CaseRole, CaseRoleDetails, RoleExclusion} from '../../../role-access/models';
-import {AllocateRoleService, RoleExclusionsService} from '../../../role-access/services';
-import {Caseworker} from '../../../work-allocation/models/dtos';
-import {CaseworkerDataService} from '../../../work-allocation/services';
-import {Utils} from '../../utils/utils';
+import { CaseRole, CaseRoleDetails, RoleExclusion } from '../../../role-access/models';
+import { AllocateRoleService, RoleExclusionsService } from '../../../role-access/services';
+import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
+import { Caseworker } from '../../../work-allocation/models/dtos';
+import { CaseworkerDataService } from '../../../work-allocation/services';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'exui-roles-and-access-container',
@@ -23,6 +26,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public caseworkers$: Observable<Caseworker[]>;
   public exclusions$: Observable<RoleExclusion[]>;
   public roles$: Observable<CaseRole[]>;
+  public updatedTaskPermission$: Observable<WAFeatureConfig>;
   public jurisdictionFieldId = '[JURISDICTION]';
   public caseJurisdiction: string;
 
@@ -31,7 +35,8 @@ export class RolesAndAccessContainerComponent implements OnInit {
               private readonly roleExclusionsService: RoleExclusionsService,
               private readonly allocateService: AllocateRoleService,
               private readonly caseworkerDataService: CaseworkerDataService,
-              private readonly sessionStorageService: SessionStorageService) {
+              private readonly sessionStorageService: SessionStorageService,
+              private readonly featureToggleService: FeatureToggleService) {
   }
 
   public ngOnInit(): void {
@@ -45,6 +50,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
     this.caseworkers$ = this.caseworkerDataService.getCaseworkersForServices([jurisdiction.value]).pipe(first());
     this.loadRoles(jurisdiction);
     this.loadExclusions(jurisdiction);
+    this.loadWaConfig();
   }
 
   public loadExclusions(jurisdiction: any): void {
@@ -79,6 +85,10 @@ export class RolesAndAccessContainerComponent implements OnInit {
         }
       })
     );
+  }
+
+  public loadWaConfig(): void {
+    this.updatedTaskPermission$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

@@ -95,7 +95,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       };
       return {
         search_parameters: searchParameters,
-        sorting_parameters: [this.getSortParameter()],
+        sorting_parameters: [...this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };

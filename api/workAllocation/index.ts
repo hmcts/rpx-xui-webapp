@@ -39,6 +39,7 @@ import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } f
 import {
   assignActionsToCases,
   assignActionsToTasks,
+  assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
@@ -140,6 +141,12 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
+    // determines whether should use release 3 or release 4 permission logic
+    searchRequest.sorting_parameters.find((sort, index) => {
+      if (sort.sort_by === 'priority') {
+        searchRequest.sorting_parameters.splice(index, 1);
+      }
+    });
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
@@ -152,9 +159,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
-      // These should be mocked as if we were getting them from the user themselves
-      returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+      returnData = !!req.body.refined ?
+       { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
+        : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+
     }
     res.send(returnData);
   } catch (error) {
@@ -194,7 +202,9 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
+    const actionedTasks = !!req.body.refined
+      ? assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId)
+      : assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
     return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);

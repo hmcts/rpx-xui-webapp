@@ -5,8 +5,8 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { JurisdictionsService } from 'src/work-allocation-2/services/juridictions.service';
 import { SessionStorageService } from '../../../app/services';
-import { AllocateRoleService } from '../../../role-access/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { AllocateRoleService } from '../../../role-access/services';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -15,9 +15,9 @@ import {
 } from '../../services';
 import { AllWorkCaseComponent } from './all-work-case.component';
 
-import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { UserRole } from 'src/app/models';
 import { AppUtils } from '../../../app/app-utils';
+import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
@@ -108,7 +108,7 @@ describe('AllWorkCaseComponent', () => {
         }],
         search_by: UserRole.Admin,
         pagination_parameters: { ...component.pagination }
-      }))
+      }));
 
     });
 
@@ -131,7 +131,7 @@ describe('AllWorkCaseComponent', () => {
 
       const actual = component.getSearchCaseRequestPagination();
 
-      expect(actual).toEqual(undefined)
+      expect(actual).toEqual(undefined);
 
     });
   });
@@ -233,7 +233,7 @@ describe('AllWorkCaseComponent', () => {
         method: 'fields',
         result: ConfigConstants.AllWorkCases
       },
-    ]
+    ];
     getters.forEach(({ method, result }) => {
       it(`should return '${result}'`, () => {
         component = new AllWorkCaseComponent({} as ChangeDetectorRef,

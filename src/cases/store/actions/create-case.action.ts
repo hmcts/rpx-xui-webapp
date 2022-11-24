@@ -23,7 +23,7 @@ export class CreateCaseLoaded implements Action {
 }
 
 export class CaseCreateFilterApply implements Action {
-  readonly type = CREATE_CASE_FILTER_APPLY;
+  public readonly type = CREATE_CASE_FILTER_APPLY;
   constructor(public payload: any) {}
 }
 

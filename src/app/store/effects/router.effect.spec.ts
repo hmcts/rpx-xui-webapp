@@ -15,7 +15,7 @@ import { RouterEffects } from './router.effect';
 describe('Router Effects', () => {
   let actions$;
   let effects: RouterEffects;
-  let store: MockStore<State>;
+  let store;
 
   const LocationMock = jasmine.createSpyObj('Location', [
     'back', 'forward',
@@ -47,10 +47,10 @@ describe('Router Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
 
-    effects = TestBed.get(RouterEffects);
+    effects = TestBed.inject(RouterEffects);
   });
 
   describe('navigate$', () => {

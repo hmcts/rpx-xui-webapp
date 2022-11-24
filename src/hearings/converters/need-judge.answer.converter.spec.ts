@@ -26,7 +26,7 @@ describe('NeedJudgeAnswerConverter', () => {
         provideMockStore({initialState}),
       ]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     converter = new NeedJudgeAnswerConverter();
   });
 

@@ -210,7 +210,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

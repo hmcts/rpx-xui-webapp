@@ -27,11 +27,11 @@ describe('Ref Data Resolver', () => {
         ]
       }
     );
-    judicialRefDataService = TestBed.get(JudicialRefDataService) as JudicialRefDataService;
+    judicialRefDataService = TestBed.inject(JudicialRefDataService) as JudicialRefDataService;
   });
 
   it('should be created', () => {
-    const service: JudicialUserSearchResponseResolver = TestBed.get(JudicialUserSearchResponseResolver);
+    const service: JudicialUserSearchResponseResolver = TestBed.inject(JudicialUserSearchResponseResolver);
     expect(service).toBeTruthy();
   });
 

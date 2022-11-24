@@ -16,7 +16,7 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
   public cachedEventTrigger: CaseEventTrigger;
 
   constructor(
-    private casesService: CasesService,
+    private readonly casesService: CasesService,
   ) { }
 
   public resolve(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {

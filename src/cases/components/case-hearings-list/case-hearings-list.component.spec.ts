@@ -651,7 +651,7 @@ describe('CaseHearingsListComponent', () => {
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsListComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     roleCategoryMappingService = new RoleCategoryMappingService(mockFeatureService);
     component = fixture.componentInstance;
     component.hearingList$ = of(UPCOMING_HEARING_LIST);

@@ -17,7 +17,7 @@ export class CaseCreateEffects {
   ) {}
 
   @Effect()
-  applyChangeCaseCreateFilter$ = this.actions$.pipe(
+  public applyChangeCaseCreateFilter$ = this.actions$.pipe(
     ofType(fromActions.CREATE_CASE_FILTER_APPLY),
     map((action: fromActions.CaseCreateFilterApply) => action.payload),
     map(param => {

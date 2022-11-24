@@ -29,7 +29,7 @@ describe('Hearing Values Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(HearingValuesEffects);
+    effects = TestBed.inject(HearingValuesEffects);
   });
 
   describe('loadHearingValue$', () => {

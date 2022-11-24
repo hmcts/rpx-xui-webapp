@@ -87,7 +87,7 @@ describe('HearingTimingComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 

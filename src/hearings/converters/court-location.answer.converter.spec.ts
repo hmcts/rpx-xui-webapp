@@ -49,8 +49,8 @@ describe('CourtLocationAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     listedVenueAnswerConverter = new CourtLocationAnswerConverter(router);
   });
 

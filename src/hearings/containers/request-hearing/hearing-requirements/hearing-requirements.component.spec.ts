@@ -4,6 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
+import {HearingActualsMainModel} from '../../../models/hearingActualsMainModel';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
@@ -14,12 +15,11 @@ import {
   UnavailabilityType
 } from '../../../models/hearings.enum';
 import {LocationByEPIMMSModel} from '../../../models/location.model';
+import {ServiceHearingValuesModel} from '../../../models/serviceHearingValues.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {LocationsDataService} from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
-import {ServiceHearingValuesModel} from '../../../models/serviceHearingValues.model';
-import {HearingActualsMainModel} from '../../../models/hearingActualsMainModel';
 
 @Component({
   selector: 'exui-hearing-parties-title',

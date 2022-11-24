@@ -70,10 +70,13 @@
     "component-class-suffix": true,
     "directive-class-suffix": true,
     "no-attribute-decorator": true,
-
     "variable-name": {
       "options": [
-        "require-const-for-all-caps"
+        "require-const-for-all-caps",
+        "allow-pascal-case",
+        "allow-leading-underscore",
+        "allow-snake-case",
+        "allow-trailing-underscore"
       ],
       "severity": "warning"
     },

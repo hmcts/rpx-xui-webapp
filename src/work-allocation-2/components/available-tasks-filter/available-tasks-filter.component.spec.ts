@@ -3,10 +3,10 @@ import { ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
+import { SessionStorageService } from '../../../app/services';
 import { FilterConstants } from '../../components/constants';
 import { LocationDataService } from '../../services';
 import { AvailableTasksFilterComponent } from './available-tasks-filter.component';
-import { SessionStorageService } from '../../../app/services';
 
 
 
@@ -28,7 +28,7 @@ describe('AvailableTasksFilterComponent', () => {
       const locationName = 'Sample Name';
       component = new AvailableTasksFilterComponent({} as LocationDataService, {} as SessionStorageService, {} as Router);
 
-      const actual = component.locationLabelFunction({ ...defaultLocation, locationName })
+      const actual = component.locationLabelFunction({ ...defaultLocation, locationName });
 
       expect(actual).toEqual(locationName);
     });

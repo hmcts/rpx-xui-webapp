@@ -57,8 +57,8 @@ describe('Hearing Request Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(HearingRequestEffects);
-    store = TestBed.get(Store);
+    effects = TestBed.inject(HearingRequestEffects);
+    store = TestBed.inject(Store);
   });
 
   describe('continueNavigation$', () => {

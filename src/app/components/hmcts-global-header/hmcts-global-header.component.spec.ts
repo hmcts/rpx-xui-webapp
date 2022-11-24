@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -14,7 +14,7 @@ describe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter;
 
   const changesMock = {
     items: {
@@ -29,7 +29,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     disabledFlag: false
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const USERDETAILS = {
       sub: 'Caseworker.ed@mailinator.com',
       uid: '36314153-06c2-400a-8dc3-7d3790660918',
@@ -68,7 +68,7 @@ describe('HmctsGlobalHeaderComponent', () => {
   }));
 
   beforeEach(() => {
-    mockRouter = TestBed.get(Router);
+    mockRouter = TestBed.inject(Router);
     spyOnProperty(mockRouter, 'url').and.returnValues('/cases', '/tasks/list', '/tasks/task-manager');
     fixture = TestBed.createComponent(HmctsGlobalHeaderComponent);
     component = fixture.componentInstance;

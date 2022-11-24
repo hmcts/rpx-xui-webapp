@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { Mode } from '../../models/hearings.enum';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
@@ -16,7 +16,7 @@ describe('LinkedHearingsCaseTitleComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HearingsPipesModule],
       declarations: [LinkedHearingsCaseTitleComponent],

@@ -29,10 +29,14 @@ export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi';
 export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi';
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi';
 export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleApi';
+export const SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH = 'services.role_assignment.roleMappingApi';
+
 export const SERVICES_CASE_CASEWORKER_REF_PATH = 'services.case.caseworkerApi';
 export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = 'services.case.judicialworkerApi';
 export const SERVICES_CASE_JUDICIAL_REF_PATH = 'services.case.judicialApi';
 export const SERVICES_LOCATION_API_PATH = 'services.location_api';
+
+export const SERVICES_JUDICIAL_BOOKING_API_PATH = 'services.judicialBookingApi';
 
 export const SERVICES_HEARINGS_COMPONENT_API = 'services.hearings.serviceApi';
 export const SERVICES_HMC_HEARINGS_COMPONENT_API = 'services.hearings.hmcApi';
@@ -41,6 +45,7 @@ export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api';
 export const SERVICES_DOCUMENTS_API_PATH_V2 = 'services.documentsv2.api';
 export const SERVICES_EM_HRS_API_PATH = 'services.em_hrs_api';
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api';
+export const SERVICES_WA_WORKFLOW_API_URL = 'services.waWorkflowApi';
 export const SERVICES_EM_DOCASSEMBLY_API_URL = 'services.em_docassembly_api';
 export const SERVICES_MARKUP_API_URL = 'services.markup_api';
 export const SERVICES_ICP_API_URL = 'services.icp_api';
@@ -57,6 +62,8 @@ export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions';
 export const SERVICES_PAYMENTS_URL = 'services.payments';
 
 export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
+
+export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices'
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 export const SERVICES_PRD_LOCATION_API = 'services.prd.locationApi';
@@ -77,6 +84,8 @@ export const ENVIRONMENT = 'environment';
 export const JURISDICTIONS = 'jurisdictions';
 
 export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
+
+export const HEARINGS_SUPPORTED_JURISDICTIONS = 'services.hearings.hearingsJurisdictions';
 
 export const SERVICE_REF_DATA_MAPPING = 'serviceRefDataMapping';
 

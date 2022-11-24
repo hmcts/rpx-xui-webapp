@@ -1,9 +1,11 @@
 
 
+const {LOG_LEVELS} = require("../support/constants")
 class CucumberReportLog{
 
     setScenarioWorld(world){
-        this.scenarioWorld = world; 
+        this.scenarioWorld = world;
+        this.logLevel = process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : LOG_LEVELS.Info; 
     }
 
     FormatPrintJson(jsonObj,basePad){
@@ -35,7 +37,9 @@ class CucumberReportLog{
         this.AddMessage(`>>>>>>> [ Test data input ]: ${message}`);
     }
 
-    AddMessage(message){
+    AddMessage(message, logLevel){
+        if (!this._isLevelEnabled(logLevel)) return;
+
         if (!this.scenarioWorld){
             return;
         }
@@ -48,14 +52,18 @@ class CucumberReportLog{
         console.log(new Date().toTimeString() + " : " + message)
     }
 
-    AddMessageToReportOnly(message) {
+    AddMessageToReportOnly(message, logLevel) {
+        if (!this._isLevelEnabled(logLevel)) return;
+
         if (!this.scenarioWorld) {
             return;
         }
         this.scenarioWorld.attach(new Date().toTimeString() + " : " + message);
     }
 
-    AddJson(json){
+    AddJson(json, logLevel){
+        if (!this._isLevelEnabled(logLevel)) return;
+
         if (!this.scenarioWorld) {
             return;
         }
@@ -68,14 +76,18 @@ class CucumberReportLog{
         console.log(JSON.stringify(json, null, 2));
     }
 
-    AddJsonToReportOnly(json) {
+    AddJsonToReportOnly(json, logLevel) {
+        if (!this._isLevelEnabled(logLevel)) return;
+
         if (!this.scenarioWorld) {
             return;
         }
         this.scenarioWorld.attach(JSON.stringify(json, null, 2));
     }
 
-    async AddScreenshot(onbrowser){
+    async AddScreenshot(onbrowser, logLevel){
+        if (!this._isLevelEnabled(logLevel)) return;
+
         onbrowser = onbrowser ? onbrowser : browser; 
         if (!this.scenarioWorld) {
             return;
@@ -90,6 +102,11 @@ class CucumberReportLog{
         const stream = await scrrenshotBrowser.takeScreenshot();
         const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
         return decodedImage; 
+    }
+
+    _isLevelEnabled(msgLoglevel){
+        msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;  
+        return msgLoglevel >= this.logLevel; 
     }
 
 }

@@ -4,7 +4,7 @@ Feature: WA Release 2: Exclusion workflow - Change links
     Background: Setup
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
-        Given I set MOCK request "/workallocation2/findPerson" response log to report
+        Given I set MOCK request "/workallocation/findPerson" response log to report
         Given I set MOCK find person response for jurisdictions
             | domain   | id   | email                   | name           | knownAs       |
             | Judicial | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |

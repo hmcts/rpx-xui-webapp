@@ -57,7 +57,7 @@ exports.config = {
         MockApp.init();
         if (isParallelExecution) {
             MockApp.getNextAvailableClientPort().then(res => {
-                MockApp.setServerPort(res.data.port); 
+                MockApp.setServerPort(res.data.port);
                 MockApp.startServer();
 
             });
@@ -68,7 +68,7 @@ exports.config = {
         }
     },
     onComplete() {
-       
+
     },
 
     async afterLaunch(){

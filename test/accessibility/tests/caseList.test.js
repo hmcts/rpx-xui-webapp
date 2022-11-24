@@ -48,7 +48,7 @@ describe('Pa11y Accessibility tests', function () {
     });
 
 
-    it('Share Case page', async function () {
+    it.skip('Share Case page', async function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));

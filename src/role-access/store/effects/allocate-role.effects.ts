@@ -4,14 +4,29 @@ import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as routeAction from '../../../app/store/index';
-import { Actions as RoleActions, RoleAccessHttpError } from '../../models';
+import { Actions as RoleActions, Role, RoleAccessHttpError } from '../../models';
 import { RoleAllocationMessageText } from '../../models/enums/allocation-text';
 import { REDIRECTS } from '../../models/enums/redirect-urls';
 import { AllocateRoleService } from '../../services/allocate-role.service';
-import { AllocateRoleActionTypes, ConfirmAllocation } from '../actions';
+import { AllocateRoleActionTypes, ConfirmAllocation, LoadRolesComplete, NoRolesFound } from '../actions';
 
 @Injectable()
 export class AllocateRoleEffects {
+
+  @Effect() public getRoles$ = this.actions$
+  .pipe(
+    ofType<ConfirmAllocation>(AllocateRoleActionTypes.LOAD_ROLES),
+    mergeMap(
+      (data) => this.allocateRoleService.getValidRoles([data.payload.jurisdiction])
+      .pipe(
+        map((roles) => {
+          const jurisdictionRoles = getRolesForRoleCategory(roles, data.payload.roleCategory, data.payload.jurisdiction);
+          return jurisdictionRoles && jurisdictionRoles.length > 0 ? new LoadRolesComplete({roles: jurisdictionRoles}) : new NoRolesFound();
+        })
+      )
+    )
+  );
+
   @Effect() public confirmAllocation$ = this.actions$
     .pipe(
       ofType<ConfirmAllocation>(AllocateRoleActionTypes.CONFIRM_ALLOCATION),
@@ -77,3 +92,7 @@ export class AllocateRoleEffects {
     }
   }
 }
+export function getRolesForRoleCategory(roles: Role[], roleCategory: string, jurisdiction: string): Role [] {
+  return roles.filter(role => role.roleCategory === roleCategory);
+}
+

@@ -73,7 +73,7 @@ Feature: WA Release 2: All work - Task assignment work flows
 
     Scenario Outline:  Task assign to unauthorised user "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
-        Given I set MOCK api method "post" endpoint "/workallocation2/task/:taskId/assign" with error response code <errorCode>
+        Given I set MOCK api method "post" endpoint "/workallocation/task/:taskId/assign" with error response code <errorCode>
 
         Given I start MockApp
         Given I navigate to home page

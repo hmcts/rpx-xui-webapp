@@ -1,0 +1,14 @@
+<p *ngIf="defaultLocations && defaultLocations.length">Access tasks and cases.</p>
+<p *ngIf="defaultLocations && !defaultLocations.length">{{noDefaultLocationMessage}}</p>
+<div class="button-heading" [ngClass]="{'hideFilter' : hideFilter}">
+  <button class="govuk-button hmcts-button--secondary" type="button" (click)="onToggleFilter(allowTypesOfWorkFilter)">
+    {{toggleFilter ? 'Hide': 'Show' }} work filter
+  </button>
+  <ng-container *ngIf="showFilteredText">
+    <span class="hmcts-badge hmcts-badge--black">Filtered view</span>
+    <span class="govuk-hint">All of your work may not be visible.</span>
+  </ng-container>
+</div>
+<div class="govuk-!-padding-3 filter govuk-!-margin-bottom-3" *ngIf="toggleFilter">
+  <xuilib-generic-filter [config]="fieldsConfig" [settings]="fieldsSettings"></xuilib-generic-filter>
+</div>

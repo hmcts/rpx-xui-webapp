@@ -74,15 +74,112 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         // });
     });
 
+    Given('I set MOCK case details {string} values', async function (caseDetailsReference, caseDetailsDatatable) {
+        const caseDetails = global.scenarioData[caseDetailsReference];
+        
+    });
+
     Given('I set MOCK case details {string} property {string} as {string}', async function(caseDetailsRef, property, value){
         const caseDetails = global.scenarioData[caseDetailsRef];
 
         if(property.toLowerCase().includes('jurisdiction')) {
             const field = getCaseDetailsMetadataField(caseDetails,'[JURISDICTION]');
             field.value = value;
-        }else {
+        } else if (property.toLowerCase().includes('casetype')) {
+            const field = getCaseDetailsMetadataField(caseDetails, '[CASE_TYPE]');
+            field.value = value;
+        }
+        else {
             throw Error(` metada field ${property} is not recognised or not implemented in test`);
         }
+    });
+
+    Given('I set MOCK case details {string} service name as {string}', async function (caseDetailsRef, serviceName) {
+        const caseDetails = global.scenarioData[caseDetailsRef];
+
+        caseDetails.case_type.jurisdiction.name = serviceName;
+    });
+
+    Given('I set MOCK case details {string} state as {string}', async function (caseDetailsRef, name) {
+        const caseDetails = global.scenarioData[caseDetailsRef];
+        caseDetails.state.name = name;
+    });
+
+    Given('I set MOCK case details {string} access process {string} and access granted {string}', async function (caseDetailsRef, accessProcess,accessGranted) {
+        const caseDetails = global.scenarioData[caseDetailsRef];
+
+        caseDetails.metadataFields.push({
+            "id": "[ACCESS_PROCESS]",
+            "label": "Access Process",
+            "hidden": null,
+            "value": accessProcess,
+            "metadata": true,
+            "hint_text": null,
+            "field_type": {
+                "id": "Text",
+                "type": "Text",
+                "min": null,
+                "max": null,
+                "regular_expression": null,
+                "fixed_list_items": [
+
+                ],
+                "complex_fields": [
+
+                ],
+                "collection_field_type": null
+            },
+            "validation_expr": null,
+            "security_label": "PUBLIC",
+            "order": null,
+            "formatted_value": null,
+            "display_context": null,
+            "display_context_parameter": null,
+            "show_condition": null,
+            "show_summary_change_option": null,
+            "show_summary_content_option": null,
+            "retain_hidden_value": null,
+            "publish": null,
+            "publish_as": null,
+            "acls": null
+        });
+
+        caseDetails.metadataFields.push({
+            "id": "[ACCESS_GRANTED]",
+            "label": "Access Granted",
+            "hidden": null,
+            "value": accessGranted,
+            "metadata": true,
+            "hint_text": null,
+            "field_type": {
+                "id": "Text",
+                "type": "Text",
+                "min": null,
+                "max": null,
+                "regular_expression": null,
+                "fixed_list_items": [
+
+                ],
+                "complex_fields": [
+
+                ],
+                "collection_field_type": null
+            },
+            "validation_expr": null,
+            "security_label": "PUBLIC",
+            "order": null,
+            "formatted_value": null,
+            "display_context": null,
+            "display_context_parameter": null,
+            "show_condition": null,
+            "show_summary_change_option": null,
+            "show_summary_content_option": null,
+            "retain_hidden_value": null,
+            "publish": null,
+            "publish_as": null,
+            "acls": null
+        });
+       
     });
 
     Given('I set MOCK case details {string} trigger id {string} trigger name {string}', async function (caseDetailsRef, eventId, eventName) {
@@ -91,7 +188,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         testTrigger.id = eventId;
         testTrigger.name = eventName;
         caseDetails.triggers.push(testTrigger);
-        
     });
 
     Given('I set MOCK case roles', async function(caseRolesDatatable){

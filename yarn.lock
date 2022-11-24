@@ -1467,29 +1467,29 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.25-case-file-view-document-count":
-  version "5.0.25-case-file-view-document-count"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.25-case-file-view-document-count.tgz#174a4869e2e2bfbe3bcf3c954158b9b6eb397980"
-  integrity sha512-RHBUf1PKeJelyhnFfLU9oSos+mPX0KL4/dv2Pa8NGAJKEcRiZxUOEXvb1cvJ7gjXVoOdbBjFTH7jTHHnV2Ne/A==
+"@hmcts/ccd-case-ui-toolkit@5.0.24-case-file-view-search-document-exceptions-v2":
+  version "5.0.24-case-file-view-search-document-exceptions-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.24-case-file-view-search-document-exceptions-v2.tgz#27652b668d547b4e754bc95933cb899a2bfa70e3"
+  integrity sha512-DV7xsE9yn948UKZOHCIH0yNEYHCrxCiPGTXWKhiq1ZX8GXo60MKFidWvQEmcKlsz5GhVSr5vy442Oem7tNAQZQ==
   dependencies:
     tslib "^2.0.0"
 
-"@hmcts/ccpay-web-component@5.0.8-beta16":
-  version "5.0.8-beta16"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.8-beta16.tgz#8f600d178e13f83649380eecc5aa173de0e4e842"
-  integrity sha512-+hspyOOQvQH8XyeASAEIdVdrhSnvAQlDoyov11m0Ao/MPRxy1xlpPNYnp72YvWvpnTa8feESWs1AUX+xM4UWEg==
+"@hmcts/ccpay-web-component@5.0.8-beta14":
+  version "5.0.8-beta14"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.8-beta14.tgz#a5d9668ef533b91d0cfdf42d87fe032b4582eeef"
+  integrity sha512-o+bVn8Xjts142W0pj7nzohOF8LtZWgB5pruAOkf9DBquhUxy3ABzMOObZNvskrSHmQli52sl9W93iAu7wQYHVA==
   dependencies:
-    tslib "^2.0.0"
+    tslib "^1.10.0"
 
 "@hmcts/frontend@0.0.39-alpha":
   version "0.0.39-alpha"
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.7.18-RC.3":
-  version "2.7.18-RC.3"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.18-RC.3.tgz#941c578358dba61545d3381118418759522d9675"
-  integrity sha512-UmGC9Kx3hdQQotXJ5/7YmLewTDtUYlIGdLElQ0hShdcHooo9opQcuY8JwMaL8kbm76DB150hHKyH2VUXrJG+HA==
+"@hmcts/media-viewer@2.7.19-RC.1":
+  version "2.7.19-RC.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.19-RC.1.tgz#96c3127e878ae909c9724e1f2f863adc6369b2c7"
+  integrity sha512-p+7ASqiCzIIbMxWuazD8Bxe6cfgOoxxLg2BJk8Wzvhw35z9niXSKx8lpWSbAtN17+acuY7jWg9GLwLCL4w9udg==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"
@@ -1527,10 +1527,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@2.1.6-angular-upgrade-11":
-  version "2.1.6-angular-upgrade-11"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-angular-upgrade-11.tgz#5cd751843ea4802f585e8a21fa01d4eb0cc79612"
-  integrity sha512-MowQP493mz+CMRbnDdpj5JTteBwRZj+wmUkDM9gc2JW0j3CEIXLh6cLriXPkxvP1D335OXq/7UgldpWV3Adm9Q==
+"@hmcts/rpx-xui-common-lib@2.1.0-angular-upgrade-11":
+  version "2.1.0-angular-upgrade-11"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.0-angular-upgrade-11.tgz#f671bfd1e7ee1ccae78f2205641bca99eb0e9f3f"
+  integrity sha512-j8JaBrTrZXTKPg22FpoDfGm17p10DXCv5lRtcSFk8Wke6tjw373gosmSVsiMbl9EXqTMTiy95qCBgb0AFlDKrA==
   dependencies:
     tslib "^2.0.0"
 

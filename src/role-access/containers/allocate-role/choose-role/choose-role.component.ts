@@ -70,7 +70,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, userRole: UserRole): void {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
@@ -79,10 +79,10 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.error = ERROR_MESSAGE;
       return;
     }
-    this.dispatchEvent(navEvent, roleCategory, isLegalOpsOrJudicialRole);
+    this.dispatchEvent(navEvent, roleCategory, userRole);
   }
 
-  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
+  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, userRole: UserRole): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const roleChosen = this.radioOptionControl.value;
@@ -94,7 +94,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
         switch (roleCategory) {
           case RoleCategory.JUDICIAL: {
-            switch (isLegalOpsOrJudicialRole) {
+            switch (userRole) {
               case UserRole.LegalOps:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
@@ -111,7 +111,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
             break;
           }
           case RoleCategory.LEGAL_OPERATIONS: {
-            switch (isLegalOpsOrJudicialRole) {
+            switch (userRole) {
               case UserRole.LegalOps:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO

@@ -192,33 +192,33 @@ describe('getFeatureToggledUrl', () => {
 describe('getRoleCategory', () => {
 
   it('should return legal ops role if user has any legal ops role', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker-ia-caseofficer']);
-    expect(roleCategory).toBe(UserRole.LegalOps);
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker-ia-caseofficer']);
+    expect(isLegalOpsOrJudicial).toBe(UserRole.LegalOps);
   });
 
   it('should return judicial role if user has any judicial role', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker-ia-iacjudge']);
-    expect(roleCategory).toBe(UserRole.Judicial);
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker-ia-iacjudge']);
+    expect(isLegalOpsOrJudicial).toBe(UserRole.Judicial);
   });
 
   it('should return null if user has no judicial or legal ops role', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker']);
-    expect(roleCategory).toBeNull();
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker']);
+    expect(isLegalOpsOrJudicial).toBeNull();
   });
 
   it('should return legal ops role if user is an task supervisor', () => {
-    const roleCategory = AppUtils.getRoleCategory(['task-supervisor']);
-    expect(roleCategory).toBe('legalops');
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['task-supervisor']);
+    expect(isLegalOpsOrJudicial).toBe('legalops');
   });
 
   it('should return legal ops role if user is an caseworker-ia', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker-ia']);
-    expect(roleCategory).toBe('legalops');
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker-ia']);
+    expect(isLegalOpsOrJudicial).toBe('legalops');
   });
 
   it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker-ia-admofficer']);
-    expect(roleCategory).toBe('legalops');
+    const isLegalOpsOrJudicial = AppUtils.getUserRole(['caseworker-ia-admofficer']);
+    expect(isLegalOpsOrJudicial).toBe('legalops');
   });
 
   it('should return the judicial domain from the user list', () => {

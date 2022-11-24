@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-import { getOptions } from '../../../work-allocation/utils';
+import { getOptions, getRoleCategoryFromUserRole } from '../../../work-allocation/utils';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
@@ -50,13 +50,12 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public ngOnInit(): void {
     this.taskRoles = this.route.snapshot.data.roles;
     this.roles = getOptions(this.taskRoles, this.sessionStorageService);
-    const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.service = this.route.snapshot.queryParamMap.get('service');
     this.verb = this.route.snapshot.data.verb;
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
-      role: [this.setUpDefaultRoleType(isJudicial, this.taskRoles), Validators.required],
+      role: [this.getCurrentUserRoleCategory()],
       taskId: [taskId, Validators.required]
     });
   }
@@ -81,26 +80,13 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     }
   }
 
-  private isCurrentUserJudicial(): boolean {
+  private getCurrentUserRoleCategory(): RoleCategory {
     const userInfoStr = this.sessionStorageService.getItem(TaskAssignmentChooseRoleComponent.userDetails);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getRoleCategory(userInfo.roles) === UserRole.Judicial;
+      return getRoleCategoryFromUserRole(AppUtils.getUserRole(userInfo.roles));
     }
-    return false;
-  }
-
-  private setUpDefaultRoleType(isCurrentUserJudicial: boolean, roles: TaskRole[]): RoleCategory {
-    const roleCategory = this.route.snapshot.queryParamMap.get('roleCategory');
-    if (roleCategory && (roleCategory as RoleCategory) !== null) {
-      return roleCategory as RoleCategory;
-    } else if (roles.length) {
-      const role = this.userWithOwnPermission(roles);
-      if (role) {
-        return role.role_category === 'judicial' ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS;
-      }
-    }
-    return isCurrentUserJudicial ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS;
+    return null;
   }
 
   private userWithOwnPermission(roles: TaskRole[]): TaskRole {

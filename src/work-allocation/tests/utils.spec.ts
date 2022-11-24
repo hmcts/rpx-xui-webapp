@@ -1,16 +1,19 @@
-import { NavigationExtras } from '@angular/router';
+import { NavigationExtras, RouterEvent } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { CaseRoleDetails } from 'src/role-access/models/case-role-details.interface';
 
-import { Caseworker, Location } from '../models/dtos';
+import { RoleCategory } from '../../role-access/models';
 import { ConfigConstants } from '../components/constants';
-import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../enums';
-import { InformationMessage } from '../models/comms';
-import { Task, TaskFieldConfig, TaskServiceConfig } from '../models/tasks';
+import { CaseService, SortOrder, TaskService } from '../enums';
+import { Case, CaseServiceConfig } from '../models/cases';
+import { FieldConfig } from '../models/common';
+import { Caseworker, Location } from '../models/dtos';
+import { Task, TaskServiceConfig } from '../models/tasks';
 
-const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: [ 'a' ] };
-const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: [ 'a', 'b' ] };
+const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: ['a'] };
+const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: ['a', 'b'] };
 export function getMockLocations(): Location[] {
-  return [ LOCATION_A, LOCATION_B ];
+  return [LOCATION_A, LOCATION_B];
 }
 
 export function getMockCaseworkers(): Caseworker[] {
@@ -20,14 +23,88 @@ export function getMockCaseworkers(): Caseworker[] {
       lastName: 'Smith',
       idamId: '1',
       email: 'j.s@caseworkers.gov.uk',
-      location: LOCATION_A
+      location: LOCATION_A,
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     },
     {
       firstName: 'Jane',
       lastName: 'Doe',
       idamId: '2',
       email: 'j.doe@caseworkers.gov.uk',
-      location: LOCATION_B
+      location: LOCATION_B,
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
+    }
+  ];
+}
+
+export function getMockCaseRoles(): CaseRoleDetails[] {
+  return [
+    {
+      sidam_id: '123456789',
+      known_as: 'Test',
+      full_name: 'Mr Test',
+      surname: 'Test',
+      idam_id: null,
+      email_id: 'test@test.com'
+    },
+    {
+      sidam_id: null,
+      known_as: 'Extra Testing',
+      full_name: 'Sir Testing',
+      surname: 'Testing',
+      idam_id: '023456780',
+      email_id: 'test@test.com'
+    }
+  ];
+}
+
+/**
+ * Mock cases
+ */
+export function getMockCases(): Case[] {
+  return [
+    {
+      id: '1549476532065586',
+      case_id: '1549476532065586',
+      taskId: '1549476532065586',
+      caseName: 'Kili Muso',
+      caseCategory: 'Protection',
+      location: 'Taylor House',
+      taskName: 'Review respondent evidence',
+      dueDate: new Date(628021800000),
+      role_category: 'JUDICIAL',
+      assignee: '123456789',
+      actions: [
+        {
+          id: 'reallocate',
+          title: 'Reallocate',
+        },
+        {
+          id: 'remove',
+          title: 'Remove Allocation',
+        }
+      ]
+    },
+    {
+      id: '1549476532065587',
+      case_id: '1549476532065587',
+      taskId: '1549476532065587',
+      caseName: 'Mankai Lit',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(628021800000),
+      role_category: 'LEGAL_OPERATIONS',
+      actions: [
+        {
+          id: 'reallocate',
+          title: 'Reallocate',
+        },
+        {
+          id: 'remove',
+          title: 'Remove Allocation',
+        }
+      ]
     }
   ];
 }
@@ -38,13 +115,26 @@ export function getMockCaseworkers(): Caseworker[] {
 export function getMockTasks(): Task[] {
   return [
     {
+      assignee: null,
+      assigneeName: null,
       id: '1549476532065586',
+      jurisdiction: 'IA',
+      description: null,
       case_id: '1549476532065586',
+      taskId: '1549476532065586',
       caseName: 'Kili Muso',
       caseCategory: 'Protection',
       location: 'Taylor House',
       taskName: 'Review respondent evidence',
       dueDate: new Date(628021800000),
+      warnings: true,
+      warning_list: {
+        values: [
+          {
+            code: '125',
+            text: 'this is a warning message 3'
+          }
+      ]},
       actions: [
         {
           id: 'actionId1',
@@ -57,8 +147,13 @@ export function getMockTasks(): Task[] {
       ]
     },
     {
+      assignee: null,
+      assigneeName: null,
+      description: null,
       id: '1549476532065587',
+      jurisdiction: 'IA',
       case_id: '1549476532065587',
+      taskId: '1549476532065587',
       caseName: 'Mankai Lit',
       caseCategory: 'Revocation',
       location: 'Taylor House',
@@ -77,8 +172,25 @@ export function getMockTasks(): Task[] {
 /**
  * Mock fields
  */
-export function getMockTaskFieldConfig(): TaskFieldConfig[] {
-  return ConfigConstants.AvailableTasks;
+
+export function getMockCaseFieldConfig(): FieldConfig[] {
+  return ConfigConstants.MyCases;
+}
+
+export function getMockTaskFieldConfig(): FieldConfig[] {
+  return ConfigConstants.AvailableTasksForJudicial;
+}
+
+/**
+ * Mock CaseServiceConfig.
+ */
+export function getMockCaseServiceConfig(): CaseServiceConfig {
+  return {
+    service: CaseService.IAC,
+    defaultSortDirection: SortOrder.ASC,
+    defaultSortFieldName: 'dueDate',
+    fields: getMockCaseFieldConfig()
+  };
 }
 
 /**
@@ -87,31 +199,15 @@ export function getMockTaskFieldConfig(): TaskFieldConfig[] {
 export function getMockTaskServiceConfig(): TaskServiceConfig {
   return {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
+    defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
     fields: getMockTaskFieldConfig()
   };
 }
 
-/**
- * Mock TaskServiceConfig.
- */
-export function getMockInfoMessages(): InformationMessage[] {
-  return [{
-    type: InfoMessageType.SUCCESS,
-    message: InfoMessage.UNASSIGNED_TASK
-  },
-  {
-    type: InfoMessageType.INFO,
-    message: InfoMessage.LIST_OF_TASKS_REFRESHED
-  },
-  {
-    type: InfoMessageType.WARNING,
-    message: InfoMessage.TASK_NO_LONGER_AVAILABLE
-  }];
-}
-
 export class MockRouter {
+  public navigateByUrl = jasmine.createSpy();
+  public events = {subscribe(): Observable<RouterEvent> { return of(null); }}
   private pUrl: string = 'bob';
   public get url(): string {
     return this.pUrl;

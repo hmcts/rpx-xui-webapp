@@ -23,25 +23,25 @@ describe.skip('Pa11y Accessibility tests', function () {
         done();
     });
     
-    it('Accessibility Page', async function () {
+    it.skip('Accessibility Page', async function () {
         const actions = [];
         await pa11ytest(this, actions, conf.baseUrl + 'accessibility');
 
     });
 
-    it('Cookies Page', async function () {
+    it.skip('Cookies Page', async function () {
         const actions = [];
         await pa11ytest(this, actions, conf.baseUrl + 'cookies');
 
     });
 
-    it('privacy-policy Page', async function () {
+    it.skip('privacy-policy Page', async function () {
         const actions = [];
         await pa11ytest(this, actions, conf.baseUrl + 'privacy-policy');
 
     });
 
-    it('get-help Page', async function () {
+    it.skip('get-help Page', async function () {
         const actions = [];
         await pa11ytest(this, actions, conf.baseUrl + 'get-help');
 

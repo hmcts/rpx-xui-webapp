@@ -49,7 +49,8 @@ describe('AllocateRoleHomeComponent', () => {
     person: null,
     durationOfRole: DurationOfRole.SEVEN_DAYS,
     action: Actions.Allocate,
-    period: null
+    period: null,
+    roleCategory: RoleCategory.ADMIN
   };
   const ROLE_LIST = [
     {
@@ -98,7 +99,8 @@ describe('AllocateRoleHomeComponent', () => {
               },
               queryParams: {
                 caseId: '111111',
-                userType: 'Judicial'
+                userType: 'Judicial',
+                roleCategory: 'JUDICIAL'
               },
               routeConfig: {
                 path: 'allocate',

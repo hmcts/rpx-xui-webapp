@@ -1,3 +1,4 @@
+const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
 
 const reportLogger = require('../../support/reportLogger');
@@ -16,7 +17,7 @@ class ErrorPage{
             console.log('Error messge displayed : ' + headermessage);
             return headermessage.includes('Sorry'); 
         }catch(err){
-            reportLogger.AddMessage("error page not displayed : "+err);
+            reportLogger.AddMessage("error page not displayed : "+err, LOG_LEVELS.Error);
             return false;
         }
         

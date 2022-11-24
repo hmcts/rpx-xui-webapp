@@ -18,7 +18,6 @@
         "./test/integration/tests/workallocation/release2Cases.spec.ts",
         "./test/integration/tests/workallocation/release2Tasks.spec.ts",
         "./test/integration/tests/workallocation/release2CaseRoles.spec.ts",
-        "./test/integration/tests/workallocation/locations.spec.ts",
         "./test/integration/tests/workallocation/person.spec.ts"
   ],
   "file": ["./test/integration/tests/utils/helper.ts"]

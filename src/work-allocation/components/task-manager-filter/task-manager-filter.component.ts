@@ -25,7 +25,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public appStoreSub: Subscription;
   public filterSub: Subscription;
   public roleType: string;
-  public isLegalOpsOrJudicialRole: UserRole;
+  public userRole: UserRole;
 
   public fieldsConfig: FilterConfig = {
     persistence: 'local',
@@ -213,8 +213,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
-        this.isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles) : null;
-        this.roleType = AppUtils.convertDomainToLabel(this.isLegalOpsOrJudicialRole);
+        this.userRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getRoleCategory(userDetails.userInfo.roles) : null;
+        this.roleType = AppUtils.convertDomainToLabel(this.userRole);
         this.fieldsConfig.cancelSetting.fields.push({
           name: 'taskType',
           value: [getRoleCategory(this.roleType)]

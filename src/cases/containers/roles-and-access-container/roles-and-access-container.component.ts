@@ -26,7 +26,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public caseworkers$: Observable<Caseworker[]>;
   public exclusions$: Observable<RoleExclusion[]>;
   public roles$: Observable<CaseRole[]>;
-  public updatedTaskPermission$: Observable<WAFeatureConfig>;
+  public waServiceConfig$: Observable<WAFeatureConfig>;
   public jurisdictionFieldId = '[JURISDICTION]';
   public caseJurisdiction: string;
 
@@ -88,7 +88,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public loadWaConfig(): void {
-    this.updatedTaskPermission$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
+    this.waServiceConfig$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null);
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

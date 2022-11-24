@@ -76,10 +76,17 @@ describe('WorkAllocation', () => {
 
       // Replace the task and it should also display as the location is the same on both tasks
       component.sourceColumn = firstExampleColumn;
-      component.task = getTasks()[1];
+      component.task = getTasks()[0];
       fixture.detectChanges();
       element = fixture.debugElement.nativeElement.querySelector('svg');
       expect(element).not.toBeNull();
+
+      // if no warning_list on task there should be not warning
+      component.sourceColumn = firstExampleColumn;
+      component.task = getTasks()[1];
+      fixture.detectChanges();
+      element = fixture.debugElement.nativeElement.querySelector('svg');
+      expect(element).toBeNull();
 
     });
 
@@ -120,7 +127,7 @@ describe('WorkAllocation', () => {
 
         // Set up the column names
         const firstExampleColumn: string = 'location';
-        const hoverWarning: string = 'This case has more than one task. Review needed.';
+        const hoverWarning: string = 'this is a warning message 3';
 
         // Set the task, column and value to match with
         component.task = getTasks()[0];

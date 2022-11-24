@@ -35,7 +35,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/task`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRelease2Tasks();
@@ -58,7 +58,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/task`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRelease2Tasks();
@@ -84,7 +84,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/task`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRelease2Tasks();
@@ -109,7 +109,7 @@ describe('Work allocations Release 2: Tasks', () => {
 
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
         const tasksRes = await getTasks('AvailableTasks', [userDetailsRes.data.userInfo.id], 1);
-        const caseworkerRes = await Request.get(`workallocation2/caseworker`, headers, 200);
+        const caseworkerRes = await Request.get(`workallocation/caseworker`, headers, 200);
 
 
         const idamId = caseworkerRes.data[0].idamId;
@@ -120,14 +120,14 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(assignTaskReqBody).length
         };
         if (tasksRes.data.tasks.length > 1) {
-            const assignTaskRes = await Request.post(`workallocation2/task/${tasksRes.data.tasks[0].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
+            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
 
             assignTasksHeader = {
                 'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
                 'content-length': JSON.stringify(assignTaskReqBody).length
             };
-            const assignTaskRes2 = await Request.post(`workallocation2/task/${tasksRes.data.tasks[1].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
+            const assignTaskRes2 = await Request.post(`workallocation/task/${tasksRes.data.tasks[1].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes2.status).to.equal(204);
 
         }
@@ -147,7 +147,7 @@ describe('Work allocations Release 2: Tasks', () => {
         const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
 
         const tasksRes = await getTasks('MyTasks', [userDetailsRes.data.userInfo.id], 1);
-        const caseworkerRes = await Request.get(`workallocation2/caseworker`, headers, 200);
+        const caseworkerRes = await Request.get(`workallocation/caseworker`, headers, 200);
 
 
         const idamId = caseworkerRes.data[0].idamId;
@@ -158,7 +158,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(assignTaskReqBody).length
         };
         if (tasksRes.data.tasks.length > 0) {
-            const assignTaskRes = await Request.post(`workallocation2/task/${tasksRes.data.tasks[0].id}/assign`, assignTaskReqBody, assignTasksHeader, 204);
+            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/assign`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
         }
 
@@ -184,7 +184,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(assignTaskReqBody).length
         };
         if (tasksRes.data.tasks.length > 0) {
-            const assignTaskRes = await Request.post(`workallocation2/task/${tasksRes.data.tasks[0].id}/unclaim`, assignTaskReqBody, assignTasksHeader, 204);
+            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/unclaim`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
         }
 
@@ -211,16 +211,16 @@ describe('Work allocations Release 2: Tasks', () => {
         let taskWithAssignee = null;
         for (const task of tasksRes.data.tasks){
             if (task.assignee){
-                taskWithAssignee = task.id; 
+                taskWithAssignee = task.id;
             }
         }
         if (taskWithAssignee) {
-            const assignTaskRes = await Request.post(`workallocation2/task/${taskWithAssignee}/complete`, assignTaskReqBody, assignTasksHeader, 204);
+            const assignTaskRes = await Request.post(`workallocation/task/${taskWithAssignee}/complete`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
         } else {
             reporterMsg('No tasks retuened with assignee, complete task can be performed only on already assigned tasks. skipping complete task step in tests due to data unavailability');
         }
-       
+
 
     });
 
@@ -242,7 +242,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(assignTaskReqBody).length
         };
         if (tasksRes.data.tasks.length > 0) {
-            const assignTaskRes = await Request.post(`workallocation2/task/${tasksRes.data.tasks[0].id}/cancel`, assignTaskReqBody, assignTasksHeader, 204);
+            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/cancel`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
         }
 
@@ -282,7 +282,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const tasksRes = await Request.post(`workallocation2/task`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await Request.post(`workallocation/task`, reqBody, headersForGetTasks, 200);
         const taskIds = [];
         for (const task of tasksRes.data.tasks) {
             taskIds.push(task.id);
@@ -293,7 +293,7 @@ describe('Work allocations Release 2: Tasks', () => {
     }
 
     function getSearchTaskReqBody(view, users, locations ,userType) {
-        // const response = await Request.get('api/user/details', null, 200); 
+        // const response = await Request.get('api/user/details', null, 200);
 
         const taskRequestBody = new TaskRequestBody();
         taskRequestBody.inView(view);
@@ -337,7 +337,7 @@ describe('Work allocations Release 2: Tasks', () => {
             default:
                 throw new Error(`${view} is not recognized or not implemented in test`);
         }
-       
+
         return taskRequestBody;
     }
 

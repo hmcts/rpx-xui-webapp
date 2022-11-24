@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import * as dtos from '../../models/dtos';
 import { LocationDataService } from '../../services';
 import { getMockLocations } from '../../tests/utils.spec';
-import { FilterConstants } from '../constants';
+import { FilterConstants } from '../../components/constants';
 import { AvailableTasksFilterComponent } from './available-tasks-filter.component';
 
 @Component({

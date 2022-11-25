@@ -5,8 +5,8 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { first, mergeMap } from 'rxjs/operators';
 
-import { Caseworker } from '../../../work-allocation-2/interfaces/common';
-import { CaseworkerDataService } from '../../../work-allocation-2/services';
+import { Caseworker } from '../../../work-allocation/interfaces/common';
+import { CaseworkerDataService } from '../../../work-allocation/services';
 import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { AllocateRoleService, RoleExclusionsService } from '../../services';

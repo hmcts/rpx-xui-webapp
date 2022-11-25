@@ -4,6 +4,7 @@ import { AllocateRoleNavigationComponent } from './allocate-role-navigation/allo
 import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person/allocate-role-search-person.component';
 import { ChooseAllocateToComponent } from './choose-allocate-to/choose-allocate-to.component';
 import { ChooseDurationComponent } from './choose-duration/choose-duration.component';
+import { ChooseRoleErrorComponent } from './choose-role-error/choose-role-error.component';
 import { ChooseRoleComponent } from './choose-role/choose-role.component';
 
 export const containers: any[] = [
@@ -13,6 +14,7 @@ export const containers: any[] = [
   ChooseAllocateToComponent,
   ChooseDurationComponent,
   ChooseRoleComponent,
+  ChooseRoleErrorComponent,
   AllocateRoleSearchPersonComponent,
 ];
 

@@ -44,8 +44,8 @@ describe("Task management api, Search task", () => {
                 "location_name": somethingLike("Taylor House"),
                 "case_type_id": somethingLike("Asylum"),
                 "case_id": somethingLike("1617708245335311"),
-                "case_category": somethingLike("refusalOfHumanRights"), 
-                "case_name": somethingLike("Bob Smith"),  
+                "case_category": somethingLike("refusalOfHumanRights"),
+                "case_name": somethingLike("Bob Smith"),
                 "warnings": somethingLike(false),
                 "permissions": taskPermissions
             },
@@ -101,7 +101,7 @@ describe("Task management api, Search task", () => {
         });
 
         before(async () => {
-           
+
             await pactSetUp.provider.setup()
             const interaction = {
                 state: "appropriate tasks are returned by criteria",
@@ -139,8 +139,8 @@ describe("Task management api, Search task", () => {
             sandbox.stub(config,'get').callsFake((prop) =>{
                 return configValues[prop];
             });
-            
-            const { searchTask } = requireReloaded('../../../../workAllocation2/index');
+
+            const { searchTask } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers:{
@@ -164,7 +164,7 @@ describe("Task management api, Search task", () => {
 
             try{
                 await searchTask(req, response, next);
-              
+
                 assertResponses(returnedResponse);
                 pactSetUp.provider.verify()
                 pactSetUp.provider.finalize()
@@ -174,7 +174,7 @@ describe("Task management api, Search task", () => {
                 pactSetUp.provider.finalize()
                 throw new Error(err);
             }
-          
+
         })
     })
 })

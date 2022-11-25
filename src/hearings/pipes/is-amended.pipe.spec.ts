@@ -66,6 +66,14 @@ describe('IsAmendedPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
+  it('should transform is paper hearing', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    const result$ = isAmendedPipe.transform(AnswerSource.IS_PAPER_HEARING, of(STATE));
+    const isAmended = false;
+    const expected = cold('(b|)', { b: isAmended });
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should transform is amended for panel inclusion', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { InfoMessage, InfoMessageType, TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
@@ -57,12 +57,16 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       if (typesOfWorkParameter) {
         searchParameters.push(typesOfWorkParameter);
       }
-      return {
+      const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
+      if (this.updatedTaskPermission) {
+        searchTaskParameter.request_context = TaskContext.AVAILABLE_TASKS;
+      }
+      return searchTaskParameter;
     }
   }
 

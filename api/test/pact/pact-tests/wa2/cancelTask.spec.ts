@@ -23,12 +23,12 @@ describe("Task management api, cancel a task", () => {
 
         const jwt = 'some-access-token';
         beforeEach(() => {
-            
+
             next = sandbox.spy();
         });
 
         before(async () => {
-            
+
             await pactSetUp.provider.setup()
             const interaction = {
                 state: "cancel a task using taskId",
@@ -64,8 +64,8 @@ describe("Task management api, cancel a task", () => {
             sandbox.stub(config, 'get').callsFake((prop) => {
                 return configValues[prop];
             });
-           
-            const { postTaskAction } = requireReloaded('../../../../workAllocation2/index');
+
+            const { postTaskAction } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

@@ -8,6 +8,7 @@ const { browser } = require("protractor");
 const BrowserWaits = require("../../support/customWaits");
 const headerPage = require("../pageObjects/headerPage");
 const browserUtil = require("../../../ngIntegration/util/browserUtil");
+const { LOG_LEVELS } = require("../../support/constants");
 
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -71,7 +72,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I wait to see case results displayed', {timeout : 180*1000} ,async function(){
         await BrowserWaits.retryWithActionCallback(async () => {
             try{
-                await CucumberReportLogger.AddMessage("Step started");
+                await CucumberReportLogger.AddMessage("Step started", LOG_LEVELS.Debug);
                 await caseListPage.waitForCaseResultsToDisplay();
 
             }catch(err){

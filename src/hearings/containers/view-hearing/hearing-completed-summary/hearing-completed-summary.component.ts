@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
-import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -11,6 +10,7 @@ import * as fromHearingStore from '../../../store';
   templateUrl: './hearing-completed-summary.component.html',
 })
 export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
+  public hearingState$: Observable<fromHearingStore.State>;
   public hearingActualsMainModel: HearingActualsMainModel;
   public sub: Subscription;
 
@@ -18,13 +18,14 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
+    this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState)
       .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
-      )
-      .subscribe((state: HearingActualsStateData) => {
-        this.hearingActualsMainModel = state.hearingActualsMainModel;
-      });
+        filter(state => !!state.hearingActuals.hearingActualsMainModel),
+    );
+
+    this.sub = this.hearingState$.subscribe(state => {
+        this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
+    });
   }
 
   public ngOnDestroy(): void {

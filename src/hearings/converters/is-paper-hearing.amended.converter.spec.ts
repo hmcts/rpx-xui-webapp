@@ -6,11 +6,11 @@ import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
-import { RoomIdAnswerConverter } from './room-id.answer.converter';
+import { IsPaperHearingAmendedConverter } from './is-paper-hearing.amended.converter';
 
-describe('RoomIdAnswerConverter', () => {
+describe('IsPaperHearingAmendedConverter', () => {
 
-  let converter: RoomIdAnswerConverter;
+  let converter: IsPaperHearingAmendedConverter;
   let store: Store<any>;
   let router: any;
 
@@ -32,15 +32,14 @@ describe('RoomIdAnswerConverter', () => {
     });
     store = TestBed.get(Store);
     router = TestBed.get(ActivatedRoute);
-    converter = new RoomIdAnswerConverter();
+    converter = new IsPaperHearingAmendedConverter();
   });
 
-  it('should transform hearing stage', () => {
+  it('should not transform the amended flag when previous vs current paper hearing selection', () => {
     const STATE: State = initialState.hearings;
-    const result$ = converter.transformAnswer(of(STATE), 0);
-    const room = 'room 3';
-    const expected = cold('(b|)', { b: room });
+    const result$ = converter.transformIsAmended(of(STATE));
+    const isAmended = false;
+    const expected = cold('(b|)', { b: isAmended });
     expect(result$).toBeObservable(expected);
   });
-
 });

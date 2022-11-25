@@ -6,8 +6,8 @@ import { State } from '../store';
 import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
-export class DateResponseSubmittedTimeAnswerConverter implements AnswerConverter {
-  public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
+export class DateResponseSubmittedMultiDayAnswerConverter implements AnswerConverter {
+  public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map(state => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
@@ -16,11 +16,12 @@ export class DateResponseSubmittedTimeAnswerConverter implements AnswerConverter
           return '';
         }
         hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
-        const hearingStartDateTime = hearingDaySchedule[index || 0].hearingStartDateTime;
-        // it is assumed and confirmed from HMC this date time is always utc so we convert it here.
-        return hearingStartDateTime ? moment.utc(hearingStartDateTime).local().format(HearingDateEnum.DisplayTime) : '';
+        const hearingStartDateTime = hearingDaySchedule[0].hearingStartDateTime;
+        const hearingEndDateTime = hearingDaySchedule[hearingDaySchedule.length - 1].hearingEndDateTime;
+        return hearingStartDateTime && hearingEndDateTime
+            ? `${moment(hearingStartDateTime).format(HearingDateEnum.DisplayMonth)} - ${moment(hearingEndDateTime).format(HearingDateEnum.DisplayMonth)}`
+            : '';
       })
     );
   }
 }
-

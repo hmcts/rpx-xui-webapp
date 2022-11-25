@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
+import { Roles } from 'src/staff-administrator/models/roles.enum';
 import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffJobTitles } from '../../../models/staff-job-titles';
@@ -170,15 +171,15 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     let case_allocator_flag = false;
     let staff_admin_flag = false;
     this.roles.map(role => {
-      if (role === 'task-supervisor') {
+      if (role === Roles.TaskSupervisor) {
         task_supervisor_flag = true;
         return;
       }
-      if (role === 'case-allocator') {
+      if (role === Roles.CaseAllocator) {
         case_allocator_flag = true;
         return;
       }
-      if (role === 'staff-administrator') {
+      if (role === Roles.StaffAdmin) {
         staff_admin_flag = true;
         return;
       }
@@ -189,7 +190,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       first_name: this.firstName,
       last_name: this.lastName,
       services: this.servicePayload,
-      region: this.regionPayload[0].label,
+      region: this.regionPayload.length ? this.regionPayload[0].label : '' ,
       region_id: 1,
       roles: this.jobTitlesPayload,
       task_supervisor: task_supervisor_flag,

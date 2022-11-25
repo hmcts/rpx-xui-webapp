@@ -13,6 +13,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { Role } from '../roleAccess/models/roleType';
 import { getAllRoles } from '../roleAccess/roleAssignmentService';
+import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
@@ -69,7 +70,6 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
-import { refreshRoleAssignmentForUser } from '../user';
 
 caseServiceMock.init();
 roleServiceMock.init();

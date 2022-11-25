@@ -9,15 +9,16 @@ import { Store, StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
+import * as fromActions from '../../../app/store';
 import { reducers } from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
+import { TaskContext } from '../../../work-allocation/enums';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
-import * as fromActions from '../../../app/store';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
 @Component({
@@ -73,7 +74,7 @@ describe('AllWorkTaskComponent', () => {
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled', 'getValue']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
@@ -122,6 +123,7 @@ describe('AllWorkTaskComponent', () => {
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
     component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
     mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
@@ -141,6 +143,7 @@ describe('AllWorkTaskComponent', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view, refined: false, currentUser: '1233434'};
     expect(searchRequest.search_by).toEqual('caseworker');
+    expect(searchRequest.request_context).toEqual(TaskContext.ALL_WORK);
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
 
@@ -156,6 +159,7 @@ describe('AllWorkTaskComponent', () => {
     }));
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_by).toEqual('judge');
+    expect(searchRequest.request_context).toEqual(TaskContext.ALL_WORK);
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
 
@@ -227,7 +231,7 @@ describe('AllWorkTaskComponent', () => {
     const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
     const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
     const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-    const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+    const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled', 'getValue']);
     const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
     const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
     let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
@@ -243,6 +247,7 @@ describe('AllWorkTaskComponent', () => {
       mockCaseworkerService.getAll.and.returnValue(of([]));
       mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
       mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+      mockFeatureToggleService.getValue.and.returnValue(of(false));
       mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
       TestBed.configureTestingModule({
         imports: [

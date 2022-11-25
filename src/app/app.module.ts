@@ -8,18 +8,13 @@ import {
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import {
   CookieService,
-  ExuiCommonLibModule,
   FeatureToggleGuard,
-  FeatureToggleService,
   FilterService,
   GoogleTagManagerService,
-  LaunchDarklyService,
   LoadingService,
   RoleService,
-  TimeoutNotificationsService,
 } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
@@ -39,10 +34,6 @@ import {
   NGXMapperService
 } from 'ngx-logger';
 import { environment } from '../environments/environment';
-import {
-  EnvironmentConfig,
-  ENVIRONMENT_CONFIG
-} from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 // app routes
 import { ROUTES, routingConfiguration } from './app.routes';

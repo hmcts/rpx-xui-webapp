@@ -1,0 +1,36 @@
+.filter {
+  background-color: #f2f2f1;
+  width: 50%;
+}
+
+.button-heading {
+  display: flex;
+  align-items: center;
+
+  span {
+    margin-bottom: 32px;
+    margin-left: 12px;
+  }
+
+  .hmcts-badge--black {
+    border-color: #0b0c0c;
+    color: #0b0c0c;
+  }
+}
+
+
+div[field="locations"] {
+  > div {
+    flex-basis: calc(50% - 34px);
+  }
+}
+
+div[field="types-of-work"], div[field="services"] {
+  > div {
+    flex-basis: calc(100% - 34px);
+  }
+}
+
+.hideFilter {
+  visibility: hidden;
+}

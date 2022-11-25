@@ -103,11 +103,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             } 
         }
         expect(linkToClick !== null, `lnk with text ${attributeLinktext} not found in next steps`).to.be.true;
-        
         await BrowserWaits.retryWithActionCallback(async () => {
             await linkToClick.click();
         });
-
         await BrowserWaits.retryWithActionCallback(async () => {
             await BrowserWaits.waitForElement($('ccd-case-edit-page'));
         });
@@ -194,6 +192,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }   
         });
         
+    });
+
+    When('I click next step {string} for task with name {string}', async function(linkText, taskName){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseDetailsTaskTabPage.clickTaskNextStepLink(taskName, linkText) 
+        });
     });
 
 

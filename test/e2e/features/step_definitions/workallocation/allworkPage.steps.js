@@ -57,12 +57,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    Then('I validate filter item {string} select or radio has option {string} in all work page', async function (filterItem, filterOptions) {
+        const actualOption = await allWorkPage.getFilterSelectOrRadioOptions(filterItem);
+        reportLogger.AddMessage(`${filterItem} options displayed : ${JSON.stringify(actualOption)}`);
+ 
+        for (const option of filterOptions.split(",")) {
+            expect(actualOption).to.includes(option)
+        }
+
+    });
+
     When('I select filter item {string} select or radio option {string} in all work page', async function (filterItem, option) {
         if (Object.keys(filtersToIgnore).includes(filterItem)) {
             reportLogger.AddMessage(`${filterItem} in test ignored for reason : ${filtersToIgnore[filterItem]}`);
             return;
         }
-        await allWorkPage.setFilterSelectOrRadioOptions(filterItem, option);
+
+        const optionElement = await allWorkPage.setFilterSelectOrRadioOptions(filterItem, option);
 
     });
 

@@ -1,0 +1,35 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <div class="govuk-grid-row">
+        <a class="govuk-back-link" href="javascript:void(0)" *ngIf="isComponentVisible(bookingNavigationCurrentState, backVisibilityStates)" (click)="onNavEvent(bookingNavigationEvent.BACK)">Back</a>
+          <div class="govuk-main-wrapper">
+            <exui-booking-home
+              *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingHomeVisibilityStates)"
+              (eventTrigger)="onNavEvent($event)"
+              [(bookingProcess)]="bookingProcess"
+              [userId]="userId">
+            </exui-booking-home>
+            <exui-booking-location
+              *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingLocationVisibilityStates)"
+              (eventTrigger)="onNavEvent($event)"
+              [(bookingProcess)]="bookingProcess">
+            </exui-booking-location>
+            <exui-booking-date
+              *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingDateVisibilityStates)"
+              (eventTrigger)="onNavEvent($event)"
+              [(bookingProcess)]="bookingProcess">
+            </exui-booking-date>
+            <exui-booking-check
+              *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingCheckVisibilityStates)"
+              (eventTrigger)="onNavEvent($event)"
+              [(bookingProcess)]="bookingProcess"
+              [userId]="userId">
+            </exui-booking-check>
+          </div>
+      </div>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

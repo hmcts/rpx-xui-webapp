@@ -100,7 +100,7 @@ describe('AppHeaderComponent', () => {
     it('should take a theme and update the app header properties.', () => {
 
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-      const menuItems = AppConstants.DEFAULT_MENU_ITEMS
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
 
       component.setAppHeaderProperties(defaultTheme, menuItems);
 

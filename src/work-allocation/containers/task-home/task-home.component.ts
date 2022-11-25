@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
-import { FilterPersistence, SubNavigation } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FilterPersistence, SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
+import { AppConstants } from 'src/app/app.constants';
 
 import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
@@ -37,15 +38,19 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly allocateRoleService: AllocateRoleService
+    private readonly allocateRoleService: AllocateRoleService,
+    private readonly featureToggleService: FeatureToggleService
   ) {
   }
 
   public ngOnInit(): void {
 
     this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
-    this.subNavigationItems.push({text: 'My access', href: '/work/my-work/my-access', active: false});
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waAccess, null).subscribe(hasMyAccess => {
+      if (hasMyAccess) {
+        this.subNavigationItems.push({text: 'My access', href: '/work/my-work/my-access', active: false});
+      }
+    })
 
     this.allocateRoleService.getMyAccessNewCount().subscribe( (countOfApproval) => {
      const myAccessNavItem = this.subNavigationItems.find(nav => nav.text === 'My access' ) ;

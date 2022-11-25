@@ -10,13 +10,13 @@ import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import * as fromActions from '../../../app/store';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionIds } from '../../enums';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
-import * as fromActions from '../../../app/store';
 
 describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
@@ -30,7 +30,7 @@ describe('TaskListWrapperComponent', () => {
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled', 'getValue']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
@@ -78,6 +78,7 @@ describe('TaskListWrapperComponent', () => {
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue('1');
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));

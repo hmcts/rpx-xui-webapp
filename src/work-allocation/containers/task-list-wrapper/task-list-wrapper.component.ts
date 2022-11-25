@@ -5,12 +5,12 @@ import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-x
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
-import { AppConstants } from '../../../app/app.constants';
-
 import { AppUtils } from '../../../app/app-utils';
+import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskListFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
@@ -27,7 +27,6 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import * as fromActions from '../../../app/store';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -52,6 +51,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private currentUser: string;
   public routeEventsSubscription: Subscription;
   public isUpdatedTaskPermissions$: Observable<boolean>;
+  public updatedTaskPermission: boolean;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -156,6 +156,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public ngOnInit(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
+    this.isUpdatedTaskPermissions$.filter(v => !!v).subscribe(value => {
+      this.updatedTaskPermission = value;
+    });
 
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
@@ -354,7 +358,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     }
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    const tasksSearch$ = this.isUpdatedTaskPermissions$.pipe(mergeMap(enabled => enabled ? this.performSearchUpdatedTaskPermissions() : this.performSearchPreviousTaskPermissions()))
+    const tasksSearch$ = this.isUpdatedTaskPermissions$.pipe(mergeMap(enabled => enabled ? this.performSearchUpdatedTaskPermissions() : this.performSearchPreviousTaskPermissions()));
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
       const assignedJudicialUsers: string[] = [];
       result.tasks.forEach(task => {

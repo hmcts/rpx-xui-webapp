@@ -124,6 +124,7 @@ export interface SearchTaskRequest {
   sorting_parameters: SortParameter[];
   search_by?: string;
   pagination_parameters?: PaginationParameter;
+  request_context?: string;
 }
 
 export interface Task {

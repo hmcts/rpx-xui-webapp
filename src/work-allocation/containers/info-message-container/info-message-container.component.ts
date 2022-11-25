@@ -4,7 +4,6 @@ import { InfoMessageCommService } from '../../../app/shared/services/info-messag
 
 import { Observable } from 'rxjs';
 import { InformationMessage } from '../../models/comms';
-import { InfoMessageCommService } from '../../services';
 
 
 @Component({

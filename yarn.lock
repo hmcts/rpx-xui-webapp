@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.25-case-file-sort-documents":
-  version "5.0.25-case-file-sort-documents"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.25-case-file-sort-documents.tgz#78db086af850a3a4360b2f318e4d4d82517ac121"
-  integrity sha512-NJUrfsqzOSz75eHn+Z/NgbWXagA8xfs/K9SlQHTRxNefQLPVulFZqOS8oGwW3zYa6H7RxaxRa9dtpQZQRPD9Hg==
+"@hmcts/ccd-case-ui-toolkit@5.0.25-case-file-sort-documents-v5":
+  version "5.0.25-case-file-sort-documents-v5"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.25-case-file-sort-documents-v5.tgz#c9adab30bd58ada8c8f89226b6442e9289f629f1"
+  integrity sha512-y0YqAMHTy0uNANI9h5Vejktx2hq9k25fkuo/620ByX5N4U5XqZhPhzYmONACW8a1Bz8yL+Uvk4alEKrtoG2lzQ==
   dependencies:
     tslib "^2.0.0"
 

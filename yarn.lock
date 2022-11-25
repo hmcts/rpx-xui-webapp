@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.27-angular11-upgrade":
-  version "5.0.27-angular11-upgrade"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.27-angular11-upgrade.tgz#bbe9a17a7ee6230b410948e3d097be86213166e8"
-  integrity sha512-Ke8mglcvjSLnkDvcAM790b/YfHZPsSp1actvIV259DP8QKjDfFSiYCfeeskK8Wz9HshtizSUblF7dtaAF5G3XQ==
+"@hmcts/ccd-case-ui-toolkit@5.0.29-angular11-upgrade":
+  version "5.0.29-angular11-upgrade"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.29-angular11-upgrade.tgz#f323f0413fd8f30a06907c621dbd5289dbd251fb"
+  integrity sha512-RVjJKF9ljBjzGnKrwemDwAcWcLUR8GjmpCd+gl3mrxHlqIc3n8eOmVXzxqjZl9rauhGr0IwQigqX6E/VTdF6Bw==
   dependencies:
     tslib "^2.0.0"
 
@@ -3492,7 +3492,7 @@ async@1.x:
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
   integrity sha512-nSVgobk4rv61R9PUSDtYt7mPVB2olxNR5RWJcAsH676/ef11bUZwvu7+RGYrYauVdDPcO519v68wRhXQtxsV9w==
 
-async@^2.6.2:
+async@^2.6.2, async@^2.6.4:
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.4.tgz#706b7ff6084664cd7eae713f6f965433b5504221"
   integrity sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA==
@@ -15797,6 +15797,18 @@ winston-transport@^4.5.0:
     logform "^2.3.2"
     readable-stream "^3.6.0"
     triple-beam "^1.3.0"
+
+winston@^2.4.1:
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-2.4.7.tgz#5791fe08ea7e90db090f1cb31ef98f32531062f1"
+  integrity sha512-vLB4BqzCKDnnZH9PHGoS2ycawueX4HLqENXQitvFHczhgW2vFpSOn31LZtVr1KU8YTw7DS4tM+cqyovxo8taVg==
+  dependencies:
+    async "^2.6.4"
+    colors "1.0.x"
+    cycle "1.0.x"
+    eyes "0.1.x"
+    isstream "0.1.x"
+    stack-trace "0.0.x"
 
 winston@^2.4.5:
   version "2.4.6"

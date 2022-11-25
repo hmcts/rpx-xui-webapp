@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material';
-import { AlertService, CaseUIToolkitModule, PipesModule } from '@hmcts/ccd-case-ui-toolkit';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AlertService, PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { SharedModule } from '../app/shared/shared.module';
@@ -42,10 +42,9 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     CaseworkerDataService,
     WorkAllocationFeatureService,
     WASupportedJurisdictionsService,
-    ServiceRefDataService
-    SeniorTribunalCaseworkerGuard,
-    TribunalCaseworkerGuard],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    ServiceRefDataService,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class WorkAllocationModule {
 }

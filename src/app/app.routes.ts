@@ -1,5 +1,7 @@
 import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
+import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
+import { BookingSystemErrorComponent } from 'src/booking/containers/utils/booking-system-error/booking-system-error.component';
 import {
   AccessibilityComponent,
   ApplicationRoutingComponent,
@@ -23,6 +25,7 @@ export const routingConfiguration: ExtraOptions = {
 export const ROUTES: Routes = [
   {
     path: '',
+    canActivate: [AuthGuard],
     component: ApplicationRoutingComponent,
     pathMatch: 'full'
   },
@@ -32,9 +35,14 @@ export const ROUTES: Routes = [
     loadChildren: '../cases/cases.module#CasesModule'
   },
   {
+    path: 'booking',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../booking/booking.module#BookingModule'
+  },
+  {
     path: 'work',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
+    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
@@ -47,6 +55,12 @@ export const ROUTES: Routes = [
     path: 'tasks/:subRoute',
     redirectTo: 'work/my-work/list',
     pathMatch: 'prefix',
+    canActivate: [AuthGuard, AcceptTermsGuard]
+  },
+  {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
+    path: 'tasks',
+    redirectTo: 'work/my-work/list',
     canActivate: [AuthGuard, AcceptTermsGuard]
   },
   {
@@ -127,6 +141,27 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: 'booking-service-down',
+    component: BookingServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'booking-system-error',
+    component: BookingSystemErrorComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'refresh-booking-service-down',
+    component: RefreshBookingServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
     path: 'media-viewer',
     component: MediaViewerWrapperComponent,
     data: {
@@ -148,6 +183,16 @@ export const ROUTES: Routes = [
     component: SignedOutComponent,
     data: {
       title: 'You have been signed out'
+    }
+  },
+  {
+    path: 'search',
+    canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
+    loadChildren: '../search/search.module#SearchModule',
+    data: {
+      title: 'Search cases',
+      needsFeaturesEnabled: ['feature-global-search'],
+      featureDisabledRedirect: '/'
     }
   },
   {

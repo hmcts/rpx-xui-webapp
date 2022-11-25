@@ -1,4 +1,4 @@
-import { Task } from '../../../work-allocation-2/models/tasks';
+import { Task } from '../../../work-allocation/models/tasks';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 const task: Task = {

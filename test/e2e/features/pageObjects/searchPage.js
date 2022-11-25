@@ -46,19 +46,32 @@ class SearchPage {
 
   }
 
-  async selectJurisdiction(option){
+  async selectJurisdiction(jurisdiction){
     await this._waitForSearchComponent();
 
     await BrowserWaits.waitForElement(this.jurisdiction);
 
-    var optionElement = this.jurisdiction.element(by.xpath("//*[text() ='" + option + "']"));
+    const options = jurisdiction.split('|'); 
+    let locatorString = "//option[";
+    let i = 0;
+    for (const option of options) {
+      if (i === 0) {
+        locatorString += `contains(text(), '${option.trim()}')`;
+      } else {
+        locatorString += `or contains(text(), '${option.trim()}')`;
+      }
+      i++;
+    }
+    const elementLocator = by.xpath(locatorString + ']');
+
+    var optionElement = this.jurisdiction.element(elementLocator);
     await BrowserWaits.waitForElement(optionElement);
  
     await optionElement.click();
 
-    CucumberReportLogger.LogTestDataInput(`Search  page Jurisdiction : ${option}`);
+    CucumberReportLogger.LogTestDataInput(`Search  page Jurisdiction : `);
 
-    RuntimeTestData.searchCasesInputs.jurisdiction = option;
+    RuntimeTestData.searchCasesInputs.jurisdiction = jurisdiction;
     const caseTypeElements = this.caseType.$$("option");
     const caseTypesSize = await caseTypeElements.count();
     RuntimeTestData.searchCasesInputs.casetypes = [];

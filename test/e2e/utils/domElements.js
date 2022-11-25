@@ -61,7 +61,7 @@ class GovUKRadios{
     }
 
     async getOptions() {
-        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label]`));
+        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`));
 
         const count = await labels.count();
         const options = [];

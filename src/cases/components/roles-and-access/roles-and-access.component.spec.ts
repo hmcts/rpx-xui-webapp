@@ -1,27 +1,39 @@
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AbstractAppConfig, AlertService, AuthService, CaseNotifier, CasesService, CaseUIToolkitModule, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-
-import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
+import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '..';
+import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
 import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
+import { Caseworker } from '../../../work-allocation/models/dtos';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessComponent } from './roles-and-access.component';
 
 describe('RolesAndAccessComponent', () => {
   let component: RolesAndAccessComponent;
   let fixture: ComponentFixture<RolesAndAccessComponent>;
+  const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
+  mockNotifierService.cachedCaseView = {};
+  component = new RolesAndAccessComponent(mockNotifierService);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule,
+        CaseUIToolkitModule],
       declarations: [
         RolesAndAccessComponent,
         CaseRolesTableComponent,
         ShowAllocateLinkDirective,
         ExclusionsTableComponent,
+        RoleAccessSectionComponent,
+        AllocateARoleLinkComponent
+      ],
+      providers: [
+        { provide: CaseNotifier, useValue: mockNotifierService }, CasesService, HttpErrorService, AuthService, AbstractAppConfig, AlertService
       ]
     })
       .compileComponents();
@@ -30,7 +42,7 @@ describe('RolesAndAccessComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RolesAndAccessComponent);
     component = fixture.componentInstance;
-    component.roles = CASEROLES;
+    component.roles = CASEROLES as CaseRole[];
     component.caseDetails = {
       case_id: '1',
       case_type: {
@@ -51,7 +63,7 @@ describe('RolesAndAccessComponent', () => {
       events: [],
       metadataFields: []
     };
-    component.showAllocateRoleLink = false
+    component.showAllocateRoleLink = false;
     fixture.detectChanges();
   });
 
@@ -97,7 +109,7 @@ describe('RolesAndAccessComponent', () => {
       location: null,
       roleCategory: RoleCategory.LEGAL_OPERATIONS
     }
-  ]
+  ];
 
   it('should set names for unnamed legal ops roles', () => {
     const mockLegalOpsRoles: CaseRole[] = [{

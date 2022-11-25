@@ -1,4 +1,4 @@
-@ng
+@ng @ignore
 Feature: Navigation header tabs
     https://tools.hmcts.net/confluence/display/EUI/Global+Search
 
@@ -22,7 +22,7 @@ Feature: Navigation header tabs
             | mc-menu-theme |
         Then I validate header displayed for user type "<roleType>"
         Then I see primary navigation tabs "<mainHeaders>" in main header
-       
+
         Then I do not see primary navigation tabs does not exist excluding "<mainHeaders>"
             | Tabs             |
             | Case list        |

@@ -11,7 +11,7 @@ const featureNames = {
   booking: 'mc-booking-active',
   mcHearingsFeature: 'mc-hearings-jurisdictions',
   excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
-  updatedTaskPermissionsFeature: 'updated-task-permission',
+  updatedTaskPermissionsFeature: 'updated-task-permission'
 };
 
 const footerDataNavigation = {

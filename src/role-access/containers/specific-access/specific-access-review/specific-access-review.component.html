@@ -1,0 +1,70 @@
+
+  <div class="govuk-form-group" [formGroup]="formGroup">
+    <exui-error-message
+      *ngIf="formGroup.invalid && submitted"
+      [error]="errorMessage">
+    </exui-error-message>
+    <fieldset class="govuk-fieldset" [attr.aria-label]="title">
+      <div class="govuk-grid-column-two-thirds" >
+        <p></p>
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h1 class="govuk-fieldset__heading">
+            {{ title }}
+          </h1>
+        </legend>
+        <p></p>
+        <table class="govuk-table">
+          <caption></caption>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Case name
+              </th>
+              <td class="govuk-table__cell">{{ specificAccessStateData.caseName }}</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Case reference
+              </th>
+              <td class="govuk-table__cell">{{ specificAccessStateData.caseId | ccdCaseReference }}</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Date submitted
+              </th>
+              <td class="govuk-table__cell">{{ specificAccessStateData.requestCreated | date:'d MMMM yyyy' }}</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Request from
+              </th>
+              <td class="govuk-table__cell">{{ requesterName }}</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header leftLabel" >
+                Reason for case access
+              </th>
+              <td class="govuk-table__cell">{{ specificAccessStateData.specificAccessReason }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+          <h1 class="govuk-fieldset__heading">
+            {{ hint }}
+          </h1>
+        </legend>
+        <div [formGroup]="formGroup"
+             class="govuk-form-group"
+             [ngClass]="{'form-group-error': reviewOptionControl.errors && submitted}">
+          <exui-choose-radio-option
+            [formGroup]="formGroup"
+            radioControlName="radioSelected"
+            
+            [optionsList]="optionsList"
+            [submitted]="submitted"
+          >
+          </exui-choose-radio-option>
+        </div>
+      </div>
+    </fieldset>
+  </div>

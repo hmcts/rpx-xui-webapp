@@ -6,7 +6,7 @@ const headerPage = require('../pageObjects/headerPage');
 Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
-const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
+const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 const CucumberReporter = require("../../support/reportLogger");
 const BrowserWaits = require('../../support/customWaits');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
@@ -66,14 +66,14 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
         await searchPage.selectCaseType(caseType);
       }catch(err){
         await CucumberReporter.AddScreenshot(global.screenShotUtils);
-        await CucumberReporter.AddMessage("Retrying with page refresh");
+        await CucumberReporter.AddMessage("Retrying with page refresh", LOG_LEVELS.Info);
         const currentUrl = await browser.getCurrentUrl();
         if (currentUrl.includes("service-down")){
-          await CucumberReporter.AddMessage("Service error occured, clicking find case again");
+          await CucumberReporter.AddMessage("Service error occured, clicking find case again", LOG_LEVELS.Error);
           await headerPage.clickFindCase();
 
         }else{
-          await CucumberReporter.AddMessage("Refreshing page");
+          await CucumberReporter.AddMessage("Refreshing page", LOG_LEVELS.Info);
           await headerPage.refreshBrowser();
 
         }
@@ -94,14 +94,14 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
 
       } catch (err) {
         await CucumberReporter.AddScreenshot(global.screenShotUtils);
-        await CucumberReporter.AddMessage("Retrying with page refresh");
+        await CucumberReporter.AddMessage("Retrying with page refresh", LOG_LEVELS.Info);
         const currentUrl = await browser.getCurrentUrl();
         if (currentUrl.includes("service-down")) {
-          await CucumberReporter.AddMessage("Service error occured, clicking find case again");
+          await CucumberReporter.AddMessage("Service error occured, clicking find case again", LOG_LEVELS.Warn);
           await headerPage.clickFindCase();
 
         } else {
-          await CucumberReporter.AddMessage("Refreshing page");
+          await CucumberReporter.AddMessage("Refreshing page", LOG_LEVELS.Info);
           await headerPage.refreshBrowser();
 
         }
@@ -136,7 +136,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
           throw new Error("Not case list or search page to perform filter apply action on workbasket or search inputs."); 
         }
       }catch(err){
-        CucumberReporter.AddMessage(`Retrying steps select inputs and click apply`);
+        CucumberReporter.AddMessage(`Retrying steps select inputs and click apply`, LOG_LEVELS.Info);
 
         if (isSearchCasesPage) {
           const caseTypeToSelect = RuntimeTestData.searchCasesInputs.casetype;
@@ -186,7 +186,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
         await searchPage.waitForAtleastOneSearchResult();
         await expect(await searchPage.hasSearchReturnedResults()).to.be.true;
       }catch(err){
-        CucumberReporter.AddMessage(`Retrying steps select inputs and click apply`);
+        CucumberReporter.AddMessage(`Retrying steps select inputs and click apply`, LOG_LEVELS.Warn);
 
         if (isSearchCasesPage){
           const caseTypeToSelect = RuntimeTestData.searchCasesInputs.casetype;

@@ -15,6 +15,8 @@ const CucumberReportLog = require("../../e2e/support/reportLogger");
 const MockApp = require('../../nodeMock/app');
 const BrowserWaits = require('../../e2e/support/customWaits');
 
+const mockNodeApp = require('../../nodeMock/nodeApp/mockData');
+
 defineSupportCode(({ Before, After, BeforeAll }) => {
     BeforeAll(async function(){
         const scenarioServerPort = MockApp.serverPort;
@@ -22,6 +24,7 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
     });
 
     Before(async function (scenario) {
+        global.scenarioData = {}
         await CucumberReportLog.setScenarioWorld(this);
         MockApp.setLogMessageCallback((msg) => CucumberReportLog.AddMessage(msg));
         MockApp.setLogJSONCallback((json) => CucumberReportLog.AddJson(json));
@@ -44,6 +47,7 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
         const scenarioId = await BrowserUtil.getScenarioIdCookieValue();
         MockApp.deleteScenarioSession(scenarioId);
         CucumberReportLog.AddMessage("NG Integration test status : " + scenario.result.status);
+        CucumberReportLog.AddJson(mockNodeApp.userDetails); 
         CucumberReportLog.AddJson(MockApp.requestLogs);
     });
 })

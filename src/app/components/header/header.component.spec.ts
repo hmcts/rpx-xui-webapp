@@ -1,13 +1,12 @@
 import { HttpClientModule } from '@angular/common/http';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
 import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
-import { HmctsGlobalHeaderComponent } from '../hmcts-global-header/hmcts-global-header.component';
+import { HmctsGlobalHeaderComponent } from '..';
 import { HeaderComponent } from './header.component';
 
 const flags = {
@@ -21,30 +20,20 @@ describe('Header Component', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent],
       imports: [HttpClientModule, RouterTestingModule],
-      providers: [{ provide: Store, useValue: mockStore },
-      {
-        provide: FeatureToggleService,
-        useValue: {
-          isEnabled: (flag) => of(flags[flag])
-        }
-      }]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [{ provide: Store, useValue: mockStore }]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HeaderComponent);
-    mockStore = jasmine.createSpyObj('store', ['pipe']);
-    mockService = jasmine.createSpyObj('service', ['get']);
-    component = new HeaderComponent(mockStore);
-  });
-
-  it('should create', () => {
-
-    expect(component).toBeTruthy();
+      fixture = TestBed.createComponent(HeaderComponent);
+      mockStore = jasmine.createSpyObj('store', ['pipe']);
+      mockService = jasmine.createSpyObj('service', ['get']);
+      component = new HeaderComponent(mockStore);
   });
 
   it('should render the skip to content link', () => {
@@ -63,9 +52,9 @@ describe('Header Component', () => {
 
   it('should emitNavigate', () => {
 
-    const event = {};
-    const emitter = jasmine.createSpyObj('emitter', ['emit']);
-    component.emitNavigate(event, emitter);
-    expect(emitter.emit).toHaveBeenCalled();
+      const event = {};
+      const emitter = jasmine.createSpyObj('emitter', ['emit']);
+      component.emitNavigate(event, emitter);
+      expect(emitter.emit).toHaveBeenCalled();
   });
 });

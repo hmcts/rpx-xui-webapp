@@ -5,4 +5,6 @@ export enum AllocateRoleState {
   CHOOSE_DURATION,
   CHECK_ANSWERS,
   CONFIRM_ALLOCATION,
+  LOADING_ROLES,
+  NO_ROLES_FOUND
 }

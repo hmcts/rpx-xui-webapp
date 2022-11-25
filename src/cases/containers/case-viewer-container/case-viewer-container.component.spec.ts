@@ -13,6 +13,10 @@ import { Observable, of } from 'rxjs';
 import { WASupportedJurisdictionsService } from 'src/work-allocation-2/services';
 import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { AllocateRoleService } from '../../../role-access/services';
+import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -134,8 +138,12 @@ describe('CaseViewerContainerComponent', () => {
 
   class MockFeatureToggleService implements FeatureToggleService {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
+      if (_key === 'wa-service-config') {
+        // @ts-ignore
+        return of({configurations: [{serviceName: 'SSCS', caseTypes: ['TestAddressBookCase'], releaseVersion: '3.0'}]});
+      }
       // @ts-ignore
-      return of('WorkAllocationRelease2');
+      return of([]);
     }
 
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
@@ -151,6 +159,12 @@ describe('CaseViewerContainerComponent', () => {
 
     public isEnabled(_feature: string): Observable<boolean> {
       return undefined;
+    }
+  }
+
+  class MockAllocateRoleService {
+    public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
+      return of([]);
     }
   }
 
@@ -193,7 +207,8 @@ describe('CaseViewerContainerComponent', () => {
           surname: 'judge'
         },
         roleAssignmentInfo: []
-      }
+      },
+      decorate16digitCaseReferenceSearchBoxInHeader: false
     }
   };
   const TABS: CaseTab[] = [
@@ -227,6 +242,7 @@ describe('CaseViewerContainerComponent', () => {
           }
         },
         {provide: FeatureToggleService, useClass: MockFeatureToggleService},
+        {provide: AllocateRoleService, useClass: MockAllocateRoleService },
         {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService}
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]

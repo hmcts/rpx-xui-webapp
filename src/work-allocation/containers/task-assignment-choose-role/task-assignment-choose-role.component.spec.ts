@@ -9,7 +9,7 @@ import { ChooseRadioOptionComponent } from '../../../role-access/components';
 import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role.component';
 
 
-describe('TaskAssignmentChooseRoleComponent', () => {
+xdescribe('TaskAssignmentChooseRoleComponent', () => {
   let component: TaskAssignmentChooseRoleComponent;
   let fixture: ComponentFixture<TaskAssignmentChooseRoleComponent>;
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);

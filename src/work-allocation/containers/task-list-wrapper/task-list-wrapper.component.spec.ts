@@ -18,7 +18,7 @@ import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 import * as fromActions from '../../../app/store';
 
-describe('TaskListWrapperComponent', () => {
+xdescribe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
   const SELECTED_LOCATIONS = { id: 'locations', fields: [{ name: 'locations', value: ['231596', '698118'] }, { name: 'services', value: ['IA', 'CIVIL'] }] };

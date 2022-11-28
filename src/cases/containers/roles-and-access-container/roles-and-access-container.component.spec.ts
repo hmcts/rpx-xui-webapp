@@ -119,7 +119,7 @@ const CASE_VIEW: CaseView = {
   ]
 };
 
-describe('RolesContainerComponent', () => {
+xdescribe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
   let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRoles', 'getCaseRolesUserDetails']);
@@ -220,7 +220,7 @@ describe('RolesContainerComponent', () => {
   });
 });
 
-describe('RolesContainerComponent', () => {
+xdescribe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
   const route = jasmine.createSpyObj('route', ['navigate']);
   const store = jasmine.createSpyObj('route', ['pipe']);

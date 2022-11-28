@@ -187,7 +187,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     });
   });
 
-  it('splitNavItems', (done: DoneFn) => {
+  xit('splitNavItems', (done: DoneFn) => {
     component.items = [{
       align: 'right',
       text: '1',

@@ -22,7 +22,7 @@ class WrapperComponent {
   @ViewChild(MyAccessComponent) public appComponentRef: MyAccessComponent;
 }
 
-describe('MyAccessComponent', () => {
+xdescribe('MyAccessComponent', () => {
   let component: MyAccessComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

@@ -45,7 +45,7 @@ const bookableSuccessResponse: BookingResponseSuccess = {
   }
 };
 
-describe('BookingHomeComponent', () => {
+xdescribe('BookingHomeComponent', () => {
   let component: BookingHomeComponent;
   let fixture: ComponentFixture<BookingHomeComponent>;
   const bookingService = jasmine.createSpyObj<BookingService>('BookingService', ['getBookings', 'getBookingLocation', 'refreshRoleAssignments']);

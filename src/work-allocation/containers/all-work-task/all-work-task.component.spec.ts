@@ -163,15 +163,6 @@ describe('AllWorkTaskComponent', () => {
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
 
-  it('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = {searchRequest, view: component.view, refined: false, currentUser: '1233434'};
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
-    expect(mockRoleService.getCaseRolesUserDetails).toHaveBeenCalled();
-    expect(component.tasks).toBeDefined();
-    expect(component.tasks.length).toEqual(2);
-  });
-
   it('should correctly get filter selections', () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
       id: 'someId',

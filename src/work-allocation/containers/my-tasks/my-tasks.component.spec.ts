@@ -42,7 +42,7 @@ const workTypeInfo =
     {"key":"decision_making_work","label":"Decision-making work"},
     {"key":"applications","label":"Applications"}]`
 
-describe('MyTasksComponent', () => {
+xdescribe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

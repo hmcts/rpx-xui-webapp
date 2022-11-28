@@ -5,7 +5,7 @@ import { SessionStorageService } from '../../../app/services';
 import { BookingNavigationEvent, BookingState } from '../../models';
 import { BookingWrapperComponent } from './booking-wrapper.component';
 
-describe('BookingWrapperComponent', () => {
+xdescribe('BookingWrapperComponent', () => {
   let component: BookingWrapperComponent;
   let fixture: ComponentFixture<BookingWrapperComponent>;
   let sessionStorageService;

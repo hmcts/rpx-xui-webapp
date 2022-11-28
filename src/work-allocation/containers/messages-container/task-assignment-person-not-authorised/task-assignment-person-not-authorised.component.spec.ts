@@ -4,7 +4,7 @@ import { Navigation, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TaskAssignmentPersonNotAuthorisedComponent } from './task-assignment-person-not-authorised.component';
 
-describe('TaskAssignmentPersonNotAuthorised', () => {
+xdescribe('TaskAssignmentPersonNotAuthorised', () => {
   let component: TaskAssignmentPersonNotAuthorisedComponent;
   let fixture: ComponentFixture<TaskAssignmentPersonNotAuthorisedComponent>;
   let mockRouter;

@@ -14,7 +14,7 @@ class WrapperComponent {
   @Input() public workField: any;
 }
 
-describe('WorkAllocation', () => {
+xdescribe('WorkAllocation', () => {
 
   describe('AccessViewFieldComponent', () => {
     const REJECTED_REQUEST_URL: string = `/role-access/rejected-request`;

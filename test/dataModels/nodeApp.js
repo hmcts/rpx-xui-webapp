@@ -10,7 +10,8 @@ class NodeApp{
                 {
                     ...this.getUserDetailsLocationInfo(),
                     caseId:'',
-                    caseType:''
+                    caseType:'',
+                    roleType:'ORGANISATION'
                 }
                 
             ],

@@ -50,12 +50,11 @@ import { AppComponent } from './containers/app/app.component';
 // common provider
 import { ProvidersModule } from './providers/providers.module';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
+import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
-import {
-  AbstractAppInsights,
-  AppInsightsWrapper
-} from './services/logger/appInsightsWrapper';
+import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
+import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
@@ -76,7 +75,7 @@ export function launchDarklyClientIdFactory(
 }
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent  ],
   imports: [
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,
@@ -131,12 +130,13 @@ export function launchDarklyClientIdFactory(
     CaseShareService,
     { provide: FeatureToggleService, useClass: LaunchDarklyService },
     TimeoutNotificationsService,
-    RoleService,
-    GoogleTagManagerService,
+    JurisdictionService,
     CookieService,
-    LoadingService,
+    FeatureToggleGuard,
     FilterService,
-    FeatureToggleGuard
+    GoogleTagManagerService,
+    LoadingService,
+    RoleService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,4 +1,5 @@
 
+const { LOG_LEVELS } = require("../../../support/constants");
 const BrowserWaits = require("../../../support/customWaits");
 const CucumberReporter = require("../../../support/reportLogger");
 const CheckyourChangesTable = require("../common/checkYourChangesTable");
@@ -22,7 +23,7 @@ class TaskCheckYourChangesPage{
             await BrowserWaits.waitForElement(this.pageContainer);
             return true;
         } catch (err) {
-            CucumberReporter.AddMessage(err.stack);
+            CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
             return false;
         }
     }

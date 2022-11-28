@@ -579,11 +579,10 @@ describe('CaseListComponent', () => {
       expect(event).toEqual(null);
     });
 
-    it('jurisdiction matches createEvent jurisdiction.', async () => {
-      const data = {
-        metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: { id: 'PUBLICLAW' },
-        caseStateGroupFromLS: { id: null },
+    it('jurisdiction matches createEvent jurisdiction.', () => {
+      const data = { metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
+        caseStateGroupFromLS: {id: null},
         caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
         formGroupFromLS: {
           '[CASE_REFERENCE]': null,
@@ -598,11 +597,10 @@ describe('CaseListComponent', () => {
       expect(event.selected.jurisdiction).toEqual(data.jurisdictionFromLS);
     });
 
-    it('case type matches createEvent case type.', async () => {
-      const data = {
-        metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: { id: 'PUBLICLAW' },
-        caseStateGroupFromLS: { id: null },
+    it('case type matches createEvent case type.', () => {
+      const data = { metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
+        caseStateGroupFromLS: {id: null},
         caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
         formGroupFromLS: {
           '[CASE_REFERENCE]': null,
@@ -616,11 +614,10 @@ describe('CaseListComponent', () => {
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
       expect(event.selected.caseType).toEqual(data.caseTypeGroupFromLS);
     });
-    it('form group matches createEvent formgroup.', async () => {
-      const data = {
-        metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: { id: 'PUBLICLAW' },
-        caseStateGroupFromLS: { id: null },
+    it('form group matches createEvent formgroup.', () => {
+      const data = { metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
+        caseStateGroupFromLS: {id: null},
         caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
         formGroupFromLS: {
           '[CASE_REFERENCE]': null,

@@ -1,11 +1,14 @@
+import { isDefined } from '@angular/compiler/src/util';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PaginationParameter } from '../../../work-allocation/models/dtos';
 
+import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
-import { TaskSort } from '../../enums';
-import { InvokedTaskAction, Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { SortOrder } from '../../enums';
+import { FieldConfig, SortField } from '../../models/common';
+import { PaginationParameter } from '../../models/dtos';
+import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 
 @Component({
   selector: 'exui-task-list',
@@ -13,16 +16,18 @@ import { InvokedTaskAction, Task, TaskAction, TaskFieldConfig, TaskServiceConfig
   styleUrls: ['task-list.component.scss']
 })
 export class TaskListComponent implements OnChanges {
-
   /**
    * These are the tasks & fields as returned from the WA Api.
    */
   @Input() public tasks: Task[];
+  @Input() public enablePagination: boolean = true;
   @Input() public tasksTotal: number;
   @Input() public taskServiceConfig: TaskServiceConfig;
-  @Input() public sortedBy: TaskSortField;
+  @Input() public sortedBy: SortField;
+  @Input() public addActionsColumn: boolean = true;
   @Input() public pagination: PaginationParameter;
-  @Input() public showManage: boolean = true;
+  @Input() public showManage = {};
+  @Input() public pageSessionKey: string;
 
   /**
    * The message to display when there are no tasks to display in the list.
@@ -31,7 +36,7 @@ export class TaskListComponent implements OnChanges {
 
   // TODO: Need to re-read the LLD, but I believe it says pass in the taskServiceConfig into this TaskListComponent.
   // Therefore we will not need this.
-  @Input() public fields: TaskFieldConfig[];
+  @Input() public fields: FieldConfig[];
 
   @Output() public sortEvent = new EventEmitter<string>();
   @Output() public paginationEvent = new EventEmitter<number>();
@@ -46,7 +51,19 @@ export class TaskListComponent implements OnChanges {
 
   private selectedTask: Task;
 
-  constructor(private readonly router: Router) {}
+  public defaultSortElement: HTMLElement;
+  public newUrl: string;
+
+  constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {
+  }
+
+  public get showResetSortButton(): boolean {
+    if (!this.sortedBy) {
+      return false;
+    }
+    const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
+    return !(this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection);
+  }
 
   public selectTaskFromUrlHash(url: string): Task | null {
     if (url) {
@@ -59,10 +76,15 @@ export class TaskListComponent implements OnChanges {
     return null;
   }
 
-  public ngOnChanges() {
+  public ngOnChanges(): void {
     if (this.tasks) {
       this.dataSource$ = new BehaviorSubject(this.tasks);
       this.setSelectedTask(this.selectTaskFromUrlHash(this.router.url));
+      for (const task of this.tasks) {
+        if (task && task.actions && task.actions.length) {
+          this.showManage[task.id] = task.actions.length > 0;
+        }
+      }
     }
     if (this.fields) {
       this.displayedColumns = this.getDisplayedColumn(this.fields);
@@ -73,9 +95,9 @@ export class TaskListComponent implements OnChanges {
    * Returns the columns to be displayed by the Angular Component Dev Kit table.
    *
    */
-  public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
-    const fields = taskFieldConfig.map(field => field.name);
-    return this.showManage ? this.addManageColumn(fields) : fields;
+  public getDisplayedColumn(fieldConfig: FieldConfig[]): string[] {
+    const fields = fieldConfig.map(field => field.name);
+    return this.addActionsColumn ? this.addManageColumn(fields) : fields;
   }
 
   /**
@@ -154,33 +176,54 @@ export class TaskListComponent implements OnChanges {
   public getColumnSortedSetting(fieldName: string): string {
     // If we don't have an actual sortedBy value, default it now.
     if (!this.sortedBy) {
-      const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
-      this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
+      this.setDefaultSort();
     }
 
     // If this is the field we're sorted by, return the appropriate order.
     if (this.sortedBy.fieldName === fieldName) {
-      return this.sortedBy.order === TaskSort.ASC ? 'ascending' : 'descending';
+      return this.sortedBy.order === SortOrder.ASC ? 'ascending' : 'descending';
     }
 
     // This field is not sorted, return NONE.
-    return TaskSort.NONE;
+    return SortOrder.NONE;
+  }
+
+  public onResetSorting(): void {
+    this.pagination.page_number = 1;
+    this.sessionStorageService.setItem(this.pageSessionKey, this.pagination.page_number.toString());
+    if (!this.defaultSortElement) {
+      this.defaultSortElement = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`) as HTMLElement;
+    }
+    this.defaultSortElement.click();
+  }
+
+  public getFirstResult(): number {
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.tasks ? 1 : 0));
+  }
+
+  public getLastResult(): number {
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentTaskCount());
+  }
+
+  public isPaginationEnabled(): boolean {
+    return this.pagination &&
+      this.enablePagination &&
+      isDefined(this.tasks) &&
+      this.tasks.length > 0;
+  }
+
+  private setDefaultSort(): void {
+    const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
+    this.sortedBy = {fieldName: defaultSortFieldName, order: defaultSortDirection};
   }
 
   private setupHash(): void {
-    if (this.showManage) {
+    if (this.addActionsColumn) {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
-      if (this.selectedTask) {
-        this.router.navigate([ basePath ], { fragment: `manage_${this.selectedTask.id}` });
-      } else {
-        this.router.navigate([ basePath ]);
-      }
+      this.newUrl = this.selectedTask ? `${basePath}#manage_${this.selectedTask.id}` : basePath;
+      window.history.pushState('object', document.title, this.newUrl);
     }
-  }
-
-  public onPaginationHandler(page: number): void {
-    this.paginationEvent.emit(page);
   }
 
   private getCurrentPageIndex(): number {
@@ -191,11 +234,4 @@ export class TaskListComponent implements OnChanges {
     return this.tasks ? this.tasks.length : 0;
   }
 
-  public getFirstResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.tasks ? 1 : 0));
-  }
-
-  public getLastResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentTaskCount());
-  }
 }

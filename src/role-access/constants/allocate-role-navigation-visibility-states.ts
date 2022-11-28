@@ -30,4 +30,5 @@ export const cancelButtonVisibilityStates = [
   AllocateRoleState.CHOOSE_DURATION,
   AllocateRoleState.CHECK_ANSWERS,
   AllocateRoleState.CONFIRM_ALLOCATION,
+  AllocateRoleState.NO_ROLES_FOUND
 ];

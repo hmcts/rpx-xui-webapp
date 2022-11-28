@@ -37,7 +37,6 @@ describe('CaseDetailsComponent', () => {
   it('should assign case id', () => {
     expect(component.caseId).toEqual('dummy');
   });
-
   it('should unsubscribe', () => {
     spyOn(component.$caseIdSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();

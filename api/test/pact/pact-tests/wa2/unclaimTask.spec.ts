@@ -28,7 +28,7 @@ describe("Task management api, Unclaim a task", () => {
         });
 
         before(async () => {
-            
+
             await pactSetUp.provider.setup()
             const interaction = {
                 state: "unclaim a task using taskId",
@@ -63,7 +63,7 @@ describe("Task management api, Unclaim a task", () => {
             sandbox.stub(config, 'get').callsFake((prop) => {
                 return configValues[prop];
             });
-            const { postTaskAction } = requireReloaded('../../../../workAllocation2/index');
+            const { postTaskAction } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

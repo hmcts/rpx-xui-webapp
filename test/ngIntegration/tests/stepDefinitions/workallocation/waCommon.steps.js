@@ -102,37 +102,104 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) {
-        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === useridentifier)[0];
-        if (!testUserIdamId) {
-            throw new Error("Provided user identifer is not configured in test data. " + releaseUer);
-        }
-
-        const userIdamID = testUserIdamId.idamId;
-        await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
-
-       
-
-        roles = roles.split(",");
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            // workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        }
-        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-        CucumberReporter.AddJson(userDetails);
-        global.scenarioData[mockUserRef] = userDetails;
+    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) { 
+        nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles(useridentifier,roles);
+        CucumberReporter.AddJson(nodeAppMock.userDetails);
+        global.scenarioData[mockUserRef] = nodeAppMock.userDetails;
        
     });
 
-    Given('I set MOCK user with reference {string} roleAssignmentInfo', async function(userDetailsRef, locatiosInfo){
+    Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function(userDetailsRef, roleAssignments){
+        const boolAttributes = ['isCaseAllocator','bookable']; 
         const userDetails = global.scenarioData[userDetailsRef];
-        const locationInfos = [];
-        for (let loc of locatiosInfo.hashes()){
-            loc.isCaseAllocator = loc.isCaseAllocator === "true"
-            locationInfos.push(loc);
+        const roleAssignmentArr = [];
+        for (let roleAssignment of roleAssignments.hashes()){
+            const roleKeys = Object.keys(roleAssignment);
+
+            boolAttributes.forEach(attr => {
+                if (roleKeys.includes(attr)){
+                    roleAssignment[attr] = roleAssignment[attr] === "true";
+                }
+            })
+            
+            roleAssignmentArr.push(roleAssignment);
         }
-        userDetails.roleAssignmentInfo = locationInfos;
+        userDetails.roleAssignmentInfo.push(...roleAssignmentArr);
     });
 
+    Given('I set Mock user with ref {string}, reset role assignments', async function (userDetailsRef){
+        const userDetails = global.scenarioData[userDetailsRef];
+        userDetails.roleAssignmentInfo =[];
+ 
+    });
+
+    function addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable){
+        const userDetails = global.scenarioData[userDetailsRef];
+        const roleAssignmentArr = [];
+        const roleAttributes = roleAttributesDataTable.rowsHash()
+
+        for (const service of services.split(",")) {
+            const role = {
+                "substantive": "N",
+                "primaryLocation": "455174",
+                "jurisdiction": service,
+                "isCaseAllocator": false,
+                "roleType": "ORGANISATION"
+            };
+
+            for (const attr of Object.keys(roleAttributes)) {
+                if (roleAttributes[attr] === '') {
+                    delete role[attr];
+                } else {
+                    role[attr] = roleAttributes[attr];
+                }
+            }
+            roleAssignmentArr.push(role);
+        }
+        userDetails.roleAssignmentInfo.push(...roleAssignmentArr);
+    }
+
+    Given('I set Mock user with ref {string}, ORGANISATION roles for services {string}', async function (userDetailsRef, services, roleAttributesDataTable){
+        if (services === ''){
+            return;
+        }
+        addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable) 
+    });
+    
+    Given('I set Mock user with ref {string}, ORGANISATION roles for services {string} allow empty service', async function (userDetailsRef, services, roleAttributesDataTable) {
+        addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable)
+    });
+
+
+    Given('I set MOCK user with reference {string} roleAssignmentInfo', async function (userDetailsRef, roleAssignments) {
+        const boolAttributes = ['isCaseAllocator'];
+        const userDetails = global.scenarioData[userDetailsRef];
+        const roleAssignmentArr = [];
+        for (let roleAssignment of roleAssignments.hashes()) {
+            const roleKeys = Object.keys(roleAssignment);
+
+            boolAttributes.forEach(attr => {
+                if (roleKeys.includes(attr)) {
+                    roleAssignment[attr] = roleAssignment[attr] === "true";
+                }
+            })
+            if (roleKeys.includes('bookable')){
+                const valueTypeAndValue = roleAssignment['bookable'].split(",");
+                if (valueTypeAndValue.length > 0 && valueTypeAndValue[1] && valueTypeAndValue[1].includes('string')){
+                    roleAssignment['bookable'] = valueTypeAndValue[0]
+                }else{
+                    roleAssignment['bookable'] = roleAssignment['bookable'] === "true" 
+
+                } 
+            }
+            if (roleKeys.includes('roleType') ){
+                roleAssignment.isCaseAllocator = roleAssignment.roleType === 'ORGANISATION'
+            }
+            roleAssignment.substantive = "Y"
+            roleAssignmentArr.push(roleAssignment);
+        }
+        userDetails.roleAssignmentInfo = roleAssignmentArr;
+    });
 
     Given('I set MOCK with user identifer {string} role type {string} and role identifiers {string}', async function (useridentifier,roleType ,roleIdentifiers) {
         const roles = [];
@@ -142,10 +209,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
 
         const userIdamID = testUserIdamId.idamId;
-        await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
-
-      
- 
+       
         const rolesIdentifiersArr = roleIdentifiers.split(",");
         const roleidentifersForRoleType = userRolesConfig[roleType.toLowerCase()];
         if (!roleidentifersForRoleType){
@@ -259,6 +323,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    Given('I clear all MOCK location', function(){
+        workallocationMockData.locationsByServices = [];
+    })
+
     Given('I set MOCK locations with names in service {string}', async function(service, locationNamesDatatable){
         const locationNamesHashes = locationNamesDatatable.hashes();
         const locationNames = [];
@@ -268,11 +336,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
         const locationsArray = workallocationMockData.getLocationsWithNames(locationNames);
 
-        for (const locationsByService of workallocationMockData.locationsByServices){
-            if (locationsByService.service === service){
-                locationsByService.locations.push(...locationsArray);
-            }
-        }
+        let locationForThisService = { service: service, locations: [] }
+        locationForThisService.locations.push(...locationsArray);
+        workallocationMockData.locationsByServices.push(locationForThisService)
     
     });
 

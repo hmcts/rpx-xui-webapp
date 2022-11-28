@@ -17,7 +17,6 @@ export async function createLabellingRole(req: EnhancedRequest,
     const headers = setHeaders(req);
     /* tslint:disable:no-string-literal */
     delete headers['accept'];
-    console.log('siva req body', JSON.stringify(body))
     const response = await http.post(fullPath, body, { headers });
     return response;
 }

@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.25-case-file-view-error-message-display":
-  version "5.0.25-case-file-view-error-message-display"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.25-case-file-view-error-message-display.tgz#00f558110b20c72fce9f2ef53b500733d3fb8e90"
-  integrity sha512-9md6vXR8D2UJ5DRVEEzBgO7ijCYeLyzxnlSvnOOkloUXoKv+gs+67sb6CW9mXKShEgZJY8RFjB+q4RGfkALwlQ==
+"@hmcts/ccd-case-ui-toolkit@5.0.25-case-file-view-document-count-v2":
+  version "5.0.25-case-file-view-document-count-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.25-case-file-view-document-count-v2.tgz#eb95144a04c9415056c18302e635bed6eb135326"
+  integrity sha512-c35zOC7rgzXgoWH3vvXG0DPpAsl6iNxrDtb+IQi8jspNe2q5m1206gqx0xVjHdvv8H4jpa40/kuxxnE+wmTaWA==
   dependencies:
     tslib "^2.0.0"
 

@@ -123,24 +123,37 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-      rewrite: true,
-      rewriteUrl: '/refund',
-      source: '/api/refund',
-      target: getConfigValue(SERVICES_REFUNDS_API_URL),
+    rewrite: true,
+    rewriteUrl: '/refund',
+    source: '/api/refund',
+    target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
+
   applyProxy(app, {
-      rewrite: false,
-      source: '/refdata/location',
-      target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+    rewrite: false,
+    source: '/refdata/location',
+    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
   });
+
   applyProxy(app, {
     rewrite: false,
     source: '/refdata/commondata/lov/categories/CaseLinkingReasonCode',
     target: getConfigValue(SERVICES_PRD_COMMONDATA_API),
   });
+
   applyProxy(app, {
     rewrite: false,
     source: '/getLinkedCases',
     target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
-}
+
+  applyProxy(app, {
+    rewrite: false,
+    // Note: the "service-id=" part of the URL is *not* missing a preceding '?', as would be expected if service-id was
+    // a query string parameter. The Reference Data team confirms service-id is a *path* parameter and "service-id=" is
+    // intentional (see Line 66 of CaseFlagApiController.java in
+    // https://github.com/hmcts/rd-commondata-api/blob/master/src/main/java/uk/gov/hmcts/reform/cdapi/controllers)
+    source: '/refdata/commondata/caseflags/service-id=:sid',
+    target: getConfigValue(SERVICES_PRD_COMMONDATA_API),
+  });
+};

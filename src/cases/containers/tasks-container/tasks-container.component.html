@@ -1,8 +1,5 @@
-<exui-task-alert-banner *ngIf="warningIncluded" alertTitle="Task alert"
-alertMessage="An application is pending a decision. Consider if this application has an impact on any other tasks you might wish to complete.">
+<exui-task-alert-banner [tasks]="tasks" *ngIf="warningIncluded" alertTitle="Task alert">
 </exui-task-alert-banner>
-
-
 <div class="govuk-tabs__panel active-tasks-container" id="event">
   <div>
     <div class="govuk-grid-row">

@@ -23,7 +23,7 @@ describe('Work allocation Release 2:  Case roles', () => {
         Request.clearSession();
     });
 
-   
+
     after(async function () {
         const authToken = await getAuthorisation(caseOfficer, caseofficerPass);
         const roleAssignmentCleanUp = require('../../../dataCleanup/roleAssignments');
@@ -57,7 +57,7 @@ describe('Work allocation Release 2:  Case roles', () => {
             if (caseRolesResponse.data.length > 0){
                 expect(Object.keys(caseRolesResponse.data[0])).to.include.members(expectedCaseRoleKeys);
             }else{
-                reporterMsg(`No cases roles returned`) 
+                reporterMsg(`No cases roles returned`)
             }
 
        } else {
@@ -212,13 +212,13 @@ describe('Work allocation Release 2:  Case roles', () => {
             'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length
         };
 
-        const response = await Request.post(`workallocation2/my-work/cases`, caseRequestObj.getRequestBody(), headers, 200);
+        const response = await Request.post(`workallocation/my-work/cases`, caseRequestObj.getRequestBody(), headers, 200);
         return response;
     }
 
 
     function getSearchCaseReqBody(view, users, locations, userType) {
-        // const response = await Request.get('api/user/details', null, 200); 
+        // const response = await Request.get('api/user/details', null, 200);
 
         const caseRequestBody = new CaseRequestBody();
         caseRequestBody.inView(view);
@@ -260,7 +260,7 @@ describe('Work allocation Release 2:  Case roles', () => {
 
     async function getIACases() {
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
-        
+
         const body = { size: 25 };
 
         const headers = {

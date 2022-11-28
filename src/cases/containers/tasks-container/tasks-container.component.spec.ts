@@ -6,8 +6,8 @@ import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
-import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation-2/services';
-import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
+import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
+import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 
 

@@ -3,7 +3,8 @@ import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
+
+import { Caseworker } from '../../../work-allocation/models/dtos';
 import { AnswersComponent } from '../../components/answers/answers.component';
 import { ExclusionNavigationEvent, RoleCategory } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';

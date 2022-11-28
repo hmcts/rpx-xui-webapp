@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.27-angular11-upgrade":
-  version "5.0.27-angular11-upgrade"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.27-angular11-upgrade.tgz#bbe9a17a7ee6230b410948e3d097be86213166e8"
-  integrity sha512-Ke8mglcvjSLnkDvcAM790b/YfHZPsSp1actvIV259DP8QKjDfFSiYCfeeskK8Wz9HshtizSUblF7dtaAF5G3XQ==
+"@hmcts/ccd-case-ui-toolkit@5.0.29-angular11-upgrade":
+  version "5.0.29-angular11-upgrade"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.29-angular11-upgrade.tgz#f323f0413fd8f30a06907c621dbd5289dbd251fb"
+  integrity sha512-RVjJKF9ljBjzGnKrwemDwAcWcLUR8GjmpCd+gl3mrxHlqIc3n8eOmVXzxqjZl9rauhGr0IwQigqX6E/VTdF6Bw==
   dependencies:
     tslib "^2.0.0"
 
@@ -1509,7 +1509,7 @@
     js-yaml "^3.8.4"
     superagent "5"
 
-"@hmcts/nodejs-logging@^3.0.0", "@hmcts/nodejs-logging@^3.0.1":
+"@hmcts/nodejs-logging@^3.0.0":
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/@hmcts/nodejs-logging/-/nodejs-logging-3.0.4.tgz#82418571e85f0a275e021f53008195accc55e3b9"
   integrity sha512-42JgVVxxMI9JD+lnKkBcwIYAiJM/mIUlSLlqs8uVqnzHG/JdMhg1g6cYWqWc3UIhxl2KS+n8y4bh09nLC47nSA==
@@ -1517,6 +1517,15 @@
     moment "^2.19.3"
     on-finished "^2.3.0"
     winston "^2.4.5"
+
+"@hmcts/nodejs-logging@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/nodejs-logging/-/nodejs-logging-3.0.1.tgz#370bfee6c1d502ea7fec13001632bb03f15d072d"
+  integrity sha512-BpOBBFvUfy3d/pGi/s0s2CxtNwnLEm1hJcsEH7av9NpXaGL1rO0zfAcEk4eKNKYZVBEoiyXlpajFtAutSAFWfg==
+  dependencies:
+    moment "^2.19.3"
+    on-finished "^2.3.0"
+    winston "^2.4.1"
 
 "@hmcts/properties-volume@^0.0.13":
   version "0.0.13"

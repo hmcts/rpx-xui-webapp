@@ -1,8 +1,8 @@
 import { of } from 'rxjs';
 import { RoleCategory } from '../../../role-access/models';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
-import { Task } from '../../../work-allocation-2/models/tasks';
-import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
+import { Caseworker } from '../../../work-allocation/models/dtos';
+import { Task } from '../../../work-allocation/models/tasks';
+import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { CaseTaskComponent } from './case-task.component';
 
 describe('CaseTaskComponent', () => {

@@ -44,7 +44,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const userRole: UserRole = AppUtils.getRoleCategory(userInfo.roles);
       const searchParameters: SearchTaskParameter [] = [
         { key: 'available_tasks_only', operator: 'BOOLEAN', value: true },
         { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }

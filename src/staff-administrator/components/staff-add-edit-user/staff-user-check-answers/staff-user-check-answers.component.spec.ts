@@ -6,7 +6,7 @@ import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
-import { InfoMessageCommService } from 'src/app/shared/services/info-message-comms.service';
+import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 
 describe('StaffUserCheckAnswersComponent', () => {
   let component: StaffUserCheckAnswersComponent;

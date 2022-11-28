@@ -53,6 +53,8 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
       this.domain = PersonRole.CASEWORKER;
     } else if (allocateRoleStateData.roleCategory === RoleCategory.ADMIN) {
       this.domain = PersonRole.ADMIN;
+    } else if (allocateRoleStateData.roleCategory === RoleCategory.CTSC) {
+      this.domain = PersonRole.CTSC;
     }
     this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;

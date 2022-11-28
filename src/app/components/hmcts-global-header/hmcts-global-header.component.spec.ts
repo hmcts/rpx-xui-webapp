@@ -50,7 +50,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     }
   };
 
-  let origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+  const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
 
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;

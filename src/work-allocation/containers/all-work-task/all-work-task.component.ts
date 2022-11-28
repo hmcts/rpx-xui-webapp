@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
@@ -11,6 +11,7 @@ import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 import * as fromActions from '../../../app/store';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -61,16 +62,17 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public loadCaseWorkersAndLocations(): void {
-    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).map(userDetails =>
+    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map(userDetails =>
       userDetails.roleAssignmentInfo.filter(role => role.roleName && role.roleName === 'task-supervisor').map(role => role.jurisdiction || null)
-    );
+    ));
+
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.waSupportedJurisdictions$ = Observable.combineLatest(
+    this.waSupportedJurisdictions$ = combineLatest(
       [userRoles$,
         waJurisdictions$]
-    ).map(jurisdictions => {
+    ).pipe(map(jurisdictions => {
       return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
-    });
+    }));
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {

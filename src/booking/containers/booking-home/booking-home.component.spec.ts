@@ -6,7 +6,7 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
-import { BookingProcess } from '../../models';
+import { BookingProcess, BookingResponseSuccess } from '../../models';
 import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
 import { BookingHomeComponent } from './booking-home.component';
@@ -32,6 +32,18 @@ const DUMMY_BOOKINGS: Booking[] = [{
   endTime: '2022-06-20T00:00:00Z',
   locationName: 'Glasgow Tribunals Centre'
 }];
+
+const bookableSuccessResponse: BookingResponseSuccess = {
+  bookingResponse: {
+    userId: '1',
+    locationId: '1',
+    regionId: '1',
+    beginTime: new Date(),
+    endTime: new Date(),
+    created: new Date(),
+    log: ''
+  }
+};
 
 describe('BookingHomeComponent', () => {
   let component: BookingHomeComponent;
@@ -75,7 +87,7 @@ describe('BookingHomeComponent', () => {
       .compileComponents();
 
     bookingService.getBookings.and.returnValue(of(DUMMY_BOOKINGS));
-    bookingService.refreshRoleAssignments.and.returnValue(of({}));
+    bookingService.refreshRoleAssignments.and.returnValue(of(bookableSuccessResponse));
 
     fixture = TestBed.createComponent(BookingHomeComponent);
     component = fixture.componentInstance;

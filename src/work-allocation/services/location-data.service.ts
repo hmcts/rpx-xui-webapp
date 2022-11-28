@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { SessionStorageService } from '../../app/services';
 import { Location, LocationByEPIMMSModel } from '../models/dtos';
@@ -33,7 +33,7 @@ export class LocationDataService {
         .set('serviceCodes', serviceCodes.join())
     };
     // note: may be better way of searching by epimms_id in future - previously getting location by epimms id was mocked
-    return this.http.get<LocationByEPIMMSModel[]>(`${LocationDataService.fullLocationUrl}`, options).map(
-      allLocations => allLocations.filter(location => locationIds.includes(location.epimms_id)));
+    return this.http.get<LocationByEPIMMSModel[]>(`${LocationDataService.fullLocationUrl}`, options).pipe(map(
+      allLocations => allLocations.filter(location => locationIds.includes(location.epimms_id))));
   }
 }

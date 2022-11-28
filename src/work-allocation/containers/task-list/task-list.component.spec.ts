@@ -115,7 +115,7 @@ describe('TaskListComponent', () => {
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     fixture.detectChanges();
-  });
+  }));
 
   it('should return the fields as an array with a \'manage\' entry, so that we can ' +
     'display the manage column in the table.', () => {

@@ -133,7 +133,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(component.navigate.emit).toHaveBeenCalled();
   });
 
-  it('should display find case right aligned', (done: DoneFn) => {
+  it('should display find case right aligned', () => {
     component.showItems = true;
     component.items = [{
       align: 'right',
@@ -156,11 +156,10 @@ describe('HmctsGlobalHeaderComponent', () => {
     fixture.detectChanges();
     component.isUserCaseManager$.subscribe(result => {
       expect(result).toBe(true);
-      done();
     });
   });
 
-  it('should not display find case right aligned', (done: DoneFn) => {
+  it('should not display find case right aligned', () => {
     component.showItems = true;
     component.items = [{
       text: 'Find case',
@@ -183,11 +182,10 @@ describe('HmctsGlobalHeaderComponent', () => {
     fixture.detectChanges();
     component.isUserCaseManager$.subscribe(result => {
       expect(result).toBe(false);
-      done();
     });
   });
 
-  it('splitNavItems', (done: DoneFn) => {
+  it('splitNavItems', () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -237,7 +235,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     });
   });
 
-  it('filters out menu items for which the user does not hold the correct role', (done) => {
+  it('filters out menu items for which the user does not hold the correct role', () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -269,7 +267,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       })
     ).subscribe(items => {
       expect(items).toEqual([component.items[0]]);
-      done();
+
     });
   });
 

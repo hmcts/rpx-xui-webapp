@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import * as routeAction from '../../../app/store/index';
 import { ExcludeOption, RoleAccessHttpError } from '../../models';
 import { ExclusionMessageText } from '../../models/enums';

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InfoMessage } from '../../../../app/shared/enums/info-message';
 import { InformationMessage } from 'src/app/shared/models';
 import { InfoMessageCommService } from 'src/app/shared/services/info-message-comms.service';
 import { InfoMessageType } from 'src/role-access/models/enums';

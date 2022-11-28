@@ -1,4 +1,4 @@
-import { RoleCategory } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
+import { RoleCategory } from '@hmcts/ccd-case-ui-toolkit';
 import { Action } from '@ngrx/store';
 
 import { Period, SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';

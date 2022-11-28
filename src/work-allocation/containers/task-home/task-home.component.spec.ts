@@ -11,7 +11,6 @@ import { ErrorMessage } from 'src/app/models';
 import { ErrorMessageComponent } from '../../../app/components';
 import { SessionStorageService } from '../../../app/services';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
-import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';

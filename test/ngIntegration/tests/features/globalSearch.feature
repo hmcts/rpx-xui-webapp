@@ -1,4 +1,4 @@
-@ng 
+@ng @ignore
 Feature: Global search
 
     Background: Setup
@@ -226,7 +226,7 @@ Feature: Global search
         When I click action link "View" at row 1 in global search results page
         Then I see case details page
 
-@test
+
     Scenario: Case search results view validations challenged access
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
@@ -253,7 +253,7 @@ Feature: Global search
         Then I validate global search results displayed count 10
 
         When I click action link "Challenged access" at row 1 in global search results page
-        
+
         Then I see case details basic view and request access page
         Then I see case details basic view displays banner with message "This case requires challenged access"
 
@@ -264,7 +264,7 @@ Feature: Global search
 
         When I click request access button in case basic view page
         Then I see case details challenged access request page
-@test
+
     Scenario: Case search results view validations Specific access
         Given I set MOCK case details with reference "caseDetailsSpecific"
         Given I set MOCK case details "caseDetailsSpecific" property "Jurisdiction" as "Civil"

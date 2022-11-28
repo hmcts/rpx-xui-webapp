@@ -4,12 +4,14 @@ import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
   waServiceConfig: 'wa-service-config',
+  waAccess: 'wa-access',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
   userTypeRoles: 'mc-user-type-roles',
   booking: 'mc-booking-active',
   mcHearingsFeature: 'mc-hearings-jurisdictions',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs'
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
+  updatedTaskPermissionsFeature: 'updated-task-permission'
 };
 
 const footerDataNavigation = {
@@ -76,7 +78,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Immigration and Asylum',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'customer.service@justice.gov.uk',
+    email: 'contactia@justice.gov.uk',
     phone: '0300 123 1711',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   },

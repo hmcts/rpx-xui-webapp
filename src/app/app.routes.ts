@@ -47,12 +47,6 @@ export const ROUTES: Routes = [
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
-    path: 'tasks',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    component: MyTasksComponent
-  },
-  {
-    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks/:subRoute',
     pathMatch: 'prefix',
     canActivate: [AuthGuard, AcceptTermsGuard],
@@ -61,8 +55,7 @@ export const ROUTES: Routes = [
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks',
-    redirectTo: 'work/my-work/list',
-    canActivate: [AuthGuard, AcceptTermsGuard]
+    redirectTo: 'work/my-work/list'
   },
   {
     path: 'role-access',

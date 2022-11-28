@@ -34,7 +34,8 @@
     "location_ref_api_url": "/refdata/location",
     "cam_role_assignments_api_url": "/am/role-assignments",
     "rd_common_data_api_url": "/refdata/commondata",
-    "case_data_store_api_url": "/getLinkedCases"
+    "case_data_store_api_url": "/getLinkedCases",
+    "case_flags_refdata_api_url": "/refdata/commondata/caseflags/service-id=:sid"
   },
   "urls": {
     "idam": {

@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -78,7 +78,7 @@ describe('AllWorkCaseComponent', () => {
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   let store: Store<fromActions.State>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     storeMock.pipe.and.returnValue(of(USER_DETAILS));
     TestBed.configureTestingModule({
@@ -112,8 +112,8 @@ describe('AllWorkCaseComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
-    store = TestBed.get(Store);
+    router = TestBed.inject(Router);
+    store = TestBed.inject(Store);
     navigateSpy = spyOn(router, 'navigateByUrl');
 
     const cases: Case[] = getMockCases();

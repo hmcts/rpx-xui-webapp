@@ -1,4 +1,3 @@
-import { isDefined } from '@angular/compiler/src/util';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -208,7 +207,7 @@ export class TaskListComponent implements OnChanges {
   public isPaginationEnabled(): boolean {
     return this.pagination &&
       this.enablePagination &&
-      isDefined(this.tasks) &&
+      typeof(this.tasks) !== 'undefined' &&
       this.tasks.length > 0;
   }
 

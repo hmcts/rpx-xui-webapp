@@ -10,9 +10,9 @@ import { AssignHintText, TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { handleTasksFatalErrors } from '../../utils';
-import { InformationMessage } from 'src/app/shared/models';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
-import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 
 @Component({
   selector: 'exui-task-assignment-confirm',

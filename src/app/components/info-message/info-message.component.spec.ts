@@ -1,7 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
-import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
+import { InfoMessage } from '../../shared/enums/info-message';
+import { InfoMessageType } from '../../shared/enums/info-message-type';
 import { InfoMessageComponent } from './info-message.component';
 
 @Component({

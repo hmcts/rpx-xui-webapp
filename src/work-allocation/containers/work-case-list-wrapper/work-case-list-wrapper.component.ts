@@ -6,8 +6,8 @@ import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-x
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
-import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';

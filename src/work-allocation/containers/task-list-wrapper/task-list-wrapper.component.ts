@@ -28,8 +28,8 @@ import {
 } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import * as fromActions from '../../../app/store';
-import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',

@@ -14,7 +14,7 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 import { CaseDetailsHomeComponent } from '..';
 import { reducers } from '../../../app/store';
 import * as fromFeature from '../../store';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 
 describe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
-import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';

@@ -1,4 +1,4 @@
-import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { TaskActionType } from '../../enums';
 
 export const TASK_ACTION_CONSTANTS = {

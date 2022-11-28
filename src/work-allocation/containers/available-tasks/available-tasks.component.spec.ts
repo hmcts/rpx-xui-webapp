@@ -20,9 +20,9 @@ import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsSer
 import { getMockLocations, getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
-import { InformationMessage } from 'src/app/shared/models';
-import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 
 @Component({
   template: `

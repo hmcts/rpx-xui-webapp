@@ -5,8 +5,8 @@ import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
 import { InfoMessage } from '../../../../app/shared/enums/info-message';
-import { InformationMessage } from 'src/app/shared/models';
-import { InfoMessageCommService } from 'src/app/shared/services/info-message-comms.service';
+import { InformationMessage } from '../../../../app/shared/models';
+import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from 'src/role-access/models/enums';
 import { Roles } from 'src/staff-administrator/models/roles.enum';
 import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';

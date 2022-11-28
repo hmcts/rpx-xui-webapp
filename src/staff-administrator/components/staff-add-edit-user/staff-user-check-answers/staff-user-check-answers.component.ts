@@ -8,6 +8,7 @@ import { InfoMessageCommService } from 'src/app/shared/services/info-message-com
 import { InformationMessage } from 'src/app/shared/models';
 import { InfoMessage } from 'src/app/shared/enums/info-message';
 import { InfoMessageType } from 'src/app/shared/enums/info-message-type';
+import { Roles } from 'src/staff-administrator/models/roles.enum';
 import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffJobTitles } from '../../../models/staff-job-titles';
@@ -33,16 +34,18 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public firstName: string;
   public lastName: string;
   public email: string;
-  public region: string;
+  public region: string[];
   public services: string[];
   public primaryLocations;
   public additionalLocations;
-  public userType: string;
+  public userType: string[];
   public roles: string[];
   public skills: string[];
   public servicePayload;
   public rolesPayload = [];
   public jobTitlesPayload = [];
+  public regionPayload = [];
+  public userTypesPayload = [];
   public skillsPayload;
 
   constructor(
@@ -67,16 +70,18 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         this.firstName = this.addUserData[0].value[0];
         this.lastName = this.addUserData[1].value[0];
         this.email = this.addUserData[2].value[0];
-        this.region = this.addUserData[3].value[0];
+        this.region = this.addUserData[3].value;
         this.primaryLocations = this.addUserData[5].value[0];
         this.additionalLocations = this.addUserData[6].value;
-        this.userType = this.addUserData[7].value[0];
+        this.userType = this.addUserData[7].value;
         this.roles = this.addUserData[8].value;
         this.skills = this.addUserData[10].value;
 
         this.prepareServicesPayload();
         this.prepareJobTitlesPayload();
+        this.prepareUserTypePayload();
         this.prepareRolesPayload();
+        this.prepareRegionPayload();
         this.prepareSkillsPayload();
       }
     });
@@ -103,6 +108,12 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
     jobTitlesNamePayload.map(jobTitleName => {
       this.jobTitlesPayload.push(StaffJobTitles.jobTitles.find(jobTitle => jobTitle.role === jobTitleName.label));
+    });
+  }
+
+  private prepareUserTypePayload() {
+    this.userType.map(userType => {
+      this.userTypesPayload.push(this.staffFilterOptions.userTypes.find(userTypes => userTypes.key === userType));
     });
   }
 
@@ -134,6 +145,16 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     })
   }
 
+  private prepareRegionPayload() {
+    const regionObj = [
+      { key: 'region-1', label: 'Region 1'}
+    ];
+
+    this.region.map(region => {
+      this.regionPayload.push(regionObj.find(regions => regions.key === region));
+    })
+  }
+
   private prepareSkillsPayload() {
     const skillsPayload = [[]];
     let nonEmptySkillsPayload = [[]];
@@ -151,13 +172,22 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public addNewUser() {
-    let task_supervisor_flag;
-    let case_allocator_flag;
-    let staff_admin_flag;
+    let task_supervisor_flag = false;
+    let case_allocator_flag = false;
+    let staff_admin_flag = false;
     this.roles.map(role => {
-      task_supervisor_flag = role === 'task-supervisor';
-      case_allocator_flag = role === 'case-allocator';
-      staff_admin_flag = role === 'staff-administrator';
+      if (role === Roles.TaskSupervisor) {
+        task_supervisor_flag = true;
+        return;
+      }
+      if (role === Roles.CaseAllocator) {
+        case_allocator_flag = true;
+        return;
+      }
+      if (role === Roles.StaffAdmin) {
+        staff_admin_flag = true;
+        return;
+      }
     });
 
     const addNewUserPayload = {
@@ -165,7 +195,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       first_name: this.firstName,
       last_name: this.lastName,
       services: this.servicePayload,
-      region: this.region,
+      region: this.regionPayload.length ? this.regionPayload[0].label : '' ,
       region_id: 1,
       roles: this.jobTitlesPayload,
       task_supervisor: task_supervisor_flag,
@@ -173,7 +203,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       staff_admin: staff_admin_flag,
       suspended: false,
       base_locations: this.prepareLocationPayload(),
-      user_type: this.userType,
+      user_type: this.userTypesPayload[0].label,
       skills: this.skillsPayload
     };
 

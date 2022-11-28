@@ -209,7 +209,9 @@ describe('StaffUserCheckAnswersComponent', () => {
       },
       {
         value: [
-          'task-supervisor'
+          'task-supervisor',
+          'case-allocator',
+          'staff-administrator'
         ],
         name: 'roles'
       },

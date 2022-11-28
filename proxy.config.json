@@ -93,5 +93,16 @@
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
+  },
+  "/refdata/commondata/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/getLinkedCases/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
   }
+
 }

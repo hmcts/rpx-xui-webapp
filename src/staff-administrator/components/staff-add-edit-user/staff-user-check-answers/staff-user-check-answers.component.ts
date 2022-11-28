@@ -64,8 +64,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.filterService.getStream(this.formId).subscribe(data => {
-      this.addUserData = data.fields;
+    this.filterService.getStream(this.formId)
+    .filter(responseFormValue => responseFormValue !== null)
+    .subscribe(responseFormValue => {
+      this.addUserData = responseFormValue.fields;
       if (this.addUserData) {
         this.firstName = this.addUserData[0].value[0];
         this.lastName = this.addUserData[1].value[0];
@@ -212,6 +214,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         message: InfoMessage.ADD_NEW_USER,
         type: InfoMessageType.SUCCESS
       } as InformationMessage);
+      this.filterService.clearSessionAndLocalPersistance(this.formId);
       this.router.navigateByUrl('/staff');
     }, error => {
       this.router.navigateByUrl('/service-down');

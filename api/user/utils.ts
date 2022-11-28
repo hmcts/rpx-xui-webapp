@@ -4,6 +4,7 @@ import { RoleAssignment } from "./interfaces/roleAssignment";
 export const JUDGE_ROLE = 'judge';
 export const JUDGE_ROLE_CATEGORY = 'JUDICIAL';
 export const JUDGE_ROLE_NAME = 'judicial';
+export const JUDICIARY_ROLE_NAME = 'judiciary';
 export const ADMIN_ROLE = 'admin';
 export const ADMIN_ROLE_CATEGORY = 'ADMIN';
 export const ADMIN_ROLE_NAME = 'admin';
@@ -16,6 +17,7 @@ export const LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
 export const CITIZEN_ROLE = 'citizen';
 export const CITIZEN_ROLE_CATEGORY = 'CITIZEN';
 export const CITIZEN_ROLE_NAME = 'citizen';
+export const CTSC_ROLE_NAME = 'ctsc';
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
@@ -44,26 +46,22 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
    return roles;
  }
 
-export function getMappedRoleCategory(roles: string[], roleCategories: string[]): string {
-   const roleKeywords: string[] = roles.join().split('-').join().split(',');
-   if (this.roleOrCategoryExists(JUDGE_ROLE, JUDGE_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-      return JUDGE_ROLE_CATEGORY;
-   } else if (this.roleOrCategoryExists(PROFESSIONAL_ROLE, PROFESSIONAL_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-      return PROFESSIONAL_ROLE_CATEGORY;
-   } else if (this.roleOrCategoryExists(CITIZEN_ROLE, CITIZEN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-      return CITIZEN_ROLE_CATEGORY;
-   } else if (this.roleOrCategoryExists(ADMIN_ROLE, ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-      return ADMIN_ROLE_CATEGORY;
-   } else {
-      return LEGAL_OPERATIONS_ROLE_CATEGORY;
-   }
+export function getUserRoleCategory(roles: string[]): string {
+  if (hasRoleCategory(roles, CITIZEN_ROLE)) {
+    return CITIZEN_ROLE_NAME;
+  } else if (hasRoleCategory(roles, JUDGE_ROLE) || hasRoleCategory(roles, JUDICIARY_ROLE_NAME)) {
+    return JUDGE_ROLE_NAME;
+  } else if (hasRoleCategory(roles, PROFESSIONAL_ROLE) || hasRoleCategory(roles, PROFESSIONAL_ROLE_NAME)) {
+    return PROFESSIONAL_ROLE;
+  } else if (hasRoleCategory(roles, ADMIN_ROLE)) {
+    return ADMIN_ROLE_NAME;
+  } else if (hasRoleCategory(roles, CTSC_ROLE_NAME)) {
+    return CTSC_ROLE_NAME;
+  } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME)) {
+    return LEGAL_OPERATIONS_ROLE_NAME;
+  }
 }
 
-export function roleOrCategoryExists(roleKeyword: string,
-                                     roleCategory: string,
-                                     roleKeywords: string[],
-                                     roleCategories: string[]): boolean {
-   const categoryExists = roleCategories.indexOf(roleCategory) > -1;
-   const keywordExists = roleKeywords.indexOf(roleKeyword) > -1;
-   return categoryExists && keywordExists;
+export function hasRoleCategory(roles: string[], roleName): boolean {
+  return roles.some(x => x.toLowerCase() === roleName.toLowerCase());
 }

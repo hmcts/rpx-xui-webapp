@@ -1,7 +1,6 @@
-import { RoleCategory } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 import { Action } from '@ngrx/store';
 
-import { Period, SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
+import { Period, RoleCategory, SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { AccessReason } from '../../models/enums';
 
 export enum SpecificAccessActionTypes {
@@ -35,13 +34,14 @@ export class SetSpecificAccessInitData implements Action {
     accessReason: string,
     specificAccessReason: string,
     roleCategory: RoleCategory,
-    requestedRole: string }) {
+    requestedRole: string
+  }) {
   }
 }
 
 export class DecideSpecificAccessAndGo implements Action {
   public readonly type = SpecificAccessActionTypes.DECIDE_SPECIFIC_ACCESS_AND_GO;
-  constructor(public payload: { accessReason: AccessReason, specificAccessState: SpecificAccessState}) {
+  constructor(public payload: { accessReason: AccessReason, specificAccessState: SpecificAccessState }) {
   }
 }
 
@@ -66,7 +66,7 @@ export class RequestMoreInfoSpecificAccessRequest implements Action {
 }
 export class ApproveSpecificAccessRequest implements Action {
   public readonly type = SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST;
-  constructor(public payload: {specificAccessStateData: SpecificAccessStateData, period: Period}) {
+  constructor(public payload: { specificAccessStateData: SpecificAccessStateData, period: Period }) {
   }
 }
 

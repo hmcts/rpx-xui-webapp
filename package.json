@@ -73,7 +73,7 @@
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "6.9.0-work-allocation-changes-added",
+    "@hmcts/ccd-case-ui-toolkit": "6.10.0-rc6",
     "@hmcts/ccpay-web-component": "5.0.4",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.19-RC.1",

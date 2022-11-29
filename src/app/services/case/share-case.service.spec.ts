@@ -20,7 +20,7 @@ describe('Share Case Service', () => {
   });
 
   it('should have configuration service', () => {
-    service = TestBed.get(CaseShareService);
+    service = TestBed.inject(CaseShareService);
     expect(service).toBeTruthy();
   });
 

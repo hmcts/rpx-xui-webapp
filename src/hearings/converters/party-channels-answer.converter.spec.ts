@@ -59,8 +59,8 @@ describe('PartyChannelsAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new PartyChannelsAnswerConverter(router);
   });
 
@@ -79,7 +79,7 @@ describe('PartyChannelsAnswerConverter', () => {
     };
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG
-    }
+    };
     expect(converter.getPartyName(party, foundPartyFromService)).toEqual('P002');
   });
 
@@ -89,7 +89,7 @@ describe('PartyChannelsAnswerConverter', () => {
     };
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG, partyName: 'Jack'
-    }
+    };
     expect(converter.getPartyName(party, foundPartyFromService)).toEqual('Smith');
   });
 
@@ -99,7 +99,7 @@ describe('PartyChannelsAnswerConverter', () => {
     };
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG, partyName: 'Jack'
-    }
+    };
     expect(converter.getPartyName(party, foundPartyFromService)).toEqual('Jack');
   });
 });

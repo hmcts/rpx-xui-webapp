@@ -5,12 +5,12 @@ import { CaseRole, RoleCategory, TypeOfRole } from '../../role-access/models';
   selector: '[exuiShowAllocateLink]'
 })
 export class ShowAllocateLinkDirective implements OnInit {
-  private static CASE_MANAGERS_LIMIT = 1;
+  private static readonly CASE_MANAGERS_LIMIT = 1;
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public roles: CaseRole[];
   @Input() public roleCategory: RoleCategory;
 
-  constructor(private element: ElementRef<HTMLElement>) {
+  constructor(private readonly element: ElementRef<HTMLElement>) {
   }
 
   private static canDisplayLink(roles: CaseRole[], roleCategory: RoleCategory, showAllocateRoleLink: boolean): boolean {

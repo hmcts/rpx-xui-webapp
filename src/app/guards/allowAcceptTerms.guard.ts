@@ -8,10 +8,10 @@ import { AcceptTermsGuard } from './acceptTerms.guard';
   providedIn: 'root'
 })
 export class AllowAcceptTermsGuard implements CanActivate {
-  constructor(private acceptGuard: AcceptTermsGuard) {
+  constructor(private readonly acceptGuard: AcceptTermsGuard) {
   }
 
-  canActivate(): Observable<boolean> {
+  public canActivate(): Observable<boolean> {
     return this.acceptGuard.canActivate().pipe(
       map(accepted => !accepted)
     );

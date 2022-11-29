@@ -95,7 +95,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       map((userInfo: UserInfo) => userInfo.roles),
       map((roles: string[]) => {
         const i = items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true));
-        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true))
+        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true));
       })
     );
   }

@@ -34,11 +34,11 @@ describe('Ref Data Resolver', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
   it('should be created', () => {
-    const service: RefDataResolver = TestBed.get(RefDataResolver);
+    const service: RefDataResolver = TestBed.inject(RefDataResolver);
     expect(service).toBeTruthy();
   });
 

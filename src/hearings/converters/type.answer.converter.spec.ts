@@ -26,7 +26,7 @@ describe('TypeAnswerConverter', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     typeAnswerConverter = new TypeAnswerConverter(router);
   });
 

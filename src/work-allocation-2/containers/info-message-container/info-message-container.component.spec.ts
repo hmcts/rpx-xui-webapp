@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { InfoMessageContainerComponent } from '..';
@@ -24,7 +24,7 @@ describe('WorkAllocation', () => {
 
     const mockMessageService = jasmine.createSpyObj('messageService', ['infoMessageChangeEmitted$']);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [
@@ -38,7 +38,7 @@ describe('WorkAllocation', () => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
       fixture.detectChanges();
     });
 

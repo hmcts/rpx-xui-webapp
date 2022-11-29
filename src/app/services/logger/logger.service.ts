@@ -1,10 +1,10 @@
-import { CryptoWrapper } from './cryptoWrapper';
-import { environment as config } from '../../../environments/environment';
 import { Injectable } from '@angular/core';
-import { MonitoringService } from './monitoring.service';
 import { NGXLogger } from 'ngx-logger';
-import { SessionStorageService } from '../session-storage/session-storage.service';
+import { environment as config } from '../../../environments/environment';
 import { UserInfo } from '../../models/user-details.model';
+import { SessionStorageService } from '../session-storage/session-storage.service';
+import { CryptoWrapper } from './cryptoWrapper';
+import { MonitoringService } from './monitoring.service';
 
 export interface ILoggerService {
     trace(message: any, ...additional: any[]): void;

@@ -190,6 +190,8 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
       return PersonRole.JUDICIAL;
     case RoleCategory.LEGAL_OPERATIONS:
       return PersonRole.CASEWORKER;
+    case RoleCategory.CTSC:
+      return PersonRole.CTSC;
     default:
       throw new Error('Invalid roleCategory ' + roleCategory);
   }

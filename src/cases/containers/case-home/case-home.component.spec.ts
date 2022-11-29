@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
@@ -22,7 +22,7 @@ describe('CaseHomeComponent', () => {
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     navigationNotifierService = new NavigationNotifierService();
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -44,7 +44,7 @@ describe('CaseHomeComponent', () => {
 
   beforeEach(() => {
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     storeDispatchMock = spyOn(store, 'dispatch');
 
     fixture = TestBed.createComponent(CaseHomeComponent);

@@ -26,7 +26,7 @@ describe('CaseFlagAmendedConverter', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     caseFlagAmendedConverter = new CaseFlagAmendedConverter(router);
   });
 

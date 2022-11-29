@@ -6,10 +6,10 @@ import {Helper, Navigation} from '../../containers/footer/footer.model';
     templateUrl: './hmcts-global-footer.component.html'
 })
 export class HmctsGlobalFooterComponent implements OnInit {
-    @Input() help: Helper;
-    @Input() navigation: Navigation;
+    @Input() public help: Helper;
+    @Input() public navigation: Navigation;
 
     constructor() { }
-    ngOnInit() {}
+    public ngOnInit() {}
 
 }

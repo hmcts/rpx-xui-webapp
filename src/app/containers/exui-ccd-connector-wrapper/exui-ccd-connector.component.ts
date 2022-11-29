@@ -25,17 +25,17 @@ import { Subscription } from 'rxjs';
   `
 })
 export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
-  @ContentChild('ccdComponent', { static: false }) ccdComponent;
-  @ContentChild('ccdComponent', { static: false, read: ElementRef }) ccdComponentElementRef: ElementRef;
-  @Input() eventsBindings;
-  @Input() store: Store<any>; // generic store
-  @Input() fromFeatureStore: any; // specific feature store
-  @HostBinding('attr.data-selector') hostBindingValue: string;
+  @ContentChild('ccdComponent', { static: false }) public ccdComponent;
+  @ContentChild('ccdComponent', { static: false, read: ElementRef }) public ccdComponentElementRef: ElementRef;
+  @Input() public eventsBindings;
+  @Input() public store: Store<any>; // generic store
+  @Input() public fromFeatureStore: any; // specific feature store
+  @HostBinding('attr.data-selector') public hostBindingValue: string;
 
-  subscriptions: Subscription[] = [];
-  dispatcherContainer: { type: string } | {};
+  public subscriptions: Subscription[] = [];
+  public dispatcherContainer: { type: string } | {};
 
-  ngAfterContentInit() {
+  public ngAfterContentInit() {
     if (this.ccdComponent) {
       this.eventsBindings.forEach((event) => {
         this.subscriptions[event.type] =
@@ -49,7 +49,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
   /**
    * Creates dispatchers functions based on CCD events array
    */
-  createDispatchers() {
+  public createDispatchers() {
     this.dispatcherContainer = {};
     this.eventsBindings.forEach(event => {
       this.dispatcherContainer[event.type] = (obj) => {
@@ -58,11 +58,11 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
     });
   }
 
-  deepClone(obj) {
+  public deepClone(obj) {
     return JSON.parse(JSON.stringify(this.simplifyFormGroup(obj)));
   }
 
-  simplifyFormGroup(obj) {
+  public simplifyFormGroup(obj) {
     Object.keys(obj).forEach((key) => {
       if (key === 'formGroup' && obj && obj[key]) {
         const copiedValue = obj[key].value;
@@ -78,7 +78,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
     return obj;
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.subscriptions.length) {
       this.eventsBindings.forEach((event) => {
         this.subscriptions[event.type].unsubscribe();

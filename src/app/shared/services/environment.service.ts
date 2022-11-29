@@ -13,7 +13,7 @@ export class EnvironmentService {
   public config$ = this.http.get<EnvironmentConfig>('/external/config/ui')
     .pipe<EnvironmentConfig>( shareReplay<EnvironmentConfig>(1) );
 
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
     this.config$.subscribe( config => {
       this.data = config;
     });

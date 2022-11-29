@@ -23,6 +23,8 @@ export class AppUtils {
           return AppConstants.ENVIRONMENT_NAMES.ithc;
         case AppConstants.ENVIRONMENT_NAMES.perftest:
           return AppConstants.ENVIRONMENT_NAMES.perftest;
+        default:
+          break;
       }
     }
     return AppConstants.ENVIRONMENT_NAMES.prod;
@@ -179,6 +181,8 @@ export class AppUtils {
         userRole = 'Admin';
         break;
       }
+      default:
+        break;
     }
     return userRole;
   }
@@ -213,6 +217,8 @@ export class AppUtils {
         theme.appTitle.name = 'Manage cases';
         theme.backgroundColor = '#202020';
         theme.logo = 'myhmcts';
+        break;
+      default:
         break;
     }
   }

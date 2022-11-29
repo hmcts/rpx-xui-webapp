@@ -31,7 +31,7 @@ describe('RequestHearingComponent', () => {
       ]
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     fixture = TestBed.createComponent(HearingActualsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

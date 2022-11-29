@@ -28,11 +28,11 @@ describe('AdditionalFacilities Resolver', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
   it('should be created', () => {
-    const service: AdditionalFacilitiesResolver = TestBed.get(AdditionalFacilitiesResolver);
+    const service: AdditionalFacilitiesResolver = TestBed.inject(AdditionalFacilitiesResolver);
     expect(service).toBeTruthy();
   });
 

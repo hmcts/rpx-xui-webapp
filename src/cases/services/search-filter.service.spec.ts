@@ -43,8 +43,8 @@ describe('SearchFilterService', () => {
             ]
         });
 
-        store = TestBed.get(Store);
-        searchFilterService = TestBed.get(SearchFilterService);
+        store = TestBed.inject(Store);
+        searchFilterService = TestBed.inject(SearchFilterService);
         storeDispatchMock = spyOn(store, 'dispatch');
     });
 

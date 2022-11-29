@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
@@ -60,7 +60,7 @@ describe('HearingStageResultComponent', () => {
     },
   ];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HearingStageResultComponent],
       imports: [
@@ -79,7 +79,7 @@ describe('HearingStageResultComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingStageResultComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

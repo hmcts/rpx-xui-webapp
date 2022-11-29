@@ -1,6 +1,7 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import {
+  addNewUser,
   getFilteredUsers,
   getJobTitles,
   getServices,
@@ -20,5 +21,6 @@ router.get('/getUserTypes', getUserTypes);
 router.get('/getJobTitles', getJobTitles);
 router.get('/getSkills', getSkills);
 router.get('/getServices', getServices);
+router.post('/addNewUser', addNewUser);
 
 export default router;

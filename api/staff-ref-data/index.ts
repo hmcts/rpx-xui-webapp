@@ -8,10 +8,10 @@ mock.init();
 
 export async function getFilteredUsers(req, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  const markupPath: string = `/refdata/case-worker/profile`;
+  const apiPath: string = `/refdata/case-worker/profile`;
 
   try {
-    const {status, data}: { status: number, data: StaffDataUser[] } = await handlePost(markupPath, reqBody, req);
+    const {status, data}: { status: number, data: StaffDataUser[] } = await handlePost(apiPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -19,10 +19,10 @@ export async function getFilteredUsers(req, res: Response, next: NextFunction) {
 }
 
 export async function getUserTypes(req, res: Response, next: NextFunction) {
-  const markupPath: string = `/refdata/case-worker/user-type`;
+  const apiPath: string = `/refdata/case-worker/user-type`;
 
   try {
-    const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(markupPath, req);
+    const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -30,10 +30,10 @@ export async function getUserTypes(req, res: Response, next: NextFunction) {
 }
 
 export async function getJobTitles(req, res: Response, next: NextFunction) {
-  const markupPath: string = `/refdata/case-worker/job-title`;
+  const apiPath: string = `/refdata/case-worker/job-title`;
 
   try {
-    const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(markupPath, req);
+    const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -41,10 +41,10 @@ export async function getJobTitles(req, res: Response, next: NextFunction) {
 }
 
 export async function getSkills(req, res: Response, next: NextFunction) {
-  const markupPath: string = `/refdata/case-worker/skill`;
+  const apiPath: string = `/refdata/case-worker/skill`;
 
   try {
-    const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(markupPath, req);
+    const {status, data}: { status: number, data } = await handleGet(apiPath, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -52,10 +52,10 @@ export async function getSkills(req, res: Response, next: NextFunction) {
 }
 
 export async function getServices(req, res: Response, next: NextFunction) {
-  const markupPath: string = `/refdata/case-worker/services`;
+  const apiPath: string = `/refdata/case-worker/services`;
 
   try {
-    const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(markupPath, req);
+    const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -64,10 +64,10 @@ export async function getServices(req, res: Response, next: NextFunction) {
 
 export async function getUsersByPartialName(req, res: Response, next: NextFunction) {
   const searchParam = req.query.search ? req.query.search : '';
-  const markupPath: string = `/refdata/case-worker/profile/search?search=${searchParam}`;
+  const apiPath: string = `/refdata/case-worker/profile/search?search=${searchParam}`;
 
   try {
-    const {status, data}: { status: number, data: StaffDataUser[] } = await handleGet(markupPath, req);
+    const {status, data}: { status: number, data: StaffDataUser[] } = await handleGet(apiPath, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -76,10 +76,22 @@ export async function getUsersByPartialName(req, res: Response, next: NextFuncti
 
 export async function getStaffRefUserDetails(req, res: Response, next: NextFunction) {
   const id = req.params.id;
-  const markupPath: string = `/refdata/case-worker/user-details/${id}`;
+  const apiPath: string = `/refdata/case-worker/user-details/${id}`;
 
   try {
-    const {status, data}: { status: number, data: StaffDataUser } = await handleGet(markupPath, req);
+    const {status, data}: { status: number, data: StaffDataUser } = await handleGet(apiPath, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function addNewUser(req, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const apiPath: string = `/refdata/case-worker/profile`;
+
+  try {
+    const {status, data}: { status: number, data: StaffDataUser } = await handlePost(apiPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

@@ -19,6 +19,9 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "hammerjs"
+            ],
             "stylePreprocessorOptions": {
               "includePaths": [
                 "node_modules/govuk_frontend_toolkit/stylesheets",
@@ -38,7 +41,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "preserveSymlinks": true
           },
           "configurations": {
             "production": {

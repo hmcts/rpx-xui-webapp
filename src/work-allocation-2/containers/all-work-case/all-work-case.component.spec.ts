@@ -38,8 +38,8 @@ class WrapperComponent {
 
 xdescribe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
-  let wrapper: WrapperComponent;
-  let fixture: ComponentFixture<WrapperComponent>;
+  // let wrapper: WrapperComponent;
+  let fixture: ComponentFixture<AllWorkCaseComponent>;
 
   const routerMock = new MockRouter();
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases']);
@@ -62,7 +62,7 @@ xdescribe('AllWorkCaseComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [AllWorkCaseComponent, WrapperComponent, WorkCaseListComponent],
+      declarations: [AllWorkCaseComponent, WorkCaseListComponent],
       providers: [
         {provide: Router, useValue: routerMock},
         {provide: WorkAllocationCaseService, useValue: mockCaseService},
@@ -80,9 +80,9 @@ xdescribe('AllWorkCaseComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
+    fixture = TestBed.createComponent(AllWorkCaseComponent);
+    // wrapper = fixture.componentInstance;
+    component = fixture.componentInstance;
     const cases: Case[] = getMockCases();
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockCaseService.getCases.and.returnValue(of({cases}));
@@ -94,13 +94,15 @@ xdescribe('AllWorkCaseComponent', () => {
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ));
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
-    fixture.detectChanges();
   });
 
   it('should have all column headers, including "Manage +"', () => {
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
+    // fixture.detectChanges();
+    console.log({fields, component});
+
     expect(headerCells).toBeDefined();
     expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
     for (let i = 0; i < fields.length; i++) {

@@ -32,8 +32,13 @@ export class StaffAddEditUserFormComponent implements OnInit {
     private filterService: FilterService,
     private router: Router
   ) {
-    this.previousUrl = this.router.getCurrentNavigation().previousNavigation.finalUrl.toString();
-
+    const currentNavigation = this.router.getCurrentNavigation();
+    if (currentNavigation) {
+      const previousNavigation = currentNavigation.previousNavigation;
+      if (previousNavigation) {
+        this.previousUrl = previousNavigation.finalUrl.toString();
+      }
+    }
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
@@ -145,7 +150,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxWidth480px: true,
         },
         {
-          name: 'services',
+          name: 'user-services',
           type: 'checkbox',
           title: 'Services',
           titleClasses: 'govuk-label govuk-label--m',
@@ -235,12 +240,14 @@ export class StaffAddEditUserFormComponent implements OnInit {
           lineBreakBefore: true,
         },
         {
-          name: 'skills',
-          type: 'checkbox',
+          name: 'user-skills',
+          type: 'nested-checkbox',
           title: 'Skills',
           titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
           options: [...this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b))],
+          // options: [],
+          groupOptions: this.staffFilterOptions.skills,
           minSelected: 0,
           maxSelected: 10,
           maxWidth480px: true,

@@ -5,7 +5,6 @@ import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { ServiceRefData } from '../models/common';
-import { Service, ServiceCode } from '../models/common/service.enum';
 import { Caseworker, CaseworkersByService, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';
 
@@ -190,8 +189,6 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
       return PersonRole.JUDICIAL;
     case RoleCategory.LEGAL_OPERATIONS:
       return PersonRole.CASEWORKER;
-    case RoleCategory.CTSC:
-      return PersonRole.CTSC;
     default:
       throw new Error('Invalid roleCategory ' + roleCategory);
   }

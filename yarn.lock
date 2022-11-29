@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.9.0-work-allocation-changes-added":
-  version "6.9.0-work-allocation-changes-added"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.9.0-work-allocation-changes-added.tgz#909fbe89260d676a69b2485fcc89c2b7fba31c5e"
-  integrity sha512-pJllcM6zcl5Z7trACX4PoRzWnp2XWvv3eEASDxxhA+oboCzxXrTuex6ctEiGbPZM21frkeZP8hHCyoWCEYowhQ==
+"@hmcts/ccd-case-ui-toolkit@6.10.0-rc6":
+  version "6.10.0-rc6"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.0-rc6.tgz#28a100a57d854352d710585d6a15b72a6ec1e703"
+  integrity sha512-XxBYiamNzP4m6XookNFnRlW+TPhFOinLwhNiRqLvCWGZRsvUQq1NwF7LlYQ8ELfj0pleRxgSaNrwqFI3eNgqJQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

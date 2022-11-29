@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.20.26-linked-cases-private-law-integration":
-  version "4.20.26-linked-cases-private-law-integration"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.20.26-linked-cases-private-law-integration.tgz#5dd0c57af76e3c23708265b03e3bbdfd2f0b21a2"
-  integrity sha512-sZwyxyp3GqPZNOSjAx0hqOSEXzaQM3Qb0WNpOpozBnt7AvQaS6PWac0LgAPEKRf8kgppeVHixwp81C8E7MZhMA==
+"@hmcts/ccd-case-ui-toolkit@4.20.27-linked-cases-private-law-integration":
+  version "4.20.27-linked-cases-private-law-integration"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.20.27-linked-cases-private-law-integration.tgz#7404cfa42b387c5943a19741ea1d1d31889eb1f0"
+  integrity sha512-80UWDl2DHfD9W/WZOiyzkhrQYeWEZXimuJK1yvAtUc225y+L5JsV0wS0T4/EVuk30679vWa6XQ9Br+FCmsNxvw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

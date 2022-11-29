@@ -18,8 +18,8 @@ appTestConfig.testEnv = 'aat';
 
 process.env['LOG_LEVEL'] = LOG_LEVELS.Info
 
-
-if (!process.env['TEST_ENV_URL']){
+console.log(process.env['TEST_ENV_URL'])
+if (!process.env['TEST_ENV_URL'] || process.env['TEST_ENV_URL'] === undefined){
     process.env['TEST_ENV_URL'] = process.env['TEST_URL']; 
 
 }
@@ -180,11 +180,10 @@ const config = {
 
 function getBDDTags() {
     let tags = [];
-    console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_ENV_URL']}`);
+    console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_URL']}`);
     console.log(`*********************** process.env['TEST_ENV_URL'] : ${process.env['TEST_ENV_URL']}`);
     if (process.env['TEST_ENV_URL'].includes("pr-") ||
-        process.env['TEST_ENV_URL'].includes("localhost") || 
-        appTestConfig.testEnv === "aat"
+        process.env['TEST_ENV_URL'].includes("localhost") 
         ) { 
         if (argv.tags){
             tags = argv.tags.split(',');

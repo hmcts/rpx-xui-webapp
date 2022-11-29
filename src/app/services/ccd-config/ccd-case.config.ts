@@ -178,6 +178,11 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.refunds_url;
   }
 
+  public getCaseFlagsRefdataApiUrl(): string {
+    // After merge from master , case_flags_refdata_api_url doesnt seems exist, will need to open after investigated
+    return '';//this.config.case_flags_refdata_api_url;
+  }
+
   public getAccessManagementMode(): boolean {
     return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
   }

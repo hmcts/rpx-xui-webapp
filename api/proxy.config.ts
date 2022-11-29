@@ -134,13 +134,13 @@ export const initProxy = (app: Express) => {
     source: '/refdata/location',
     target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
   });
-  
+
   applyProxy(app, {
     rewrite: false,
     source: '/refdata/commondata/lov/categories/CaseLinkingReasonCode',
     target: getConfigValue(SERVICES_PRD_COMMONDATA_API),
   });
-  
+
   applyProxy(app, {
     rewrite: false,
     source: '/getLinkedCases',

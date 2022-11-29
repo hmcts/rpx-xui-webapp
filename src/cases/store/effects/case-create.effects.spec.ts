@@ -29,7 +29,7 @@ describe('CaseCreate Effects', () => {
       ],
     });
 
-    effects = TestBed.get(CaseCreateEffects);
+    effects = TestBed.inject(CaseCreateEffects);
 
   });
 

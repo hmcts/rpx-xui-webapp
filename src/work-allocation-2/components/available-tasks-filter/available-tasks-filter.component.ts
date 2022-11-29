@@ -7,7 +7,6 @@ import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
-
 @Component({
   selector: 'exui-available-tasks-filter',
   templateUrl: './available-tasks-filter.component.html',
@@ -18,7 +17,7 @@ export class AvailableTasksFilterComponent implements OnInit {
   // Getting CheckboxListComponent from DOM ensures it will be defined
   @ViewChild('locationFilter', {static: false}) public locationFilter: CheckboxListComponent<Location>;
   @ViewChild('filterDetails', {static: false})
-  public readonly filterDetails: ElementRef<HTMLDetailsElement>;
+  public filterDetails: ElementRef<HTMLDetailsElement>;
 
   public get detailsElement(): HTMLDetailsElement {
     return this.filterDetails ? this.filterDetails.nativeElement : undefined;
@@ -29,6 +28,7 @@ export class AvailableTasksFilterComponent implements OnInit {
     return this.pSelection;
   }
   public set selection(value: Location[]) {
+    /* istanbul ignore else*/
     if (this.pSelection !== value) {
       this.pSelection = value;
     }
@@ -73,6 +73,7 @@ export class AvailableTasksFilterComponent implements OnInit {
   }
 
   public onSelectionChange(): void {
+     /* istanbul ignore else*/
     if (!this.handledInitialSelection) {
       this.applyFilter();
       this.handledInitialSelection = true;

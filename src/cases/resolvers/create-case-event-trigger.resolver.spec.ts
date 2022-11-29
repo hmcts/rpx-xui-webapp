@@ -51,6 +51,8 @@ describe('CreateCaseFieldsResolver', () => {
           return CASE_TYPE;
         case PARAM_EVENT_ID:
           return EVENT_TRIGGER_ID;
+        default:
+          break;
       }
     });
 

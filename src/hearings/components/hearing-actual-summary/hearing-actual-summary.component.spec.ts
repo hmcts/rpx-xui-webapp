@@ -414,12 +414,12 @@ describe('HearingActualSummaryComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(HearingActualSummaryComponent);
     component = fixture.componentInstance;
     component.hearingActualsMainModel = hearingActualsMainModel;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 

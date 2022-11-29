@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ViewHearingComponent } from './view-hearing.component';
 
 describe('ViewHearingComponent', () => {
@@ -8,7 +8,7 @@ describe('ViewHearingComponent', () => {
   let fixture: ComponentFixture<ViewHearingComponent>;
   const mockLocation = jasmine.createSpyObj('Location', ['back']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ViewHearingComponent],
       providers: [

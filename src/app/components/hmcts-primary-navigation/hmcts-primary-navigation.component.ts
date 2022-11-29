@@ -12,16 +12,16 @@ export class HmctsPrimaryNavigationComponent {
    * That showNavItems is used specifically on the Terms and Conditions page, to not show
    * the Navigation Menu
    */
-  @Input() set showNavItems(value) {
+  @Input() public set showNavItems(value) {
         this.showItems = value;
     }
 
-    @Input() label;
-    @Input() items;
+    @Input() public label;
+    @Input() public items;
     @Input() public logoIsUsed;
 
     public showItems: boolean;
-    constructor(private route: ActivatedRoute) {
+    constructor(private readonly route: ActivatedRoute) {
 
     }
 

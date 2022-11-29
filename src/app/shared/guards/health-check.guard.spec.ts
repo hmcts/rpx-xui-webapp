@@ -7,7 +7,7 @@ import { HealthCheckGuard } from './health-check.guard';
 
 class HttpClientMock {
 
-    get() {
+    public get() {
         return {healthState: true};
     }
 }
@@ -39,8 +39,8 @@ describe('HealthCheckGuard', () => {
     });
 
     beforeEach(() => {
-        healthCheckServiceInstance = TestBed.get(HealthCheckService);
-        storeInstance = TestBed.get(Store);
+        healthCheckServiceInstance = TestBed.inject(HealthCheckService);
+        storeInstance = TestBed.inject(Store);
     });
 
     describe('canActivate', () => {

@@ -27,7 +27,7 @@ describe('Ref Data Resolver', () => {
         ]
       }
     );
-    judicialRefDataService = TestBed.get(JudicialRefDataService) as JudicialRefDataService;
+    judicialRefDataService = TestBed.inject(JudicialRefDataService) as JudicialRefDataService;
   });
 
   afterEach(() => {
@@ -35,7 +35,7 @@ describe('Ref Data Resolver', () => {
   });
 
   it('should be created', () => {
-    const service: JudicialUserSearchResolver = TestBed.get(JudicialUserSearchResolver);
+    const service: JudicialUserSearchResolver = TestBed.inject(JudicialUserSearchResolver);
     expect(service).toBeTruthy();
   });
 

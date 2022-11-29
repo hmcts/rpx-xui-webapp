@@ -8,7 +8,7 @@ import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/mode
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessComponent } from './roles-and-access.component';
-
+import 'mocha';
 
 describe('RolesAndAccessComponent', () => {
   let component: RolesAndAccessComponent;
@@ -51,7 +51,7 @@ describe('RolesAndAccessComponent', () => {
       events: [],
       metadataFields: []
     };
-    component.showAllocateRoleLink = false
+    component.showAllocateRoleLink = false;
     fixture.detectChanges();
   });
 
@@ -97,7 +97,7 @@ describe('RolesAndAccessComponent', () => {
       location: null,
       roleCategory: RoleCategory.LEGAL_OPERATIONS
     }
-  ]
+  ];
 
   it('should set names for unnamed legal ops roles', () => {
     const mockLegalOpsRoles: CaseRole[] = [{
@@ -205,3 +205,7 @@ describe('RolesAndAccessComponent', () => {
     expect(component.namedExclusions[3].name).toBe('D Test');
   });
 });
+function waitForAsync(arg0: () => void): Mocha.Func {
+  throw new Error('Function not implemented.');
+}
+

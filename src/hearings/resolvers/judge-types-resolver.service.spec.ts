@@ -28,11 +28,11 @@ describe('JudgeTypesResolverService', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
   it('should be created', () => {
-    const service: JudgeTypesResolverService = TestBed.get(JudgeTypesResolverService);
+    const service: JudgeTypesResolverService = TestBed.inject(JudgeTypesResolverService);
     expect(service).toBeTruthy();
   });
 

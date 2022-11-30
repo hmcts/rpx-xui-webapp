@@ -17,7 +17,7 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA'
         }
       }
@@ -36,7 +36,7 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA'
         }
       }
@@ -59,7 +59,7 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA'
         }
       }
@@ -78,7 +78,7 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA'
         }
       }
@@ -110,7 +110,7 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA'
         }
       },
@@ -126,7 +126,7 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA'
         }
       }];

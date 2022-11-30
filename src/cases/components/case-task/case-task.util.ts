@@ -29,4 +29,4 @@ export const appendTaskIdAsQueryStringToTaskDescription = (task: Task): string =
   }
 
   return '';
-}
+};

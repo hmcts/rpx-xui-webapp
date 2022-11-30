@@ -1,4 +1,4 @@
 export class FeatureVariation {
-  jurisdiction: string;
-  roles: string[];
+  public jurisdiction: string;
+  public roles: string[];
 }

@@ -16,9 +16,9 @@ import * as fromCases from '../../store/reducers/';
 import { CaseFilterComponent } from './case-filter.component';
 
 class MockSortService {
-  features = {};
-  getFeatureToggle() { }
-  getEditorConfiguration() { }
+  public features = {};
+  public getFeatureToggle() { }
+  public getEditorConfiguration() { }
 }
 describe('Case Filter Component', () => {
   let component: CaseFilterComponent;

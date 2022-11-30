@@ -24,7 +24,7 @@ describe('ActualSummaryResponseResolver', () => {
   });
 
   it('should be created', () => {
-    const service: ActualSummaryResponseResolver = TestBed.get(ActualSummaryResponseResolver);
+    const service: ActualSummaryResponseResolver = TestBed.inject(ActualSummaryResponseResolver);
     expect(service).toBeTruthy();
   });
 

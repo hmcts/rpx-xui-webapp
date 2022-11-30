@@ -888,11 +888,11 @@ describe('Case Flags Resolver', () => {
         ]
       }
     );
-    caseFlagsRefDataService = TestBed.get(CaseFlagsRefDataService) as CaseFlagsRefDataService;
+    caseFlagsRefDataService = TestBed.inject(CaseFlagsRefDataService) as CaseFlagsRefDataService;
   });
 
   it('should be created', () => {
-    const service: CaseFlagsResolver = TestBed.get(CaseFlagsResolver);
+    const service: CaseFlagsResolver = TestBed.inject(CaseFlagsResolver);
     expect(service).toBeTruthy();
   });
 

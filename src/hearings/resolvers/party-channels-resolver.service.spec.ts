@@ -28,11 +28,11 @@ describe('PartyChannelsResolverService', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
   it('should be created', () => {
-    const service: PartyChannelsResolverService = TestBed.get(PartyChannelsResolverService);
+    const service: PartyChannelsResolverService = TestBed.inject(PartyChannelsResolverService);
     expect(service).toBeTruthy();
   });
 

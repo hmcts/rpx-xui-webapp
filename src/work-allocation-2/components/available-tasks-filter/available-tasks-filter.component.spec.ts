@@ -1,155 +1,163 @@
 import { Location } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
+import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
+import { of, throwError } from 'rxjs';
+import { SessionStorageService } from '../../../app/services';
 import { FilterConstants } from '../../components/constants';
-import * as dtos from '../../models/dtos';
 import { LocationDataService } from '../../services';
-import { getMockLocations } from '../../tests/utils.spec';
 import { AvailableTasksFilterComponent } from './available-tasks-filter.component';
 
 
-@Component({
-  template: `<exui-available-tasks-filter (selectionChanged)="onSelectionChanged($event)"></exui-available-tasks-filter>`
-})
-class WrapperComponent {
-  @ViewChild(AvailableTasksFilterComponent, {static: false}) public appComponentRef: AvailableTasksFilterComponent;
-  public changedEvents: any[] = [];
-  public onSelectionChanged(locations: Location[]): void {
-    this.changedEvents.push(locations);
-  }
-}
 
-xdescribe('AvailableTasksFilterComponent', () => {
+describe('AvailableTasksFilterComponent', () => {
   let component: AvailableTasksFilterComponent;
-  let wrapper: WrapperComponent;
-  let fixture: ComponentFixture<WrapperComponent>;
 
-  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
-  const mockLocations: dtos.Location[] = getMockLocations();
-  const mockSavedFilter = JSON.stringify([ mockLocations[0] ]);
-  const mocksessionStore = {
-    [FilterConstants.Session.AvailableTasks]: mockSavedFilter
-  };
-  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem']);
+  const location = { locationName: 'Test Name', id: '000', services: [] };
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ExuiCommonLibModule
-      ],
-      declarations: [ AvailableTasksFilterComponent, WrapperComponent ],
-      providers: [
-        { provide: LocationDataService, useValue: mockLocationService },
-        { provide: Router, useValue: mockRouter }
-      ]
-    }).compileComponents();
-  }));
+  it('should create', () => {
+    component = new AvailableTasksFilterComponent({} as LocationDataService, {} as SessionStorageService, {} as Router);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    mockLocationService.getLocations.and.returnValue(of(mockLocations));
-    spyOn(sessionStorage, 'getItem').and.callFake((key) => {
-      return mocksessionStore[key];
+    expect(component).toBeTruthy();
+  });
+
+  describe('locationLabelFunction', () => {
+    const defaultLocation = { locationName: '', id: '', services: [] };
+    it('should return location name', () => {
+      const locationName = 'Sample Name';
+      component = new AvailableTasksFilterComponent({} as LocationDataService, {} as SessionStorageService, {} as Router);
+
+      const actual = component.locationLabelFunction({ ...defaultLocation, locationName });
+
+      expect(actual).toEqual(locationName);
     });
-    spyOn(sessionStorage, 'setItem').and.callFake((key, value) => {
-      return mocksessionStore[key] = value;
+
+    it('should return empty string', () => {
+      component = new AvailableTasksFilterComponent({} as LocationDataService, {} as SessionStorageService, {} as Router);
+
+      const actual = component.locationLabelFunction(null);
+
+      expect(actual).toEqual('');
     });
-    fixture.detectChanges();
   });
 
-  it('should attempt to load a saved filter from session storage on load', () => {
-    expect(sessionStorage.getItem).toHaveBeenCalledWith(FilterConstants.Session.AvailableTasks);
-    expect(component.preselection).toBeDefined();
-    expect(component.preselection.length).toEqual(1);
-    expect(component.preselection[0].locationName).toEqual(mockLocations[0].locationName);
+  describe('cancelFilter', () => {
+    const filterDetailsMock = { nativeElement: {} };
+    it(`should update the component's 'locationFilter.selection' and 'detailsElement.open'`, () => {
+      component = new AvailableTasksFilterComponent({} as LocationDataService, mockSessionStorageService, {} as Router);
+
+      mockSessionStorageService.getItem.and.callThrough();
+      mockSessionStorageService.setItem.and.callThrough();
+      component.locationFilter = {} as unknown as CheckboxListComponent<any>;
+      component.filterDetails = filterDetailsMock as unknown as ElementRef<HTMLDetailsElement>;
+      component.selection = [location];
+
+      component.cancelFilter();
+
+      expect(component.locationFilter).toEqual(jasmine.objectContaining({
+        selection: [location]
+      }));
+      expect(component.detailsElement.open).toEqual(false);
+    });
+
+    it(`should NOT update the component's 'detailsElement.open'`, () => {
+      component = new AvailableTasksFilterComponent({} as LocationDataService, mockSessionStorageService, {} as Router);
+
+      mockSessionStorageService.getItem.and.callThrough();
+      mockSessionStorageService.setItem.and.callThrough();
+      component.locationFilter = {} as unknown as CheckboxListComponent<any>;
+      component.filterDetails = null;
+
+      component.cancelFilter();
+
+      expect(component.detailsElement?.open).toEqual(undefined);
+    });
+
   });
 
-  it('should have loaded the mock locations', () => {
-    expect(mockLocationService.getLocations).toHaveBeenCalled();
-    expect(component.locations).toBeDefined();
-    expect(component.locations.length).toEqual(mockLocations.length);
+  describe('onSelectionChange', () => {
+    const filterDetailsMock = { nativeElement: {} };
+
+    it(`should setItem in sessionstorage and emit selection`, () => {
+      component = new AvailableTasksFilterComponent({} as LocationDataService, mockSessionStorageService, {} as Router);
+
+      const selectionChangedSpy = spyOn(component.selectionChanged, 'emit');
+      mockSessionStorageService.getItem.and.callThrough();
+      mockSessionStorageService.setItem.and.callThrough();
+
+      component.locationFilter = { selection: [location] } as unknown as CheckboxListComponent<any>;
+      component.filterDetails = filterDetailsMock as unknown as ElementRef<HTMLDetailsElement>;
+
+      component.onSelectionChange();
+      component.onSelectionChange();
+
+      expect(component.selection).toEqual([location]);
+      expect(selectionChangedSpy).toHaveBeenCalledWith([location]);
+      expect(mockSessionStorageService.setItem).toHaveBeenCalledWith(FilterConstants.Session.AvailableTasks, JSON.stringify([location]));
+
+      expect(selectionChangedSpy).toHaveBeenCalledTimes(1);
+      expect(mockSessionStorageService.setItem).toHaveBeenCalledTimes(1);
+    });
+
+    it(`should NOT update component's 'selection'`, () => {
+      component = new AvailableTasksFilterComponent({} as LocationDataService, mockSessionStorageService, {} as Router);
+
+      mockSessionStorageService.getItem.and.callThrough();
+      mockSessionStorageService.setItem.and.callThrough();
+
+      component.locationFilter = undefined;
+      component.filterDetails = filterDetailsMock as unknown as ElementRef<HTMLDetailsElement>;
+
+      component.onSelectionChange();
+
+      expect(component.selection).toEqual([]);
+    });
   });
 
-  it('should have dispatched an event to right away as we have a preselection', () => {
-    const length = wrapper.changedEvents.length;
-    expect(length).toBeGreaterThan(0);
-    expect(wrapper.changedEvents[length - 1].length).toEqual(1);
-    expect(wrapper.changedEvents[length - 1][0].locationName).toEqual(mockLocations[0].locationName);
-  });
+  describe('ngOnInit', () => {
+    const locationDataService = {
+      getLocations: jasmine.createSpy()
+    };
 
-  it('should NOT dispatch a change event when a checkbox is clicked', () => {
-    const element = fixture.debugElement.nativeElement;
+    it(`should update component's 'preselection' and update 'locations' with session storage data`, () => {
+      component = new AvailableTasksFilterComponent(locationDataService as unknown as LocationDataService, mockSessionStorageService, {} as Router);
 
-    // Record how many change events we've had so far.
-    const eventsBeforeSelectAll = wrapper.changedEvents.length;
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify([location]));
+      locationDataService.getLocations.and.returnValues(of([location as unknown as Location]));
 
-    // Click on the summary.
-    const summary = element.querySelector('#toggleFilter');
-    summary.dispatchEvent(new Event('click'));
+      component.ngOnInit();
 
-    // Now click on the "Select all" option.
-    const selectAll = element.querySelector('#select_all');
-    selectAll.dispatchEvent(new Event('change'));
+      expect(component.preselection).toEqual([location]);
+      expect(component.locations).toEqual([location]);
+    });
 
-    // Ensure we haven't had another change event fire.
-    expect(wrapper.changedEvents.length).toEqual(eventsBeforeSelectAll);
-  });
+    it(`should NOT update component's 'locations' with session storage data`, () => {
+      component = new AvailableTasksFilterComponent(locationDataService as unknown as LocationDataService, mockSessionStorageService, {} as Router);
 
-  it('should reset the checkboxes when cancel is clicked', () => {
-    const element = fixture.debugElement.nativeElement;
+      mockSessionStorageService.getItem.and.returnValue(null);
+      locationDataService.getLocations.and.returnValues(of([location as unknown as Location]));
 
-    // Get the selection to start off with.
-    const startingSelection = [ ...component.locationFilter.selection ];
+      component.ngOnInit();
 
-    // Click on the summary.
-    const summary = element.querySelector('#toggleFilter');
-    summary.dispatchEvent(new Event('click'));
+      expect(component.preselection).not.toEqual(jasmine.objectContaining(
+        [location]
+      ));
+    });
 
-    // Now click on the "Select all" option.
-    const selectAll = element.querySelector('#select_all');
-    selectAll.dispatchEvent(new Event('change'));
+    it(`should navigate if getLocations errored`, () => {
+      const routerSpy = {
+        navigate: jasmine.createSpy()
+      };
 
-    // We should now have a changed selection.
-    const selectionAfterSelectAll = [ ...component.locationFilter.selection ];
-    expect(selectionAfterSelectAll.length).not.toEqual(startingSelection.length);
+      component = new AvailableTasksFilterComponent(locationDataService as unknown as LocationDataService, mockSessionStorageService, routerSpy as unknown as Router);
 
-    const cancel = element.querySelector('#cancelFilter');
-    cancel.dispatchEvent(new Event('click'));
+      mockSessionStorageService.getItem.and.returnValue(null);
+      locationDataService.getLocations.and.returnValue(throwError(new Error({ status: 500 } as unknown as string)));
 
-    // And it should now be changed back to what it was before.
-    const selectionAfterCancel = [ ...component.locationFilter.selection ];
-    expect(selectionAfterCancel.length).toEqual(startingSelection.length);
-    expect(selectionAfterCancel[0].locationName).toEqual(startingSelection[0].locationName);
-  });
+      component.ngOnInit();
 
-  it('should ONLY dispatch a change event when apply button is clicked', () => {
-    const element = fixture.debugElement.nativeElement;
-
-    // Record how many change events we've had so far.
-    const eventsBeforeApply = wrapper.changedEvents.length;
-
-    // Click on the summary.
-    const summary = element.querySelector('#toggleFilter');
-    summary.dispatchEvent(new Event('click'));
-
-    // Now click on the "Select all" option.
-    const selectAll = element.querySelector('#select_all');
-    selectAll.dispatchEvent(new Event('change'));
-
-    // And NOW click on "Apply".
-    const apply = element.querySelector('#applyFilter');
-    apply.dispatchEvent(new Event('click'));
-
-    // We should have received another change event.
-    expect(wrapper.changedEvents.length).toBeGreaterThan(eventsBeforeApply);
-
-    // And also make sure we had an attempt to save the filter.
-    const toStore = JSON.stringify(component.selection);
-    expect(sessionStorage.setItem).toHaveBeenCalledWith(FilterConstants.Session.AvailableTasks, toStore);
+      expect(routerSpy.navigate).toHaveBeenCalled();
+    });
   });
 });

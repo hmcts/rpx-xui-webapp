@@ -93,7 +93,7 @@ describe('CancelHearingComponent', () => {
     fixture = TestBed.createComponent(CancelHearingComponent);
     component = fixture.componentInstance;
     component.hearingCancelOptions = reasons;
-    mockHearingService = TestBed.get(HearingsService);
+    mockHearingService = TestBed.inject(HearingsService);
     spyOn(component, 'initForm').and.callThrough();
     spyOn(component, 'getChosenReasons').and.callThrough();
     spyOn(mockHearingService, 'cancelHearingRequest').and.returnValue(of({}));

@@ -44,11 +44,11 @@ describe('CourtLocationsData Resolver', () => {
         ]
       }
     );
-    locationsDataService = TestBed.get(LocationsDataService) as LocationsDataService;
+    locationsDataService = TestBed.inject(LocationsDataService) as LocationsDataService;
   });
 
   it('should be created', () => {
-    const service: CourtLocationsDataResolver = TestBed.get(CourtLocationsDataResolver);
+    const service: CourtLocationsDataResolver = TestBed.inject(CourtLocationsDataResolver);
     expect(service).toBeTruthy();
   });
 

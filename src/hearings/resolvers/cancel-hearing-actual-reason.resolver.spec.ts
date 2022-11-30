@@ -28,11 +28,11 @@ describe('CancelHearingActualReason Resolver', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
   it('should be created', () => {
-    const service: CancelHearingActualReasonResolver = TestBed.get(CancelHearingActualReasonResolver);
+    const service: CancelHearingActualReasonResolver = TestBed.inject(CancelHearingActualReasonResolver);
     expect(service).toBeTruthy();
   });
 

@@ -7,13 +7,13 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
 import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
 import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { MyCasesComponent } from './my-cases.component';
-import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
 @Component({ template: `<exui-my-cases></exui-my-cases>` })
 
@@ -66,14 +66,14 @@ describe('MyCasesComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     const cases: Case[] = getMockCases();
     mockCaseService.getMyCases.and.returnValue(of({ cases }));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     sessionStorageService.getItem.and.callFake((key) => {
-      return undefined
+      return undefined;
     });
     fixture.whenStable();
     fixture.detectChanges();

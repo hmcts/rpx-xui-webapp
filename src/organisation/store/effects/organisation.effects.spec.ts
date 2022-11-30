@@ -36,8 +36,8 @@ describe('Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(OrganisationEffects);
-    loggerService = TestBed.get(LoggerService);
+    effects = TestBed.inject(OrganisationEffects);
+    loggerService = TestBed.inject(LoggerService);
 
   });
 

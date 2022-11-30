@@ -25,7 +25,7 @@ describe('TypeFromRequestAnswerConverter', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     typeFromRequestAnswerConverter = new TypeFromRequestAnswerConverter(router);
   });
 

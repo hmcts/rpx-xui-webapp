@@ -20,8 +20,9 @@ nodejs:
      STUB: false
      DEBUG: xuiNode:*,-xuiNode:auth:s2s,-xuiNode:auth:oauth2
      FEATURE_WORKALLOCATION_ENABLED: true
+     SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-aat.service.core-compute-aat.internal
      SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-aat.service.core-compute-aat.internal
-     FEATURE_ACCESS_MANAGEMENT_ENABLED: true
+     FEATURE_ACCESS_MANAGEMENT_ENABLED: false
   keyVaults:
     rpx:
       secrets:

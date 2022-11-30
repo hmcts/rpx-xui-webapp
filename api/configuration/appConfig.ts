@@ -26,6 +26,7 @@ import {
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
+  SERVICES_JUDICIAL_BOOKING_API_PATH,
   SERVICES_LOCATION_REF_API_URL,
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_API_URL,
@@ -33,8 +34,8 @@ import {
   SERVICES_PRD_JUDICIAL_API,
   SERVICES_PRD_LOCATION_API,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_TERMS_AND_CONDITIONS_URL,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH
+  SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH,
+  SERVICES_TERMS_AND_CONDITIONS_URL, SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from './references';
 
 /**
@@ -70,6 +71,7 @@ export const applicationConfiguration = () => {
     payments: getConfigValue(SERVICES_PAYMENTS_URL),
     protocol: getConfigValue(PROTOCOL),
     roleAssignmentPath: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
+    roleAssignmentMappingPath: getConfigValue(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH),
     servicesCcdCaseAssignmentPath: getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH),
     servicesCcdComponentPath: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
     servicesCcdDataStorePath: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
@@ -77,6 +79,7 @@ export const applicationConfiguration = () => {
     servicesDocumentApiV2Path: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
     servicesEmHrsApiPath: getConfigValue(SERVICES_EM_HRS_API_PATH),
     servicesLocationRefApiPath: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+    servicesJudicialBookingApiPath: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
     servicesPrdApiPath: getConfigValue(SERVICES_PRD_API_URL),
     servicesPrdLocationApiPath: getConfigValue(SERVICES_PRD_LOCATION_API),
     servicesPrdJudicialApiPath: getConfigValue(SERVICES_PRD_JUDICIAL_API),

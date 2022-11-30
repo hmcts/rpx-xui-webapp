@@ -1,0 +1,27 @@
+<exui-error-message *ngIf="!formGroup.get(controlName).valid  && submitted" [error]="error"></exui-error-message>
+<h1 class="govuk-heading-l">
+  <span class="govuk-caption-l">{{caption}}</span>
+  {{title}}
+</h1>
+<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !formGroup.get(controlName).valid  && submitted}" [formGroup]="formGroup">
+  <span id="more-detail-error" class="govuk-error-message"
+  *ngIf="!formGroup.get(controlName).valid  && submitted">
+<span class="govuk-visually-hidden">Error:</span> Enter details
+</span>
+  <fieldset class="govuk-fieldset" [attr.aria-label]="caption">
+    <div id="more-detail-hint" class="govuk-hint">
+      This information will be sent to the person requesting access to the case.
+    </div>
+    <textarea
+      [ngClass]="{'govuk-textarea--error': !formGroup.get(controlName).valid && submitted}"
+      [formGroup]="formGroup"
+      formControlName="infoCtrl"
+      class="govuk-textarea"
+      id="more-detail"
+      name="more-detail"
+      rows="5"
+      aria-describedby="more-detail-hint"></textarea>
+  </fieldset>
+</div>
+
+

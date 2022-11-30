@@ -1,4 +1,5 @@
 
+const { LOG_LEVELS } = require("../../../../support/constants");
 const BrowserWaits = require("../../../../support/customWaits");
 const CucucmberReporter = require("../../../../support/reportLogger");
 class SelectRoleTypePage{
@@ -16,7 +17,7 @@ class SelectRoleTypePage{
             await BrowserWaits.waitForElement(this.container);
             return true;
         }catch(err){
-            await CucucmberReporter.AddMessage(err);
+            await CucucmberReporter.AddMessage(err, LOG_LEVELS.Error);
             return false;
         }
     }

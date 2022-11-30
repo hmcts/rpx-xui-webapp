@@ -1,7 +1,7 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng @wa2 @wa @ignore
+@ng @wa2 @wa @ignore 
 Feature: WA Release 2: My cases - Manage links - Action work flow
 
     Background: Mock and browser setup

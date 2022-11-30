@@ -1,5 +1,6 @@
 import { CaseFlagsComponent } from './case-flags/case-flags.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
+import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary-single-day/hearing-actual-summary-single-day.component';
 import { HearingActualSummaryComponent } from './hearing-actual-summary/hearing-actual-summary.component';
 import { HearingActualsCaseTitleComponent } from './hearing-actuals-case-title/hearing-actuals-case-title.component';
 import { HearingAmendWarningMsgComponent } from './hearing-amend-warning-msg/hearing-amend-warning-msg.component';
@@ -27,7 +28,8 @@ export const components: any[] = [
   ErrorPageComponent,
   HearingActualsCaseTitleComponent,
   HearingActualSummaryComponent,
-  LinkedHearingsCaseTitleComponent
+  LinkedHearingsCaseTitleComponent,
+  HearingActualSummarySingleDayComponent
 ];
 
 export * from '../components/case-flags/case-flags.component';
@@ -44,5 +46,4 @@ export * from '../components/listing-information-summary/listing-information-sum
 export * from '../components/multi-level-selector/multi-level-selector.component';
 export * from '../components/parties-unavailable-dates/parties-unavailable-dates.component';
 export * from './linked-hearings-case-title/linked-hearings-case-title.component';
-
-
+export * from '../components/hearing-actual-summary-single-day/hearing-actual-summary-single-day.component';

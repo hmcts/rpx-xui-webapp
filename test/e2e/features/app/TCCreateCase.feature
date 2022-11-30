@@ -1,4 +1,4 @@
-@fullfunctional_fixneeded @test 
+@fullfunctional @test 
 Feature: Test case type case creation and case details validations
 
   Background:

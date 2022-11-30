@@ -97,7 +97,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public resultViewIsReady: boolean = false;
 
-  private unsubscribe$ = new Subject();
+  private readonly unsubscribe$ = new Subject();
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -244,7 +244,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
 
-    if (typeof resultView.results !== 'undefined') this.resultViewIsReady = true;
+    if (typeof resultView.results !== 'undefined') { this.resultViewIsReady = true; }
 
     this.resultsArr = resultView.results;
     this.resultView = {

@@ -26,7 +26,7 @@ describe('CaseFlagAnswerConverter', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     caseFlagConverter = new CaseFlagAnswerConverter(router);
   });
 

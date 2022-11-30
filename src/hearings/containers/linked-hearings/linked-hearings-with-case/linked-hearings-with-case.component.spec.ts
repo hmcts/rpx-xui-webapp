@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -72,7 +72,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
     }
   ];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsWithCaseComponent],
       imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
@@ -107,8 +107,8 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LinkedHearingsWithCaseComponent);
-    mockHearingService = TestBed.get(HearingsService);
-    store = TestBed.get(Store);
+    mockHearingService = TestBed.inject(HearingsService);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

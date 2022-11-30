@@ -1,4 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -9,13 +10,12 @@ import { of } from 'rxjs/internal/observable/of';
 import { ErrorMessage, UserInfo } from 'src/app/models';
 import { ErrorMessageComponent } from '../../../app/components';
 import { SessionStorageService } from '../../../app/services';
+import { State } from '../../../app/store';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { TaskHomeComponent } from './task-home.component';
-import { State } from '../../../app/store';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 @Component({
   template: `

@@ -43,7 +43,7 @@ export class AuthGuard implements CanActivate {
     if (currentPathIsRoot) {
       const storedRedirectUrl = this.sessionStorage.getItem('redirectUrl', true);
 
-      if (!storedRedirectUrl) return;
+      if (!storedRedirectUrl) { return; }
 
       this.authService.setWindowLocationHref(storedRedirectUrl);
     }

@@ -28,11 +28,11 @@ describe('HearingStage Resolver', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
   it('should be created', () => {
-    const service: HearingStageResolver = TestBed.get(HearingStageResolver);
+    const service: HearingStageResolver = TestBed.inject(HearingStageResolver);
     expect(service).toBeTruthy();
   });
 

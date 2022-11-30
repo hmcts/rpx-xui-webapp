@@ -28,11 +28,11 @@ describe('PanelRolesResolverService', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
   it('should be created', () => {
-    const service: PanelRolesResolverService = TestBed.get(PanelRolesResolverService);
+    const service: PanelRolesResolverService = TestBed.inject(PanelRolesResolverService);
     expect(service).toBeTruthy();
   });
 

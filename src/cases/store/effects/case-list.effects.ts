@@ -39,7 +39,7 @@ export class CaseListEffects {
       }));
 
     @Effect()
-    applyCaselistFiltersForES$ = this.actions$.pipe(
+    public applyCaselistFiltersForES$ = this.actions$.pipe(
       ofType(caselistActions.APPLY_CASELIST_FILTER_FOR_ES),
       map((action: caselistActions.ApplyCaselistFilterForES) => action.payload),
       switchMap(payload => {

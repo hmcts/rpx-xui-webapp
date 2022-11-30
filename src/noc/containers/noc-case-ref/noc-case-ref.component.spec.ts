@@ -12,7 +12,7 @@ import { NocCaseRefComponent } from './noc-case-ref.component';
 describe('NocCaseRefComponent', () => {
   let fixture: ComponentFixture<NocCaseRefComponent>;
   let component: NocCaseRefComponent;
-  let store: MockStore<fromNocStore.State>;
+  let store;
   let spyOnPipeToStore = jasmine.createSpy();
 
   beforeEach(() => {
@@ -32,7 +32,7 @@ describe('NocCaseRefComponent', () => {
       ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnPipeToStore.and.returnValue(of(NocState.START));

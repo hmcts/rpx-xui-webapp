@@ -77,7 +77,7 @@ describe('CaseManagerFilterComponent', () => {
   it('should subscribe to the store and the filterService', () => {
     expect(storePipeMock).toHaveBeenCalled();
     expect(component.appStoreSub).toBeDefined();
-    expect(component.filterConfig.fields.length).toBe(6);
+    expect(component.filterConfig.fields.length).toBe(5);
   });
 
   afterAll(() => {

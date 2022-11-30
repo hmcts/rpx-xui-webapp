@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@7.0.3-integration-of-case-flags-and-case-links":
-  version "7.0.3-integration-of-case-flags-and-case-links"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-7.0.3-integration-of-case-flags-and-case-links.tgz#283a72a0594304ce0a0cf4a05eb0b35f5ef4d867"
-  integrity sha512-i71/PEL7gwKMLgtbQJgFWN4RlmcjfRuGeCpwDhGcMPuegAD2tNCwEt0uKgQDYElBfYJ+6gTfvaPq1zGK731qKw==
+"@hmcts/ccd-case-ui-toolkit@4.20.28-linked-cases-private-law-integration":
+  version "4.20.28-linked-cases-private-law-integration"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.20.28-linked-cases-private-law-integration.tgz#684949a5a96f50dfce3030ae1da39f7eb8717c66"
+  integrity sha512-QZrBH6CphhU3AkKhVWZd7NznUY66H7Pbihtd2KrbX4bnM3o/MYwnZbzIx72HuTGDBrG6KzaJbOyOKWGraVWzBQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -9405,7 +9405,7 @@ ngx-chips@1.9.8:
     ng2-material-dropdown "0.10.1"
     tslib "^1.9.0"
 
-ngx-logger@^4.0.4:
+ngx-logger@4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-4.1.1.tgz#1bf0a32321d46c5b4fde92341864020bc502cd5b"
   integrity sha512-zWAsH1MbqD8CNwMOJVM2IRH4mKRCrXVcsYfCMtsHYr1tp5m91a76HfEdkivx9/dYvlaL9CnSn9KLaTgWctCpTg==

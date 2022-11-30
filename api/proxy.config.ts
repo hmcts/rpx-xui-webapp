@@ -2,7 +2,6 @@ import * as bodyParser from 'body-parser';
 import { Express } from 'express';
 import * as amendedJurisdictions from './amendedJurisdictions';
 import { getConfigValue } from './configuration';
-import * as accessManagement from './accessManagement'
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
@@ -11,11 +10,11 @@ import {
   SERVICES_EM_DOCASSEMBLY_API_URL,
   SERVICES_EM_HRS_API_PATH,
   SERVICES_ICP_API_URL,
+  SERVICES_LOCATION_REF_API_URL,
   SERVICES_MARKUP_API_URL,
   SERVICES_PAYMENTS_URL,
-  SERVICES_REFUNDS_API_URL,
-  SERVICES_LOCATION_REF_API_URL,
-  SERVICES_ROLE_ASSIGNMENT_API_PATH
+  SERVICES_PRD_COMMONDATA_API,
+  SERVICES_REFUNDS_API_URL
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
@@ -123,20 +122,25 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-      rewrite: true,
-      rewriteUrl: '/refund',
-      source: '/api/refund',
-      target: getConfigValue(SERVICES_REFUNDS_API_URL),
+    rewrite: true,
+    rewriteUrl: '/refund',
+    source: '/api/refund',
+    target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
+
   applyProxy(app, {
-    onReq: accessManagement.removeAcceptHeader,
     rewrite: false,
-    source: '/am/role-assignments',
-    target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
+    source: '/refdata/location',
+    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
   });
+
   applyProxy(app, {
-      rewrite: false,
-      source: '/refdata/location',
-      target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+    rewrite: false,
+    // Note: the "service-id=" part of the URL is *not* missing a preceding '?', as would be expected if service-id was
+    // a query string parameter. The Reference Data team confirms service-id is a *path* parameter and "service-id=" is
+    // intentional (see Line 66 of CaseFlagApiController.java in
+    // https://github.com/hmcts/rd-commondata-api/blob/master/src/main/java/uk/gov/hmcts/reform/cdapi/controllers)
+    source: '/refdata/commondata/caseflags/service-id=:sid',
+    target: getConfigValue(SERVICES_PRD_COMMONDATA_API),
   });
-}
+};

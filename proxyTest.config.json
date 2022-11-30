@@ -93,5 +93,10 @@
     "target": "http://localhost:3005",
     "secure": false,
     "logLevel": "debug"
+  },
+  "/refdata/commondata/*": {
+    "target": "http://localhost:3005",
+    "secure": false,
+    "logLevel": "debug"
   }
 }

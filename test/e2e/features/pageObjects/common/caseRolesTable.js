@@ -2,6 +2,7 @@
 const BrowserWaits = require("../../../support/customWaits"); 
 const reportLogger = require("../../../support/reportLogger");
 const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
+const { LOG_LEVELS } = require("../../../support/constants");
 class CaseRolesTable{
 
     constructor(parentXpath){ 
@@ -16,18 +17,18 @@ class CaseRolesTable{
 
 
     async isTableDisplayed(){
-        reportLogger.AddMessage(`Table locator: ${this.taskDetailsTable.locator().toString()}`);
+        reportLogger.AddMessage(`Table locator: ${this.taskDetailsTable.locator().toString()}`,LOG_LEVELS.Debug);
        
         return this.taskDetailsTable.isPresent();
     }
 
     async isNoDataSummaryMessageDisplayed(){
-        reportLogger.AddMessage(`No data summary locator: ${this.summaryMessage.locator().toString()}`);
+        reportLogger.AddMessage(`No data summary locator: ${this.summaryMessage.locator().toString()}`, LOG_LEVELS.Debug);
         return this.summaryMessage.isPresent();
     }
 
     async getNoDataSummaryMessage(){
-        reportLogger.AddMessage(`No data summary locator: ${this.summaryMessage.locator().toString()}`);
+        reportLogger.AddMessage(`No data summary locator: ${this.summaryMessage.locator().toString()}`, LOG_LEVELS.Debug);
         return this.summaryMessage.getText();
     }
 
@@ -79,7 +80,7 @@ class CaseRolesTable{
     async getLinkElementWithTextAtRow(rowIndex,linkText){
         const linkElement = element(by.xpath(`${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')][${rowIndex}]//td//a[contains(text(),'${linkText}')]`));
         
-        reportLogger.AddMessage(`Case role table link with text element at row : ${linkElement.locator().toString()}`);
+        reportLogger.AddMessage(`Case role table link with text element at row : ${linkElement.locator().toString()}`, LOG_LEVELS.Debug);
         return linkElement;
     }
 
@@ -90,7 +91,7 @@ class CaseRolesTable{
             return true;
         }
         catch(err){
-            reportLogger.AddMessage(`error checking ${linkElement.locator().toString()}`);
+            reportLogger.AddMessage(`error checking ${linkElement.locator().toString()}`, LOG_LEVELS.Error);
 
             return false;
         }
@@ -111,9 +112,9 @@ class CaseRolesTable{
 
     async isActionRowDisplayed(atRow){
         const actionRowDatas = element.all(by.xpath(`${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')][${atRow}]/following-sibling::tr[position()=1]//td`));
-        reportLogger.AddMessage(`Action at row ${atRow} locator : ${actionRowDatas.locator().toString()}`);
+        reportLogger.AddMessage(`Action at row ${atRow} locator : ${actionRowDatas.locator().toString()}`, LOG_LEVELS.Debug);
         const tdCountOfRow = await actionRowDatas.count();
-        reportLogger.AddMessage(`Action at row ${atRow} locator : ${actionRowDatas.locator().toString()} has ${tdCountOfRow} data colums`);
+        reportLogger.AddMessage(`Action at row ${atRow} locator : ${actionRowDatas.locator().toString()} has ${tdCountOfRow} data colums`, LOG_LEVELS.Debug);
         return tdCountOfRow === 1;
     }
 

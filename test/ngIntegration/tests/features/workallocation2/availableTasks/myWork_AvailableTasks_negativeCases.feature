@@ -12,7 +12,7 @@ Feature: WA Release 2: My work -  Available tasks - Negative Scenarios
 
 
         When I click on primary navigation header tab "My work", I see selected tab page displayed
-        Given I set MOCK api method "post" endpoint "/workallocation2/task/" with error response code <ResponseCode>
+        Given I set MOCK api method "post" endpoint "/workallocation/task/" with error response code <ResponseCode>
         Given I start MockApp
         When I navigate to My work sub navigation tab "Available tasks"
         Then I see error message of type "<ErrorMessageType>" displayed with message "<ErrorMessage>"

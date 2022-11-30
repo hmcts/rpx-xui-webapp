@@ -1,4 +1,6 @@
+import * as moment from 'moment';
 import {HearingConditions} from '../models/hearingConditions';
+import {HearingDayScheduleModel} from '../models/hearingDaySchedule.model';
 import {LovRefDataModel} from '../models/lovRefData.model';
 
 export class HearingsUtils {
@@ -29,5 +31,14 @@ export class HearingsUtils {
       return foundChannel ? foundChannel.value_en : key;
     });
     return result;
+  }
+
+  public static sortHearingDaySchedule(hearingDaySchedule: HearingDayScheduleModel[]): HearingDayScheduleModel[] {
+    if (!hearingDaySchedule || hearingDaySchedule.length === 0) {
+      return hearingDaySchedule;
+    }
+    return hearingDaySchedule.slice().sort((schedule1, schedule2) =>
+      moment.utc(schedule1.hearingStartDateTime).diff(moment.utc(schedule2.hearingStartDateTime))
+    );
   }
 }

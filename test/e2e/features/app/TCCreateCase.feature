@@ -1,4 +1,4 @@
-@fullfunctional @test 
+@fullfunctional @test123
 Feature: Test case type case creation and case details validations
 
   Background:

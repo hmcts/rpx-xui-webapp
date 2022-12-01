@@ -39,7 +39,7 @@ describe("access management service, get role assignemnts of actor", () => {
                 "created": somethingLike(1646675603.936321),
                 "log": null,
                 "attributes": {
-                    "primaryLocation": somethingLike("500A2S"),
+                    "baseLocation": somethingLike("500A2S"),
                     "jurisdiction": somethingLike("IA")
                 },
                 "notes": null,

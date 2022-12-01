@@ -36,7 +36,7 @@ import {
   getUniqueCasesCount,
   mapCasesFromData,
   mapCaseworkerData,
-  mapCaseworkerPrimaryLocation,
+  mapCaseworkerLocation,
   mapRoleType,
   prepareGetTaskUrl,
   preparePaginationUrl,
@@ -340,7 +340,7 @@ describe('workAllocation.utils', () => {
       const expectedResult = {
         attributes: {
           jurisdiction: jurisdictions,
-          primaryLocation: [locationId],
+          baseLocation: [locationId],
         },
         roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
           'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
@@ -623,11 +623,11 @@ describe('workAllocation.utils', () => {
 
       const caseworkerPayload = prepareServiceRoleApiRequest(jurisdictions, roles, locationId);
       expect(caseworkerPayload[0].attributes.jurisdiction).to.deep.equal(['IA']);
-      expect(caseworkerPayload[0].attributes.primaryLocation).to.deep.equal([locationId]);
+      expect(caseworkerPayload[0].attributes.baseLocation).to.deep.equal([locationId]);
       expect(caseworkerPayload[0].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
       expect(caseworkerPayload[0].roleType).to.deep.equal(['ORGANISATION']);
       expect(caseworkerPayload[1].attributes.jurisdiction).to.deep.equal(['Not-IA']);
-      expect(caseworkerPayload[1].attributes.primaryLocation).to.deep.equal([locationId]);
+      expect(caseworkerPayload[1].attributes.baseLocation).to.deep.equal([locationId]);
       expect(caseworkerPayload[1].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
       expect(caseworkerPayload[1].roleType).to.deep.equal(['ORGANISATION']);
     });
@@ -649,18 +649,18 @@ describe('workAllocation.utils', () => {
 
     it('should map the primary location correctly', () => {
       // check function seals with no locations
-      expect(mapCaseworkerPrimaryLocation(undefined)).to.equal(null);
+      expect(mapCaseworkerLocation(undefined)).to.equal(null);
 
       // check function deals correctly with example locations
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_1, LOCATIONAPI_2])).to.deep.equal(LOCATION_1);
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_2, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
+      expect(mapCaseworkerLocation([LOCATIONAPI_1, LOCATIONAPI_2])).to.deep.equal(LOCATION_1);
+      expect(mapCaseworkerLocation([LOCATIONAPI_2, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
 
       // for two primary locations, should return last one
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_1, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_3, LOCATIONAPI_1])).to.deep.equal(LOCATION_1);
+      expect(mapCaseworkerLocation([LOCATIONAPI_1, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
+      expect(mapCaseworkerLocation([LOCATIONAPI_3, LOCATIONAPI_1])).to.deep.equal(LOCATION_1);
 
       // if no primary location, return null
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_2])).to.deep.equal(null);
+      expect(mapCaseworkerLocation([LOCATIONAPI_2])).to.deep.equal(null);
 
     });
 
@@ -956,7 +956,7 @@ describe('workAllocation.utils', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           caseId: '123',
-          primaryLocation: '001',
+          baseLocation: '001',
           isNew: true
         },
       },
@@ -968,7 +968,7 @@ describe('workAllocation.utils', () => {
         beginTime: new Date('01-01-2021'),
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
-          primaryLocation: '001',
+          baseLocation: '001',
           isNew: true
         },
       },
@@ -981,7 +981,7 @@ describe('workAllocation.utils', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           caseId: '456',
-          primaryLocation: '001',
+          baseLocation: '001',
           isNew: true
         },
       },
@@ -1060,7 +1060,7 @@ describe('workAllocation.utils', () => {
       roleCategory: 'LEGAL_OPERATIONS',
       attributes: {
         caseId: '123',
-        primaryLocation: '001',
+        baseLocation: '001',
         substantive: 'Y',
       },
     },
@@ -1072,7 +1072,7 @@ describe('workAllocation.utils', () => {
         beginTime: new Date('01-01-2021'),
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
-          primaryLocation: '001',
+          baseLocation: '001',
           substantive: 'Y',
         },
       },
@@ -1085,7 +1085,7 @@ describe('workAllocation.utils', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           caseId: '456',
-          primaryLocation: '001',
+          baseLocation: '001',
           substantive: 'N',
         },
       }, ];
@@ -1255,7 +1255,7 @@ describe('workAllocation.utils', () => {
               'substantive': 'Y',
               'caseId': '1634822871207303',
               'jurisdiction': 'IA',
-              'primaryLocation': '229786',
+              'baseLocation': '229786',
               'caseType': 'Asylum',
             },
           },
@@ -1274,7 +1274,7 @@ describe('workAllocation.utils', () => {
             "attributes": {
               "substantive": "Y",
               "caseId": "1547476018728634",
-              "primaryLocation": "229786",
+              "baseLocation": "229786",
               "jurisdiction": "IA",
               "caseType": "Asylum",
             },
@@ -1290,7 +1290,7 @@ describe('workAllocation.utils', () => {
   describe('constructRoleAssignmentQuery', () => {
 
     it(
-      'should create a query with jurisdiction (IA), primaryLocation and roleType CASE',
+      'should create a query with jurisdiction (IA), baseLocation and roleType CASE',
       () => {
 
         const searchParameters = [

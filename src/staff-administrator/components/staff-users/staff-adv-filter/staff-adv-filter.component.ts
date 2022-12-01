@@ -49,7 +49,8 @@ export class StaffAdvFilterComponent implements OnInit {
         minSelected: 0,
         maxSelected: 0,
         type: 'select',
-        lineBreakBefore: true
+        lineBreakBefore: true,
+        defaultOption: { key: 'All', label: 'All' }
       },
       {
         name: 'user-job-title',
@@ -58,7 +59,8 @@ export class StaffAdvFilterComponent implements OnInit {
         minSelected: 0,
         maxSelected: 0,
         type: 'select',
-        lineBreakBefore: true
+        lineBreakBefore: true,
+        defaultOption: { key: 'All', label: 'All' }
       },
       {
         name: 'user-skills',
@@ -69,7 +71,7 @@ export class StaffAdvFilterComponent implements OnInit {
         maxSelected: 0,
         type: 'group-select',
         lineBreakBefore: true,
-        disabledText: 'All'
+        defaultOption: { key: 'All', label: 'All' }
     },
     {
       name: 'user-role',
@@ -85,11 +87,28 @@ export class StaffAdvFilterComponent implements OnInit {
       lineBreakBefore: true
     }
     ],
-    persistence: 'session',
+    persistence: 'local',
     applyButtonText: 'Search',
     cancelButtonText: '',
     enableDisabledButton: false,
-    showCancelFilterButton: false
+    showCancelFilterButton: false,
+    cancelSetting: {
+      id: 'staff-advanced-filters',
+      fields: [
+      {
+        name: 'user-job-title',
+        value: ['All']
+      },
+      {
+        name: 'user-type',
+        value: ['All']
+      },
+      {
+        name: 'user-skills',
+        value: ['All']
+      }
+    ]
+    }
   };
 }
 

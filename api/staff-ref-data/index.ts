@@ -23,7 +23,7 @@ export async function getUserTypes(req, res: Response, next: NextFunction) {
 
   try {
     const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
-    res.status(status).send(data);
+    res.status(status).send(sortArray(data));
   } catch (error) {
     next(error);
   }
@@ -34,7 +34,7 @@ export async function getJobTitles(req, res: Response, next: NextFunction) {
 
   try {
     const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
-    res.status(status).send(data);
+    res.status(status).send(sortArray(data));
   } catch (error) {
     next(error);
   }
@@ -96,4 +96,8 @@ export async function addNewUser(req, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
+}
+
+export function sortArray(array: StaffFilterOption[]) {
+  return array.sort((a, b) => a.label.localeCompare(b.label));
 }

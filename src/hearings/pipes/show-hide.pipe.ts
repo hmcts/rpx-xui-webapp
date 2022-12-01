@@ -7,6 +7,7 @@ import { JudgeNameHiddenConverter } from '../converters/judge-name.hidden.conver
 import { JudgeTypesHiddenConverter } from '../converters/judge-types.hidden.converter';
 import { ListedHiddenConverter } from '../converters/listed.hidden.converter';
 import { NotListedHiddenConverter } from '../converters/not-listed.hidden.converter';
+import { PanelDetailsExclusionHiddenConverter } from '../converters/panel-details-exclusion.hidden.converter';
 import { PanelExclusionHiddenConverter } from '../converters/panel-exclusion.hidden.converter';
 import { PanelInclusionHiddenConverter } from '../converters/panel-inclusion.hidden.converter';
 import { PanelRolesHiddenConverter } from '../converters/panel-roles.hidden.converter';
@@ -47,6 +48,9 @@ export class ShowHidePipe implements PipeTransform {
         break;
       case IsHiddenSource.PANEL_EXCLUSION:
         converter = new PanelExclusionHiddenConverter();
+        break;
+      case IsHiddenSource.PANEL_DETAILS_EXCLUSION:
+        converter = new PanelDetailsExclusionHiddenConverter();
         break;
       case IsHiddenSource.PANEL_ROLES:
         converter = new PanelRolesHiddenConverter();

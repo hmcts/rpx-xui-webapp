@@ -125,5 +125,5 @@ xdescribe('MyAccessComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
-  })
+  });
 });

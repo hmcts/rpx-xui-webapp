@@ -16,8 +16,8 @@ export class StaffAdvFilterComponent implements OnInit {
       jobTitles: this.route.snapshot.data.jobTitles,
       skills: this.route.snapshot.data.skills,
       services: this.route.snapshot.data.services,
-  };
-
+    };
+    const defaultOption = { key: 'All', label: 'All' };
     this.filterConfig = {
       id: 'staff-advanced-filters',
       fields: [{
@@ -50,7 +50,7 @@ export class StaffAdvFilterComponent implements OnInit {
         maxSelected: 0,
         type: 'select',
         lineBreakBefore: true,
-        defaultOption: { key: 'All', label: 'All' }
+        defaultOption
       },
       {
         name: 'user-job-title',
@@ -60,7 +60,7 @@ export class StaffAdvFilterComponent implements OnInit {
         maxSelected: 0,
         type: 'select',
         lineBreakBefore: true,
-        defaultOption: { key: 'All', label: 'All' }
+        defaultOption
       },
       {
         name: 'user-skills',
@@ -71,46 +71,46 @@ export class StaffAdvFilterComponent implements OnInit {
         maxSelected: 0,
         type: 'group-select',
         lineBreakBefore: true,
-        defaultOption: { key: 'All', label: 'All' }
-    },
-    {
-      name: 'user-role',
-      title: 'Role',
-      options: [
-        {label: 'Case Allocator', key: 'case-allocator'},
-        {label: 'Task supervisor', key: 'task-supervisor'},
-        {label: 'Staff administrator', key: 'Staff administrator'}
-      ],
-      minSelected: 0,
-      maxSelected: 3,
-      type: 'checkbox',
-      lineBreakBefore: true
-    }
-    ],
-    persistence: 'local',
-    applyButtonText: 'Search',
-    cancelButtonText: '',
-    enableDisabledButton: false,
-    showCancelFilterButton: false,
-    cancelSetting: {
-      id: 'staff-advanced-filters',
-      fields: [
-      {
-        name: 'user-job-title',
-        value: ['All']
+        defaultOption
       },
       {
-        name: 'user-type',
-        value: ['All']
-      },
-      {
-        name: 'user-skills',
-        value: ['All']
+        name: 'user-role',
+        title: 'Role',
+        options: [
+          { label: 'Case Allocator', key: 'case-allocator' },
+          { label: 'Task supervisor', key: 'task-supervisor' },
+          { label: 'Staff administrator', key: 'Staff administrator' }
+        ],
+        minSelected: 0,
+        maxSelected: 3,
+        type: 'checkbox',
+        lineBreakBefore: true
       }
-    ]
-    }
-  };
-}
+      ],
+      persistence: 'local',
+      applyButtonText: 'Search',
+      cancelButtonText: '',
+      enableDisabledButton: false,
+      showCancelFilterButton: false,
+      cancelSetting: {
+        id: 'staff-advanced-filters',
+        fields: [
+          {
+            name: 'user-job-title',
+            value: ['All']
+          },
+          {
+            name: 'user-type',
+            value: ['All']
+          },
+          {
+            name: 'user-skills',
+            value: ['All']
+          }
+        ]
+      }
+    };
+  }
 
   public ngOnInit() {
   }

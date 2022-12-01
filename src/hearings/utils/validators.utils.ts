@@ -26,8 +26,8 @@ export class ValidatorsUtils {
 
   public numberLargerThanValidator(greaterThan: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      const inputNumber = Number(control.value);
-      return control.value ? !isNaN(Number(control.value)) && inputNumber >= greaterThan ? null : { isValid: false } : { isValid: false };
+      const inputNumber = Number(control.value) || 0;
+      return !isNaN(Number(control.value)) && inputNumber >= greaterThan ? null : { isValid: false };
     };
   }
 
@@ -45,12 +45,12 @@ export class ValidatorsUtils {
     };
   }
 
-  public minutesValidator(minNumber: number, maxNumber: number, totalNumber: number): ValidatorFn {
+  public hearingLengthValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
+      const days = Number(control.get('days').value) || 0;
       const hours = Number(control.get('hours').value) || 0;
       const minutes = Number(control.get('minutes').value) || 0;
-      const totalMinutes = (hours * 60) + minutes;
-      return totalMinutes >= minNumber && minutes <= maxNumber && totalMinutes <= totalNumber ? null : { isValid: false };
+      return days > 0 || hours > 0 || minutes > 0 ? null : { isValid: false };
     };
   }
 
@@ -63,6 +63,19 @@ export class ValidatorsUtils {
         ((selectedDate.weekday() !== 6) && (selectedDate.weekday() !== 0))
         ? null : { isValid: false };
     };
+  }
+
+  public calcBusinessDays(startDate: moment.Moment, endDate: moment.Moment): number {
+    const day = startDate;
+    let businessDays = 0;
+
+    while (day.isSameOrBefore(endDate, 'day')) {
+      if (day.day() !== 0 && day.day() !== 6) {
+        businessDays++;
+      }
+      day.add(1, 'd');
+    }
+    return businessDays;
   }
 
   public isWeekendDate(date: moment.Moment): boolean {

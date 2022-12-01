@@ -1,20 +1,17 @@
-import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { cold } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { initialState } from '../hearing.test.data';
-import { LovRefDataModel } from '../models/lovRefData.model';
-import { State } from '../store';
-import { ParticipantAttendenceAnswerConverter } from './participant-attendence.answer.converter';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute, Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {of} from 'rxjs';
+import {hearingRoles} from '../../hearing.test.data';
+import {LovRefDataModel} from '../../models/lovRefData.model';
+import {ConvertToValuePipe} from '../../pipes/convert-to-value.pipe';
+import {HearingActualSummarySingleDayComponent} from './hearing-actual-summary-single-day.component';
 
-describe('ParticipantAttendenceAnswerConverter', () => {
-
-  let converter: ParticipantAttendenceAnswerConverter;
-  let store: Store<any>;
-  let router: any;
-  const PARTY_CHANNELS: LovRefDataModel[] = [
+describe('HearingActualSummarySingleDayComponent', () => {
+  let component: HearingActualSummarySingleDayComponent;
+  let fixture: ComponentFixture<HearingActualSummarySingleDayComponent>;
+  let router: Router;
+  const partyChannels: LovRefDataModel[] = [
     {
       key: 'inPerson',
       value_en: 'In person',
@@ -175,33 +172,39 @@ describe('ParticipantAttendenceAnswerConverter', () => {
     },
   ];
 
+
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      declarations: [HearingActualSummarySingleDayComponent, ConvertToValuePipe],
       providers: [
-        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                partyChannels: PARTY_CHANNELS,
-              },
+                partyChannels,
+                hearingRoles
+              }
             },
-          },
-        }
-      ]
-    });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
-    converter = new ParticipantAttendenceAnswerConverter(router);
+            fragment: of('point-to-me'),
+          }
+        },
+      ],
+    })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(HearingActualSummarySingleDayComponent);
+    component = fixture.componentInstance;
+    router = TestBed.get(Router);
+    fixture.detectChanges();
   });
 
-  it('should transform hearing stage', () => {
-    const STATE: State = initialState.hearings;
-    const result$ = converter.transformAnswer(of(STATE), 0);
-    const room = 'Jane Smith - In person<br>DWP - By video';
-    const expected = cold('(b|)', { b: room });
-    expect(result$).toBeObservable(expected);
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
+  afterEach(() => {
+    fixture.destroy();
+  });
 });

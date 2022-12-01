@@ -6,7 +6,7 @@ import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { PanelDetailsExclusionHiddenConverter } from './panel-details-exclusion.hidden.converter';
 
-fdescribe('PanelDetailsExclusionHiddenConverter', () => {
+describe('PanelDetailsExclusionHiddenConverter', () => {
 
   let panelDetailsExclusionHiddenConverter: PanelDetailsExclusionHiddenConverter;
   const JUDICAIL_USER_DETAILS = [{

@@ -34,9 +34,11 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
         }), take(1),
         switchMap(hearingValues => {
           const category = route.data['category'] ? route.data['category'] as HearingCategory : HearingCategory.HearingPriority;
-          const panelRequirements = hearingValues && hearingValues.serviceHearingValuesModel && hearingValues.serviceHearingValuesModel.panelRequirements;
-          if (category === HearingCategory.PanelMemberType && !panelRequirements) {
-            return of(null);
+          if (category === HearingCategory.PanelMemberType) {
+            const screenFlow = hearingValues && hearingValues.serviceHearingValuesModel && hearingValues.serviceHearingValuesModel.screenFlow;
+            if (screenFlow && screenFlow.findIndex(screen => screen.screenName === 'hearing-panel') === -1) {
+              return of(null);
+            }
           }
           return this.getReferenceData$(this.serviceId, category, route.data.isChildRequired && route.data.isChildRequired.includes(route.data['category']));
         })

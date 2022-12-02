@@ -26,8 +26,8 @@ export const CTSC_ROLE_CATEGORY = 'ctsc';
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
 // If current location is passed it checks if the RoleAssignment is for location
 export function isCurrentUserCaseAllocator(currentUserRoleAssignment: RoleAssignment,
-  currentJurisdiction?: string,
-  currentLocation?: string): boolean {
+                                           currentJurisdiction?: string,
+                                           currentLocation?: string): boolean {
   return !!currentUserRoleAssignment
     && currentUserRoleAssignment.roleType === ORGANISATION_ROLE_TYPE
     && currentUserRoleAssignment.roleName === CASE_ALLOCATOR_ROLE

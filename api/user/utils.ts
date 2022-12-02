@@ -9,7 +9,8 @@ export const ADMIN_ROLE = 'admin';
 export const ADMIN_ROLE_CATEGORY = 'ADMIN';
 export const ADMIN_ROLE_NAME = 'admin';
 export const PROFESSIONAL_ROLE = 'solicitor';
-export const PUI_ROLE_CATEGORY = 'pui-';
+export const PUI_CASE_MANAGER = 'pui-case-manager';
+export const PUI_ORG_MANAGER = 'pui-organisation-manager';
 export const PROFESSIONAL_ROLE_CATEGORY = 'PROFESSIONAL';
 export const PROFESSIONAL_ROLE_NAME = 'professional';
 export const LEGAL_OPERATIONS_ROLE = 'caseworker';
@@ -19,6 +20,7 @@ export const CITIZEN_ROLE = 'citizen';
 export const CITIZEN_ROLE_CATEGORY = 'CITIZEN';
 export const CITIZEN_ROLE_NAME = 'citizen';
 export const CTSC_ROLE_NAME = 'ctsc';
+export const CTSC_ROLE_CATEGORY = 'ctsc';
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
@@ -48,7 +50,7 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
 }
 
 export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): string {
-  const roleCategories = [JUDGE_ROLE_CATEGORY, LEGAL_OPERATIONS_ROLE_CATEGORY, CITIZEN_ROLE_CATEGORY, ADMIN_ROLE_CATEGORY];
+  const roleCategories = [JUDGE_ROLE_CATEGORY, LEGAL_OPERATIONS_ROLE_CATEGORY, CTSC_ROLE_CATEGORY, ADMIN_ROLE_CATEGORY];
   let roleCategory: string;
   roleCategories.forEach((givenRoleCategory: string) => {
     if (hasRoleCategory(roleAssignments, givenRoleCategory) && !roleCategory) {
@@ -61,15 +63,11 @@ export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): s
 export function getUserRoleCategory(roles: string[]): string {
   if (hasRoleCategory(roles, CITIZEN_ROLE)) {
     return CITIZEN_ROLE_NAME;
-  } else if (hasRoleCategory(roles, JUDGE_ROLE) || hasRoleCategory(roles, JUDICIARY_ROLE_NAME)) {
+  } else if (includesRoleCategory(roles, JUDGE_ROLE) || includesRoleCategory(roles, JUDICIARY_ROLE_NAME)) {
     return JUDGE_ROLE_NAME;
   } else if (hasRoleCategory(roles, PROFESSIONAL_ROLE) || hasRoleCategory(roles, PROFESSIONAL_ROLE_NAME)
-    || includesRoleCategory(roles, PUI_ROLE_CATEGORY)) {
+    || hasRoleCategory(roles, PUI_CASE_MANAGER) || hasRoleCategory(roles, PUI_ORG_MANAGER)) {
     return PROFESSIONAL_ROLE;
-  } else if (hasRoleCategory(roles, ADMIN_ROLE)) {
-    return ADMIN_ROLE_NAME;
-  } else if (hasRoleCategory(roles, CTSC_ROLE_NAME)) {
-    return CTSC_ROLE_NAME;
   } else {
     return LEGAL_OPERATIONS_ROLE_NAME;
   }

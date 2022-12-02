@@ -43,6 +43,7 @@ import {
   assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
+  convertPermissionsToRefinedPermissionsManually,
   filterByLocationId,
   getCaseIdListFromRoles,
   getCaseworkerDataForServices,
@@ -157,6 +158,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
+    data.tasks = convertPermissionsToRefinedPermissionsManually(data.tasks);
     let returnData;
     if (data) {
       returnData = !!req.body.refined ?

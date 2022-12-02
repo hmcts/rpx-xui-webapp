@@ -1,3 +1,5 @@
+import { TaskPermission } from "../constants/actions";
+
 export interface TaskList {
   tasks: Task[];
 }
@@ -29,6 +31,7 @@ export interface Task {
   caseCategory: string;
   assigneeName: string;
   name: string;
+  permissions?: {values?: TaskPermission[]};
 }
 
 export interface TaskAction {

@@ -35,6 +35,7 @@ import {
 import { Person, PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
+import { Task } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -870,4 +871,36 @@ export async function getTypesOfWorkByUserId(path, req: express.Request): Promis
 export function getUniqueCasesCount(caseData: RoleCaseData[]): number {
   const caseIds = caseData ? caseData.map(caseResult => caseResult.case_id) : [];
   return new Set(caseIds).size;
+}
+
+export function convertPermissionsToRefinedPermissionsManually(tasks: Task[]) {
+  const newTasks = [];
+  tasks.forEach(task => {
+    if (task.permissions && task.permissions.values) {
+      let newPermissions = [];
+      task.permissions.values.forEach(value => {
+        newPermissions = newPermissions.concat(convertSpecificPermission(value));
+      })
+      const thisTask = task;
+      thisTask.permissions.values = newPermissions;
+      newTasks.push(thisTask);
+    }
+  })
+  return newTasks;
+}
+
+export function convertSpecificPermission(permission: string): string[] {
+  permission = permission.toLowerCase();
+  switch (permission) {
+    case TaskPermission.MANAGE:
+      return [TaskPermission.MANAGE, TaskPermission.UNASSIGN, TaskPermission.ASSIGN, TaskPermission.COMPLETE, TaskPermission.UNCLAIM];
+    case TaskPermission.CANCEL:
+      return [TaskPermission.CANCEL];
+    case TaskPermission.OWN:
+      return [TaskPermission.OWN, TaskPermission.CLAIM];
+    case TaskPermission.EXECUTE:
+      return [TaskPermission.EXECUTE, TaskPermission.CLAIM];
+    default:
+      return [permission];
+  }
 }

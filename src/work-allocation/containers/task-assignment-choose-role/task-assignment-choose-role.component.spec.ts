@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -9,7 +10,7 @@ import { ChooseRadioOptionComponent } from '../../../role-access/components';
 import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role.component';
 
 
-xdescribe('TaskAssignmentChooseRoleComponent', () => {
+describe('TaskAssignmentChooseRoleComponent', () => {
   let component: TaskAssignmentChooseRoleComponent;
   let fixture: ComponentFixture<TaskAssignmentChooseRoleComponent>;
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
@@ -26,7 +27,7 @@ xdescribe('TaskAssignmentChooseRoleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([])],
+      imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([]), HttpClientTestingModule],
       declarations: [TaskAssignmentChooseRoleComponent, ChooseRadioOptionComponent],
       providers: [
         {provide: SessionStorageService, useValue: mockSessionStorageService},

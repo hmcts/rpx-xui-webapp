@@ -26,8 +26,8 @@ export const CTSC_ROLE_CATEGORY = 'ctsc';
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
 // If current location is passed it checks if the RoleAssignment is for location
 export function isCurrentUserCaseAllocator(currentUserRoleAssignment: RoleAssignment,
-                                           currentJurisdiction?: string,
-                                           currentLocation?: string): boolean {
+  currentJurisdiction?: string,
+  currentLocation?: string): boolean {
   return !!currentUserRoleAssignment
     && currentUserRoleAssignment.roleType === ORGANISATION_ROLE_TYPE
     && currentUserRoleAssignment.roleName === CASE_ALLOCATOR_ROLE
@@ -51,13 +51,12 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
 
 export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): string {
   const roleCategories = [JUDGE_ROLE_CATEGORY, LEGAL_OPERATIONS_ROLE_CATEGORY, CTSC_ROLE_CATEGORY, ADMIN_ROLE_CATEGORY];
-  let roleCategory: string;
-  roleCategories.forEach((givenRoleCategory: string) => {
-    if (hasRoleCategory(roleAssignments, givenRoleCategory) && !roleCategory) {
-      roleCategory = givenRoleCategory;
+  for (const roleCategory of roleCategories) {
+    if (hasRoleCategory(roleAssignments, roleCategory)) {
+      return roleCategory;
     }
-  });
-  return roleCategory;
+  }
+  return undefined;
 }
 
 export function getUserRoleCategory(roles: string[]): string {

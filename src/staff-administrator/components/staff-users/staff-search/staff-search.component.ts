@@ -3,6 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { Subscription } from 'rxjs';
+import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
@@ -19,7 +20,11 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
   private filterSub: Subscription;
   private filterErrorsSub: Subscription;
 
-  constructor(private staffDataFilterService: StaffDataFilterService, private filterService: FilterService) { }
+  constructor(
+    private staffDataFilterService: StaffDataFilterService,
+    private filterService: FilterService,
+    private infoMessageCommService: InfoMessageCommService
+  ) { }
 
   public ngOnInit() {
     this.filterConfig = {
@@ -39,7 +44,10 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
       applyButtonText: 'Search',
       cancelButtonText: '',
       enableDisabledButton: false,
-      showCancelFilterButton: false
+      showCancelFilterButton: false,
+      applyButtonCallback: () => {
+        this.infoMessageCommService.removeAllMessages();
+      }
     };
 
     this.filterSub = this.filterService.getStream(this.FILTER_NAME)

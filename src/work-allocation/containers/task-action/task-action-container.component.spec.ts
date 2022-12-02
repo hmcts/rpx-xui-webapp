@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -37,7 +37,7 @@ class WrapperComponent {
 class NothingComponent {
 }
 
-xdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
   describe('TaskActionContainerComponent', () => {
     let component: TaskActionContainerComponent;
@@ -54,7 +54,7 @@ xdescribe('WorkAllocation', () => {
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
 
-    beforeEach(async () => {
+    beforeEach(waitForAsync (() => {
       TestBed.configureTestingModule({
         declarations: [
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
@@ -96,7 +96,7 @@ xdescribe('WorkAllocation', () => {
       wrapper.tasks = null;
       window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
       fixture.detectChanges();
-    });
+    }));
 
     afterEach(() => {
       fixture.destroy();

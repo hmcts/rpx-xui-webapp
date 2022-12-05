@@ -171,7 +171,8 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       domainField: 'role',
       enableCondition: 'actorId=Specific person',
       type: 'find-person',
-      radioSelectionChange: 'actorId=Specific person'
+      radioSelectionChange: 'actorId=Specific person',
+      userIncluded: true
     };
   }
 

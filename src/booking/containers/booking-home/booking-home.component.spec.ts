@@ -220,7 +220,6 @@ describe('BookingHomeComponent', () => {
         navigate: jasmine.createSpy('navigate')
       };
       fixture.detectChanges();
-      //component.NavigationErrorHandler(error, mockRouter);
       component.onExistingBookingSelected(1);
       expect(bookingService.refreshRoleAssignments).toHaveBeenCalled();
     }));

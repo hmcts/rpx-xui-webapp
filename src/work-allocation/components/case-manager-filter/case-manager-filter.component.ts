@@ -101,7 +101,8 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
       title: 'Location',
-      type: 'radio'
+      type: 'radio',
+      lineBreakBefore: true
     };
   }
 
@@ -130,33 +131,8 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       lineBreakBefore: true,
       minSelectedError: 'You must select a role type',
       maxSelectedError: null,
-      title: 'Role type',
+      title: 'Select a role type',
       type: 'select'
-    };
-  }
-
-  private static initPersonFilter(): FilterFieldConfig {
-    return {
-      name: 'actorId',
-      options: [
-        {
-          key: PersonRole.ALL,
-          label: PersonRole.ALL
-        },
-        {
-          key: 'Specific person',
-          label: 'Specific person'
-        }
-      ],
-      minSelected: 1,
-      maxSelected: 1,
-      lineBreakBefore: true,
-      findPersonField: 'person',
-      changeResetFields: ['findPersonControl', 'person'],
-      minSelectedError: 'You must select a person',
-      maxSelectedError: null,
-      title: 'Person',
-      type: 'radio'
     };
   }
 
@@ -164,14 +140,16 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     return {
       name: 'person',
       options: [],
-      minSelected: 0,
-      maxSelected: 0,
+      minSelected: 1,
+      maxSelected: 1,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
       domainField: 'role',
-      enableCondition: 'actorId=Specific person',
       type: 'find-person',
-      radioSelectionChange: 'actorId=Specific person'
+      title: 'Person',
+      subTitle: 'Search for a person',
+      lineBreakBefore: true,
+      placeholderContent: 'You must specify a person...'
     };
   }
 
@@ -189,11 +167,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     );
     this.filterConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
-      CaseManagerFilterComponent.initSelectLocationFilter(),
-      CaseManagerFilterComponent.initLocationFilter(),
       CaseManagerFilterComponent.initRoleTypeFilter(),
-      CaseManagerFilterComponent.initPersonFilter(),
-      CaseManagerFilterComponent.findPersonFilter()
+      CaseManagerFilterComponent.findPersonFilter(),
+      CaseManagerFilterComponent.initSelectLocationFilter(),
+      CaseManagerFilterComponent.initLocationFilter()
     ];
     this.sub = this.filterService.getStream(CaseManagerFilterComponent.FILTER_NAME)
       .pipe(

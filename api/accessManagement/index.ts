@@ -14,6 +14,9 @@ import { postTaskCompletionForAccess } from '../workAllocation';
 import { getFullLocationsForServices } from '../workAllocation/locationService';
 
 export async function getBookings(req, resp: Response, next: NextFunction) {
+  if (req.body.bookableServices && req.body.bookableServices.length === 0) {
+    return resp.status(200).send([]);
+  }
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
   const fullPath = `${basePath}/am/bookings/query`;
   const headers = setHeaders(req);

@@ -134,6 +134,16 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
                   typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
                 }));
                 break;
+              case UserRole.LegalOps:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
+                }));
+                break;
+              case UserRole.Judicial:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
+                }));
+                break;
               default:
                 throw new Error('Invalid user role');
             }

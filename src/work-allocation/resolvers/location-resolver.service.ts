@@ -50,7 +50,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
             map((serviceRefData) => this.getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails))
           )
         ),
-        mergeMap((locations: Location[]) => this.userRole.toLocaleLowerCase() === UserRole.Judicial ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([])
+        mergeMap((locations: Location[]) => this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([])
           .pipe(
             map((bookings: Booking[]) => this.addBookingLocations(locations, bookings)),
           )

@@ -179,8 +179,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCaseFlagsRefdataApiUrl(): string {
-    // After merge from master , case_flags_refdata_api_url doesnt seems exist, will need to open after investigated
-    return '';//this.config.case_flags_refdata_api_url;
+    return this.config.case_flags_refdata_api_url;
   }
 
   public getAccessManagementMode(): boolean {

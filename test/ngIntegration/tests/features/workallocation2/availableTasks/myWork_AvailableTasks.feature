@@ -1,4 +1,5 @@
-@ng
+
+@ng 
 Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
@@ -14,12 +15,31 @@ Feature: WA Release 2: My work -  Available tasks
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
             | 20009 | IA Court Taylor House  |
+        Given I set MOCK locations with names in service "SSCS"
+            | id    | locationName           |
+            | 30001 | IA Court Aldgate Tower |
+            | 30002 | IA Court Birmingham    |
+            | 3003  | IA Court Bradford      |
+            | 30004 | IA Court Glasgow       |
+            | 30005 | IA Court Hatton Cross  |
+            | 30006 | IA Court Newcastle     |
+            | 30007 | IA Court Newport       |
+            | 30008 | IA Court North Shields |
+            | 30009 | IA Court Taylor House  |
 
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
+        
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 10001 |
+        
+    
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -32,13 +52,13 @@ Feature: WA Release 2: My work -  Available tasks
             | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
             | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
         Given I set MOCK tasks with attributes for view "Available tasks"
-            | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | created_date | case_category        |
-            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1      | -10          | auto test category 1 |
-            | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0       | -10          | auto test category 2 |
-            | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1       | -10          | auto test category 3 |
-            | 3     | Manage,Read                | 1234-1234-1234-1231 | case 4    | test location 4 | test auto task 4 | -10     | -20          | auto test category 4 |
-            | 4     | Manage                     | 1234-1234-1234-1231 | case 5    | test location 5 | test auto task 5 | -20     | -30          | auto test category 5 |
-            | 5     | Read                       | 1234-1234-1234-1231 | case 6    | test location 6 | test auto task 6 | -30     | -40          | auto test category 6 |
+            | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | created_date | hearing_date | case_category        |
+            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1      | -10          | 20           | auto test category 1 |
+            | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0       | -10          | 21           | auto test category 2 |
+            | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1       | -10          | 22           | auto test category 3 |
+            | 3     | Manage,Read                | 1234-1234-1234-1231 | case 4    | test location 4 | test auto task 4 | -10     | -20          | 23           | auto test category 4 |
+            | 4     | Manage                     | 1234-1234-1234-1231 | case 5    | test location 5 | test auto task 5 | -20     | -30          | 24           | auto test category 5 |
+            | 5     | Read                       | 1234-1234-1234-1231 | case 6    | test location 6 | test auto task 6 | -30     | -40          | 25           | auto test category 6 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -54,14 +74,14 @@ Feature: WA Release 2: My work -  Available tasks
             | Priority      | Yes        | No    |
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
-            | row | Case name | Case category        | Location        | Task             | Task created |
-            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -10          |
-            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          |
+            | row | Case name | Case category        | Location        | Task             | Task created | 
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -10          | 
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          | 
 
         Then If current user "<UserType>" is "Caseworker", I validate task table values displayed
-            | row | Case name | Case category        | Location        | Task             | Due date | Priority |
-            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | HIGH     |
-            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   |
+            | row | Case name | Case category        | Location        | Task             | Due date | Priority | 
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | HIGH     | 
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   | 
             | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
 
 
@@ -89,14 +109,19 @@ Feature: WA Release 2: My work -  Available tasks
 
     Scenario: Available Tasks sort column persist in session with Caseworker user
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 10001 |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -127,9 +152,14 @@ Feature: WA Release 2: My work -  Available tasks
 
     Scenario Outline:  Available Tasks, columns width "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 20001 |
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
+            | bookable        | false |
+            | substantive     | Y     |
+            | primaryLocation | 10001 |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

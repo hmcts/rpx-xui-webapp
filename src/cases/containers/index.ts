@@ -6,6 +6,7 @@ import { CaseFilterComponent } from './case-filter/case-filter.component';
 import { CaseHearingsComponent } from './case-hearings/case-hearings.component';
 import { CaseHomeComponent } from './case-home/case-home.component';
 import { CaseListComponent } from './case-list/case-list.component';
+import { CaseLoaderComponent } from './case-loader/case-loader.component';
 import { CaseSearchComponent } from './case-search/case-search.component';
 import { CaseShareCompleteComponent } from './case-share-complete/case-share-complete.component';
 import { CaseShareConfirmComponent } from './case-share-confirm/case-share-confirm.component';
@@ -18,6 +19,7 @@ export const containers: any[] = [
   CaseListComponent,
   CasesCreateComponent,
   CaseFilterComponent,
+  CaseLoaderComponent,
   CaseViewerContainerComponent,
   TasksContainerComponent,
   RolesAndAccessContainerComponent,

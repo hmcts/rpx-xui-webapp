@@ -57,7 +57,13 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
       this.route.snapshot.queryParams.jurisdiction : '';
     const userTypePlaceHolder = getLabel(this.roleCategory as RoleCategory).toLowerCase();
-    this.caption = this.roleCategory === RoleCategory.ADMIN ? 'Allocate an admin role' : `Allocate a ${userTypePlaceHolder} role`;
+    if (this.roleCategory === RoleCategory.ADMIN) {
+      this.caption = 'Allocate an admin role';
+    } else if (this.roleCategory === RoleCategory.CTSC) {
+      this.caption = 'Allocate a CTSC role';
+    } else {
+      this.caption = `Allocate a ${userTypePlaceHolder} role`;
+    }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;

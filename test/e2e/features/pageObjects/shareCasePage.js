@@ -5,6 +5,7 @@ const { browser, $ } = require('protractor');
 const ShareCaseData = require('../../utils/shareCaseData');
 
 const CucumberReportLog = require("../../support/reportLogger");
+const { LOG_LEVELS } = require('../../support/constants');
 class ShareCasePage {
 
     constructor() {
@@ -127,14 +128,14 @@ class ShareCasePage {
             let usernameEmailText = await user.getText();
             userNameEmails.push(usernameEmailText);
         }
-        CucumberReportLog.AddMessage("Filtered Users : " + JSON.stringify(userNameEmails));
+        CucumberReportLog.AddMessage("Filtered Users : " + JSON.stringify(userNameEmails), LOG_LEVELS.Debug);
         return userNameEmails; 
     }
 
 
     async selectUserFromFilteredList(userNum){
         let userToSelect = await this.userFilterList.get(userNum - 1);
-        CucumberReportLog.AddMessage("Selected User : "+await userToSelect.getText()); 
+        CucumberReportLog.AddMessage("Selected User : "+await userToSelect.getText(),LOG_LEVELS.Debug); 
         await userToSelect.click();
     }
 
@@ -146,7 +147,7 @@ class ShareCasePage {
         await this.addUserBtn.click();
         this.testData_lastAddedUser = this.testData_lastSelectedUser;
         this.testData_lastSelectedUser = "";
-        CucumberReportLog.AddMessage("Click Add with user selected : " + this.testData_lastAddedUser );
+        CucumberReportLog.AddMessage("Click Add with user selected : " + this.testData_lastAddedUser, LOG_LEVELS.Debug);
         await this.testData_markUserWithEmailTobeAdded(this.testData_lastAddedUser);
     }
 
@@ -162,7 +163,7 @@ class ShareCasePage {
 
     async clickDeselectCase(caseNum){
         let selectedCase = await this.selectedCases.get(caseNum - 1);
-        CucumberReportLog.AddMessage("Deselecting Case " + await selectedCase.getText()); 
+        CucumberReportLog.AddMessage("Deselecting Case " + await selectedCase.getText(), LOG_LEVELS.Debug); 
         await selectedCase.$('#btn-deselect-case').click();  
         
         await BrowserWaits.waitForCondition(async () => {
@@ -436,7 +437,6 @@ class ShareCasePage {
     }
 
     async validateShareCaseChangesPersisted(){
-        CucumberReportLog.AddMessage("Validating expected test data changes");
 
         let casesCount = await this.casesCount();
         let issuesList = [];

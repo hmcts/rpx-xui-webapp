@@ -93,7 +93,7 @@ describe("Task management api, task roles", () => {
                 return configValues[prop];
             });
 
-            const { getTaskRoles } = requireReloaded('../../../../workAllocation2/index');
+            const { getTaskRoles } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

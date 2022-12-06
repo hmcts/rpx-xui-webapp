@@ -15,7 +15,6 @@ import {
     AllocateRoleStateData,
     RoleCategory
 } from '../../../models';
-import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 import { ChooseRoleComponent } from './choose-role.component';
 
@@ -47,9 +46,7 @@ describe('ChooseRoleComponent', () => {
   let fixture: ComponentFixture<ChooseRoleComponent>;
   const mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
 
-  const mockAllocateRoleService = jasmine.createSpyObj('allocateRoleService', ['getValidRoles']);
-
-  beforeEach(waitForAsync(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChooseRoleComponent],
@@ -69,7 +66,6 @@ describe('ChooseRoleComponent', () => {
             },
           }
         },
-        {provide: AllocateRoleService, useValue: mockAllocateRoleService}
       ]
     })
       .compileComponents();
@@ -79,8 +75,7 @@ describe('ChooseRoleComponent', () => {
     fixture = TestBed.createComponent(ChooseRoleComponent);
     component = fixture.componentInstance;
     component.formGroup = formGroup;
-    mockStore.pipe.and.returnValue(of(mockAllocateRoleStateData));
-    mockAllocateRoleService.getValidRoles.and.returnValue(of(personRoles));
+    mockStore.pipe.and.returnValue(of(personRoles));
     fixture.detectChanges();
   });
 

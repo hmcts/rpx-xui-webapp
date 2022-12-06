@@ -100,8 +100,6 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
                   typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
                 }));
                 break;
-              case UserRole.Judicial:
-                break;
               default:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO

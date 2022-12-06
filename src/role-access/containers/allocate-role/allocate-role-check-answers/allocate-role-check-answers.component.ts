@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { RoleCategory } from '../../../../booking/models';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import {
   Actions,
@@ -55,7 +56,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
 
   public setAnswersFromAllocateRoleStateStore(allocateRoleStateData: AllocateRoleStateData): void {
     this.allocateRoleStateData = allocateRoleStateData;
-    this.typeOfRole = allocateRoleStateData.typeOfRole.name;
+    this.typeOfRole = allocateRoleStateData.typeOfRole ? allocateRoleStateData.typeOfRole.name : '';
     this.allocateTo = allocateRoleStateData.allocateTo;
     const roleCategory = allocateRoleStateData.roleCategory;
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
@@ -64,6 +65,8 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     } else {
       if (this.typeOfRole) {
         this.caption = `${action} a ${this.typeOfRole.toLowerCase()}`;
+      } else if (roleCategory === RoleCategory.ADMIN) {
+        this.caption = `${action} an admin role`;
       } else {
         this.caption = roleCategory !== undefined ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
       }

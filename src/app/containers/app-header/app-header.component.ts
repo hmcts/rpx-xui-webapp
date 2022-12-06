@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
 import { ApplicationThemeLogo } from '../../enums';
@@ -47,6 +47,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public userDetails$: Observable<UserDetails>;
   public defaultTheme: ApplicationTheme = AppConstants.DEFAULT_USER_THEME;
   public defaultMenuItems: NavigationItem[] = AppConstants.DEFAULT_MENU_ITEMS;
+  public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
+  private userDetails: UserDetails;
 
   constructor(
     private readonly store: Store<fromActions.State>,
@@ -87,17 +89,23 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.featureToggleKey = AppConstants.SERVICE_MESSAGES_FEATURE_TOGGLE_KEY;
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
+
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
-    this.setAppHeaderProperties(this.defaultTheme, this.defaultMenuItems);
+    const decorate16DigitCaseReferenceSearchBoxInHeader$ = this.store.pipe(select(fromActions.getDecorate16digitCaseReferenceSearchBoxInHeader));
+    combineLatest([
+      this.userDetails$,
+      decorate16DigitCaseReferenceSearchBoxInHeader$
+    ]).subscribe(([userDetails, decorate16DigitCaseReferenceSearchBoxInHeader]) => {
+        this.userDetails = userDetails;
+        this.setAppHeaderProperties(this.defaultTheme, this.defaultMenuItems);
+        this.setHeaderContent(userDetails);
+        this.decorate16DigitCaseReferenceSearchBoxInHeader = decorate16DigitCaseReferenceSearchBoxInHeader;
 
-    this.userDetails$.subscribe(userDetails => {
-      this.setHeaderContent(userDetails);
-    });
-
-    // Set up the active link whenever we detect that navigation has completed.
-    this.router.events.subscribe(event => {
-      this.setNavigationEnd(event);
-    });
+        // Set up the active link whenever we detect that navigation has completed.
+        this.router.events.subscribe(event => {
+          this.setNavigationEnd(event);
+        });
+      });
   }
 
   public async setHeaderContent(userDetails) {
@@ -216,6 +224,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   private setupActiveNavLink(items: NavigationItem[]): void {
-    this.navItems = AppUtils.setActiveLink(items, this.router.url);
+    if (this.router.url.indexOf('booking') > 0 && AppUtils.isBookableAndJudicialRole(this.userDetails)) {
+      this.navItems = [];
+    } else {
+      this.navItems = AppUtils.setActiveLink(items, this.router.url);
+    }
   }
 }

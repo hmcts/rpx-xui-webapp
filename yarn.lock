@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.25-case-file-view-document-in-media-viewer-v2":
-  version "5.0.25-case-file-view-document-in-media-viewer-v2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.25-case-file-view-document-in-media-viewer-v2.tgz#b996afce4d3b1843ca27db7a0f794a620c179f8e"
-  integrity sha512-K955PldkAytxwqpiHQcD6+7gfx1XhEcPY1e/ZKG6wnsXsVPHd3RAQOHBVWLakB8pja6DtDMMkrI++xROmlXSdQ==
+"@hmcts/ccd-case-ui-toolkit@5.0.32-angular11-upgrade":
+  version "5.0.32-angular11-upgrade"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.32-angular11-upgrade.tgz#acb7f9e7ef59b057bb98ae31ae9c2ecceb3800ea"
+  integrity sha512-lqsJjThNxv/QbAtq2mkrThMgyK3WkMP9r4w+Zao+QacA3U2n8eApi5EGma3v+JPmLMvYSkB6LIPNrocKCuxgsQ==
   dependencies:
     tslib "^2.0.0"
 
@@ -1509,7 +1509,7 @@
     js-yaml "^3.8.4"
     superagent "5"
 
-"@hmcts/nodejs-logging@^3.0.0", "@hmcts/nodejs-logging@^3.0.1":
+"@hmcts/nodejs-logging@^3.0.0":
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/@hmcts/nodejs-logging/-/nodejs-logging-3.0.4.tgz#82418571e85f0a275e021f53008195accc55e3b9"
   integrity sha512-42JgVVxxMI9JD+lnKkBcwIYAiJM/mIUlSLlqs8uVqnzHG/JdMhg1g6cYWqWc3UIhxl2KS+n8y4bh09nLC47nSA==
@@ -1517,6 +1517,15 @@
     moment "^2.19.3"
     on-finished "^2.3.0"
     winston "^2.4.5"
+
+"@hmcts/nodejs-logging@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/nodejs-logging/-/nodejs-logging-3.0.1.tgz#370bfee6c1d502ea7fec13001632bb03f15d072d"
+  integrity sha512-BpOBBFvUfy3d/pGi/s0s2CxtNwnLEm1hJcsEH7av9NpXaGL1rO0zfAcEk4eKNKYZVBEoiyXlpajFtAutSAFWfg==
+  dependencies:
+    moment "^2.19.3"
+    on-finished "^2.3.0"
+    winston "^2.4.1"
 
 "@hmcts/properties-volume@^0.0.13":
   version "0.0.13"
@@ -3483,7 +3492,7 @@ async@1.x:
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
   integrity sha512-nSVgobk4rv61R9PUSDtYt7mPVB2olxNR5RWJcAsH676/ef11bUZwvu7+RGYrYauVdDPcO519v68wRhXQtxsV9w==
 
-async@^2.6.2:
+async@^2.6.2, async@^2.6.4:
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.4.tgz#706b7ff6084664cd7eae713f6f965433b5504221"
   integrity sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA==
@@ -15788,6 +15797,18 @@ winston-transport@^4.5.0:
     logform "^2.3.2"
     readable-stream "^3.6.0"
     triple-beam "^1.3.0"
+
+winston@^2.4.1:
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-2.4.7.tgz#5791fe08ea7e90db090f1cb31ef98f32531062f1"
+  integrity sha512-vLB4BqzCKDnnZH9PHGoS2ycawueX4HLqENXQitvFHczhgW2vFpSOn31LZtVr1KU8YTw7DS4tM+cqyovxo8taVg==
+  dependencies:
+    async "^2.6.4"
+    colors "1.0.x"
+    cycle "1.0.x"
+    eyes "0.1.x"
+    isstream "0.1.x"
+    stack-trace "0.0.x"
 
 winston@^2.4.5:
   version "2.4.6"

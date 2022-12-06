@@ -56,13 +56,13 @@ const USER_DETAILS = {
   ]
 };
 
-describe('AllWorkCaseComponent', () => {
+fdescribe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   let router: Router;
 
-  let navigateSpy: jasmine.Spy;
+  const routerMock = jasmine.createSpyObj('Router', [ 'navigateByUrl' ]);
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases', 'getMyAccess']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
@@ -93,16 +93,18 @@ describe('AllWorkCaseComponent', () => {
       declarations: [AllWorkCaseComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
         { provide: Router, useValue: routerMock },
-        { provide: WorkAllocationCaseService, useValue: mockCaseService },
-        { provide: AlertService, useValue: mockAlertService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-        { provide: LocationDataService, useValue: mockLocationService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
-        { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
-        { provide: AllocateRoleService, useValue: mockAllocateRoleService }
+        {provide: WorkAllocationCaseService, useValue: mockCaseService},
+        {provide: AlertService, useValue: mockAlertService},
+        {provide: SessionStorageService, useValue: mockSessionStorageService},
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
+        {provide: LocationDataService, useValue: mockLocationService},
+        {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
+        {provide: LoadingService, useValue: mockLoadingService},
+        {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+        {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService},
+        {provide: JurisdictionsService, useValue: mockjurisdictionsService},
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService },
+        { provide: Store, useValue: storeMock },
       ]
     }).compileComponents();
   }));
@@ -113,7 +115,6 @@ describe('AllWorkCaseComponent', () => {
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
     store = TestBed.get(Store);
-    navigateSpy = spyOn(router, 'navigateByUrl');
 
     const cases: Case[] = getMockCases();
     component.isFirsTimeLoad = false;

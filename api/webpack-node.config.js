@@ -43,7 +43,6 @@ module.exports = {
                 test: /\.ts$/,
                 use: [
                     'ts-loader',
-                    'node-loader'
                 ]
             }
         ]

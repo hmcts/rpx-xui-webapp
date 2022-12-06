@@ -150,7 +150,11 @@ export const initProxy = (app: Express) => {
   applyProxy(app, {
     rewrite: false,
     source: '/documentData/caseref',
-    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)
+  });
+
+  applyProxy(app, {
+    rewrite: false,
     // Note: the "service-id=" part of the URL is *not* missing a preceding '?', as would be expected if service-id was
     // a query string parameter. The Reference Data team confirms service-id is a *path* parameter and "service-id=" is
     // intentional (see Line 66 of CaseFlagApiController.java in

@@ -12,6 +12,7 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
 export class RolesAndAccessComponent implements OnInit, OnChanges {
   public exclusionsNotNamed = false;
   public legalRolesNotNamed = false;
+  public ctscRolesNotNamed = false;
   public legalOpsRoles: CaseRole[] = [];
   public ctscRoles: CaseRole[] = [];
   public adminRoles: CaseRole[] = [];
@@ -74,11 +75,15 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     if (this.legalOpsRoles && this.legalOpsRoles.length > 0 && !this.legalOpsRoles[0].name) {
       // checking one name will reveal whether caseworker names are avaiable
       this.legalRolesNotNamed = true;
-    };
+    }
+    if (this.ctscRoles && this.ctscRoles.length > 0 && !this.ctscRoles[0].name) {
+      // checking one name will reveal whether caseworker names are avaiable
+      this.ctscRolesNotNamed = true;
+    }
     if (this.exclusions && this.exclusions.length > 0) {
       for (const exclusion of this.exclusions) {
         // some exclusions are judicial so this checks whether any exclusion is missing a name
-        if (exclusion.userType === RoleCategory.LEGAL_OPERATIONS || exclusion.userType === RoleCategory.ADMIN) {
+        if (exclusion.userType === RoleCategory.LEGAL_OPERATIONS || exclusion.userType === RoleCategory.ADMIN || exclusion.userType === RoleCategory.CTSC) {
           if (!exclusion.name) {
             this.exclusionsNotNamed = true;
           } else {
@@ -92,6 +97,9 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     }
     if (this.caseworkers && this.exclusions && this.exclusions.length > 0) {
       this.namedExclusions = this.checkSetNamedRoles(this.exclusions, this.exclusionsNotNamed);
+    }
+    if (this.caseworkers && this.ctscRoles && this.ctscRoles.length > 0) {
+      this.namedCTSCRoles = this.checkSetNamedRoles(this.ctscRoles, this.ctscRolesNotNamed);
     }
     if (this.waServiceConfig) {
       const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;

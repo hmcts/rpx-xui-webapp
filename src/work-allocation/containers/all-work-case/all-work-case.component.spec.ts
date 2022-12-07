@@ -56,7 +56,7 @@ const USER_DETAILS = {
   ]
 };
 
-fdescribe('AllWorkCaseComponent', () => {
+describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

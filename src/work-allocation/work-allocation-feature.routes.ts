@@ -23,6 +23,7 @@ import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
 import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
+import { WorkAllocationAccessGuard } from './guards';
 
 export const ROUTES: Routes = [
   {
@@ -65,6 +66,7 @@ export const ROUTES: Routes = [
           {
             path: 'my-access',
             component: MyAccessComponent,
+            canActivate: [WorkAllocationAccessGuard],
             data: {
               title: 'HMCTS Manage cases | My work | My access', subTitle: 'My access'
             }

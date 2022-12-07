@@ -1,4 +1,4 @@
-@ng 
+@ng @ignore
 Feature: Global search
 
     Background: Setup
@@ -253,7 +253,7 @@ Feature: Global search
         Then I validate global search results displayed count 10
 
         When I click action link "Challenged access" at row 1 in global search results page
-        
+
         Then I see case details basic view and request access page
         Then I see case details basic view displays banner with message "This case requires challenged access"
 

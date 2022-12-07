@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.0-rc6":
-  version "6.10.0-rc6"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.0-rc6.tgz#28a100a57d854352d710585d6a15b72a6ec1e703"
-  integrity sha512-XxBYiamNzP4m6XookNFnRlW+TPhFOinLwhNiRqLvCWGZRsvUQq1NwF7LlYQ8ELfj0pleRxgSaNrwqFI3eNgqJQ==
+"@hmcts/ccd-case-ui-toolkit@6.10.0-EUI-3729-show-hide-conditionals":
+  version "6.10.0-EUI-3729-show-hide-conditionals"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.0-EUI-3729-show-hide-conditionals.tgz#6a24bac67a76da1a583c2748310f12002f2ba53d"
+  integrity sha512-NzU3Ee3XjLGNxB0aEA8hlrU/PgNze7xSPGtUFnJQ7yrXfb82rFBH/J0RkxmWgWl+OUzHEhvPammYxPGyDMY2Dw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -479,6 +479,7 @@
     moment "^2.29.1"
     moment-timezone "^0.5.31"
     npm-registry-fetch "^4.0.5"
+    pegjs "^0.10.0"
     rx-polling "1.1.0"
     typescript "3.1.1"
     underscore "^1.9.1"
@@ -10579,6 +10580,11 @@ pdfjs-dist@2.5.207:
   version "2.5.207"
   resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.5.207.tgz#b5e8c19627be64269cd3fb6df3eaaf45ddffe7b6"
   integrity sha512-xGDUhnCYPfHy+unMXCLCJtlpZaaZ17Ew3WIL0tnSgKFUZXHAPD49GO9xScyszSsQMoutNDgRb+rfBXIaX/lJbw==
+
+pegjs@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/pegjs/-/pegjs-0.10.0.tgz#cf8bafae6eddff4b5a7efb185269eaaf4610ddbd"
+  integrity sha512-qI5+oFNEGi3L5HAxDwN2LA4Gg7irF70Zs25edhjld9QemOgp0CbvMtbFcMvFtEo1OityPrcCzkQFB8JP/hxgow==
 
 pend@~1.2.0:
   version "1.2.0"

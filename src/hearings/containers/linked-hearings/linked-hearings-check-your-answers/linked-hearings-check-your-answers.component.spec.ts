@@ -258,6 +258,11 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', caseId, 'hearings']);
   });
 
+  it('should navigate to hearings tab', () => {
+    component.onCancel();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', caseId, 'hearings']);
+  });
+
   it('should navigate to selected hearings page', () => {
     component.caseId = caseId;
     component.hearingId = hearingId;

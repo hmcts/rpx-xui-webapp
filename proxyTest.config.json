@@ -95,12 +95,12 @@
     "logLevel": "debug"
   },
   "/categoriesAndDocuments/*": {
-    "target": "http://localhost:3001",
+    "target": "http://localhost:3005",
     "secure": false,
     "logLevel": "debug"
   },
   "/documentData/caseref/*": {
-    "target": "http://localhost:3001",
+    "target": "http://localhost:3005",
     "secure": false,
     "logLevel": "debug"
   },

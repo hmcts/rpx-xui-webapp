@@ -130,6 +130,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     let formValid = true;
     let selectionValid = true;
 
+    if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
+      return formValid;
+    }
+
     (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
       if (!element.valid) {
         formValid = false;

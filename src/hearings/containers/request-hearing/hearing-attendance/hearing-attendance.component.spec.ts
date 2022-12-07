@@ -6,7 +6,7 @@ import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
+import {ACTION, RadioOptions} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {LovRefDataService} from '../../../services/lov-ref-data.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
@@ -66,6 +66,11 @@ describe('HearingAttendanceComponent', () => {
     });
     component.executeAction(ACTION.CONTINUE);
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
+  });
+  it('should return true when calling isFormValid for paper hearings', () => {
+    component.attendanceFormGroup.controls.paperHearing.setValue(RadioOptions.YES);
+    fixture.detectChanges();
+    expect(component.isFormValid()).toEqual(true);
   });
   it('should true when calling isFormValid with partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);

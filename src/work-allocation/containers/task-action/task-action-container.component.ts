@@ -95,7 +95,7 @@ export class TaskActionContainerComponent implements OnInit {
   public isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);D
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
       const isJudge = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
       return isJudge;
     }

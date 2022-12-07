@@ -214,6 +214,11 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
       'h1000002',
     ]);
   });
+  
+  it('should navigate to hearings tab', () => {
+    component.onCancel();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '8254902572336147', 'hearings']);
+  });
 
   afterEach(() => {
     fixture.destroy();

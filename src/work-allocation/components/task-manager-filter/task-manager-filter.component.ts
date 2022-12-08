@@ -52,7 +52,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           name: 'taskName',
-          value: ['']
+          value: [null]
         },
       ]
     }

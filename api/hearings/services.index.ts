@@ -91,17 +91,22 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
       reasonsForLink: [],
     };
     const linkedCaseIds = data.map(linkedCase => linkedCase.caseReference);
-    const promises = [];
-    const allCaseId = [currentCase.caseReference, ...linkedCaseIds];
-    const allData = [currentCase, ...data];
-    allCaseId.forEach(caseId => {
-      const promise = getHearings(caseId, req);
-      promises.push(promise);
-    });
-    // @ts-ignore
-    const allResults = await Promise.allSettled(promises);
-    const result = aggregateAllResults(allData, allResults);
-    res.status(status).send(result);
+
+    if (linkedCaseIds && linkedCaseIds.length) {
+      const promises = [];
+      const allCaseId = [currentCase.caseReference, ...linkedCaseIds];
+      const allData = [currentCase, ...data];
+      allCaseId.forEach(caseId => {
+        const promise = getHearings(caseId, req);
+        promises.push(promise);
+      });
+      // @ts-ignore
+      const allResults = await Promise.allSettled(promises);
+      const result = aggregateAllResults(allData, allResults);
+      res.status(status).send(result);
+    } else {
+      res.status(status).send([]);
+    }
   } catch (error) {
     next(error);
   }

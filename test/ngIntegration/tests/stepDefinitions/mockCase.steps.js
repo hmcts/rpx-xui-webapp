@@ -74,6 +74,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         // });
     });
 
+    Given('I set MOCK case details {string} values', async function (caseDetailsReference, caseDetailsDatatable) {
+        const caseDetails = global.scenarioData[caseDetailsReference];
+        
+    });
+
     Given('I set MOCK case details {string} property {string} as {string}', async function(caseDetailsRef, property, value){
         const caseDetails = global.scenarioData[caseDetailsRef];
 

@@ -42,12 +42,15 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
   public getReferenceData$(serviceId, category: HearingCategory, isChildRequired): Observable<LovRefDataModel[]> {
     const sessionKey = this.getLovSessionKey(serviceId, category);
     const lovDataFromSession = this.getLovRefDataFromSession(sessionKey);
-    if (lovDataFromSession.length > 0) {
+    if (lovDataFromSession && lovDataFromSession.length > 0) {
       return of(lovDataFromSession);
     }
     return this.lovRefDataService.getListOfValues(category, serviceId, isChildRequired).pipe(
       tap((lovData) => {
-        this.sessionStorageService.setItem(sessionKey, JSON.stringify(lovData));
+        // by pass EntityRoleCode/HearingChannel and not put them in session storage as it causes inconsistency between request/actual hearing
+        if (category !== HearingCategory.EntityRoleCode && category !== HearingCategory.HearingChannel) {
+          this.sessionStorageService.setItem(sessionKey, JSON.stringify(lovData));
+        }
       }),
       catchError(() => {
         this.router.navigate(['/hearings/error']);

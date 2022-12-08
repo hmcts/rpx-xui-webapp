@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
-import { orchestrationSpecificAccessRequest, postCreateTask } from '.';
+import { getTaskType, orchestrationSpecificAccessRequest, postCreateTask } from '.';
 
 chai.use(sinonChai);
 describe('postCreateTask', () => {
@@ -37,7 +37,7 @@ describe('postCreateTask', () => {
   });
 
   it('should create task successfully', async () => {
-    const createTask= { caseId: '101', jurisdiction: 'IA', caseType: 'caseType', taskType: 'access_requests', dueDate: '2022-06-30T16:53:10+0100', name: 'name' }
+    const createTask= { caseId: '101', jurisdiction: 'IA', caseType: 'caseType', taskType: 'access_requests', dueDate: '2022-06-30T16:53:10+0100', name: 'name', roleAssignmentId: 'example' }
     const response = await postCreateTask(req, next, createTask);
     expect(response.data).to.deep.equal(data);
   });
@@ -96,6 +96,12 @@ describe('orchestrationSpecificAccessRequest', () => {
   it('should call orchestrationSpecificAccessRequest successfully', async () => {
     await orchestrationSpecificAccessRequest(req, res, next);
     expect(res.send).to.have.been.calledWith(sinon.match(data));
+  });
+
+  it('should get task type from role category', async () => {
+    expect(getTaskType('JUDICIAL')).to.deep.equal('reviewSpecificAccessRequestJudiciary');
+    expect(getTaskType('LEGAL_OPERATIONS')).to.deep.equal('reviewSpecificAccessRequestLegalOps');
+    expect(getTaskType('ADMIN')).to.deep.equal('reviewSpecificAccessRequestAdmin');
   });
 });
 

@@ -62,5 +62,4 @@ describe('CCD Connector Component', () => {
   it('should have ngOnDestroy() method', () => {
     expect(component.ngOnDestroy).toBeTruthy();
   });
-
 });

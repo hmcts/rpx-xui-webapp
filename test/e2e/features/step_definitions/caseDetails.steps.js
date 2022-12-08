@@ -55,9 +55,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see case details page displayed with tab {string} selected', async function(tabLabel){
-        expect(await caseDetailsPage.amOnPage(),'Not on case details page').to.be.true;
-        expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel), `Tab with label "${tabLabel}" is not present or displayed`).to.be.true;
-        expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel), `Tab with label "${tabLabel}" is not selected`).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsPage.amOnPage(), 'Not on case details page').to.be.true;
+            expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel), `Tab with label "${tabLabel}" is not present or displayed`).to.be.true;
+            expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel), `Tab with label "${tabLabel}" is not selected`).to.be.true;
+        }); 
     });
 
     Then('I see case details page with message banner {string}', async function(expectedBannerMessage){

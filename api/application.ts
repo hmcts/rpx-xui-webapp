@@ -10,7 +10,7 @@ import {
   FEATURE_HELMET_ENABLED,
   HELMET,
   PROTOCOL,
-  SESSION_SECRET,
+  SESSION_SECRET
 } from './configuration/references';
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
@@ -19,8 +19,7 @@ import * as tunnel from './lib/tunnel';
 import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
-import taskRouter from './workAllocation/routes';
-import workAllocation2Router from './workAllocation2/routes';
+import workAllocationRouter from './workAllocation/routes';
 
 export const app = express();
 
@@ -113,10 +112,7 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 app.use('/am', amRoutes);
 app.use('/api', routes);
 app.use('/external', openRoutes);
-// TODO: No dash?
-// TODO: taskRouter should be called workAllocationRouter
-app.use('/workallocation', taskRouter);
-app.use('/workallocation2', workAllocation2Router);
+app.use('/workallocation', workAllocationRouter);
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application');

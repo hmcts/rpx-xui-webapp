@@ -4,10 +4,10 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
-import { TaskListFilterComponent } from '../../../work-allocation-2/components';
+import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { BookingNavigationEvent, BookingProcess, BookingRequest } from '../../models';
 import { BookingService } from '../../services';
-import { CreateBookingHandleError, RefreshBookingHandleError} from '../utils/booking-error-handler';
+import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/booking-error-handler';
 
 @Component({
   selector: 'exui-booking-check',
@@ -51,9 +51,19 @@ export class BookingCheckComponent implements OnInit {
       beginDate: this.bookingProcess.startDate,
       endDate: this.bookingProcess.endDate
     };
+    const givenDate = payload.beginDate;
+    if (givenDate) {
+      // issue previously with API rejecting DST because time was today 00:00 but UTC was yesterday 23:00
+      // only replace the time if current status is DST
+      if (payload.beginDate.getHours() !== payload.beginDate.getUTCHours()) {
+        payload.beginDate = new Date(Date.UTC(
+          givenDate.getFullYear(), givenDate.getMonth(), givenDate.getDate(), 0, 0, 0, 0
+        ));
+      }
+    }
     this.bookingService.createBooking(payload).pipe(
       switchMap(() => {
-        return this.bookingService.refreshRoleAssignments().pipe(
+        return this.bookingService.refreshRoleAssignments(this.userId).pipe(
           catchError(err => {
             return throwError({...err, case : 'refreshRoleAssignments'});
           })
@@ -71,7 +81,7 @@ export class BookingCheckComponent implements OnInit {
       this.router.navigate(['/work/my-work/list'], {
         state: {
           location: {
-            id: this.bookingProcess.location.epimms_id
+            ids: [this.bookingProcess.location.epimms_id]
           }
         }
       });

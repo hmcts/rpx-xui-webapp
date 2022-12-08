@@ -20,7 +20,7 @@ export class BookingGuard implements CanActivate {
 
   public hasAccess(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
-    return userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some( roleAssignment => 'bookable' in roleAssignment && roleAssignment.bookable === true );
+    return userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some( roleAssignment => 'bookable' in roleAssignment && (roleAssignment.bookable === true || roleAssignment.bookable === 'true') );
   }
 
   public canActivate(): Observable<boolean> {

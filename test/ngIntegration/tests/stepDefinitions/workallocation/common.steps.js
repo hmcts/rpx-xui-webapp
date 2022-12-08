@@ -2,7 +2,7 @@ var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
-
+const rolesAccessMockData = require('../../../../nodeMock/workAllocation/rolesAccess');
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('../../../../e2e/features/pageObjects/workAllocation/taskManagerPage');
@@ -47,12 +47,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
         await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
-            
+
             const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
             if (val !== "success"){
                 throw new Error(JSON.stringify(val));
 
-           } 
+           }
             await taskListTable.clickPaginationLink(paginationLinktext);
             await BrowserWaits.waitForConditionAsync(async () => {
                 const caseCatColVal = await taskListTable.getColumnValueForTaskAt('Case category', 1);
@@ -63,7 +63,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 return global.scenarioData[reference] !== null
             }, 5000);
         });
-       
+
     });
 
     When('I click WA case list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
@@ -109,26 +109,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 continue;
             }
             const searchParamObj = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchHash.key);
-           
+
             softAssert.setScenario(`Search param with key ${searchHash.key} is present`);
             if (searchHash.value !== ''){
                 await softAssert.assert(async () => expect(searchParamObj.length > 0).to.be.true);
             }
-             
+
             if (searchParamObj.length > 0) {
                 if (searchHash.value && searchHash.value !== ""){
                     softAssert.setScenario(`Search param with key ${searchHash.key} and values ${searchHash.value} is present`);
                     if (searchHash.value !== ''){
                         await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
                     }
-                    
+
                 }
 
                 if (searchHash.size) {
                     softAssert.setScenario(`Search param with key ${searchHash.key} and has value count ${searchHash.size}`);
                     await softAssert.assert(async () => expect(searchParamObj[0].values.length).to.equal(parseInt(searchHash.size)));
                 }
-                
+
             }
         }
         softAssert.finally();
@@ -155,7 +155,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
         softAssert.finally();
-        
+
     });
 
 
@@ -165,7 +165,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const reqSearchParams = reqBody.searchRequest.search_parameters;
         const searchParametersMatchingType = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchKey);
 
-        expect(searchParametersMatchingType.length, `Search parameter mathcing key "${searchKey}" found in request body ${reqBody} `).to.equal(0); 
+        expect(searchParametersMatchingType.length, `Search parameter mathcing key "${searchKey}" found in request body ${reqBody} `).to.equal(0);
 
     });
 
@@ -177,7 +177,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 res.send(persons);
             });
         } else if (forRelease === "2"){
-            MockApp.onGet('workallocation2/caseworker', (req, res) => {
+            MockApp.onGet('workallocation/caseworker', (req, res) => {
                 res.send(persons);
             });
         } else{
@@ -195,6 +195,36 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await validateTaskTableValues(datatable);
         }
     });
+
+    Given('I have workallocation on boarded services {string}', async function(onboardedServices){
+        workAllocationMockData.updateWASupportedJurisdictions(onboardedServices.split(",")) ;
+    });
+
+    // Given('I set MOCK case roles', async function(datatable){
+    //     const caseRoles = [];
+    //     const tableRowHashes = datatable.hashes();
+    //     for (const row of tableRowHashes) {
+    //         const mockCaseRole = rolesAccessMockData.dataModel.getCaseRole();
+    //         caseRoles.push(mockCaseRole)
+    //         const hashkeys = Object.keys(row);
+
+    //         for (let j = 0; j < hashkeys.length; j++) {
+    //             const key = hashkeys[j];
+
+    //             // if (key.includes('start') || key.includes('end') || key.includes('created')) {
+    //             //     mockCaseRole[key] = workAllocationDateUtil.getDateFormat(row[key],"YYYY-MM-DD");
+    //             // }else{
+    //             //     mockCaseRole[key] = row[key];
+    //             // }
+
+    //             mockCaseRole[key] = row[key];
+
+    //         }
+
+
+    //     }
+    //     rolesAccessMockData.caseRoles = caseRoles;
+    // });
 
     async function validateTaskTableValues(datatable){
         const tableRowHashes = datatable.hashes();
@@ -217,6 +247,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     expectedValue = workAllocationDateUtil.getTaskCeateDateDisplayString(expectedValue);
                 }
 
+                if (columnName.includes('Hearing date')) {
+                    expectedValue = workAllocationDateUtil.getDurationDateDisplayString(expectedValue);
+                }
+
                 let actualColumnValue = null;
                 if (columnName === "row") {
                     continue;
@@ -233,7 +267,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
         softAssert.finally();
-    } 
+    }
 
     function getLocationsResponse(datatable){
         const locationHashes = datatable.hashes();
@@ -248,18 +282,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 location[key] = locationFromDatatable[key];
             }
             locations.push(location);
-           
+
         }
         return locations;
     }
-    
+
     function getPersonResponse(datatable){
         const personHashes = datatable.hashes();
         const personsData = [];
         for (let i = 0; i < personHashes.length;i++){
             const personFromDatatable = personHashes[i];
             const person = workAllocationDataModel.getCaseWorkerOrperson();
-            
+
             const personInputKeys = Object.keys(personFromDatatable);
             for (let j = 0; j < personInputKeys.length;j++ ){
                 const key = personInputKeys[j];
@@ -270,7 +304,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }else{
                     person[key] = personFromDatatable[key];
                 }
-                
+
             }
             personsData.push(person);
         }

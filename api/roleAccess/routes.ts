@@ -1,17 +1,18 @@
 import { Router } from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
-import { confirmAllocateRole,
+import {
+  confirmAllocateRole,
   createSpecificAccessApprovalRole,
-  manageLabellingRoleAssignment,
   deleteRoleByCaseAndRoleId,
   getAccessRolesByCaseId,
   getJudicialUsers,
+  getMyAccessNewCount,
   getRolesByCaseId,
-  getSpecificAccessApproved,
-  reallocateRole,
-  getNewCasesCount} from './index';
-import { getPossibleRoles, getRoleByAssignmentId } from './roleAssignmentService';
+  manageLabellingRoleAssignment,
+  reallocateRole
+} from './index';
+import { getPossibleRoles } from './roleAssignmentService';
 
 const router = Router({ mergeParams: true });
 router.use(authInterceptor);
@@ -25,13 +26,11 @@ router.post('/allocate-role/reallocate', reallocateRole);
 router.post('/allocate-role/delete', deleteRoleByCaseAndRoleId);
 
 router.post('/allocate-role/valid-roles', getPossibleRoles);
-router.post('/allocate-role/get', getRoleByAssignmentId);
 router.post('/roles/post', getRolesByCaseId);
 router.post('/roles/access-get', getAccessRolesByCaseId);
 router.post('/roles/getJudicialUsers', getJudicialUsers);
 
-router.get('/roles/getSpecificAccessApproved', getSpecificAccessApproved );
-router.get('/roles/getNewCasesCount', getNewCasesCount );
+router.get('/roles/get-my-access-new-count', getMyAccessNewCount);
 router.post('/roles/manageLabellingRoleAssignment/:caseId', manageLabellingRoleAssignment );
 
 router.post('/allocate-role/specific-access-approval', createSpecificAccessApprovalRole);

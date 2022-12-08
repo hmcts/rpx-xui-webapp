@@ -1,6 +1,7 @@
 import {HearingConditions} from '../../models/hearingConditions';
 import {HearingRequestMainModel} from '../../models/hearingRequestMain.model';
 import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
+import {Mode} from '../../models/hearings.enum';
 import * as fromActions from '../actions';
 
 export const initialHearingRequestState: HearingRequestStateData = {
@@ -26,6 +27,9 @@ export const initialHearingRequestState: HearingRequestStateData = {
       listingComments: null,
       hearingRequester: null,
       leadJudgeContractType: null,
+      amendReasonCodes: null,
+      hearingChannels: [],
+      listingAutoChangeReasonCode: null
     },
     caseDetails: {
       hmctsServiceCode: null,
@@ -63,21 +67,32 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
       };
     }
     case fromActions.UPDATE_HEARING_REQUEST: {
+      let mode;
       let hasWalesLocation;
       const hearingConditions: HearingConditions = action.hearingCondition;
+      if (hearingConditions.hasOwnProperty('mode')) {
+        mode = hearingConditions['mode'];
+      }
       if (hearingConditions.hasOwnProperty('region')) {
         const region = hearingConditions['region'];
         hasWalesLocation = region.includes('Wales');
       }
       let updatedHearingRequestMainModel: HearingRequestMainModel = action.hearingRequestMainModel;
-      if (!hasWalesLocation) {
+      if (mode === Mode.VIEW_EDIT) {
         updatedHearingRequestMainModel = {
-          ...action.hearingRequestMainModel,
-          hearingDetails: {
-            ...action.hearingRequestMainModel.hearingDetails,
-            hearingInWelshFlag: false
-          }
+          ...action.hearingRequestMainModel
         };
+      } else {
+        // On create or create-edit mode if no Wales location is selected, it needs to set hearingInWelshFlag as false
+        if (!hasWalesLocation) {
+          updatedHearingRequestMainModel = {
+            ...action.hearingRequestMainModel,
+            hearingDetails: {
+              ...action.hearingRequestMainModel.hearingDetails,
+              hearingInWelshFlag: false
+            }
+          };
+        }
       }
       return {
         ...currentState,

@@ -89,6 +89,7 @@ describe('Specific Access Reducer', () => {
         const specificAccessStateData = {
           state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
           accessReason: null,
+          specificAccessReason: null,
           caseName: 'Example name',
           actorId: 'N/A',
           requestCreated: null,
@@ -97,7 +98,7 @@ describe('Specific Access Reducer', () => {
           requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
           jurisdiction: 'IA',
           roleCategory: RoleCategory.LEGAL_OPERATIONS,
-          requestedRole: 'specific-access-legal-ops',
+          requestedRole: 'specific-access-legal-ops'
         }
         const action: SpecificAccessAction = {type: SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA, payload: specificAccessStateData};
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);

@@ -1,6 +1,6 @@
 import { NavigationExtras } from '@angular/router';
 
-import { ISessionStorageService } from '../../work-allocation-2/interfaces/common';
+import { ISessionStorageService } from '../../work-allocation/interfaces/common';
 import { Role, RoleAccessHttpError, RolesByService, SpecificRole, TypeOfRole } from '../models';
 import { RoleCaptionText } from '../models/enums/allocation-text';
 import { InfoMessageType } from '../models/enums';

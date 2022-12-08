@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { HearingConditions } from '../../../hearings/models/hearingConditions';
-import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
-import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
+import {Component, Input, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {HearingConditions} from '../../../hearings/models/hearingConditions';
+import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
+import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode} from '../../../hearings/models/hearings.enum';
+import {LovRefDataModel} from '../../../hearings/models/lovRefData.model';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
@@ -26,15 +27,17 @@ export class CaseHearingsListComponent implements OnInit {
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
+  public hearingStageOptions: LovRefDataModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
+    this.hearingStageOptions = this.activatedRoute.snapshot.data.hearingStageOptions;
   }
 
   public ngOnInit(): void {
-    if (this.status === EXUISectionStatusEnum.PAST_AND_CANCELLED) {
+    if (this.status === EXUISectionStatusEnum.PAST_OR_CANCELLED) {
       this.hasReadOnlyAction = true;
     }
     if (this.status === EXUISectionStatusEnum.UPCOMING) {
@@ -63,6 +66,12 @@ export class CaseHearingsListComponent implements OnInit {
     return !!hearingGroupRequestId;
   }
 
+  public isLinkableStatus(exuiDisplayStatus: EXUIDisplayStatusEnum) {
+    return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING
+      || exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED
+      || exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED;
+  }
+
   public addAndEdit(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
   }
@@ -75,8 +84,13 @@ export class CaseHearingsListComponent implements OnInit {
     this.router.navigate(['/', 'hearings', 'link', this.caseId, hearingID]);
   }
 
-  public manageLinks(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'manage-links', hearingID]);
+  public manageLinks(hearing: HearingListViewModel): void {
+    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({
+      caseReference: this.caseId,
+      hearingId: hearing.hearingID
+    }));
+    this.hearingStore.dispatch(new fromHearingStore.LoadLinkedHearingGroup({groupId: hearing.hearingGroupRequestId}));
+    this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
   }
 
   public viewAndEdit(hearingID: string): void {
@@ -98,7 +112,7 @@ export class CaseHearingsListComponent implements OnInit {
         this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancellation-summary');
         break;
       case EXUIDisplayStatusEnum.CANCELLED:
-        this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancelled-summary');
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-cancelled-summary/${hearing.hearingID}`);
         break;
       case EXUIDisplayStatusEnum.COMPLETED:
         this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-completed-summary/${hearing.hearingID}`);
@@ -119,6 +133,6 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public LoadHearingRequestAndRedirect(hearingID: string, targetURL: string) {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL }));
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({hearingID, targetURL}));
   }
 }

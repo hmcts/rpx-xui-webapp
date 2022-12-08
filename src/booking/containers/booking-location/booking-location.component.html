@@ -34,9 +34,10 @@
         <!-- TODO: determine selectedLocations -->
         <exui-search-location
           class="search-location"
-          [selectedLocations]="[]"
+          [selectedLocations]="selectedLocations"
           [singleMode]="true"
           [delay]="300"
+          [bookingCheck]="bookingCheckType"
           serviceIds="IA"
           locationType=""
           (locationSelected)="onLocationChanged($event)"></exui-search-location>

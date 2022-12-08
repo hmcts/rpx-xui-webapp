@@ -41,7 +41,7 @@ export const HEARING_CANCELLATION_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'reasonForCancellation',
         answerTitle: 'Reason for cancellation',
-        answerSource: AnswerSource.REASON_FOR_CANCELLATION,
+        answerSource: AnswerSource.REASON_FOR_REQUEST_CANCELLATION,
       },
     ],
   },

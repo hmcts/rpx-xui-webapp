@@ -15,7 +15,7 @@ export class JudicialMembersAnswerConverter implements AnswerConverter {
       map(() => {
         const judicialNames: string[] = [];
         judicialUsersList.forEach(judgeInfo => {
-          judicialNames.push(judgeInfo.knownAs ? judgeInfo.knownAs : judgeInfo.fullName);
+          judicialNames.push(judgeInfo.fullName);
         });
         return judicialNames.join('<br>');
       })

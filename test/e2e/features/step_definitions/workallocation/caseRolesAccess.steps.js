@@ -73,11 +73,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate case roles table has headers for role category {string} in case roles and access page', async function(roleCategory,headerColumnsDatatab){
         const headerNameHashes = headerColumnsDatatab.hashes();
-
-        for (const headerHash of headerNameHashes){
-            expect(await caseRolesAndAccessPage.isTableColumnDisplayedForAccessRoleType(roleCategory, headerHash.headerName), `${headerHash.headerName} column is not displayedin case role table for role ${roleCategory}`).to.be.true
-        }
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            for (const headerHash of headerNameHashes) {
+                expect(await caseRolesAndAccessPage.isTableColumnDisplayedForAccessRoleType(roleCategory, headerHash.headerName), `${headerHash.headerName} column is not displayedin case role table for role ${roleCategory}`).to.be.true
+            }
+        }); 
     });
 
     Then('I validate case roles table for role category {string} has data', async function (roleCategory, rowsDatatabale) {

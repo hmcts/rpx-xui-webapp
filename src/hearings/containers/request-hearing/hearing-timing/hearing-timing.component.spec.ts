@@ -1,20 +1,20 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {Component, Input, NO_ERRORS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
-import {of} from 'rxjs';
-import {ErrorMessage} from '../../../../app/models';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION, HearingDatePriorityEnum, RadioOptions, UnavailabilityType} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {UnavailabilityRangeModel} from '../../../models/unavailabilityRange.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
-import {HearingTimingComponent} from './hearing-timing.component';
+import { of } from 'rxjs';
+import { ErrorMessage } from '../../../../app/models';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION, HearingDatePriorityEnum, RadioOptions, UnavailabilityType } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
+import { HearingsService } from '../../../services/hearings.service';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { HearingTimingComponent } from './hearing-timing.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -67,8 +67,8 @@ describe('HearingTimingComponent', () => {
         HttpClientTestingModule],
       declarations: [HearingTimingComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         ValidatorsUtils,
         {
           provide: ActivatedRoute,
@@ -98,7 +98,7 @@ describe('HearingTimingComponent', () => {
   it('should check initForm', () => {
     component.priorityFormInfo.startDate = new Date('02-03-2021');
     component.initForm();
-    expect(component.firstHearingFormGroup.get('firstHearingDate_day').value).toBe(3);
+    expect(component.firstHearingFormGroup.get('firstHearingDate_day').value).toBeNull();
   });
 
   it('should set checkedHearingAvailability', () => {
@@ -178,16 +178,16 @@ describe('HearingTimingComponent', () => {
   it('should get getFormData', () => {
     component.hearingRequestMainModel.hearingDetails.duration = 70;
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
-    component.hearingRequestMainModel.hearingDetails.hearingWindow = { dateRangeStart: '', dateRangeEnd: '', firstDateTimeMustBe: '' };
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = null;
     component.getFormData();
     expect(component.priorityFormInfo.hours).toBe('1');
     expect(component.priorityFormInfo.minutes).toBe('10');
     expect(component.priorityFormInfo.priority).toBe('Urgent');
     expect(component.checkedHearingAvailability).toBe(RadioOptions.NO);
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart = '01-01-2021';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = { dateRangeStart: '01-01-2021' };
     component.getFormData();
-    expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd = '01-01-2021';
+    expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = { dateRangeEnd: '01-01-2021' };
     component.getFormData();
     expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
   });
@@ -219,7 +219,7 @@ describe('HearingTimingComponent', () => {
     component.firstDateOfHearingError = null;
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('25');
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
-    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2022');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2027');
     component.showChosenDateError();
     expect(component.firstDateOfHearingError).toBe(null);
   });
@@ -298,7 +298,7 @@ describe('HearingTimingComponent', () => {
     component.showDateAvailability();
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.duration).toBe(65);
-    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart).toBe('null');
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart).toBe(undefined);
     hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
     component.showDateAvailability();
     component.prepareHearingRequestData();

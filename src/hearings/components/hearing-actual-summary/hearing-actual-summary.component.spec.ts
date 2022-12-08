@@ -1,22 +1,23 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
-import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
-import { LovRefDataModel } from '../../models/lovRefData.model';
-import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import {hearingActualsMainModel, initialState} from '../../hearing.test.data';
+import {LovRefDataModel} from '../../models/lovRefData.model';
+import {ConvertToValuePipe} from '../../pipes/convert-to-value.pipe';
+import {HearingActualSummaryComponent} from './hearing-actual-summary.component';
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
   let fixture: ComponentFixture<HearingActualSummaryComponent>;
   let router: Router;
   let mockStore: any;
-  const partyChannels: LovRefDataModel[] = [
+  const PARTY_CHANNELS: LovRefDataModel[] = [
     {
       key: 'inPerson',
       value_en: 'In person',
@@ -176,20 +177,234 @@ describe('HearingActualSummaryComponent', () => {
       child_nodes: null,
     },
   ];
+  const HEARING_ROLES: LovRefDataModel[] = [
+    {
+      category_key: 'EntityRoleCode',
+      key: 'APEL',
+      value_en: 'Appellant',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Applicant',
+      parent_key: 'APPL',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'APIN',
+      value_en: 'Appointee',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Support',
+      parent_key: 'SUPP',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'JOPA',
+      value_en: 'Joint Party',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Applicant',
+      parent_key: 'APPL',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'OTPA',
+      value_en: 'Other Party',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Respondent',
+      parent_key: 'RESP',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'RESP',
+      value_en: 'Respondent',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'WERP',
+      value_en: 'Welfare Representative',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Representative',
+      parent_key: 'RPTT',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'LGRP',
+      value_en: 'Legal Representative',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Representative',
+      parent_key: 'RPTT',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'BARR',
+      value_en: 'Barrister',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: 'Representative',
+      parent_key: 'RPTT',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'INTP',
+      value_en: 'Interpreter',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'RPTT',
+      value_en: 'Representative',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'SUPP',
+      value_en: 'Support',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'APPL',
+      value_en: 'Applicant',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    },
+    {
+      category_key: 'EntityRoleCode',
+      key: 'DEFE',
+      value_en: 'Defendant',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null
+    }
+  ];
+  const HEARING_TYPES: LovRefDataModel[] = [
+    {
+      category_key : 'HearingType',
+      key : 'BBA3-SUB',
+      value_en : 'Substantive',
+      value_cy : '',
+      hint_text_en : '',
+      hint_text_cy : '',
+      lov_order: null,
+      parent_category : '',
+      parent_key : '',
+      active_flag : 'Y',
+      child_nodes: null
+    },
+    {
+      category_key : 'HearingType',
+      key : 'BBA3-DIR',
+      value_en : 'Direction Hearings',
+      value_cy : '',
+      hint_text_en : '',
+      hint_text_cy : '',
+      lov_order: null,
+      parent_category : '',
+      parent_key : '',
+      active_flag : 'Y',
+      child_nodes: null
+    },
+    {
+      category_key : 'HearingType',
+      key : 'BBA3-CHA',
+      value_en : 'Chambers Outcome',
+      value_cy : '',
+      hint_text_en : '',
+      hint_text_cy : '',
+      lov_order: null,
+      parent_category : '',
+      parent_key : '',
+      active_flag : 'Y',
+      child_nodes: null
+    }
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule,
         HttpClientTestingModule],
-      declarations: [HearingActualSummaryComponent],
+      declarations: [HearingActualSummaryComponent, ConvertToValuePipe],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                partyChannels
+                partyChannels: PARTY_CHANNELS,
+                hearingRoles: HEARING_ROLES,
+                hearingStageOptions: HEARING_TYPES
               }
             },
             fragment: of('point-to-me'),
@@ -210,11 +425,6 @@ describe('HearingActualSummaryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should check getChannelInfo', () => {
-    expect(component.getChannelInfo('inPerson')).toEqual({ channel: 'In person', subChannel: '' });
-    expect(component.getChannelInfo('video-teams')).toEqual({ channel: 'By video', subChannel: 'Video - Teams' });
   });
 
   afterEach(() => {

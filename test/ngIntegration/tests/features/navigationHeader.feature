@@ -1,5 +1,6 @@
-@ng @test
+@ng
 Feature: Navigation header tabs
+    https://tools.hmcts.net/confluence/display/EUI/Global+Search
 
     Scenario Outline: Primanry nav headers for user "<roleType>" "<useridentifier>" and roles "<rolesIdentifiers>"
         Then I Log to report launch darkly feature toggle values
@@ -35,17 +36,17 @@ Feature: Navigation header tabs
             | Notice of change |
 
         Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
-        # Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
+        Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
 
         Examples:
             | roleType   | useridentifier    | rolesIdentifiers                            | mainHeaders                                                         | rightColumnHeaders | 16-digitCaseRef |
-            # | caseworker | PROD_LIKE         | NON-WA                                      | Case list, Create case                                              | Find case          | yes             |
-            # | caseworker | WA2_GLOBAL-SEARCH | WA2,GLOBAL-SEARCH                           | Case list,My work , Create case, Search                             |                    | yes             |
-            # | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,GLOBAL-SEARCH                | Case list,My work, All work , Create case, Search                    |                    | yes             |
-            # | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,NON-WA,GLOBAL-SEARCH         | Case list,My work, All work ,Case list, Create case, Search         | Find case          | yes             |
-            # | caseworker | PROD_LIKE         | NON-WA,REFUNDS                              | Case list,Create case,Refunds                                       | Find case          | yes             |
-            # | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,GLOBAL-SEARCH,REFUNDS        | Case list,My work, All work , Create case, Search, Refunds          |                    | yes             |
-            # | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,NON-WA,GLOBAL-SEARCH,REFUNDS | Case list,My work, All work ,Case list, Create case, Search,Refunds | Find case          | yes             |
+            | caseworker | PROD_LIKE         | NON-WA                                      | Case list, Create case                                              | Find case          | yes             |
+            | caseworker | WA2_GLOBAL-SEARCH | WA2,GLOBAL-SEARCH                           | Case list,My work , Create case, Search                             |                    | yes             |
+            | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,GLOBAL-SEARCH                | Case list,My work, All work , Create case, Search                   |                    | yes             |
+            | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,NON-WA,GLOBAL-SEARCH         | Case list,My work, All work ,Case list, Create case, Search         | Find case          | yes             |
+            | caseworker | PROD_LIKE         | NON-WA,REFUNDS                              | Case list,Create case,Refunds                                       | Find case          | yes             |
+            | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,GLOBAL-SEARCH,REFUNDS        | Case list,My work, All work , Create case, Search, Refunds          |                    | yes             |
+            | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,NON-WA,GLOBAL-SEARCH,REFUNDS | Case list,My work, All work ,Case list, Create case, Search,Refunds | Find case          | yes             |
             | judicial   | PROD_LIKE         | NON-WA                                      | Case list                                                           | Find case          | yes             |
             | judicial   | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,GLOBAL-SEARCH                | Case list,My work, All work, Search                                 |                    | yes             |
             | judicial   | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,NON-WA,GLOBAL-SEARCH         | My work, All work,Case list, Search                                 | Find case          | yes             |

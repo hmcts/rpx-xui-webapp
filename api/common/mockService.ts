@@ -15,11 +15,10 @@ export const httpMock = HttpMock.getInstance();
  * @param req
  */
 export async function handleGet(path: string, req: EnhancedRequest): Promise<AxiosResponse> {
-
   try {
     logger.info('handle get method', path);
     const headers = setHeaders(req);
-    return await httpMock.get(path, {headers});
+    return await httpMock.get(path, {headers, params: req.query});
   } catch (e) {
     exists(e, 'message') ? logger.error(e.message) : logger.error('Error in get response');
     throw e;

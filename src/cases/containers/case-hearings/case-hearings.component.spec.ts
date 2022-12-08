@@ -277,7 +277,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   };
 
   const CASE_HEARING_9: HearingListModel = {
@@ -292,7 +292,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
   };
 
@@ -308,7 +308,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
   };
 
@@ -325,7 +325,7 @@ describe('CaseHearingsComponent', () => {
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   };
 
   const HEARINGS_LIST: HearingListMainModel = {
@@ -339,6 +339,10 @@ describe('CaseHearingsComponent', () => {
       hearingList: {
         hearingListMainModel: HEARINGS_LIST
       },
+      hearingValues: {
+        serviceHearingValuesModel: null,
+        lastError: null
+      }
     }
   };
 

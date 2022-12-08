@@ -11,7 +11,8 @@ export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
   }
 
   private static getFacilityValue(hearingFacilities: LovRefDataModel[], key: string): string {
-    return hearingFacilities.find(facility => facility.key === key).value_en;
+    const lovData: LovRefDataModel = hearingFacilities.find(facility => facility.key === key);
+    return lovData ? lovData.value_en : '';
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
@@ -19,10 +20,14 @@ export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
       map(state => {
         let result = '<ul>';
         const facilities = this.route.snapshot.data.additionFacilitiesOptions;
-        state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
-        .forEach((facility: string) => result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`);
-        result += '</ul>';
-        return result
+        if (state.hearingRequest.hearingRequestMainModel.hearingDetails
+        && state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
+        && state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired.length) {
+          state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
+            .forEach((facility: string) => result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`);
+          result += '</ul>';
+        }
+        return result;
       })
     );
   }

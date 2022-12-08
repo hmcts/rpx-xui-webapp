@@ -1,32 +1,28 @@
-import * as chai from 'chai'
-import { expect } from 'chai'
-import 'mocha'
-import * as sinonChai from 'sinon-chai'
-chai.use(sinonChai)
-import { mockRes } from 'sinon-express-mock'
-import * as accessManagement from './index'
+import * as chai from 'chai';
+import 'mocha';
+import * as sinonChai from 'sinon-chai';
+chai.use(sinonChai);
 import 'mocha';
 import * as sinon from 'sinon';
+import { mockReq, mockRes } from 'sinon-express-mock';
 
 describe('Judicial Booking', () => {
     let res;
     let req;
-    let spy: any;
     let sandbox;
+    const next = () => {
+      return;
+    };
 
     beforeEach(() => {
-      res = mockRes()
+      req = mockReq({
+        userId: 'userId',
+      });
+      res = mockRes();
       sandbox = sinon.createSandbox();
-    })
+    });
 
     afterEach(() => {
       sandbox.restore();
-    })
-
-    describe('access management', () => {
-      it('should return a role assignment success message response', async () => {
-          const response = await accessManagement.refreshRoleAssignments(req, res, null)
-          expect(response).to.not.equal(undefined)
-      })
-    })
-})
+    });
+});

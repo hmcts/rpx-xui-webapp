@@ -1,15 +1,13 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
-import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
-import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
-import { HearingsService } from '../../../services/hearings.service';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {select, Store} from '@ngrx/store';
+import {Subscription} from 'rxjs';
+import {ACTION, HearingLinkMessages} from '../../../models/hearings.enum';
+import {ServiceLinkedCasesModel} from '../../../models/linkHearings.model';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { LoadServiceLinkedCases } from '../../../store';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-link',
@@ -17,23 +15,20 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseId: string;
-  public hearingLinksStateData$: Observable<HearingLinksStateData>;
   public linkedCases: ServiceLinkedCasesModel[];
   public hearingLinkForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
-  public caseTitle: string;
+  public caseName: string;
+  public showSpinner: boolean = true;
+  public hearingLinksSub: Subscription;
+
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected readonly route: ActivatedRoute,
               private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);
-    this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      state => {
-        this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
-        const caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
-        this.caseTitle = `${caseName} ${this.caseId}`;
-      }
-    );
+    this.caseId = this.hearingListMainModel.caseRef || '';
+    this.caseName = this.serviceHearingValuesModel.publicCaseName || '';
   }
 
   public ngOnInit(): void {
@@ -41,10 +36,16 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
       hearingLink: ['', Validators.required],
     });
     this.initialiseFromHearingValues();
-    this.hearingStore.dispatch(new LoadServiceLinkedCases({caseReference: this.caseId, hearingId: ''}));
-    this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe(
+    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({
+      caseReference: this.caseId,
+      hearingId: ''
+    }));
+    this.hearingLinksSub = this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe(
       hearingLinks => {
-        this.linkedCases = hearingLinks.serviceLinkedCases;
+        if (hearingLinks.serviceLinkedCases) {
+          this.linkedCases = hearingLinks.serviceLinkedCases;
+          this.showSpinner = false;
+        }
       }
     );
   }
@@ -94,5 +95,8 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
 
   public ngOnDestroy(): void {
     super.unsubscribe();
+    if (this.hearingLinksSub) {
+      this.hearingLinksSub.unsubscribe();
+    }
   }
 }

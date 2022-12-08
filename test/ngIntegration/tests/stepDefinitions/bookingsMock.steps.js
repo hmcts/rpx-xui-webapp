@@ -20,16 +20,28 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set mock for existing bookings', async function (bookingDatatAble) {
         const bookingsTestData = bookingDatatAble.hashes();
+        const bookings = [];
         for (const booking of bookingsTestData){
-            if ( "beginTime" in  booking ){
-                booking["beginTime"] = workAllocationDateUtil.getDateInDays(booking["beginTime"])
+            if(booking.locationId === ""){
+                continue;
             }
-            if ("endTime" in booking) {
-                booking["endTime"] = workAllocationDateUtil.getDateInDays(booking["endTime"])
+            
+            const bookingLocations = booking.locationId.split(",");
+            for (const location of bookingLocations){
+                const bookingForLocation = {...booking}
+                bookingForLocation.locationId = location;
+                bookings.push(bookingForLocation)
+                if ("beginTime" in bookingForLocation) {
+                    bookingForLocation["beginTime"] = workAllocationDateUtil.getDateInDays(bookingForLocation["beginTime"])
+                }
+                if ("endTime" in bookingForLocation) {
+                    bookingForLocation["endTime"] = workAllocationDateUtil.getDateInDays(bookingForLocation["endTime"])
+                }
             }
+           
         }
-        CucumberReporter.AddJson(bookingsTestData, LOG_LEVELS.Debug); 
-        bookingsMockData.setUpBookings(bookingsTestData);
+        CucumberReporter.AddJson(bookings, LOG_LEVELS.Debug); 
+        bookingsMockData.setUpBookings(bookings);
     });
 
     Given('I set mock locations for bookings', async function (bookinglocations) {

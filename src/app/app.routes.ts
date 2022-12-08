@@ -1,7 +1,6 @@
 import { ExtraOptions, Routes } from '@angular/router';
-import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
-import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
-import { BookingSystemErrorComponent } from 'src/booking/containers/utils/booking-system-error/booking-system-error.component';
+import { FeatureToggleGuard, RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
+import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import {
   AccessibilityComponent,
   ApplicationRoutingComponent,
@@ -19,19 +18,16 @@ import { AuthGuard } from './services/auth/auth.guard';
 
 export const routingConfiguration: ExtraOptions = {
   paramsInheritanceStrategy: 'always',
-  scrollPositionRestoration: 'enabled'
+  scrollPositionRestoration: 'enabled',
+  anchorScrolling: 'enabled'
 };
 
 export const ROUTES: Routes = [
   {
     path: '',
+    canActivate: [AuthGuard],
     component: ApplicationRoutingComponent,
     pathMatch: 'full'
-  },
-  {
-    path: 'booking',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../booking/booking.module#BookingModule'
   },
   {
     path: 'cases',
@@ -39,14 +35,43 @@ export const ROUTES: Routes = [
     loadChildren: '../cases/cases.module#CasesModule'
   },
   {
-    path: 'work',
+    path: 'booking',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
+    loadChildren: '../booking/booking.module#BookingModule'
   },
   {
-    path: 'tasks',
+    path: 'work',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+  },
+  {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
+    path: 'tasks',
+    redirectTo: 'work/my-work/list',
+    canActivate: [AuthGuard, AcceptTermsGuard]
+  },
+  {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
+    path: 'tasks/:subRoute',
+    redirectTo: 'work/my-work/list',
+    pathMatch: 'prefix',
+    canActivate: [AuthGuard, AcceptTermsGuard]
+  },
+  {
+    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
+    path: 'tasks',
+    redirectTo: 'work/my-work/list',
+    canActivate: [AuthGuard, AcceptTermsGuard]
+  },
+  {
+    path: 'staff',
+    canActivate: [AuthGuard, AcceptTermsGuard, RoleGuard],
+    loadChildren: '../staff-administrator/staff-administrator.module#StaffAdministratorModule',
+    data: {
+      needsRole: ['staff-admin'],
+      roleMatching: RoleMatching.ALL,
+      noRoleMatchRedirect: '/'
+    }
   },
   {
     path: 'role-access',
@@ -168,6 +193,16 @@ export const ROUTES: Routes = [
     component: SignedOutComponent,
     data: {
       title: 'You have been signed out'
+    }
+  },
+  {
+    path: 'search',
+    canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
+    loadChildren: '../search/search.module#SearchModule',
+    data: {
+      title: 'Search cases',
+      needsFeaturesEnabled: ['feature-global-search'],
+      featureDisabledRedirect: '/'
     }
   },
   {

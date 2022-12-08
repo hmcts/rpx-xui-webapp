@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
+import { BookingCheckType, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
@@ -18,6 +18,8 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
 
+  public bookingCheckType = BookingCheckType.POSSIBLE_BOOKINGS;
+  public selectedLocations: LocationByEPIMMSModel[] = [];
   public jurisdictions: string;
   public findLocationFormGroup: FormGroup;
   public formError: boolean;
@@ -35,6 +37,7 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   public ngOnInit(): void {
     this.getJurisdictions();
+    this.selectedLocations = this.bookingProcess.location ? [this.bookingProcess.location] : [];
   }
 
   public ngAfterViewInit(): void {

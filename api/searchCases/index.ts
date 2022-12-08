@@ -9,18 +9,21 @@ import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery';
  * Manually creating Elastic search query
  */
 export function modifyRequest(proxyReq, req) {
-  const userInfo = req.session.passport.user.userinfo as UserInfo;
-  const request = prepareElasticQuery(req.query, req.body, userInfo);
+  const userInfo = getUserInfoFromRequest(req);
 
-  // Write out body changes to the proxyReq stream
-  const body = JSON.stringify(request);
+  if (userInfo) {
+    const request = prepareElasticQuery(req.query, req.body, userInfo);
 
-  // Update header
-  proxyReq.setHeader('content-type', 'application/json');
-  proxyReq.setHeader('content-length', body.length);
+    // Write out body changes to the proxyReq stream
+    const body = JSON.stringify(request);
 
-  // Write out body changes to the proxyReq stream
-  proxyReq.write(body);
+    // Update header
+    proxyReq.setHeader('content-type', 'application/json');
+    proxyReq.setHeader('content-length', body.length);
+
+    // Write out body changes to the proxyReq stream
+    proxyReq.write(body);
+  }
 
   // Remove body-parser body object from the request
   delete req.body;
@@ -34,7 +37,7 @@ export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
     .indexOf(role.toLowerCase()) >= 0).length > 0;
 }
 
-export function prepareElasticQuery(queryParams: { page? }, body: any, user: UserInfo): ElasticSearchQuery {
+export function prepareElasticQuery(queryParams: { page?}, body: any, user: UserInfo): ElasticSearchQuery {
   const metaCriteria: { [key: string]: string } = queryParams;
   let caseCriteria = {};
   let nativeEsQuery: {};
@@ -201,4 +204,13 @@ function canApplyWildCardSearch(
 function phraseHasSpecialCharacters(phrase: string): boolean {
   const specialCharacters: string[] = [' ', '-', '_'];
   return specialCharacters.filter((specialCharacter: string) => phrase.indexOf(specialCharacter) >= 0).length > 0;
+}
+
+function getUserInfoFromRequest(req: any): UserInfo {
+  try {
+    const userInfo = req.session.passport.user.userinfo as UserInfo;
+    return userInfo;
+  } catch (error) {
+    return null;
+  }
 }

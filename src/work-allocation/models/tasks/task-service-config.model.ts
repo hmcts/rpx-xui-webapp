@@ -1,9 +1,9 @@
-import { TaskFieldConfig } from '.';
-import { TaskService, TaskSort } from './../../enums';
+import { SortOrder, TaskService } from '../../enums';
+import { FieldConfig } from '../common';
 
 export default interface TaskServiceConfig {
   service: TaskService;
-  defaultSortDirection: TaskSort;
+  defaultSortDirection: SortOrder;
   defaultSortFieldName: string;
-  fields: TaskFieldConfig[];
+  fields: FieldConfig[];
 }

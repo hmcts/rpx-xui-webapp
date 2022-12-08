@@ -3,6 +3,7 @@ const WAReqResMappings  = require('./workAllocation/reqResMapping');
 const ccdReqResMapping = require('./ccd/reqResMapping');
 const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
 
+const globalSearchReqResMapping = require('./globalSearch/reqResMapping');
 
 
 const dummyCaseDetails = require('./ccd/caseDetails_data');
@@ -13,6 +14,7 @@ const requestMapping = {
         ...nodeAppReqResMappings.get,
         ...WAReqResMappings.get,
         ...ccdReqResMapping.get,
+        ...globalSearchReqResMapping.get,
 
        
        '/api/organisation': (req,res) => {
@@ -42,6 +44,23 @@ const requestMapping = {
         },
         '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata': (req,res) => {
             res.send();
+        },
+        '/api/service-ref-data/get': (req,res) => {
+            res.send([
+                {
+                    "service": "IA",
+                    "serviceCodes": [
+                        "BFA1"
+                    ]
+                },
+                {
+                    "service": "CIVIL",
+                    "serviceCodes": [
+                        "AAA6",
+                        "AAA7"
+                    ]
+                }
+            ]);
         }
       
 
@@ -50,10 +69,12 @@ const requestMapping = {
         ...WAReqResMappings.post,
         ...ccdReqResMapping.post,
         ...WAReqResMappings.post,
+        ...globalSearchReqResMapping.post,
+
         
         '/api/caseshare/case-assignments': (req, res) => {
             res.send( []);
-        }
+        },
        
 
     },

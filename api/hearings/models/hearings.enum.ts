@@ -13,21 +13,19 @@ export enum HMCStatus {
   UPDATE_SUBMITTED = 'UPDATE_SUBMITTED',
   EXCEPTION = 'EXCEPTION',
   CANCELLATION_REQUESTED = 'CANCELLATION_REQUESTED',
+  CANCELLATION_SUBMITTED = 'CANCELLATION_SUBMITTED',
   VACATED = 'VACATED',
+  CANCELLED = 'CANCELLED',
   AWAITING_ACTUALS = 'AWAITING_ACTUALS',
   COMPLETED = 'COMPLETED',
   ADJOURNED = 'ADJOURNED',
 }
 
 export enum LaCaseStatus {
-  CASE_CREATED = 'Case Created',
-  AWAITING_LISTING = 'Awaiting Listing',
-  LISTED = 'Listed',
-  PENDING_RELISTING = 'Pending Relisting',
-  HEARING_COMPLETED = 'Hearing Completed',
-  CASE_CLOSED = 'Case Closed',
-  CANCELLED = 'Cancelled',
-  EXCEPTION = 'Request failure',
+  LISTED = 'LISTED',
+  PENDING_RELISTING = 'PENDING_RELISTING',
+  CLOSED = 'CLOSED',
+  EXCEPTION = 'EXCEPTION',
 }
 
 export enum ListingStatus {
@@ -52,7 +50,7 @@ export enum HearingListingStatusEnum {
 
 export enum EXUISectionStatusEnum {
   UPCOMING = 'Current and upcoming',
-  PAST_AND_CANCELLED = 'Past and cancelled',
+  PAST_OR_CANCELLED = 'Past or cancelled',
 }
 
 export enum EXUIDisplayStatusEnum {
@@ -64,9 +62,15 @@ export enum EXUIDisplayStatusEnum {
   LISTED = 'LISTED',
   FAILURE = 'REQUEST FAILURE',
   CANCELLATION_REQUESTED = 'CANCELLATION REQUESTED',
+  CANCELLATION_SUBMITTED = 'CANCELLATION REQUESTED',
   VACATED = 'VACATED',
   AWAITING_ACTUALS = 'AWAITING HEARING DETAILS',
   ADJOURNED = 'ADJOURNED',
+}
+
+export enum HearingChannelEnum {
+  ONPPR = 'ONPPRS',
+  NotAttending = 'NA',
 }
 
 export enum HMCLocationType {

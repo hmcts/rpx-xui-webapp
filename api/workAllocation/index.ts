@@ -151,9 +151,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
     // TEMPORARY CODE: task_name search parameter is not yet enabled by Task API. to be removed
     let taskName;
-    console.log("**searchRequest.search_parameters**");
-    console.log(searchRequest.search_parameters);
-
     searchRequest.search_parameters.map((param, index) => {
       if (param.key === 'task_name') {
         taskName = param.values[0];

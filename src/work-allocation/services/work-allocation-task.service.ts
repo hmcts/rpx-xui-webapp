@@ -6,7 +6,7 @@ import { map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
 import { UserInfo, UserRole } from '../../app/models';
 
-import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
+import { SearchTaskRequest, TaskNamesResponse, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
 import { TaskRole } from '../models/tasks';
@@ -107,7 +107,7 @@ export class WorkAllocationTaskService {
     return of(null);
   }
 
-  public getTaskNames(): Observable<{taskName: string, taskId: number}[]> {
-    return this.http.get<{taskName: string, taskId: number}[]>('/workallocation2/taskNames');
+  public getTaskNames(): Observable<TaskNamesResponse[]> {
+    return this.http.get<TaskNamesResponse[]>('/workallocation2/taskNames');
   }
 }

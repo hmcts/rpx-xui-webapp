@@ -1,4 +1,4 @@
-import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
+import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import {
   CategoryType,
   HMCLocationType,
@@ -17,6 +17,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 45,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -32,9 +33,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       privateHearingRequiredFlag: false,
       panelRequirements: {
         roleType: [
-          'tribunalJudge',
-          'deputyTribunalJudge',
-          'regionalTribunalJudge',
+          'tj',
+          'dtj',
+          'rtj',
         ],
         panelPreferences: [],
         panelSpecialisms: [
@@ -57,6 +58,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -72,19 +75,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -154,10 +157,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
-      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      laCaseStatus: LaCaseStatus.PENDING_RELISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -225,7 +228,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -236,6 +239,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 50,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -251,8 +255,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       privateHearingRequiredFlag: false,
       panelRequirements: {
         roleType: [
-          'tribunalJudge',
-          'regionalTribunalJudge',
+          'tj',
+          'rtj',
         ],
         panelPreferences: [],
         panelSpecialisms: [
@@ -273,6 +277,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -288,19 +294,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -370,10 +376,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
-      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      laCaseStatus: LaCaseStatus.PENDING_RELISTING,
       listingStatus: ListingStatus.DRAFT,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -441,7 +447,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -452,6 +458,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 55,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -478,6 +485,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -493,19 +502,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -578,7 +587,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T11:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -646,7 +655,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -657,6 +666,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 60,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -683,6 +693,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -698,19 +710,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -783,7 +795,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.PENDING_RELISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -851,7 +863,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -862,6 +874,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 65,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -888,6 +901,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -903,19 +918,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -985,10 +1000,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
-      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      laCaseStatus: LaCaseStatus.PENDING_RELISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -1056,7 +1071,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1067,6 +1082,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1093,6 +1109,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1108,19 +1126,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1194,7 +1212,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.EXCEPTION,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -1262,7 +1280,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1273,6 +1291,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1299,6 +1318,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1314,19 +1335,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1399,7 +1420,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -1467,7 +1488,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1478,6 +1499,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1504,6 +1526,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1519,19 +1543,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1601,10 +1625,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
-      laCaseStatus: LaCaseStatus.CASE_CLOSED,
+      laCaseStatus: LaCaseStatus.CLOSED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -1672,7 +1696,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1683,6 +1707,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1709,6 +1734,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -1724,19 +1751,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1806,10 +1833,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
-      laCaseStatus: LaCaseStatus.CANCELLED,
+      laCaseStatus: LaCaseStatus.CLOSED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -1877,7 +1904,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -1888,6 +1915,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1914,6 +1942,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -1929,19 +1959,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -1978,7 +2008,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -2010,7 +2040,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             },
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -2021,6 +2051,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -2047,6 +2078,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -2062,19 +2095,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -2111,7 +2144,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -2143,7 +2176,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             },
           },
         ],
-      },
+      }],
     },
   },
   {
@@ -2154,6 +2187,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 60,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -2180,6 +2214,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'BBA3',
@@ -2195,19 +2231,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -2278,7 +2314,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
         hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -2344,7 +2380,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             ],
           },
         ],
-      },
+      }],
     },
   }, {
     requestDetails: {
@@ -2354,6 +2390,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannels: [],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -2380,6 +2417,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
+      amendReasonCodes: ['reasonOne'],
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: 'SSCS',
@@ -2395,19 +2434,19 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
+          categoryValue: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002',
+        }, {
           categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002',
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
@@ -2444,7 +2483,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
-      hearingDaySchedule: {
+      hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
         hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -2476,7 +2515,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             },
           },
         ],
-      },
+      }],
     },
   },
 ];

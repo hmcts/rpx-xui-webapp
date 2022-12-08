@@ -143,4 +143,12 @@ export class DurationHelperService {
     return startDate <= endDate;
   }
 
+  public setUTCTimezone(date: Date): Date {
+    if (!date) {
+      return null;
+    }
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    return date;
+  }
+
 }

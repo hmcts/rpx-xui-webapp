@@ -11,7 +11,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | case-allocator | 10    |
             | case-allocator | 90    |
 
-        Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findPersonRequest"
+        Given I set MOCK request "/workallocation/findPerson" intercept with reference "findPersonRequest"
 
     Scenario:  Judge reaallocate case from all work cases
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
@@ -53,8 +53,8 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | searchTerm   | user1    |
         Then I see find person search results in work flow
             | Person                      |
-            | user1 j(judge_user1@gov.uk) |
-        When I select find person result "user1 j(judge_user1@gov.uk) " in work flow
+            | user1 j (judge_user1@gov.uk) |
+        When I select find person result "user1 j (judge_user1@gov.uk) " in work flow
         When I click continue in work flow page "Find the person"
 
         Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a lead judge" is displayed
@@ -69,7 +69,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I see Check your answers page has questions and answers with change link
             | Question                          | Answer                      |
             | Who the role will be allocated to | Allocate to another person  |
-            | Person                            | user1 j(judge_user1@gov.uk) |
+            | Person                            | user1 j (judge_user1@gov.uk) |
             | Duration of role                  | Indefinite                  |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
@@ -114,8 +114,8 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         # | searchTerm   | cas       |
         Then I see find person search results in work flow
             | Person                                  |
-            | caseworker1 cw(caseworker_user1@gov.uk) |
-        When I select find person result "caseworker1 cw(caseworker_user1@gov.uk)" in work flow
+            | caseworker1 cw (caseworker_user1@gov.uk) |
+        When I select find person result "caseworker1 cw (caseworker_user1@gov.uk)" in work flow
         When I click continue in work flow page "Find the person"
 
         Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a legal ops case manager" is displayed
@@ -130,7 +130,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I see Check your answers page has questions and answers with change link
             | Question                          | Answer                                  |
             | Who the role will be allocated to | Allocate to another person              |
-            | Person                            | caseworker1 cw(caseworker_user1@gov.uk) |
+            | Person                            | caseworker1 cw (caseworker_user1@gov.uk) |
             | Duration of role                  | Indefinite                              |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
@@ -176,8 +176,8 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         # | searchTerm   | cas       |
         Then I see find person search results in work flow
             | Person                      |
-            | user1 j(judge_user1@gov.uk) |
-        When I select find person result "user1 j(judge_user1@gov.uk) " in work flow
+            | user1 j (judge_user1@gov.uk) |
+        When I select find person result "user1 j (judge_user1@gov.uk) " in work flow
         When I click continue in work flow page "Find the person"
 
         Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a lead judge" is displayed
@@ -192,7 +192,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I see Check your answers page has questions and answers with change link
             | Question                          | Answer                      |
             | Who the role will be allocated to | Allocate to another person  |
-            | Person                            | user1 j(judge_user1@gov.uk) |
+            | Person                            | user1 j (judge_user1@gov.uk) |
             | Duration of role                  | Indefinite                  |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
@@ -228,7 +228,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I see Check your answers page has questions and answers without change link
             | Question     | Answer                      |
             | Type of role | Lead judge                  |
-            | Person       | user1 j(judge_user1@gov.uk) |
+            | Person       | user1 j (judge_user1@gov.uk) |
 
         When I click button with label "Remove allocation" in work flow  Check your answers page
         Then I see All work cases page displayed

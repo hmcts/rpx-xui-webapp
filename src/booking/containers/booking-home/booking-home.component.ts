@@ -3,16 +3,18 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { combineLatest, Observable, of, Subscription, } from 'rxjs';
+import * as moment from 'moment';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
-import { TaskListFilterComponent } from '../../../work-allocation-2/components';
+import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 @Component({
   selector: 'exui-booking-home',
-  templateUrl: './booking-home.component.html'
+  templateUrl: './booking-home.component.html',
+  styleUrls: ['./booking-home.component.scss']
 })
 export class BookingHomeComponent implements OnInit, OnDestroy {
 
@@ -41,23 +43,24 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     this.bookingTypeForm = this.fb.group({
       bookingType: new FormControl(null)
     });
-
+    const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices'));
     if (this.userId) {
-      this.existingBookingsSubscription = this.bookingService.getBookings(this.userId).subscribe((bookings) => {
+      this.existingBookingsSubscription = this.bookingService.getBookings(this.userId, bookableServices).subscribe((bookings) => {
         if (bookings) {
           this.combineResult$ = combineLatest([of(bookings), this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.booking)]);
           this.combineResult$.pipe(map(([bookingResults, bookingFeatureToggle]) => {
             if (bookingResults) {
               this.existingBookings = bookingResults as any;
               this.orderByCurrentThenFuture();
-              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any ).filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings).map(p => p.locationId) : null;
+              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter(p => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map(p => p.locationId) : null;
+              this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(new Set(this.bookingProcess.selectedBookingLocationIds))));
             }
           })).subscribe();
         }
       },
-      err => {
-        this.NavigationErrorHandler(err, this.router)
-      });
+        err => {
+          this.NavigationErrorHandler(err, this.router)
+        });
     }
   }
 
@@ -97,7 +100,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public onExistingBookingSelected(locationId) {
-    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments().subscribe(response => {
+    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments(this.userId).subscribe(response => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
       this.router.navigate(
@@ -105,7 +108,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
         {
           state: {
             location: {
-              id: locationId
+              ids: [locationId]
             }
           }
         }
@@ -113,7 +116,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public NavigationErrorHandler = ( error: any, navigator: {navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>} ): void => {
+  public NavigationErrorHandler = (error: any, navigator: { navigate(commands: any[], extras?: NavigationExtras): Promise<boolean> }): void => {
     if (error && error.status) {
       if (error.status >= 500 && error.status < 600) {
         navigator.navigate(['/service-down']);

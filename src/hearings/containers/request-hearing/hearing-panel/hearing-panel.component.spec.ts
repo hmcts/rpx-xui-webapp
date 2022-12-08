@@ -1,19 +1,19 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {HearingJudgeNamesListComponent} from '../../../components';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION, MemberType, RadioOptions, RequirementType} from '../../../models/hearings.enum';
-import {JudicialUserModel} from '../../../models/judicialUser.model';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingPanelComponent} from './hearing-panel.component';
+import { of } from 'rxjs';
+import { HearingJudgeNamesListComponent } from '../../../components';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import { JudicialUserModel } from '../../../models/judicialUser.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingPanelComponent } from './hearing-panel.component';
 
 describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
@@ -207,15 +207,16 @@ describe('HearingPanelComponent', () => {
     const STATE = _.cloneDeep(initialState);
     STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS,
-      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-001']
+      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-001', 'BBA3-MQPM1-001'],
+      roleType: ['BBA3-RMM', 'BBA3-DQPM', 'BBA3-MQPM1']
     };
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingPanelComponent, HearingJudgeNamesListComponent],
       providers: [
-        provideMockStore({initialState: STATE}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState: STATE }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {

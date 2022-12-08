@@ -23,8 +23,11 @@ Feature: WA Release 2: My cases
             | ColumnHeader |
             | Case name    |
 
+        Then I validate work allocation case table column "Case name" width less than or equal to 200
         When I click work allocation case column link "Case name" at row 1
         Then I see case details page
+
+
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
@@ -37,7 +40,7 @@ Feature: WA Release 2: My cases
             | case-allocator | 10 |
             | case-allocator | 10 |
 
-        Given I set MOCK request "/workallocation2/my-work/cases/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/my-work/cases/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page

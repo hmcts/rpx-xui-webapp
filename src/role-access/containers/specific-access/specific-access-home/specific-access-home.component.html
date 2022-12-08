@@ -5,8 +5,7 @@
       <div class="govuk-grid-row">
         <exui-specific-access-navigation (eventTrigger)="onNavEvent($event)">
           <div class="govuk-main-wrapper">
-            <exui-specific-access-review
-              #specificAccessReview
+            <exui-specific-access-review #specificAccessReview
               *ngIf="isComponentVisible(navigationCurrentState, specificAccessReviewVisibilityStates)"
               [navEvent]="navEvent">
             </exui-specific-access-review>
@@ -31,6 +30,11 @@
               [navEvent]="navEvent">
             </exui-specific-access-denied>
           </div>
+          <exui-specific-access-duplicate-record
+            #specificAccessDuplicateRecord
+            *ngIf="isComponentVisible(navigationCurrentState, specificAccessDuplicateRecordVisibilityStates)"
+            [navEvent]="navEvent">
+          </exui-specific-access-duplicate-record>
         </exui-specific-access-navigation>
       </div>
     </main>

@@ -1,136 +1,153 @@
-import { Component, OnInit } from '@angular/core';
+import { Location as AngularLocation } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { Subscription } from 'rxjs';
 
-import { ErrorMessage } from '../../../app/models';
+import { AppUtils } from '../../../app/app-utils';
+import { ErrorMessage, UserInfo, UserRole } from '../../../app/models';
+import { RoleCategory } from '../../../role-access/models';
 import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
-import { InformationMessage } from '../../models/comms';
+import { SortOrder, TaskActionType, TaskService } from '../../enums';
+import { FieldConfig } from '../../models/common';
 import { Caseworker, Location } from '../../models/dtos';
-import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { getAssigneeName, handleFatalErrors } from '../../utils';
+import { TaskServiceConfig } from '../../models/tasks';
 
-export const NAME_ERROR: ErrorMessage = {
-  title: 'There is a problem',
-  description: 'You must select a name',
-  fieldId: 'task_assignment_caseworker'
-};
 @Component({
   selector: 'exui-task-container-assignment',
-  templateUrl: 'task-assignment-container.component.html',
-  styleUrls: ['task-assignment-container.component.scss']
+  templateUrl: 'task-assignment-container.component.html'
 })
-export class TaskAssignmentContainerComponent implements OnInit {
+export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public error: ErrorMessage = null;
-  public tasks: any [];
-  public sortedBy: any;
+  public tasks: any[];
   public showManage: boolean = false;
   public caseworker: Caseworker;
   public verb: TaskActionType;
-
-  public successMessage: InfoMessage;
-  public excludedCaseworkers: Caseworker[];
   public location: Location;
+  public assignedUser: string;
 
-  constructor(
-    private readonly taskService: WorkAllocationTaskService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly messageService: InfoMessageCommService
-  ) {}
-
-  public get fields(): TaskFieldConfig[] {
-    return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
-  }
-
-  private get returnUrl(): string {
-    let url;
-    if (window && window.history && window.history.state) {
-      url = window.history.state.returnUrl;
-    }
-    return url || '/tasks/list';
-  }
-
-  private get showAssigneeColumn(): boolean {
-    const url = this.router.url;
-    // unless action is assign, show the current assignee
-    return (url.includes('reassign') || url.includes('unassign'));
-  }
-
+  public domain = PersonRole.ALL;
+  public service: string;
+  public formGroup: FormGroup = new FormGroup({});
+  public person: Person;
+  public taskId: string;
+  public role: RoleCategory;
+  public rootPath: string;
+  public isJudicial: boolean;
+  public defaultPerson: string;
   public taskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
+    defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-  public ngOnInit(): void {
-    // Set up the default sorting.
-    this.sortedBy = {
-      fieldName: this.taskServiceConfig.defaultSortFieldName,
-      order: this.taskServiceConfig.defaultSortDirection
-    };
+  protected userDetailsKey: string = 'userDetails';
+  private readonly assignTask: Subscription;
 
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly angularLocation: AngularLocation,
+    private readonly sessionStorageService: SessionStorageService
+  ) {
+  }
+
+  public get fields(): FieldConfig[] {
+    return this.showAssigneeColumn ?
+      (this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps) :
+      ConfigConstants.TaskActions;
+  }
+
+  private get returnUrl(): string {
+    // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
+    // buttons, which clear the `window.history.state` object
+    let url: string = '';
+
+    // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
+    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+      // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
+      url = window.history.state.returnUrl.split('#')[0];
+    }
+
+    return url;
+  }
+
+  private get showAssigneeColumn(): boolean {
+    if (window && window.history && window.history.state) {
+      return !!window.history.state.showAssigneeColumn;
+    }
+    return false;
+  }
+
+  public ngOnInit(): void {
+    this.isJudicial = this.isCurrentUserJudicial();
     // Get the task from the route, which will have been put there by the resolver.
     const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
-    const caseworkers = this.route.snapshot.data.taskAndCaseworkers.caseworkers;
-    task.assigneeName = getAssigneeName(caseworkers, task.assignee);
-    this.tasks = [ task ];
+    this.assignedUser = task.assignee;
+    this.tasks = [task];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
-    this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
-    if (task.assignee) {
-      const names: string[] = task.assignee.split(' ');
-      const firstName = names.shift();
-      const lastName = names.join(' ');
-      this.excludedCaseworkers = [ { firstName, lastName } as Caseworker ];
+
+    this.taskId = this.route.snapshot.paramMap.get('taskId');
+    this.role = this.route.snapshot.queryParamMap.get('role') as RoleCategory;
+    this.service = this.route.snapshot.queryParamMap.get('service');
+    this.domain = this.setDomain(this.role);
+    this.rootPath = this.router.url.split('/')[1];
+  }
+
+  public isCurrentUserJudicial(): boolean {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      return AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
     }
-    if (task.location) {
-      this.location = { locationName: task.location } as Location;
+    return false;
+  }
+
+  public ngOnDestroy(): void {
+    if (this.assignTask) {
+      this.assignTask.unsubscribe();
     }
+  }
+
+  public selectedPerson(person?: Person) {
+    this.person = person;
   }
 
   public assign(): void {
-    if (!this.caseworker) {
-      this.error = NAME_ERROR;
-      return;
+    if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl && this.formGroup.value.findPersonControl.email) {
+      // Pass the returnUrl in the `state` parameter, so it can be used for navigation by the Task Assignment Confirm
+      // component
+      this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase(), 'confirm'],
+        {state: { selectedPerson: this.person, returnUrl: this.returnUrl, roleCategory: this.role}});
+    } else {
+      this.formGroup.setErrors({
+        invalid: true
+      });
     }
-    this.error = null;
-    this.taskService.assignTask(this.tasks[0].id, {userId: this.caseworker.idamId}).subscribe(() => {
-      this.reportSuccessAndReturn();
-    }, error => {
-      const handledStatus = handleFatalErrors(error.status, this.router);
-      if (handledStatus > 0) {
-        this.reportUnavailableErrorAndReturn();
-      }
-    });
   }
 
   public cancel(): void {
-    this.returnWithMessage(null, {});
+    this.router.navigate([this.returnUrl]);
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
     this.caseworker = caseworker;
   }
 
-  private reportSuccessAndReturn(): void {
-    const message = this.successMessage;
-    this.returnWithMessage(
-      { type: InfoMessageType.SUCCESS, message },
-      { badRequest: false }
-    );
+  public setFocusOn(eId: string): void {
+    document.getElementById(eId).focus();
   }
 
-  private reportUnavailableErrorAndReturn(): void {
-    this.returnWithMessage({
-      type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-    }, { badRequest: true });
-  }
-
-  private returnWithMessage(message: InformationMessage, state: any): void {
-    if (message) {
-      this.messageService.nextMessage(message);
+  private setDomain(role: RoleCategory): PersonRole {
+    if (role === RoleCategory.JUDICIAL) {
+      return PersonRole.JUDICIAL;
+    } else if (role === RoleCategory.LEGAL_OPERATIONS) {
+      return PersonRole.CASEWORKER;
+    } else if (role === RoleCategory.ADMIN) {
+      return PersonRole.ADMIN;
     }
-    this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
+    return PersonRole.ALL;
   }
 }

@@ -1,8 +1,8 @@
 /* tslint:disable:object-literal-sort-keys */
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
-import { AllocateTo, RoleCategory } from '../models/allocate-role.enum';
+import { AllocateTo, Period, RoleCategory } from '../models/allocate-role.enum';
 
-export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData) {
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -26,27 +26,34 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
   };
 }
 
-export function toSARoleAssignmentBody(currentUserId: string, specificAccessData: any): any {
+export function toSARoleAssignmentBody(
+  currentUserId: string, specificAccessData: { specificAccessStateData: AllocateRoleData, period: Period },
+  extraAttributesForBasicRole: {[x: string]: string | boolean} = {},
+  extraAttributesForSpecificRole: {[x: string]: string | boolean} = {}
+) {
   const todayDate = new Date();
   const allocateRoleData = specificAccessData.specificAccessStateData;
   const period = specificAccessData.period;
+  const requestedRole = allocateRoleData.requestedRole !== 'specific-access-judicial'
+   ? allocateRoleData.requestedRole : 'specific-access-judiciary';
   return {
     roleRequest: {
       assignerId: currentUserId,
       replaceExisting: true,
       process: 'specific-access',
-      reference: `${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.actorId}`,
+      reference: `${allocateRoleData.caseId}/${requestedRole}/${allocateRoleData.actorId}`,
     },
     requestedRoles: [{
       roleType: 'CASE',
       readOnly: true,
       grantType: 'BASIC',
-      classification: 'PUBLIC',
+      classification: 'PRIVATE',
       attributes: {
         caseId: allocateRoleData.caseId,
-        requestedRole: allocateRoleData.requestedRole,
+        requestedRole,
+        ...extraAttributesForBasicRole,
       },
-      roleName: 'specific-access-approved',
+      roleName: 'specific-access-granted',
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.actorId,
@@ -54,9 +61,11 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       endTime: period.endDate
       ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
-      notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
-      time: "2022-05-10T16:34:18.763Z",
-      userId: allocateRoleData.actorId}],
+      notes: [
+      {comment: `{\"specificReason\":${allocateRoleData.accessReason}}`,
+      time: new Date().toISOString(),
+      userId: allocateRoleData.actorId},
+    ],
     },
     {
       roleType: 'CASE',
@@ -65,23 +74,28 @@ export function toSARoleAssignmentBody(currentUserId: string, specificAccessData
       classification: 'RESTRICTED',
       attributes: {
         caseId: allocateRoleData.caseId,
-        requestedRole: allocateRoleData.requestedRole,
+        requestedRole,
+        ...extraAttributesForSpecificRole,
       },
-      roleName: allocateRoleData.requestedRole,
+      roleName: requestedRole,
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.actorId,
       beginTime: period.startDate,
       endTime: period.endDate,
       // TODO: Include notes once we have that information
-      notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
-      time: "2022-05-10T16:34:18.763Z",
-      userId: allocateRoleData.actorId}, ],
+      notes: [
+      {comment: "{\"specificReason\":\"Request approved\"}",
+      time: new Date().toISOString,
+      userId: allocateRoleData.actorId},
+      ],
     }],
   };
 }
 
-export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+export function toDenySARoleAssignmentBody(
+  currentUserId: string, allocateRoleData: AllocateRoleData, extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+) {
   let requestedrole;
   switch ( allocateRoleData.roleCategory) {
     case RoleCategory.JUDICIAL:
@@ -111,6 +125,14 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: requestedrole,
+        specificAccessReason: allocateRoleData.specificAccessReason,
+        requestDate: allocateRoleData.requestCreated,
+        reviewer: currentUserId,
+        infoRequired: allocateRoleData.accessReason === 'Request more information',
+        // note: line below added in conflict with lines above
+        // since the lines above are crucial, some are required within the state data
+        // and the development for the above has already been approved by QA this will be kept for now
+        ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-denied',
       roleCategory: allocateRoleData.roleCategory,
@@ -124,7 +146,7 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
   ],
   };
 }
-export function toDenySADletionRequestedRoleBody(requestId: string): any {
+export function toDenySADletionRequestedRoleBody(requestId: string) {
   return {
       pathVariables: {
         process: 'staff-organisational-role-mapping',
@@ -138,7 +160,9 @@ export function toDenySADletionRequestedRoleBody(requestId: string): any {
     };
 }
 
-export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData): any {
+export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData,
+                                              extraAttributesForBasicRole: {[x: string]: string | boolean} = {}
+) {
   const todayDate = new Date();
   return {
     roleRequest: {
@@ -155,6 +179,7 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       attributes: {
         caseId: allocateRoleData.caseId,
         requestedRole: allocateRoleData.requestedRole,
+        ...extraAttributesForBasicRole,
       },
       roleName: 'specific-access-requested',
       roleCategory: allocateRoleData.roleCategory,
@@ -164,8 +189,8 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       endTime: allocateRoleData.period && allocateRoleData.period.endDate ? allocateRoleData.period.endDate
        : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
-      notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
-      time: "2022-05-10T16:34:18.763Z",
+      notes: [{comment: `{\"specificReason\":${allocateRoleData.specificReason}}`,
+      time: new Date().toISOString(),
       userId: allocateRoleData.person.id}],
     }],
   };

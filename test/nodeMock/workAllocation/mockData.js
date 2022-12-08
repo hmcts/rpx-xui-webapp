@@ -6,18 +6,18 @@ class WorkAllocationMockData {
 
     constructor() {
         this.locationIdCounter = 10000; 
-
+        this.locationsByServices = [];
         this.WorkAllocationDataModels = WorkAllocationDataModels;
         this.init(); 
     }
 
     init(){
+        this.updateWASupportedJurisdictions(['IA', 'SSCS']);
         this.setDefaultData();
     }
 
     setDefaultData(){
         this.findPersonsAllAdata = [];
-        this.waSupportedJusridictions = ['IA', 'SSCS'];
 
         this.locationsByServices = this.getLocationsByServices(this.waSupportedJusridictions);
 
@@ -51,15 +51,17 @@ class WorkAllocationMockData {
 
         this.caseRoleForAssignment = [this.caseRoles[0]];
 
-        this.myWorkMyTasks = this.getMyWorkMyTasks(150);
-        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(200);
-        this.allWorkTasks = this.getAllWorkTasks(300);
+        this.myWorkMyTasks = this.getMyWorkMyTasks(25);
+        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(25);
+        this.allWorkTasks = this.getAllWorkTasks(25);
 
-        this.myCases = this.getWACases(125);
-        this.allWorkCases = this.getWACases(125);
+        this.myCases = this.getWACases(25);
+        this.allWorkCases = this.getWACases(25);
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
     }
+
+
 
     setTaskDetails(task){
         Object.keys(task).forEach(taskkey => {
@@ -129,6 +131,7 @@ class WorkAllocationMockData {
         return user;
     }
 
+
     addCaseworker(caseworker, service) {
         let caseworketByService = null;
 
@@ -149,7 +152,7 @@ class WorkAllocationMockData {
                 personWithIdamd.lastName = caseworker.lastName;
                 personWithIdamd.email = caseworker.email;
                 personWithIdamd.roleCategory = caseworker.roleCategory; 
-
+                personWithIdamd.service = service;
 
                 personWithIdamd.location = {
                     id: locationsByService[0].epimms_id,
@@ -160,6 +163,41 @@ class WorkAllocationMockData {
             }
         }
     }
+
+    setLocationForCaseWokerInService(service, email,locationId ){
+        let locationsByService = null;
+        for (const byService of this.locationsByServices) {
+            if (byService.service === service) {
+                locationsByService = byService.locations;
+                break;
+            }
+        }
+
+        let locationDetailsToDetach = null;
+        for (const location of locationsByService){
+            if (location.epimms_id === locationId){
+                locationDetailsToDetach = {
+                    id: location.epimms_id,
+                    locationName: location.court_name 
+                }
+                break; 
+            }
+        }
+
+        for (const byservice of this.caseworkersByService) {
+            if (byservice.service === service) {
+               
+                for(const caseworker of byservice.caseworkers){
+                    if(caseworker.email === email){
+                        caseworker.location = locationDetailsToDetach; 
+                    } 
+                }
+                break;
+            }
+        }
+
+    }
+
 
     getLocationsByServices(services){
        const  locationsByService = [];
@@ -226,7 +264,7 @@ class WorkAllocationMockData {
 
     updateWASupportedJurisdictions(jurisdictions){
         this.waSupportedJusridictions = jurisdictions;
-        this.caseworkersByService = this.getCaseworkersByService(this.waSupportedJusridictions);
+        this.setDefaultData();
     }
 
     getCaseworkersByService(services){
@@ -301,7 +339,10 @@ class WorkAllocationMockData {
             const validRoleTypes = WorkAllocationDataModels.getValidRoles();
 
             let validRoleCounter = 0;
+            let caseCounter = 0;
             for (const caseAlloc of cases) {
+                caseCounter++;
+                caseAlloc.case_name = new Array(caseCounter).fill(`testCase name ${caseCounter}`).join("-") 
                 caseAlloc.case_role = validRoleTypes[validRoleCounter].roleId;
                 caseAlloc.role_category = validRoleTypes[validRoleCounter].roleCategory;
                 validRoleCounter++;
@@ -646,6 +687,16 @@ class WorkAllocationMockData {
                 } else if (taskAttribute.toLowerCase().includes('warnings')) {
                     const val = task[taskAttribute].toLowerCase();
                     taskTemplate[taskAttribute] = val.includes('true') || val.includes('yes');
+                } else if (taskAttribute.toLowerCase().includes('warning_list')) {
+                    taskTemplate.warning_list = { values :[]};
+                    const testInputWarnings = task[taskAttribute].split(",");
+                    const responseWantings = testInputWarnings.map(t =>{
+                        return {
+                            warningText: t,
+                            warningCode: t.split(' ').join('-')
+                        }
+                    }) 
+                    taskTemplate.warning_list.values = responseWantings;
                 } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
                     const val = task[taskAttribute].toLowerCase();
                     if (val.includes('session')) {
@@ -810,6 +861,41 @@ class WorkAllocationMockData {
         }
         return locationMatchingId;
        
+    }
+
+    getLocationsByIds(locations) {
+        const locationIdsToMatch = locations.map(l => l.id); 
+        const allLocations = [];
+        for (const locationsByService of this.locationsByServices) {
+            allLocations.push(...locationsByService.locations);
+        }
+
+        let mathcingLocations = [];
+        for (const location of allLocations) {
+            if (locationIdsToMatch.includes(location.epimms_id )) {
+                mathcingLocations.push(location);
+            }
+        }
+        return mathcingLocations;
+
+    }
+
+    getLocations(reqBody) {
+        const serviceIds = reqBody.serviceIds.split(",");
+        const searchTerm = reqBody.searchTerm;
+
+        let mathcingLocation = [];
+        for (const locationsByService of this.locationsByServices) {
+            if (!serviceIds.includes(locationsByService.service)){
+                continue;
+            }
+           
+            mathcingLocation.push(...locationsByService.locations);
+        }
+
+        mathcingLocation = mathcingLocation.filter(location => location.court_name.includes(searchTerm));
+        return mathcingLocation;
+
     }
 
 

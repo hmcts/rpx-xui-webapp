@@ -24,16 +24,44 @@ class CreateCaseStartPage {
 
   
 
-  async selectJurisdiction(option){
-    var e = element(by.xpath('//*[@id = "cc-jurisdiction"]/option[text() = "' + option + '"]'));
+  async selectJurisdiction(jurisdiction){
+
+    let locatorString = "//*[@id = 'cc-jurisdiction']/option[";
+    let i = 0;
+    const options = jurisdiction.split('|');
+    for (const option of options) {
+      if (i === 0) {
+        locatorString += `contains(text(), '${option.trim()}')`;
+      } else {
+        locatorString += ` or contains(text(), '${option.trim()}')`;
+      }
+      i++;
+    }
+    locatorString = locatorString + ']';
+    
+    var e = element(by.xpath(locatorString));
     await BrowserWaits.waitForElement(e);
-   await e.click(); 
+    await e.click();
      
   }
 
-  async selectCaseType(option){
-    var e = element(by.xpath('//*[@id = "cc-case-type"]/option[text() = "' + option + '"]'));
-     await BrowserWaits.waitForElement(e);
+  async selectCaseType(caseType){
+    
+    let locatorString = "//*[@id = 'cc-case-type']/option[";
+    let i = 0;
+    const options = caseType.split('|'); 
+    for (const option of options) {
+      if (i === 0) {
+        locatorString += `contains(text(), '${option.trim()}')`;
+      } else {
+        locatorString += ` or contains(text(), '${option.trim()}')`;
+      }
+      i++;
+    }
+    locatorString = locatorString + ']';
+
+    var e = element(by.xpath(locatorString));
+    await BrowserWaits.waitForElement(e);
     await e.click(); 
 
     // await this._caseType.selectFromDropdownByText(option);

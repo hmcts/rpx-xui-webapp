@@ -1,3 +1,5 @@
+
+const BrowserWaits = require('../../../support/customWaits'); 
 class ChooseDuration {
 
     constructor() {
@@ -12,6 +14,9 @@ class ChooseDuration {
 
     }
 
+    async waitForPage(){
+        await BrowserWaits.waitForElement(this.container); 
+    }
 
     async isDisplayed() {
         try {

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { getLabel } from '../../../../work-allocation-2/utils';
+import { getLabel } from '../../../../work-allocation/utils';
 import {
   AllocateRoleNavigation
 } from '../../../models';

@@ -1,7 +1,7 @@
-import { Action } from '@ngrx/store';
-import { HttpError } from '../../../models/httpError.model';
-import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
+import {Action} from '@ngrx/store';
+import {HttpError} from '../../../models/httpError.model';
 import {HearingConditions} from '../../models/hearingConditions';
+import {HearingRequestMainModel} from '../../models/hearingRequestMain.model';
 
 export const RESET_HEARING_REQUEST = '[HEARING REQUEST] Reset Hearing Request';
 export const NAVIGATE_BACK_HEARING_REQUEST = '[HEARING REQUEST] Navigate Back Hearing Request';
@@ -46,7 +46,7 @@ export class UpdateHearingRequest implements Action {
 }
 
 export class UpdateHearingRequestFailure implements Action {
-  public readonly type = UPDATE_HEARING_REQUEST_FAILURE
+  public readonly type = UPDATE_HEARING_REQUEST_FAILURE;
 
   constructor(public payload: HttpError) {
   }

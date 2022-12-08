@@ -52,7 +52,8 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     let judgeTypes: string[];
     let includedJudges: string[] = [];
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
-    if (panelRequirements && panelRequirements.roleType && panelRequirements.roleType.length) {
+    const selectedPanelRequirements = panelRequirements && panelRequirements.roleType && panelRequirements.roleType.filter(roleKey => this.hearingJudgeTypes.map((role) => role.key).includes(roleKey));
+    if (selectedPanelRequirements && selectedPanelRequirements.length > 0) {
       this.specificJudgeSelection = RadioOptions.NO;
       judgeTypes = panelRequirements.roleType;
     } else if (panelRequirements && panelRequirements.panelPreferences) {
@@ -60,8 +61,8 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       includedJudges = panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
     }
     const excludedJudges: string[] = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences
-        .filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE)
-        .map(preferences => preferences.memberID);
+      .filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE)
+      .map(preferences => preferences.memberID);
     this.hearingJudgeFormInfo = {
       includedJudges, judgeTypes, excludedJudges
     };
@@ -136,7 +137,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
 
   public prepareHearingRequestData(): void {
     const selectedPanelJudges: PanelPreferenceModel[] = [] as PanelPreferenceModel[];
-    let roleType: string[] = [];
+    let selectedPanelRoles: string[] = [];
     if (this.hearingJudgeForm.value.specificJudge === RadioOptions.YES) {
       const panelPreference: PanelPreferenceModel = {
         memberID: (this.hearingJudgeForm.value.judgeName as JudicialUserModel).personalCode,
@@ -145,7 +146,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       };
       selectedPanelJudges.push(panelPreference);
     } else {
-      roleType = this.hearingJudgeForm.value.judgeType.filter(judgeType => judgeType.selected).map(judgeType => judgeType.key);
+      selectedPanelRoles = this.hearingJudgeForm.value.judgeType.filter(judgeType => judgeType.selected).map(judgeType => judgeType.key);
     }
     this.excludedJudge.judgeList.forEach((judgeInfo: JudicialUserModel) => {
       const panelPreference: PanelPreferenceModel = {
@@ -156,6 +157,10 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       selectedPanelJudges.push(panelPreference);
     });
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
+    let preSelectedPanelRoles = [];
+    if (this.hearingRequestMainModel.hearingDetails.panelRequirements && this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType) {
+      preSelectedPanelRoles = this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.filter(roleKey => !this.hearingJudgeTypes.map((role) => role.key).includes(roleKey));
+    }
     const selectedPanelMembers = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER) || [];
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
@@ -163,7 +168,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
         ...this.hearingRequestMainModel.hearingDetails,
         panelRequirements: {
           ...this.hearingRequestMainModel.hearingDetails.panelRequirements,
-          roleType,
+          roleType: [...preSelectedPanelRoles, ...selectedPanelRoles],
           panelPreferences: [...selectedPanelMembers, ...selectedPanelJudges]
         }
       }

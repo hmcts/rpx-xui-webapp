@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 
-import {InfoMessage, InfoMessageType} from './../../enums';
+import {InfoMessage, InfoMessageType} from '../../enums';
 
 @Component({
   selector: 'exui-info-message',

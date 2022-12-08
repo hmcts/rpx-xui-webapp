@@ -84,9 +84,11 @@ describe('ValidatorsUtils', () => {
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 
-  it('should check calcBusinessDays', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
-    expect(service.calcBusinessDays(moment('23-12-2022', HearingDateEnum.DefaultFormat), moment('26-12-2022', HearingDateEnum.DefaultFormat))).toBe(2);
-    expect(service.calcBusinessDays(moment('24-12-2022', HearingDateEnum.DefaultFormat), moment('25-12-2022', HearingDateEnum.DefaultFormat))).toBe(0);
+  it('should check isWeekendDate', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    expect(service.isWeekendDate(moment('24-06-2022', HearingDateEnum.DefaultFormat))).toBeFalsy();
+    expect(service.isWeekendDate(moment('25-06-2022', HearingDateEnum.DefaultFormat))).toBeTruthy();
+    expect(service.isWeekendDate(moment('26-06-2022', HearingDateEnum.DefaultFormat))).toBeTruthy();
+    expect(service.isWeekendDate(moment('27-06-2022', HearingDateEnum.DefaultFormat))).toBeFalsy();
   }));
 
   it('should check hearingDateRangeValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {

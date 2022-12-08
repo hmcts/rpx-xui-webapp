@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {InfoMessage, InfoMessageType} from './../../enums';
-import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
+import {InfoMessage, InfoMessageType} from '../../enums';
+import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { InfoMessageComponent } from './info-message.component';
 
 @Component({

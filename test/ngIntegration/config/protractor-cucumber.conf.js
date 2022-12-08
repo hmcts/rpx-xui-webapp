@@ -11,8 +11,10 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
-
+const appTestConfig = require('../../e2e/config/appTestConfig');
 const {LOG_LEVELS} = require("../../e2e/support/constants");
+
+appTestConfig.testEnv = 'aat';
 
 process.env['LOG_LEVEL'] = LOG_LEVELS.Info
 
@@ -27,6 +29,14 @@ process.env['TEST_URL'] = argv.debug ? 'http://localhost:3000/' : 'http://localh
 const isParallelExecution = argv.parallel ? argv.parallel === "true" : !getBDDTags().includes('@none') ? true : false;
 
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
+
+
+ 
+let  nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
+if (argv.debug){
+    nodeMockPort = 3001; 
+}
 
 const perfLoggingPrefs = {
     'enableNetwork': true,
@@ -92,8 +102,8 @@ const config = {
 
     beforeLaunch(){
         if (isParallelExecution) {
-            MockApp.setServerPort(3001);
-            MockApp.init(3002);
+            MockApp.setServerPort(nodeMockPort);
+            MockApp.init(parseInt(nodeMockPort) + 1);
             MockApp.startServer();
         }    
     },
@@ -117,7 +127,7 @@ const config = {
                 
             });
         }else{
-            MockApp.setServerPort(3001);
+            MockApp.setServerPort(nodeMockPort);
             //await MockApp.startServer();
         }    
        
@@ -130,7 +140,7 @@ const config = {
 
     },
     cucumberOpts: {
-        'fail-fast': true,
+        'fail-fast': argv.failFast ? argv.failFast.includes("true") : false,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
@@ -173,7 +183,9 @@ function getBDDTags() {
     console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_ENV_URL']}`);
     console.log(`*********************** process.env['TEST_ENV_URL'] : ${process.env['TEST_ENV_URL']}`);
     if (process.env['TEST_ENV_URL'].includes("pr-") ||
-        process.env['TEST_ENV_URL'].includes("localhost")) { 
+        process.env['TEST_ENV_URL'].includes("localhost") || 
+        appTestConfig.testEnv === "aat"
+        ) { 
         if (argv.tags){
             tags = argv.tags.split(',');
         }else{

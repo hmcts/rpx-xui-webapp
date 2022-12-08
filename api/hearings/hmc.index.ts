@@ -1,5 +1,5 @@
 import {NextFunction, Response} from 'express';
-import {handleDelete, handleGet, handlePost, handlePut} from '../common/crudService';
+import {handleDelete, handleGet, handlePost, handlePut, sendPut} from '../common/crudService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HMC_HEARINGS_COMPONENT_API} from '../configuration/references';
 import {EnhancedRequest} from '../lib/models';
@@ -12,7 +12,7 @@ import {
   LinkedHearingGroupResponseModel,
 } from './models/linkHearings.model';
 
-const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
+export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
 
 /**
  * getHearings from case ID
@@ -71,11 +71,10 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
  */
 export async function cancelHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.query.hearingId;
-  const cancellationReasonCode = req.query.cancellationReasonCode;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
 
   try {
-    const reqBody = { cancellationReasonCode };
+    const reqBody = req.body;
     const {status, data}: { status: number, data: any } = await handleDelete(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
@@ -120,7 +119,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.query.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
-    const {status, data}: { status: number, data: HearingActualsModel } = await handlePut(markupPath, reqBody, req, next);
+    const {status, data}: { status: number, data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -145,9 +144,8 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
  * getLinkedHearingGroup - get linked hearing group
  */
 export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const caseReference: string = req.query.caseReference;
-  const hearingId: string = req.query.hearingId;
-  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?caseReference=${caseReference}&hearingId=${hearingId}`;
+  const groupId: string = req.query.groupId;
+  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   try {
     const {status, data}: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
     res.status(status).send(data);
@@ -175,8 +173,9 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
  * putLinkedHearingGroup - put linked hearing group
  */
 export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const groupId: string = req.query.groupId;
   const reqBody = req.body;
-  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
+  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
     // tslint:disable-next-line:max-line-length
     const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req, next);
@@ -190,8 +189,9 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
  * deleteLinkedHearingGroup - delete linked hearing group
  */
 export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const hearingGroupId: string = req.query.hearingGroupId;
   const reqBody = req.body;
-  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
+  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}`;
   try {
     // tslint:disable-next-line:max-line-length
     const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req, next);

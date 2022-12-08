@@ -22,6 +22,18 @@ export function hearingActualsReducer(
         hearingActualsMainModel: action.payload
       };
     }
+    case fromActions.SAVE_HEARING_ACTUALS_PLANNED_DAYS: {
+      return {
+        ...currentState,
+        hearingActualsMainModel: {
+          ...currentState.hearingActualsMainModel,
+          hearingActuals: {
+            ...currentState.hearingActualsMainModel.hearingActuals,
+            actualHearingDays: action.actualHearingDays
+          }
+        }
+      };
+    }
     case fromActions.UPDATE_HEARING_ACTUALS_SUCCESS: {
       return {
         ...currentState,

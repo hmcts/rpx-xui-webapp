@@ -3,9 +3,9 @@ import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@a
 import { EMPTY, forkJoin, Observable } from 'rxjs';
 import { catchError, mergeMap } from 'rxjs/operators';
 
-import { Task } from '../../work-allocation-2/models/tasks';
-import { WorkAllocationTaskService } from '../../work-allocation-2/services';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation-2/utils';
+import { Task } from '../../work-allocation/models/tasks';
+import { WorkAllocationTaskService } from '../../work-allocation/services';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/utils';
 import { AllocateRoleService } from '../services';
 
 @Injectable({ providedIn: 'root' })

@@ -40,7 +40,7 @@ async function uiConfigurationRouter(req, res) {
     substantiveEnabled: showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED),
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
-    judicialBookingsApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
+    judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
   })
 }
 

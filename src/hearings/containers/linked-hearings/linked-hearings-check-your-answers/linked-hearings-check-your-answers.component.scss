@@ -6,6 +6,17 @@ span.align-right {
   float: right;
 }
 
+.no-linked-hearings {
+  float: left;
+	margin-bottom: 20px;
+}
+
 .linked-hearings-button{
   margin-left: 0px;
+}
+
+.link-cancel {
+  margin: 10px 30px;
+  display: inline-block;
+  font-size: 20px;
 }

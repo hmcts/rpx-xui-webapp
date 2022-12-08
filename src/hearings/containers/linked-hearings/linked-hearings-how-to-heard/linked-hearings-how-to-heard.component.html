@@ -1,104 +1,94 @@
-<div class="govuk-!-padding-3">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-          <div class="govuk-width-container">
-            <div class="govuk-grid-row">
-              <div class="govuk-grid-column-full">
-                <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
-                </xuilib-hmcts-error-summary>
-                <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName">
-                </exui-linked-hearings-case-title>
-              </div>
-            </div>
-            <h1 class="govuk-heading-l">
-              How should these linked hearings be heard?
-            </h1>
-            <form class="form" [formGroup]="form" (submit)="onSubmit()" #ngForm="ngForm">
-              <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                  <div class="govuk-radios" [ngClass]="{'govuk-form-group--error' : hasEmptyGroupSelection()}">
-                    <span *ngIf="hasEmptyGroupSelection()" class="govuk-error-message govuk-!-margin-top-2">
-                      {{ validationErrors[0].message }}
-                    </span>
-                    <div class="govuk-radios__item">
-                      <input class="govuk-radios__input" id="heardTogether" formControlName="hearingGroup" name="hearingGroup"
-                        type="radio" value="heardTogether" (change)="onOptionSelection('heardTogether')">
-                      <label class="govuk-label govuk-radios__label" for="yes">
-                        Hearings should be heard together
-                      </label>
-                    </div>
-                    <div class="govuk-radios__item">
-                      <input class="govuk-radios__input" id="particularOrder" formControlName="hearingGroup" name="hearingGroup"
-                        type="radio" value="particularOrder" (change)="onOptionSelection('particularOrder')">
-                      <label class="govuk-label govuk-radios__label" for="no">
-                        Hearings should be heard in a particular order, but not together
-                      </label>
-                      <br />
-                      <div [ngClass]="{'govuk-form-group--error' : hasInvalidOrderSelection()}" style="margin:15px"
-                        class="govuk-error-message govuk-!-margin-top-2">
-                        <table class="govuk-table" *ngIf="selectedOption === 'particularOrder'">
-                          <caption class="govuk-table__caption govuk-table__caption--m">
-                            In what order should these hearings be heard?
-                          </caption>
-                          <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                              <span *ngIf="validationErrors.length > 0" class="govuk-error-message govuk-!-margin-top-2">
-                                {{ validationErrors[0].message }}
-                              </span>
-                            </tr>
-                            <tr class="govuk-table__row">
-                              <th scope="col" class="govuk-table__header">Case name and number</th>
-                              <th scope="col" class="govuk-table__header">Stage of hearing</th>
-                              <th scope="col" class="govuk-table__header">Position</th>
-                            </tr>
-                          </thead>
-                          <tbody class="govuk-table__body">
-                            <tr class="govuk-table__row"
-                              *ngIf="selectedToBeLinkedCases && selectedToBeLinkedCases.length === 0">
-                              <td class="govuk-table__cell" colspan="3">None</td>
-                            </tr>
-                            <ng-container *ngIf="selectedToBeLinkedCases && selectedToBeLinkedCases.length > 0"
-                              formArrayName="hearingOrder">
-                              <tr class="govuk-table__row row-padding" [formGroupName]="i"
-                                *ngFor="let group of hearingOrder.controls ; let i=index">
-                                <td class="govuk-table__cell">
-                                  <a class="govuk-link govuk-link--no-visited-state" style="text-decoration: none;">
-                                    {{group.get('caseName').value}}
-                                    {{group.get('caseReference').value | caseReference}}
-                                  </a>
-                                </td>
-                                <td class="govuk-table__cell">
-                                  {{group.get('hearingStage').value}}
-                                </td>
-                                <td>
-                                  <select class="govuk-select" [id]="'hearingsOrder'+i" formControlName="position"
-                                    (change)="onOrderChange(i)"
-                                    [ngClass]="{'govuk-select--error': validationErrors.length > 0 && highlightRowError(i, 'position', ngForm.submitted)}">
-                                    <option value="" selected></option>
-                                    <option *ngFor="let num of positionDropdownValues">
-                                      {{num}}</option>
-                                  </select>
-                                </td>
-                              </tr>
-                            </ng-container>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-              </div>
-              <div>
-                <button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">Continue</button>
-                <a href="javascript:history.back()" class="link-cancel">Cancel</a>
-              </div>
-            </form>
-          </div>
-          <br>
-        </div>
-      </div>
-    </div>
+<a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">Back</a>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
+    </xuilib-hmcts-error-summary>
+    <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName" mode="mode">
+    </exui-linked-hearings-case-title>
   </div>
 </div>
+<h1 class="govuk-heading-l">
+  How should these linked hearings be heard?
+</h1>
+<form class="form" [formGroup]="form" (submit)="onSubmit()" #ngForm="ngForm">
+  <div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+      <div class="govuk-radios" [ngClass]="{'govuk-form-group--error' : hasEmptyGroupSelection()}">
+        <span *ngIf="hasEmptyGroupSelection()" class="govuk-error-message govuk-!-margin-top-2">
+          {{ validationErrors[0].message }}
+        </span>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="heardTogether" formControlName="hearingGroup" name="hearingGroup"
+                 type="radio" [value]="groupLinkType.SAME_SLOT" (change)="onOptionSelection(groupLinkType.SAME_SLOT)"
+                 [checked]="hasGroupSelected(groupLinkType.SAME_SLOT)">
+          <label class="govuk-label govuk-radios__label" for="heardTogether">
+            Hearings should be heard together
+          </label>
+        </div>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="particularOrder" formControlName="hearingGroup" name="hearingGroup"
+                 type="radio" [value]="groupLinkType.ORDERED" (change)="onOptionSelection(groupLinkType.ORDERED)"
+                 [checked]="hasGroupSelected(groupLinkType.ORDERED)">
+          <label class="govuk-label govuk-radios__label" for="particularOrder">
+            Hearings should be heard in a particular order, but not together
+          </label>
+          <br/>
+          <div [ngClass]="{'govuk-form-group--error' : hasInvalidOrderSelection()}" style="margin:15px"
+               class="govuk-error-message govuk-!-margin-top-2">
+            <table class="govuk-table" *ngIf="selectedOption === groupLinkType.ORDERED">
+              <caption class="govuk-table__caption govuk-table__caption--m">
+                In what order should these hearings be heard?
+              </caption>
+              <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                              <span *ngIf="validationErrors.length > 0"
+                                    class="govuk-error-message govuk-!-margin-top-2">
+                    {{ validationErrors[0].message }}
+                  </span>
+              </tr>
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Case name and number</th>
+                <th scope="col" class="govuk-table__header">Stage of hearing</th>
+                <th scope="col" class="govuk-table__header">Position</th>
+              </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+              <tr class="govuk-table__row" *ngIf="selectedLinkedCases && selectedLinkedCases.length === 0">
+                <td class="govuk-table__cell" colspan="3">None</td>
+              </tr>
+              <ng-container *ngIf="selectedLinkedCases && selectedLinkedCases.length > 0"
+                            formArrayName="hearingOrder">
+                <tr class="govuk-table__row row-padding" [formGroupName]="i"
+                    *ngFor="let group of hearingOrder.controls ; let i=index">
+                  <td class="govuk-table__cell">
+                    <a class="govuk-link govuk-link--no-visited-state" style="text-decoration: none;">
+                      {{group.get('caseName').value}}
+                      {{group.get('caseReference').value | caseReference}}
+                    </a>
+                  </td>
+                  <td class="govuk-table__cell">
+                    {{group.get('hearingStage').value | convertToValue : hearingStageOptions}}
+                  </td>
+                  <td *ngIf="hearingOrder">
+                    <select class="govuk-select" [id]="'hearingsOrder'+i" formControlName="position"
+                            (change)="onOrderChange(i)"
+                            [ngClass]="{'govuk-select--error': validationErrors.length > 0 && highlightRowError(i, 'position', ngForm.submitted)}">
+                      <option value=""></option>
+                      <option *ngFor="let pos of positionDropdownValues" [selected]="hasPosToBePreSelected(i) == pos">
+                        {{pos}}</option>
+                    </select>
+                  </td>
+                </tr>
+              </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div>
+    <button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">Continue</button>
+    <a href="javascript:history.back()" class="link-cancel">Cancel</a>
+  </div>
+</form>

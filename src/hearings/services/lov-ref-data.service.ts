@@ -11,8 +11,8 @@ export class LovRefDataService {
   public getListOfValues(category: string, service: string, isChildRequired: boolean = false): Observable<LovRefDataModel[]> {
     const options = {
       params: new HttpParams()
-        .set('category', category)
-        .set('service', service)
+        .set('categoryId', category)
+        .set('serviceId', service)
         .set('isChildRequired', isChildRequired ? 'Y' : 'N')
     };
     return this.http.get<LovRefDataModel[]>('api/prd/lov/getLovRefData', options);

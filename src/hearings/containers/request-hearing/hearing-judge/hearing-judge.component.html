@@ -61,7 +61,7 @@
                         <div class="govuk-checkboxes__item" *ngFor="let judgeType of hearingJudgeTypes;index as pos"
                           [formGroupName]="pos">
                           <input class="govuk-checkboxes__input" id="{{judgeType.key}}" name="pos" type="checkbox"
-                            formControlName="selected" [value]="judgeType.value_en">
+                            formControlName="selected" [value]="judgeType.key">
                           <label class="govuk-label govuk-checkboxes__label"
                             for="{{judgeType.key}}">{{judgeType.value_en}}</label>
                         </div>

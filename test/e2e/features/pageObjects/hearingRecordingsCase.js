@@ -12,6 +12,7 @@ class HearingRecordingsCase {
       this.continueBtn = element(by.xpath('//button[contains(text(),\'Continue\')]'));
       this.submitBtn = element(by.xpath('//button[contains(text(),\'Submit\')]'));
       this.hearingFilesTabBtn = element(by.xpath('//div[contains(text(),\'Case Hearing Files\')]'));
+      this.hearingFilesTabContainer = $('.mat-tab-body-content .CaseFiles');
       this.fileLink = element(by.xpath('//a[contains(text(),\'dummy.pdf\')]'));
       this.fileText = element(by.xpath('//span[contains(text(),\'Dumm\')]'));
     }

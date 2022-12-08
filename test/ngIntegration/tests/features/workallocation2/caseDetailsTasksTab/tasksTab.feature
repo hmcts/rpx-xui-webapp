@@ -1,5 +1,5 @@
 
-@ng
+@ng 
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from
@@ -16,7 +16,7 @@ Feature: WA Release 2: Case details Tasks tab
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
-        Given I set MOCK request "/workallocation2/case/task/:caseid" response log to report
+        Given I set MOCK request "/workallocation/case/task/:caseid" response log to report
 
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
@@ -86,7 +86,6 @@ Feature: WA Release 2: Case details Tasks tab
 
         Then I validate case details task tab page is displayed
         Then I validate task tab alert banner header is "Task alert"
-        Then I validate task tab alert banner message is "An application is pending a decision. Consider if this application has an impact on any other tasks you might wish to complete."
         Then I validate task tab active tasks container displayed
         Then I validate task tab active tasks displayed count 15
 

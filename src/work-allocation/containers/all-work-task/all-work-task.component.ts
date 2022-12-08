@@ -152,7 +152,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     }
   }
 
-  private getTaskNameParameter(): any {
+  private getTaskNameParameter(): {key: string, operator: string, values: string[]} {
     if (this.selectedTaskName) {
       return {key: 'task_name', operator: 'IN', values: [this.selectedTaskName]};
     }

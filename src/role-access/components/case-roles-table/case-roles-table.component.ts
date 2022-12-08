@@ -57,7 +57,7 @@ export class CaseRolesTableComponent implements OnInit {
         break;
       }
       case RoleCategory.CTSC: {
-        roleCategory = 'ctsc';
+        roleCategory = 'CTSC';
         break;
       }
 

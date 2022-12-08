@@ -21,14 +21,14 @@ export const vowels = ['a', 'e', 'i', 'o', 'u'];
 export const getTitleText = (role: SpecificRole, action: string, roleCategory: string): string => {
   if (role && role.name) {
     const aOrAn = vowels.includes(role.name.toLowerCase().charAt(0)) ? 'an' : 'a';
-    return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} ${aOrAn} ${role.name.toLowerCase()}`;
+    return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} ${aOrAn} ${role.name}`;
   } else {
     if (roleCategory === RoleCategory.ADMIN) {
       return `${action} an admin role`;
     } else if (roleCategory === RoleCategory.CTSC) {
       return `${action} a CTSC role`;
     }
-    return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
+    return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ')} role` : `${action} a role`;
   }
 };
 

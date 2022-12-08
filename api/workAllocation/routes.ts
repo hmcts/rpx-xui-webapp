@@ -20,7 +20,8 @@ import {
   postTaskSearchForCompletable,
   searchCaseWorker,
   searchTask,
-  showAllocateRoleLink
+  showAllocateRoleLink,
+  getTaskNames
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getFullLocations, getLocationById, getLocations } from './locationController';
@@ -63,5 +64,6 @@ router.use('/all-work/cases', getCases);
 
 router.use('/getJudicialUsers', getJudicialUsers);
 router.use('/my-work/myaccess', getMyAccess);
+router.get('/taskNames', getTaskNames)
 
 export default router;

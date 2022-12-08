@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ErrorMessage, MultipleErrorMessage } from '../../../../../app/models';
+import { StaffSearchFilters } from '../../../../../staff-administrator/models/staff-search-filters.model';
 import { StaffUser } from '../../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../../services/staff-data-access/staff-data-access.service';
 
@@ -26,7 +27,16 @@ export class StaffDataFilterService {
     this.setErrors([]);
     return this.staffDataAccessService.getUsersByPartialName(partialName).pipe(
       tap((tableData) => this.tableData.next({
-        results: tableData.results
+        results: tableData
+      }))
+    );
+  }
+
+  public filterByAdvancedSearch(searchFilters: StaffSearchFilters) {
+    this.setErrors([]);
+    return this.staffDataAccessService.getFilteredUsers(searchFilters).pipe(
+      tap((tableData) => this.tableData.next({
+        results: tableData
       }))
     );
   }

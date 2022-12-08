@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FilterConfig } from '@hmcts/rpx-xui-common-lib';
+import { FilterConfig, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { Subscription } from 'rxjs';
+import { StaffSearchFilters } from '../../../../staff-administrator/models/staff-search-filters.model';
+import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
   selector: 'exui-staff-adv-filter',
@@ -9,17 +12,22 @@ import { FilterConfig } from '@hmcts/rpx-xui-common-lib';
 })
 export class StaffAdvFilterComponent implements OnInit {
   public filterConfig: FilterConfig;
+  private readonly FILTER_NAME = 'staff-advanced-filters';
+  private filterSub: Subscription;
+  private filterErrorsSub: Subscription;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute,
+    private staffDataFilterService: StaffDataFilterService,
+    private filterService: FilterService) {
     const staffFilters = {
       userTypes: this.route.snapshot.data.userTypes,
       jobTitles: this.route.snapshot.data.jobTitles,
       skills: this.route.snapshot.data.skills,
       services: this.route.snapshot.data.services,
-  };
+    };
 
     this.filterConfig = {
-      id: 'staff-advanced-filters',
+      id: this.FILTER_NAME,
       fields: [{
         name: 'user-services',
         title: 'Services',
@@ -35,7 +43,7 @@ export class StaffAdvFilterComponent implements OnInit {
         title: 'Search by location',
         subTitle: 'Enter a location name',
         options: [],
-        minSelected: 1,
+        minSelected: 0,
         maxSelected: 0,
         type: 'find-location',
         enableAddButton: true,
@@ -70,28 +78,53 @@ export class StaffAdvFilterComponent implements OnInit {
         type: 'group-select',
         lineBreakBefore: true,
         disabledText: 'All'
-    },
-    {
-      name: 'user-role',
-      title: 'Role',
-      options: [
-        {label: 'Case Allocator', key: 'case-allocator'},
-        {label: 'Task supervisor', key: 'task-supervisor'},
-        {label: 'Staff administrator', key: 'Staff administrator'}
+      },
+      {
+        name: 'user-role',
+        title: 'Role',
+        options: [
+          { label: 'Case Allocator', key: 'case allocator' },
+          { label: 'Task supervisor', key: 'task supervisor' },
+          { label: 'Staff administrator', key: 'staff administrator' }
+        ],
+        minSelected: 0,
+        maxSelected: 3,
+        type: 'checkbox',
+        lineBreakBefore: true
+      }
       ],
-      minSelected: 0,
-      maxSelected: 3,
-      type: 'checkbox',
-      lineBreakBefore: true
-    }
-    ],
-    persistence: 'session',
-    applyButtonText: 'Search',
-    cancelButtonText: '',
-    enableDisabledButton: false,
-    showCancelFilterButton: false
-  };
-}
+      persistence: 'session',
+      applyButtonText: 'Search',
+      cancelButtonText: '',
+      enableDisabledButton: false,
+      showCancelFilterButton: false
+    };
+
+    this.filterSub = this.filterService.getStream(this.FILTER_NAME)
+      .subscribe(filterConfig => {
+        if (filterConfig) {          
+          const searchFilters: StaffSearchFilters = {
+            jobTitle: filterConfig.fields.find(item => item.name === 'user-job-title').value[0],
+            locations: (filterConfig.fields.find(item => item.name === 'user-location').value).map(l => l.epimms_id),
+            userType: filterConfig.fields.find(item => item.name === 'user-type').value[0],
+            roles: filterConfig.fields.find(item => item.name === 'user-role').value,
+            services: filterConfig.fields.find(item => item.name === 'user-services').value,
+            skills: filterConfig.fields.find(item => item.name === 'user-skills').value
+          };
+          if (searchFilters.jobTitle || searchFilters.userType || searchFilters.locations.length > 0 || 
+            searchFilters.roles.length > 0 || searchFilters.services.length > 0 || searchFilters.skills.length > 0) {
+              debugger
+            this.staffDataFilterService.filterByAdvancedSearch(searchFilters).subscribe();
+          }
+        }
+      });
+
+    this.filterErrorsSub = this.filterService.givenErrors.subscribe((filterErrors) => {
+      if (filterErrors && filterErrors.length) {
+        this.staffDataFilterService.setErrors([...filterErrors]);
+      }
+    });
+  }
 
   public ngOnInit() {
   }

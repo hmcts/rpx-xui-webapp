@@ -4,7 +4,7 @@ describe('StaffDataAccessService', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
   it('should be Truthy', () => {
-    const service = new StaffDataAccessService(mockHttpService);
+    const service = new StaffDataAccessService(mockHttpService);    
     expect(service).toBeTruthy();
   });
 
@@ -12,25 +12,25 @@ describe('StaffDataAccessService', () => {
     const service = new StaffDataAccessService(mockHttpService);
     service.getFilteredUsers({
       services: [],
-      locations: [],
+      locations: ['1'],
       userType: '',
       jobTitle: '',
       skills: [],
       roles: []
     });
-    expect(mockHttpService.post).toHaveBeenCalledTimes(1);
+    expect(mockHttpService.get).toHaveBeenCalledTimes(1);
   });
 
   it('getUsersByPartialName should make a GET API call', () => {
     const service = new StaffDataAccessService(mockHttpService);
     service.getUsersByPartialName('Kevin');
-    expect(mockHttpService.get).toHaveBeenCalledTimes(1);
+    expect(mockHttpService.get).toHaveBeenCalledTimes(2);
   });
 
   it('getStaffRefUserDetails should make a GET API call', () => {
     const service = new StaffDataAccessService(mockHttpService);
     service.getStaffRefUserDetails(1);
-    expect(mockHttpService.get).toHaveBeenCalledTimes(2);
+    expect(mockHttpService.get).toHaveBeenCalledTimes(3);
   });
 });
 

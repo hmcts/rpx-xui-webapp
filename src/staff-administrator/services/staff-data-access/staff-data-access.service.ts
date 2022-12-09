@@ -10,7 +10,7 @@ export class StaffDataAccessService {
   constructor(private readonly http: HttpClient) {}
 
   public getFilteredUsers(searchFilters: StaffSearchFilters) {
-    const searchParam = { 
+    const searchParam = {
       serviceCode: searchFilters.services.toString(),
       locations: searchFilters.locations.toString(),
       skill: searchFilters.skills.toString(),

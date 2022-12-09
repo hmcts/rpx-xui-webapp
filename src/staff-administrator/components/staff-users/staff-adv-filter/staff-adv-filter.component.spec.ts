@@ -5,7 +5,9 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
+import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from './staff-adv-filter.component';
 
 describe('StaffAdvFilterComponent', () => {
@@ -21,8 +23,10 @@ describe('StaffAdvFilterComponent', () => {
         ExuiCommonLibModule,
       ],
       providers: [
+        StaffDataFilterService,
+        StaffDataAccessService,
         {
-          provide: ActivatedRoute,
+          provide: ActivatedRoute, 
           useValue: {
             snapshot: {
               data: {
@@ -43,10 +47,26 @@ describe('StaffAdvFilterComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffAdvFilterComponent);
     component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have All by default in job title', () => {
+    const field = component.filterConfig.fields.find(f => f.name === 'user-job-title');
+    expect(field.defaultOption.key).toBe('All');
+    const element = fixture.debugElement.nativeElement;
+    const userJobTitle = element.querySelector('#select_user-job-title');
+    expect(userJobTitle.value).toBe('All');
+  });
+
+  it('should have All by default in user type', () => {
+    const field = component.filterConfig.fields.find(f => f.name === 'user-type');
+    expect(field.defaultOption.key).toBe('All');
+    const element = fixture.debugElement.nativeElement;
+    const userJobTitle = element.querySelector('#select_user-type');
+    expect(userJobTitle.value).toBe('All');
   });
 });

@@ -18,7 +18,7 @@ export async function getUserTypes(req, res: Response, next: NextFunction) {
       options.push({ key: element.id, label: element.code });
     });
 
-    res.status(status).send(options);
+    res.status(status).send(sortArray(options));
   } catch (error) {
     next(error);
   }
@@ -35,7 +35,7 @@ export async function getJobTitles(req, res: Response, next: NextFunction) {
       options.push({ key: element.role_id, label: element.role_description });
     });
 
-    res.status(status).send(options);
+    res.status(status).send(sortArray(options));
   } catch (error) {
     next(error);
   }
@@ -70,7 +70,7 @@ export async function getSkills(req, res: Response, next: NextFunction) {
       services.skills.forEach(skill => {
         options.push({ key: skill.id, label: skill.description });
       })
-      groupOptions.push({ group: services.id, options: options });
+      groupOptions.push({ group: services.id, options });
     });
 
     res.status(status).send(groupOptions);
@@ -81,6 +81,7 @@ export async function getSkills(req, res: Response, next: NextFunction) {
 
 export async function getFilteredUsers(req, res: Response, next: NextFunction) {
   const { serviceCode, locations, skill, role, userType, jobTitle } = req.query;
+  console.log('req.query ', req.query);
   const params = new URLSearchParams();
   try {
     if (serviceCode) {
@@ -89,16 +90,16 @@ export async function getFilteredUsers(req, res: Response, next: NextFunction) {
     if (locations) {
       params.set('location', locations);
     }
-    if (skill) {
+    if (skill && skill !== 'All') {
       params.set('skill', skill);
     }
     if (role) {
       params.set('role', role);
     }
-    if (userType) {
+    if (userType && userType !== 'All') {
       params.set('userType', userType);
     }
-    if (jobTitle) {
+    if (jobTitle && jobTitle !== 'All') {
       params.set('jobTitle', jobTitle);
     }
     const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${params}`;
@@ -118,4 +119,8 @@ export async function getUsersByPartialName(req, res: Response, next: NextFuncti
   } catch (error) {
     next(error);
   }
+}
+
+export function sortArray(array: StaffFilterOption[]) {
+  return array.sort((a, b) => a.label.localeCompare(b.label));
 }

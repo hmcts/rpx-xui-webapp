@@ -16,7 +16,8 @@ export class StaffAdvFilterComponent implements OnInit {
   private filterSub: Subscription;
   private filterErrorsSub: Subscription;
 
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private staffDataFilterService: StaffDataFilterService,
     private filterService: FilterService) {
     const staffFilters = {
@@ -25,7 +26,7 @@ export class StaffAdvFilterComponent implements OnInit {
       skills: this.route.snapshot.data.skills,
       services: this.route.snapshot.data.services,
     };
-
+    const defaultOption = { key: 'All', label: 'All' };
     this.filterConfig = {
       id: this.FILTER_NAME,
       fields: [{
@@ -57,7 +58,8 @@ export class StaffAdvFilterComponent implements OnInit {
         minSelected: 0,
         maxSelected: 0,
         type: 'select',
-        lineBreakBefore: true
+        lineBreakBefore: true,
+        defaultOption
       },
       {
         name: 'user-job-title',
@@ -66,7 +68,8 @@ export class StaffAdvFilterComponent implements OnInit {
         minSelected: 0,
         maxSelected: 0,
         type: 'select',
-        lineBreakBefore: true
+        lineBreakBefore: true,
+        defaultOption
       },
       {
         name: 'user-skills',
@@ -77,7 +80,7 @@ export class StaffAdvFilterComponent implements OnInit {
         maxSelected: 0,
         type: 'group-select',
         lineBreakBefore: true,
-        disabledText: 'All'
+        defaultOption
       },
       {
         name: 'user-role',
@@ -97,12 +100,29 @@ export class StaffAdvFilterComponent implements OnInit {
       applyButtonText: 'Search',
       cancelButtonText: '',
       enableDisabledButton: false,
-      showCancelFilterButton: false
+      showCancelFilterButton: false,
+      cancelSetting: {
+        id: this.FILTER_NAME,
+        fields: [
+          {
+            name: 'user-job-title',
+            value: ['All']
+          },
+          {
+            name: 'user-type',
+            value: ['All']
+          },
+          {
+            name: 'user-skills',
+            value: ['All']
+          }
+        ]
+      }
     };
 
     this.filterSub = this.filterService.getStream(this.FILTER_NAME)
       .subscribe(filterConfig => {
-        if (filterConfig) {          
+        if (filterConfig) {
           const searchFilters: StaffSearchFilters = {
             jobTitle: filterConfig.fields.find(item => item.name === 'user-job-title').value[0],
             locations: (filterConfig.fields.find(item => item.name === 'user-location').value).map(l => l.epimms_id),
@@ -111,7 +131,7 @@ export class StaffAdvFilterComponent implements OnInit {
             services: filterConfig.fields.find(item => item.name === 'user-services').value,
             skills: filterConfig.fields.find(item => item.name === 'user-skills').value
           };
-          if (searchFilters.jobTitle || searchFilters.userType || searchFilters.locations.length > 0 || 
+          if (searchFilters.jobTitle || searchFilters.userType || searchFilters.locations.length > 0 ||
             searchFilters.roles.length > 0 || searchFilters.services.length > 0 || searchFilters.skills.length > 0) {
               debugger
             this.staffDataFilterService.filterByAdvancedSearch(searchFilters).subscribe();

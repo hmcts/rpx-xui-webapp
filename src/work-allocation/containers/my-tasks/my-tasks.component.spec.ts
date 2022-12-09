@@ -40,7 +40,7 @@ const workTypeInfo =
   `[{"key":"hearing_work","label":"Hearing work"},
     {"key":"routine_work","label":"Routine work"},
     {"key":"decision_making_work","label":"Decision-making work"},
-    {"key":"applications","label":"Applications"}]`
+    {"key":"applications","label":"Applications"}]`;
 
 describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
@@ -119,6 +119,7 @@ describe('MyTasksComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
+    component.isUpdatedTaskPermissions$ = of(true);
     fixture.detectChanges();
   });
 
@@ -127,7 +128,7 @@ describe('MyTasksComponent', () => {
     // tick(500);
     fixture.detectChanges();
     const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = {searchRequest, view: component.view};
+    const payload = {searchRequest, view: component.view, refined: true, currentUser: undefined};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
@@ -176,7 +177,9 @@ describe('MyTasksComponent', () => {
     for (let i = 0; i < fields.length; i++) {
       // ensure derivedIcon has no header and every other field does
       if (fields[i].columnLabel) {
-        expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        if (fields[i].columnLabel !== 'Priority') {
+          expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+        }
       } else {
         expect(headerCells[i].textContent).toEqual('');
       }

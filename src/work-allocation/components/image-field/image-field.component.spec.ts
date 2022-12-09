@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
+import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { ImageFieldComponent } from './image-field.component';
 
 @Component({

@@ -160,8 +160,9 @@ const PRIORITY: FieldConfig = {
   name: 'priority',
   type: FieldType.PRIORITY,
   columnLabel: 'Priority',
-  sortName: 'dueDate',
-  views: TaskView.ALL_VIEWS
+  sortName: 'priority',
+  views: TaskView.ALL_VIEWS,
+  disableSort: true
 };
 const START_DATE: FieldConfig = {
   name: 'startDate',
@@ -188,7 +189,7 @@ const ACCESS_END_DATE_DISABLE_SORT: FieldConfig = {
   columnLabel: 'End',
   sortName: 'endDate',
   views: TaskView.ALL_VIEWS
-}
+};
 const END_DATE: FieldConfig = {
   name: 'endDate',
   type: FieldType.FORMATTED_DATE,

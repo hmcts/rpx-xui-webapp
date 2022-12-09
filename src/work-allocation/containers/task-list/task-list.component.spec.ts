@@ -7,12 +7,12 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
-import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { SortOrder, TaskService } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter } from '../../models/dtos';
+import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
@@ -82,7 +82,7 @@ describe('TaskListComponent', () => {
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem', 'getItem']);
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({

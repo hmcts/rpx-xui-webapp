@@ -10,7 +10,7 @@ import {
   FEATURE_HELMET_ENABLED,
   HELMET,
   PROTOCOL,
-  SESSION_SECRET,
+  SESSION_SECRET
 } from './configuration/references';
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
@@ -112,9 +112,6 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 app.use('/am', amRoutes);
 app.use('/api', routes);
 app.use('/external', openRoutes);
-// TODO: No dash?
-// TODO: taskRouter should be called workAllocationRouter
-//TODO101
 app.use('/workallocation', workAllocationRouter);
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));
 // @ts-ignore

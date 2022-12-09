@@ -38,6 +38,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedTaskCategory: string = 'All';
   private selectedPerson: string = '';
   private selectedTaskType: string = 'All';
+  private selectedTaskName: string = '';
 
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.AllWork;
@@ -84,6 +85,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const personParameter = { key: 'user', operator: 'IN', values: [this.selectedPerson] };
       const locationParameter = this.getLocationParameter();
       const taskTypeParameter = this.getTaskTypeParameter();
+      const taskNameParameter = this.getTaskNameParameter();
       if (this.selectedPerson) {
         searchParameters.push(personParameter);
       }
@@ -93,9 +95,14 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       if (taskTypeParameter) {
         searchParameters.push(taskTypeParameter);
       };
+
+      if (taskNameParameter) {
+        searchParameters.push(taskNameParameter);
+      };
+
       const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
-        sorting_parameters: [this.getSortParameter()],
+        sorting_parameters: this.getSortParameter(),
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
@@ -113,12 +120,13 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location: string, service: string, selectPerson: string, person: Person, taskType: string }): void {
+  public onSelectionChanged(selection: { findTaskNameControl: string, location: string, service: string, selectPerson: string, person: Person, taskType: string, taskName: string }): void {
     this.selectedLocation.id = selection.location;
     this.selectedServices = [selection.service];
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
+    this.selectedTaskName = selection.findTaskNameControl;
     this.onPaginationHandler(1);
   }
 
@@ -147,6 +155,12 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private getTaskTypeParameter(): any {
     if (this.selectedTaskType && this.selectedTaskType !== AllWorkTaskComponent.ALL_TASKS) {
       return {key: 'role_category', operator: 'IN', values: [this.selectedTaskType]};
+    }
+  }
+
+  private getTaskNameParameter(): {key: string, operator: string, values: string[]} {
+    if (this.selectedTaskName) {
+      return {key: 'task_name', operator: 'IN', values: [this.selectedTaskName]};
     }
   }
 }

@@ -55,7 +55,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     this.verb = this.route.snapshot.data.verb;
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
-      role: [this.getCurrentUserRoleCategory()],
+      role: [this.setUpDefaultRoleType(this.getCurrentUserRoleCategory(), this.taskRoles), Validators.required],
       taskId: [taskId, Validators.required]
     });
   }
@@ -89,8 +89,34 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     return null;
   }
 
-  private userWithOwnPermission(roles: TaskRole[]): TaskRole {
+  private setUpDefaultRoleType(userRoleCategory: RoleCategory, roles: TaskRole[]): string {
+    const roleCategory = this.route.snapshot.queryParamMap.get('roleCategory');
+    if (roleCategory && (roleCategory as RoleCategory) !== null) {
+      return roleCategory as RoleCategory;
+    } else if (roles.length) {
+      const roleCategories = this.taskWithOwnPermission(roles);
+      // if there is only one role with relevant permissions, use that role
+      if (roleCategories && roleCategories.length === 1) {
+        return roleCategories[0].toUpperCase();
+      // if the user has a role that matches the relevant task role category
+      } else if (roleCategories.includes(userRoleCategory)) {
+        return userRoleCategory;
+      // else return simply the first role with an own permission
+      } else {
+        return roleCategories[0];
+      }
+    }
+  }
+
+  private taskWithOwnPermission(roles: TaskRole[]): string[] {
     // EUI-5236 - TaskPermission instead of Permission (i.e. not all caps)
-    return roles.find(role => role.permissions.includes(TaskPermission.OWN));
+    const possibleRoles  =  roles.filter(role => role.permissions.includes(TaskPermission.OWN));
+    const roleList = [];
+    possibleRoles.forEach(possibleRole => {
+      if (!roleList.includes(possibleRole.role_category)) {
+        roleList.push(possibleRole.role_category.toUpperCase());
+      }
+    })
+    return roleList;
   }
 }

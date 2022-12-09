@@ -48,7 +48,7 @@ describe('StaffAdvFilterComponent', () => {
     reset: false
   }
 
-  const mockFilterService: any = {
+  const mockFilterService= {
     getStream: () => of(mockFilterServiceResponse),
     get: jasmine.createSpy(),
     persist: jasmine.createSpy(),

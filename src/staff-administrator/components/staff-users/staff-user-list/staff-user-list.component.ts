@@ -21,7 +21,7 @@ export class StaffUserListComponent implements OnInit {
     this.pagination = { itemsPerPage: 15, currentPage: this.currentPageNumber, totalItems: this.pageTotalSize };
   }
 
-  public emitPageClickEvent(pageNumber: any) {
+  public emitPageClickEvent(pageNumber: number) {
     this.currentPageNumber = pageNumber;
     this.pageChange.emit(pageNumber);
   }

@@ -128,6 +128,7 @@
     "ngx-pagination": "^3.2.1",
     "node-http-proxy-json": "^0.1.9",
     "p-iteration": "^1.1.7",
+    "pegjs": "^0.10.0",
     "portfinder": "^1.0.28",
     "protractor-screenshot-utils": "^1.0.5",
     "rxjs": "^6.0.0",

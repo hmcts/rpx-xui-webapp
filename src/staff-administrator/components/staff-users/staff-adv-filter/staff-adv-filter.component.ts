@@ -133,7 +133,6 @@ export class StaffAdvFilterComponent implements OnInit {
           };
           if (searchFilters.jobTitle || searchFilters.userType || searchFilters.locations.length > 0 ||
             searchFilters.roles.length > 0 || searchFilters.services.length > 0 || searchFilters.skills.length > 0) {
-              debugger
             this.staffDataFilterService.filterByAdvancedSearch(searchFilters).subscribe();
           }
         }

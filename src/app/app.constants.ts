@@ -5,13 +5,15 @@ import { ApplicationTheme, NavigationItem } from './models/theming.model';
 const featureNames = {
   waServiceConfig: 'wa-service-config',
   waAccess: 'wa-access',
+  currentWAFeature: 'mc-work-allocation-active-feature',
+  updatedTaskPermissionsFeature: 'updated-task-permission',
+  workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
   userTypeRoles: 'mc-user-type-roles',
   booking: 'mc-booking-active',
   mcHearingsFeature: 'mc-hearings-jurisdictions',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
-  updatedTaskPermissionsFeature: 'updated-task-permission'
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs'
 };
 
 const footerDataNavigation = {

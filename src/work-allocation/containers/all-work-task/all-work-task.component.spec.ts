@@ -164,7 +164,7 @@ describe('AllWorkTaskComponent', () => {
 
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = { searchRequest, view: component.view };
+    const payload = {searchRequest, view: component.view, refined: false, currentUser: '1233434'};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(mockRoleService.getCaseRolesUserDetails).toHaveBeenCalled();
     expect(component.tasks).toBeDefined();
@@ -181,7 +181,7 @@ describe('AllWorkTaskComponent', () => {
       roles: ['caseworker-ia-caseofficer'],
       uid: '1233434'
     }));
-    const selection = { location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High' };
+    const selection = {findTaskNameControl: 'Process Application', location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High', taskName: 'Review Hearing bundle' };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_parameters).toContain({ key: 'jurisdiction', operator: 'IN', values: ['IA'] });
@@ -294,7 +294,7 @@ describe('AllWorkTaskComponent', () => {
       const navigateSpy = spyOn(router, 'navigate');
       component.getSearchTaskRequestPagination();
       const searchRequest = component.onPaginationEvent(1);
-      const payload = { searchRequest, view: component.view };
+      const payload = { searchRequest, view: component.view, refined: false, currentUser: undefined };
       expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);

@@ -1,7 +1,7 @@
-import { ApplicationRoutingComponent } from './application-routing.component';
+import { TestBed } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { TestBed } from '@angular/core/testing';
+import { ApplicationRoutingComponent } from './application-routing.component';
 
 describe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;
@@ -18,13 +18,19 @@ describe('ApplicationRoutingComponent', () => {
     router = jasmine.createSpyObj('router', ['navigate']);
     waFeatureService = jasmine.createSpyObj('service', ['getActiveWAFeature']);
     mockStore = jasmine.createSpyObj('store', ['pipe']);
+    router.url = '/';
     featureToggleMock.isEnabled.and.returnValue(of(true));
     component = new ApplicationRoutingComponent(router, mockStore, featureToggleMock);
-    router.url = '/';
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should call navigateBasedOnUserRole on ngOnInit', () => {
+    spyOn(component, 'navigateBasedOnUserRole');
+    component.ngOnInit();
+    expect(component.navigateBasedOnUserRole).toHaveBeenCalled();
   });
 
   it('should navigateBasedOnUserRole caseworker-civil', () => {
@@ -37,6 +43,13 @@ describe('ApplicationRoutingComponent', () => {
   it('should navigateBasedOnUserRole caseworker-ia-iacjudge', async () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-ia-iacjudge']}}));
+    component.navigateBasedOnUserRole();
+    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
+  });
+
+  it('should navigateBasedOnUserRole caseworker-civil', () => {
+    featureToggleMock.getValueOnce.and.returnValue(of(true));
+    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   });

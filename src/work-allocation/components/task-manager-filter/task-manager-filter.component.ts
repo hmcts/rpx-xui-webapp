@@ -50,6 +50,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           name: 'selectPerson',
           value: ['All']
         },
+        {
+          name: 'taskName',
+          value: ['']
+        },
       ]
     }
   };
@@ -66,7 +70,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
-      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType'],
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType', 'findTaskNameControl'],
       title: 'Service',
       type: 'select'
     };
@@ -83,7 +87,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectLocation=search',
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
-      enableAddLocationButton: false,
+      enableAddButton: false,
       type: 'find-location',
       radioSelectionChange: 'selectLocation=search',
       bookingCheckType: BookingCheckType.NO_CHECK
@@ -210,6 +214,21 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
+  private static initTaskNameFilter(): FilterFieldConfig {
+    return {
+      name: 'taskName',
+      title: 'Task by name',
+      options: [],
+      minSelected: 0,
+      maxSelected: 1,
+      findLocationField: 'service',
+      minSelectedError: 'You must select a task name',
+      maxSelectedError: null,
+      enableAddTaskNameButton: false,
+      type: 'find-task-name',
+    };
+  }
+
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
@@ -230,10 +249,12 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
       TaskManagerFilterComponent.initSelectLocationFilter(),
       TaskManagerFilterComponent.initLocationFilter(),
+      // TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(),
-      TaskManagerFilterComponent.initTaskTypeFilter()
+      TaskManagerFilterComponent.initTaskTypeFilter(),
+      TaskManagerFilterComponent.initTaskNameFilter()
     ];
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
       .pipe(

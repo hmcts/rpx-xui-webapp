@@ -40,6 +40,7 @@ import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } f
 import {
   assignActionsToCases,
   assignActionsToTasks,
+  assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
@@ -140,26 +141,103 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
+    // determines whether should use release 3 or release 4 permission logic
+    const refined = req.body.refined;
+    searchRequest.sorting_parameters.find((sort, index) => {
+      if (sort.sort_by === 'priority') {
+        searchRequest.sorting_parameters.splice(index, 1)
+      }
+    });
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
+    // TEMPORARY CODE: task_name search parameter is not yet enabled by Task API. to be removed
+    let taskName;
+    searchRequest.search_parameters.map((param, index) => {
+      if (param.key === 'task_name') {
+        taskName = param.values[0];
+        searchRequest.search_parameters.splice(index, 1);
+      }
+    });
+    // TEMPERORY CODE: end
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
+      // TEMPORARY CODE: task_name search parameter is not yet enabled by Task API. to be removed
+      if (taskName) {
+        data.tasks = data.tasks.filter(task => task.name === taskName);
+      }
+      // TEMPERORY CODE: end
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+      if (refined) {
+        data = mockTaskPermissions(data);
+      }
+      returnData = !!req.body.refined ?
+       { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
+        : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+
     }
     res.send(returnData);
   } catch (error) {
     next(error);
   }
+}
+
+// mocks permissions to test fine-grained task permissions
+function mockTaskPermissions(data) {
+  if (data.tasks) {
+    for (let i = 0; i < data.tasks.length; i++) {
+      let permissions = [];
+      if (i === 7) {
+        break;
+      }
+      switch (i) {
+        case 0: {
+          permissions = ['assign', 'own'];
+          break;
+        }
+        case 1: {
+          permissions = ['Unassign'];
+          break;
+        }
+        case 2: {
+          permissions = [];
+          break;
+        }
+        case 3: {
+          permissions = ['Execute', 'Assign'];
+          break;
+        }
+        case 4: {
+          permissions = ['Own', 'Claim'];
+          break;
+        }
+        case 5: {
+          permissions = ['UnassignAssign'];
+          break;
+        }
+        case 6: {
+          permissions = ['UnassignClaim'];
+          break;
+        }
+        case 7: {
+          permissions = ['UnclaimAssign'];
+          break;
+        }
+      }
+      if (data.tasks[i].permissions) {
+        data.tasks[i].permissions.values = permissions;
+      }
+    }
+  }
+  return data;
 }
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
@@ -191,10 +269,15 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     ],
   };
   try {
-    const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    let { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    if (data && req.body.refined) {
+      data = mockTaskPermissions(data);
+    }
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
+    const actionedTasks = !!req.body.refined
+      ? assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId)
+      : assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
     return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);
@@ -211,9 +294,9 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
     const jurisdictions = getWASupportedJurisdictionsList();
     let status;
     let data;
-    jurisdictions.includes(jurisdiction) ? {status, data} =
-     await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
-     : (status = 200, data = []);
+    jurisdictions.includes(jurisdiction) ? { status, data } =
+      await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
+      : (status = 200, data = []);
     return res.status(status).send(data);
   } catch (e) {
     next(e);
@@ -230,8 +313,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     if (req.body.hasNoAssigneeOnComplete === true) {
       req.body = {
         completion_options: {
-           assign_and_complete: true,
-         },
+          assign_and_complete: true,
+        },
       };
     } else {
       delete req.body.hasNoAssigneeOnComplete;
@@ -316,7 +399,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest): Promise<Case
 // similar as above but checks services
 export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: Response): Promise<CaseworkersByService[]> {
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const jurisdictions = req.body.serviceIds as string [];
+  const jurisdictions = req.body.serviceIds as string[];
   // will need to check specific jurisdiction have caseworkers in session
   let newJurisdictions: string[];
   let sessionCaseworkersByService: CaseworkersByService[] = [];
@@ -592,4 +675,32 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     console.error(error);
     next(error);
   }
+}
+
+export async function getTaskNames(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const taskNames = [{
+    taskName: 'Review Hearing bundle',
+    taskId: 1912,
+  },
+  {
+    taskName: 'Process Application',
+    taskId: 1890,
+  },
+  {
+    taskName: 'Review the appeal',
+    taskId: 12334,
+  },
+  {
+    taskName: 'Follow-up extended direction',
+    taskId: 1345,
+  },
+  {
+    taskName: 'Follow-up extended direction',
+    taskId: 1456,
+  },
+  {
+    taskName: 'Review Addendum Evidence',
+    taskID: 1678,
+  }];
+  return res.send(taskNames).status(200);
 }

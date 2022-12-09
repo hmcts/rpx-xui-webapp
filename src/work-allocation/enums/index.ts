@@ -4,6 +4,7 @@ import { CaseService } from './case-service';
 import { FieldType } from './field-type';
 import { InfoMessage } from './info-message';
 import { InfoMessageType } from './info-message-type';
+import { PriorityLimits } from './priority-limits';
 import { SortOrder } from './sort-order';
 import { TaskActionIds } from './task-action-ids';
 import { TaskActionType } from './task-action-type';
@@ -20,6 +21,7 @@ export {
   FieldType,
   InfoMessage,
   InfoMessageType,
+  PriorityLimits,
   SortOrder,
   TaskActionIds,
   TaskActionType,

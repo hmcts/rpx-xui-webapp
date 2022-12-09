@@ -7,8 +7,7 @@ import { ServiceConfig, WAFeatureConfig } from '../models/common/service-config.
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationFeatureService {
-    constructor(private readonly featureToggleService: FeatureToggleService) {
-    }
+    constructor(private readonly featureToggleService: FeatureToggleService) {}
 
     private checkForServiceConfig(serviceConfigs: ServiceConfig[], service: string, caseType: string): string {
         serviceConfigs.forEach(serviceConfig => {
@@ -26,5 +25,9 @@ export class WorkAllocationFeatureService {
                 ? this.checkForServiceConfig(waServiceConfig.configurations, service, caseType) : null; }
         )
         );
+    }
+
+    public getActiveUpdatedTaskPermissionsFeature(): Observable<string> {
+        return this.featureToggleService.getValue<string>(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, 'true');
     }
 }

@@ -166,6 +166,16 @@ export class AppUtils {
     return null;
   }
 
+  public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
+    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.Judicial;
+    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.LegalOps;
+    }
+    // TODO: When we know roles for Admin we can put this in this method
+    return null;
+  }
+
   public static convertDomainToLabel(userRole: string): string {
     switch (userRole) {
       case UserRole.LegalOps: {

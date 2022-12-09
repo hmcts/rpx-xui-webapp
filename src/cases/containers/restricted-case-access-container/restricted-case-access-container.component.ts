@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'exui-restricted-case-access-container',
@@ -7,6 +7,6 @@ import { Component, OnInit } from "@angular/core";
 export class RestrictedCaseAccessContainerComponent implements OnInit {
 
   public ngOnInit(): void {
-    
+
   }
 }

@@ -4,15 +4,15 @@ describe('StaffDataAccessService', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
   it('should be Truthy', () => {
-    const service = new StaffDataAccessService(mockHttpService);    
+    const service = new StaffDataAccessService(mockHttpService);
     expect(service).toBeTruthy();
   });
 
-  it('getFilteredUsers should make a POST API call', () => {
+  it('getFilteredUsers should make a GET API call', () => {
     const service = new StaffDataAccessService(mockHttpService);
     service.getFilteredUsers({
-      services: [],
-      locations: ['1'],
+      services: ['AAA7'],
+      locations: [],
       userType: '',
       jobTitle: '',
       skills: [],

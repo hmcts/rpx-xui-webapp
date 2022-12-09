@@ -12,7 +12,6 @@ export const init = () => {
   const getSkills = /refdata\/case-worker\/skill/;
   const getServices = /refdata\/case-worker\/services/;
 
-
   mock.onGet(getServices).reply(() => {
     return [
       200,

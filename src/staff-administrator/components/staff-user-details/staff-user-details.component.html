@@ -67,7 +67,7 @@
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
         {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
       </button>
-      <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="copy()">
         Copy
       </button>
     </div>

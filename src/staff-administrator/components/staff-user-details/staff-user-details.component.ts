@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { StaffUser } from '../../../staff-administrator/models/staff-user.model';
 
 @Component({
@@ -11,7 +12,14 @@ export class StaffUserDetailsComponent {
   public userDetails: StaffUser;
   public showAction: boolean = false;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router) {
     this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails.results[0];
    }
+
+   public copy(): void {
+    const url = '/staff/add-user';
+    this.router.navigate([url], { state: { user: this.userDetails } });
+  }
 }

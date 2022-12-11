@@ -4,7 +4,9 @@ import { StaffFilterOption } from '../../models/staff-filter-option.model';
 import { StaffSearchFilters } from '../../models/staff-search-filters.model';
 import { StaffUser } from '../../models/staff-user.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class StaffDataAccessService {
   private API_PATH = `/api/staff-ref-data`;
   constructor(private readonly http: HttpClient) {}

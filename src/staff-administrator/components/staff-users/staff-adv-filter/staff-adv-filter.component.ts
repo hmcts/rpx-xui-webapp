@@ -77,7 +77,7 @@ export class StaffAdvFilterComponent implements OnInit {
       options: [
         {label: 'Case Allocator', key: 'case-allocator'},
         {label: 'Task supervisor', key: 'task-supervisor'},
-        {label: 'Staff administrator', key: 'Staff administrator'}
+        {label: 'Staff administrator', key: 'staff-administrator'}
       ],
       minSelected: 0,
       maxSelected: 3,

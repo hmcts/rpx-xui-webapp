@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { getMappedRoleCategory, getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
 import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants';
+import { ADMIN_ROLE_NAME, getOrganisationRoles, getUserRoleCategory, isCurrentUserCaseAllocator } from './utils';
 
 describe('user.utils', () => {
   describe('isCurrentUserCaseAllocator without jurisdiction and location', () => {
@@ -17,10 +17,10 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
-          jurisdiction: 'IA'
-        }
-      }
+          baseLocation: '231596',
+          jurisdiction: 'IA',
+        },
+      };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE)).to.equal(true);
     });
     it('should return false', () => {
@@ -36,10 +36,10 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
-          jurisdiction: 'IA'
-        }
-      }
+          baseLocation: '231596',
+          jurisdiction: 'IA',
+        },
+      };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE)).to.equal(false);
     });
 
@@ -59,10 +59,10 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
-          jurisdiction: 'IA'
-        }
-      }
+          baseLocation: '231596',
+          jurisdiction: 'IA',
+        },
+      };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE, 'IA', '231596')).to.equal(true);
     });
     it('should return false', () => {
@@ -78,10 +78,10 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
-          jurisdiction: 'IA'
-        }
-      }
+          baseLocation: '231596',
+          jurisdiction: 'IA',
+        },
+      };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE, 'DIVORCE', '123123')).to.equal(false);
     });
   });
@@ -110,9 +110,9 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          baseLocation: '231596',
+          jurisdiction: 'IA',
+        },
       },
       {
         id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac3',
@@ -126,9 +126,9 @@ describe('user.utils', () => {
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
-          primaryLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          baseLocation: '231596',
+          jurisdiction: 'IA',
+        },
       }];
       const response = getOrganisationRoles(roleAssignmentInfo);
       expect(response.length).to.equal(1);
@@ -136,14 +136,13 @@ describe('user.utils', () => {
     });
   });
 
-  describe('getMappedRoleCategory', () => {
-    it('should return LEGAL_OPERATION', () => {
-      const roles = ['caseworker', 'caseworker-ia',
+  describe('getUserRoleCategory', () => {
+    it('should return UserRoleCategory', () => {
+      const roles = ['ADMIN', 'caseworker-ia',
                      'caseworker-ia-caseofficer', 'cwd-user',
                      'case-allocator', 'tribunal-caseworker',
                      'hmcts-legal-operations', 'task-supervisor'];
-      const result = getMappedRoleCategory(roles, ['LEGAL_OPERATIONS']);
-      console.log('getMappedRoleCategory', result);
+      expect(getUserRoleCategory(roles)).to.equal('legal-operations');
     });
   });
 });

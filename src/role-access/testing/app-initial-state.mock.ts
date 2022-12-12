@@ -27,17 +27,17 @@ export const initialMockState: State = {
       },
       roleAssignmentInfo: [
         {
-          primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA',
           isCaseAllocator: true
         },
         {
-          primaryLocation: '',
+          baseLocation: '',
           jurisdiction: 'JUDICIAL',
           isCaseAllocator: true,
         },
         {
-          primaryLocation: '',
+          baseLocation: '',
           jurisdiction: 'DIVORCE',
           isCaseAllocator: false,
         }

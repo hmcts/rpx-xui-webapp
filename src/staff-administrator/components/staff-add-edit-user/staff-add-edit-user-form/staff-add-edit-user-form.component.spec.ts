@@ -7,8 +7,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService, GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
+
 import { StaffFilterOption } from '../../../models//staff-filter-option.model';
+import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 import { StaffUserCheckAnswersComponent } from '../staff-user-check-answers/staff-user-check-answers.component';
 
 @Component({ selector: 'exui-staff-main-container', template: '' })

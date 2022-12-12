@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StaffUser } from '../models/staff-user.model';
-import { StaffDataAccessService } from '../../staff-administrator/services/staff-data-access/staff-data-access.service';
+import { StaffDataAccessService } from '../services/staff-data-access/staff-data-access.service';
 
 @Injectable({
   providedIn: 'root'

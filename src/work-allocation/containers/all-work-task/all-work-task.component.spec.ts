@@ -209,7 +209,7 @@ describe('AllWorkTaskComponent', () => {
   { statusCode: 500, routeUrl: '/service-down' },
   { statusCode: 400, routeUrl: '/service-down' },
 ].forEach(scr => {
-  describe('AllWorkTaskComponent negative cases', () => {
+  fdescribe('AllWorkTaskComponent negative cases', () => {
     let component: AllWorkTaskComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -237,7 +237,33 @@ describe('AllWorkTaskComponent', () => {
       mockCaseworkerService.getAll.and.returnValue(of([]));
       mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
       mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-      mockFeatureToggleService.getValue.and.returnValue(of(false));
+      mockFeatureToggleService.getValue.and.returnValue(of({
+        "configurations": [
+            {
+                "caseTypes": [
+                    "Asylum"
+                ],
+                "releaseVersion": "3.5",
+                "serviceName": "IA"
+            },
+            {
+                "caseTypes": [
+                    "PRIVATELAW",
+                    "PRLAPPS"
+                ],
+                "releaseVersion": "2.1",
+                "serviceName": "PRIVATELAW"
+            },
+            {
+                "caseTypes": [
+                    "CIVIL",
+                    "GENERALAPPLICATION"
+                ],
+                "releaseVersion": "2.1",
+                "serviceName": "CIVIL"
+            }
+        ]
+      }));
       mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
       TestBed.configureTestingModule({
         imports: [

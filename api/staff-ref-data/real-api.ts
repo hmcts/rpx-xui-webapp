@@ -11,7 +11,7 @@ export async function getUserTypes(req, res: Response, next: NextFunction) {
   const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/user-type`;
 
   try {
-    const { status, data }: { status: number, data: any } = await handleGet(apiPath, req, next);
+    const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
 
     const options: StaffFilterOption[] = [];
     data.user_type.forEach(element => {
@@ -28,7 +28,7 @@ export async function getJobTitles(req, res: Response, next: NextFunction) {
   const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/job-title`;
 
   try {
-    const { status, data }: { status: number, data: any } = await handleGet(apiPath, req, next);
+    const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
 
     const options: StaffFilterOption[] = [];
     data.job_title.forEach(element => {
@@ -45,7 +45,7 @@ export async function getServices(req, res: Response, next: NextFunction) {
   const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/skill`;
 
   try {
-    const { status, data }: { status: number, data: any } = await handleGet(apiPath, req, next);
+    const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
 
     const options: StaffFilterOption[] = [];
     data.service_skill.forEach(element => {
@@ -80,29 +80,10 @@ export async function getSkills(req, res: Response, next: NextFunction) {
 }
 
 export async function getFilteredUsers(req, res: Response, next: NextFunction) {
-  const { serviceCode, locations, skill, role, userType, jobTitle } = req.query;
-  console.log('req.query ', req.query);
-  const params = new URLSearchParams();
+  const queryString = require('query-string');
+  const parsed = queryString.stringify(req.query);
   try {
-    if (serviceCode) {
-      params.set('serviceCode', serviceCode);
-    }
-    if (locations) {
-      params.set('location', locations);
-    }
-    if (skill && skill !== 'All') {
-      params.set('skill', skill);
-    }
-    if (role) {
-      params.set('role', role);
-    }
-    if (userType && userType !== 'All') {
-      params.set('userType', userType);
-    }
-    if (jobTitle && jobTitle !== 'All') {
-      params.set('jobTitle', jobTitle);
-    }
-    const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${params}`;
+    const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${parsed}`;
     const { status, data }: { status: number, data: StaffDataUser[] } = await handleGet(apiPath, req, next);
     res.status(status).send(data);
   } catch (error) {

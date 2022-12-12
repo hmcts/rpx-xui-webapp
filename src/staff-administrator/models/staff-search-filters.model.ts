@@ -1,8 +1,8 @@
 export interface StaffSearchFilters {
-  services: string[];
-  locations: string[];
-  userType: string;
-  jobTitle: string;
-  skills: string[];
-  roles: string[];
+  serviceCode?: string;
+  location?: string;
+  userType?: string;
+  jobTitle?: string;
+  skill?: string;
+  role?: string;
 }

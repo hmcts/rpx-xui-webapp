@@ -123,17 +123,37 @@ export class StaffAdvFilterComponent implements OnInit {
     this.filterSub = this.filterService.getStream(this.FILTER_NAME)
       .subscribe(filterConfig => {
         if (filterConfig) {
-          const searchFilters: StaffSearchFilters = {
-            jobTitle: filterConfig.fields.find(item => item.name === 'user-job-title').value[0],
-            locations: (filterConfig.fields.find(item => item.name === 'user-location').value).map(l => l.epimms_id),
-            userType: filterConfig.fields.find(item => item.name === 'user-type').value[0],
-            roles: filterConfig.fields.find(item => item.name === 'user-role').value,
-            services: filterConfig.fields.find(item => item.name === 'user-services').value,
-            skills: filterConfig.fields.find(item => item.name === 'user-skills').value
-          };
-          if (searchFilters.jobTitle || searchFilters.userType || searchFilters.locations.length > 0 ||
-            searchFilters.roles.length > 0 || searchFilters.services.length > 0 || searchFilters.skills.length > 0) {
+          const searchFilters: StaffSearchFilters = {};
+          const jobTitle = filterConfig.fields.find(item => item.name === 'user-job-title').value[0];
+          const userType = filterConfig.fields.find(item => item.name === 'user-type').value[0];
+          const services = (filterConfig.fields.find(item => item.name === 'user-services').value).map(s => s.key);
+          const locations = (filterConfig.fields.find(item => item.name === 'user-location').value).map(l => l.epimms_id);
+          const roles = filterConfig.fields.find(item => item.name === 'user-role').value;
+          const skills = filterConfig.fields.find(item => item.name === 'user-skills').value;
+
+          if (services && services.length > 0) {
+            searchFilters.serviceCode = services.toString();
+          }
+          if (locations && locations.length > 0) {
+            searchFilters.location = locations.toString();
+          }          
+          if (roles && roles.length > 0) {
+            searchFilters.role = roles.toString();
+          }
+          if (skills && skills.some(s => s !== 'All')) {
+            searchFilters.skill = skills.toString();
+          }
+          if (userType && userType !== 'All') {
+            searchFilters.userType = userType;
+          }
+          if (jobTitle && jobTitle !== 'All') {
+            searchFilters.jobTitle = jobTitle;
+          }
+          
+          if (Object.keys(searchFilters).length !== 0) {
             this.staffDataFilterService.filterByAdvancedSearch(searchFilters).subscribe();
+          } else {
+            this.staffDataFilterService.resetSearch();
           }
         }
       });

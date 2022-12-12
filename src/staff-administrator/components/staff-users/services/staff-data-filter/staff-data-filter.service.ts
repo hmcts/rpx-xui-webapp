@@ -41,6 +41,12 @@ export class StaffDataFilterService {
     );
   }
 
+  public resetSearch() {
+    return this.tableData.next({
+      results: null
+    });
+  }
+
   public setErrors(errors: MultipleErrorMessage[]) {
     this.errors.next({
       ...this.errors.getValue(),

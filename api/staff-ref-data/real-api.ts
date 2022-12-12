@@ -1,4 +1,5 @@
 import { NextFunction, Response } from 'express';
+import * as querystring from 'querystring';
 import { handleGet } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
@@ -80,8 +81,7 @@ export async function getSkills(req, res: Response, next: NextFunction) {
 }
 
 export async function getFilteredUsers(req, res: Response, next: NextFunction) {
-  const queryString = require('query-string');
-  const parsed = queryString.stringify(req.query);
+  const parsed = querystring.stringify(req.query);
   try {
     const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${parsed}`;
     const { status, data }: { status: number, data: StaffDataUser[] } = await handleGet(apiPath, req, next);

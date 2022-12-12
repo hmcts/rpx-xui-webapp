@@ -76,7 +76,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.getRoleCategory(userInfo.roles);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [
         {key: 'jurisdiction', operator: 'IN', values: this.selectedServices},
         this.getStateParameter()

@@ -13,6 +13,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public legalRolesNotNamed = false;
   public legalOpsRoles: CaseRole[] = [];
   public adminRoles: CaseRole[] = [];
+  public ctscRoles: CaseRole[] = [];
   public namedLegalRoles: CaseRole[];
   public namedAdminRoles: CaseRole[];
   public judicialRoles: CaseRole[] = [];
@@ -42,7 +43,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
       this.legalOpsRoles = this.roles.filter(role => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
       this.judicialRoles = this.roles.filter(role => role.roleCategory === RoleCategory.JUDICIAL);
       this.adminRoles = this.roles.filter(role => role.roleCategory === RoleCategory.ADMIN);
-      console.log(this.adminRoles);
+      this.ctscRoles = this.roles.filter(role => role.roleCategory === RoleCategory.CTSC);
     }
     this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }

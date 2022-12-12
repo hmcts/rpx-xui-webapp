@@ -1,4 +1,4 @@
-@fullfunctional @demo
+@fullfunctional @demo @test
 Feature: WA Release 2: : Task Assign/Reassign
 
     Scenario: Reassign task from All work

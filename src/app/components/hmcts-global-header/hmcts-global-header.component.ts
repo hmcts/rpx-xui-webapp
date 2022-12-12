@@ -18,6 +18,8 @@ import { UserService } from '../../services/user/user.service';
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
+  private static readonly GLOBAL_SEARCH_FEATURE_CONFIG = 'feature-global-search';
+
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
   }
@@ -35,6 +37,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   public tab;
   public userDetails$: Observable<UserDetails>;
   public isUserCaseManager$: Observable<boolean>;
+  public isGlobalSearchEnabled$: Observable<boolean>;
   public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
   }
@@ -65,7 +68,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
         return givenRoles.filter(x => roles.includes(x)).length > 0;
       })
     );
-
+    this.isGlobalSearchEnabled$ = this.featureToggleService.isEnabled(HmctsGlobalHeaderComponent.GLOBAL_SEARCH_FEATURE_CONFIG);
     this.splitAndFilterNavItems(this.items);
   }
 

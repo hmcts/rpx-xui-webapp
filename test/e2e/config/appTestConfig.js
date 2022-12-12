@@ -1,24 +1,21 @@
 
 const prToTestInDemo = [
-    { 
-        previewUrl: 'https://xui-webapp-pr-1774.service.core-compute-preview.internal', 
-        demoUrl:'https://manage-case-wa-int.demo.platform.hmcts.net' 
-    }
+
 ];
 
 const mathingPreviewToDemo = prToTestInDemo.filter(conf => process.env.TEST_URL && process.env.TEST_URL.includes(conf.previewUrl));
 if (mathingPreviewToDemo.length === 1){
     process.env.TEST_ENV='demo';
-    process.env.TEST_URL = mathingPreviewToDemo[0].demoUrl; 
-} 
+    process.env.TEST_URL = mathingPreviewToDemo[0].demoUrl;
+}
 
 function getTestENVFromEnvironment(){
     return process.env.TEST_ENV !== undefined && (process.env.TEST_ENV.includes('aat') || process.env.TEST_ENV.includes('demo')) ? process.env.TEST_ENV : 'aat'
 }
 
 const data = {
-    getTestEnvFromEnviornment: getTestENVFromEnvironment, 
-    testEnv: getTestENVFromEnvironment(),  
+    getTestEnvFromEnviornment: getTestENVFromEnvironment,
+    testEnv: getTestENVFromEnvironment(),
     users: {
         aat: [
             {
@@ -138,7 +135,7 @@ const data = {
                 release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1"
             },
             {
-                idamId: "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+                idamId: "3db21928-cbbc-4364-bd91-137c7031fe17",
                 email: "CRD_func_test_demo_stcw@justice.gov.uk",
                 release: "wa_release_2", userIdentifier: "IAC_CaseOfficer_R2",
                 key:"AldgateT0wer"
@@ -208,7 +205,7 @@ const data = {
             }
 
 
-        ] 
+        ]
     },
     appFeatures: {
         primaryTabs: {

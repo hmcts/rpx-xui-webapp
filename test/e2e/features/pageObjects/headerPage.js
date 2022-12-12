@@ -222,7 +222,7 @@ function HeaderPage() {
     await BrowserWaits.waitForElementClickable(this.caseList());
     await this.caseList().click();
     await browserUtil.waitForLD();
-    expect(await caseListPage.amOnPage()).to.be.true
+    expect(await caseListPage.amOnPage(), 'Case list page not loaded').to.be.true
   };
 
   this.clickCreateCase = async function () {

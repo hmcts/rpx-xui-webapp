@@ -25,7 +25,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public appStoreSub: Subscription;
   public filterSub: Subscription;
   public roleType: string;
-  public isLegalOpsOrJudicialRole: UserRole;
+  public userRole: UserRole;
 
   public fieldsConfig: FilterConfig = {
     persistence: 'local',
@@ -50,6 +50,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           name: 'selectPerson',
           value: ['All']
         },
+        {
+          name: 'taskName',
+          value: ['']
+        },
       ]
     }
   };
@@ -66,7 +70,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
-      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType'],
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType', 'findTaskNameControl'],
       title: 'Service',
       type: 'select'
     };
@@ -210,11 +214,26 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
+  private static initTaskNameFilter(): FilterFieldConfig {
+    return {
+      name: 'taskName',
+      title: 'Task by name',
+      options: [],
+      minSelected: 0,
+      maxSelected: 1,
+      findLocationField: 'service',
+      minSelectedError: 'You must select a task name',
+      maxSelectedError: null,
+      enableAddTaskNameButton: false,
+      type: 'find-task-name',
+    };
+  }
+
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
-        this.isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles) : null;
-        this.roleType = AppUtils.convertDomainToLabel(this.isLegalOpsOrJudicialRole);
+        this.userRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getRoleCategory(userDetails.userInfo.roles) : null;
+        this.roleType = AppUtils.convertDomainToLabel(this.userRole);
         this.fieldsConfig.cancelSetting.fields.push({
           name: 'taskType',
           value: [getRoleCategory(this.roleType)]
@@ -230,10 +249,12 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
       TaskManagerFilterComponent.initSelectLocationFilter(),
       TaskManagerFilterComponent.initLocationFilter(),
+      // TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(),
-      TaskManagerFilterComponent.initTaskTypeFilter()
+      TaskManagerFilterComponent.initTaskTypeFilter(),
+      TaskManagerFilterComponent.initTaskNameFilter()
     ];
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
       .pipe(

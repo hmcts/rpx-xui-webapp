@@ -9,7 +9,7 @@ const globalSearchReqResMapping = require('./globalSearch/reqResMapping');
 const dummyCaseDetails = require('./ccd/caseDetails_data');
 
 const requestMapping = {
-    mockServiceResetCallbacks: [...WAReqResMappings.mockServiceResetCallbacks],
+    mockServiceResetCallbacks: [...WAReqResMappings.mockServiceResetCallbacks, ...ccdReqResMapping.mockServiceResetCallbacks ],
     get:{
         ...nodeAppReqResMappings.get,
         ...WAReqResMappings.get,

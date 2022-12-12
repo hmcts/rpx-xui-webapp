@@ -167,7 +167,6 @@ class BrowserWaits{
             catch (err) {
                 if (this.logLevel === 'DEBUG'){
                     await BrowserLogs.printBrowserLogs();
-                    await CucumberReporter.AddScreenshot(global.screenShotUtils); 
                 }
                 CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
 

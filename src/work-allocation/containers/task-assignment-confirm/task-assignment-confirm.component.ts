@@ -59,7 +59,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       if (userInfo) {
-        this.isUserJudicial = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+        this.isUserJudicial = AppUtils.getRoleCategory(userInfo.roles) === UserRole.Judicial;
       }
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;

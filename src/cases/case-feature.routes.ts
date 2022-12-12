@@ -132,7 +132,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'restricted-case-access',
+        path: 'restricted-case-access/:cid',
         component: RestrictedCaseAccessContainerComponent,
         data: {
           title: 'Restricted case access'

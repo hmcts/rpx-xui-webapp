@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'exui-restricted-case-access-container',
@@ -6,7 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RestrictedCaseAccessContainerComponent implements OnInit {
 
-  public ngOnInit(): void {
+	public caseReference: string;
 
+	constructor(private route: ActivatedRoute) {
+		this.caseReference = this.route.snapshot.params.cid;
+	}
+
+  public ngOnInit(): void {
+		console.log('CASE ID', this.caseReference);
   }
 }

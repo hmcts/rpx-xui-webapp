@@ -25,7 +25,7 @@
                           <p>
                             <span class="govuk-!-font-weight-bold">{{booking.locationName}}</span>
                             <span class="govuk-hint">
-                              {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}
+                              {{booking.beginTime | date:'dd LLLL yyyy'}} to {{getPreviousDate(booking.endTime) | date:'dd LLLL yyyy'}}
                             </span>
                           </p>
                           <div class="govuk-button-group">
@@ -33,7 +33,7 @@
                               [disabled]="checkIfButtonDisabled(booking.beginTime)"
                               role="button"
                               class="govuk-button govuk-button--secondary"
-                              attr.aria-label="{{booking.locationName}} {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}"
+                              attr.aria-label="{{booking.locationName}} {{booking.beginTime | date:'dd LLLL yyyy'}} to {{getPreviousDate(booking.endTime) | date:'dd LLLL yyyy'}}"
                               (click)="onExistingBookingSelected(booking.locationId)">
                               Continue
                             </button>

@@ -1,3 +1,4 @@
+import { RoleCategory } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 import { AccessReason } from '../../../role-access/models/enums';
 import { SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions';
@@ -55,7 +56,7 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         actorId: action.payload.actorId,
         accessReason: action.payload.accessReason as AccessReason,
         specificAccessReason: action.payload.specificAccessReason,
-        roleCategory: action.payload.roleCategory,
+        roleCategory: action.payload.roleCategory as RoleCategory,
         requestedRole: action.payload.requestedRole
       };
     }

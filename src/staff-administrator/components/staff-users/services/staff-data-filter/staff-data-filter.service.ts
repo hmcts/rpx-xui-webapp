@@ -11,7 +11,7 @@ import { StaffDataAccessService } from '../../../../services/staff-data-access/s
 })
 export class StaffDataFilterService {
   private tableData = new BehaviorSubject<{ results: StaffUser[]; }>({ results: [] });
-  private errors = new BehaviorSubject<ErrorMessage>({
+  private readonly errors = new BehaviorSubject<ErrorMessage>({
     title: 'There is a problem',
     description: '',
     multiple: true,

@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 import * as HandleError from '../utils/booking-error-handler';
-import {BookingCheckComponent} from './booking-check.component';
+import { BookingCheckComponent } from './booking-check.component';
 
 describe('BookingCheckComponent', () => {
   let component: BookingCheckComponent;
@@ -75,6 +75,29 @@ describe('BookingCheckComponent', () => {
       );
     });
 
+    it('should call and check submit booking', () => {
+      component.bookingProcess = {
+        startDate: new Date('Thu Dec 12 2021 00:00:00 GMT+0000'),
+        endDate: new Date('Thu Dec 12 2021 00:00:00 GMT+0000'),
+        location: { court_name: 'London Court', region_id: '23090' }
+      } as BookingProcess;
+      const payload = {
+        userId: 'user-id',
+        locationId: component.bookingProcess.location.epimms_id,
+        regionId: component.bookingProcess.location.region_id,
+        beginDate: component.bookingProcess.startDate,
+        endDate: component.bookingProcess.endDate
+      };
+      mockBookingServiceSpy.createBooking.and.returnValue(of({ status: 403 }));
+      const confirmButton = fixture.debugElement.query(By.css('button'));
+      confirmButton.triggerEventHandler('click', null);
+      fixture.detectChanges();
+      mockBookingServiceSpy.createBooking(payload).subscribe(() => {
+        expect(component.bookingProcess.endDate).toBe(payload.endDate);
+      });
+      expect(mockBookingServiceSpy.createBooking).toHaveBeenCalled();
+    });
+
     it('should display the correct values on row for this week case', () => {
       const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
       component.bookingProcess = {
@@ -114,7 +137,7 @@ describe('BookingCheckComponent', () => {
         mockRouter = {
           navigate: jasmine.createSpy('navigate')
         };
-        mockBookingServiceSpy.createBooking.and.returnValue(of({status: 403}));
+        mockBookingServiceSpy.createBooking.and.returnValue(of({ status: 403 }));
         const confirmButton = fixture.debugElement.query(By.css('button'));
         confirmButton.triggerEventHandler('click', null);
         fixture.detectChanges();
@@ -148,7 +171,7 @@ describe('BookingCheckComponent', () => {
         confirmButton.triggerEventHandler('click', null);
 
         expect(eventTriggerSpy).toHaveBeenCalledWith(component.bookingNavigationEvent.CONFIRM);
-        expect(mockBookingServiceSpy.refreshRoleAssignments).toHaveBeenCalledTimes(2);
+        expect(mockBookingServiceSpy.refreshRoleAssignments).toHaveBeenCalledTimes(3);
       });
     });
   });

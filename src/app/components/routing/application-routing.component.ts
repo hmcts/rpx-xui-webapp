@@ -1,28 +1,24 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, iif, Observable, Subscription } from 'rxjs';
-import { of } from 'rxjs/internal/observable/of';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { combineLatest, Observable, iif, Subscription } from 'rxjs';
 import { mergeMap, tap } from 'rxjs/operators';
-
+import { of } from 'rxjs/internal/observable/of';
+import * as fromActions from '../../store';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
-import * as fromActions from '../../store';
-
 @Component({ templateUrl: './application-routing.component.html' })
 export class ApplicationRoutingComponent implements OnInit, OnDestroy {
-  public static defaultWAPage = '/work/my-work/list';
-  public static defaultPage = '/cases';
-  public static bookingUrl: string = '../booking';
-
-  private routingSubscription: Subscription;
-
   constructor(
     private readonly router: Router,
     private readonly store: Store<fromActions.State>,
-    private readonly featureToggleService: FeatureToggleService,
-  ) {}
+    private readonly featureToggleService: FeatureToggleService
+  ) { }
+  public static defaultWAPage = '/work/my-work/list';
+  public static defaultPage = '/cases';
+  public static bookingUrl: string = '../booking';
+  private routingSubscription: Subscription;
 
   public ngOnInit() {
     this.navigateBasedOnUserRole();

@@ -7,6 +7,7 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
+import { AppConstants } from '../../../app/app.constants';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import * as fromActions from '../../../app/store';
@@ -221,7 +222,8 @@ describe('AllWorkTaskComponent', () => {
     const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
     const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
     const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-    const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled', 'getValue']);
+    const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
+
     const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
     const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
     let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
@@ -236,34 +238,40 @@ describe('AllWorkTaskComponent', () => {
       // mockTaskService.searchTaskWithPagination.and.returnValue(of(throwError({ status: 500 })));
       mockCaseworkerService.getAll.and.returnValue(of([]));
       mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-      mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-      mockFeatureToggleService.getValue.and.returnValue(of({
-        "configurations": [
-            {
-                "caseTypes": [
-                    "Asylum"
-                ],
-                "releaseVersion": "3.5",
-                "serviceName": "IA"
-            },
-            {
-                "caseTypes": [
-                    "PRIVATELAW",
-                    "PRLAPPS"
-                ],
-                "releaseVersion": "2.1",
-                "serviceName": "PRIVATELAW"
-            },
-            {
-                "caseTypes": [
-                    "CIVIL",
-                    "GENERALAPPLICATION"
-                ],
-                "releaseVersion": "2.1",
-                "serviceName": "CIVIL"
-            }
-        ]
-      }));
+      mockFeatureToggleService.isEnabled.and.callFake(() => of(false));
+      mockFeatureToggleService.getValue.and.callFake((params) => {
+        if (params === AppConstants.FEATURE_NAMES.waServiceConfig) {
+          return of({
+            configurations: [
+              {
+                  caseTypes: [
+                      'Asylum'
+                  ],
+                  releaseVersion: '3.5',
+                  serviceName: 'IA'
+              },
+              {
+                  caseTypes: [
+                      'PRIVATELAW',
+                      'PRLAPPS'
+                  ],
+                  releaseVersion: '2.1',
+                  serviceName: 'PRIVATELAW'
+              },
+              {
+                  caseTypes: [
+                      'CIVIL',
+                      'GENERALAPPLICATION'
+                  ],
+                  releaseVersion: '2.1',
+                  serviceName: 'CIVIL'
+              }
+          ]
+          });
+        } else {
+          return of(true);
+        }
+      });
       mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
       TestBed.configureTestingModule({
         imports: [
@@ -288,6 +296,7 @@ describe('AllWorkTaskComponent', () => {
           { provide: CaseworkerDataService, useValue: mockCaseworkerService },
           { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
           { provide: LoadingService, useValue: mockLoadingService },
+          // FeatureToggleService,
           { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           { provide: LocationDataService, useValue: mockLocationService },
           { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
@@ -312,7 +321,6 @@ describe('AllWorkTaskComponent', () => {
       component.getSearchTaskRequestPagination();
       const searchRequest = component.onPaginationEvent(1);
       const payload = { searchRequest, view: component.view, refined: false, currentUser: undefined };
-      expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
 

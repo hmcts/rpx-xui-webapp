@@ -14,29 +14,29 @@ describe('CaseTaskComponent', () => {
   mockRouter.url = '/case-details/123243430403904/tasks';
   const component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockFeatureToggleService);
   mockFeatureToggleService.getValue.and.returnValue(of({
-    "configurations": [
+    configurations: [
         {
-            "caseTypes": [
-                "Asylum"
+            caseTypes: [
+                'Asylum'
             ],
-            "releaseVersion": "3.5",
-            "serviceName": "IA"
+            releaseVersion: '3.5',
+            serviceName: 'IA'
         },
         {
-            "caseTypes": [
-                "PRIVATELAW",
-                "PRLAPPS"
+            caseTypes: [
+                'PRIVATELAW',
+                'PRLAPPS'
             ],
-            "releaseVersion": "2.1",
-            "serviceName": "PRIVATELAW"
+            releaseVersion: '2.1',
+            serviceName: 'PRIVATELAW'
         },
         {
-            "caseTypes": [
-                "CIVIL",
-                "GENERALAPPLICATION"
+            caseTypes: [
+                'CIVIL',
+                'GENERALAPPLICATION'
             ],
-            "releaseVersion": "2.1",
-            "serviceName": "CIVIL"
+            releaseVersion: '2.1',
+            serviceName: 'CIVIL'
         }
     ]
   }));

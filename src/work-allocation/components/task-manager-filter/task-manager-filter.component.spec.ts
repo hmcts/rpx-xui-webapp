@@ -110,29 +110,29 @@ describe('TaskManagerFilterComponent', () => {
     storePipeMock.and.returnValue(of(0));
     mockFilterService.get.and.returnValue(null);
     mockFeatureToggleService.getValue.and.returnValue(of({
-      "configurations": [
+      configurations: [
           {
-              "caseTypes": [
-                  "Asylum"
+              caseTypes: [
+                  'Asylum'
               ],
-              "releaseVersion": "3.5",
-              "serviceName": "IA"
+              releaseVersion: '3.5',
+              serviceName: 'IA'
           },
           {
-              "caseTypes": [
-                  "PRIVATELAW",
-                  "PRLAPPS"
+              caseTypes: [
+                  'PRIVATELAW',
+                  'PRLAPPS'
               ],
-              "releaseVersion": "2.1",
-              "serviceName": "PRIVATELAW"
+              releaseVersion: '2.1',
+              serviceName: 'PRIVATELAW'
           },
           {
-              "caseTypes": [
-                  "CIVIL",
-                  "GENERALAPPLICATION"
+              caseTypes: [
+                  'CIVIL',
+                  'GENERALAPPLICATION'
               ],
-              "releaseVersion": "2.1",
-              "serviceName": "CIVIL"
+              releaseVersion: '2.1',
+              serviceName: 'CIVIL'
           }
       ]
     }));

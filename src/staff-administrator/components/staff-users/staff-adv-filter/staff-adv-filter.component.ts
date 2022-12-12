@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterConfig, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   templateUrl: './staff-adv-filter.component.html',
   styleUrls: ['./staff-adv-filter.component.scss']
 })
-export class StaffAdvFilterComponent implements OnInit {
+export class StaffAdvFilterComponent implements OnInit, OnDestroy {
   public filterConfig: FilterConfig;
   private readonly FILTER_NAME = 'staff-advanced-filters';
   private filterSub: Subscription;
@@ -166,6 +166,12 @@ export class StaffAdvFilterComponent implements OnInit {
   }
 
   public ngOnInit() {
+  }
+
+  public ngOnDestroy(): void {
+    if (this.filterSub && !this.filterSub.closed) {
+      this.filterSub.unsubscribe();
+    }
   }
 
 }

@@ -121,3 +121,55 @@ describe('WorkAllocation', () => {
 
   });
 });
+
+@Component({
+  template: `<exui-case-name-field [caseName]="caseName" [caseId]="caseId" ></exui-case-name-field>`
+})
+class Wrapper1Component {
+  @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
+  @Input() public caseName: string;
+  @Input() public caseId: string;
+  @Input() public hasAccess: boolean;
+}
+
+describe('WorkAllocation', () => {
+
+  describe('CaseNameFieldComponent', () => {
+    const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
+    const CASE_NAME: string = 'Casename';
+    const CASE_ID: string = 'CaseId';
+
+    let component: CaseNameFieldComponent;
+    let wrapper: Wrapper1Component;
+    let fixture: ComponentFixture<WrapperComponent>;
+
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        declarations: [ Wrapper1Component ],
+        imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
+      })
+      .compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(Wrapper1Component);
+      wrapper = fixture.componentInstance;
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
+    });
+
+    it('should show a link when hasaccess is not set in wrapper component', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseName and it should work (showing the link).
+      wrapper.caseName = CASE_NAME;
+      wrapper.caseId = CASE_ID;
+      fixture.detectChanges();
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(CASE_NAME);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+    });
+  });
+});

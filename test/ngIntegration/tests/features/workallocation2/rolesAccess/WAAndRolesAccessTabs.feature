@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: Case details - "Tasks", "Roles and access" tabs visibility
 
     Scenario Outline: WA tab "<TaskTabLabel>" is displayed "<TaskTabLabelisDisplayed>" in case details for user "<UserType>" "<UserIdentifier>"
@@ -15,5 +15,5 @@ Feature: WA Release 2: Case details - "Tasks", "Roles and access" tabs visibilit
             | UserIdentifier     | UserType   | Roles                                                            | TaskTabLabel | TaskTabLabelisDisplayed | RolesAndAccessTabLabel | RolesAndAccessTabLabelisDisplayed |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer | Tasks        | true                    | Roles and access       | true                              |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    | Tasks        | true                    | Roles and access       | true                              |
-            | SOLICITOR          | Solicitor  | caseworker-divorce,caseworker-divorce-solicitor                  | Tasks        | false                   | Roles and access       | false                             |
+            | SOLICITOR          | Solicitor  | caseworker-divorce,caseworker-divorce-solicitor,pui-case-manager                 | Tasks        | false                   | Roles and access       | false                             |
 

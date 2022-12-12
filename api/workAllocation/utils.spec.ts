@@ -14,6 +14,7 @@ import { Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi 
 import { PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 
+import { Case } from './interfaces/case';
 import {
   applySearchFilter,
   assignActionsToTasks,
@@ -46,7 +47,6 @@ import {
   prepareSearchTaskUrl,
   prepareServiceRoleApiRequest
 } from './util';
-import { Case } from './interfaces/case';
 
 import * as util from './util';
 
@@ -1056,7 +1056,9 @@ describe('workAllocation.utils', () => {
       infoRequired: undefined,
       requestDate: undefined,
       reviewer: undefined,
-      specificAccessReason: undefined
+      specificAccessReason: undefined,
+      reviewerRoleCategory: undefined,
+      infoRequiredComment: undefined
     },
       {
         access: undefined,
@@ -1080,7 +1082,9 @@ describe('workAllocation.utils', () => {
         infoRequired: undefined,
         requestDate: undefined,
         reviewer: undefined,
-        specificAccessReason: undefined
+        specificAccessReason: undefined,
+        reviewerRoleCategory: undefined,
+        infoRequiredComment: undefined
       }
     ];
     it('should return empty list if there is nothing given', () => {

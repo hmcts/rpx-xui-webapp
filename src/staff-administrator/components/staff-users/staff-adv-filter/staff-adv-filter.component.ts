@@ -136,7 +136,7 @@ export class StaffAdvFilterComponent implements OnInit {
           }
           if (locations && locations.length > 0) {
             searchFilters.location = locations.toString();
-          }          
+          }
           if (roles && roles.length > 0) {
             searchFilters.role = roles.toString();
           }
@@ -149,7 +149,7 @@ export class StaffAdvFilterComponent implements OnInit {
           if (jobTitle && jobTitle !== 'All') {
             searchFilters.jobTitle = jobTitle;
           }
-          
+
           if (Object.keys(searchFilters).length !== 0) {
             this.staffDataFilterService.filterByAdvancedSearch(searchFilters).subscribe();
           } else {

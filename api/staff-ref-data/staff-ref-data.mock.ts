@@ -15,6 +15,8 @@ export const init = () => {
   const getSkills = /refdata\/case-worker\/skill/;
   const getServices = /refdata\/case-worker\/services/;
 
+  const updateUserStatus = /refdata\/case-worker\/user-status\/[0-99]/;
+
   mock.onPost(getFilteredUsers).reply(() => {
     return [
       200,
@@ -88,10 +90,10 @@ export const init = () => {
           const res = {
             group : ser,
             options : filteredSkills,
-          }
+          };
           response.push(res);
         }
-      })
+      });
     } catch (error) {
       console.log('error', error);
     }
@@ -125,6 +127,18 @@ export const init = () => {
       200,
       {
         results: filteredUser,
+      },
+    ];
+  });
+
+  mock.onPost(updateUserStatus).reply(config => {
+    const reqBody = JSON.parse(config.data);
+    const updatedStatus = reqBody.suspended;
+
+    return [
+      200,
+      {
+        suspended: updatedStatus,
       },
     ];
   });

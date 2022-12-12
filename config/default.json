@@ -33,7 +33,15 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "serviceApi": "http://jurisdiction-hearings-api-prod.service.core-compute-prod.internal",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW",
+      "sscs": {
+        "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "Benefit"
+      },
+      "privatelaw": {
+        "serviceApi": "http://fis-hmc-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "PRLAPPS"
+      },
       "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
     "documents": {
@@ -89,7 +97,7 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "globalSearchServices": "IA,CIVIL,PRIVATELAW",
-  "waSupportedJurisdictions": ["IA", "SSCS", "CIVIL", "PRIVATELAW"],
+  "waSupportedJurisdictions": ["IA"],
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}, {"service": "PRIVATELAW", "serviceCodes": ["ABA5"]}],
   "wildcardSearchFields": {

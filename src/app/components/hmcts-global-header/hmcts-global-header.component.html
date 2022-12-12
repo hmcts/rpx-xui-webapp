@@ -68,7 +68,7 @@
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of (rightItems | async)">
             <a
-              *ngIf="(isUserCaseManager$ | async)"
+              *ngIf="(isUserCaseManager$ | async) || !(isGlobalSearchEnabled$ | async)"
               class="hmcts-primary-navigation__link transparent-background"
               [ngClass]="item.ngClass"
               (click)="onEmitSubMenu(item)"
@@ -76,7 +76,7 @@
               [routerLink]="item.href">{{item.text}}
             </a>
             <exui-case-reference-search-box
-              *ngIf="!(isUserCaseManager$ | async)"
+              *ngIf="!(isUserCaseManager$ | async) && (isGlobalSearchEnabled$ | async)"
               [item]="item"
               [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader">
             </exui-case-reference-search-box>

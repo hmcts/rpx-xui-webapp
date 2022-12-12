@@ -13,6 +13,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { Role } from '../roleAccess/models/roleType';
 import { getAllRoles } from '../roleAccess/roleAssignmentService';
+import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
@@ -69,7 +70,6 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
-import { refreshRoleAssignmentForUser } from '../user';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -502,6 +502,7 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
 
 export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const jurisdictions = getWASupportedJurisdictionsList();
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
     const reqBody = {
       'case_id': req.body.searchRequest.ccdId,
@@ -509,7 +510,10 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_type': req.body.searchRequest.caseTypeId,
       'event_id': req.body.searchRequest.eventId,
     };
-    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
+    let status;
+    let data;
+    jurisdictions.includes(req.body.searchRequest.jurisdiction) ?
+     { status, data } = await handlePostSearch(postTaskPath, reqBody, req) : (status = 200, data = []);
     res.status(status);
     res.send(data);
   } catch (error) {

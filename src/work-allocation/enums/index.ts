@@ -8,6 +8,7 @@ import { PriorityLimits } from './priority-limits';
 import { SortOrder } from './sort-order';
 import { TaskActionIds } from './task-action-ids';
 import { TaskActionType } from './task-action-type';
+import { TaskContext } from './task-context';
 import { TaskPriority } from './task-priority';
 import { TaskService } from './task-service';
 import { TaskSort } from './task-sort';
@@ -27,5 +28,6 @@ export {
   TaskService,
   TaskSort,
   TaskPriority,
-  TaskView
+  TaskView,
+  TaskContext
 };

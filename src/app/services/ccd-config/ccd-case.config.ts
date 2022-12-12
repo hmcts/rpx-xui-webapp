@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+
+import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import { AppConfigService } from '../config/configuration.services';
 
@@ -34,6 +36,13 @@ export class AppConfig extends AbstractAppConfig {
       next: (val) => this.config = {
         ...this.config,
         access_management_mode: val
+      }
+    });
+
+    this.featureToggleService.getValue('wa-service-config', null).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        wa_service_config: val
       }
     });
 
@@ -162,15 +171,23 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWorkAllocationApiUrl(): string {
-    return this.workallocationUrl;
+    return 'workallocation';
   }
 
   public getRefundsUrl(): string {
     return this.config.refunds_url;
   }
 
+  public getCaseFlagsRefdataApiUrl(): string {
+    return this.config.case_flags_refdata_api_url;
+  }
+
   public getAccessManagementMode(): boolean {
     return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
+  }
+
+  public getWAServiceConfig(): WAFeatureConfig {
+    return this.config.wa_service_config;
   }
 
   public getAccessManagementBasicViewMock(): {} {

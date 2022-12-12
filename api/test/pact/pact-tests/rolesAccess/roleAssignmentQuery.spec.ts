@@ -1,16 +1,16 @@
 import { expect } from 'chai';
 import { PactTestSetup } from '../settings/provider.mock';
 
-import * as sinon from 'sinon'
+import * as sinon from 'sinon';
 
-import * as config from 'config'
+import * as config from 'config';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
+import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
-import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_queryAssignment', port: 8000 });
 
@@ -31,7 +31,7 @@ describe("access management service, query role assignments", () => {
                     caseType: ['asylum'],
                     jurisdiction: ['IAC'],
                 },
-                roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL'],
+                roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'],
             },
         ],
     };

@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
 import { AppConstants } from '../../app/app.constants';
 
 @Injectable()
-export class WorkAllocationFeatureToggleGuard implements CanActivate {
+export class WorkAllocationAccessGuard implements CanActivate {
   public static defaultUrl: string = '/cases';
   constructor(private readonly featureToggleService: FeatureToggleService,
               private readonly router: Router) {
@@ -20,8 +20,8 @@ export class WorkAllocationFeatureToggleGuard implements CanActivate {
   }
 
   public canActivate(): Observable<boolean> {
-    return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.workAllocation, false).pipe(tap(isfeatureEnabled => {
-      WorkAllocationFeatureToggleGuard.navigateUrl(isfeatureEnabled, this.router, WorkAllocationFeatureToggleGuard.defaultUrl);
+    return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.waAccess, false).pipe(tap(isfeatureEnabled => {
+      WorkAllocationAccessGuard.navigateUrl(isfeatureEnabled, this.router, WorkAllocationAccessGuard.defaultUrl);
     }));
   }
 }

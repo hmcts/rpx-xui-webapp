@@ -270,7 +270,7 @@ describe('HearingTimingComponent', () => {
     component.earliestDateOfHearingError = null;
     component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('10');
     component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('12');
-    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2022');
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2020');
     component.latestHearingFormGroup.get('latestHearingDate_day').setValue('11');
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2022');

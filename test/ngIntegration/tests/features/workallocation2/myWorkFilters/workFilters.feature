@@ -40,7 +40,7 @@ Feature: WA Release 2: My work - Work filters
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -75,7 +75,7 @@ Feature: WA Release 2: My work - Work filters
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -134,11 +134,11 @@ Feature: WA Release 2: My work - Work filters
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation |  |
+            | baseLocation |  |
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"

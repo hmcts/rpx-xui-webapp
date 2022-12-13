@@ -16,6 +16,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public legalOpsRoles: CaseRole[] = [];
   public ctscRoles: CaseRole[] = [];
   public adminRoles: CaseRole[] = [];
+  public ctscRoles: CaseRole[] = [];
   public namedLegalRoles: CaseRole[];
   public namedAdminRoles: CaseRole[];
   public namedCTSCRoles: CaseRole[];

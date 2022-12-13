@@ -50,7 +50,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
             map((serviceRefData) => this.getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails))
           )
         ),
-        mergeMap((locations: Location[]) => this.userRole.toLocaleLowerCase() === UserRole.Judicial ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([])
+        mergeMap((locations: Location[]) => this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([])
           .pipe(
             map((bookings: Booking[]) => this.addBookingLocations(locations, bookings)),
           )
@@ -70,7 +70,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   private getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails: UserDetails): Location[] {
     this.serviceRefData = serviceRefData;
     this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
-    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.getRoleCategory(userDetails.userInfo.roles);
+    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.getUserRole(userDetails.userInfo.roles);
     let userLocationsByService: LocationsByService[] = [];
     const locations: Location[] = [];
     const locationServices = new Set<string>();

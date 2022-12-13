@@ -168,13 +168,29 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
+
     if (data) {
-      // TEMPORARY CODE: task_name search parameter is not yet enabled by Task API. to be removed
+      // TEMPORARY CODE: for task_name search parameter until it is enabled in Task API
       if (taskName) {
         data.tasks = data.tasks.filter(task => task.name === taskName);
       }
       // TEMPERORY CODE: end
-      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
+      // TEMPORARY CODE: for next_hearing_date until it is enabled in Task API
+      data.tasks.forEach(task => {
+        task.hearing_date =
+          new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString()
+      });
+      const payload = req.body;
+      const sortingParameters = payload.searchRequest.sorting_parameters;
+      if (sortingParameters && sortingParameters.length > 0) {
+        sortingParameters.forEach( sortParameter => {
+          if (sortParameter.sort_by === 'hearing_date') {
+            sortParameter.sort_by = 'caseName'
+          }
+        });
+      }
+      // TEMPORARY CODE: end
+
       // These should be mocked as if we were getting them from the user themselves
       if (refined) {
         data = mockTaskPermissions(data);
@@ -577,7 +593,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
     // get 'service' and 'location' filters from search_parameters on request
-    const { search_parameters } = req.body.searchRequest;
+    const { search_parameters, sorting_parameters } = req.body.searchRequest;
     const services = search_parameters.find(searchParam => searchParam.key === 'services');
     const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
 
@@ -621,6 +637,19 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       result.unique_cases = getUniqueCasesCount(mappedCases);
       const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
       result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
+    }
+    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
+    result.cases.forEach(item => {
+      item.hearing_date = new Date(+new Date() + Math.random() *
+      (new Date(2022, 6, 20) as any - (new Date() as any) )).toString();
+    });
+    if ( sorting_parameters &&
+        sorting_parameters.some(parameter => parameter.sort_by === 'hearing_date')) {
+        if ( sorting_parameters.find(parameter => parameter.sort_by === 'hearing_date').sort_order === 'desc' ) {
+          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) > Date.parse(b.hearing_date) ? -1 : 1));
+        } else {
+          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) < Date.parse(b.hearing_date) ? -1 : 1));
+        }
     }
     return res.send(result).status(200);
   } catch (e) {
@@ -670,6 +699,11 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
     result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
+    result.cases.forEach(item => {
+      item.hearing_date =
+      new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString();
+    });
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

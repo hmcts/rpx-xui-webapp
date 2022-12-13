@@ -237,6 +237,6 @@ export class AppUtils {
     const { roleAssignmentInfo, userInfo } = userDetails;
     return userInfo.roleCategory === RoleCategory.JUDICIAL
       && roleAssignmentInfo.some(roleAssignment => 'bookable' in roleAssignment
-      && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
+        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
   }
 }

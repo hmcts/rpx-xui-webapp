@@ -18,7 +18,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -64,7 +64,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -118,7 +118,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -169,7 +169,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -213,7 +213,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp

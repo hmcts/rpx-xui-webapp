@@ -304,7 +304,7 @@ describe('getFilterPersistenceByRoleType', () => {
         canShareCases: true,
         roleAssignmentInfo: [{
           bookable: true,
-          primaryLocation: 'Glasgow',
+          baseLocation: 'Glasgow',
           jurisdiction: 'IA',
           isCaseAllocator: true
       }],

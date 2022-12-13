@@ -203,6 +203,8 @@ export function getRoleCategory(role: string): RoleCategory {
     return RoleCategory.LEGAL_OPERATIONS;
   } else if (role === PersonRole.ADMIN) {
     return RoleCategory.ADMIN;
+  } else if (role === PersonRole.CTSC) {
+    return RoleCategory.CTSC;
   }
   return null;
 }

@@ -48,6 +48,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasks: Task[] = [];
   private myWorkSubscription: Subscription;
   private pTasksTotal: number;
+  private currentUser: string;
   public routeEventsSubscription: Subscription;
   public isUpdatedTaskPermissions$: Observable<boolean>;
   public updatedTaskPermission: boolean;
@@ -71,6 +72,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected rolesService: AllocateRoleService,
     protected store: Store<fromActions.State>
   ) {
+    this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
 
   public get tasks(): Task[] {
@@ -138,7 +140,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return {
       service: TaskService.IAC,
       defaultSortDirection: SortOrder.ASC,
-      defaultSortFieldName: this.getDateField('dueDate'),
+      defaultSortFieldName: 'priority',
       fields: this.fields
     };
   }
@@ -247,9 +249,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.doLoad();
   }
 
-  public performSearchPagination(): Observable<TaskResponse> {
+  public performSearchUpdatedTaskPermissions(): Observable<TaskResponse> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view });
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: true, currentUser: this.currentUser });
+  }
+
+  public performSearchPreviousTaskPermissions(): Observable<TaskResponse> {
+    const searchRequest = this.getSearchTaskRequestPagination();
+    return this.taskService.searchTask({ searchRequest, view: this.view, refined: false, currentUser: this.currentUser});
   }
 
   /**
@@ -259,16 +266,20 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [],
-      sorting_parameters: [this.getSortParameter()],
+      sorting_parameters: this.getSortParameter(),
       pagination_parameters: this.getPaginationParameter()
     };
   }
 
-  public getSortParameter(): SortParameter {
-    return {
-      sort_by: this.sortedBy.fieldName,
-      sort_order: this.sortedBy.order
-    };
+  public getSortParameter(): SortParameter[] {
+    if (this.sortedBy.fieldName !== 'priority') {
+      return [{
+        sort_by: this.sortedBy.fieldName,
+        sort_order: this.sortedBy.order
+      }];
+    }
+
+    return [] as SortParameter[];
   }
 
   public getPaginationParameter(): PaginationParameter {
@@ -340,9 +351,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
+    }
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    const tasksSearch$ = this.performSearchPagination();
+    const tasksSearch$ = this.isUpdatedTaskPermissions$.pipe(mergeMap(enabled => enabled ? this.performSearchUpdatedTaskPermissions() : this.performSearchPreviousTaskPermissions()));
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
       const assignedJudicialUsers: string[] = [];
       result.tasks.forEach(task => {

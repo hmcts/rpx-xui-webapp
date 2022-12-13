@@ -5,6 +5,7 @@
     "node": ">=12.13.0"
   },
   "scripts": {
+    "clean": "rimraf node_modules",
     "nuke": "rm -rf dist",
     "build": "yarn build:prod && yarn build:node",
     "pre-push": "yarn lint && yarn build:prod && ng test --code-coverage",

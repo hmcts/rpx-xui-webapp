@@ -9,7 +9,8 @@ import { setHeaders } from '../lib/proxy';
 import { exists } from '../lib/util';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
 import {
-  getOrganisationRoles, getRoleCategoryFromRoleAssignments, getUserRoleCategory, isCurrentUserCaseAllocator
+  getOrganisationRoles, getRoleCategoryFromRoleAssignments,
+  getUserRoleCategory, isCurrentUserCaseAllocator
 } from './utils';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {

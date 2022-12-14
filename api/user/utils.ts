@@ -50,9 +50,9 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
        });
    }
    return roles;
- }
+}
 
- export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): string {
+export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): string {
    const roleCategories = [JUDGE_ROLE_CATEGORY, LEGAL_OPERATIONS_ROLE_CATEGORY, CTSC_ROLE_CATEGORY, ADMIN_ROLE_CATEGORY];
    for (const roleCategory of roleCategories) {
      if (hasRoleCategory(roleAssignments, roleCategory)) {
@@ -60,7 +60,7 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
      }
    }
    return undefined;
- }
+}
 
 export function getUserRoleCategory(roles: string[]): string {
   if (hasRoleCategory(roles, CITIZEN_ROLE)) {

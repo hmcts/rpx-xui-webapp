@@ -8,7 +8,9 @@ import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { exists } from '../lib/util';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
-import { getOrganisationRoles, getUserRoleCategory, isCurrentUserCaseAllocator } from './utils';
+import {
+  getOrganisationRoles, getRoleCategoryFromRoleAssignments, getUserRoleCategory, isCurrentUserCaseAllocator
+} from './utils';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!exists(req, 'session.passport.user')) {
@@ -36,7 +38,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
 }
 
 export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any[]> {
-  let locationInfo = [];
+  let userRoleAssignments = [];
   const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const id = userInfo.id ? userInfo.id : userInfo.uid;
   const path = `${baseUrl}/am/role-assignments/actors/${id}`;
@@ -46,18 +48,18 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   try {
     const response: AxiosResponse = await http.get(path, { headers });
     const activeRoleAssignments = getActiveRoleAssignments(response.data.roleAssignmentResponse, new Date());
-    locationInfo = getRoleAssignmentInfo(activeRoleAssignments);
-    const roles = getOrganisationRoles(activeRoleAssignments);
-    userInfo.roles = userInfo.roles.concat(roles);
-    const roleAssignments: string[] = locationInfo.filter(role => !!role.roleCategory).length > 0 ?
-      // tslint:disable-next-line: no-shadowed-variable
-      locationInfo.map(roles => roles.roleCategory) : [];
-    userInfo.roleCategory = getUserRoleCategory(roleAssignments) || getUserRoleCategory(userInfo.roles);
+    userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
+    const idamRoles = getOrganisationRoles(activeRoleAssignments);
+    userInfo.roles = userInfo.roles.concat(idamRoles);
+    const roleAssignments: string[] = userRoleAssignments.filter(role => !!role.roleCategory).length > 0 ?
+      userRoleAssignments.map(roles => roles.roleCategory) : [];
+    // We check for the roleAssignments to determine the roleCategory. If not we try IDAM roles
+    userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
     req.session.roleAssignmentResponse = activeRoleAssignments;
   } catch (error) {
     console.log(error);
   }
-  return locationInfo;
+  return userRoleAssignments;
 }
 
 export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filterDate: Date): RoleAssignment[] {

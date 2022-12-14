@@ -65,7 +65,7 @@ export function getUserRoleCategory(roles: string[]): string {
     return CITIZEN_ROLE_NAME;
   } else if (includesRoleCategory(roles, JUDGE_ROLE) || includesRoleCategory(roles, JUDICIARY_ROLE_NAME)) {
     return JUDGE_ROLE_NAME;
-  } if (hasRoleCategory(roles, PROFESSIONAL_ROLE) || hasRoleCategory(roles, PROFESSIONAL_ROLE_NAME)
+  } else if (hasRoleCategory(roles, PROFESSIONAL_ROLE) || hasRoleCategory(roles, PROFESSIONAL_ROLE_NAME)
   || hasRoleCategory(roles, PUI_CASE_MANAGER) || hasRoleCategory(roles, PUI_ORG_MANAGER)) {
     return PROFESSIONAL_ROLE;
   } else if (hasRoleCategory(roles, ADMIN_ROLE)) {
@@ -84,4 +84,3 @@ export function hasRoleCategory(roles: string[], roleName): boolean {
 export function includesRoleCategory(roles: string[], roleName: string): boolean {
   return roles.some(x => x.toLowerCase().includes(roleName.toLowerCase()));
 }
-

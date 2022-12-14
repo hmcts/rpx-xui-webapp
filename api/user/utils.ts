@@ -71,7 +71,7 @@ export function getUserRoleCategory(roles: string[]): string {
     return ADMIN_ROLE_NAME;
   } else if (includesRoleCategory(roles, CTSC_ROLE_NAME)) {
     return CTSC_ROLE_NAME;
-  } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) || hasRoleCategory(roles, TASK_SUPERVISOR)) {
+  } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) || hasRoleCategory(roles, TASK_SUPERVISOR)
     || hasRoleCategory(roles, PUI_CASE_MANAGER) || hasRoleCategory(roles, PUI_ORG_MANAGER)) {
     return PROFESSIONAL_ROLE;
   } else {

@@ -56,8 +56,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   };
   public allLocations: string[] = [];
   public defaultLocations: any[] = null;
-  public primaryLocations: string[] = [];
-  public primaryLocationServices: string[] = [];
+  public baseLocations: string[] = [];
+  public baseLocationServices: string[] = [];
   public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,
@@ -152,7 +152,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.taskTypesService.getTypesOfWork(),
       this.service.getWASupportedJurisdictions(),
       this.taskService.getUsersAssignedTasks(),
-      this.locationService.getSpecificLocations(this.defaultLocations, this.primaryLocationServices)
+      this.locationService.getSpecificLocations(this.defaultLocations, this.baseLocationServices)
     ]).subscribe(([typesOfWork, services, assignedTasks, locations]: [any[], string[], Task[], LocationByEPIMMSModel[]]) => {
       this.setUpServicesFilter(services);
       this.setUpLocationFilter(locations);
@@ -240,21 +240,24 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     }
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
-        const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0 && userDetails.roleAssignmentInfo.filter(p => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable).length === 0;
+        const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0
+         && userDetails.roleAssignmentInfo.filter(p => p.roleType && p.roleType === 'ORGANISATION'
+          && !p.bookable).length === 0;
         if (isFeePaidJudgeWithNoBooking) {
           localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
         } else if (!isLocationsAvailable) {
-          const primaryLocations: string[] = [];
+          const baseLocations: string[] = [];
           userDetails.roleAssignmentInfo.forEach(roleAssignment => {
             const roleJurisdiction = roleAssignment.jurisdiction;
             if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION'
-              && roleAssignment.primaryLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
-              primaryLocations.push(roleAssignment.primaryLocation);
-              this.primaryLocationServices = [...this.primaryLocationServices, roleAssignment.jurisdiction];
+              && roleAssignment.baseLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
+              baseLocations.push(roleAssignment.baseLocation);
+              this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
             }
           });
-          this.primaryLocationServices = Array.from(new Set(this.primaryLocationServices));
-          this.defaultLocations = this.defaultLocations && this.defaultLocations.length > 0 ? this.defaultLocations : Array.from(new Set(primaryLocations));
+          this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
+          this.defaultLocations = this.defaultLocations && this.defaultLocations.length > 0
+           ? this.defaultLocations : Array.from(new Set(baseLocations));
         }
       });
   }

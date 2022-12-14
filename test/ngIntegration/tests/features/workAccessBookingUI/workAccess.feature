@@ -21,7 +21,7 @@ Feature: Work access page
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
             |isCaseAllocator|true|
 
         Given I start MockApp
@@ -64,7 +64,7 @@ Feature: Work access page
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | true |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
             |isCaseAllocator|true|
 
         Given I start MockApp

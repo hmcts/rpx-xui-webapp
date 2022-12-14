@@ -67,7 +67,11 @@ export function getUserRoleCategory(roles: string[]): string {
     return CITIZEN_ROLE_NAME;
   } else if (includesRoleCategory(roles, JUDGE_ROLE) || includesRoleCategory(roles, JUDICIARY_ROLE_NAME)) {
     return JUDGE_ROLE_NAME;
-  } else if (hasRoleCategory(roles, PROFESSIONAL_ROLE) || hasRoleCategory(roles, PROFESSIONAL_ROLE_NAME)
+  } else if (includesRoleCategory(roles, ADMIN_ROLE)) {
+    return ADMIN_ROLE_NAME;
+  } else if (includesRoleCategory(roles, CTSC_ROLE_NAME)) {
+    return CTSC_ROLE_NAME;
+  } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) || hasRoleCategory(roles, TASK_SUPERVISOR)
     || hasRoleCategory(roles, PUI_CASE_MANAGER) || hasRoleCategory(roles, PUI_ORG_MANAGER)) {
     return PROFESSIONAL_ROLE;
   } else {

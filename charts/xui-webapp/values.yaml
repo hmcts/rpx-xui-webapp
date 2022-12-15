@@ -138,6 +138,7 @@ nodejs:
         - mc-idam-client-secret
         - appinsights-instrumentationkey-mc
         - webapp-redis-connection-string
+        - webapp-redis-connection-string-new
         - launch-darkly-client-id
         - system-user-name
         - system-user-password

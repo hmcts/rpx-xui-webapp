@@ -137,13 +137,14 @@ class Request {
             error = null;
             try {
                 retVal = await callback();
+                reporterMsg(`Response: Status code ${retVal.status}`); 
             } catch (err) {
                 // retryErrorLogs.push(err.response ? err.response : err);
                 error = err;
                 retVal = err.response ? err.response : null; 
                 
             }
-
+            
 
             if (retVal && expectedResponsecode instanceof Array){
                 isExpectedResponseReceived = expectedResponsecode.includes(retVal.status); 

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { MediaViewerModule } from '@hmcts/media-viewer';
@@ -25,6 +26,7 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     CommonModule,
     MediaViewerModule,
     ExuiCommonLibModule,
+    ReactiveFormsModule,
     RpxTranslationModule.forChild()
   ],
   declarations: [
@@ -40,6 +42,7 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     RpxTranslationModule
   ],
   providers: [
+    HealthCheckGuard,
     HealthCheckService,
     WindowService,
     McLaunchDarklyService,

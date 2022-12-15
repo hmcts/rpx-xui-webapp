@@ -77,7 +77,7 @@ describe("Task management api, work types", () => {
                 return configValues[prop];
             });
 
-            const { getTypesOfWork } = requireReloaded('../../../../workAllocation2/index');
+            const { getTypesOfWork } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

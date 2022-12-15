@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
@@ -8,7 +8,7 @@ import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import * as fromHearingStore from '../store';
-import {ServiceIdResolverResolve} from './service-id-resolver.resolve';
+import { ServiceIdResolverResolve } from './service-id-resolver.resolve';
 
 @Injectable({
   providedIn: 'root'
@@ -28,13 +28,19 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     return this.getServiceId$()
       .pipe(
-        switchMap(id => {
-          return of(
-            id ? id : this.serviceId);
+        switchMap(serviceId => {
+          this.serviceId = serviceId ? serviceId : '';
+          return this.hearingStore.pipe(select(fromHearingStore.getHearingValues));
         }), take(1),
-        switchMap((serviceId) => {
+        switchMap(hearingValues => {
           const category = route.data['category'] ? route.data['category'] as HearingCategory : HearingCategory.HearingPriority;
-          return this.getReferenceData$(serviceId, category, route.data.isChildRequired && route.data.isChildRequired.includes(route.data['category']));
+          if (category === HearingCategory.PanelMemberType) {
+            const screenFlow = hearingValues && hearingValues.serviceHearingValuesModel && hearingValues.serviceHearingValuesModel.screenFlow;
+            if (screenFlow && screenFlow.findIndex(screen => screen.screenName === 'hearing-panel') === -1) {
+              return of(null);
+            }
+          }
+          return this.getReferenceData$(this.serviceId, category, route.data.isChildRequired && route.data.isChildRequired.includes(route.data['category']));
         })
       );
   }

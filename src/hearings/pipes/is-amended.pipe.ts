@@ -13,6 +13,7 @@ import { HearingSpecificDateAmendedConverter } from '../converters/hearing-speci
 import { HowManyPeopleAttendAmendedConverter } from '../converters/how-many-people-attend.amended.converter';
 import { HowPartyAttendAmendedConverter } from '../converters/how-party-attend.amended.converter';
 import { IsAmendedConverter } from '../converters/is-amended.converter';
+import { IsPaperHearingAmendedConverter } from '../converters/is-paper-hearing.amended.converter';
 import { JudgeExclusionAmendedConverter } from '../converters/judge-exclusion.amended.converter';
 import { JudgeNameAmendedConverter } from '../converters/judge-name.amended.converter';
 import { JudgeTypesAmendedConverter } from '../converters/judge-types.amended.converter';
@@ -52,6 +53,9 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.HOW_ATTENDANT:
         converter = new HowPartyAttendAmendedConverter();
+        break;
+      case AnswerSource.IS_PAPER_HEARING:
+        converter = new IsPaperHearingAmendedConverter();
         break;
       case AnswerSource.ATTENDANT_PERSON_AMOUNT:
         converter = new HowManyPeopleAttendAmendedConverter();

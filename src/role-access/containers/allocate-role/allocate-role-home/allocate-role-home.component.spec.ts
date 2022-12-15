@@ -215,14 +215,29 @@ describe('AllocateRoleHomeComponent', () => {
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
     });
 
-    it('on CHOOSE_DURATION page on invalid details', () => {
+    it('on CHOOSE_DURATION page on invalid details Invalid role category', () => {
       component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
       component.action = Actions.Allocate;
       component.userRole = UserRole.CTSC;
       component.roleCategory = RoleCategory.JUDICIAL;
       component.allocateTo = AllocateTo.ALLOCATE_TO_ANOTHER_PERSON;
-      component.navigationHandler(navEvent);
-      expect(storeDispatchMock).not.toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+      expect(() => { component.navigationHandler(navEvent); }).toThrow(new Error('Invalid role category'));
+    });
+    it('on CHOOSE_DURATION page on invalid details Invalid allocate to', () => {
+      component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
+      component.action = Actions.Allocate;
+      component.userRole = UserRole.CTSC;
+      component.roleCategory = RoleCategory.CTSC;
+      component.allocateTo = AllocateTo.REALLOCATE_TO_ANOTHER_PERSON;
+      expect(() => { component.navigationHandler(navEvent); }).toThrow(new Error('Invalid allocate to'));
+    });
+    it('on CHOOSE_DURATION page on invalid details invalid user role', () => {
+      component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
+      component.action = Actions.Allocate;
+      component.userRole = UserRole.Ogd;
+      component.roleCategory = RoleCategory.CTSC;
+      component.allocateTo = AllocateTo.REALLOCATE_TO_ANOTHER_PERSON;
+      expect(() => { component.navigationHandler(navEvent); }).toThrow(new Error('invalid user role'));
     });
 
     it('on CHOOSE_DURATION page when judicial user allocate judicial user if allocate to another person', () => {

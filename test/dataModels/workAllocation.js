@@ -40,8 +40,8 @@ class WorkAllocationModels {
             "auto_assigned":false,
             "case_management_category":"test",
             "case_type_id":"",
-            "created_date":'',
-            "due_date":'',
+            "created_date":"2021-05-12T16:00:00.000+0000",
+            "due_date":'2021-07-12T16:00:00.000+0000',
             "execution_type":'',
             "jurisdiction":"",
             "task_title": "Review application decision",
@@ -51,11 +51,14 @@ class WorkAllocationModels {
             "task_state":'',
             "task_system":'',
             "dueDate": "2021-05-12T16:00:00.000+0000",
+            "hearing_date": '2021-05-12T16:00:00.000+0000',
             "location_name": "Glasgow",
             "location": "765320",
             "case_id": "1620409659381330",
             "case_category": "Protection",
             "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
+            "major_priority": Math.floor((Math.random() * 5000) + 1000),
+            "minor_priority": Math.floor((Math.random() * 5000) + 1000),
             "permissions": { values : []},
             "actions": [],
             "type":"",
@@ -79,11 +82,13 @@ class WorkAllocationModels {
             "actions": [],
             "assignee": v4(),
             "startDate": "2021-02-16T18:58:48.987+0000",
+             "hearing_date": "2021-02-16T18:58:48.987+0000",
             "endDate": "2021-02-16T18:58:48.987+0000",
             "jurisdiction":"Test jurisdiction",
             "case_role":"Mock Test case role",
             "role" : "case role",
             "role_category" : "role-categpry",
+            "hasAccess":true
             
         };
     }
@@ -133,11 +138,16 @@ class WorkAllocationModels {
 
     getFindPersonObj() {
         return {
-            domain: 1,
+            id:'',
             email: "andy.kings@email.com",
-            id: "id131",
+            emailId: "andy.kings@email.com",
+            idamId: "id131",
             name: "Andy Kings",
-            knownAs:'Lead Judgee'
+            knownAs:'Lead Judgee',
+            fullName:'Judge Robin',
+            personalCode:'',
+            surname:'test',
+            title:'Mr'
         }
     }
 
@@ -285,6 +295,7 @@ class WorkAllocationModels {
             "known_as": `${fn} ${ln}` ,
             "surname": ln,
             "full_name":fn ,
+            "personal_code":"330127",
             "post_nominals": "Ms",
             "email_id": email ? email : 'test@judicial.com',
             "appointments": [
@@ -299,7 +310,7 @@ class WorkAllocationModels {
                     "is_principal_appointment": "true",
                     "appointment": "Tribunal Member Disability",
                     "appointment_type": "Fee Paid",
-                    "service_code": null,
+                    "service_code": "BFA1",
                     "roles": [],
                     "start_date": "2018-12-05",
                     "end_date": null

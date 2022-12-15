@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { WorkAllocationTaskService } from '../../../work-allocation/services';
-import { AppUtils } from '../../app-utils';
-import { AppConstants } from '../../app.constants';
+
+import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import { AppConfigService } from '../config/configuration.services';
 
@@ -25,7 +24,6 @@ export class AppConfig extends AbstractAppConfig {
   ) {
     super();
     this.config = this.appConfigService.getEditorConfiguration() || {};
-    this.featureToggleWorkAllocation();
 
     this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
       next: (val) => this.config = {
@@ -38,6 +36,13 @@ export class AppConfig extends AbstractAppConfig {
       next: (val) => this.config = {
         ...this.config,
         access_management_mode: val
+      }
+    });
+
+    this.featureToggleService.getValue('wa-service-config', null).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        wa_service_config: val
       }
     });
 
@@ -102,20 +107,15 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCaseHistoryUrl(caseId: string, eventId: string) {
-    return (
-      this.getCaseDataUrl() +
-      `/internal` +
-      `/cases/${caseId}` +
-      `/events/${eventId}`
-    );
+    return `${this.getCaseDataUrl()}/internal/cases/${caseId}/events/${eventId}`;
   }
 
   public getCreateOrUpdateDraftsUrl(ctid: string) {
-    return this.getCaseDataUrl() + `/internal/case-types/${ctid}/drafts/`;
+    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts/`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string) {
-    return this.getCaseDataUrl() + `/drafts/${did}`;
+    return `${this.getCaseDataUrl()}/drafts/${did}`;
   }
 
   public getActivityUrl() {
@@ -171,24 +171,23 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWorkAllocationApiUrl(): string {
-    return this.workallocationUrl;
+    return 'workallocation';
   }
 
   public getRefundsUrl(): string {
-    return 'api/refund';
+    return this.config.refunds_url;
   }
 
-  private featureToggleWorkAllocation(): void {
-    this.featureToggleService
-    .getValue(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease2')
-      .subscribe(
-        (currentWorkAllocationFeature) =>
-        this.workallocationUrl = currentWorkAllocationFeature === 'WorkAllocationRelease2'
-          ? 'workallocation2' : 'workallocation');
+  public getCaseFlagsRefdataApiUrl(): string {
+    return this.config.case_flags_refdata_api_url;
   }
 
   public getAccessManagementMode(): boolean {
     return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
+  }
+
+  public getWAServiceConfig(): WAFeatureConfig {
+    return this.config.wa_service_config;
   }
 
   public getAccessManagementBasicViewMock(): {} {

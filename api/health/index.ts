@@ -7,6 +7,7 @@ import {
   FEATURE_WORKALLOCATION_ENABLED,
   SERVICE_S2S_PATH,
   SERVICES_CASE_CASEWORKER_REF_PATH,
+  SERVICES_CASE_JUDICIAL_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
@@ -18,7 +19,7 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
-  SERVICES_CASE_JUDICIAL_REF_PATH
+  SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { JUILogger } from '../lib/models'
@@ -43,6 +44,7 @@ export interface HealthChecks {
     s2s: any,
     workAllocationApi?: any,
     roleApi?: any,
+    roleMappingApi?: any,
     caseworkerRefApi?: any,
   }
 }
@@ -65,6 +67,7 @@ if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
   config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH))
   config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH))
   config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH))
+  config.checks.roleMappingApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH))
   config.checks.judicialApi = checkServiceHealth(getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH))
 }
 

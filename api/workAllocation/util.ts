@@ -14,7 +14,12 @@ import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
 import { exists, reflect } from '../lib/util';
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
+import {
+  TaskPermission,
+  VIEW_PERMISSIONS_ACTIONS_MATRIX,
+  VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED,
+  ViewType
+} from './constants/actions';
 import { getCaseListPromises } from "./index";
 import { Case, CaseList } from './interfaces/case';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
@@ -100,6 +105,49 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
     return `${postPath}?first_result=${pageNumber}&max_results=${pageSize}`;
   }
   return postPath;
+}
+
+/**
+ * The below sets up actions on the tasks, though it's expected this will change
+ * in the future - it should do fine for the MVP, though.
+ * @param tasks The tasks to set up the actions for.
+ * @param view This dictates which set of actions we should use.
+ * @param currentUser
+ */
+export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser: string): any[] {
+  const allWorkView = ViewType.ALL_WORK;
+  const activeTasksView = ViewType.ACTIVE_TASKS;
+  const tasksWithActions: any[] = [];
+  if (tasks) {
+    for (const task of tasks) {
+      task.dueDate = task.due_date;
+      let thisView = view;
+      if (view === allWorkView) {
+        thisView = ViewType.ALL_WORK_UNASSIGNED;
+        if (task.assignee) {
+          thisView = currentUser === task.assignee ?
+            ViewType.ALL_WORK_ASSIGNED_CURRENT : ViewType.ALL_WORK_ASSIGNED_OTHER;
+        }
+      }
+      if (view === activeTasksView) {
+        thisView = ViewType.ACTIVE_TASKS_UNASSIGNED;
+        if (task.assignee) {
+          thisView = currentUser === task.assignee ?
+            ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
+        }
+      }
+      const permissions = task.permissions && task.permissions.values && Array.isArray(task.permissions.values)
+        ? task.permissions.values : task.permissions;
+      let actions: Action[] = getActionsByRefinedPermissions(thisView, permissions);
+      // EUI-5549 - to do with cases
+      if (task.assignee && currentUser !== task.assignee && view === ViewType.ACTIVE_TASKS) {
+        actions = actions.filter(action => action.id !== 'claim');
+      }
+      const taskWithAction = {...task, actions};
+      tasksWithActions.push(taskWithAction);
+    }
+  }
+  return tasksWithActions;
 }
 
 /**
@@ -196,7 +244,7 @@ export function
         firstName: caseWorkerApi.first_name,
         idamId: caseWorkerApi.id,
         lastName: caseWorkerApi.last_name,
-        location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
+        location: mapCaseworkerLocation(caseWorkerApi.base_location),
         roleCategory: getRoleCategory(roleAssignments, caseWorkerApi),
         service: jurisdiction ? jurisdiction : null,
       };
@@ -211,12 +259,12 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
   return roleAssignment ? roleAssignment.roleCategory : null;
 }
 
-export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Location {
-  let primaryLocation: Location = null;
+export function mapCaseworkerLocation(baseLocation: LocationApi[]): Location {
+  let thisBaseLocation: Location = null;
   if (baseLocation) {
     baseLocation.forEach((location: LocationApi) => {
       if (location.is_primary) {
-        primaryLocation = {
+        thisBaseLocation = {
           id: location.location_id,
           locationName: location.location,
           services: location.services,
@@ -224,7 +272,7 @@ export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Locat
       }
     });
   }
-  return primaryLocation;
+  return thisBaseLocation;
 }
 
 export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number): any {
@@ -234,6 +282,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
 
   const payload = {
     attributes,
+    // TODO: This should not be hard-coded list
     roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
       'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
       'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
@@ -241,7 +290,8 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
     validAt: Date.UTC,
   };
   if (locationId) {
-    payload.attributes.primaryLocation = [locationId];
+    // TODO: Not sure whether this is even being used
+    payload.attributes.baseLocation = [locationId];
   }
   return payload;
 }
@@ -255,7 +305,8 @@ export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Rol
       jurisdiction: [jurisdiction],
     };
     if (locationId) {
-      attributes.primaryLocation = [locationId];
+      // TODO: Again does not seem to be being used
+      attributes.baseLocation = [locationId];
     }
     const payload = {
       attributes,
@@ -280,8 +331,103 @@ export function getRoleIdsFromRoles(roles: Role[]): string[] {
  * @param permissions The list of permissions the user holds.
  * @return actionList:Action[] the list of total actions user holds.
  */
+export function getActionsByRefinedPermissions(view, permissions: TaskPermission[]): Action[] {
+  let actionList: Action[] = [];
+  actionList = getActionsFromRefinedMatrix(view, TaskPermission.DEFAULT, actionList);
+  permissions.forEach(permission => {
+    switch (permission) {
+      case TaskPermission.UNCLAIM:
+        // unassign from self
+        actionList = getActionsFromRefinedMatrix(view, permission, actionList);
+        if (permissions.includes(TaskPermission.ASSIGN)) {
+          // reassign task assigned to me
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.UNCLAIMASSIGN, actionList);
+        }
+        if (view.includes(ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT) || view.includes(ViewType.ALL_WORK_ASSIGNED_CURRENT)) {
+          // unassign from self
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.UNASSIGN, actionList);
+        }
+        break;
+      case TaskPermission.CLAIM:
+        if ((permissions.includes(TaskPermission.OWN) || permissions.includes(TaskPermission.EXECUTE))
+          && !view.includes('Other')) {
+          // assign to me
+          actionList = getActionsFromRefinedMatrix(view, permission, actionList);
+        }
+        break;
+      case TaskPermission.ASSIGN:
+        if (permissions.includes(TaskPermission.OWN) || permissions.includes(TaskPermission.EXECUTE)) {
+          // assign to me
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.CLAIM, actionList);
+        }
+        if (view.includes(ViewType.ACTIVE_TASKS_UNASSIGNED) || view.includes(ViewType.ALL_WORK_UNASSIGNED)) {
+          // assign to someone else
+          actionList = getActionsFromRefinedMatrix(view, permission, actionList);
+        }
+        break;
+      case TaskPermission.UNASSIGN:
+        if (permissions.includes(TaskPermission.ASSIGN)) {
+          // reassign to someone else
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.ASSIGN, actionList);
+        }
+        if ((permissions.includes(TaskPermission.ASSIGN) || permissions.includes(TaskPermission.CLAIM))
+          && (permissions.includes(TaskPermission.OWN) || permissions.includes(TaskPermission.EXECUTE))) {
+          // assign to me (previously assigned to someone else)
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.CLAIM, actionList);
+        }
+        // unassign task
+        actionList = getActionsFromRefinedMatrix(view, permission, actionList);
+        break;
+      case TaskPermission.CANCEL:
+      case TaskPermission.CANCELOWN:
+      case TaskPermission.COMPLETE:
+      case TaskPermission.COMPLETEOWN:
+      case TaskPermission.UNCLAIMASSIGN:
+        // Completing or cancelling (or unclaiming and assigning) simply uses matrix direct actions
+        // as does not depend on other permissions
+        actionList = getActionsFromRefinedMatrix(view, permission, actionList);
+        break;
+      case TaskPermission.UNASSIGNASSIGN:
+        // reassign task
+        actionList = getActionsFromRefinedMatrix(view, permission, actionList);
+        if (permissions.includes(TaskPermission.EXECUTE) || permissions.includes(TaskPermission.OWN)) {
+          // assign task to me
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.CLAIM, actionList);
+        }
+        break;
+      case TaskPermission.UNASSIGNCLAIM:
+        if (permissions.includes(TaskPermission.EXECUTE) || permissions.includes(TaskPermission.OWN)) {
+          // assign task to me
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.CLAIM, actionList);
+        }
+        break;
+      case TaskPermission.EXECUTE:
+      case TaskPermission.OWN:
+        // Available task action permissions
+        if (permissions.includes(TaskPermission.ASSIGN) || permissions.includes(TaskPermission.CLAIM)) {
+          // claim task
+          actionList = getActionsFromRefinedMatrix(view, TaskPermission.EXECUTE, actionList);
+        }
+        break;
+      default:
+        break;
+    }
+  });
+  // Note sorting is implemented to order all possible action lists the same
+  // Currently sorting by id but can be changed
+  actionList =  Array.from(new Set(actionList));
+  return actionList.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+/**
+ * Aggregate permissions from the View Permissions Actions Matrix defined by business.
+ * @param view This dictates which set of actions we should use.
+ * @param permissions The list of permissions the user holds.
+ * @return actionList:Action[] the list of total actions user holds.
+ */
 export function getActionsByPermissions(view, permissions: TaskPermission[]): Action[] {
   let actionList: Action[] = [];
+  permissions = permissions.map(permission => permission = permission.toString().toLowerCase() as TaskPermission);
   permissions.forEach(permission => {
     switch (permission) {
       case TaskPermission.MANAGE:
@@ -315,10 +461,16 @@ export function getActionsFromMatrix(view, permission: TaskPermission, currentAc
   return currentActionList;
 }
 
+export function getActionsFromRefinedMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
+  const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED[view][permission]);
+  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  return currentActionList;
+}
+
 export function getActionsFromAllocatorRole(isAllocator: boolean): Action[] {
   let actionList: Action[] = [];
   if (isAllocator) {
-    actionList = (VIEW_PERMISSIONS_ACTIONS_MATRIX.AllCases.Manage);
+    actionList = (VIEW_PERMISSIONS_ACTIONS_MATRIX.AllCases.manage);
   }
   return actionList;
 }
@@ -423,10 +575,11 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
   return null;
 }
 
+// Only called in test function - why is it here?
 export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments.filter(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.primaryLocation
+  return roleAssignments.filter(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.baseLocation
     && roleAssignment.roleName === CASE_ALLOCATOR_ROLE)
-    .map(roleAssignment => roleAssignment.attributes.primaryLocation)
+    .map(roleAssignment => roleAssignment.attributes.baseLocation)
     .reduce((acc, locationId) => acc.includes(locationId) ? acc : `${acc}${locationId},`, '')
     .split(',')
     .filter(location => location.length);
@@ -442,7 +595,7 @@ export function constructRoleAssignmentQuery(
     queryRequests: [searchTaskParameters
       .map((param: SearchTaskParameter) => {
         if (param.key === 'location_id') {
-          param.key = 'primaryLocation';
+          param.key = 'baseLocation';
           const values = param.values as string;
           param.values = [values]
             .filter(location => location.length);
@@ -486,7 +639,7 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
       .filter((param: SearchTaskParameter) => param.key === 'actorId' || param.values && param.values.length)
       .map((param: SearchTaskParameter) => {
         if (param.key === 'location_id') {
-          param.key = 'primaryLocation';
+          param.key = 'baseLocation';
         }
         if (param.key === 'roleCategory') {
           param.values = mapRoleType(param.values as string);
@@ -498,7 +651,7 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
         if (param.key === 'actorId') {
           param.values = userId;
         }
-        if (param.key === 'jurisdiction' || param.key === 'primaryLocation') {
+        if (param.key === 'jurisdiction' || param.key === 'baseLocation') {
           const attributes = acc.attributes || {};
           return {
             ...acc, attributes: {

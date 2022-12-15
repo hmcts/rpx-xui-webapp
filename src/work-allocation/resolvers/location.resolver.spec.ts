@@ -12,7 +12,6 @@ import * as fromCaseList from '../../app/store/reducers';
 import { AllocateRoleService } from '../../role-access/services';
 import { CaseworkerDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
-import { LocationModel } from 'api/locations/models/location.model';
 
 describe('LocationResolver', () => {
 
@@ -38,7 +37,15 @@ describe('LocationResolver', () => {
         'caseworker-ia-caseofficer',
         'cwd-user'
       ]
-    }
+    },
+    roleAssignmentInfo: [{
+      jurisdiction: 'IA',
+      isCaseAllocator: false,
+      baseLocation: '12345',
+      primaryLocation: '54321',
+      roleType: 'ORGANISATION',
+      substantive: 'y'
+    }]
   };
 
   const JUDICIAL_WORKER: UserDetails = {
@@ -56,7 +63,15 @@ describe('LocationResolver', () => {
       roles: [
         'judicialworker'
       ]
-    }
+    },
+    roleAssignmentInfo: [{
+      jurisdiction: 'IA',
+      isCaseAllocator: false,
+      baseLocation: '12345',
+      primaryLocation: '54321',
+      roleType: 'ORGANISATION',
+      substantive: 'y'
+    }]
   };
 
   const JUDICIAL_WORKERS = [
@@ -125,5 +140,15 @@ describe('LocationResolver', () => {
     service.resolve().subscribe((location: any) => {
       expect(location.court_name).toEqual(JUDICIAL_WORKERS[0].location.locationName);
     });
+  }));
+
+  it('should get base location for the user', inject([LocationResolver], (service: LocationResolver) => {
+    const expectedLocationList = [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ]}];
+    expect(service.getJudicialWorkersOrCaseWorkers({service: 'IA', serviceCode: ['BFA1']}, CASE_WORKER)).toEqual(expectedLocationList);
+  }));
+
+  it('should get base location for the judicial user', inject([LocationResolver], (service: LocationResolver) => {
+    const expectedLocationList = [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ]}];
+    expect(service.getJudicialWorkersOrCaseWorkers({service: 'IA', serviceCode: ['BFA1']}, JUDICIAL_WORKER)).toEqual(expectedLocationList);
   }));
 });

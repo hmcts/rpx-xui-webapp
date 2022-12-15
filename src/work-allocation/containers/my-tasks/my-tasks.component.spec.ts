@@ -119,6 +119,7 @@ describe('MyTasksComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
+    component.isUpdatedTaskPermissions$ = of(true);
     fixture.detectChanges();
   });
 
@@ -127,7 +128,7 @@ describe('MyTasksComponent', () => {
     // tick(500);
     fixture.detectChanges();
     const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = {searchRequest, view: component.view};
+    const payload = {searchRequest, view: component.view, refined: true, currentUser: undefined};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);

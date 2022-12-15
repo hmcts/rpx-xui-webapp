@@ -76,7 +76,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.getRoleCategory(userInfo.roles);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [
         {key: 'jurisdiction', operator: 'IN', values: this.selectedServices},
         this.getStateParameter()
@@ -95,7 +95,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       };
       const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
-        sorting_parameters: [this.getSortParameter()],
+        sorting_parameters: [...this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };

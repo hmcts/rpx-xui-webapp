@@ -52,7 +52,7 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
-  public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<TaskResponse> {
+  public searchTask(body: { searchRequest: SearchTaskRequest, view: string, currentUser: string, refined: boolean }): Observable<TaskResponse> {
     return this.http.post<any>(`${BASE_URL}`, body).pipe(
       tap(response => this.currentTasks$.next(response.tasks)),
     );
@@ -90,7 +90,7 @@ export class WorkAllocationTaskService {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.getRoleCategory(userInfo.roles);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [
         { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] }

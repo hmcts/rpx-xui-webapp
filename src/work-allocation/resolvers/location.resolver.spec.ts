@@ -2,7 +2,6 @@ import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Caseworker } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
 
@@ -38,7 +37,15 @@ describe('LocationResolver', () => {
         'caseworker-ia-caseofficer',
         'cwd-user'
       ]
-    }
+    },
+    roleAssignmentInfo: [{
+      jurisdiction: 'IA',
+      isCaseAllocator: false,
+      baseLocation: '12345',
+      primaryLocation: '54321',
+      roleType: 'ORGANISATION',
+      substantive: 'y'
+    }]
   };
 
   const JUDICIAL_WORKER: UserDetails = {
@@ -56,7 +63,15 @@ describe('LocationResolver', () => {
       roles: [
         'judicialworker'
       ]
-    }
+    },
+    roleAssignmentInfo: [{
+      jurisdiction: 'IA',
+      isCaseAllocator: false,
+      baseLocation: '12345',
+      primaryLocation: '54321',
+      roleType: 'ORGANISATION',
+      substantive: 'y'
+    }]
   };
 
   const JUDICIAL_WORKERS = [
@@ -112,20 +127,13 @@ describe('LocationResolver', () => {
     expect(service).toBeTruthy();
   });
 
-  // Need to be resolved - PJW
-  // it('resolves caseworkers location', inject([LocationResolver], (service: LocationResolver) => {
-  //   spyOn(store, 'pipe').and.returnValue(of(CASE_WORKER));
-  //   spyOn(caseworkerDataService, 'getAll').and.returnValue(of(CASE_WORKERS));
-  //   service.resolve().subscribe((location: any) => {
-  //     expect(location.court_name).toEqual(CASE_WORKERS[0].location.locationName);
-  //   });
-  // }));
+  it('should get base location for the user', inject([LocationResolver], (service: LocationResolver) => {
+    const expectedLocationList = [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ]}];
+    expect(service.getJudicialWorkersOrCaseWorkers({service: 'IA', serviceCode: ['BFA1']}, CASE_WORKER)).toEqual(expectedLocationList);
+  }));
 
-  // it('resolves judicialworkers location', inject([LocationResolver], (service: LocationResolver) => {
-  //   spyOn(store, 'pipe').and.returnValue(of(JUDICIAL_WORKER));
-  //   spyOn(judicialWorkerDataService, 'getCaseRolesUserDetails').and.returnValue(of(JUDICIAL_WORKERS));
-  //   service.resolve().subscribe((location: any) => {
-  //     expect(location.court_name).toEqual(JUDICIAL_WORKERS[0].location.locationName);
-  //   });
-  // }));
+  it('should get base location for the judicial user', inject([LocationResolver], (service: LocationResolver) => {
+    const expectedLocationList = [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ]}];
+    expect(service.getJudicialWorkersOrCaseWorkers({service: 'IA', serviceCode: ['BFA1']}, JUDICIAL_WORKER)).toEqual(expectedLocationList);
+  }));
 });

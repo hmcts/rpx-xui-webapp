@@ -22,12 +22,13 @@ export class LocationDataService {
       tap(allLocations => this.sessionStorageService.setItem(LocationDataService.allLocationsKey, JSON.stringify(allLocations)))
     );
   }
-  public getSpecificLocations(locationIds: string[], primaryLocationServices: string[]): Observable<LocationByEPIMMSModel[]> {
+
+  public getSpecificLocations(locationIds: string[], locationServices: string[]): Observable<LocationByEPIMMSModel[]> {
     if (!locationIds || locationIds.length === 0) {
       return of([]);
     }
     const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices')) || [];
-    const serviceCodes: string[] = bookableServices.length ? bookableServices : primaryLocationServices;
+    const serviceCodes: string[] = bookableServices.length ? bookableServices : locationServices;
     const options = {
       params: new HttpParams()
         .set('serviceCodes', serviceCodes.join())

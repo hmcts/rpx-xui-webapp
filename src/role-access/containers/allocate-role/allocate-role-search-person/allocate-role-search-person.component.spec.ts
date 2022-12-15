@@ -13,7 +13,7 @@ import {
 import { ChoosePersonAndGo } from '../../../store';
 import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person.component';
 
-fdescribe('AllocateRolePersonComponent', () => {
+describe('AllocateRolePersonComponent', () => {
   let component: AllocateRoleSearchPersonComponent;
   let mockStore: any;
   beforeEach((() => {

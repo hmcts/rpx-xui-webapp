@@ -18,7 +18,7 @@ module.exports = {
             }),
         ],
     },
-    entry: ['./server.ts','./src/polyfill.js'],
+    entry: ['./server.ts'],
     mode: NODE_ENV,
     target: 'node',
     devtool: 'source-map',

@@ -22,7 +22,7 @@ describe('RoleService', () => {
       readOnly: false,
       created: Date.UTC.toString(),
       attributes: {
-        primaryLocation: '231596',
+        baseLocation: '231596',
         jurisdiction: 'IA',
       },
     },
@@ -38,7 +38,7 @@ describe('RoleService', () => {
       readOnly: false,
       created: Date.UTC.toString(),
       attributes: {
-        primaryLocation: '331234',
+        baseLocation: '331234',
         jurisdiction: 'IA',
       },
     },

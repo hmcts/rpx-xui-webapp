@@ -1,0 +1,36 @@
+<h1 class="govuk-heading-l">
+  <span class="govuk-caption-l"> Work access </span>
+  Check your new booking
+</h1>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-9 govuk-!-width-three-quarters">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Location</dt>
+    <dd class="govuk-summary-list__value">
+      <p class="govuk-body">{{bookingProcess.location.court_name}}</p>
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a id="change-location" class="govuk-link" (click)="onEventTrigger(bookingNavigationEvent.CHANGELOCATIONCLICK)"
+        [routerLink]="">Change</a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Duration</dt>
+    <dd class="govuk-summary-list__value">
+      <p class="govuk-body">{{bookingProcess.startDate | date:'dd LLLL yyyy'}} to {{bookingProcess.endDate | date:'dd
+        LLLL yyyy'}}</p>
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a id="change-duration" (click)="onEventTrigger(bookingNavigationEvent.CHANGEDURATIONCLICK)"
+        [routerLink]="">Change</a>
+    </dd>
+  </div>
+</dl>
+
+<button class="govuk-button govuk-!-margin-right-3" type="button"
+  (click)="onEventTrigger(bookingNavigationEvent.CONFIRM)">Confirm Booking</button>
+<div class="govuk-button-group">
+  <a id="cancel" class="govuk-body" (click)="onEventTrigger(bookingNavigationEvent.CANCEL)" [routerLink]="">
+    Cancel
+  </a>
+</div>

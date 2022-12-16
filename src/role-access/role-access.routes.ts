@@ -2,12 +2,33 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseAllocatorGuard } from '../app/guards/case-allocator.guard';
 import { UserNotAssignableComponent } from './components';
-import { DeleteExclusionComponent, RemoveRoleComponent } from './containers';
+import { DeleteExclusionComponent, RejectedRequestViewComponent, RemoveRoleComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
 import { AllocateRoleHomeComponent } from './containers/allocate-role';
+import { SpecificAccessHomeComponent } from './containers/specific-access';
+import { TaskRoleAccessResolver } from './resolvers/task-role-access-resolver';
 
 export const ROUTES: Routes = [
   { path: 'user-not-assignable', component: UserNotAssignableComponent },
+  {
+    path: ':taskId/assignment/:assignmentId',
+    resolve: { taskAndRole: TaskRoleAccessResolver},
+    children: [
+    {
+      path: 'specific-access',
+      component: SpecificAccessHomeComponent,
+      children: [
+        {
+          path: '',
+          component: null,
+          // canActivate: [HealthCheckGuard],
+          data: {
+            title: 'HMCTS Manage cases | Role and access | Specific access',
+          }
+        }
+      ]
+    }]
+  },
   {
     path: 'add-exclusion',
     component: AddExclusionHomeComponent,
@@ -27,6 +48,13 @@ export const ROUTES: Routes = [
     canActivate: [CaseAllocatorGuard],
     data: {
       title: 'HMCTS Manage cases | Role and access | Delete exclusion',
+    }
+  },
+  {
+    path: 'rejected-request',
+    component: RejectedRequestViewComponent,
+    data: {
+      title: 'HMCTS Manage cases | Role and access | Rejected request',
     }
   },
   {

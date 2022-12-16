@@ -14,6 +14,11 @@
     "secure": false,
     "logLevel": "debug"
   },
+  "/am/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
   "/documents/*": {
     "target": "http://localhost:3001",
     "secure": false,
@@ -90,6 +95,11 @@
     "logLevel": "debug"
   },
   "/am/role-assignments/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/refdata/commondata/*": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"

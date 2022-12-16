@@ -1,0 +1,48 @@
+<exui-app-header></exui-app-header>
+<xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
+<div class="govuk-width-container" *ngIf="!showSpinner">
+  <exui-page-wrapper [title]="'Search results'">
+    <p>
+      <a class="govuk-link" href="" [routerLink]="['/search']">
+        Change search
+      </a>
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header govuk-table-column-header" scope="col">Case</th>
+          <th class="govuk-table__header govuk-table-column-header" scope="col">Service</th>
+          <th class="govuk-table__header govuk-table-column-actions" scope="col">State</th>
+          <th class="govuk-table__header govuk-table-column-actions" scope="col">Location</th>
+          <th class="govuk-table__header govuk-table-column-actions" scope="col"></th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row" *ngFor="let item of searchResultDisplay">
+          <td class="govuk-table__cell">
+            <div>{{item.caseName}}</div>
+            <div class="case-reference">{{item.caseReference}}</div>
+          </td>
+          <td class="govuk-table__cell">
+            {{item.service}}
+          </td>
+          <td class="govuk-table__cell">
+            {{item.state}}
+          </td>
+          <td class="govuk-table__cell">
+            {{item.location}}
+          </td>
+          <td class="govuk-table__cell action-cell">
+            <a class="govuk-link" href="" routerLink="{{item.actionLink}}">
+              {{item.actionLinkText}}
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <xuilib-pagination *ngIf="moreResultsToGo || caseStartRecord > 1" [moreItems]="moreResultsToGo" [firstRecord]="caseStartRecord"
+    (previousPage)="getPreviousResultsPage()" (nextPage)="getNextResultsPage()">
+    </xuilib-pagination>
+  </exui-page-wrapper>
+</div>
+<exui-app-footer></exui-app-footer>

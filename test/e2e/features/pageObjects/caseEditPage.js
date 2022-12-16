@@ -4,6 +4,7 @@ const CucumberReportLogger = require('../../support/reportLogger');
 Button = require('./webdriver-components/button.js');
 const RuntimeTestData = require("../../support/runtimeTestData");
 const CaseListPage = require("../pageObjects/CaseListPage");
+const { LOG_LEVELS } = require('../../support/constants');
 class caseEditPage {
     constructor() {
         this.userName = 'lukesuperuserxui@mailnesia.com';
@@ -101,9 +102,9 @@ class caseEditPage {
 
     async workBasketHeaders(index) {
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
+        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString(), LOG_LEVELS.Debug);
         await BrowserWaits.waitForSeconds(2);
-        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
+        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString(), LOG_LEVELS.Debug);
         let thLable = $$("ccd-search-result>table>thead tr th");
         await BrowserWaits.waitForElement($("ccd-search-result>table>thead tr th"));
         let count = await thLable.count();
@@ -354,9 +355,10 @@ class caseEditPage {
             case "DateTime":
                 var fieldDate = new Date(field.value).toLocaleString('en-UK', { hour12: true });
                 let time = fieldDate.split(", ")
-                var date1 = new Date(fieldDate);
-                date1.setDate(date1.getDate());
-                date1 = date1.getDate() + " " + monthNames[date1.getMonth()] + " " + date1.getFullYear() + ", " + time[1];
+                var date1 = time[0].split("/");
+                // date1.setDate(date1.getDate())
+                CucumberReportLogger.AddMessage(date1);
+                date1 = date1[1] + " " + monthNames[parseInt(date1[0]) - 1] + " " + date1[2] + ", " + time[1].toUpperCase();
                 return date1;
             default: return field.value;
         }

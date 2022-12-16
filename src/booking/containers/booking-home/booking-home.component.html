@@ -1,0 +1,68 @@
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="hmcts-page-heading">
+        <div class="hmcts-page-heading__title">
+          <h1 class="govuk-heading-l">Work access</h1>
+        </div>
+      </div>
+      <form [formGroup]="bookingTypeForm">
+        <div class="govuk-form-group">
+          <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+            <ng-container *ngIf="existingBookings && existingBookings.length > 0">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="type-0" name="bookingType" type="radio" [value]="0"
+                data-aria-controls="conditional-booking-type-0" (change)="onSelectOption(0)" formControlName="bookingType"/>
+                <label class="govuk-label govuk-radios__label" for="type-0" id="type-0-label">
+                  Choose an existing booking
+                </label>
+              </div>
+              <div id="conditional-booking-type-0" *ngIf="bookingTypeForm.get('bookingType').value === 0" class="govuk-radios__conditional">
+
+                <div class="govuk-form-group ">
+                  <ng-container *ngFor="let booking of existingBookings; let i = index">
+                    <div [ngClass]="{'govuk-grid-row': (i+1)%3 === 0}">
+                      <div class="govuk-grid-column-one-third" >
+                          <p>
+                            <span class="govuk-!-font-weight-bold">{{booking.locationName}}</span>
+                            <span class="govuk-hint">
+                              {{booking.beginTime | date:'dd LLLL yyyy'}} to {{getPreviousDate(booking.endTime) | date:'dd LLLL yyyy'}}
+                            </span>
+                          </p>
+                          <div class="govuk-button-group">
+                            <button
+                              [disabled]="checkIfButtonDisabled(booking.beginTime)"
+                              role="button"
+                              class="govuk-button govuk-button--secondary"
+                              attr.aria-label="{{booking.locationName}} {{booking.beginTime | date:'dd LLLL yyyy'}} to {{getPreviousDate(booking.endTime) | date:'dd LLLL yyyy'}}"
+                              (click)="onExistingBookingSelected(booking.locationId)">
+                              Continue
+                            </button>
+                          </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+
+              </div>
+            </ng-container>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="type-1" name="bookingType" type="radio"
+                (change)="onSelectOption(1)" [value]="1" formControlName="bookingType" [checked]="bookingProcess.selectedBookingOption===1" />
+              <label class="govuk-label govuk-radios__label" for="type-1">
+                Create a new booking
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="type-2" name="bookingType" type="radio"
+                (change)="onSelectOption(2)" [value]="2" formControlName="bookingType"/>
+              <label class="govuk-label govuk-radios__label" for="type-2">
+                View tasks and cases
+              </label>
+            </div>
+          </div>
+        </div>
+        <button class="govuk-button" type="button" *ngIf="bookingProcess.selectedBookingOption" (click)="onEventTrigger()">Continue</button>
+      </form>
+    </div>
+
+  </div>

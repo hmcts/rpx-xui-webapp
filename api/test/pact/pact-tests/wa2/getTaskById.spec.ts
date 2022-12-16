@@ -17,7 +17,7 @@ const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_task
 
 const taskId = "f782bde3-8d51-11eb-a9a4-06d032acc76d"
 describe("Task management api, get task by id", () => {
-    
+
 
     const RESPONSE_BODY = {
         "task": {
@@ -90,8 +90,8 @@ describe("Task management api, get task by id", () => {
             sandbox.stub(config, 'get').callsFake((prop) => {
                 return configValues[prop];
             });
-            
-            const { getTask } = requireReloaded('../../../../workAllocation2/index');
+
+            const { getTask } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {
@@ -100,9 +100,9 @@ describe("Task management api, get task by id", () => {
                     'content-type': 'application/json',
                 },
                 params:{
-                    taskId: taskId 
+                    taskId: taskId
                 }
-               
+
             });
             let returnedResponse = null;
             const response = mockRes();
@@ -134,6 +134,6 @@ function assertResponses(dto: any) {
     expect(dto.task.location_name).to.be.equal("Taylor House");
     expect(dto.task.task_title).to.be.equal("Review the appeal");
     expect(dto.task.dueDate).to.be.equal("2021-06-30T16:53:10+0100");
-    expect(dto.task.assignee).to.be.equal("10bac6bf-80a7-4c81-b2db-516aba826be6"); 
+    expect(dto.task.assignee).to.be.equal("10bac6bf-80a7-4c81-b2db-516aba826be6");
 }
 

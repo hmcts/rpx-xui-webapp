@@ -3,16 +3,20 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { PaginationParameter } from '../../models/dtos';
 
+import { SessionStorageService } from '../../../app/services';
+import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { TaskService, TaskSort } from '../../enums';
-import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { SortOrder, TaskService } from '../../enums';
+import { FieldConfig, SortField } from '../../models/common';
+import { PaginationParameter } from '../../models/dtos';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
+
 
 @Component({
   template: `
@@ -21,17 +25,26 @@ import { TaskListComponent } from './task-list.component';
       [tasks]='tasks'
       [tasksTotal]="tasksTotal"
       [taskServiceConfig]="taskServiceConfig"
-      [sortedBy]="TaskSortField"
+      [sortedBy]="sortedBy"
       [pagination]="pagination"></exui-task-list>`
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
-  @Input() public fields: TaskFieldConfig[];
+  @Input() public fields: FieldConfig[];
   @Input() public tasks: Task[];
   @Input() public tasksTotal: number;
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public pagination: PaginationParameter;
-  @Input() public sortedBy: TaskSortField;
+  @Input() public sortedBy: SortField;
+}
+
+@Component({
+  selector: 'exui-task-field',
+  template: '<div class="xui-task-field">{{task.taskName}}</div>'
+})
+class TaskFieldComponent {
+  @Input() public config: FieldConfig;
+  @Input() public task: Task;
 }
 
 /**
@@ -44,8 +57,8 @@ function getTasks(): Task[] {
 /**
  * Mock fields
  */
-function getFields(): TaskFieldConfig[] {
-  return ConfigConstants.AvailableTasks;
+function getFields(): FieldConfig[] {
+  return ConfigConstants.AvailableTasksForJudicial;
 }
 
 /**
@@ -54,7 +67,7 @@ function getFields(): TaskFieldConfig[] {
 function getTaskService(): TaskServiceConfig {
   return {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
+    defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
     fields: getFields(),
   };
@@ -67,7 +80,9 @@ describe('TaskListComponent', () => {
   let routerSpy: jasmine.SpyObj<any>;
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
+  const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem']);
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
@@ -80,7 +95,9 @@ describe('TaskListComponent', () => {
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         { provide: Router, useValue: mockRouter },
-        { provide: LoadingService, useValue: mockLoadingService }
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -96,12 +113,12 @@ describe('TaskListComponent', () => {
       page_size: 10
     };
     mockWorkAllocationService.getTask.and.returnValue(of({}));
-    mockLoadingService.isLoading = of(false);
+    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     fixture.detectChanges();
   }));
 
-  it('should return the fields as an array with a \'manage\' entry, so that we can' +
-    'display the manage column in the table.', async () => {
+  it('should return the fields as an array with a \'manage\' entry, so that we can ' +
+    'display the manage column in the table.', () => {
 
     const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
     const fieldsWithManage = [...fields, 'manage'];
@@ -112,12 +129,12 @@ describe('TaskListComponent', () => {
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
 
     // create mock getDisplayedColumn variables
-    const taskFieldConfig = getFields();
-    const fields = taskFieldConfig.map(field => field.name);
+    const fieldConfig = getFields();
+    const fields = fieldConfig.map(field => field.name);
     const displayedColumns = component.addManageColumn(fields);
 
     // test actual function against mock variables
-    expect(component.getDisplayedColumn(taskFieldConfig)).toEqual(displayedColumns);
+    expect(component.getDisplayedColumn(fieldConfig)).toEqual(displayedColumns);
 
   });
 
@@ -133,6 +150,43 @@ describe('TaskListComponent', () => {
     // check the emitter had been called and that it gets called with the first field which is caseName
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
+  });
+
+  it('reset sort button is hidden by default', async () => {
+    expect(component.showResetSortButton).toBeFalsy();
+  });
+
+  it('show reset sort button after clicking column header', async () => {
+
+    /// mock the emitter and dispatch the connected event
+    spyOn(component.sortEvent, 'emit');
+    const element = fixture.debugElement.nativeElement;
+    const button = element.querySelector('#sort_by_caseName');
+    button.dispatchEvent(new Event('click'));
+    component.sortedBy = { fieldName: 'caseName', order: SortOrder.DESC };
+    fixture.detectChanges();
+
+    // check the emitter had been called and that it gets called with the new field defined which is caseName
+    expect(component.sortEvent.emit).toHaveBeenCalled();
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
+
+    expect(component.showResetSortButton).toBeTruthy();
+  });
+
+  it('should reset sorting', async () => {
+    component.taskServiceConfig.defaultSortFieldName = 'dueDate';
+    component.defaultSortElement = document.createElement('button');
+    component.pageSessionKey = 'pageSessionKey';
+    /// mock the emitter and dispatch the connected event
+    spyOn(component.sortEvent, 'emit');
+    spyOn(component.defaultSortElement, 'click');
+    component.onResetSorting();
+    fixture.detectChanges();
+
+    // check the emitter had been called and that it gets called with the new field defined which is caseName
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('pageSessionKey', '1');
+    expect(component.defaultSortElement.click).toHaveBeenCalled;
+
   });
 
   it('should allow sorting for different columns.', async () => {
@@ -361,21 +415,21 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event (with example case field buttons selected)
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const referenceButton = element.querySelector('#sort_by_caseId');
+    const referenceButton = element.querySelector('#sort_by_caseName');
     const categoryButton = element.querySelector('#sort_by_caseCategory');
-    const dueDateButton = element.querySelector('#sort_by_dueDate');
+    const dueDateButton = element.querySelector('#sort_by_created_date');
     referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the case reference is being sorted via ascending
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
 
     // check that the case reference is being sorted via descending
     referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
 
     // click the second example button and verify that sorting is for case category
     categoryButton.dispatchEvent(new Event('click'));
@@ -387,38 +441,41 @@ describe('TaskListComponent', () => {
     dueDateButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('created_date');
   });
 
   describe('act upon deep linking', () => {
     const id = '12345678';
 
     it('should select appropriate task from location hash', () => {
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
-      const navigateCallsBefore = mockRouter.navigateCalls.length;
       const task = { id } as Task;
       wrapper.tasks = [ task ];
+      component.addActionsColumn = true;
       fixture.detectChanges();
+      component.setSelectedTask(task);
       expect(component.getSelectedTask()).toEqual(task);
-      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
-      const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall).toBeDefined();
-      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
-      expect(lastNavigateCall.extras).toEqual({ fragment: `manage_${id}` });
+      expect(component.newUrl).toEqual(`bob#manage_${task.id}`);
     });
 
     it('should handle a location hash for a task that does not exist', () => {
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
-      const navigateCallsBefore = mockRouter.navigateCalls.length;
       const task = { id: '99999999' } as Task;
       wrapper.tasks = [ task ];
+      component.addActionsColumn = true;
       fixture.detectChanges();
       expect(component.getSelectedTask()).toBeNull();
-      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
-      const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall).toBeDefined();
-      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
-      expect(lastNavigateCall.extras).toBeUndefined();
+      expect(component.newUrl).toEqual('bob');
+    });
+  });
+
+  describe('pagination display state', () => {
+    it('should display pagination', async () => {
+      component.tasks = getTasks();
+      expect(component.isPaginationEnabled()).toEqual(true);
+    });
+
+    it('should not display pagination', async () => {
+      component.tasks = [];
+      expect(component.isPaginationEnabled()).toEqual(false);
     });
   });
 
@@ -426,11 +483,11 @@ describe('TaskListComponent', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {
-      paginationSummary = fixture.debugElement.nativeElement.querySelector('#search-result-summary__text');
+      paginationSummary = fixture.debugElement.nativeElement.querySelector('span[data-test="search-result-summary__text"]');
     });
 
     it('should correctly set the summary text', () => {
-      expect(paginationSummary.innerText).toContain('Showing 1 to 2 of 2 results');
+      expect(paginationSummary.textContent).toContain('Showing 1 to 2 of 2 results');
     });
   });
 

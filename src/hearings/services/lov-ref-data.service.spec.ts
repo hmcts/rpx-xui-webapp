@@ -11,8 +11,8 @@ describe('Lov RefData service', () => {
 
       const options = {
         params: new HttpParams()
-          .set('category', HearingCategory.HearingPriority)
-          .set('service', 'BBA3')
+          .set('categoryId', HearingCategory.HearingPriority)
+          .set('serviceId', 'BBA3')
           .set('isChildRequired', 'N')
       };
 

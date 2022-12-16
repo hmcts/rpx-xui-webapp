@@ -3,6 +3,7 @@ import { AllocateRoleState } from './allocate-role-state.enum';
 import { Actions, AllocateTo, DurationOfRole, Period, RoleCategory} from './allocate-role.enum';
 import { SpecificRole } from './specific-role.model';
 import { HttpError } from './http-error.interface';
+import { Role } from '.';
 
 export interface AllocateRoleStateData {
   caseId: string;
@@ -18,4 +19,5 @@ export interface AllocateRoleStateData {
   period: Period;
   roleCategory?: RoleCategory;
   lastError?: HttpError;
+  roles?: Role[];
 }

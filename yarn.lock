@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.33-angular11-upgrade":
-  version "5.0.33-angular11-upgrade"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.33-angular11-upgrade.tgz#622b82e45991cbd35dabb64e7a6da89ef9df6e1d"
-  integrity sha512-L6B/Lg1szeFYjZkteju40LbrD/DuftVQmEf+5ETRU5ePxRbnKo9rm1klTqJeg0OhIR9XDCQhyokKU0sfZHWTvA==
+"@hmcts/ccd-case-ui-toolkit@5.0.15-angular11-updgrade-welsh-release-v2":
+  version "5.0.15-angular11-updgrade-welsh-release-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.15-angular11-updgrade-welsh-release-v2.tgz#d39c1728ba44f0aeae0ab0daea5a0a75fd83de35"
+  integrity sha512-aABpgevIaamOqbgqaw8nMiymGws99iUSBFYiInAp8gPy0JuXi5YnlTlRGUV7oHpRyBWMcXSA1ieb6o2RGgDQJw==
   dependencies:
     tslib "^2.0.0"
 

@@ -21,7 +21,7 @@ import {
   constructElasticSearchQuery,
   constructRoleAssignmentCaseAllocatorQuery,
   constructRoleAssignmentQuery,
-  filterByLocationId,
+  filterByLocationId, filterMyAccessRoleAssignments,
   getActionsByPermissions,
   getActionsFromMatrix,
   getCaseAllocatorLocations,

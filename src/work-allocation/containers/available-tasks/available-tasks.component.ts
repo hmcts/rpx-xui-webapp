@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
@@ -17,7 +18,11 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   public get fields(): FieldConfig[] {
-    return this.isCurrentUserJudicial() ? ConfigConstants.AvailableTasksForJudicial : ConfigConstants.AvailableTasksForLegalOps;
+    let fields = [];
+    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+      fields = this.isCurrentUserJudicial() ? ConfigConstants.AvailableTasksForJudicial : (isRelease4 ? ConfigConstants.AvailableTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForLegalOps);
+    });
+    return fields;
   }
 
   public get sortSessionKey(): string {

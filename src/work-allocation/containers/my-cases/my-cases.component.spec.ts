@@ -7,6 +7,7 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
+import { CheckReleaseVersionService } from 'src/work-allocation/services/check-release-version.service';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -40,6 +41,13 @@ describe('MyCasesComponent', () => {
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockCheckReleaseVersionService = {
+    isRelease4: () => {
+      return {
+        subscribe: () => true
+      };
+    }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -64,7 +72,8 @@ describe('MyCasesComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
       ]
     }).compileComponents();
   }));

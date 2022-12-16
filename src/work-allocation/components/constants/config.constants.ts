@@ -312,3 +312,11 @@ export const CONFIG_CONSTANTS = {
   AllWorkTasksForLegalOps: ALL_WORK_TASKS_FOR_LEGAL_OPS,
   AllWorkCases: ALL_WORK_CASES
 };
+
+export const CONFIG_CONSTANTS_NOT_RELEASE4 = {
+  AvailableTasksForLegalOps: AVAILABLE_TASKS_FOR_LEGAL_OPS.filter(task => task.name !== 'hearing_date'),
+  MyCases: MY_CASES.filter(task => task.name !== 'hearing_date'),
+  MyTasks: MY_TASKS.filter(task => task.name !== 'hearing_date'),
+  AllWorkTasksForLegalOps: ALL_WORK_TASKS_FOR_LEGAL_OPS.filter(task => task.name !== 'hearing_date'),
+  AllWorkCases: ALL_WORK_CASES.filter(task => task.name !== 'hearing_date'),
+};

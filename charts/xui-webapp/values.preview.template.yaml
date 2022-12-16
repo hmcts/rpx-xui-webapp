@@ -30,6 +30,7 @@ nodejs:
         - mc-idam-client-secret
         - system-user-name
         - system-user-password
+        - webapp-redis-connection-string-new
   autoscaling:
     enabled: false
 redis:

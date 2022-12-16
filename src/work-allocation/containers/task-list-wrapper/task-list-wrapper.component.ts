@@ -21,6 +21,7 @@ import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
 import { TaskResponse } from '../../models/tasks/task.model';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -71,7 +72,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected checkReleaseVersionService: CheckReleaseVersionService
   ) {
     this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }

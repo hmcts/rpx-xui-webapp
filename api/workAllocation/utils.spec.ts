@@ -1882,7 +1882,7 @@ describe('workAllocation.utils', () => {
       ];
 
       const filteredRoleAssignments = filterMyAccessRoleAssignments(roleAssignments);
-      expect(filteredRoleAssignments.length).to.equal(3);
+      expect(filteredRoleAssignments.length).to.equal(2);
     });
 
   });

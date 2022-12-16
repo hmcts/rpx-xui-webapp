@@ -1,19 +1,23 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import {Component, ViewChild} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {Router} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {AlertService, LoadingService, PaginationModule} from '@hmcts/ccd-case-ui-toolkit';
-import {ExuiCommonLibModule, FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
-import {of} from 'rxjs';
-import {SessionStorageService} from '../../../app/services';
-
-import {WorkAllocationComponentsModule} from '../../components/work-allocation.components.module';
-import {Task} from '../../models/tasks';
-import {CaseworkerDataService, WorkAllocationTaskService} from '../../services';
-import {getMockTasks} from '../../tests/utils.spec';
-import {TaskListComponent} from '../task-list/task-list.component';
-import {MyTasksComponent} from './my-tasks.component';
+import { Component, ViewChild } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
+import { TaskListComponent } from '..';
+import { SessionStorageService } from '../../../app/services';
+import { AllocateRoleService } from '../../../role-access/services';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { FieldType } from '../../enums';
+import { Task } from '../../models/tasks';
+import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { getMockTasks } from '../../tests/utils.spec';
+import { MyTasksComponent } from './my-tasks.component';
+import * as fromActions from '../../../app/store';
 
 @Component({
   template: `
@@ -22,6 +26,21 @@ import {MyTasksComponent} from './my-tasks.component';
 class WrapperComponent {
   @ViewChild(MyTasksComponent) public appComponentRef: MyTasksComponent;
 }
+
+const userInfo =
+  `{"id":"exampleId",
+    "forename":"Joe",
+    "surname":"Bloggs",
+    "email":"JoeBloggs@example.com",
+    "active":true,
+    "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
+    "token":"eXaMpLeToKeN"}`;
+
+const workTypeInfo =
+  `[{"key":"hearing_work","label":"Hearing work"},
+    {"key":"routine_work","label":"Routine work"},
+    {"key":"decision_making_work","label":"Decision-making work"},
+    {"key":"applications","label":"Applications"}]`
 
 describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
@@ -32,11 +51,17 @@ describe('MyTasksComponent', () => {
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getCaseworkersForServices']);
+  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
-
+  const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
+  let store: Store<fromActions.State>;
   beforeEach(async(() => {
+    storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -47,12 +72,17 @@ describe('MyTasksComponent', () => {
       ],
       declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
-        {provide: WorkAllocationTaskService, useValue: mockTaskService},
-        {provide: AlertService, useValue: mockAlertService},
-        {provide: SessionStorageService, useValue: mockSessionStorageService},
-        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
+        { provide: WorkAllocationTaskService, useValue: mockTaskService },
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: FilterService, useValue: mockFilterService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: CaseworkerDataService, useValue: mockCaseworkerService },
+        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
+        { provide: AllocateRoleService, useValue: mockRoleService },
+        { provide: Store, useValue: storeMock },
       ]
     }).compileComponents();
   }));
@@ -61,22 +91,79 @@ describe('MyTasksComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(false);
     router = TestBed.get(Router);
+    store = TestBed.get(Store);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
-    mockCaseworkerService.getAll.and.returnValue(of([]));
+    mockCaseworkerService.getCaseworkersForServices.and.returnValue(of([]));
+    const filterFields: FilterSetting = {
+      id: 'locations',
+      fields: [
+        {
+          name: 'locations',
+          value: ['231596']
+        },
+        {
+          name: 'types-of-work',
+          value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
+        },
+        {
+          name: 'services',
+          value: ['IA', 'CIVIL']
+        }
+      ]
+    };
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
+    mockFilterService.getStream.and.returnValue(of(filterFields));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     fixture.detectChanges();
   });
 
-
-  it('should make a call to load tasks using the default search request', () => {
+  it('should make a call to load tasks using the default search request', async(() => {
+    component.ngOnInit();
+    // tick(500);
+    fixture.detectChanges();
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
+  }));
+
+  it('should allow searching via state', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[1];
+    expect(searchParameter.key).toBe('state');
+    expect(searchParameter.values[0]).toBe('assigned');
+  });
+
+  it('should allow searching via location', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const exampleLocations = ['location1', 'location2', 'location3'];
+    component.selectedLocations = exampleLocations;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[3];
+    expect(searchParameter.key).toBe('location');
+    expect(searchParameter.values).toBe(exampleLocations);
+  });
+
+  it('should allow searching via work types', () => {
+    mockSessionStorageService.getItem.and.returnValues(userInfo, workTypeInfo, '1');
+    const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
+    component.selectedWorkTypes = workTypes;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[4];
+    expect(searchParameter.key).toBe('work_type');
+    expect(searchParameter.values).toBe(workTypes);
+  });
+
+  it('should not search by work types if all work types are selected', () => {
+    mockSessionStorageService.getItem.and.returnValues(userInfo, workTypeInfo, '1');
+    const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work', 'extra_work_type'];
+    component.selectedWorkTypes = workTypes;
+    for (const search_parameter of component.getSearchTaskRequestPagination().search_parameters) {
+      expect(search_parameter.key).not.toBe('work_type');
+    }
   });
 
   it('should have all column headers, including "Manage +"', () => {
@@ -97,56 +184,17 @@ describe('MyTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  it('should handle a click to sort on the caseReference heading', async () => {
-
-    // spyOn(mockSessionStorageService, 'getItem').and.returnValue(JSON.stringify({id: '1'}));
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({id: '1'}));
-
-    const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseId');
-    button.dispatchEvent(new Event('click'));
+  it('should not show the footer when there are tasks', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
     fixture.detectChanges();
-
-    const searchRequest = component.getSearchTaskRequestPagination();
-    // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(1);
-    expect(searchRequest.search_parameters[0].key).toEqual('user');
-    expect(searchRequest.search_parameters[0].values).toContain('1');
-
-    expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
-    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseId');
-
-    // Let's also make sure that the tasks were re-requested with the new sorting.
-    const payload = {searchRequest, view: component.view};
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
-
-    // Do it all over again to make sure it reverses the order.
-    button.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-
-    const newSearchRequest = component.getSearchTaskRequestPagination();
-    // Make sure the search request looks right.
-    expect(newSearchRequest.search_parameters.length).toEqual(1);
-    expect(newSearchRequest.search_parameters[0].key).toEqual('user');
-    expect(newSearchRequest.search_parameters[0].values).toContain('1'); // Important!
-
-    /*TODO: should be descending*/
-    expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
-    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseId');
-
-    // Let's also make sure that the tasks were re-requested with the new sorting.
-    const newPayload = {searchRequest: newSearchRequest, view: component.view};
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
-  });
-
-  it('should not show the footer when there are tasks', () => {
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
     const footerRowClass = footerRow.getAttribute('class');
     expect(footerRowClass).toContain('footer-row');
     expect(footerRowClass).not.toContain('shown');
-  });
+  }));
 
   it('should show the footer when there no tasks', () => {
     spyOnProperty(component, 'tasks').and.returnValue([]);
@@ -162,7 +210,10 @@ describe('MyTasksComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
-  it('should appropriately handle clicking on a row action', () => {
+  it('should appropriately handle clicking on a row action', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    fixture.detectChanges();
     const navigateSpy = spyOn(router, 'navigate');
     const element = fixture.debugElement.nativeElement;
     // Use the first task.
@@ -178,6 +229,20 @@ describe('MyTasksComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(navigateSpy).toHaveBeenCalledWith([`/tasks/${task.id}/${actionId}/`], jasmine.any(Object));
+    expect(navigateSpy).toHaveBeenCalledWith([`/work/${task.id}/${actionId}/`], jasmine.any(Object));
+  }));
+
+  it('should allow setting the release 2 details', () => {
+    // verifying fields best way to check as the elements (apart from column names) on page will not change
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.fields[0].name).toBe('case_name');
+    expect(component.fields[0].type).toBe(FieldType.CASE_NAME);
+    expect(component.fields[4].type).toBe(FieldType.TASK_NAME);
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 });

@@ -3,6 +3,7 @@ const BrowserWaits = require('../../support/customWaits');
 const TaskMessageBanner = require("./messageBanner");
 const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
+const { LOG_LEVELS } = require('../../support/constants');
 class CaseListPage{
 
     constructor(){
@@ -50,7 +51,7 @@ class CaseListPage{
     async amOnPage(){
         await BrowserWaits.waitForElement(this.caselistComponent);
         await BrowserWaits.waitForElement(this.searchFilterContainer);
-        return await this.caselistComponent.isPresent(); 
+        return (await this.caselistComponent.isPresent()) && (await this.ccdCaseSearchResult.isPresent()); 
     }
 
     async _waitForSearchComponent(){
@@ -60,23 +61,18 @@ class CaseListPage{
 
     _getOptionSelectorWithText(optionText){
         let elementLocator = null;
-        if (optionText.includes('|')){
-            const options = optionText.split('|');
-            let locatorString = "//option[";
-             let i = 0;   
-            for (const option of options){
-                if( i === 0){
-                    locatorString += `contains(text(), '${option.trim()}')`;
-                }else{
-                    locatorString += `or contains(text(), '${option.trim()}')`;
-                }
-                i++; 
-            } 
-            elementLocator = by.xpath(locatorString +']');
-
-        }else{
-            elementLocator = by.xpath("//option[text() = '" + optionText + "']");
+        const options = optionText.split('|');
+        let locatorString = "//option[";
+        let i = 0;
+        for (const option of options) {
+            if (i === 0) {
+                locatorString += `contains(text(), '${option.trim()}')`;
+            } else {
+                locatorString += `or contains(text(), '${option.trim()}')`;
+            }
+            i++;
         }
+        elementLocator = by.xpath(locatorString + ']');
 
         return elementLocator
     }
@@ -129,8 +125,10 @@ class CaseListPage{
             await browser.executeScript('arguments[0].scrollIntoView()',
                 this.searchApplyBtn);
             await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
-            CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.");
+            CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.", LOG_LEVELS.Debug);
             await this.searchApplyBtn.click();
+            await BrowserWaits.waitForSpinnerToDissappear();
+
         });
     }
 
@@ -144,9 +142,9 @@ class CaseListPage{
 
     async waitForCaseResultsToDisplay(){
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-        await CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
+        await CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString(), LOG_LEVELS.Debug);
         await BrowserWaits.waitForSeconds(2);
-       await  CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
+        await CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString(), LOG_LEVELS.Debug);
 
     }
 
@@ -160,17 +158,22 @@ class CaseListPage{
 
     async clickFirstCaseLink(){
         let currentPageUrl = await browser.getCurrentUrl();
-        await CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
+        CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
 
         await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await BrowserWaits.waitForSpinnerToDissappear(); 
-            await this.caseListRows.get(0).$("td a").click();
-            await BrowserWaits.waitForPageNavigation(currentPageUrl); 
-        });
-
-      
-        await CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
+        let isNavigationSuccess = false;
+        let retryAttemptsCounter = 0;
+        while (retryAttemptsCounter <= 3 && !isNavigationSuccess ){
+            try{
+                await this.caseListRows.get(0).$("td a").click();
+                await BrowserWaits.waitForPageNavigation(currentPageUrl); 
+                isNavigationSuccess = true;
+            }catch(err){
+                retryAttemptsCounter++;
+                CucumberReportLogger.AddMessage(`Error opening first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
+            }
+        } 
+        CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
 
     }
 

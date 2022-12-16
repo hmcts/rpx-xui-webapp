@@ -1,9 +1,10 @@
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { initialMockState } from '../role-access/testing/app-initial-state.mock';
 import { AppUtils } from './app-utils';
 import { AppConstants, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
-import { UserRole } from './models/user-details.model';
+import { UserDetails, UserRole } from './models/user-details.model';
 
 describe('getEnvironment', () => {
 
@@ -294,5 +295,45 @@ describe('getFilterPersistenceByRoleType', () => {
     userDetails.userInfo.roles = LEGAL_OPS_ROLE_LIST;
     const persistence = AppUtils.getFilterPersistenceByRoleType(userDetails);
     expect(persistence).toEqual('session');
+  });
+
+  describe('isBookableAndJudicialRole', () => {
+
+    it('should set true/false base on the user details', () => {
+      const USER_2: UserDetails = {
+        canShareCases: true,
+        roleAssignmentInfo: [{
+          bookable: true,
+          baseLocation: 'Glasgow',
+          jurisdiction: 'IA',
+          isCaseAllocator: true
+      }],
+        sessionTimeout: {
+          idleModalDisplayTime: 10,
+          totalIdleTime: 50
+        },
+        userInfo: {
+          id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+          forename: 'Luke',
+          surname: 'Wilson',
+          email: 'lukesuperuserxui@mailnesia.com',
+          roleCategory: RoleCategory.JUDICIAL,
+          active: true,
+          roles: [
+            'caseworker',
+            'caseworker-sscs-judge',
+            'fee-paid-judge'
+          ],
+        }
+      };
+
+      expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);
+      USER_2.roleAssignmentInfo[0].bookable = 'true';
+      expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);
+      USER_2.roleAssignmentInfo[0].bookable = false;
+      expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
+      USER_2.userInfo.roleCategory = RoleCategory.CASEWORKER;
+      expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
+    });
   });
 });

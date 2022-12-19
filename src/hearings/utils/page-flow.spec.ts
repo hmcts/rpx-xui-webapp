@@ -1,6 +1,6 @@
-import {Observable, of} from 'rxjs';
-import {ScreenNavigationModel} from '../models/screenNavigation.model';
-import {PageFlow} from './page-flow';
+import { Observable, of } from 'rxjs';
+import { ScreenNavigationModel } from '../models/screenNavigation.model';
+import { PageFlow } from './page-flow';
 
 describe('PageFlow', () => {
   let pageFlow: PageFlow;

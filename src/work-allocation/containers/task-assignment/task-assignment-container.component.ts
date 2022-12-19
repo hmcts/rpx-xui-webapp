@@ -2,7 +2,7 @@ import { Location as AngularLocation } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 

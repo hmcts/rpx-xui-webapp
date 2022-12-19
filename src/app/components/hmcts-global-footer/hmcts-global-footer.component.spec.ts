@@ -1,5 +1,5 @@
 import { Component, DebugElement, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { AppConstants } from '../../app.constants';
@@ -15,9 +15,9 @@ describe('HmctsGlobalFooterComponent', () => {
                     [items]="text"></exui-app-hmcts-global-footer>`
     })
     class TestDummyHostComponent {
-        @Input() help: Helper;
-        @Input() navigation: Navigation;
-        @ViewChild(HmctsGlobalFooterComponent)
+        @Input() public help: Helper;
+        @Input() public navigation: Navigation;
+        @ViewChild(HmctsGlobalFooterComponent, {static: false})
         public hmctsGlobalFooterComponent: HmctsGlobalFooterComponent;
     }
     const testHostComponent = TestDummyHostComponent;
@@ -34,7 +34,7 @@ describe('HmctsGlobalFooterComponent', () => {
     const helpData: Helper = AppConstants.FOOTER_DATA;
     const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
       TestBed.configureTestingModule({
         declarations: [ HmctsGlobalFooterComponent ],

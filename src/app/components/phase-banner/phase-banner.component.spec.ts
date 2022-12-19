@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { SessionStorageService } from 'src/app/services';
@@ -13,6 +13,12 @@ const mockSessionStorageService = {
 describe('PhaseBannerComponent', () => {
   let component: PhaseBannerComponent;
   let fixture: ComponentFixture<PhaseBannerComponent>;
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [PhaseBannerComponent]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  } });

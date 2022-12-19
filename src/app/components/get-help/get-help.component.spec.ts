@@ -1,17 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ContactDetailsComponent } from '@hmcts/rpx-xui-common-lib';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { GetHelpComponent } from '..';
-import { of } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
+import { of } from 'rxjs';
+import { GetHelpComponent } from '..';
 
 describe('GetHelpComponent', () => {
   let component: GetHelpComponent;
   let fixture: ComponentFixture<GetHelpComponent>;
   let mockStore: any;
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [GetHelpComponent, ContactDetailsComponent, RpxTranslatePipe],

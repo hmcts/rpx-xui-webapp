@@ -1,0 +1,58 @@
+[
+  {
+    "key": "progressed",
+    "value_en": "Progressed as part of this lead case",
+    "value_cy": "",
+    "hint_text_en": "Progressed as part of this lead case",
+    "hint_text_cy": "",
+    "lov_order": 1,
+    "parent_key": null,
+    "category_key": "caseLinkReason",
+    "parent_category": "",
+    "active_flag": "Y",
+    "child_nodes": null,
+    "from": "exui-default"
+  },
+  {
+    "key": "consolidated",
+    "value_en": "Case consolidated",
+    "value_cy": "",
+    "hint_text_en": "Case Consolidated",
+    "hint_text_cy": "",
+    "lov_order": 1,
+    "parent_key": null,
+    "category_key": "caseLinkReason",
+    "parent_category": "",
+    "active_flag": "Y",
+    "child_nodes": null,
+    "from": "exui-default"
+  },
+  {
+    "key": "bail",
+    "value_en": "Bail",
+    "value_cy": "",
+    "hint_text_en": "Bail",
+    "hint_text_cy": "",
+    "lov_order": 2,
+    "parent_key": null,
+    "category_key": "caseLinkReason",
+    "parent_category": "",
+    "active_flag": "Y",
+    "child_nodes": null,
+    "from": "exui-default"
+  },
+  {
+    "key": "other",
+    "value_en": "Other",
+    "value_cy": "",
+    "hint_text_en": "Other",
+    "hint_text_cy": "",
+    "lov_order": 3,
+    "parent_key": null,
+    "category_key": "caseLinkReason",
+    "parent_category": "",
+    "active_flag": "Y",
+    "child_nodes": null,
+    "from": "exui-default"
+  }
+]

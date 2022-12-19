@@ -1,4 +1,4 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
@@ -9,6 +9,13 @@ const mockSessionStorageService = {
   getItem: jasmine.createSpy('getItem').and.returnValue(JSON.parse('false')),
   setItem: jasmine.createSpy('setItem').and.returnValue(JSON.stringify('false'))
 };
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslationMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('PhaseBannerComponent', () => {
   let component: PhaseBannerComponent;
@@ -21,11 +28,11 @@ describe('PhaseBannerComponent', () => {
   }));
 
   beforeEach(() => {
-    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  } });
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
     TestBed.configureTestingModule({
-      imports: [RpxTranslationModule.forChild()],
+      imports: [],
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [PhaseBannerComponent],
+      declarations: [PhaseBannerComponent, RpxTranslationMockPipe],
       providers: [
         {
           provide: RpxTranslationService,
@@ -49,7 +56,7 @@ describe('PhaseBannerComponent', () => {
     const feedbackLinkSpanElement = fixture.debugElement.query(By.css(`${feedbackLinkClass} span.visuallyhidden`)).nativeElement;
 
     expect(feedbackLinkElement.getAttribute('target')).toBe('_blank');
-    expect(feedbackLinkSpanElement.innerHTML).toEqual('');
+    expect(feedbackLinkSpanElement.innerHTML).toEqual('(Opens in a new window)');
   });
 
   it('should change the language', () => {

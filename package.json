@@ -5,6 +5,7 @@
     "node": ">=12.13.0"
   },
   "scripts": {
+    "clean": "rimraf node_modules",
     "nuke": "rm -rf dist",
     "build": "yarn build:prod && yarn build:node",
     "pre-push": "yarn lint && yarn build:prod && ng test --code-coverage",
@@ -73,7 +74,7 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "5.0.33-angular11-upgrade",
+    "@hmcts/ccd-case-ui-toolkit": "5.0.34-case-file-view-merge-into-angular-11",
     "@hmcts/ccpay-web-component": "5.0.10-beta08",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.18-RC.3",

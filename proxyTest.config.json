@@ -94,6 +94,16 @@
     "secure": false,
     "logLevel": "debug"
   },
+  "/categoriesAndDocuments/*": {
+    "target": "http://localhost:3005",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/documentData/caseref/*": {
+    "target": "http://localhost:3005",
+    "secure": false,
+    "logLevel": "debug"
+  },
   "/refdata/commondata/*": {
     "target": "http://localhost:3005",
     "secure": false,

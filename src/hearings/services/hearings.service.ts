@@ -11,7 +11,7 @@ import {
   ServiceLinkedCasesModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../models/linkHearings.model';
-import {LovRefDataModel} from '../models/lovRefData.model';
+import {LovRefDataByCategoryModel, LovRefDataByServiceModel, LovRefDataModel} from '../models/lovRefData.model';
 import {ResponseDetailsModel} from '../models/requestDetails.model';
 import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
@@ -51,6 +51,10 @@ export class HearingsService {
       caseName,
       hearingId // could be null, empty string or missing
     });
+  }
+
+  public loadCaseLinkingReasonCodes(): Observable<LovRefDataModel[]> {
+    return this.http.get<LovRefDataModel[]>('/refdata/commondata/lov/categories/CaseLinkingReasonCode');
   }
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {

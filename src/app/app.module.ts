@@ -31,6 +31,7 @@ import {
 import { MetaReducer, Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storeFreeze } from 'ngrx-store-freeze';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import {
   LoggerModule,
   NGXLogger,
@@ -100,6 +101,14 @@ export function launchDarklyClientIdFactory(
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
+    RpxTranslationModule.forRoot({
+      baseUrl: '/api/welsh-translation',
+      debounceTimeMs: 300,
+      validity: {
+        days: 1
+      },
+      testMode: true,
+    })
   ],
   providers: [
     NGXLogger,

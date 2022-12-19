@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -12,10 +12,17 @@ import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../../noc/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslationMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('HmctsGlobalHeaderComponent', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter;
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'
@@ -33,7 +40,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     enabledFlag: true,
     disabledFlag: false
   };
-  let origTimeout: number;
 
   const userDetails = {
     sessionTimeout: {
@@ -51,11 +57,12 @@ describe('HmctsGlobalHeaderComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
-    origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+  const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+
+  beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
-      declarations: [ HmctsGlobalHeaderComponent ],
+      declarations: [ HmctsGlobalHeaderComponent, RpxTranslationMockPipe ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       imports: [
         HttpClientTestingModule,
@@ -88,11 +95,11 @@ describe('HmctsGlobalHeaderComponent', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    mockRouter = TestBed.get(Router);
+    mockRouter = TestBed.inject(Router);
     spyOnProperty(mockRouter, 'url').and.returnValues('/cases', '/tasks/list', '/tasks/task-manager');
     fixture = TestBed.createComponent(HmctsGlobalHeaderComponent);
     component = fixture.componentInstance;
@@ -122,7 +129,7 @@ describe('HmctsGlobalHeaderComponent', () => {
   });
 
   it('should onEmitSubMenu', () => {
-    const menuItem = {href: '/noc', text: null};
+    const menuItem = { href: '/noc', text: null };
     component.onEmitSubMenu(menuItem);
     expect(storeMock.dispatch).toHaveBeenCalled();
   });
@@ -133,7 +140,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(component.navigate.emit).toHaveBeenCalled();
   });
 
-  it('should display find case right aligned', (done: DoneFn) => {
+  it('should display find case right aligned', () => {
     component.showItems = true;
     component.items = [{
       align: 'right',
@@ -156,11 +163,10 @@ describe('HmctsGlobalHeaderComponent', () => {
     fixture.detectChanges();
     component.isUserCaseManager$.subscribe(result => {
       expect(result).toBe(true);
-      done();
     });
   });
 
-  it('should not display find case right aligned', (done: DoneFn) => {
+  it('should not display find case right aligned', () => {
     component.showItems = true;
     component.items = [{
       text: 'Find case',
@@ -183,11 +189,10 @@ describe('HmctsGlobalHeaderComponent', () => {
     fixture.detectChanges();
     component.isUserCaseManager$.subscribe(result => {
       expect(result).toBe(false);
-      done();
     });
   });
 
-  it('splitNavItems', (done: DoneFn) => {
+  it('splitNavItems', () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -234,11 +239,10 @@ describe('HmctsGlobalHeaderComponent', () => {
         href: '',
         active: false
       }]);
-      done();
     });
   });
 
-  it('filters out menu items for which the user does not hold the correct role', (done) => {
+  it('filters out menu items for which the user does not hold the correct role', () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -270,7 +274,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       })
     ).subscribe(items => {
       expect(items).toEqual([component.items[0]]);
-      done();
+
     });
   });
 

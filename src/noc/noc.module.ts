@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbstractAppConfig, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
+import { RouterModule } from '@angular/router';
+import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -28,7 +29,6 @@ import { effects, reducers } from './store';
 @NgModule({
   imports: [
       CommonModule,
-      CaseUIToolkitModule,
       HttpClientModule,
       StoreModule.forFeature('noc', reducers),
       EffectsModule.forFeature(effects),
@@ -69,7 +69,7 @@ export class NocModule {
     NocModule.forRoot();
   }
 
-  public static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: NocModule,
       providers: [

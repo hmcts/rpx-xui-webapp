@@ -1,11 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { CaseShareCompleteComponent } from './case-share-complete.component';
 import * as fromCasesFeature from '../../store';
+import { CaseShareCompleteComponent } from './case-share-complete.component';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 
 describe('CaseShareCompleteComponent', () => {
@@ -24,7 +24,7 @@ describe('CaseShareCompleteComponent', () => {
   }];
   let mockStore: any;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
 
     mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     mockStore.pipe.and.returnValue(of(SHARED_CASE));
@@ -59,7 +59,7 @@ describe('CaseShareCompleteComponent', () => {
     mockStore.pipe.and.returnValue(of(SHARED_CASE));
     fixture.detectChanges();
     mockFeatureToggleService.getValue.and.returnValue(of(true));
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();

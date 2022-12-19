@@ -1,15 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
-import { DocumentUrlPipe } from '@hmcts/ccd-case-ui-toolkit/dist/shared/components/palette/document/document-url.pipe';
-import { MediaViewerModule } from '@hmcts/media-viewer';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/window';
-import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit/dist/app.config';
-import createSpyObj = jasmine.createSpyObj;
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SessionStorageService } from '../../services/session-storage/session-storage.service'
+import { AbstractAppConfig, DocumentUrlPipe, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { MediaViewerModule } from '@hmcts/media-viewer';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { SessionStorageService } from '../../services/session-storage/session-storage.service';
+import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
+import createSpyObj = jasmine.createSpyObj;
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
@@ -28,7 +26,7 @@ describe('MediaViewerWrapperComponent', () => {
     let mockAppConfig: any;
     let featureToggleService;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
         mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
         mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_URL);

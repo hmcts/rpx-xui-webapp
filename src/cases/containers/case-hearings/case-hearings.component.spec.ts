@@ -6,9 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { Observable, of } from 'rxjs';
-import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
-import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
+import { of } from 'rxjs';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -23,6 +21,8 @@ import {
   HearingListingStatusEnum,
   HMCStatus
 } from '../../../hearings/models/hearings.enum';
+import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
+import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
 
@@ -436,7 +436,7 @@ describe('CaseHearingsComponent', () => {
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     component = fixture.componentInstance;
     // @ts-ignore
     mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));
@@ -455,10 +455,10 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.lastErrorSubscription = new Observable().subscribe();
-    component.roleCatSubscription = new Observable().subscribe();
-    component.hearingValuesSubscription = new Observable().subscribe();
-    component.refDataSubscription = new Observable().subscribe();
+    component.lastErrorSubscription = of().subscribe();
+    component.roleCatSubscription = of().subscribe();
+    component.hearingValuesSubscription = of().subscribe();
+    component.refDataSubscription = of().subscribe();
     spyOn(component.lastErrorSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.roleCatSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.hearingValuesSubscription, 'unsubscribe').and.callThrough();

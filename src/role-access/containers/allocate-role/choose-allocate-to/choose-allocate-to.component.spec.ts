@@ -1,18 +1,18 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_ALLOCATE_TO } from '../../../constants';
 import {
-  Actions,
-  AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateRoleStateData,
-  AllocateTo,
-  DurationOfRole,
-  RoleCategory
+    Actions,
+    AllocateRoleNavigationEvent,
+    AllocateRoleState,
+    AllocateRoleStateData,
+    AllocateTo,
+    DurationOfRole,
+    RoleCategory
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseAllocateToComponent } from './choose-allocate-to.component';
@@ -49,7 +49,7 @@ describe('ChooseAllocateToComponent', () => {
     },
     roleCategory: RoleCategory.LEGAL_OPERATIONS,
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -69,7 +69,7 @@ describe('ChooseAllocateToComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ChooseAllocateToComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component = fixture.componentInstance;
     component.formGroup = formGroup;

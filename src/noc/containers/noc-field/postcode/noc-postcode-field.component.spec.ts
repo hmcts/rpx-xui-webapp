@@ -1,12 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocPostcodeFieldComponent } from './noc-postcode-field.component';
 import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
+
 
 describe('NocPostcodeFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -37,7 +37,7 @@ describe('NocPostcodeFieldComponent', () => {
   let component: NocPostcodeFieldComponent;
   let fixture: ComponentFixture<NocPostcodeFieldComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [

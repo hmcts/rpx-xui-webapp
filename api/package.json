@@ -12,6 +12,5 @@
         "test:watch": "mocha --watch --recursive --watch-extensions ts -r ts-node/register",
         "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
     },
-    "private": true,
-    "dependencies": {}
+    "private": true
 }

@@ -1,5 +1,5 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { SessionStorageService } from 'src/app/services';
@@ -10,16 +10,29 @@ const mockSessionStorageService = {
   setItem: jasmine.createSpy('setItem').and.returnValue(JSON.stringify('false'))
 };
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslationMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('PhaseBannerComponent', () => {
   let component: PhaseBannerComponent;
   let fixture: ComponentFixture<PhaseBannerComponent>;
 
-  beforeEach(() => {
-    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  } });
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RpxTranslationModule.forChild()],
+      declarations: [PhaseBannerComponent]
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
+    TestBed.configureTestingModule({
+      imports: [],
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [PhaseBannerComponent],
+      declarations: [PhaseBannerComponent, RpxTranslationMockPipe],
       providers: [
         {
           provide: RpxTranslationService,
@@ -43,7 +56,7 @@ describe('PhaseBannerComponent', () => {
     const feedbackLinkSpanElement = fixture.debugElement.query(By.css(`${feedbackLinkClass} span.visuallyhidden`)).nativeElement;
 
     expect(feedbackLinkElement.getAttribute('target')).toBe('_blank');
-    expect(feedbackLinkSpanElement.innerHTML).toEqual('');
+    expect(feedbackLinkSpanElement.innerHTML).toEqual('(Opens in a new window)');
   });
 
   it('should change the language', () => {

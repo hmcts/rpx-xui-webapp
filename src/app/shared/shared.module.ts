@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { MediaViewerModule } from '@hmcts/media-viewer';
-import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import * as fromAppComponents from '../components';
 import * as fromAppContainers from '../containers';
@@ -38,7 +38,6 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
     ...fromAppDirectives.directives,
-    ...GOV_UI_COMPONENTS,
     RpxTranslationModule
   ],
   providers: [
@@ -49,4 +48,4 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     TaskSupervisorGuard
   ],
 })
-export class SharedModule {}
+export class SharedModule { }

@@ -37,7 +37,6 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
   exports: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
-    ...fromAppDirectives.directives
     ...fromAppDirectives.directives,
     RpxTranslationModule
   ],

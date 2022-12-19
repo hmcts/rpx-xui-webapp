@@ -7,7 +7,7 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { CheckReleaseVersionService } from 'src/work-allocation/services/check-release-version.service';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';

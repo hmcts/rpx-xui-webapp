@@ -8,7 +8,7 @@ import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Store } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
-import { CheckReleaseVersionService } from 'src/work-allocation/services/check-release-version.service';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';

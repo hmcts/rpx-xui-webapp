@@ -27,7 +27,7 @@ import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';
 import * as fromActions from '../../../app/store';
-import { CheckReleaseVersionService } from 'src/work-allocation/services/check-release-version.service';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 
 @Component({
   template: `

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConstants } from 'src/app/app.constants';
+import { AppConstants } from '../../app/app.constants';
 import { FieldConfig } from '../models/common';
 
 

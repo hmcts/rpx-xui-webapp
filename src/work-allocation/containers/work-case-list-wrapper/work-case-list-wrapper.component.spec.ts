@@ -23,7 +23,7 @@ import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
 import * as fromActions from '../../../app/store';
-import { CheckReleaseVersionService } from 'src/work-allocation/services/check-release-version.service';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 
 const USER_DETAILS = {
   canShareCases: true,

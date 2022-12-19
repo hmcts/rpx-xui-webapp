@@ -143,6 +143,11 @@ describe('LinkedHearingsWithCaseComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g000101', 'h1000002']);
   });
 
+  it('should navigate to hearings tab', () => {
+    component.onCancel();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '8254902572336147', 'hearings']);
+  });
+
   it('should check on submit for manage link', () => {
     component.isManageLink = true;
     component.onSubmit();

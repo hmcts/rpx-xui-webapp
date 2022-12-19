@@ -85,5 +85,5 @@
 
 <div *ngIf="linkedCases?.length">
   <button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">Continue</button>
-  <a href="javascript:history.back()" class="link-cancel">Cancel</a>
+  <a href="javascript:void(0)" class="link-cancel" (click)="onCancel()">Cancel</a>
 </div>

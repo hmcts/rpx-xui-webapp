@@ -56,7 +56,7 @@ describe('CourtLocationAnswerConverter', () => {
 
   it('should transform type', () => {
     const STATE: State = initialState.hearings;
-    const result$ = listedVenueAnswerConverter.transformAnswer(of(STATE));
+    const result$ = listedVenueAnswerConverter.transformAnswer(of(STATE), 0);
     const type = COURT_LOCATION[0].site_name;
     const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);

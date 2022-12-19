@@ -47,7 +47,7 @@ describe('JudicialMembersAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS
     };
-    const result$ = converter.transformAnswer(of(STATE));
+    const result$ = converter.transformAnswer(of(STATE), 0);
     const option = '';
     const expected = cold('(b|)', {b: option});
     expect(result$).toBeObservable(expected);

@@ -5,6 +5,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocPhoneUkFieldComponent } from './noc-phone-uk-field.component';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 
 describe('NocPhoneUkFieldComponent', () => {
@@ -44,10 +45,13 @@ describe('NocPhoneUkFieldComponent', () => {
       ],
       imports: [
         ReactiveFormsModule,
-        UtilsModule
+        UtilsModule,
+        RpxTranslationModule.forChild(),
       ],
       providers: [
-        provideMockStore()
+        provideMockStore(),
+        RpxTranslationService,
+        RpxTranslationConfig,
       ]
     }).compileComponents();
   }));

@@ -16,6 +16,7 @@ import { PaginationParameter } from '../../models/dtos';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 
 @Component({
@@ -89,8 +90,16 @@ describe('TaskListComponent', () => {
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule,
-        PaginationModule
-      ],
+        PaginationModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
+    ],
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },

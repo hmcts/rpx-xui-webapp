@@ -6,6 +6,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { State } from '../../../app/store/reducers';
 import { CaseShareComponent } from './case-share.component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 describe('CaseShareComponent', () => {
   let component: CaseShareComponent;
@@ -31,6 +32,16 @@ describe('CaseShareComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ CaseShareComponent ],
+      imports: [
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true,
+        })
+      ],
       providers: [
         provideMockStore(),
         {

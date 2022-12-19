@@ -5,6 +5,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocDateFieldComponent } from './noc-date-field.component';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 
 
 describe('NocDateFieldComponent', () => {
@@ -44,10 +45,13 @@ describe('NocDateFieldComponent', () => {
       ],
       imports: [
         ReactiveFormsModule,
-        UtilsModule
+        UtilsModule,
+        RpxTranslationModule.forChild(),
       ],
       providers: [
-        provideMockStore()
+        provideMockStore(),
+        RpxTranslationService,
+        RpxTranslationConfig,
       ]
     }).compileComponents();
   }));

@@ -1,17 +1,22 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { AlertService, DefinitionsService, PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { State } from '../../../app/store/reducers';
 import * as converts from '../../converters/case-converter';
 import { CaseListComponent } from './case-list.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslationMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -33,7 +38,7 @@ describe('CaseListComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      declarations: [CaseListComponent],
+      declarations: [CaseListComponent, RpxTranslationMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

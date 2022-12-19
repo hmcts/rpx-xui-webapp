@@ -1,7 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocTextFieldComponent } from './noc-text-field.component';
@@ -44,10 +45,13 @@ describe('NocTextFieldComponent', () => {
       ],
       imports: [
         ReactiveFormsModule,
-        UtilsModule
+        UtilsModule,
+        RpxTranslationModule.forChild(),
       ],
       providers: [
-        provideMockStore()
+        provideMockStore(),
+        RpxTranslationService,
+        RpxTranslationConfig,
       ]
     }).compileComponents();
   }));

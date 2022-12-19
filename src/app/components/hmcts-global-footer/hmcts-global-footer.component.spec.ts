@@ -1,6 +1,7 @@
 import { Component, DebugElement, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { AppConstants } from '../../app.constants';
 import { Helper, Navigation } from '../../containers/footer/footer.model';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
@@ -34,10 +35,19 @@ describe('HmctsGlobalFooterComponent', () => {
     const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
     beforeEach(waitForAsync(() => {
+      const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
       TestBed.configureTestingModule({
         declarations: [ HmctsGlobalFooterComponent ],
         imports: [
-            RouterTestingModule
+          RouterTestingModule,
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            validity: {
+              days: 1
+            },
+            testMode: true,
+          })
         ]
       })
       .compileComponents();

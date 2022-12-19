@@ -1536,12 +1536,12 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.18-welsh-release-mockpipe":
-  version "1.7.18-welsh-release-mockpipe"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.18-welsh-release-mockpipe.tgz#c00a42a312ec08d448e6eb711e4116a6f00bbab1"
-  integrity sha512-4A6e6CKoOifu4rg5i82ra/4g3QHSubwXHkp6bdwitFyZtHABNsFFxCJsl3KAoFESisB4Id+Tvz9Sz3ygU8JFKw==
+"@hmcts/rpx-xui-common-lib@2.1.6-welsh-translation":
+  version "2.1.6-welsh-translation"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-welsh-translation.tgz#96824f270587ae0703ed07060dc3f29718fa225d"
+  integrity sha512-XOYtkCQhH0dOHFZ0DMoewTDIwiqgR1CDD0smZErioYhe2YK+CP2idVv+c9XI3OfkaQBxriX/9Iy3QH+oGcuxVw==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 "@hmcts/rpx-xui-node-lib@2.25.12":
   version "2.25.12"

@@ -33,11 +33,11 @@ Feature: WA Release 2: My work -  Available tasks
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 10001 |
+            | baseLocation | 10001 |
         
     
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
@@ -112,11 +112,11 @@ Feature: WA Release 2: My work -  Available tasks
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 10001 |
+            | baseLocation | 10001 |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -155,11 +155,11 @@ Feature: WA Release 2: My work -  Available tasks
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 10001 |
+            | baseLocation | 10001 |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

@@ -58,7 +58,7 @@ Feature: Case access management: Approve specific access request
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -108,7 +108,7 @@ Feature: Case access management: Approve specific access request
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -159,7 +159,7 @@ Feature: Case access management: Approve specific access request
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
@@ -207,7 +207,7 @@ Feature: Case access management: Approve specific access request
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -266,7 +266,7 @@ Feature: Case access management: Approve specific access request
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -305,7 +305,7 @@ Feature: Case access management: Approve specific access request
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
 
         Given I start MockApp
         Given I navigate to home page

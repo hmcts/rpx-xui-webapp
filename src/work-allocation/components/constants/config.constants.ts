@@ -313,6 +313,7 @@ export const CONFIG_CONSTANTS = {
   AllWorkCases: ALL_WORK_CASES
 };
 
+// Hearing date will not be shown except release 4
 export const CONFIG_CONSTANTS_NOT_RELEASE4 = {
   AvailableTasksForLegalOps: AVAILABLE_TASKS_FOR_LEGAL_OPS.filter(task => task.name !== 'hearing_date'),
   MyCases: MY_CASES.filter(task => task.name !== 'hearing_date'),

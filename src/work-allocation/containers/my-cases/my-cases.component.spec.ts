@@ -7,7 +7,7 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { CheckReleaseVersionService } from 'src/work-allocation/services/check-release-version.service';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';

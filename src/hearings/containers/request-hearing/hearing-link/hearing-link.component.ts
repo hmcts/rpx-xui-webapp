@@ -1,13 +1,15 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
-import {ACTION, HearingLinkMessages} from '../../../models/hearings.enum';
-import {ServiceLinkedCasesModel} from '../../../models/linkHearings.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { of, Subscription } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
+import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-link',
@@ -16,6 +18,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseId: string;
   public linkedCases: ServiceLinkedCasesModel[];
+  public caseLinkingReasonCodes: LovRefDataModel[] = [];
   public hearingLinkForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public caseName: string;
@@ -26,12 +29,13 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
               protected readonly hearingsService: HearingsService,
               protected readonly route: ActivatedRoute,
               private readonly formBuilder: FormBuilder) {
-    super(hearingStore, hearingsService);
+    super(hearingStore, hearingsService, route);
     this.caseId = this.hearingListMainModel.caseRef || '';
     this.caseName = this.serviceHearingValuesModel.publicCaseName || '';
   }
 
   public ngOnInit(): void {
+    // this.caseLinkingReasonCodes = this.route.snapshot.data.caseLinkingReasonCodes;
     this.hearingLinkForm = this.formBuilder.group({
       hearingLink: ['', Validators.required],
     });
@@ -40,14 +44,42 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
       caseReference: this.caseId,
       hearingId: ''
     }));
+
+    this.hearingsService.loadCaseLinkingReasonCodes().pipe(
+      switchMap((caseLinkingReasonCodes: LovRefDataModel[]) => {
+        return of(caseLinkingReasonCodes)
+      }),
+      tap(caseLinkingReasonCodes => {
+        console.log(caseLinkingReasonCodes);
+      }),
+      switchMap((caseLinkingReasonCodes) => {
+        return caseLinkingReasonCodes.map(x => x.value_en);
+      })
+    ).subscribe(result => {
+      console.log('RESULT', result);
+    });
+
     this.hearingLinksSub = this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe(
       hearingLinks => {
         if (hearingLinks.serviceLinkedCases) {
           this.linkedCases = hearingLinks.serviceLinkedCases;
+          this.parseCaseLinkReasonCodes();
           this.showSpinner = false;
         }
       }
     );
+  }
+
+  public parseCaseLinkReasonCodes(): void {
+    this.linkedCases.forEach(linkedCase => {
+      linkedCase.reasonsForLink.forEach(code => {
+        const caseLinkingReason = this.caseLinkingReasonCodes.find(reasonCode => reasonCode.key === code);
+        console.log(caseLinkingReason);
+        if (caseLinkingReason) {
+          code = caseLinkingReason.value_en;
+        }
+      });
+    });
   }
 
   public initialiseFromHearingValues(): void {

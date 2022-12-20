@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
-import { AlertService, LoadingService, PipesModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService, PipesModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { SharedModule } from '../app/shared/shared.module';
@@ -43,7 +43,8 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     WorkAllocationFeatureService,
     WASupportedJurisdictionsService,
     ServiceRefDataService,
-    LoadingService
+    LoadingService,
+    SessionStorageService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

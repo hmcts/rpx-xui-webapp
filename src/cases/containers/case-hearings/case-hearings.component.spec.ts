@@ -516,7 +516,7 @@ describe('CaseHearingsComponent', () => {
 
   it('should have first Update section status hearing with hearing status as Waiting', (done) => {
     component.upcomingHearings$.subscribe(hearing => {
-      expect(hearing[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.AWAITING_LISTING);
+      expect(hearing[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.UPDATE_REQUESTED);
       done();
     });
   });
@@ -567,9 +567,9 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should have the cancel and passed section status hearings with Cancel listing state and no hearing date assigned in creation date order', (done) => {
-    component.pastAndCancelledHearings$.subscribe(hearing => {
-      expect(hearing[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
-      expect(hearing[1].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
+    component.pastAndCancelledHearings$.subscribe(hearings => {
+      expect(hearings[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.VACATED);
+      expect(hearings[1].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
       done();
     });
   });

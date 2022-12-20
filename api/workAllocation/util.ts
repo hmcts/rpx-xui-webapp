@@ -369,7 +369,6 @@ export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment
   );
 }
 
-
 export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
   : Promise<RoleCaseData[]> {
   const specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignmentList);

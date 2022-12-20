@@ -122,7 +122,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : "functional-output/tests/smoke/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
@@ -133,7 +133,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : "functional-output/tests/functional/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Functional Test'
         ])
@@ -142,7 +142,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/api_functional/",
+            reportDir            : "functional-output/tests/api_functional/",
             reportFiles          : 'mochawesome.html',
             reportName           : 'PREVIEW API Functional Test'
         ])
@@ -151,7 +151,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/ngIntegration/",
+            reportDir            : "functional-output/tests/ngIntegration/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW NG Integration Test'
         ])

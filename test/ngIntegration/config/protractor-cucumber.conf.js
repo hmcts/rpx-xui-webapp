@@ -143,7 +143,7 @@ const config = {
         'fail-fast': argv.failFast ? argv.failFast.includes("true") : false,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
+        format: ['node_modules/cucumber-pretty', 'json:functional-output/ngIntegrationtests/json/results.json'],
         tags: getBDDTags() ,
         require: [
             '../../e2e/support/timeout.js',

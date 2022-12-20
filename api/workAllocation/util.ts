@@ -360,17 +360,15 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
 
 export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment[]) {
   return roleAssignmentList.filter(roleAssignment =>
-    (roleAssignment.grantType === 'SPECIFIC'
-      ||
-      roleAssignment.roleName === 'specific-access-requested'
-      ||
+    (
+      roleAssignment.grantType === 'SPECIFIC' ||
+      roleAssignment.roleName === 'specific-access-requested' ||
       roleAssignment.roleName === 'specific-access-denied'
-      ||
-      roleAssignment.grantType === 'CHALLENGED')
-    &&
+    ) &&
     (!roleAssignment.attributes || roleAssignment.attributes.substantive !== 'Y')
   );
 }
+
 
 export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
   : Promise<RoleCaseData[]> {

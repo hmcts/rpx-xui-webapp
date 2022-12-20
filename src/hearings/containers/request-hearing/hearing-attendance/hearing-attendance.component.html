@@ -35,29 +35,29 @@
             </div>
         </fieldset>
       </div>
-      <div  class="govuk-form-group" *ngIf="attendanceFormGroup.controls.paperHearing.value === 'No'"
-            [ngClass]="{'govuk-form-group--error' : !selectionValid}" formGroupName="parties">
-          <div class="govuk-form-group">
+      <div class="govuk-form-group" *ngIf="attendanceFormGroup.controls.paperHearing.value === 'No'">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            <h1 class="govuk-fieldset__heading">
+              In which ways can the participants attend this hearing?
+            </h1>
+          </legend>
+          <div class="govuk-form-group govuk-!-margin-bottom-3" id="facilitiesList">
             <fieldset class="govuk-fieldset">
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                <h1 class="govuk-fieldset__heading">
-                  In which ways can the participants attend this hearing?
-                </h1>
-              </legend>
-              <div class="govuk-form-group govuk-!-margin-bottom-3" id="facilitiesList">
-                <fieldset class="govuk-fieldset">
-                  <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                    <div id="checkbox-addition-facility" class="govuk-checkboxes checkbox-row" formArrayName="hearingLevelChannels" data-module="govuk-checkboxes">
-                      <div class="govuk-checkboxes__item" *ngFor="let attendance of hearingLevelChannels$ | async" [formGroupName]="pos">
-                        <input class="govuk-checkboxes__input" id="{{attendance.key}}" name="pos" type="checkbox" formControlName="selected" [value]="attendance.value_en">
-                        <label class="govuk-label govuk-checkboxes__label" for="{{attendance.key}}" >{{attendance.value_en}}</label>
-                      </div>
-                    </div>
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div id="checkbox-addition-facility" class="govuk-checkboxes checkbox-row" formArrayName="hearingLevelChannels" data-module="govuk-checkboxes">
+                  <div class="govuk-checkboxes__item" *ngFor="let attendance of hearingLevelChannels$ | async" [formGroupName]="pos">
+                    <input class="govuk-checkboxes__input" id="{{attendance.key}}" name="pos" type="checkbox" formControlName="selected" [value]="attendance.value_en">
+                    <label class="govuk-label govuk-checkboxes__label" for="{{attendance.key}}" >{{attendance.value_en}}</label>
                   </div>
-                </fieldset>
+                </div>
               </div>
             </fieldset>
           </div>
+        </fieldset>
+      </div>
+      <div  class="govuk-form-group" *ngIf="attendanceFormGroup.controls.paperHearing.value === 'No'"
+            [ngClass]="{'govuk-form-group--error' : !selectionValid}" formGroupName="parties">
          <span *ngIf=" !selectionValid"
             id="party-selection-error"
             class="govuk-error-message">

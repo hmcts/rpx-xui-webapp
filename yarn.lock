@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.38-case-flags-table-alignment":
-  version "5.0.38-case-flags-table-alignment"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.38-case-flags-table-alignment.tgz#d7d7f0f52926636ee9169516677a89d3e8bf35d4"
-  integrity sha512-m+zHVIPVVZtc9+pp7dCYrVt97f2/g+LOFZwiB2YoUnVsvTYUaCfjJhFMt3jN9bB+4l+Xw/+kbLBFHjNwDwI+Nw==
+"@hmcts/ccd-case-ui-toolkit@5.0.40-case-edit-module-for-integration":
+  version "5.0.40-case-edit-module-for-integration"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.40-case-edit-module-for-integration.tgz#c98fada6f34dbad67cd8f98a89901d9069b51e25"
+  integrity sha512-Liv0NCYWnHuzE3kP7/yjwGnyr5q5I885gx19x9VEbGGVdLUul4HFe4ieNDYonMtdZVbTGMSBzCf/f2XMfjLdow==
   dependencies:
     tslib "^2.0.0"
 

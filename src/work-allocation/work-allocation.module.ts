@@ -4,8 +4,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
-import { AlertService, LoadingService, PipesModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService, PaginationModule, PipesModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { SharedModule } from '../app/shared/shared.module';
 import { BookingService } from '../booking/services';
@@ -31,7 +32,9 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     ExuiCommonLibModule,
     PriorityFieldComponentModule,
     ReactiveFormsModule,
-    RoleAccessModule
+    RoleAccessModule,
+    PaginationModule,
+    NgxPaginationModule
   ],
   declarations: [...fromContainers.containers],
   providers: [

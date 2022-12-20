@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.36-prl-integration-merge-into-angular-11":
-  version "5.0.36-prl-integration-merge-into-angular-11"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.36-prl-integration-merge-into-angular-11.tgz#938942b557edee402689af2702a9f5f656524de3"
-  integrity sha512-m32Lu6IJA0N0MZ8shPSBhxTNNGvCSd2wBxfBYylKveRb424ZQhmiEqG0zmzTzuYl3/1oIWPDh/wuTKcyPwKz0w==
+"@hmcts/ccd-case-ui-toolkit@5.0.38-case-flags-table-alignment":
+  version "5.0.38-case-flags-table-alignment"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.38-case-flags-table-alignment.tgz#d7d7f0f52926636ee9169516677a89d3e8bf35d4"
+  integrity sha512-m+zHVIPVVZtc9+pp7dCYrVt97f2/g+LOFZwiB2YoUnVsvTYUaCfjJhFMt3jN9bB+4l+Xw/+kbLBFHjNwDwI+Nw==
   dependencies:
     tslib "^2.0.0"
 

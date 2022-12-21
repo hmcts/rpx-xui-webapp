@@ -48,12 +48,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       const searchParameters: SearchTaskParameter [] = [
         { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }
       ];
-      //To support release 3. Will be deprecated and removed
-      let requestContext: SearchTaskParameter;      
-      if (!this.updatedTaskPermission) {
-        requestContext = { key: 'available_tasks_only', operator: 'BOOLEAN', value: true }
-      }
-      searchParameters.push(requestContext);
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();
       if (locationParameter) {

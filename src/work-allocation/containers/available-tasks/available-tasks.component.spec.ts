@@ -149,7 +149,7 @@ describe('AvailableTasksComponent', () => {
     const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
     component.selectedWorkTypes = workTypes;
     const searchRequest = component.getSearchTaskRequestPagination();
-    const searchParameter = searchRequest.search_parameters[3];
+    const searchParameter = searchRequest.search_parameters[2];
     expect(searchRequest.request_context).toEqual(TaskContext.AVAILABLE_TASKS);
     expect(searchParameter.key).toBe('work_type');
     expect(searchParameter.values).toBe(workTypes);

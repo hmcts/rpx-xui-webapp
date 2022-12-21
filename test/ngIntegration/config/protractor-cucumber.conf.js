@@ -143,7 +143,7 @@ const config = {
         'fail-fast': argv.failFast ? argv.failFast.includes("true") : false,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
+        format: ['node_modules/cucumber-pretty', 'json:functional-output/reports/ngIntegrationtests/json/results.json'],
         tags: getBDDTags() ,
         require: [
             '../../e2e/support/timeout.js',
@@ -167,8 +167,8 @@ const config = {
                 removeExistingJsonReportFile: true,
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
-                jsonDir: 'reports/tests/ngIntegration',
-                reportPath: 'reports/tests/ngIntegration',
+                jsonDir: 'functional-output/reports/tests/ngIntegration',
+                reportPath: 'functional-output/reports/tests/ngIntegration',
                 displayDuration : true,
                 durationInMS : false
             }

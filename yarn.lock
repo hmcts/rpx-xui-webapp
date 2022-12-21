@@ -546,10 +546,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.19-fix-find-person-issue1":
-  version "1.7.19-fix-find-person-issue1"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.19-fix-find-person-issue1.tgz#70938dc53e925fe862209e2612ace3ad5460b26d"
-  integrity sha512-PFRC8fzqQ0qoXqaUqJ8Zr3rglwRNwb/NVIpV9OWCl0Pg1Zk+r/JIWi3AkjzdTjxpWJJqmn1AKQfvLoA4yQHrAg==
+"@hmcts/rpx-xui-common-lib@1.7.19-fix-filter-persistance-issue":
+  version "1.7.19-fix-filter-persistance-issue"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.19-fix-filter-persistance-issue.tgz#892b05cd33d16d917b99984459de2d181990cd0a"
+  integrity sha512-ycrjtTYdt2d6ByeZjkWXFIMhXPznCZcqQYHxNhqNdJfdCSADdhSztZqxvmn6iCLKZOEoNds+A58Kz/yuTAv0YA==
   dependencies:
     tslib "^1.9.0"
 

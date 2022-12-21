@@ -13,6 +13,7 @@ import {
   chooseAllocateToVisibilityStates,
   chooseDurationVisibilityStates,
   chooseRoleVisibilityStates,
+  noRolesErrorVisibilityStates,
   searchPersonVisibilityStates
 } from '../../../constants/allocate-role-page-visibility-states';
 import {
@@ -25,8 +26,7 @@ import {
   DEFINED_ROLES,
   DurationOfRole,
   RoleCategory,
-  SpecificRole,
-  TypeOfRole
+  SpecificRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
@@ -43,21 +43,22 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
-  @ViewChild('chooseRole', {read: ChooseRoleComponent})
+  @ViewChild('chooseRole', {static: false, read: ChooseRoleComponent})
   public chooseRoleComponent: ChooseRoleComponent;
 
-  @ViewChild('chooseAllocateTo', {read: ChooseAllocateToComponent})
+  @ViewChild('chooseAllocateTo', {static: false, read: ChooseAllocateToComponent})
   public chooseAllocateToComponent: ChooseAllocateToComponent;
 
-  @ViewChild('searchPerson', {read: AllocateRoleSearchPersonComponent})
+  @ViewChild('searchPerson', {static: false, read: AllocateRoleSearchPersonComponent})
   public searchPersonComponent: AllocateRoleSearchPersonComponent;
 
-  @ViewChild('chooseDuration', {read: ChooseDurationComponent})
+  @ViewChild('chooseDuration', {static: false, read: ChooseDurationComponent})
   public chooseDurationComponent: ChooseDurationComponent;
 
-  @ViewChild('checkAnswers', {read: AllocateRoleCheckAnswersComponent})
+  @ViewChild('checkAnswers', {static: false, read: AllocateRoleCheckAnswersComponent})
   public checkAnswersComponent: AllocateRoleCheckAnswersComponent;
 
+  public noRolesErrorVisibilityStates = noRolesErrorVisibilityStates;
   public chooseRoleVisibilityStates = chooseRoleVisibilityStates;
   public chooseAllocateToVisibilityStates = chooseAllocateToVisibilityStates;
   public searchPersonVisibilityStates = searchPersonVisibilityStates;
@@ -142,6 +143,9 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    if (this.action !== Actions.Reallocate) {
+      this.store.dispatch(new fromFeature.LoadRoles({jurisdiction: this.jurisdiction, roleCategory: this.roleCategory}));
+    }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.navigationCurrentState = allocateRoleStateData.state;
@@ -170,6 +174,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     this.navigationHandler(event);
   }
 
+  // TODO: Need extra logic when we know admin roles
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.BACK: {
@@ -203,6 +208,9 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                     throw new Error('Invalid user role');
                 }
                 break;
+              case RoleCategory.ADMIN:
+                this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+                break;
               default:
                 throw new Error('Invalid user type');
             }
@@ -229,6 +237,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                         }
                         break;
                       case RoleCategory.LEGAL_OPERATIONS:
+                      case RoleCategory.ADMIN:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                         break;
                       default:
@@ -238,6 +247,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                   case UserRole.LegalOps:
                     switch (this.roleCategory) {
                       case RoleCategory.JUDICIAL:
+                      case RoleCategory.ADMIN:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                         break;
                       case RoleCategory.LEGAL_OPERATIONS:

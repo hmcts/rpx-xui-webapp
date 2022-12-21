@@ -1,18 +1,17 @@
-import * as chai from 'chai';
-import { expect } from 'chai'
-
-import { PactTestSetup } from '../settings/provider.mock';
+import { expect } from 'chai';
+import * as config from 'config';
 // import { searchTasks } from "../../pactUtil";
-import * as sinon from 'sinon'
-
-import * as config from 'config'
+import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
-import { getSearchTaskOverrides} from '../utils/configOverride';
+import { PactTestSetup } from '../settings/provider.mock';
+import { getSearchTaskOverrides } from '../utils/configOverride';
+import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 
+
+
+
 const { Matchers } = require('@pact-foundation/pact');
-import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search', port: 8000 });
 
@@ -44,8 +43,8 @@ describe("Task management api, Search task", () => {
                 "location_name": somethingLike("Taylor House"),
                 "case_type_id": somethingLike("Asylum"),
                 "case_id": somethingLike("1617708245335311"),
-                "case_category": somethingLike("refusalOfHumanRights"), 
-                "case_name": somethingLike("Bob Smith"),  
+                "case_category": somethingLike("refusalOfHumanRights"),
+                "case_name": somethingLike("Bob Smith"),
                 "warnings": somethingLike(false),
                 "permissions": taskPermissions
             },
@@ -101,7 +100,7 @@ describe("Task management api, Search task", () => {
         });
 
         before(async () => {
-           
+
             await pactSetUp.provider.setup()
             const interaction = {
                 state: "appropriate tasks are returned by criteria",
@@ -139,8 +138,8 @@ describe("Task management api, Search task", () => {
             sandbox.stub(config,'get').callsFake((prop) =>{
                 return configValues[prop];
             });
-            
-            const { searchTask } = requireReloaded('../../../../workAllocation2/index');
+
+            const { searchTask } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers:{
@@ -164,7 +163,7 @@ describe("Task management api, Search task", () => {
 
             try{
                 await searchTask(req, response, next);
-              
+
                 assertResponses(returnedResponse);
                 pactSetUp.provider.verify()
                 pactSetUp.provider.finalize()
@@ -174,7 +173,7 @@ describe("Task management api, Search task", () => {
                 pactSetUp.provider.finalize()
                 throw new Error(err);
             }
-          
+
         })
     })
 })

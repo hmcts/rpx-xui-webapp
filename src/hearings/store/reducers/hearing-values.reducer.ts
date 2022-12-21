@@ -17,7 +17,8 @@ export function hearingValuesReducer(currentState = initialHearingValuesState,
     case fromActions.LOAD_HEARING_VALUES_SUCCESS: {
       return {
         ...currentState,
-        serviceHearingValuesModel: action.payload
+        serviceHearingValuesModel: action.payload,
+        lastError: null
       };
     }
     case fromActions.LOAD_HEARING_VALUES_FAILURE: {

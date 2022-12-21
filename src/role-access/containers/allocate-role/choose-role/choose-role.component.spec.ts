@@ -1,24 +1,23 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-
 import { UserRole } from '../../../../app/models';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
 import {
-  Actions,
-  AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateRoleStateData,
-  RoleCategory,
+    Actions,
+    AllocateRoleNavigationEvent,
+    AllocateRoleState,
+    AllocateRoleStateData,
+    RoleCategory
 } from '../../../models';
-import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 import { ChooseRoleComponent } from './choose-role.component';
+
 
 const firstRoleOptions = [{optionId: 'lead-judge', optionValue: 'Lead judge'},
   {optionId: 'hearing-judge', optionValue: 'Hearing judge'}];
@@ -47,8 +46,6 @@ describe('ChooseRoleComponent', () => {
   let fixture: ComponentFixture<ChooseRoleComponent>;
   const mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
 
-  const mockAllocateRoleService = jasmine.createSpyObj('allocateRoleService', ['getValidRoles']);
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -69,7 +66,6 @@ describe('ChooseRoleComponent', () => {
             },
           }
         },
-        {provide: AllocateRoleService, useValue: mockAllocateRoleService}
       ]
     })
       .compileComponents();
@@ -79,8 +75,7 @@ describe('ChooseRoleComponent', () => {
     fixture = TestBed.createComponent(ChooseRoleComponent);
     component = fixture.componentInstance;
     component.formGroup = formGroup;
-    mockStore.pipe.and.returnValue(of(mockAllocateRoleStateData));
-    mockAllocateRoleService.getValidRoles.and.returnValue(of(personRoles));
+    mockStore.pipe.and.returnValue(of(personRoles));
     fixture.detectChanges();
   });
 

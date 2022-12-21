@@ -1,4 +1,3 @@
-import { FocusMonitor } from '@angular/cdk/a11y';
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup, ValidatorFn } from '@angular/forms';
 import * as moment from 'moment';
@@ -27,8 +26,8 @@ export class ValidatorsUtils {
 
   public numberLargerThanValidator(greaterThan: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      const inputNumber = Number(control.value);
-      return control.value ? !isNaN(Number(control.value)) && inputNumber >= greaterThan ? null : { isValid: false } : { isValid: false };
+      const inputNumber = Number(control.value) || 0;
+      return !isNaN(Number(control.value)) && inputNumber >= greaterThan ? null : { isValid: false };
     };
   }
 
@@ -46,12 +45,12 @@ export class ValidatorsUtils {
     };
   }
 
-  public minutesValidator(minNumber: number, maxNumber: number, totalNumber: number): ValidatorFn {
+  public hearingLengthValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
+      const days = Number(control.get('days').value) || 0;
       const hours = Number(control.get('hours').value) || 0;
       const minutes = Number(control.get('minutes').value) || 0;
-      const totalMinutes = (hours * 60) + minutes;
-      return totalMinutes >= minNumber && minutes <= maxNumber && totalMinutes <= totalNumber ? null : { isValid: false };
+      return days > 0 || hours > 0 || minutes > 0 ? null : { isValid: false };
     };
   }
 
@@ -79,6 +78,13 @@ export class ValidatorsUtils {
     return businessDays;
   }
 
+  public isWeekendDate(date: moment.Moment): boolean {
+    if (date && date.day() === 0 || date.day() === 6) {
+      return true;
+    }
+    return false;
+  }
+
   public hearingDateRangeValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const firstDateRangeList = Object.values(control.value[Object.keys(control.value)[0]]);
@@ -90,12 +96,13 @@ export class ValidatorsUtils {
       const firstDate = moment(firstDateRangeList.join('-'), HearingDateEnum.DefaultFormat);
       const secondDate = moment(secondDateRangeList.join('-'), HearingDateEnum.DefaultFormat);
       const isLatestDate = (isValidFirstDate && isValidSecondDate) ? secondDate >= firstDate : (isValidFirstDate || isValidSecondDate);
-      const numberOfBusinessDays = this.calcBusinessDays(firstDate, secondDate);
+      const isEarliestDateWeekendDate = this.isWeekendDate(firstDate);
+      const isLatestDateWeekendDate = this.isWeekendDate(secondDate);
       return (isValidFirstDate || isValidSecondDate) && (firstDateNullLength === 0 || firstDateNullLength === 3) && (secondDateNullLength === 0 || secondDateNullLength === 3) &&
         (firstDate.isValid() || secondDate.isValid()) && isLatestDate &&
         (isValidFirstDate ? (firstDate.isAfter() || firstDate.isSame(new Date(), 'd')) : true) &&
         (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true) &&
-        numberOfBusinessDays !== 0
+        !isEarliestDateWeekendDate && !isLatestDateWeekendDate
         ? null : { isValid: false };
     };
   }
@@ -169,8 +176,18 @@ export class ValidatorsUtils {
 
   public validateLinkedHearings(): ValidatorFn {
     return (formGroup: FormGroup) => {
-      const formArrayValue = formGroup && formGroup.value;
-      return formArrayValue.find(entry => entry.hearingReference !== null) ? null : { error: true };
+      const linkedCases = formGroup.value.linkedCasesWithHearings;
+      if (linkedCases) {
+        let isHearingSelected: boolean;
+        linkedCases.forEach((caseInfo) => {
+          if (caseInfo.caseHearings.find((hearingInfo) => !!hearingInfo.isSelected)) {
+            isHearingSelected = true;
+          }
+        });
+        return isHearingSelected ? null : { error: true };
+      } else {
+        return null;
+      }
     };
   }
 }

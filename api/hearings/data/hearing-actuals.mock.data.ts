@@ -17,6 +17,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
         hearingEndTime: '2021-03-13T10:00:00.000Z',
         pauseDateTimes: [],
         actualDayParties: [],
+        notRequired: false,
       },
     ],
   },
@@ -37,7 +38,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company D',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'appellant',
             partyChannelSubType: 'video-teams',
           },
@@ -51,7 +52,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: '5',
+            partyID: '5',
             partyRole: 'claimant',
             partyChannelSubType: 'video-teams',
           },
@@ -71,7 +72,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company E',
             },
-            partyId: '2',
+            partyID: '2',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
@@ -85,7 +86,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company C',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
@@ -105,7 +106,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company B',
             },
-            partyId: '1',
+            partyID: '1',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
@@ -119,7 +120,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company E',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Other',
           },
@@ -139,7 +140,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company D',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
@@ -153,7 +154,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: '4',
+            partyID: '4',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Letter',
           },
@@ -176,19 +177,19 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'Personal Independence Payment',
-      },
-      {
+        categoryValue: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Conditions of Entitlement',
-      },
-      {
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Good cause',
-      },
-      {
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-002',
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
@@ -210,6 +211,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
         hearingDate: '2021-03-12',
         hearingStartTime: '2021-03-12T09:00:00.000Z',
         hearingEndTime: '2021-03-13T10:00:00.000Z',
+        notRequired: false,
         pauseDateTimes: [{
           pauseStartTime: '2021-03-12T10:10:00.000Z',
           pauseEndTime: '2021-03-12T11:15:00.000Z',
@@ -218,13 +220,11 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
           {
             actualPartyId: '3',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             partyChannelSubType: 'video-teams',
             partyRole: 'Interpreter',
             representedParty: null,
@@ -232,13 +232,11 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
           {
             actualPartyId: '5',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'DWP',
               lastName: '',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-btMeetMe',
             partyRole: 'Interpreter',
             representedParty: null,
@@ -246,13 +244,11 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
           {
             actualPartyId: '10',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Tom',
               lastName: 'Cruise',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-CVP',
             partyRole: 'Interpreter',
             representedParty: '3',
@@ -278,7 +274,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company D',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'appellant',
             partyChannelSubType: 'telephone-CVP',
           },
@@ -292,7 +288,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: '5',
+            partyID: '5',
             partyRole: 'claimant',
             partyChannelSubType: 'video-teams',
           },
@@ -312,7 +308,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company E',
             },
-            partyId: '2',
+            partyID: '2',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
@@ -326,7 +322,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company C',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
@@ -346,7 +342,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company B',
             },
-            partyId: '1',
+            partyID: '1',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
@@ -360,7 +356,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company E',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Other',
           },
@@ -380,7 +376,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company D',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
@@ -394,7 +390,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: '4',
+            partyID: '4',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Letter',
           },
@@ -417,19 +413,19 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'Personal Independence Payment',
-      },
-      {
+        categoryValue: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Conditions of Entitlement',
-      },
-      {
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Good cause',
-      },
-      {
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-002',
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
@@ -451,6 +447,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
         hearingDate: '2021-03-12',
         hearingStartTime: '2021-03-12T09:00:00.000Z',
         hearingEndTime: '2021-03-13T10:00:00.000Z',
+        notRequired: false,
         pauseDateTimes: [{
           pauseStartTime: '2021-03-12T10:10:00.000Z',
           pauseEndTime: '2021-03-12T11:15:00.000Z',
@@ -459,13 +456,11 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
           {
             actualPartyId: '3',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             partyChannelSubType: 'video-teams',
             partyRole: 'Interpreter',
             representedParty: null,
@@ -473,13 +468,11 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
           {
             actualPartyId: '5',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'DWP',
               lastName: '',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-btMeetMe',
             partyRole: 'Interpreter',
             representedParty: null,
@@ -487,13 +480,11 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
           {
             actualPartyId: '10',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Tom',
               lastName: 'Cruise',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-CVP',
             partyRole: 'Interpreter',
             representedParty: '3',
@@ -519,7 +510,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company D',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'appellant',
             partyChannelSubType: 'telephone-CVP',
           },
@@ -533,7 +524,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: '5',
+            partyID: '5',
             partyRole: 'claimant',
             partyChannelSubType: 'video-teams',
           },
@@ -553,7 +544,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company E',
             },
-            partyId: '2',
+            partyID: '2',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
@@ -567,7 +558,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company C',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
@@ -587,7 +578,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company B',
             },
-            partyId: '1',
+            partyID: '1',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
@@ -601,7 +592,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company E',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Other',
           },
@@ -621,7 +612,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company D',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
@@ -635,7 +626,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: '4',
+            partyID: '4',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Letter',
           },
@@ -658,19 +649,19 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'Personal Independence Payment',
-      },
-      {
+        categoryValue: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Conditions of Entitlement',
-      },
-      {
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Good cause',
-      },
-      {
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-002',
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
@@ -692,6 +683,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
         hearingDate: '2021-03-12',
         hearingStartTime: '2021-03-12T09:00:00.000+0000',
         hearingEndTime: '2021-03-13T10:00:00.000+0000',
+        notRequired: false,
         pauseDateTimes: [{
           pauseStartTime: '2021-03-12T10:10:00.000+0000',
           pauseEndTime: '2021-03-12T11:15:00.000+0000',
@@ -700,13 +692,11 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
           {
             actualPartyId: '3',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             partyChannelSubType: 'video-teams',
             partyRole: 'Interpreter',
             representedParty: null,
@@ -714,13 +704,11 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
           {
             actualPartyId: '5',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'DWP',
               lastName: '',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-btMeetMe',
             partyRole: 'Interpreter',
             representedParty: null,
@@ -728,13 +716,11 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
           {
             actualPartyId: '10',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Tom',
               lastName: 'Cruise',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
-            },
+            actualOrganisationName: 'Company A',
             partyChannelSubType: 'telephone-CVP',
             partyRole: 'Interpreter',
             representedParty: '3',
@@ -760,7 +746,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company D',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'appellant',
             partyChannelSubType: 'telephone-CVP',
           },
@@ -774,7 +760,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: '5',
+            partyID: '5',
             partyRole: 'claimant',
             partyChannelSubType: 'video-teams',
           },
@@ -794,7 +780,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company E',
             },
-            partyId: '2',
+            partyID: '2',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
@@ -808,7 +794,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company C',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
@@ -828,7 +814,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company B',
             },
-            partyId: '1',
+            partyID: '1',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
@@ -842,7 +828,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company E',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Other',
           },
@@ -862,7 +848,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company D',
             },
-            partyId: '3',
+            partyID: '3',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
@@ -876,7 +862,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: '4',
+            partyID: '4',
             partyRole: 'Interpreter',
             partyChannelSubType: 'Letter',
           },
@@ -899,19 +885,19 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'Personal Independence Payment',
-      },
-      {
+        categoryValue: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Conditions of Entitlement',
-      },
-      {
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Good cause',
-      },
-      {
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-002',
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,

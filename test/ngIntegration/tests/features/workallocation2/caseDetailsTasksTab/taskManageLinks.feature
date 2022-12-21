@@ -1,39 +1,39 @@
 
-@ng @integration_todo  
+@ng
 Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
 
     Feature Description
 
     Background: Mock setup
 
-      
+
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
 
         Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | task_title                                | assignee    | assigneeName | created_date | due_date | permissions        | warnings | description                                                                             |
-            | Task 1                                    | thissession | Test user    | -10          | -1      | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
-            | Task 2                                    | someone     | Test 2 user  | -10          | 0       | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
-            | Task 3                                    |             |              | -10          | 1       | Own,Manage,Execute | true     |                                                                                         |
-            | Task 4                                    |             |              | -10          | 10      |                    | true     |                                                                                         |
-            | Task 5                                    |             |              | -10          | 10      |                    | true     |                                                                                         |
-            | 6 Permissions OME assined to me           | thissession | Test user    | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
-            | 7 Permissions OME assigned to someother   | someone     | Test 3 user  | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
-            | 8 Permissions OME unassigned              |             |              | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
-            | 9 Permissions ME assined to me            | thissession | Test user    | -10          | 10      | Manage,Execute     | true     |                                                                                         |
-            | 10 Permissions ME assigned to someother   | someone     | Test 4 user  | -10          | 10      | Manage,Execute     | true     |                                                                                         |
-            | 11 Permissions ME unassigned              |             |              | -10          | 10      | Manage,Execute     | true     |                                                                                         |
-            | 12 Permissions M assigned to someother    | someone     | Test 5 user  | -10          | 10      | Manage             | true     |                                                                                         |
-            | 13 Permissions M unassigned               |             |              | -10          | 10      | Manage             | true     |                                                                                         |
-            | 14 Permissions none assigned to someother | someone     | Test 6 user  | -10          | 10      |                    | true     |                                                                                         |
-            | 15 Permissions none unassigned            |             |              | -10          | 10      |                    | true     |                                                                                         |
+            | task_title                                | assignee    | assigneeName | created_date | due_date | permissions        | warnings | warning_list  | description                                                                             |
+            | Task 1                                    | thissession | Test user    | -10          | -1       | Own,Manage,Execute | true     | warn 1, warn2 | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
+            | Task 2                                    | someone     | Test 2 user  | -10          | 0        | Own,Manage,Execute | true     | warn 1, warn2 | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
+            | Task 3                                    |             |              | -10          | 1        | Own,Manage,Execute | true     | warn 1, warn2 |                                                                                         |
+            | Task 4                                    |             |              | -10          | 10       |                    | true     | warn 1, warn2 |                                                                                         |
+            | Task 5                                    |             |              | -10          | 10       |                    | true     | warn 1, warn2 |                                                                                         |
+            | 6 Permissions OME assined to me           | thissession | Test user    | -10          | 10       | Own,Manage,Execute | true     | warn 1, warn2 |                                                                                         |
+            | 7 Permissions OME assigned to someother   | someone     | Test 3 user  | -10          | 10       | Own,Manage,Execute | true     | warn 1, warn2 |                                                                                         |
+            | 8 Permissions OME unassigned              |             |              | -10          | 10       | Own,Manage,Execute | true     | warn 1, warn2 |                                                                                         |
+            | 9 Permissions ME assined to me            | thissession | Test user    | -10          | 10       | Manage,Execute     | true     | warn 1, warn2 |                                                                                         |
+            | 10 Permissions ME assigned to someother   | someone     | Test 4 user  | -10          | 10       | Manage,Execute     | true     | warn 1, warn2 |                                                                                         |
+            | 11 Permissions ME unassigned              |             |              | -10          | 10       | Manage,Execute     | true     | warn 1, warn2 |                                                                                         |
+            | 12 Permissions M assigned to someother    | someone     | Test 5 user  | -10          | 10       | Manage             | true     | warn 1, warn2 |                                                                                         |
+            | 13 Permissions M unassigned               |             |              | -10          | 10       | Manage             | true     | warn 1, warn2 |                                                                                         |
+            | 14 Permissions none assigned to someother | someone     | Test 6 user  | -10          | 10       |                    | true     | warn 1, warn2 |                                                                                         |
+            | 15 Permissions none unassigned            |             |              | -10          | 10       |                    | true     | warn 1, warn2 |                                                                                         |
 
     Scenario: Task manage link actions Assign to me
-       
+
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
@@ -44,7 +44,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
 
         Then I validate case details task tab page is displayed
         Then I validate task tab alert banner header is "Task alert"
-        Then I validate task tab alert banner message is "An application is pending a decision. Consider if this application has an impact on any other tasks you might wish to complete."
+        Then I validate task tab alert banner message is "warn 1"
         Then I validate task tab active tasks container displayed
         Then I validate task tab active tasks displayed count 15
 
@@ -52,7 +52,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
         Then I see case details tab label "Tasks" is displayed is "true"
         Then I see case details page with message banner "You've assigned yourself a task"
 
-    
+
     Scenario: Task manage link actions Reassign
 
         Given I start MockApp
@@ -65,7 +65,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
 
         Then I validate case details task tab page is displayed
         Then I validate task tab alert banner header is "Task alert"
-        Then I validate task tab alert banner message is "An application is pending a decision. Consider if this application has an impact on any other tasks you might wish to complete."
+        Then I validate task tab alert banner message is "warn 1"
         Then I validate task tab active tasks container displayed
         Then I validate task tab active tasks displayed count 15
 
@@ -79,7 +79,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
 
         Then In workflow "Reassign task", I see find person page displayed with caption "Reassign task"
         When In workflow "Reassign task", I enter search term "jane" in find person input text
-        
+
         When In workflow "Reassign task", I select find person result "testemail0@testdomain.com"
         Then In workflow "Reassign task", I see find person is selected with "testemail0@testdomain.com"
 
@@ -112,7 +112,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
 
         Then I validate case details task tab page is displayed
         Then I validate task tab alert banner header is "Task alert"
-        Then I validate task tab alert banner message is "An application is pending a decision. Consider if this application has an impact on any other tasks you might wish to complete."
+        Then I validate task tab alert banner message is "warn 1"
         Then I validate task tab active tasks container displayed
         Then I validate task tab active tasks displayed count 15
 

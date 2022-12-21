@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { Mode } from '../../../models/hearings.enum';
-import { HEARING_CANCELLED_SUMMARY_TEMPLATE } from '../../../templates/hearing-cancelled-summary.template';
+import {Component} from '@angular/core';
+import {Mode} from '../../../models/hearings.enum';
+import {HEARING_CANCELLED_SUMMARY_TEMPLATE} from '../../../templates/hearing-cancelled-summary.template';
 
 @Component({
   selector: 'exui-hearing-cancelled-summary',

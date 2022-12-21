@@ -1,8 +1,8 @@
 import { of } from 'rxjs';
 import { RoleCategory } from '../../../role-access/models';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
-import { Task } from '../../../work-allocation-2/models/tasks';
-import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
+import { Caseworker } from '../../../work-allocation/models/dtos';
+import { Task } from '../../../work-allocation/models/tasks';
+import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { CaseTaskComponent } from './case-task.component';
 
 describe('CaseTaskComponent', () => {
@@ -15,7 +15,7 @@ describe('CaseTaskComponent', () => {
 
   it('ngOnInit', () => {
     component.task = {} as Task;
-    component.task.actions = [{id: 'id', title: 'actionName'}]
+    component.task.actions = [{id: 'id', title: 'actionName'}];
     component.ngOnInit();
     expect(component.manageOptions[0].id).toEqual('id');
     expect(component.manageOptions[0].title).toEqual('actionName');
@@ -158,7 +158,7 @@ describe('CaseTaskComponent', () => {
 
     it('should handle an action that redirects', () => {
       const state = {returnUrl: '/case-details/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true};
-      const queryParams = { service: 'IA' }
+      const queryParams = { service: 'IA' };
 
       // need to check that navigate has been called
       component.onActionHandler(exampleTask, secondOption);

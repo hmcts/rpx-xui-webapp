@@ -1,49 +1,53 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AdditionalFacilitiesAnswerConverter } from '../converters/additional-facilities.answer.converter';
-import { AdditionalInstructionsAnswerConverter } from '../converters/additional-instructions.answer.converter';
-import { AdditionalSecurityAnswerConverter } from '../converters/additional-security.answer.converter';
-import { AnswerConverter } from '../converters/answer.converter';
-import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converter';
-import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
-import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
-import { CourtLocationAnswerConverter } from '../converters/court-location.answer.converter';
-import { DateRequestFailedAnswerConverter } from '../converters/date-request-failed.answer.converter';
-import { DateRequestSubmittedAnswerConverter } from '../converters/date-request-submitted.answer.converter';
-import { DateResponseReceivedAnswerConverter } from '../converters/date-response-received.answer.converter';
-import { DateResponseSubmittedTimeAnswerConverter } from '../converters/date-response-submitted-time.answer.converter';
-import { DateResponseSubmittedAnswerConverter } from '../converters/date-response-submitted.answer.converter';
-import { DefaultAnswerConverter } from '../converters/default.answer.converter';
-import { HearingLengthAnswerConverter } from '../converters/hearing-length.answer.converter';
-import { HearingPanelAnswerConverter } from '../converters/hearing-panel.answer.converter';
-import { HearingPriorityAnswerConverter } from '../converters/hearing-priority.answer.converter';
-import { HearingResponseLengthAnswerConverter } from '../converters/hearing-response-length.answer.converter';
-import { HearingResponseStatusAnswerConverter } from '../converters/hearing-response-status.answer.converter';
-import { HearingSpecificDateAnswerConverter } from '../converters/hearing-specific-date.answer.converter';
-import { JudgeExclusionAnswerConverter } from '../converters/judge-exclusion.answer.converter';
-import { JudgeNameAnswerConverter } from '../converters/judge-name.answer.converter';
-import { JudgeTypesAnswerConverter } from '../converters/judge-types.answer.converter';
-import { JudicialMembersAnswerConverter } from '../converters/judicial-members.answer.converter';
-import { LinkedHearingsAnswerConverter } from '../converters/linked-hearings.answer.converter';
-import { NeedJudgeAnswerConverter } from '../converters/need-judge.answer.converter';
-import { NeedWelshAnswerConverter } from '../converters/need-welsh.answer.converter';
-import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
-import { PanelExclusionAnswerConverter } from '../converters/panel-exclusion.answer.converter';
-import { PanelInclusionAnswerConverter } from '../converters/panel-inclusion.answer.converter';
-import { PanelRolesAnswerConverter } from '../converters/panel-roles.answer.converter';
-import { ParticipantAttendenceAnswerConverter } from '../converters/participant-attendence.answer.converter';
-import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
-import { ReasonForCancellationAnswerConverter } from '../converters/reason-for-cancellation.answer.converter';
-import { RoomIdAnswerConverter } from '../converters/room-id.answer.converter';
-import { StageAnswerConverter } from '../converters/stage.answer.converter';
-import { StatusAnswerConverter } from '../converters/status.answer.converter';
-import { TypeFromRequestAnswerConverter } from '../converters/type-from-request.answer.converter';
-import { TypeAnswerConverter } from '../converters/type.answer.converter';
-import { VenueAnswerConverter } from '../converters/venue.answer.converter';
-import { AnswerSource } from '../models/hearings.enum';
-import { LocationsDataService } from '../services/locations-data.service';
-import { State } from '../store';
+import {Pipe, PipeTransform} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Observable} from 'rxjs';
+import {AdditionalFacilitiesAnswerConverter} from '../converters/additional-facilities.answer.converter';
+import {AdditionalInstructionsAnswerConverter} from '../converters/additional-instructions.answer.converter';
+import {AdditionalSecurityAnswerConverter} from '../converters/additional-security.answer.converter';
+import {AnswerConverter} from '../converters/answer.converter';
+import {CaseFlagAnswerConverter} from '../converters/case-flag.answer.converter';
+import {CaseNameAnswerConverter} from '../converters/case-name.answer.converter';
+import {CaseNumberAnswerConverter} from '../converters/case-number.answer.converter';
+import {CourtLocationAnswerConverter} from '../converters/court-location.answer.converter';
+import {DateRequestFailedAnswerConverter} from '../converters/date-request-failed.answer.converter';
+import {DateRequestSubmittedAnswerConverter} from '../converters/date-request-submitted.answer.converter';
+import {DateResponseReceivedAnswerConverter} from '../converters/date-response-received.answer.converter';
+import {DateResponseSubmittedMultiDayAnswerConverter} from '../converters/date-response-submitted-multi-day.answer.converter';
+import {DateResponseSubmittedTimeAnswerConverter} from '../converters/date-response-submitted-time.answer.converter';
+import {DateResponseSubmittedAnswerConverter} from '../converters/date-response-submitted.answer.converter';
+import {DefaultAnswerConverter} from '../converters/default.answer.converter';
+import {HearingLengthAnswerConverter} from '../converters/hearing-length.answer.converter';
+import {HearingPanelAnswerConverter} from '../converters/hearing-panel.answer.converter';
+import {HearingPriorityAnswerConverter} from '../converters/hearing-priority.answer.converter';
+import {HearingResponseLengthAnswerConverter} from '../converters/hearing-response-length.answer.converter';
+import {HearingResponseStatusAnswerConverter} from '../converters/hearing-response-status.answer.converter';
+import {HearingSpecificDateAnswerConverter} from '../converters/hearing-specific-date.answer.converter';
+import {IsPaperHearingAnswerConverter} from '../converters/is-paper-hearing.answer.converter';
+import {JudgeExclusionAnswerConverter} from '../converters/judge-exclusion.answer.converter';
+import {JudgeNameAnswerConverter} from '../converters/judge-name.answer.converter';
+import {JudgeTypesAnswerConverter} from '../converters/judge-types.answer.converter';
+import {JudicialMembersAnswerConverter} from '../converters/judicial-members.answer.converter';
+import {LinkedHearingsAnswerConverter} from '../converters/linked-hearings.answer.converter';
+import {NeedJudgeAnswerConverter} from '../converters/need-judge.answer.converter';
+import {NeedWelshAnswerConverter} from '../converters/need-welsh.answer.converter';
+import {NumberOfAttendancesAnswerConverter} from '../converters/number-of-attendances-answer.converter';
+import {PanelExclusionAnswerConverter} from '../converters/panel-exclusion.answer.converter';
+import {PanelInclusionAnswerConverter} from '../converters/panel-inclusion.answer.converter';
+import { PanelMembersAnswerConverter } from '../converters/panel-members.answer.converter';
+import {PanelRolesAnswerConverter} from '../converters/panel-roles.answer.converter';
+import {ParticipantAttendenceAnswerConverter} from '../converters/participant-attendence.answer.converter';
+import {PartyChannelsAnswerConverter} from '../converters/party-channels-answer.converter';
+import {ReasonForActualCancellationAnswerConverter} from '../converters/reason-for-actual-cancellation.answer.converter';
+import {ReasonForRequestCancellationAnswerConverter} from '../converters/reason-for-request-cancellation.answer.converter';
+import {RoomIdAnswerConverter} from '../converters/room-id.answer.converter';
+import {StageAnswerConverter} from '../converters/stage.answer.converter';
+import {StatusAnswerConverter} from '../converters/status.answer.converter';
+import {TypeFromRequestAnswerConverter} from '../converters/type-from-request.answer.converter';
+import {TypeAnswerConverter} from '../converters/type.answer.converter';
+import {VenueAnswerConverter} from '../converters/venue.answer.converter';
+import {AnswerSource} from '../models/hearings.enum';
+import {LocationsDataService} from '../services/locations-data.service';
+import {State} from '../store';
 
 @Pipe({
   name: 'transformAnswer'
@@ -54,7 +58,7 @@ export class HearingAnswersPipe implements PipeTransform {
               protected readonly locationsDataService: LocationsDataService) {
   }
 
-  public transform(answerSource: AnswerSource, hearingState$: Observable<State>): Observable<string> {
+  public transform(answerSource: AnswerSource, hearingState$: Observable<State>, index?: number): Observable<string> {
     let converter: AnswerConverter = new DefaultAnswerConverter();
     switch (answerSource) {
       case AnswerSource.CASE_NAME:
@@ -64,7 +68,10 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new CaseNumberAnswerConverter();
         break;
       case AnswerSource.Type:
-        converter = new TypeAnswerConverter();
+        converter = new TypeAnswerConverter(this.route);
+        break;
+      case AnswerSource.TYPE_FROM_REQUEST:
+        converter = new TypeFromRequestAnswerConverter(this.route);
         break;
       case AnswerSource.STATUS:
         converter = new StatusAnswerConverter();
@@ -78,14 +85,14 @@ export class HearingAnswersPipe implements PipeTransform {
       case AnswerSource.DATE_RESPONSE_SUBMITTED:
         converter = new DateResponseSubmittedAnswerConverter();
         break;
+      case AnswerSource.DATE_RESPONSE_SUBMITTED_MULTI_DAY:
+        converter = new DateResponseSubmittedMultiDayAnswerConverter();
+        break;
       case AnswerSource.DATE_RESPONSE_RECEIVED:
         converter = new DateResponseReceivedAnswerConverter();
         break;
       case AnswerSource.ERROR_TIME_STAMP:
         converter = new DateRequestFailedAnswerConverter();
-        break;
-      case AnswerSource.TYPE_FROM_REQUEST:
-        converter = new TypeFromRequestAnswerConverter();
         break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagAnswerConverter(this.route);
@@ -104,6 +111,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.HOW_ATTENDANT:
         converter = new PartyChannelsAnswerConverter(this.route);
+        break;
+      case AnswerSource.IS_PAPER_HEARING:
+        converter = new IsPaperHearingAnswerConverter();
         break;
       case AnswerSource.PARTICIPANT_ATTENDENCE:
         converter = new ParticipantAttendenceAnswerConverter(this.route);
@@ -162,11 +172,17 @@ export class HearingAnswersPipe implements PipeTransform {
       case AnswerSource.PANEL_EXCLUSION:
         converter = new PanelExclusionAnswerConverter(this.route);
         break;
+      case AnswerSource.PANEL_MEMBERS:
+        converter = new PanelMembersAnswerConverter(this.route);
+        break;
       case AnswerSource.PANEL_ROLES:
         converter = new PanelRolesAnswerConverter(this.route);
         break;
-      case AnswerSource.REASON_FOR_CANCELLATION:
-        converter = new ReasonForCancellationAnswerConverter();
+      case AnswerSource.REASON_FOR_ACTUAL_CANCELLATION:
+        converter = new ReasonForActualCancellationAnswerConverter(this.route);
+        break;
+      case AnswerSource.REASON_FOR_REQUEST_CANCELLATION:
+        converter = new ReasonForRequestCancellationAnswerConverter(this.route);
         break;
       case AnswerSource.LINKED_HEARINGS:
         converter = new LinkedHearingsAnswerConverter();
@@ -174,7 +190,7 @@ export class HearingAnswersPipe implements PipeTransform {
       default:
         break;
     }
-    return converter.transformAnswer(hearingState$);
+    return converter.transformAnswer(hearingState$, index);
   }
 
 }

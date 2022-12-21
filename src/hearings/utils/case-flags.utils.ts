@@ -6,7 +6,7 @@ import {PartyDetailsModel} from '../models/partyDetails.model';
 import {PartyFlagsDisplayModel, PartyFlagsModel} from '../models/partyFlags.model';
 
 export class CaseFlagsUtils {
-  public static ACTIVE = 'ACTIVE';
+  public static ACTIVE = 'active';
   public static LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
   public static PARTY_NAME = 'partyName';
 
@@ -52,7 +52,7 @@ export class CaseFlagsUtils {
         };
       }
     });
-    return displayCaseFlags.filter(flag => flag.displayPath ? flag.flagStatus === CaseFlagsUtils.ACTIVE : false);
+    return displayCaseFlags.filter(flag => flag.displayPath ? flag.flagStatus.toLowerCase() === CaseFlagsUtils.ACTIVE : false);
   }
 
   private static getAllRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {
@@ -88,14 +88,17 @@ export class CaseFlagsUtils {
                                                partiesFromServiceValue?: PartyDetailsModel[]): Map<string, CaseFlagReferenceModel[]> {
     const partyWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     partyDetails.forEach(party => {
-      const partyName = party.partyName ? party.partyName : partiesFromServiceValue.find(pt => pt.partyID === party.partyID).partyName;
-      const reasonableAdjustments: string[] = party.individualDetails.reasonableAdjustments ? party.individualDetails.reasonableAdjustments : [];
+      const foundPartyFromService = partiesFromServiceValue.find(pt => pt.partyID === party.partyID);
+      const partyName = party.partyName ? party.partyName : (foundPartyFromService ? foundPartyFromService.partyName : '');
+      const reasonableAdjustments: string[] = party.individualDetails && party.individualDetails.reasonableAdjustments ? party.individualDetails.reasonableAdjustments : [];
       const allFlagsId: string[] = reasonableAdjustments.slice();
-      if (party.individualDetails.interpreterLanguage) {
+      if (party.individualDetails && party.individualDetails.interpreterLanguage) {
         allFlagsId.push(party.individualDetails.interpreterLanguage);
       }
       const allFlags: CaseFlagReferenceModel[] = allFlagsId.map(flagId => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));
-      partyWithFlags.set(partyName, allFlags);
+      if (partyName) {
+        partyWithFlags.set(partyName, allFlags);
+      }
     });
     return partyWithFlags;
   }

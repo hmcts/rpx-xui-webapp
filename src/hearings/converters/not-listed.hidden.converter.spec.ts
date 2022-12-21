@@ -1,10 +1,10 @@
-import {cold} from 'jasmine-marbles';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {LaCaseStatus} from '../models/hearings.enum';
-import {State} from '../store/reducers';
-import {NotListedHiddenConverter} from './not-listed.hidden.converter';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { LaCaseStatus } from '../models/hearings.enum';
+import { State } from '../store/reducers';
+import { NotListedHiddenConverter } from './not-listed.hidden.converter';
 
 describe('NotListedHiddenConverter', () => {
 
@@ -15,7 +15,7 @@ describe('NotListedHiddenConverter', () => {
 
   it('should transform hidden of true answer', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.laCaseStatus = LaCaseStatus.CASE_CLOSED;
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.laCaseStatus = LaCaseStatus.CLOSED;
     const result$ = notListedHiddenConverter.transformHidden(of(STATE));
     const showAnswer = true;
     const expected = cold('(b|)', {b: showAnswer});

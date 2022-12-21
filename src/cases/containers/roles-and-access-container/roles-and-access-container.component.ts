@@ -9,8 +9,8 @@ import {SessionStorageService} from '../../../app/services';
 import * as fromRoot from '../../../app/store';
 import {CaseRole, CaseRoleDetails, RoleExclusion} from '../../../role-access/models';
 import {AllocateRoleService, RoleExclusionsService} from '../../../role-access/services';
-import {Caseworker} from '../../../work-allocation-2/models/dtos';
-import {CaseworkerDataService} from '../../../work-allocation-2/services';
+import {Caseworker} from '../../../work-allocation/models/dtos';
+import {CaseworkerDataService} from '../../../work-allocation/services';
 import {Utils} from '../../utils/utils';
 
 @Component({
@@ -83,6 +83,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
 
   public applyJurisdiction(caseDetails: CaseView): void {
     const jurisdictionField = caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+    /* istanbul ignore else*/
     if (jurisdictionField) {
       this.caseJurisdiction = jurisdictionField.value;
       this.store.select(fromRoot.getUserDetails).subscribe(user => this.setDisplayAllocateLink(user, this.caseJurisdiction));
@@ -90,6 +91,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public setDisplayAllocateLink(user: UserDetails, caseJurisdiction: any): void {
+    /* istanbul ignore else*/
     if (user && user.roleAssignmentInfo) {
       this.showAllocateRoleLink = user.roleAssignmentInfo.some(roleAssignmentInfo => roleAssignmentInfo.isCaseAllocator && roleAssignmentInfo.jurisdiction === caseJurisdiction);
     }

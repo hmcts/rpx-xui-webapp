@@ -1,4 +1,4 @@
-import {DefaultAmendedConverter} from './default.amended.converter';
+import { DefaultAmendedConverter } from './default.amended.converter';
 
 describe('DefaultAmendedConverter', () => {
 

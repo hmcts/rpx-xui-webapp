@@ -1,7 +1,7 @@
-import { HearingActualsMainModel } from './models/hearingActualsMainModel';
-import { HearingRequestMainModel } from './models/hearingRequestMain.model';
+import {HearingActualsMainModel} from './models/hearingActualsMainModel';
+import {HearingRequestMainModel} from './models/hearingRequestMain.model';
 import {
-  CategoryType,
+  CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum,
   GroupLinkType,
   HearingListingStatusEnum,
   HearingResult,
@@ -11,12 +11,13 @@ import {
   ListingStatus,
   MemberType,
   PartyType,
-  RequirementType, UnavailabilityType
+  RequirementType,
+  UnavailabilityType
 } from './models/hearings.enum';
 import {JudicialUserModel} from './models/judicialUser.model';
-import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
-export const hearingStageRefData =  [
+export const hearingStageRefData = [
   {
     key: 'initial',
     value_en: 'Initial',
@@ -84,6 +85,19 @@ export const judicailUsersRefData: JudicialUserModel[] = [{
   title: 'Mr'
 }];
 
+export const panelMembersRefData: JudicialUserModel[] = [{
+  emailId: '7007496EMP-@ejudiciary.net',
+  fullName: 'Ramon Herrera',
+  idamId: 'a229ec37-d84d-4eed-bd7f-0c77a6721da6',
+  isJudge: '',
+  isMagistrate: '',
+  isPanelMember: '',
+  knownAs: 'Ramon',
+  personalCode: '7007496',
+  surname: 'Herrera',
+  title: 'Mr'
+}];
+
 export const judgeRefData: JudicialUserModel[] = [
   {
     emailId: 'jacky.collins@judicial.com',
@@ -141,10 +155,371 @@ export const facilitiesListRefData = [
 ];
 
 export const partyChannelsRefData = [
-  { key: 'inPerson', value_en: 'In person', value_cy: '', hintText_EN: 'in person', hintTextCY: '', order: 1, parentKey: null },
-  { key: 'byPhone', value_en: 'By phone', value_cy: '', hintText_EN: 'By Phone', hintTextCY: '', order: 2, parentKey: null },
-  { key: 'byVideo', value_en: 'By video', value_cy: '', hintText_EN: 'By video', hintTextCY: '', order: 4, parentKey: null },
-  { key: 'notAttending', value_en: 'Not attending', value_cy: '', hintText_EN: 'not attending', hintTextCY: '', order: 5, parentKey: null }
+  {
+    key: 'inPerson',
+    value_en: 'In person',
+    value_cy: '',
+    hintText_EN: 'in person',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null
+  },
+  {
+    key: 'byPhone',
+    value_en: 'By phone',
+    value_cy: '',
+    hintText_EN: 'By Phone',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null
+  },
+  {
+    key: 'byVideo',
+    value_en: 'By video',
+    value_cy: '',
+    hintText_EN: 'By video',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null
+  },
+  {
+    key: 'notAttending',
+    value_en: 'Not attending',
+    value_cy: '',
+    hintText_EN: 'not attending',
+    hintTextCY: '',
+    order: 5,
+    parentKey: null
+  }
+];
+
+export const caseTypeRefData = [
+  {
+    category_key: 'caseType',
+    key: 'BBA3-002',
+    value_en: 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM)',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: [
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002EC',
+        value_en: 'ECHR',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CP',
+        value_en: 'CIVIL PENALTIES',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002EX',
+        value_en: 'EX LEGISLATION',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002MO',
+        value_en: 'MOBILITY COMPONENT',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002LE',
+        value_en: 'LATE (EXTENDING BACK)',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CC',
+        value_en: 'CONDITIONS OF ENTITLEMENT - COMPLEX',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002OC',
+        value_en: 'OVERPAYMENT - CAPITAL',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002RA',
+        value_en: 'RATE OF ASSESSMENT/PAYABILITY ISSUES',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002EI',
+        value_en: 'EXPORTABILITY ISSUES',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002OS',
+        value_en: 'OVERPAYMENT - STRAIGHTFORWARD',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002DD',
+        value_en: 'APPEAL DIRECTLY LODGED',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002AA',
+        value_en: 'INVALID',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002LC',
+        value_en: 'DAILY LIVING COMPONENT',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002MD',
+        value_en: 'MOBILITY (DLA)',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002ON',
+        value_en: 'ONE PROJECT',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CE',
+        value_en: 'CONDITIONS OF ENTITLEMENT',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002RC',
+        value_en: 'RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002OX',
+        value_en: 'OVERPAYMENT - COMPLEX',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CD',
+        value_en: 'CARE (DLA)',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002AR',
+        value_en: 'ALTERNATIVE DISPUTE RESOLUTION',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002VW',
+        value_en: 'VERBALLY WITHDRAWN',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002CF',
+        value_en: 'CARE/MOBILITY (DLA)',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002GC',
+        value_en: 'GOOD CAUSE',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      },
+      {
+        category_key: 'caseSubType',
+        key: 'BBA3-002ML',
+        value_en: 'DAILY LIVING/MOBILITY',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: 'caseType',
+        parent_key: 'BBA3-002',
+        active_flag: 'Y',
+        child_nodes: null
+      }
+    ]
+  },
 ];
 
 export const caseFlagsRefData = [
@@ -1008,26 +1383,32 @@ export const caseFlagsRefData = [
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',
-  caseName: 'Jane vs DWP',
+  hmctsInternalCaseName: 'Jane vs DWP',
+  publicCaseName: 'Jane vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
+  hearingChannels: [],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
-      categoryValue: 'Personal Independence Payment',
+      categoryValue: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'Conditions of Entitlement',
+      categoryValue: 'BBA3-002CC',
+      categoryParent: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'Good cause',
+      categoryValue: 'BBA3-002GC',
+      categoryParent: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'Rate of Assessment / Payability Issues - complex',
+      categoryValue: 'BBA3-002RC',
+      categoryParent: 'BBA3-002',
     },
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
   caserestrictedFlag: false,
+  externalCaseReference: '',
   caseManagementLocationCode: '196538',
   caseSLAStartDate: '2021-05-05T09:00:00.000Z',
   hearingWindow: {
@@ -1043,16 +1424,17 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     locationId: '196538',
     locationType: HMCLocationType.COURT,
   },
-  {
-    locationId: '234850',
-    locationType: HMCLocationType.COURT,
-  },
+    {
+      locationId: '234850',
+      locationType: HMCLocationType.COURT,
+    },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
   listingComments: '',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
+  caseInterpreterRequiredFlag: false,
   leadJudgeContractType: '',
   judiciary: {
     roleType: [
@@ -1084,9 +1466,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingIsLinkedFlag: false,
   panelRequirements: {
     roleType: [
-      'tribunalJudge',
-      'deputyTribunalJudge',
-      'regionalTribunalJudge',
+      'tj',
+      'dtj',
+      'rtj',
     ],
     panelPreferences: [],
     panelSpecialisms: [
@@ -1347,6 +1729,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
   hearingDetails: {
     duration: 45,
     hearingType: 'final',
+    hearingChannels: [],
     hearingLocations: [
       {
         locationId: '196538',
@@ -1373,6 +1756,8 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     listingComments: 'Interpreter required',
     hearingRequester: '',
     leadJudgeContractType: '',
+    amendReasonCodes: [],
+    listingAutoChangeReasonCode: null
   },
   caseDetails: {
     hmctsServiceCode: 'BBA3',
@@ -1388,19 +1773,19 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'Personal Independence Payment',
-      },
-      {
+        categoryValue: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Conditions of Entitlement',
-      },
-      {
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Good cause',
-      },
-      {
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-002',
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
@@ -1436,10 +1821,10 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     listAssistTransactionID: '123456789',
     receivedDateTime: '2021-11-30T09:00:00.000Z',
     responseVersion: 0,
-    laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+    laCaseStatus: LaCaseStatus.PENDING_RELISTING,
     listingStatus: ListingStatus.DRAFT,
     hearingCancellationReason: '123456543',
-    hearingDaySchedule: {
+    hearingDaySchedule: [{
       hearingStartDateTime: '2021-03-12T09:00:00.000Z',
       hearingEndDateTime: '2021-03-12T16:00:00.000Z',
       listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
@@ -1473,7 +1858,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
           },
         },
       ],
-    },
+    }],
   },
 };
 
@@ -1483,51 +1868,97 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
       hearingFinalFlag: false,
       hearingResult: HearingResult.CANCELLED,
       hearingResultDate: '2019-01-01',
-      hearingResultReasonType: 'reasonTwo',
+      hearingResultReasonType: 'unable',
       hearingType: 'Pre-hearing review',
     },
     actualHearingDays: [
       {
-        hearingDate: '2021-03-12T09:00:00.000Z',
+        hearingDate: '2021-03-12',
         hearingStartTime: '2021-03-12T09:00:00.000Z',
-        hearingEndTime: '2021-03-13T10:00:00.000Z',
+        hearingEndTime: '2021-03-12T10:00:00.000Z',
         pauseDateTimes: [],
+        notRequired: false,
         actualDayParties: [
           {
             actualPartyId: '1',
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Bob',
               lastName: 'Jones',
             },
-            actualOrganisationDetails: {
-              name: 'Company D',
+            actualOrganisationName: 'Company A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'appellant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '2',
+            individualDetails: {
+              firstName: 'Mary',
+              lastName: 'Jones',
             },
+            actualOrganisationName: 'Company B',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'claimant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '3',
+            individualDetails: {
+              firstName: 'James',
+              lastName: 'Gods',
+            },
+            actualOrganisationName: 'Solicitors A',
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
             partyRole: 'interpreter',
-            representedParty: '5',
+            representedParty: '1',
           },
         ],
       },
       {
-        hearingDate: '2021-03-12',
-        hearingStartTime: '2021-03-12T09:00:00.000Z',
-        hearingEndTime: '2021-03-13T10:00:00.000Z',
+        hearingDate: '2021-03-14',
+        hearingStartTime: '2021-03-14T09:00:00.000Z',
+        hearingEndTime: '2021-03-14T10:00:00.000Z',
         pauseDateTimes: [],
+        notRequired: false,
         actualDayParties: [
           {
+            actualPartyId: '1',
+            individualDetails: {
+              firstName: 'Bob',
+              lastName: 'Jones',
+            },
+            actualOrganisationName: 'Company A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'appellant',
+            representedParty: '',
+          },
+          {
             actualPartyId: '2',
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Mary',
               lastName: 'Jones',
             },
-            actualOrganisationDetails: {
-              name: 'Company A',
+            actualOrganisationName: 'Company B',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'claimant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '3',
+            individualDetails: {
+              firstName: 'James',
+              lastName: 'Gods',
             },
-            didNotAttendFlag: true,
-            partyChannelSubType: 'video-teams',
+            actualOrganisationName: 'Solicitors A',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
             partyRole: 'interpreter',
-            representedParty: '2',
+            representedParty: '1',
           },
         ],
       },
@@ -1538,22 +1969,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     plannedHearingDays: [
       {
         plannedStartTime: '2021-03-12T09:00:00.000Z',
-        plannedEndTime: '2021-03-13T10:00:00.000Z',
+        plannedEndTime: '2021-03-12T10:00:00.000Z',
         parties: [
-          {
-            individualDetails: {
-              title: 'Ms',
-              firstName: 'Mary',
-              lastName: 'Jones',
-            },
-            organisationDetails: {
-              cftOrganisationID: '54321',
-              name: 'Company D',
-            },
-            partyId: '3',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Letter',
-          },
           {
             individualDetails: {
               title: 'Miss',
@@ -1562,113 +1979,59 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
+              name: 'Company A',
             },
-            partyId: '5',
+            partyID: '1',
             partyRole: 'interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'appellant',
+          },
+          {
+            individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: '',
+            },
+            organisationDetails: {
+              cftOrganisationID: 'ogd1',
+              name: 'DWP',
+            },
+            partyID: '2',
+            partyRole: 'interpreter',
+            partyChannelSubType: 'claimant',
           },
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000Z',
-        plannedEndTime: '2021-03-13T10:00:00.000Z',
+        plannedStartTime: '2021-03-14T09:00:00.000Z',
+        plannedEndTime: '2021-03-14T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
               title: 'Miss',
-              firstName: 'Jane',
-              lastName: 'Smith',
-            },
-            organisationDetails: {
-              cftOrganisationID: '12345',
-              name: 'Company E',
-            },
-            partyId: '2',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Email',
-          },
-          {
-            individualDetails: {
-              title: 'Mr',
-              firstName: 'Tom',
-              lastName: 'Jones',
-            },
-            organisationDetails: {
-              cftOrganisationID: '12345',
-              name: 'Company C',
-            },
-            partyId: '3',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Email',
-          },
-        ],
-      },
-      {
-        plannedStartTime: '2021-03-12T09:00:00.000Z',
-        plannedEndTime: '2021-03-13T10:00:00.000Z',
-        parties: [
-          {
-            individualDetails: {
-              title: 'Mr',
-              firstName: 'John',
-              lastName: 'Smith',
-            },
-            organisationDetails: {
-              cftOrganisationID: '67890',
-              name: 'Company B',
-            },
-            partyId: '1',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Fax',
-          },
-          {
-            individualDetails: {
-              title: 'Mr',
-              firstName: 'Jane',
-              lastName: 'Jones',
+              firstName: 'Jo',
+              lastName: 'Blogg',
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company E',
+              name: 'Company A',
             },
-            partyId: '3',
+            partyID: '1',
             partyRole: 'interpreter',
-            partyChannelSubType: 'Other',
-          },
-        ],
-      },
-      {
-        plannedStartTime: '2021-03-12T09:00:00.000Z',
-        plannedEndTime: '2021-03-13T10:00:00.000Z',
-        parties: [
-          {
-            individualDetails: {
-              title: 'Miss',
-              firstName: 'Tom',
-              lastName: 'Jones',
-            },
-            organisationDetails: {
-              cftOrganisationID: '67890',
-              name: 'Company D',
-            },
-            partyId: '3',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'appellant',
           },
           {
             individualDetails: {
-              title: 'Mrs',
-              firstName: 'Jane',
-              lastName: 'Smith',
+              title: '',
+              firstName: 'DWP',
+              lastName: '',
             },
             organisationDetails: {
-              cftOrganisationID: '54321',
-              name: 'Company C',
+              cftOrganisationID: 'ogd1',
+              name: 'DWP',
             },
-            partyId: '4',
+            partyID: '2',
             partyRole: 'interpreter',
-            partyChannelSubType: 'Letter',
+            partyChannelSubType: 'claimant',
           },
         ],
       },
@@ -1689,19 +2052,19 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'Personal Independence Payment',
-      },
-      {
+        categoryValue: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Conditions of Entitlement',
-      },
-      {
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Good cause',
-      },
-      {
+        categoryValue: 'BBA3-002GC',
+        categoryParent: 'BBA3-002',
+      }, {
         categoryType: CategoryType.CaseSubType,
-        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        categoryValue: 'BBA3-002RC',
+        categoryParent: 'BBA3-002',
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
@@ -1747,6 +2110,7 @@ export const initialState = {
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
+          hearingChannels: [],
           hearingLocations: [
             {
               locationId: '196538',
@@ -1777,6 +2141,8 @@ export const initialState = {
           listingComments: 'blah blah blah',
           hearingRequester: null,
           leadJudgeContractType: null,
+          amendReasonCodes: null,
+          listingAutoChangeReasonCode: null
         },
         caseDetails: {
           hmctsServiceCode: null,
@@ -1792,19 +2158,19 @@ export const initialState = {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'Personal Independence Payment',
-            },
-            {
+              categoryValue: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Conditions of Entitlement',
-            },
-            {
+              categoryValue: 'BBA3-002CC',
+              categoryParent: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Good cause',
-            },
-            {
+              categoryValue: 'BBA3-002GC',
+              categoryParent: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Rate of Assessment / Payability Issues - complex',
+              categoryValue: 'BBA3-002RC',
+              categoryParent: 'BBA3-002',
             }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,
@@ -1876,27 +2242,31 @@ export const initialState = {
     hearingRequest: {
       hearingRequestMainModel: {
         requestDetails: {
+          hearingRequestID: '1000000',
+          status: 'LISTED',
           timeStamp: '2021-11-30T09:00:00.000Z',
           versionNumber: 1,
+          cancellationReasonCodes: ['withdraw', 'struck']
         },
         hearingResponse: {
           listAssistTransactionID: '',
           responseVersion: 1,
           receivedDateTime: '2021-11-30T09:00:00.000Z',
-          laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+          laCaseStatus: LaCaseStatus.PENDING_RELISTING,
           listingStatus: ListingStatus.FIXED,
           hearingCancellationReason: '',
-          hearingDaySchedule: {
-            hearingStartDateTime: '',
-            hearingEndDateTime: '',
+          hearingDaySchedule: [{
+            hearingStartDateTime: '2022-12-12T09:00:00.000Z',
+            hearingEndDateTime: '2022-12-12T16:00:00.000Z',
             listAssistSessionID: '',
-            hearingVenueId: '',
+            hearingVenueId: '815833',
             hearingRoomId: 'room 3',
             hearingJudgeId: 'p1000002',
             panelMemberIds: ['p1000001'],
             attendees: [
               {
                 partyID: 'P1',
+                hearingSubChannel: 'inPerson',
                 partyName: 'Jane and Smith',
                 partyType: PartyType.IND,
                 partyRole: 'appellant',
@@ -1908,6 +2278,7 @@ export const initialState = {
               },
               {
                 partyID: 'P2',
+                hearingSubChannel: 'byVideo',
                 partyName: 'DWP',
                 partyType: PartyType.ORG,
                 partyRole: 'claimant',
@@ -1918,11 +2289,12 @@ export const initialState = {
                 }
               },
             ],
-          }
+          }]
         },
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
+          hearingChannels: [],
           hearingLocations: [
             {
               locationId: '196538',
@@ -1953,6 +2325,8 @@ export const initialState = {
           listingComments: 'blah blah blah',
           hearingRequester: null,
           leadJudgeContractType: null,
+          amendReasonCodes: null,
+          listingAutoChangeReasonCode: null
         },
         caseDetails: {
           hmctsServiceCode: null,
@@ -1968,19 +2342,19 @@ export const initialState = {
           caseCategories: [
             {
               categoryType: CategoryType.CaseType,
-              categoryValue: 'Personal Independence Payment',
-            },
-            {
+              categoryValue: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Conditions of Entitlement',
-            },
-            {
+              categoryValue: 'BBA3-002CC',
+              categoryParent: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Good cause',
-            },
-            {
+              categoryValue: 'BBA3-002GC',
+              categoryParent: 'BBA3-002',
+            }, {
               categoryType: CategoryType.CaseSubType,
-              categoryValue: 'Rate of Assessment / Payability Issues - complex',
+              categoryValue: 'BBA3-002RC',
+              categoryParent: 'BBA3-002',
             }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,
@@ -2060,13 +2434,6 @@ export const initialState = {
           reasonsForLink: [
             'Linked for a hearing'
           ],
-          hearings: [{
-            hearingId: 'h100001',
-            hearingStage: HMCStatus.UPDATE_REQUESTED,
-            isSelected: true,
-            hearingStatus: HMCStatus.AWAITING_LISTING,
-            hearingIsLinkedFlag: false
-          }]
         },
         {
           caseReference: '5283819672542864',
@@ -2084,18 +2451,732 @@ export const initialState = {
             'Guardian',
             'Linked for a hearing'
           ],
-          hearings: [{
-            hearingId: 'h100010',
-            hearingStage: HMCStatus.UPDATE_REQUESTED,
+        }
+      ],
+      serviceLinkedCasesWithHearings: [
+        {
+          caseRef: '4652724902696213',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing'
+          ],
+          caseHearings: [{
+            hearingID: 'h100001',
+            hearingType: 'Substantive',
+            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+            lastResponseReceivedDateTime: '',
+            exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+            exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+            hmcStatus: HMCStatus.HEARING_REQUESTED,
+            responseVersion: 'rv1',
+            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+            listAssistCaseStatus: '',
+            hearingIsLinkedFlag: true,
+            hearingGroupRequestId: null,
+            hearingDaySchedule: [],
             isSelected: true,
-            hearingStatus: HMCStatus.AWAITING_LISTING,
-            hearingIsLinkedFlag: false
+          }]
+        },
+        {
+          caseRef: '5283819672542864',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing',
+            'Progressed as part of lead case'
+          ],
+          caseHearings: []
+        },
+        {
+          caseRef: '8254902572336147',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Familial',
+            'Guardian',
+            'Linked for a hearing'
+          ],
+          caseHearings: [{
+            hearingID: 'h100010',
+            hearingType: 'Direction Hearings',
+            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+            lastResponseReceivedDateTime: '',
+            exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+            exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+            hmcStatus: HMCStatus.AWAITING_LISTING,
+            responseVersion: 'rv1',
+            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+            listAssistCaseStatus: '',
+            hearingIsLinkedFlag: true,
+            hearingGroupRequestId: null,
+            hearingDaySchedule: [],
+            isSelected: true,
           }, {
-            hearingId: 'h100012',
-            hearingStage: HMCStatus.UPDATE_REQUESTED,
-            isSelected: false,
-            hearingStatus: HMCStatus.AWAITING_LISTING,
-            hearingIsLinkedFlag: false
+            hearingID: 'h100012',
+            hearingType: 'Chambers Outcome',
+            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+            lastResponseReceivedDateTime: '',
+            exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+            exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+            hmcStatus: HMCStatus.AWAITING_LISTING,
+            responseVersion: 'rv1',
+            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+            listAssistCaseStatus: '',
+            hearingIsLinkedFlag: true,
+            hearingGroupRequestId: null,
+            hearingDaySchedule: [],
+            isSelected: true,
+          }]
+        }
+      ],
+      linkedHearingGroup: {
+        groupDetails: {
+          groupName: 'Group A',
+          groupReason: 'Reason 1',
+          groupLinkType: GroupLinkType.ORDERED,
+          groupComments: 'Comment 1',
+        },
+        hearingsInGroup: [
+          {
+            hearingId: 'h1000001',
+            hearingOrder: 1,
+          },
+          {
+            hearingId: 'h1000003',
+            hearingOrder: 2,
+          },
+          {
+            hearingId: 'h1000005',
+            hearingOrder: 3,
+          }],
+      },
+      lastError: null
+    }
+  },
+};
+
+export const hearingRoles = [
+  {
+    category_key: 'EntityRoleCode',
+    key: 'APEL',
+    value_en: 'Appellant',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Applicant',
+    parent_key: 'APPL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'APIN',
+    value_en: 'Appointee',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Support',
+    parent_key: 'SUPP',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'JOPA',
+    value_en: 'Joint Party',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Applicant',
+    parent_key: 'APPL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'OTPA',
+    value_en: 'Other Party',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Respondent',
+    parent_key: 'RESP',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'RESP',
+    value_en: 'Respondent',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'WERP',
+    value_en: 'Welfare Representative',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Representative',
+    parent_key: 'RPTT',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'LGRP',
+    value_en: 'Legal Representative',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Representative',
+    parent_key: 'RPTT',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'BARR',
+    value_en: 'Barrister',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'Representative',
+    parent_key: 'RPTT',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'INTP',
+    value_en: 'Interpreter',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'RPTT',
+    value_en: 'Representative',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'SUPP',
+    value_en: 'Support',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'APPL',
+    value_en: 'Applicant',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'EntityRoleCode',
+    key: 'DEFE',
+    value_en: 'Defendant',
+    value_cy: '',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null
+  }
+];
+
+export const initialStateImmutable = {
+  hearings: {
+    hearingList: {
+      hearingListMainModel: {
+        caseRef: '1111222233334444',
+        hmctsServiceID: 'BBA3',
+        caseHearings: [{
+          hearingID: 'h00001',
+          hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+          hearingType: 'Case management hearing',
+          hmcStatus: HMCStatus.HEARING_REQUESTED,
+          lastResponseReceivedDateTime: '',
+          responseVersion: 'rv1',
+          hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+          listAssistCaseStatus: '',
+          hearingIsLinkedFlag: true,
+          hearingGroupRequestId: null,
+          hearingDaySchedule: null,
+        }]
+      }
+    },
+    hearingActuals: {
+      hearingActualsMainModel,
+      lastError: null,
+    },
+    hearingValues: {
+      serviceHearingValuesModel,
+      lastError: null
+    },
+    hearingRequestToCompare: {
+      hearingRequestMainModel: {
+        requestDetails: {
+          timeStamp: null,
+          versionNumber: 1,
+        },
+        hearingDetails: {
+          duration: 60,
+          hearingType: 'final',
+          hearingChannels: [],
+          hearingLocations: [
+            {
+              locationId: '196538',
+              locationType: HMCLocationType.COURT,
+            },
+            {
+              locationId: '234850',
+              locationType: HMCLocationType.COURT,
+            },
+          ],
+          hearingIsLinkedFlag: false,
+          hearingWindow: {
+            dateRangeStart: '2022-12-12T09:00:00.000Z',
+            dateRangeEnd: '2022-12-12T09:00:00.000Z',
+            firstDateTimeMustBe: '',
+          },
+          privateHearingRequiredFlag: false,
+          panelRequirements: null,
+          autolistFlag: false,
+          nonStandardHearingDurationReasons: [],
+          hearingPriorityType: 'standard',
+          numberOfPhysicalAttendees: 3,
+          hearingInWelshFlag: true,
+          facilitiesRequired: [
+            'immigrationDetentionCentre',
+            'inCameraCourt'
+          ],
+          listingComments: 'blah blah blah',
+          hearingRequester: null,
+          leadJudgeContractType: null,
+          amendReasonCodes: null,
+          listingAutoChangeReasonCode: null
+        },
+        caseDetails: {
+          hmctsServiceCode: null,
+          caseRef: null,
+          requestTimeStamp: null,
+          hearingID: null,
+          externalCaseReference: null,
+          caseDeepLink: null,
+          hmctsInternalCaseName: null,
+          publicCaseName: null,
+          caseAdditionalSecurityFlag: false,
+          caseInterpreterRequiredFlag: false,
+          caseCategories: [
+            {
+              categoryType: CategoryType.CaseType,
+              categoryValue: 'BBA3-002',
+            }, {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'BBA3-002CC',
+              categoryParent: 'BBA3-002',
+            }, {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'BBA3-002GC',
+              categoryParent: 'BBA3-002',
+            }, {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'BBA3-002RC',
+              categoryParent: 'BBA3-002',
+            }],
+          caseManagementLocationCode: null,
+          caserestrictedFlag: false,
+          caseSLAStartDate: null
+        },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jane',
+              lastName: 'Smith',
+              reasonableAdjustments: [
+                'RA0042',
+                'RA0053',
+                'RA0013',
+                'RA0016',
+                'RA0042',
+                'RA0009',
+              ],
+              interpreterLanguage: 'PF0015',
+              preferredHearingChannel: 'byVideo',
+            },
+            organisationDetails: {},
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
+              },
+            ],
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+              reasonableAdjustments: [
+                'RA0005',
+              ],
+              interpreterLanguage: null,
+            },
+            organisationDetails: {
+              name: 'DWP',
+              organisationType: 'GOV',
+              cftOrganisationID: 'O100000',
+            },
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
+              },
+            ],
+          }
+        ]
+      },
+      lastError: null
+    },
+    hearingRequest: {
+      hearingRequestMainModel: {
+        requestDetails: {
+          hearingRequestID: '1000000',
+          status: 'LISTED',
+          timeStamp: '2021-11-30T09:00:00.000Z',
+          versionNumber: 1,
+          cancellationReasonCodes: ['withdraw', 'struck']
+        },
+        hearingResponse: {
+          listAssistTransactionID: '',
+          responseVersion: 1,
+          receivedDateTime: '2021-11-30T09:00:00.000Z',
+          laCaseStatus: LaCaseStatus.PENDING_RELISTING,
+          listingStatus: ListingStatus.FIXED,
+          hearingCancellationReason: '',
+          hearingDaySchedule: [{
+            hearingStartDateTime: '2022-12-12T09:00:00.000Z',
+            hearingEndDateTime: '2022-12-12T16:00:00.000Z',
+            listAssistSessionID: '',
+            hearingVenueId: '',
+            hearingRoomId: 'room 3',
+            hearingJudgeId: 'p1000002',
+            panelMemberIds: ['p1000001'],
+            attendees: [
+              {
+                partyID: 'P1',
+                hearingSubChannel: 'inPerson',
+                partyName: 'Jane and Smith',
+                partyType: PartyType.IND,
+                partyRole: 'appellant',
+                individualDetails: {
+                  firstName: 'Jane',
+                  lastName: 'Smith',
+                  preferredHearingChannel: 'inPerson',
+                }
+              },
+              {
+                partyID: 'P2',
+                hearingSubChannel: 'byVideo',
+                partyName: 'DWP',
+                partyType: PartyType.ORG,
+                partyRole: 'claimant',
+                individualDetails: {
+                  firstName: 'DWP',
+                  lastName: null,
+                  preferredHearingChannel: 'byVideo',
+                }
+              },
+            ],
+          }]
+        },
+        hearingDetails: {
+          duration: 60,
+          hearingType: 'final',
+          hearingChannels: [],
+          hearingLocations: [
+            {
+              locationId: '196538',
+              locationType: HMCLocationType.COURT,
+            },
+            {
+              locationId: '234850',
+              locationType: HMCLocationType.COURT,
+            },
+          ],
+          hearingIsLinkedFlag: false,
+          hearingWindow: {
+            dateRangeStart: '2022-12-12T09:00:00.000Z',
+            dateRangeEnd: '2022-12-12T09:00:00.000Z',
+            firstDateTimeMustBe: '',
+          },
+          privateHearingRequiredFlag: false,
+          panelRequirements: null,
+          autolistFlag: false,
+          nonStandardHearingDurationReasons: [],
+          hearingPriorityType: 'standard',
+          numberOfPhysicalAttendees: 3,
+          hearingInWelshFlag: true,
+          facilitiesRequired: [
+            'immigrationDetentionCentre',
+            'inCameraCourt'
+          ],
+          listingComments: 'blah blah blah',
+          hearingRequester: null,
+          leadJudgeContractType: null,
+          amendReasonCodes: null,
+          listingAutoChangeReasonCode: null
+        },
+        caseDetails: {
+          hmctsServiceCode: null,
+          caseRef: null,
+          requestTimeStamp: null,
+          hearingID: null,
+          externalCaseReference: null,
+          caseDeepLink: null,
+          hmctsInternalCaseName: 'Jane vs DWP',
+          publicCaseName: 'Jane vs DWP',
+          caseAdditionalSecurityFlag: false,
+          caseInterpreterRequiredFlag: false,
+          caseCategories: [
+            {
+              categoryType: CategoryType.CaseType,
+              categoryValue: 'BBA3-002',
+            }, {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'BBA3-002CC',
+              categoryParent: 'BBA3-002',
+            }, {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'BBA3-002GC',
+              categoryParent: 'BBA3-002',
+            }, {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'BBA3-002RC',
+              categoryParent: 'BBA3-002',
+            }],
+          caseManagementLocationCode: null,
+          caserestrictedFlag: false,
+          caseSLAStartDate: null
+        },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+              reasonableAdjustments: [
+                'RA0042',
+                'RA0053',
+                'RA0013',
+                'RA0016',
+                'RA0042',
+              ],
+              interpreterLanguage: 'PF0015',
+            },
+            organisationDetails: {},
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
+              },
+            ],
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              preferredHearingChannel: 'byVideo',
+              reasonableAdjustments: [
+                'RA0005',
+              ],
+              interpreterLanguage: null,
+            },
+            organisationDetails: {
+              name: 'DWP',
+              organisationType: 'GOV',
+              cftOrganisationID: 'O100000',
+            },
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
+              },
+            ],
+          }
+        ]
+      },
+      lastError: null
+    },
+    hearingConditions: {
+      caseId: '1111222233334444',
+      mode: 'create',
+      isInit: true,
+      fragmentId: 'venue'
+    },
+    hearingLinks: {
+      serviceLinkedCases: [
+        {
+          caseReference: '4652724902696213',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing'
+          ],
+        },
+        {
+          caseReference: '5283819672542864',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing',
+            'Progressed as part of lead case'
+          ]
+        },
+        {
+          caseReference: '8254902572336147',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Familial',
+            'Guardian',
+            'Linked for a hearing'
+          ],
+        }
+      ],
+      serviceLinkedCasesWithHearings: [
+        {
+          caseRef: '4652724902696213',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing'
+          ],
+          caseHearings: [{
+            hearingID: 'h100001',
+            hearingType: 'Substantive',
+            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+            lastResponseReceivedDateTime: '',
+            exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+            exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+            hmcStatus: HMCStatus.HEARING_REQUESTED,
+            responseVersion: 'rv1',
+            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+            listAssistCaseStatus: '',
+            hearingIsLinkedFlag: true,
+            hearingGroupRequestId: null,
+            hearingDaySchedule: [],
+            isSelected: true,
+          }]
+        },
+        {
+          caseRef: '5283819672542864',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing',
+            'Progressed as part of lead case'
+          ],
+          caseHearings: []
+        },
+        {
+          caseRef: '8254902572336147',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Familial',
+            'Guardian',
+            'Linked for a hearing'
+          ],
+          caseHearings: [{
+            hearingID: 'h100010',
+            hearingType: 'Direction Hearings',
+            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+            lastResponseReceivedDateTime: '',
+            exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+            exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+            hmcStatus: HMCStatus.AWAITING_LISTING,
+            responseVersion: 'rv1',
+            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+            listAssistCaseStatus: '',
+            hearingIsLinkedFlag: true,
+            hearingGroupRequestId: null,
+            hearingDaySchedule: [],
+            isSelected: true,
+          }, {
+            hearingID: 'h100012',
+            hearingType: 'Chambers Outcome',
+            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+            lastResponseReceivedDateTime: '',
+            exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+            exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+            hmcStatus: HMCStatus.AWAITING_LISTING,
+            responseVersion: 'rv1',
+            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+            listAssistCaseStatus: '',
+            hearingIsLinkedFlag: true,
+            hearingGroupRequestId: null,
+            hearingDaySchedule: [],
+            isSelected: true,
           }]
         }
       ],

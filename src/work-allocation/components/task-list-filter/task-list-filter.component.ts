@@ -425,7 +425,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
         (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
-      }, 500);
+      }, 0);
     }
   }
 }

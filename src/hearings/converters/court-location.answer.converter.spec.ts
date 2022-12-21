@@ -1,20 +1,20 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {LocationModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {CourtLocationAnswerConverter} from './court-location.answer.converter';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { CourtLocationAnswerConverter } from './court-location.answer.converter';
 
 describe('CourtLocationAnswerConverter', () => {
 
   let listedVenueAnswerConverter: CourtLocationAnswerConverter;
   let store: Store<any>;
   let router: any;
-  const COURT_LOCATION: LocationModel = {
+  const COURT_LOCATION: LocationModel[] = [{
     court_venue_id: '164',
     epimms_id: '815833',
     is_hearing_location: 'N',
@@ -31,7 +31,7 @@ describe('CourtLocationAnswerConverter', () => {
     open_for_public: 'No',
     court_address: '54 HAGLEY ROAD, EDGBASTON ',
     postcode: 'B16 8PE'
-  };
+  }];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -49,15 +49,15 @@ describe('CourtLocationAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     listedVenueAnswerConverter = new CourtLocationAnswerConverter(router);
   });
 
   it('should transform type', () => {
     const STATE: State = initialState.hearings;
-    const result$ = listedVenueAnswerConverter.transformAnswer(of(STATE));
-    const type = COURT_LOCATION.site_name;
+    const result$ = listedVenueAnswerConverter.transformAnswer(of(STATE), 0);
+    const type = COURT_LOCATION[0].site_name;
     const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);
   });

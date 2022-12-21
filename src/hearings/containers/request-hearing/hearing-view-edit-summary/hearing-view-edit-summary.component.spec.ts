@@ -1,11 +1,11 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingViewEditSummaryComponent} from './hearing-view-edit-summary.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.component';
 
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;
@@ -18,8 +18,8 @@ describe('HearingViewEditSummaryComponent', () => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent],
         providers: [
-          provideMockStore({initialState}),
-          {provide: HearingsService, useValue: hearingsService},
+          provideMockStore({ initialState }),
+          { provide: HearingsService, useValue: hearingsService },
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
@@ -31,21 +31,21 @@ describe('HearingViewEditSummaryComponent', () => {
       expect(component).toBeTruthy();
     });
     it('should call navigateAction when executeAction is called with a valid form', () => {
-      component.executeAction(ACTION.VIEW_EDIT_REASON)
-      expect(component.validationErrors.length).toEqual(0)
+      component.executeAction(ACTION.VIEW_EDIT_REASON);
+      expect(component.validationErrors.length).toEqual(0);
     });
     afterEach(() => {
       fixture.destroy();
     });
-  })
+  });
 
   describe('getHearingRequestToCompare and getHearingRequest state are same', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent],
         providers: [
-          provideMockStore({initialState: {hearings: {}}}),
-          {provide: HearingsService, useValue: hearingsService},
+          provideMockStore({ initialState: { hearings: {} } }),
+          { provide: HearingsService, useValue: hearingsService },
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
@@ -55,12 +55,12 @@ describe('HearingViewEditSummaryComponent', () => {
       fixture.detectChanges();
     });
     it('should have a validation errors mapped when nothing has changed summary page', () => {
-      component.executeAction(ACTION.VIEW_EDIT_REASON)
-      expect(component.validationErrors.length).toEqual(1)
+      component.executeAction(ACTION.VIEW_EDIT_REASON);
+      expect(component.validationErrors.length).toEqual(1);
     });
 
     afterEach(() => {
       fixture.destroy();
     });
-  })
+  });
 });

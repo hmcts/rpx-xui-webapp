@@ -4,10 +4,13 @@ import { RoleAssignment } from "./interfaces/roleAssignment";
 export const JUDGE_ROLE = 'judge';
 export const JUDGE_ROLE_CATEGORY = 'JUDICIAL';
 export const JUDGE_ROLE_NAME = 'judicial';
+export const JUDICIARY_ROLE_NAME = 'judiciary';
 export const ADMIN_ROLE = 'admin';
 export const ADMIN_ROLE_CATEGORY = 'ADMIN';
 export const ADMIN_ROLE_NAME = 'admin';
 export const PROFESSIONAL_ROLE = 'solicitor';
+export const PUI_CASE_MANAGER = 'pui-case-manager';
+export const PUI_ORG_MANAGER = 'pui-organisation-manager';
 export const PROFESSIONAL_ROLE_CATEGORY = 'PROFESSIONAL';
 export const PROFESSIONAL_ROLE_NAME = 'professional';
 export const LEGAL_OPERATIONS_ROLE = 'caseworker';
@@ -16,6 +19,8 @@ export const LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
 export const CITIZEN_ROLE = 'citizen';
 export const CITIZEN_ROLE_CATEGORY = 'CITIZEN';
 export const CITIZEN_ROLE_NAME = 'citizen';
+export const CTSC_ROLE_NAME = 'ctsc';
+export const CTSC_ROLE_CATEGORY = 'ctsc';
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
@@ -27,43 +32,51 @@ export function isCurrentUserCaseAllocator(currentUserRoleAssignment: RoleAssign
    && currentUserRoleAssignment.roleType === ORGANISATION_ROLE_TYPE
    && currentUserRoleAssignment.roleName === CASE_ALLOCATOR_ROLE
    && (!currentJurisdiction || currentUserRoleAssignment.attributes.jurisdiction === currentJurisdiction)
-   && (!currentLocation || currentUserRoleAssignment.attributes.primaryLocation === currentLocation);
+   // primaryLocation changed to baseLocation here
+   && (!currentLocation || currentUserRoleAssignment.attributes.baseLocation === currentLocation);
 }
 
 // Returns the roles
 // Of Type ORGANISATION
 export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[] {
-   const roles = [];
-   if (roleAssignments) {
-      roleAssignments.forEach(roleAssignment => {
-         if (!roles.includes(roleAssignment.roleName) && roleAssignment.roleType === ORGANISATION_ROLE_TYPE) {
-             roles.push(roleAssignment.roleName);
-           }
-       });
-   }
-   return roles;
- }
-
-export function getMappedRoleCategory(roles: string[], roleCategories: string[]): string {
-   const roleKeywords: string[] = roles.join().split('-').join().split(',');
-   if (this.roleOrCategoryExists(JUDGE_ROLE, JUDGE_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-      return JUDGE_ROLE_CATEGORY;
-   } else if (this.roleOrCategoryExists(PROFESSIONAL_ROLE, PROFESSIONAL_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-      return PROFESSIONAL_ROLE_CATEGORY;
-   } else if (this.roleOrCategoryExists(CITIZEN_ROLE, CITIZEN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-      return CITIZEN_ROLE_CATEGORY;
-   } else if (this.roleOrCategoryExists(ADMIN_ROLE, ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
-      return ADMIN_ROLE_CATEGORY;
-   } else {
-      return LEGAL_OPERATIONS_ROLE_CATEGORY;
-   }
+  const roles = [];
+  if (roleAssignments) {
+    roleAssignments.forEach(roleAssignment => {
+      if (!roles.includes(roleAssignment.roleName) && roleAssignment.roleType === ORGANISATION_ROLE_TYPE) {
+        roles.push(roleAssignment.roleName);
+      }
+    });
+  }
+  return roles;
 }
 
-export function roleOrCategoryExists(roleKeyword: string,
-                                     roleCategory: string,
-                                     roleKeywords: string[],
-                                     roleCategories: string[]): boolean {
-   const categoryExists = roleCategories.indexOf(roleCategory) > -1;
-   const keywordExists = roleKeywords.indexOf(roleKeyword) > -1;
-   return categoryExists && keywordExists;
+export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): string {
+  const roleCategories = [JUDGE_ROLE_CATEGORY, LEGAL_OPERATIONS_ROLE_CATEGORY, CTSC_ROLE_CATEGORY, ADMIN_ROLE_CATEGORY];
+  for (const roleCategory of roleCategories) {
+    if (hasRoleCategory(roleAssignments, roleCategory)) {
+      return roleCategory;
+    }
+  }
+  return undefined;
+}
+
+export function getUserRoleCategory(roles: string[]): string {
+  if (hasRoleCategory(roles, CITIZEN_ROLE)) {
+    return CITIZEN_ROLE_NAME;
+  } else if (includesRoleCategory(roles, JUDGE_ROLE) || includesRoleCategory(roles, JUDICIARY_ROLE_NAME)) {
+    return JUDGE_ROLE_NAME;
+  } else if (hasRoleCategory(roles, PROFESSIONAL_ROLE) || hasRoleCategory(roles, PROFESSIONAL_ROLE_NAME)
+    || hasRoleCategory(roles, PUI_CASE_MANAGER) || hasRoleCategory(roles, PUI_ORG_MANAGER)) {
+    return PROFESSIONAL_ROLE;
+  } else {
+    return LEGAL_OPERATIONS_ROLE_NAME;
+  }
+}
+
+export function hasRoleCategory(roles: string[], roleName: string): boolean {
+  return roles.some(x => x.toLowerCase() === roleName.toLowerCase());
+}
+
+export function includesRoleCategory(roles: string[], roleName: string): boolean {
+  return roles.some(x => x.toLowerCase().includes(roleName.toLowerCase()));
 }

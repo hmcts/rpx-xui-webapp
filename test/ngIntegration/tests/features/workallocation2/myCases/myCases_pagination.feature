@@ -1,14 +1,18 @@
 # https://tools.hmcts.net/jira/browse/EUI-3886
-@ng  
+@ng   
 Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "caseSearchRequest"
+        Given I set MOCK request "/workallocation/my-work/cases" intercept with reference "caseSearchRequest"
 
 
     Scenario Outline: pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | baseLocation | roleType     |
+            | IA           | 20001           | ORGANISATION |
+            | SSCS         |                 | ORGANISATION |
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | case-allocator | 40 |
@@ -29,6 +33,13 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
             | Case name    | No        |
             | Case category | No |
 
+        # Then I see work allocation table "cases" reset sort button state isDisplayed is "false"
+        # Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
+        # When I click work allocation table "cases" reset sort button
+        # Then I see work allocation table "cases" reset sort button state isDisplayed is "false"
+        # Then I see work allocation table "cases" reset sort button state isDisplayed is "true"
+
+        
         Examples:
             | UserIdentifier  | UserType | Roles                                           |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
@@ -36,6 +47,10 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Scenario Outline: pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | baseLocation | roleType     |
+            | IA           | 20001           | ORGANISATION |
+            | SSCS         |                 | ORGANISATION |
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | case-allocator | 20 |
@@ -58,6 +73,10 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
     @ignore
     Scenario Outline: pagnation control display 0 items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | baseLocation | roleType     |
+            | IA           | 20001           | ORGANISATION |
+            | SSCS         |                 | ORGANISATION |
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | case-allocator | 0 |
@@ -78,4 +97,27 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
 
+    Scenario Outline: My cases sorting
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | baseLocation | roleType     |
+            | IA           | 20001           | ORGANISATION |
+            | SSCS         |                 | ORGANISATION |
+        Given I set MOCK workallocation cases with permissions for view "My cases"
+            | Roles          | Count |
+            | case-allocator | 10    |
+            | case-allocator | 90    |
+
+        Given I start MockApp
+
+        Given I navigate to home page
+        When I navigate to My work sub navigation tab "My cases"
+
+        Then I validate work allocation cases table pagination controls, is displayed state is "false"
+
+    
+        Examples:
+            | UserIdentifier  | UserType | Roles                                           |
+            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 

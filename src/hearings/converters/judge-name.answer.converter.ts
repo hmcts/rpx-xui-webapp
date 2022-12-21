@@ -17,7 +17,7 @@ export class JudgeNameAnswerConverter implements AnswerConverter {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const includedJudgeMemberId: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
         const includedJudge: JudicialUserModel = judicialUsersList.find((judgeInfo) => includedJudgeMemberId.includes(judgeInfo.personalCode));
-        return includedJudge.knownAs ? includedJudge.knownAs : includedJudge.fullName;
+        return includedJudge.fullName;
       })
     );
   }

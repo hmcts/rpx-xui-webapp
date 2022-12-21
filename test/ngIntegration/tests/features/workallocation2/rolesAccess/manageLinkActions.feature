@@ -2,11 +2,12 @@
 Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
     Background: User and mock data setup
-        Given I set MOCK request "/workallocation2/findPerson" response log to report
+        Given I set MOCK request "/workallocation/findPerson" response log to report
         Given I set MOCK request "/api/role-access/roles/post" response log to report
 
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
+        Given I set MOCK case details "caseDetails" property "CaseType" as "Asylum"
 
 
         Given I set MOCK case workers
@@ -50,7 +51,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
     Scenario: Manage link display and actions listed
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -82,7 +83,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
     Scenario: Judicial user Reallocate a Judiciary role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -145,7 +146,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
     Scenario: Judicial user Reallocate a Legal Ops role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -207,7 +208,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
     Scenario: Legal Ops user Reallocate a Legal Ops role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -271,7 +272,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
     Scenario: Legal ops user Reallocate a Judicial role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -332,7 +333,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
     Scenario: Judicial user Removes judicial role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -377,7 +378,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
     Scenario: Judicial user Removes Legal ops role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp

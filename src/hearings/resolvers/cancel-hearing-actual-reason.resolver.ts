@@ -26,7 +26,7 @@ export class CancelHearingActualReasonResolver extends RefDataResolver implement
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     route.data = {
       ...route.data,
-      category: HearingCategory.CancelHearingActualReason
+      category: HearingCategory.ActualCancellationReasonCodes
     };
 
     return super.resolve(route);

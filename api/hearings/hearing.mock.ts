@@ -1,22 +1,27 @@
 import MockAdapter from 'axios-mock-adapter';
-import { HttpMockAdapter } from '../common/httpMockAdapter';
+import {HttpMockAdapter} from '../common/httpMockAdapter';
 import {
   HEARING_ACTUAL, HEARING_ACTUAL_ADJOURNED, HEARING_ACTUAL_AWAITING,
   HEARING_ACTUAL_COMPLETED
 } from './data/hearing-actuals.mock.data';
-import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearingLists.mock.data';
-import { HEARING_REQUEST_RESULTS } from './data/hearingRequests.mock.data';
-import { LINKED_HEARING_GROUP, SERVICE_LINKED_CASES } from './data/linkHearings.mock.data';
-import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
+import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearingLists.mock.data';
+import {HEARING_REQUEST_RESULTS} from './data/hearingRequests.mock.data';
+import {LINKED_HEARING_GROUP, SERVICE_LINKED_CASES} from './data/linkHearings.mock.data';
+import {SERVICE_HEARING_VALUES} from './data/serviceHearingValues.mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
+  // ------ Mock service APIs Start ------
+  const postServiceHearingValues = /serviceHearingValues/;
+
+  const loadServiceLinkedCases = /serviceLinkedCases/;
+  // ------ Mock service APIs End ------
+
+  // ------ Mock HMC APIs Start ------
   const getHearingsUrl = /hearings\/[0-9]{16}/;
 
   const getHearingInfoUrl = /hearing\/[\w]*/;
-
-  const postServiceHearingValues = /serviceHearingValues/;
 
   const submitHearingRequest = /(hearing)\b/;
 
@@ -28,11 +33,35 @@ export const init = () => {
 
   const postHearingActualsUrl = /hearingActualsCompletion\/[\w]*/;
 
-  const loadServiceLinkedCases = /serviceLinkedCases/;
-
   const getLinkedHearingGroup = /linkedHearingGroup\?caseReference=[\w]*&hearingId=[\w]*/;
 
   const linkedHearingGroup = /linkedHearingGroup/;
+  // ------ Mock HMC APIs End ------
+
+  mock.onPost(postServiceHearingValues).reply(config => {
+    const jsonData = JSON.parse(config.data);
+    const caseReference = jsonData.caseReference;
+    // START : This few lines code jus to faciliate testing for case references ending with 1
+    // so that even the failure scenarios can be verified
+    if (caseReference.endsWith('1')) {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
+    return [
+      200,
+      SERVICE_HEARING_VALUES,
+    ];
+  });
+
+  mock.onPost(loadServiceLinkedCases).reply(() => {
+    return [
+      200,
+      SERVICE_LINKED_CASES,
+    ];
+  });
 
   mock.onGet(getHearingsUrl).reply(config => {
     const url = config.url;
@@ -77,24 +106,6 @@ export const init = () => {
     return [
       200,
       FOUND_A_HEARING,
-    ];
-  });
-
-  mock.onPost(postServiceHearingValues).reply(config => {
-    const jsonData = JSON.parse(config.data);
-    const caseReference = jsonData.caseReference;
-    // START : This few lines code jus to faciliate testing for case references ending with 1
-    // so that even the failure scenarios can be verified
-    if (caseReference.endsWith('1')) {
-      return [
-        500,
-        null,
-      ];
-    }
-    // END
-    return [
-      200,
-      SERVICE_HEARING_VALUES,
     ];
   });
 
@@ -175,13 +186,6 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(loadServiceLinkedCases).reply(() => {
-    return [
-      200,
-      SERVICE_LINKED_CASES,
-    ];
-  });
-
   mock.onGet(getLinkedHearingGroup).reply(() => {
     return [
       200,
@@ -190,11 +194,10 @@ export const init = () => {
   });
 
   mock.onPost(linkedHearingGroup).reply(config => {
-    // START : This few lines code jus to faciliate testing for specific hearing id of h100014
+    // START : This few lines code just to faciliate testing for specific hearing id of h100014
     // so that even the failure scenarios can be verified
     const jsonData = JSON.parse(config.data);
-    const hearingId = jsonData.hearingsInGroup[0].hearingId
-    if (hearingId === 'h100014') {
+    if (jsonData && jsonData.hearingsInGroup && jsonData.hearingsInGroup[0].hearingId === 'h100014') {
       return [
         500,
         null,
@@ -221,9 +224,7 @@ export const init = () => {
   mock.onDelete(linkedHearingGroup).reply(() => {
     return [
       200,
-      {
-        hearingGroupRequestId: 'g1000000',
-      },
+      null,
     ];
   });
 };

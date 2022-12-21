@@ -16,7 +16,7 @@ import { PaletteService } from './palette.service';
 })
 export class NocFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  @ViewChild('fieldContainer', {read: ViewContainerRef})
+  @ViewChild('fieldContainer', {static: false, read: ViewContainerRef})
   public fieldContainer: ViewContainerRef;
 
   constructor(private readonly resolver: ComponentFactoryResolver,

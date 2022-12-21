@@ -1,13 +1,12 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
-import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {ACTION, RadioOptions} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {LovRefDataService} from '../../../services/lov-ref-data.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
@@ -26,7 +25,7 @@ describe('HearingAttendanceComponent', () => {
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
-  const lovRefDataService = new LovRefDataService(mockedHttpClient);
+  const lovRefDataService = jasmine.createSpyObj('lovRefDataService', ['getListOfValues']);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
@@ -54,6 +53,7 @@ describe('HearingAttendanceComponent', () => {
     spyOn(component, 'initialiseFromHearingValues').and.callThrough();
     spyOn(component, 'prepareHearingRequestData').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();
+    lovRefDataService.getListOfValues.and.returnValue(of([]));
     fixture.detectChanges();
   });
   it('should create', () => {
@@ -66,6 +66,11 @@ describe('HearingAttendanceComponent', () => {
     });
     component.executeAction(ACTION.CONTINUE);
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
+  });
+  it('should return true when calling isFormValid for paper hearings', () => {
+    component.attendanceFormGroup.controls.paperHearing.setValue(RadioOptions.YES);
+    fixture.detectChanges();
+    expect(component.isFormValid()).toEqual(true);
   });
   it('should true when calling isFormValid with partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);

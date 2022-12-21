@@ -42,17 +42,6 @@ describe('ValidatorsUtils', () => {
     expect(control.hasError('isValid')).toBeFalsy();
   }));
 
-  it('should check minutesValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
-    const form = new FormGroup({
-      hours: new FormControl(),
-      minutes: new FormControl()
-    });
-    form.setValidators(service.minutesValidator(5, 55, 360));
-    form.controls.hours.setValue('0');
-    form.controls.minutes.setValue('10');
-    expect(form.hasError('isValid')).toBeFalsy();
-  }));
-
   it('should check errorValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormControl();
     form.setValidators(service.errorValidator('message'));
@@ -63,6 +52,30 @@ describe('ValidatorsUtils', () => {
     const form = new FormControl();
     form.setValidators(service.validateLinkedHearings());
     expect(form.hasError('error')).toBeFalsy();
+  }));
+
+  it('should check hearingLengthValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      days: new FormControl(),
+      hours: new FormControl(),
+      minutes: new FormControl()
+    });
+    form.setValidators(service.hearingLengthValidator());
+    form.controls.days.setValue('5');
+    form.controls.hours.setValue('');
+    form.controls.minutes.setValue('');
+    console.log('FORM HAS ERROR', form.hasError('isValid'));
+    expect(form.hasError('isValid')).toBeFalsy();
+    form.controls.days.setValue('');
+    form.controls.hours.setValue('4');
+    form.controls.minutes.setValue('');
+    console.log('FORM HAS ERROR', form.hasError('isValid'));
+    expect(form.hasError('isValid')).toBeFalsy();
+    form.controls.days.setValue('');
+    form.controls.hours.setValue('');
+    form.controls.minutes.setValue('40');
+    console.log('FORM HAS ERROR', form.hasError('isValid'));
+    expect(form.hasError('isValid')).toBeFalsy();
   }));
 
   it('should check hearingDateValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
@@ -84,9 +97,11 @@ describe('ValidatorsUtils', () => {
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 
-  it('should check calcBusinessDays', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
-    expect(service.calcBusinessDays(moment('23-12-2022', HearingDateEnum.DefaultFormat), moment('26-12-2022', HearingDateEnum.DefaultFormat))).toBe(2);
-    expect(service.calcBusinessDays(moment('24-12-2022', HearingDateEnum.DefaultFormat), moment('25-12-2022', HearingDateEnum.DefaultFormat))).toBe(0);
+  it('should check isWeekendDate', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    expect(service.isWeekendDate(moment('24-06-2022', HearingDateEnum.DefaultFormat))).toBeFalsy();
+    expect(service.isWeekendDate(moment('25-06-2022', HearingDateEnum.DefaultFormat))).toBeTruthy();
+    expect(service.isWeekendDate(moment('26-06-2022', HearingDateEnum.DefaultFormat))).toBeTruthy();
+    expect(service.isWeekendDate(moment('27-06-2022', HearingDateEnum.DefaultFormat))).toBeFalsy();
   }));
 
   it('should check hearingDateRangeValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {

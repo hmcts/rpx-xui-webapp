@@ -1,4 +1,4 @@
-import {HttpParams} from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataService } from './lov-ref-data.service';
 
@@ -11,8 +11,8 @@ describe('Lov RefData service', () => {
 
       const options = {
         params: new HttpParams()
-          .set('category', HearingCategory.HearingPriority)
-          .set('service', 'BBA3')
+          .set('categoryId', HearingCategory.HearingPriority)
+          .set('serviceId', 'BBA3')
           .set('isChildRequired', 'N')
       };
 

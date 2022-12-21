@@ -182,7 +182,7 @@ export const ROUTES: Routes = [
   {
     path: 'search',
     canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
-    loadChildren: '../search/search.module#SearchModule',
+    loadChildren: () => import('../search/search.module').then(m => m.SearchModule),
     data: {
       title: 'Search cases',
       needsFeaturesEnabled: ['feature-global-search'],

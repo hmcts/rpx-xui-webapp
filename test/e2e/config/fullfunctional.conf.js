@@ -107,8 +107,8 @@ const config = {
                 removeExistingJsonReportFile: true,
                 reportName: 'XUI Manage Cases Full Functional Tests',
                 // openReportInBrowser: true,
-                jsonDir: 'reports/tests/functional',
-                reportPath: 'reports/tests/functional',
+                jsonDir: 'functional-output/tests/functional',
+                reportPath: 'functional-output/tests/functional',
                 displayDuration: true,
                 durationInMS: false
             }

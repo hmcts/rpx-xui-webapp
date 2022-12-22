@@ -7,7 +7,7 @@ Feature: WA Release 2: Roles and access - Allocate Role Case worker - Check your
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
         Given I set MOCK find person response for jurisdictions
             | domain   | id   | email                   | name           | knownAs       |
@@ -42,7 +42,7 @@ Feature: WA Release 2: Roles and access - Allocate Role Case worker - Check your
         When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
             | Person                      |
-            | user1 j(judge_user1@gov.uk) |
+            | user1 j (judge_user1@gov.uk) |
         When I select find person result "judge_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 

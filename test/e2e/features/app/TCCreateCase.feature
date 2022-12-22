@@ -1,4 +1,4 @@
-@fullfunctional
+@fullfunctional_fixneeded @test 
 Feature: Test case type case creation and case details validations
 
   Background:
@@ -43,6 +43,7 @@ Feature: Test case type case creation and case details validations
         Then I am on case form page
         Then I should be able to fill the form pages
         Then Should be able to see check your answers summary page links
+
 
     Scenario: Validate tabs in case details page against API response
         When I click on search button

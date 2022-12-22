@@ -1,12 +1,11 @@
 redis:
   enabled: false
-  cluster:
-    enabled: false
-    slaveCount: 0
-  usePassword: false
+  architecture: standalone
   master:
     persistence:
       enabled: false
+  auth:
+    enabled: false
 
 nodejs:
   aadIdentityName: xui
@@ -55,10 +54,16 @@ nodejs:
     SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_CCD_CASE_ASSIGNMENT_API: http://aac-manage-case-assignment-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_LOCATION_API: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Hearings endpoints
+    SERVICES_HEARINGS_COMPONENT_API_SSCS: http://sscs-hearings-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_HEARINGS_COMPONENT_API_PRIVATELAW: http://fis-hmc-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_HMC_HEARINGS_COMPONENT_API: http://hmc-cft-hearing-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services work allocation endpoints
     SERVICES_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services role  endpoints
     SERVICES_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services role assignment endpoints
+    SERVICES_ROLE_ASSIGNMENT_MAPPING_API: http://am-org-role-mapping-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services judicial api endpoints
     SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services refunds  endpoints
@@ -75,6 +80,9 @@ nodejs:
     SERVICES_EM_HRS_API: http://em-hrs-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services PRD
     SERVICES_PRD_API: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_PRD_LOCATION_API: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_PRD_JUDICIAL_API: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_PRD_COMMONDATA_API: http://rd-commondata-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Location Ref
     SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Em Anno
@@ -83,6 +91,8 @@ nodejs:
     SERVICES_MARKUP_API: http://em-npa-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Em docassembly
     SERVICES_EM_DOCASSEMBLY_API: http://dg-docassembly-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Wa Workflow
+    SERVICES_WA_WORKFLOW_API_URL: http://wa-workflow-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services ICP
     SERVICES_ICP_API: http://em-icp-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Idam
@@ -101,6 +111,8 @@ nodejs:
     SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}2.internal:8443/openam/oauth2/hmcts
     # Card Payment Return Url (for Ways To Pay)
     SERVICES_PAYMENT_RETURN_URL: https://paymentoutcome-web.{{ .Values.global.environment }}.platform.hmcts.net/
+    # Judicial Booking Url
+    SERVICES_JUDICIAL_BOOKING_API_PATH: http://am-judicial-booking-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
 
     #Feature Flags
     FEATURE_APP_INSIGHTS_ENABLED: true
@@ -132,8 +144,6 @@ nodejs:
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
-  redis:
-  enabled: true
 idam-pr:
   enabled: false
 

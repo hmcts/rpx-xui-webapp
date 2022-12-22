@@ -58,7 +58,7 @@ export  const config =  {
             docId: '005ed16f-be03-4620-a8ee-9bc90635f6f2'
         }
     },
-    testEnv: process.env.TEST_ENV ? process.env.TEST_ENV : 'aat',
+    testEnv: process.env.TEST_ENV !== undefined && (process.env.TEST_ENV.includes('aat') || process.env.TEST_ENV.includes('demo')) ? process.env.TEST_ENV : 'aat',
     users : {
        aat: {
             solicitor: { e: 'lukesuperuserxui@mailnesia.com', sec: 'Monday01'},
@@ -72,8 +72,8 @@ export  const config =  {
        }
     },
     configuratioUi: {
-        aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled'],
-        demo: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled']
+        aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled', 'accessManagementEnabled', 'judicialBookingApi','waWorkflowApi'],
+        demo: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled', 'accessManagementEnabled', 'judicialBookingApi', 'waWorkflowApi']
     },
     workallocation:{
         aat:{

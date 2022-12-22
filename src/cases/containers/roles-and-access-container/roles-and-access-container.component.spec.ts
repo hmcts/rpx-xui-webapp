@@ -2,11 +2,12 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, AlertService, AuthService, CaseField, CaseNotifier, CasesService, CaseUIToolkitModule, CaseView, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
+import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '../../components';
+import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
 import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
@@ -17,6 +18,7 @@ import { initialMockState } from '../../../role-access/testing/app-initial-state
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
+import { HttpClientModule } from '@angular/common/http';
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
@@ -155,8 +157,9 @@ describe('RolesContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule, CaseUIToolkitModule],
       providers: [
+        CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
         {
           provide: RoleExclusionsService,
           useClass: RoleExclusionsMockService
@@ -180,7 +183,9 @@ describe('RolesContainerComponent', () => {
         RolesAndAccessComponent,
         CaseRolesTableComponent,
         ShowAllocateLinkDirective,
-        ExclusionsTableComponent
+        ExclusionsTableComponent,
+        RoleAccessSectionComponent,
+        AllocateARoleLinkComponent
       ]
     })
       .compileComponents();
@@ -229,20 +234,20 @@ describe('RolesContainerComponent', () => {
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
     caseDetails.case_type = {
-        id: '334',
+      id: '334',
+      name: '',
+      description: '',
+      jurisdiction: {
+        id: '',
         name: '',
         description: '',
-        jurisdiction: {
-            id: '',
-            name: '',
-            description: '',
-        },
-        printEnabled: false
+      },
+      printEnabled: false
     }
     component.caseDetails = caseDetails;
-    const caseRoles = [{roleCategory: 'JUDICIAL', actorId: '234'}];
+    const caseRoles = [{ roleCategory: 'JUDICIAL', actorId: '234' }];
     allocateService.getCaseRoles.and.returnValue(of(caseRoles));
-    const caseUserDetails = [{known_as: 'some', idam_id: '234'}];
+    const caseUserDetails = [{ known_as: 'some', idam_id: '234' }];
     allocateService.getCaseRolesUserDetails.and.returnValue(of(caseUserDetails));
     const casefield = {};
     component.loadRoles(casefield);
@@ -256,7 +261,7 @@ describe('RolesContainerComponent', () => {
   it('loadExclusions', () => {
     component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
 
-    const jurisdiction = {value: 'ia'};
+    const jurisdiction = { value: 'ia' };
     const exclusions = [
       {
         actorId: 'ret',
@@ -269,7 +274,7 @@ describe('RolesContainerComponent', () => {
         email: ''
       }
     ];
-    const caseDetails = { case_id: '12344', case_type: {id: '345'}} as CaseView;
+    const caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
     component.caseDetails = caseDetails;
     roleExclusionsService.getCurrentUserRoleExclusions.and.returnValue(of(exclusions));
     component.loadExclusions(jurisdiction);

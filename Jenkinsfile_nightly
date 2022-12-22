@@ -7,7 +7,7 @@ properties([
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
     pipelineTriggers([
-    cron('H 05 * * *')
+    cron('H 07 * * *')
     ])
 ])
 
@@ -30,11 +30,11 @@ withNightlyPipeline(type, product, component) {
 
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
   
-      after('checkout') {
+      afterSuccess('checkout') {
         yarnBuilder.yarn('cache clean')
     }
   
-    after('build') {
+    afterSuccess('build') {
         yarnBuilder.yarn('build')
       
         publishHTML([
@@ -65,11 +65,11 @@ withNightlyPipeline(type, product, component) {
         ])
     }
 
-    after('fortify-scan') {
+    afterSuccess('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
-    after('fullFunctionalTest') {
+    afterSuccess('fullFunctionalTest') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -98,7 +98,7 @@ withNightlyPipeline(type, product, component) {
         ])
     }
 
-    after('mutationTest') {
+    afterSuccess('mutationTest') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -109,7 +109,7 @@ withNightlyPipeline(type, product, component) {
         ])
     }
 
-  after('crossBrowserTest') {
+  afterSuccess('crossBrowserTest') {
     publishHTML([
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -120,7 +120,7 @@ withNightlyPipeline(type, product, component) {
     ])
   }
 
-  after('securityScan') {
+  afterSuccess('securityScan') {
     publishHTML([
       allowMissing         : true,
       alwaysLinkToLastBuild: true,

@@ -8,8 +8,8 @@ import { of } from 'rxjs';
 
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
-import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation-2/services';
-import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
+import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
+import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 
 const metadataField = {} as CaseField;
@@ -173,6 +173,27 @@ describe('TasksContainerComponent', () => {
     expect(component.tasks.length).toEqual(0);
   });
 
+  it('should return task with corect name when getJudicialNamedTasks called', () => {
+    component.tasks = [
+      { id: '5f677ab6-ee64-11ec-b9f6-fe3569506667',
+        name: 'Review the appeal',
+        assignee: '09f1f25d-7d7e-4481-b8e3-8624227438ef'
+      } as any
+    ]
+    const judicialUserData = [{
+        sidam_id: '09f1f25d-7d7e-4481-b8e3-8624227438ef',
+        object_id: 'e97296ca-8182-45ef-82d0-7e4eeb6dab49-test2',
+        known_as: 'Joe',
+        surname: 'Bloggs',
+        full_name: 'Joe Bloggs',
+        post_nominals: 'Judge',
+        email_id: '4920094EMP-@ejudiciary.net',
+        personal_code: '4920094'
+    }]
+    component.getJudicialNamedTasks(judicialUserData as any).subscribe( task => {
+        expect(task[0].assigneeName).toEqual('Joe Bloggs');
+    });
+  })
 
   it('should refresh tasks when requested', () => {
     const firstTask = getMockTasks()[0];

@@ -2,15 +2,18 @@ import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib'
 import { ApplicationThemeLogo } from './enums';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
-const FeatureNames = {
-  currentWAFeature: 'mc-work-allocation-active-feature',
-  workAllocation: 'MC_Work_Allocation',
+const featureNames = {
+  waServiceConfig: 'wa-service-config',
+  waAccess: 'wa-access',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
-  userTypeRoles: 'mc-user-type-roles'
+  userTypeRoles: 'mc-user-type-roles',
+  booking: 'mc-booking-active',
+  mcHearingsFeature: 'mc-hearings-jurisdictions',
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs'
 };
 
-const FooterDataNavigation = {
+const footerDataNavigation = {
   items: [
     {text: 'Accessibility', href: '/accessibility', target: '_blank'},
     {text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank'},
@@ -74,7 +77,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Immigration and Asylum',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'customer.service@justice.gov.uk',
+    email: 'contactia@justice.gov.uk',
     phone: '0300 123 1711',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   },
@@ -111,28 +114,33 @@ const appHeaderTitle = {name: 'Manage cases', url: '/'};
 // Making the base URL for case details a constant.
 const caseDetailsUrl: string = '/cases/case-details/';
 
+const accessViewUrl: string = '/access-view/';
+
 const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
 const serviceMessageCookie: string = 'service_messages';
 
 const caseAllocatorRole: string = 'case-allocator-role';
 
 export class AppConstants {
-  static FOOTER_DATA = null;
-  static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  static APP_HEADER_TITLE = appHeaderTitle;
-  static ENVIRONMENT_NAMES = environmentNames;
-  static REDIRECT_URL = redirectUrl;
-  static HELP_CONTACT_DETAILS = helpContactDetails;
-  static DEFAULT_USER_THEME = defaultUserTheme;
-  static FEATURE_NAMES = FeatureNames;
-  static CASE_DETAILS_URL = caseDetailsUrl;
-  static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
-  static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
-  static DEFAULT_MENU_ITEMS = defaultMenuItems;
+  public static FOOTER_DATA = null;
+  public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
+  public static APP_HEADER_TITLE = appHeaderTitle;
+  public static ENVIRONMENT_NAMES = environmentNames;
+  public static REDIRECT_URL = redirectUrl;
+  public static HELP_CONTACT_DETAILS = helpContactDetails;
+  public static DEFAULT_USER_THEME = defaultUserTheme;
+  public static FEATURE_NAMES = featureNames;
+  public static CASE_DETAILS_URL = caseDetailsUrl;
+  public static ACCESS_VIEW_URL = accessViewUrl;
+  public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
+  public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
+  public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
+  public static DEFAULT_MENU_ITEMS = defaultMenuItems;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
 export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
-export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor'];
-export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge'];
-export const SERVICE_OPTIONS_LIST = [{key: 'IA', label: 'Immigration and Asylum'}];
+export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil', 'caseworker-privatelaw'];
+export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge'];
+export const SERVICE_OPTIONS_LIST = [{key: 'IA', label: 'Immigration and Asylum'}, {key: 'SSCS', label: 'Social security and child support'}];
+export const PUI_CASE_MANAGER = 'pui-case-manager';

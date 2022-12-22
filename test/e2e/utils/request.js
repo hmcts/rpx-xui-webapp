@@ -9,7 +9,7 @@ const axiosOptions = {
     baseURL: config.getBaseUrl()
 };
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = config.getBaseUrl();
+axios.defaults.baseURL = process.env.TEST_URL;
 const http = axios.create(axiosOptions);
 
 const requestInterceptor = (request) => {
@@ -36,6 +36,17 @@ class Request {
         return cookieString;
     }
     
+    async getCookievalue(name){
+        const cookies = await browser.manage().getCookies(); 
+        let retval = null;
+        for(const cookie of cookies){
+            if(cookie.name === name){
+                retval = cookie.value;
+                break; 
+            }
+        }
+        return retval;
+    }
 
      clearSession() {
         this.cookieString = '';
@@ -44,13 +55,14 @@ class Request {
         return "Test Api"
     }
 
-     getRequestConfig(headers) {
+     async getRequestConfig(headers) {
         let reqheaders = {};
         if (headers) {
             reqheaders = { ...headers };
         }
         if (this.cookieString !== '') {
-            reqheaders['cookie'] = this.cookieString;
+            reqheaders['cookie'] = await this.getCookieString();
+            reqheaders['Authorization'] = 'Bearer '+await this.getCookievalue("__auth__");
         }
 
         return { headers: reqheaders};
@@ -69,7 +81,8 @@ class Request {
 
      async get(reqpath, headers){
         try {
-            return await http.get(reqpath, this.getRequestConfig(headers));
+            const config = await this.getRequestConfig(headers); 
+            return await http.get(reqpath, config );
         } catch (error) {
             return this.getResponseFromError(error);
         }
@@ -77,7 +90,8 @@ class Request {
 
      async post(reqpath, data, headers) {
         try {
-            return await http.post(reqpath, data, this.getRequestConfig(headers));
+            const config = await this.getRequestConfig(headers); 
+            return await http.post(reqpath, data,config);
         } catch (error) {
             return this.getResponseFromError(error);
 
@@ -86,7 +100,8 @@ class Request {
 
      async put(reqpath, data, headers){
         try {
-         return await http.put(reqpath, data, this.getRequestConfig(headers));
+            const config = await this.getRequestConfig(headers); 
+            return await http.put(reqpath, data, config);
         } catch (error) {
             return this.getResponseFromError(error);
 
@@ -96,7 +111,7 @@ class Request {
 
      async delete(reqpath, payload, moreHeaders) {
         try {
-            const requestConfig = this.getRequestConfig(moreHeaders);
+            const requestConfig = await this.getRequestConfig(moreHeaders);
             if (payload){
                 requestConfig['data'] = payload;
             }

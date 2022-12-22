@@ -1,0 +1,22 @@
+<main class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">{{heading}}</h1>
+        <div class="govuk-panel__body">{{headingDescription}}</div>
+      </div>
+      <div>
+        <h2 class="govuk-heading-m">{{subheading}}</h2>
+        <div class="govuk-body" *ngIf="subheadingDescription">
+          {{subheadingDescription}}
+        </div>
+        <div class="govuk-body" *ngIf="caseId">
+          You can <a href="javascript:void(0)"
+            [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']" class="govuk-link">view the status of this hearing in the hearings tab</a>.
+        </div>
+        <div class="govuk-body" *ngIf="additionalDescription"
+          [innerHtml]="additionalDescription"></div>
+      </div>
+    </div>
+  </div>
+</main>

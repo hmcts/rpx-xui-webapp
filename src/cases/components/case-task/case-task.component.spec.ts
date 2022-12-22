@@ -1,14 +1,14 @@
 import { of } from 'rxjs';
 import { RoleCategory } from '../../../role-access/models';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
-import { Task } from '../../../work-allocation-2/models/tasks';
-import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
+import { Caseworker } from '../../../work-allocation/models/dtos';
+import { Task } from '../../../work-allocation/models/tasks';
+import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { CaseTaskComponent } from './case-task.component';
 
 describe('CaseTaskComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'warning']);
   const mockSessionStorage = jasmine.createSpyObj('mockSessionStorage', ['getItem']);
-  const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+  const mockRouter = jasmine.createSpyObj('router', ['navigate', 'url']);
   const mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
   mockRouter.url = '/case-details/123243430403904/tasks';
   const component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService);
@@ -59,8 +59,13 @@ describe('CaseTaskComponent', () => {
       warnings: false,
       derivedIcon: null
     };
-    mockSessionStorage.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
-    const result = component.isTaskAssignedToCurrentUser(task);
+    let userIdType = 'uid';
+    mockSessionStorage.getItem.and.returnValue(`{\"sub\":\"juser8@mailinator.com\",\"${userIdType}\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}`);
+    let result = component.isTaskAssignedToCurrentUser(task);
+    expect(result).toBeTruthy();
+    userIdType = 'id';
+    mockSessionStorage.getItem.and.returnValue(`{\"sub\":\"juser8@mailinator.com\",\"${userIdType}\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}`);
+    result = component.isTaskAssignedToCurrentUser(task);
     expect(result).toBeTruthy();
   });
 
@@ -194,6 +199,35 @@ describe('CaseTaskComponent', () => {
       expect(refreshTasksSpy).toHaveBeenCalled();
       expect(mockAlertService.warning).toHaveBeenCalled();
     });
+  });
+
+  describe('toDate()', () => {
+
+    it('should return null if there is no value', () => {
+      expect(component.toDate(undefined)).toBe(null);
+      expect(component.toDate(null)).toBe(null);
+    });
+
+    it('should return null if there is no date value', () => {
+      expect(component.toDate('')).toBe(null);
+    });
+
+    it('should return a date if there is a date value', () => {
+      const firstDate = new Date('01-01-2000');
+      const secondDate = new Date('03-12-2020');
+      expect(component.toDate('01-01-2000').toDateString()).toBe(firstDate.toDateString());
+      expect(component.toDate(new Date('03-12-2020')).toDateString()).toEqual(secondDate.toDateString());
+    });
+
+  });
+
+  describe('onClick()', () => {
+
+    it('should navigate correctly on click', () => {
+      component.onClick('exampleUrl(firstUrlPart?secondUrlPart=equalPart)end');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['firstUrlPart'], {queryParams: {tid: 'equalPart'}});
+    });
+
   });
 
 });

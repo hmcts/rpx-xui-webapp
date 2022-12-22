@@ -11,7 +11,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher2 } from '../utils/matchers';
-const { somethingLike, iso8601DateTime, term } = Matchers;
+const { somethingLike,eachLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_judicial', port: 8000 });
 
 const MockApp = require('../../../../../test/nodeMock/app');
@@ -91,7 +91,10 @@ describe("Judicial ref data api, get all judge users", () => {
            
             const configValues = getJudicialRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl)
             configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
-            configValues['serviceRefDataMapping'] = [{ "IA": "BFA1" }];
+
+            configValues['serviceRefDataMapping'] = [
+                { "service": "IA", "serviceCodes": ["BFA1"] }, { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] }
+            ];
 
             sandbox.stub(config, 'get').callsFake((prop) => {
                 return configValues[prop];
@@ -179,7 +182,7 @@ function getDumyJudgeUserDetails(){
                     "jurisdiction": somethingLike("Authorisation Tribunals"),
                     "ticket_description": somethingLike("Social Security and Child Support"),
                     "ticket_code": somethingLike("357"),
-                    "service_code": somethingLike("BBA3"),
+                    "service_codes": [],
                     "start_date": somethingLike("2013-12-05T00:00"),
                     "end_date": term(DateTimeMatcher2('2022-03-04T10:11:00.619526'))
                 }

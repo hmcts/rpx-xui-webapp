@@ -1,34 +1,43 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { UserDetails } from '../../../app/models/user-details.model';
+import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
-import { FlagDefinition, NavigationItem } from '../../models/theming.model';
-import { UserNavModel } from '../../models/user-nav.model';
+import { SearchStatePersistenceKey } from '../../../search/enums';
+import { SearchService } from '../../../search/services/search.service';
+import { FlagDefinition, NavigationItem, UserNavModel } from '../../models';
 import { UserService } from '../../services/user/user.service';
 
 @Component({
-    selector: 'exui-hmcts-global-header',
-    templateUrl: './hmcts-global-header.component.html',
-    styleUrls: ['./hmcts-global-header.component.scss']
+  selector: 'exui-hmcts-global-header',
+  templateUrl: './hmcts-global-header.component.html',
+  styleUrls: ['./hmcts-global-header.component.scss']
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
+
+  private static readonly GLOBAL_SEARCH_FEATURE_CONFIG = 'feature-global-search';
 
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
   }
   @Input() public items: NavigationItem[];
   @Input() public logoIsUsed: boolean;
-  @Input() public headerTitle: {name: string; url: string};
+  @Input() public headerTitle: { name: string; url: string };
   @Input() public navigation: UserNavModel;
   @Input() public logo: string;
   @Input() public currentUrl: string;
+  @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
   public showItems = false;
   public userValue = true;
   public tab;
+  public userDetails$: Observable<UserDetails>;
+  public isUserCaseManager$: Observable<boolean>;
+  public isGlobalSearchEnabled$: Observable<boolean>;
   public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
   }
@@ -42,12 +51,24 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   };
 
   constructor(
-    public nocStore: Store<fromNocStore.State>,
+    private readonly appStore: Store<fromAppStore.State>,
+    private readonly nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly searchService: SearchService
   ) { }
 
   public ngOnInit(): void {
+    this.appStore.dispatch(new fromAppStore.LoadUserDetails());
+    this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
+    this.isUserCaseManager$ = this.userDetails$.pipe(
+      map(details => details.userInfo.roles),
+      map(roles => {
+        const givenRoles = ['pui-case-manager', 'caseworker-ia-legalrep-solicitor', 'caseworker-ia-homeofficeapc', 'caseworker-ia-respondentofficer', 'caseworker-ia-homeofficelart', 'caseworker-ia-homeofficepou'];
+        return givenRoles.filter(x => roles.includes(x)).length > 0;
+      })
+    );
+    this.isGlobalSearchEnabled$ = this.featureToggleService.isEnabled(HmctsGlobalHeaderComponent.GLOBAL_SEARCH_FEATURE_CONFIG);
     this.splitAndFilterNavItems(this.items);
   }
 
@@ -62,6 +83,12 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
 
   public onEmitSubMenu(menuItem: any): void {
+    // New menu item page load, do not decorate 16-digit case reference search box with error class
+    this.appStore.dispatch(new fromAppStore.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
+
+    // Clear the search parameters from session
+    this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, null);
+
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }
@@ -79,7 +106,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     });
   }
 
-  private splitNavItems(items: NavigationItem[]): {right: NavigationItem[], left: NavigationItem[]} {
+  private splitNavItems(items: NavigationItem[]): { right: NavigationItem[], left: NavigationItem[] } {
     items = items || [];
     return {
       right: items.filter(item => item.align && item.align === 'right'),
@@ -93,14 +120,14 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       map(details => details.userInfo.roles),
       map(roles => {
         const i = items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true));
-        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true))
+        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true));
       })
     );
   }
 
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    const flags: {[flag: string]: boolean | string} = {};
+    const flags: { [flag: string]: boolean | string } = {};
     const obs: Observable<boolean>[] = [];
     items.forEach(
       item => (item.flags || []).concat(item.notFlags || []).forEach(

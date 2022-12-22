@@ -100,12 +100,65 @@ describe('AppHeaderComponent', () => {
     it('should take a theme and update the app header properties.', () => {
 
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-      const menuItems = AppConstants.DEFAULT_MENU_ITEMS
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
 
       component.setAppHeaderProperties(defaultTheme, menuItems);
 
       expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
       expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
+      expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
+      expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
+    });
+
+
+    it('should set app header content', () => {
+      const themeSpy = spyOn(component, 'getApplicationThemeForUser');
+
+      const userDetails = {
+        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+      };
+      component.setHeaderContent(userDetails);
+      expect(themeSpy).toHaveBeenCalled();
+
+    });
+
+    it('should call userThems on getApplicationThemeForUser', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme');
+
+      const userDetails = {
+        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+      };
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+
+    });
+
+    it('should call userThems on getApplicationThemeForUser with no roles', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme');
+
+      const userDetails = {
+        userInfo: []
+      };
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+      expect(component.userNav.items).toEqual([]);
+    });
+
+    it('should update theme app header properties.', () => {
+
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS
+      component.setAppHeaderNavItems(menuItems);
+      expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
+
+    });
+
+    it('should updatee navItems app header properties.', () => {
+
+      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
+      component.setAppHeaderTheme(defaultTheme);
+
+      expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
       expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);

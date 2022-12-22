@@ -1,4 +1,4 @@
-@ng  @wa2 @wa
+@ng  @wa2 @wa 
 Feature: WA Release 2: All work > Cases
 
     Background: Mock and browser setup
@@ -37,7 +37,7 @@ Feature: WA Release 2: All work > Cases
             | case-allocator | 10    |
             | case-allocator | 10 |
 
-        Given I set MOCK request "/workallocation2/my-work/cases/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/my-work/cases/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -47,6 +47,8 @@ Feature: WA Release 2: All work > Cases
         Then I validate work allocation cases count in page 20
         Then I validate work allocation cases table pagination controls, is displayed state is "false"
 
+
+        Then I validate work allocation case table column "Case name" width less than or equal to 200
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |

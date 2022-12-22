@@ -1,0 +1,54 @@
+<div class="govuk-tabs__panel">
+  <div class="govuk-width-container" *ngIf="serverError">
+    <div class="govuk-main-wrapper">
+      <p class="govuk-body">{{serverError.message}}</p>
+      <span class="govuk-body align-left">
+          <a href="javascript:void(0)" (click)="reloadHearings()"
+             id="reload-hearing-tab"
+             class="govuk-link">Reload hearings tab</a>
+        </span>
+    </div>
+  </div>
+  <ng-container *ngIf="!serverError">
+    <br>
+    <a *ngIf="hasRequestAction"
+       href="javascript:void(0)"
+       role="button" draggable="false"
+       class="govuk-button govuk-button--start"
+       data-module="govuk-button"
+       (click)="createHearingRequest()"
+       style="padding-right: 10px;background-image:none;">
+      Request a hearing
+      <svg style="padding-left:5px;vertical-align: middle;" class="govuk-button__start-icon"
+           xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40"
+           focusable="false">
+        <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
+      </svg>
+    </a>
+    <ng-container *ngIf="!(isOgdRole$ | async)">
+      <exui-case-hearings-list
+        [status]="upcomingStatus"
+        [hearingStageOptions]="hearingStageOptions"
+        [hearingList$]="upcomingHearings$"
+        [actions]="hearingsActions">
+      </exui-case-hearings-list>
+
+      <exui-case-hearings-list
+        [status]="pastAndCancelledStatus"
+        [hearingStageOptions]="hearingStageOptions"
+        [hearingList$]="pastAndCancelledHearings$"
+        [actions]="hearingsActions">
+      </exui-case-hearings-list>
+    </ng-container>
+
+    <ng-container *ngIf="isOgdRole$ | async">
+      <exui-case-hearings-list
+        [status]="upcomingStatus"
+        [hearingStageOptions]="hearingStageOptions"
+        [hearingList$]="listedHearings$"
+        [actions]="hearingsActions">
+      </exui-case-hearings-list>
+    </ng-container>
+
+  </ng-container>
+</div>

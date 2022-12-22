@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: My work - Available tasks - Manage links
 
     Background: Mock and browser setup
@@ -17,6 +17,10 @@ Feature: WA Release 2: My work - Available tasks - Manage links
             
     Scenario Outline:  Available Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | baseLocation | roleType     |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "Available tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -55,6 +59,10 @@ Feature: WA Release 2: My work - Available tasks - Manage links
 
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | baseLocation | roleType     |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -79,6 +87,6 @@ Feature: WA Release 2: My work - Available tasks - Manage links
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink                  | landingPage  | bannermessage1                                               | bannermessage2               |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Assign to me                | My work      | You've assigned yourself a task. It's available in My tasks. | The list has been refreshed. |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign to me and go to case | Case details | You've assigned yourself a task. It's available in My tasks. |                              |
+            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign to me and go to case | Case details | You've assigned yourself a task. It's available in My tasks. |                              |
 
 

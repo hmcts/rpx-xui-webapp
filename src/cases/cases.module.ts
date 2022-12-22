@@ -32,20 +32,24 @@ import { StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
+import { HearingsModule } from '../hearings/hearings.module';
+import { HearingsPipesModule } from '../hearings/pipes/hearings.pipes.module';
+import { HearingsService } from '../hearings/services/hearings.service';
 import { OrganisationModule } from '../organisation/organisation.module';
+import { PriorityFieldComponentModule } from '../work-allocation/components/priority-field/priority.module';
+import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
-// from directives
-import * as fromDirectives from './directives';
 // from containers
 import * as fromContainers from './containers';
+// from directives
+import * as fromDirectives from './directives';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
 
 @NgModule({
   imports: [
@@ -67,7 +71,9 @@ import { PriorityFieldComponentModule } from '../work-allocation-2/components/pr
     ExuiCommonLibModule,
     LoadingModule,
     ReactiveFormsModule,
-    PriorityFieldComponentModule
+    PriorityFieldComponentModule,
+    HearingsModule,
+    HearingsPipesModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
@@ -89,7 +95,9 @@ import { PriorityFieldComponentModule } from '../work-allocation-2/components/pr
     ScrollToService,
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
-    ActivityResolver
+    ActivityResolver,
+    HearingsService,
+    WASupportedJurisdictionsService
   ]
 })
 /**

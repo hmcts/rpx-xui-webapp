@@ -13,22 +13,6 @@ const workAllocationMockData = require('../../../nodeMock/workAllocation/mockDat
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
-    Given('I navigate to home page', async function () {
-        await browserUtil.gotoHomePage();
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await headerpage.waitForPrimaryNavDisplay();
-            await browserUtil.waitForLD();
-        });  
-    });
-
-    Given('I navigate page route {string}', async function (routeUrl) {
-        await browser.get(routeUrl);
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await headerpage.waitForPrimaryNavDisplay();
-            await browserUtil.waitForLD();
-        });        
-    });
-
     Given('I init MockApp', async function () {
         MockApp.init();
     });
@@ -58,15 +42,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
 
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
-        CucumberReporter.AddJson(userDetails)
        
      });
 
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
         global.scenarioData[reference] = null;
         MockApp.addIntercept(url,(req,res,next) => {
-            CucumberReporter.AddMessage(`${url} request body`)
-            CucumberReporter.AddJson(req.body)
+            CucumberReporter.AddMessage(`Intercepted: ${url}`)
+            CucumberReporter.AddJson(req.body) 
             global.scenarioData[reference] = req.body;
             next();
         })
@@ -109,9 +92,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
          global.scenarioData[reference] = null;
      });
 
+    Then('I verify reference {string} value is null', async function (reference){
+        expect(global.scenarioData[reference] === null, `Assertion failed: ${reference} is not null`).to.be.true;
+     });
+
      When('I wait for reference {string} value not null', async function(reference){
-         await BrowserWaits.waitForConditionAsync(async () => {
-             return global.scenarioData[reference] !== null
+         await BrowserWaits.retryWithActionCallback(async () => {
+             expect(global.scenarioData[reference] !== null, `reference ${reference} is null`).to.be.true;
+             try{
+                 reportLogger.AddJson(global.scenarioData[reference]);
+             }catch(err){
+                 reportLogger.AddMessage(global.scenarioData[reference]);
+             }
+ 
          });
      });
 

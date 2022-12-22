@@ -6,10 +6,10 @@ import { first, mergeMap, switchMap } from 'rxjs/operators';
 
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
-import { Caseworker, } from '../../../work-allocation-2/models/dtos';
-import { Task } from '../../../work-allocation-2/models/tasks';
-import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation-2/services';
-import { getAssigneeName } from '../../../work-allocation-2/utils';
+import { Caseworker, } from '../../../work-allocation/models/dtos';
+import { Task } from '../../../work-allocation/models/tasks';
+import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
+import { getAssigneeName } from '../../../work-allocation/utils';
 
 @Component({
   selector: 'exui-tasks-container',
@@ -78,10 +78,10 @@ export class TasksContainerComponent implements OnInit {
     }));
   }
 
-  private getJudicialNamedTasks(judicialUserData: CaseRoleDetails[]): Observable<Task[]> {
+  public getJudicialNamedTasks(judicialUserData: CaseRoleDetails[]): Observable<Task[]> {
     this.tasks.forEach(task => {
       const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
-      task.assigneeName = judicialAssignedData ? judicialAssignedData.known_as : task.assigneeName;
+      task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
     });
     return of(this.tasks);
   }

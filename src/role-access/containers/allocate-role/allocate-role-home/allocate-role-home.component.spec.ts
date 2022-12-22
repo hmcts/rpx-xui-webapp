@@ -49,7 +49,8 @@ describe('AllocateRoleHomeComponent', () => {
     person: null,
     durationOfRole: DurationOfRole.SEVEN_DAYS,
     action: Actions.Allocate,
-    period: null
+    period: null,
+    roleCategory: RoleCategory.ADMIN
   };
   const ROLE_LIST = [
     {
@@ -98,7 +99,8 @@ describe('AllocateRoleHomeComponent', () => {
               },
               queryParams: {
                 caseId: '111111',
-                userType: 'Judicial'
+                userType: 'Judicial',
+                roleCategory: 'JUDICIAL'
               },
               routeConfig: {
                 path: 'allocate',
@@ -329,6 +331,38 @@ describe('AllocateRoleHomeComponent', () => {
 
     afterEach(() => {
       fixture.destroy();
+    });
+  });
+
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when allocation is confirmed', () => {
+      const CURRENT_STATE = { ...STATE_DATA,
+        state: AllocateRoleState.CHECK_ANSWERS
+      };
+      storePipeMock.and.returnValue(of(CURRENT_STATE));
+      component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
+      fixture.detectChanges();
+      spyOn(component.checkAnswersComponent, 'navigationHandler').and.callThrough();
+      component.navigationHandler(AllocateRoleNavigationEvent.CONFIRM);
+      expect(component.checkAnswersComponent.navigationHandler).toHaveBeenCalled();
+      expect(component.showSpinner).toBeTruthy();
+    });
+
+    it('should be false if navigation event is unhandled case', () => {
+      const CURRENT_STATE = { ...STATE_DATA,
+        state: AllocateRoleState.CHECK_ANSWERS
+      };
+      storePipeMock.and.returnValue(of(CURRENT_STATE));
+      component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
+      fixture.detectChanges();
+      spyOn(component.checkAnswersComponent, 'navigationHandler').and.callThrough();
+      component.navigationHandler(AllocateRoleNavigationEvent.BACK);
+      expect(component.checkAnswersComponent.navigationHandler).not.toHaveBeenCalled();
+      expect(component.showSpinner).toBeFalsy();
     });
   });
 

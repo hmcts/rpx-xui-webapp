@@ -2,11 +2,11 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
   CaseFilterComponent,
+  CaseHearingsComponent,
   CaseHomeComponent,
   CaseListComponent,
   CasesCreateComponent,
@@ -14,9 +14,11 @@ import {
   CaseShareComponent,
   CaseShareConfirmComponent
 } from './containers';
+import { CaseLoaderComponent } from './containers/case-loader/case-loader.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
 import { CaseViewerContainerComponent } from './containers/case-viewer-container/case-viewer-container.component';
-import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
+import { RolesAndAccessContainerComponent
+} from './containers/roles-and-access-container/roles-and-access-container.component';
 import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
@@ -32,15 +34,17 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: CaseListComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Case list'
         }
       },
       {
+        path: 'case-loader',
+        component: CaseLoaderComponent
+      },
+      {
         path: 'case-share',
         component: CaseShareComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Share Cases | Case Share'
         }
@@ -48,7 +52,6 @@ export const ROUTES: Routes = [
       {
         path: 'case-share-confirm',
         component: CaseShareConfirmComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Share Cases | Case Share Confirm'
         }
@@ -56,7 +59,6 @@ export const ROUTES: Routes = [
       {
         path: 'case-share-complete',
         component: CaseShareCompleteComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Share Cases | Case Share Complete'
         }
@@ -64,7 +66,6 @@ export const ROUTES: Routes = [
       {
         path: 'case-filter',
         component: CaseFilterComponent,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Create a case'
         }
@@ -85,7 +86,6 @@ export const ROUTES: Routes = [
             children: editorRouting
           }
         ],
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Create a case'
         }
@@ -94,7 +94,6 @@ export const ROUTES: Routes = [
         path: 'case-search',
         component: CaseSearchComponent,
         children: editorRouting,
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Find a case'
         }
@@ -120,11 +119,14 @@ export const ROUTES: Routes = [
               {
                 path: 'roles-and-access',
                 component: RolesAndAccessContainerComponent
+              },
+              {
+                path: 'hearings',
+                component: CaseHearingsComponent,
               }
             ]
           },
           ...caseViewRouting],
-        canActivate: [HealthCheckGuard],
         data: {
           title: 'Case Details'
         }

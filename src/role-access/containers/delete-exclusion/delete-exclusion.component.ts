@@ -5,8 +5,8 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { first, mergeMap } from 'rxjs/operators';
 
-import { Caseworker } from '../../../work-allocation-2/interfaces/common';
-import { CaseworkerDataService } from '../../../work-allocation-2/services';
+import { Caseworker } from '../../../work-allocation/interfaces/common';
+import { CaseworkerDataService } from '../../../work-allocation/services';
 import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { AllocateRoleService, RoleExclusionsService } from '../../services';
@@ -28,6 +28,8 @@ export class DeleteExclusionComponent implements OnInit {
   public caseId: string;
   public jurisdiction: string;
   public roleExclusion: RoleExclusion;
+
+  public showSpinner: boolean;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -90,6 +92,7 @@ export class DeleteExclusionComponent implements OnInit {
     const goToCaseUrl = `cases/case-details/${this.caseId}/roles-and-access`;
     switch (navEvent) {
       case ExclusionNavigationEvent.DELETE_EXCLUSION: {
+        this.showSpinner = true;
         this.roleExclusionsService.deleteExclusion(this.roleExclusion).subscribe(() => {
           // navigates to case details page for specific case id
           this.router.navigate([goToCaseUrl], {
@@ -107,6 +110,7 @@ export class DeleteExclusionComponent implements OnInit {
         return;
       }
       default: {
+        this.showSpinner = false;
         throw new Error('Invalid option');
       }
     }

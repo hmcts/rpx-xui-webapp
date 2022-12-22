@@ -1,0 +1,62 @@
+<xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+<div class="govuk-grid-row" *ngIf="linkedCases">
+  <div class="govuk-grid-column-full">
+    <span class="govuk-caption-l">Request a hearing for {{caseName}} {{caseId}}</span>
+    <h1 class="govuk-heading-l">Will this hearing need to be linked to other hearings?</h1>
+    <div class="govuk-inset-text">
+      If you choose 'No', you will be unable to link this hearing to any others without editing it.
+    </div>
+    <br>
+    <form class="form" [formGroup]="hearingLinkForm">
+      <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : validationErrors.length > 0}">
+        <fieldset class="govuk-fieldset">
+          <div class="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="yes" formControlName="hearingLink" name="hearingLink"
+                type="radio" value="yes" (change)="onHearingLink('yes')">
+              <label class="govuk-label govuk-radios__label" for="yes">
+                Yes
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="no" formControlName="hearingLink" name="hearingLink"
+                type="radio" value="no" (change)="onHearingLink('no')">
+              <label class="govuk-label govuk-radios__label" for="no">
+                No
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </form>
+    <br>
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Cases linked to {{caseName}}</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Cases number and name</th>
+          <th scope="col" class="govuk-table__header">Reasons for case link</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row" *ngIf="linkedCases.length === 0">
+          <td class="govuk-table__cell" colspan="2">None</td>
+        </tr>
+        <tr class="govuk-table__row" *ngFor="let linkedCase of linkedCases">
+          <td class="govuk-table__cell">
+            <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', linkedCase.caseReference]"
+               class="govuk-link govuk-link--no-visited-state"
+               target="_blank"
+               style="text-decoration: none;">
+              {{linkedCase.caseName}}
+              <br>
+              {{linkedCase.caseReference | caseReference}}
+            </a>
+          </td>
+          <td class="govuk-table__cell">{{linkedCase.reasonsForLink}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

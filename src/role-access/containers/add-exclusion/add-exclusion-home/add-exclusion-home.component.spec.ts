@@ -165,6 +165,13 @@ describe('ExclusionHomeComponent', () => {
       component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION);
       expect(component.checkAnswersComponent.navigationHandler).toHaveBeenCalled();
     });
+
+    it('on choose exclusion page click continue button state set incorrectly', () => {
+      component.navigationCurrentState = ExclusionState.FIND_PERSON;
+      fixture.detectChanges();
+      expect(() => {component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION)}).toThrow(new Error('Invalid exclusion state'));
+      expect(component.showSpinner).toBe(false);
+    });
   });
 
   describe('Click cancel button', () => {
@@ -173,6 +180,35 @@ describe('ExclusionHomeComponent', () => {
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
     });
   });
+
+  describe('Unidentified state', () => {
+    it('should stop showing spinner and throw error', () => {
+      expect(() => {component.navigationHandler(null)}).toThrow(new Error('Invalid exclusion navigation event'));
+      expect(component.showSpinner).toBe(false);
+    });
+  });
+
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when exclusion is confirmed', () => {
+      component.navigationCurrentState = ExclusionState.CHECK_ANSWERS;
+      fixture.detectChanges();
+      spyOn(component.checkAnswersComponent, 'navigationHandler');
+      component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION);
+      expect(component.showSpinner).toBeTruthy();
+    });
+
+    it('should be false when exclusion navigation is not handled', () => {
+      component.navigationCurrentState = ExclusionState.CHECK_ANSWERS;
+      fixture.detectChanges();
+      component.navigationHandler(ExclusionNavigationEvent.BACK);
+      expect(component.showSpinner).toBeFalsy();
+    });
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

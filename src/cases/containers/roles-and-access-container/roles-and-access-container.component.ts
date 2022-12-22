@@ -1,18 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { first, map, mergeMap, tap } from 'rxjs/operators';
-import { getJudicialUserIds, getJudicialUserIdsFromExclusions, mapCaseRoles, mapCaseRolesForExclusions } from '../../../cases/utils/utils';
-import { UserDetails } from '../../../app/models/user-details.model';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {CaseView} from '@hmcts/ccd-case-ui-toolkit';
+import {Store} from '@ngrx/store';
+import {Observable, of} from 'rxjs';
+import {first, map, mergeMap, tap} from 'rxjs/operators';
+import {UserDetails} from '../../../app/models/user-details.model';
+import {SessionStorageService} from '../../../app/services';
 import * as fromRoot from '../../../app/store';
-import { CaseRole, RoleExclusion } from '../../../role-access/models';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
-import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
-import { AllocateRoleService, RoleExclusionsService } from '../../../role-access/services';
-import { CaseworkerDataService } from '../../../work-allocation-2/services';
-import { SessionStorageService } from '../../../app/services';
+import {CaseRole, CaseRoleDetails, RoleExclusion} from '../../../role-access/models';
+import {AllocateRoleService, RoleExclusionsService} from '../../../role-access/services';
+import {Caseworker} from '../../../work-allocation/models/dtos';
+import {CaseworkerDataService} from '../../../work-allocation/services';
+import {Utils} from '../../utils/utils';
 
 @Component({
   selector: 'exui-roles-and-access-container',
@@ -51,10 +50,10 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public loadExclusions(jurisdiction: any): void {
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
       mergeMap((exclusions: RoleExclusion[]) => {
-        const userIds = getJudicialUserIdsFromExclusions(exclusions);
+        const userIds = Utils.getJudicialUserIdsFromExclusions(exclusions);
         if (userIds && userIds.length > 0) {
           return this.allocateService.getCaseRolesUserDetails(userIds, [jurisdiction.value]).pipe(
-            map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails)
+            map((caseRolesWithUserDetails: CaseRoleDetails[]) => Utils.mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails)
             )
           );
         }
@@ -66,10 +65,10 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public loadRoles(jurisdiction: any): void {
     this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
       mergeMap((caseRoles: CaseRole[]) => {
-        const userIds = getJudicialUserIds(caseRoles);
+        const userIds = Utils.getJudicialUserIds(caseRoles);
         if (userIds && userIds.length > 0) {
           return this.allocateService.getCaseRolesUserDetails(userIds, [jurisdiction.value]).pipe(
-            map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
+            map((caseRolesWithUserDetails: CaseRoleDetails[]) => Utils.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
           );
         }
         return of(caseRoles);

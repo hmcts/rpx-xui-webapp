@@ -10,9 +10,15 @@ export interface UserInfo {
 }
 
 export interface RoleAssignmentInfo {
-  primaryLocation: string;
+  // TODO: Review model changes
+  primaryLocation?: string;
+  baseLocation?: string;
   jurisdiction: string;
+  substantive?: string;
   isCaseAllocator: boolean;
+  bookable?: boolean | string;
+  roleType?: string;
+  roleName?: string;
 }
 
 export interface UserDetails {
@@ -29,4 +35,5 @@ export enum UserRole {
   Admin = 'admin',
   LegalOps = 'legalops',
   Judicial = 'judicial',
+  Ogd = 'ogd',
 }

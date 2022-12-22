@@ -1,17 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { InfoMessage } from '../../../work-allocation-2/enums';
+import { InfoMessage } from '../../../work-allocation/enums';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
-import { replaceAll } from '../../../cases/utils/utils';
-import { AllocateRoleService } from '../../../role-access/services';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
-import { Task, TaskPermission } from '../../../work-allocation-2/models/tasks';
-import { WorkAllocationTaskService } from '../../../work-allocation-2/services';
-import { getAssigneeName, handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
+import { Utils} from '../../../cases/utils/utils';
+import { Caseworker } from '../../../work-allocation/models/dtos';
+import { Task } from '../../../work-allocation/models/tasks';
+import { WorkAllocationTaskService } from '../../../work-allocation/services';
+import { handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation/utils';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
@@ -70,9 +69,9 @@ export class CaseTaskComponent implements OnInit {
 
     return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
       if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
-        return replaceAll(description, variable, task.id);
+        return Utils.replaceAll(description, variable, task.id);
       }
-      return replaceAll(description, variable, task.case_id);
+      return Utils.replaceAll(description, variable, task.case_id);
     }, task.description);
   }
 
@@ -102,7 +101,7 @@ export class CaseTaskComponent implements OnInit {
   public onActionHandler(task: Task, option: any): void {
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
-        this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS)
+        this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS);
         this.taskRefreshRequired.emit();
       }, error => {
         this.claimTaskErrors(error.status);
@@ -133,11 +132,21 @@ export class CaseTaskComponent implements OnInit {
     }
   }
 
-    public toDate(value: string | number | Date): Date {
+  public toDate(value: string | number | Date): Date {
     if (value) {
       const d = new Date(value);
       return isNaN(d.getTime()) ? null : d;
     }
     return null;
+  }
+
+  public onClick(event: string) {
+    const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
+    const urls = url.split('?');
+    this.router.navigate([urls[0]], {
+      queryParams: {
+        tid: urls[1].split('=')[1]
+      }
+    });
   }
 }

@@ -156,8 +156,9 @@ class BrowserWaits{
         let isSuccess = false;
         let error = null;
         while (retryCounter <= this.retriesCount) {
-            CucumberReporter.AddMessage(`Sleeping for ${retryCounter * 5}sec before performing action.`);  
-            await this.waitForSeconds(retryCounter*5);
+            CucumberReporter.AddMessage(`Sleeping for ${retryCounter * 2}sec before performing action.`);  
+            await this.waitForSeconds(retryCounter*2);
+
             try {
                 const retVal = await callback();
                 isSuccess = true;
@@ -166,14 +167,20 @@ class BrowserWaits{
             catch (err) {
                 if (this.logLevel === 'DEBUG'){
                     await BrowserLogs.printBrowserLogs();
-                    await CucumberReporter.AddScreenshot(global.screenShotUtils); 
                 }
                 CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
-                CucumberReporter.AddMessage(`************** [ Retrying attempt ${retryCounter}. ] **************`); 
+
                 error = err
-                retryCounter += 1;
+                
+                const currentRoute = await browser.getCurrentUrl()
+                if (currentRoute.includes('service-down')){
+                    throw new Error('Generic system error displayed: "Sorry, there is a problem with the service"');
+                }
                
             }
+            retryCounter += 1;
+            CucumberReporter.AddMessage(`************** [ Retrying attempt ${retryCounter}. ] **************`); 
+
         }
         if (!isSuccess){
             throw new Error(`Action failed to meet success condition after ${this.retriesCount} retry attempts.`,error.stack);

@@ -11,15 +11,32 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
-const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
+const appTestConfig = require('../../e2e/config/appTestConfig');
+const {LOG_LEVELS} = require("../../e2e/support/constants");
 
-if (!process.env['TEST_ENV_URL']){
+appTestConfig.testEnv = 'aat';
+
+process.env['LOG_LEVEL'] = LOG_LEVELS.Info
+
+console.log(process.env['TEST_ENV_URL'])
+if (!process.env['TEST_ENV_URL'] || process.env['TEST_ENV_URL'] === undefined){
     process.env['TEST_ENV_URL'] = process.env['TEST_URL']; 
 
 }
 process.env['TEST_URL'] = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
 
+
+const isParallelExecution = argv.parallel ? argv.parallel === "true" : !getBDDTags().includes('@none') ? true : false;
+
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
+
+
+ 
+let  nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
+if (argv.debug){
+    nodeMockPort = 3001; 
+}
 
 const perfLoggingPrefs = {
     'enableNetwork': true,
@@ -63,7 +80,7 @@ const localConfig = [
 
 if(isParallelExecution){
     jenkinsConfig[0].shardTestFiles = true;
-    jenkinsConfig[0].maxInstances = 4;
+    jenkinsConfig[0].maxInstances = 5;
 }
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
@@ -85,8 +102,8 @@ const config = {
 
     beforeLaunch(){
         if (isParallelExecution) {
-            MockApp.setServerPort(3001);
-            MockApp.init(3002);
+            MockApp.setServerPort(nodeMockPort);
+            MockApp.init(parseInt(nodeMockPort) + 1);
             MockApp.startServer();
         }    
     },
@@ -110,7 +127,7 @@ const config = {
                 
             });
         }else{
-            MockApp.setServerPort(3001);
+            MockApp.setServerPort(nodeMockPort);
             //await MockApp.startServer();
         }    
        
@@ -123,7 +140,7 @@ const config = {
 
     },
     cucumberOpts: {
-        'fail-fast': true,
+        'fail-fast': argv.failFast ? argv.failFast.includes("true") : false,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
@@ -163,10 +180,11 @@ const config = {
 
 function getBDDTags() {
     let tags = [];
-    console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_ENV_URL']}`);
+    console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_URL']}`);
     console.log(`*********************** process.env['TEST_ENV_URL'] : ${process.env['TEST_ENV_URL']}`);
     if (process.env['TEST_ENV_URL'].includes("pr-") ||
-        process.env['TEST_ENV_URL'].includes("localhost")) { 
+        process.env['TEST_ENV_URL'].includes("localhost") 
+        ) { 
         if (argv.tags){
             tags = argv.tags.split(',');
         }else{

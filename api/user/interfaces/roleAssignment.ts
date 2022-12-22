@@ -16,6 +16,7 @@ export interface RoleAssignment {
 }
 
 export interface LocationInfo {
+  isNew?: boolean;
   primaryLocation?: string;
   caseId?: string;
   jurisdiction?: string;
@@ -23,7 +24,24 @@ export interface LocationInfo {
   isCaseAllocator?: boolean;
   caseType?: string;
   substantive?: string;
-  notes?: string;
+  notes?: Note;
+  requestedRole?: string;
+  roleType?: string;
+  specificAccessReason?: string;
+  roleName?: string;
+  infoRequired?: boolean;
+  infoRequiredComment?: string;
+  requestDate?: string;
+  reviewer?: string;
+  roleCategory?: string;
+  reviewerRoleCategory?: string;
+  baseLocation?: string;
+}
+
+export interface Note {
+  userId?: string;
+  time?: Date;
+  comment?: string;
 }
 
 export interface LocationApi {

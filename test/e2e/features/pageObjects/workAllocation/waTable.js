@@ -8,6 +8,7 @@ const Spinner = require('../../pageObjects/common/spinner');
 
 var cucumberReporter = require('../../../support/reportLogger');
 const reportLogger = require('../../../support/reportLogger');
+const { LOG_LEVELS } = require('../../../support/constants');
 
 
 class WAListTable {
@@ -21,6 +22,9 @@ class WAListTable {
         this.tableFooter = $(`${this.baseCssLocator} table tfoot td`);
         this.actionsRows = $$(`${this.baseCssLocator} table tbody>tr.actions-row`);
         this.selectedActioRow = $(`${this.baseCssLocator} table tbody>tr.actions-row.selected`)
+
+        this.selectedActions = $$(`${this.baseCssLocator} table tbody>tr.actions-row.selected .task-action a`)
+
         this.displayedActionRow = $('tr.actions-row[aria-hidden=false]');
 
         this.paginationContainer = $('ccd-pagination');
@@ -38,7 +42,7 @@ class WAListTable {
     }
 
     async waitForSpinnerToDissappear() {
-        await BrowserWaits.waitForSpinnerToDissappear();
+        await this.spinner.waitForSpinnerToDissappear();
     }
 
     async waitForTable() {
@@ -46,9 +50,9 @@ class WAListTable {
         await BrowserWaits.waitForConditionAsync(async () => {
             let tableRowsCount = await this.tableRows.count();
             let isTableFooterDispayed = await this.tableFooter.isDisplayed();
-            cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`);
+            cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
             return tableRowsCount > 0 || isTableFooterDispayed;
-        }, 45000);
+        }, BrowserWaits.waitTime);
     }
 
     async isTableDisplayed() {
@@ -62,6 +66,22 @@ class WAListTable {
     async getListCountInTable() {
         await this.waitForTable();
         return await this.tableRows.count();
+    }
+
+    async getHeaderColumnWidth(headerName){
+        let headerElement = null;
+        try{
+            headerElement = element(by.xpath(`//${this.baseCssLocator}//table//thead//th//button[contains(text(),'${headerName}')]/..`))
+            const dim = await headerElement.getSize();
+            return dim.width; 
+        }catch(err){
+            console.log(err);
+            console.log("retrying with header element as non-clickable element");
+            headerElement = element(by.xpath(`//${this.baseCssLocator}//table//thead//th//h1[contains(text(),'${headerName}')]/..`))
+            const dim = await headerElement.getSize();
+            return dim.width;
+        }
+        
     }
 
     getHeaderElementWithName(headerName) {
@@ -179,8 +199,10 @@ class WAListTable {
     }
 
     async isManageLinkPresent(position) {
-        const row = await this.getTableRowAt(position);
-        return await row.$('button[id^="manage_"]').isPresent();
+        return await browserUtil.stepWithRetry(async () => {
+            const row = await this.getTableRowAt(position);
+            return await row.$('button[id^="manage_"]').isPresent();
+        });
     }
 
     async clickManageLinkForRowAt(position) {
@@ -214,13 +236,12 @@ class WAListTable {
     async isRowActionPresent(rowAction) {
         await BrowserWaits.waitForElement(this.displayedActionRow);
         const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`))
-        return actionLink.isPresent();
+        return await actionLink.isPresent();
     }
 
     async clickRowAction(action) {
-
-        await BrowserWaits.waitForConditionAsync(async () => await this.isRowActionPresent(action), 5000);
-        await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`)
+        expect(await this.isRowActionPresent(action), 'action row not displayed').to.be.true;
+        await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`, LOG_LEVELS.Debug)
         const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`))
         await browser.executeScript('arguments[0].scrollIntoView()',
             actionLink.getWebElement());
@@ -253,7 +274,7 @@ class WAListTable {
             return true;
         }
         catch (err) {
-            cucumberReporter.AddMessage(`${this.baseCssLocator} WA Row Action bar not displayed  ${err.stack}`);
+            cucumberReporter.AddMessage(`${this.baseCssLocator} WA Row Action bar not displayed  ${err.stack}`, LOG_LEVELS.Error);
             return false;
         }
     }
@@ -344,6 +365,28 @@ class WAListTable {
         const isNonClickableElementPresent = await headerElementNonClickable.isPresent();
 
         return isClickableElementPresent && !isNonClickableElementPresent
+    }
+
+
+    async getRowActionLinksTexts(){
+        const links = await this.getRowActionLinks();
+        const linkTexts = []
+        for(const link of links){
+            linkTexts.push(await link.getText());
+        } 
+        return linkTexts;
+    }
+
+
+
+    async getRowActionLinks(){
+        const linksCount = await this.selectedActions.count();
+        const links = [];
+        for (let i = 0; i < linksCount; i++){
+            const e = await await this.selectedActions.get(i);
+            links.push(e);   
+        }
+        return links; 
     }
 }
 

@@ -44,7 +44,7 @@
             <span class="row-padding">Next steps</span>
         </dt>
         <dd class="govuk-summary-list__value">
-            <ccd-markdown [content]="task?.description"></ccd-markdown>
+          <ccd-markdown [content]="task?.description" [markdownUseHrefAsRouterLink]="true" (clicked)="onClick($event)"></ccd-markdown>
         </dd>
     </div>
 </dl>

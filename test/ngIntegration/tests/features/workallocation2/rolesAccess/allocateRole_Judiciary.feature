@@ -4,7 +4,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
     Background: Case details setup
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
-        Given I set MOCK request "/workallocation2/findPerson" response log to report
+        Given I set MOCK request "/workallocation/findPerson" response log to report
         Given I set MOCK find person response for jurisdictions
             | domain   | id   | email                   | name           | knownAs       |
             | Judicial | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |
@@ -18,7 +18,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -64,7 +64,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -90,8 +90,8 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
             | Person                      |
-            | user1 j(judge_user1@gov.uk) |
-        When I select find person result "user1 j(judge_user1@gov.uk) " in work flow
+            | user1 j (judge_user1@gov.uk) |
+        When I select find person result "user1 j (judge_user1@gov.uk) " in work flow
         When I click continue in work flow page "Find the person"
 
         Then I see Allocate role work flow page "Duration of role" with caption "Allocate a hearing judge" is displayed
@@ -108,7 +108,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
             | Type of role                      | Lead judge                  |
             | Who the role will be allocated to | Allocate to another person  |
             | Duration of role                  | 7 days                      |
-            | Person                            | user1 j(judge_user1@gov.uk) |
+            | Person                            | user1 j (judge_user1@gov.uk) |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
@@ -118,7 +118,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -169,7 +169,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -213,7 +213,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I start MockApp
@@ -236,7 +236,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
             | Person                      |
-            | user1 j(judge_user1@gov.uk) |
+            | user1 j (judge_user1@gov.uk) |
         When I select find person result "judge_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 

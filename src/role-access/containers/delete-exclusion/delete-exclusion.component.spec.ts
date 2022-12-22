@@ -4,7 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of } from 'rxjs';
 
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
+import { Caseworker } from '../../../work-allocation/models/dtos';
 import { AnswersComponent } from '../../components/answers/answers.component';
 import { ExclusionNavigationEvent, RoleCategory } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
@@ -114,6 +114,26 @@ describe('DeleteExclusionComponent', () => {
     const additionalState = { state: { showMessage: true, messageText: ExclusionMessageText.Delete } };
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
   });
+
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when exclusion is confirmed', () => {
+      mockRoleExclusionService.deleteExclusion.and.returnValue(of(200));
+      component.onNavEvent(ExclusionNavigationEvent.DELETE_EXCLUSION);
+      fixture.detectChanges();
+      expect(component.showSpinner).toBeTruthy();
+    });
+
+    it('should be false when exclusion navigation is not handled', () => {
+      expect(() => component.onNavEvent(ExclusionNavigationEvent.BACK)).toThrow();
+      fixture.detectChanges();
+      expect(component.showSpinner).toBeFalsy();
+    });
+  });
+
   it('populateAnswers', () => {
     const someExclusion = {
       actorId: null,

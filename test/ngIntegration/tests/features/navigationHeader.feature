@@ -1,14 +1,28 @@
-@ng 
+@ng @ignore
 Feature: Navigation header tabs
+    https://tools.hmcts.net/confluence/display/EUI/Global+Search
 
     Scenario Outline: Primanry nav headers for user "<roleType>" "<useridentifier>" and roles "<rolesIdentifiers>"
+        Then I Log to report launch darkly feature toggle values
+            | name                  |
+            | mc-menu-items         |
+            | mc-menu-theme         |
+            | MC_Notice_of_Change   |
+            | MC_Work_Allocation    |
+            | mc-user-type-roles    |
+            | feature-global-search |
+            | feature-refunds       |
         Given I set MOCK with user identifer "<useridentifier>" role type "<roleType>" and role identifiers "<rolesIdentifiers>"
         Given I init MockApp
         Given I start MockApp
-        # Given I navigate to home page
+        Given I navigate to home page
+        Then I log LD feature toggle values
+            | name          |
+            | mc-menu-items |
+            | mc-menu-theme |
         Then I validate header displayed for user type "<roleType>"
         Then I see primary navigation tabs "<mainHeaders>" in main header
-
+       
         Then I do not see primary navigation tabs does not exist excluding "<mainHeaders>"
             | Tabs             |
             | Case list        |
@@ -22,13 +36,13 @@ Feature: Navigation header tabs
             | Notice of change |
 
         Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
-        # Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
+        Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
 
         Examples:
             | roleType   | useridentifier    | rolesIdentifiers                            | mainHeaders                                                         | rightColumnHeaders | 16-digitCaseRef |
             | caseworker | PROD_LIKE         | NON-WA                                      | Case list, Create case                                              | Find case          | yes             |
             | caseworker | WA2_GLOBAL-SEARCH | WA2,GLOBAL-SEARCH                           | Case list,My work , Create case, Search                             |                    | yes             |
-            | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,GLOBAL-SEARCH                | Case list,My work, All work , Create case, Search                    |                    | yes             |
+            | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,GLOBAL-SEARCH                | Case list,My work, All work , Create case, Search                   |                    | yes             |
             | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,NON-WA,GLOBAL-SEARCH         | Case list,My work, All work ,Case list, Create case, Search         | Find case          | yes             |
             | caseworker | PROD_LIKE         | NON-WA,REFUNDS                              | Case list,Create case,Refunds                                       | Find case          | yes             |
             | caseworker | WA2_GLOBAL-SEARCH | WA2-SUPERVISOR,GLOBAL-SEARCH,REFUNDS        | Case list,My work, All work , Create case, Search, Refunds          |                    | yes             |

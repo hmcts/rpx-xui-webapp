@@ -5,9 +5,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
-import { CaseworkerDataService } from 'src/work-allocation-2/services';
+import { CaseworkerDataService } from 'src/work-allocation/services';
 
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
+import { Caseworker } from '../../../work-allocation/models/dtos';
 import { AnswersComponent } from '../../components';
 import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
 import { CaseRoleDetails } from '../../models/case-role-details.interface';
@@ -187,6 +187,22 @@ describe('RemoveRoleComponent', () => {
     const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
     const additionalState = { state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage } };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
+  });
+
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when removal is confirmed', () => {
+      component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
+      expect(component.showSpinner).toBeTruthy();
+    });
+
+    it('should be false when exclusion navigation is not handled', () => {
+      expect(() => component.onNavEvent(RemoveAllocationNavigationEvent.BACK)).toThrow();
+      expect(component.showSpinner).toBeFalsy();
+    });
   });
 
   describe('navigationHandler cancel', () => {

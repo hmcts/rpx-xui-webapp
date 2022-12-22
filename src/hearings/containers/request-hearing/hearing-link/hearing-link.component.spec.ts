@@ -1,7 +1,7 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -12,7 +12,7 @@ import {CaseReferencePipe} from '../../../pipes/case-reference.pipe';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingLinkComponent} from './hearing-link.component';
 
-describe('HearingLinkComponent', () => {
+fdescribe('HearingLinkComponent', () => {
   let component: HearingLinkComponent;
   let fixture: ComponentFixture<HearingLinkComponent>;
   let mockStore: any;
@@ -22,6 +22,7 @@ describe('HearingLinkComponent', () => {
     },
     fragment: of('point-to-me'),
   };
+	const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
@@ -33,6 +34,7 @@ describe('HearingLinkComponent', () => {
       providers: [
         provideMockStore({initialState}),
         {provide: ActivatedRoute, useValue: mockActivatedRoute},
+				{provide: Router, useValue: mockRouter},
         {provide: HearingsService, useValue: hearingsService},
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

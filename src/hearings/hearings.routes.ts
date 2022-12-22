@@ -45,7 +45,6 @@ import {AdjournHearingActualReasonResolver} from './resolvers/adjourn-hearing-ac
 import {CancelHearingActualReasonResolver} from './resolvers/cancel-hearing-actual-reason.resolver';
 import {CancelHearingRequestReasonResolver} from './resolvers/cancel-hearing-request-reason.resolver';
 import {CaseFlagsResolver} from './resolvers/case-flags.resolver';
-import { CaseLinkingReasonCodesResolver } from './resolvers/case-link-reason-codes.resolver';
 import {CaseTypesResolver} from './resolvers/case-types.resolver';
 import {CourtLocationsDataResolver} from './resolvers/court-locations-resolver.resolve';
 import {HearingActualPartyChannelResolverService} from './resolvers/hearing-actual-party-channel-resolver.service';
@@ -331,7 +330,6 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-link',
-        // resolve: {caseLinkingReasonCodes: CaseLinkingReasonCodesResolver},
         component: HearingLinkComponent,
         data: {
           title: 'HMCTS Hearings | Request Hearing | Hearing Link'

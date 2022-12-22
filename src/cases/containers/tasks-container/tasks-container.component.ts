@@ -39,8 +39,7 @@ export class TasksContainerComponent implements OnInit {
     // note: internal logic used to be stored in resolver - resolver removed for smoother navigation purposes
     // i.e. navigating before loading
     const caseId = this.route.snapshot.paramMap.get('cid');
-    const tasksSearch$ = this.isUpdatedTaskPermissions$.pipe(mergeMap(enabled => !enabled
-      ? this.waCaseService.getTasksByCaseId(caseId) : this.waCaseService.getTasksByCaseIdUpdated(caseId)));
+    const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
     tasksSearch$
       .pipe(
         first(),

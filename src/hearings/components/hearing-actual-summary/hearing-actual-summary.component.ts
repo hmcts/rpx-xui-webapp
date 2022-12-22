@@ -41,7 +41,6 @@ export class HearingActualSummaryComponent implements OnInit {
     this.isPaperHearing$ = this.hearingState$ && this.hearingState$.pipe(
       map(state => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
     );
-    
   }
 
   public get isMultiDayHearing(): boolean {

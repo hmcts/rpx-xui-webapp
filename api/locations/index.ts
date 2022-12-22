@@ -28,6 +28,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
+  console.log('yabba dabba doo', userLocations);
   const bookingLocations = req.body.bookingLocations ? req.body.bookingLocations : [];
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
@@ -53,11 +54,12 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     userLocations.forEach(userLocation => {
       const courtTypes = getCourtTypeIdsByService([userLocation.service]);
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
+      const regionIds = getRegionIdsFromLocationList(userLocation.locations);
       // when we are trying to filter out locations when booking location is present - my work
       if (userLocation.bookable && bookingLocations.length) {
-        results = filterOutResults(results, bookingLocations, courtTypes);
+        results = filterOutResults(results, bookingLocations, [], courtTypes);
       } else {
-        results = filterOutResults(results, locationIds, courtTypes);
+        results = filterOutResults(results, locationIds, regionIds, courtTypes);
       }
     });
     response.data.results = results.filter((locationInfo, index, self) =>
@@ -72,9 +74,9 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 
 }
 
-export function filterOutResults(locations: LocationModel[], locationIds: string[], courtTypes: string[]): LocationModel[] {
+export function filterOutResults(locations: LocationModel[], locationIds: string[], regionIds: string[], courtTypes: string[]): LocationModel[] {
   return locations.filter(location => !(courtTypes.includes(location.court_type_id))
-    || (locationIds.includes(location.epimms_id) || (!locationIds || locationIds.length === 0)));
+    || (locationIds.includes(location.epimms_id) || regionIds.includes(location.region_id) || ((!regionIds || regionIds.length === 0) && (!locationIds || locationIds.length === 0))));
 }
 
 /**
@@ -111,9 +113,24 @@ function getLocationIdsFromLocationList(locations: any): string[] {
     return [];
   }
   locations.forEach(location => {
-    locationIds.push(location.id.toString());
+    if (location.id) {
+      locationIds.push(location.id.toString());
+    }
   });
   return locationIds;
+}
+
+function getRegionIdsFromLocationList(locations: any): string[] {
+  const regionIds: string[] = [];
+  if (!locations) {
+    return [];
+  }
+  locations.forEach(region => {
+    if (region.regionId) {
+      regionIds.push(region.regionId.toString());
+    }
+  });
+  return regionIds;
 }
 
 function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {

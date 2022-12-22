@@ -37,6 +37,7 @@ export interface JudicialWorker {
 export interface LocationSummary {
   id: string;
   locationName: string;
+  regionId?: string;
 }
 
 export interface Location extends LocationSummary {
@@ -71,7 +72,16 @@ export interface LocationsByService {
   service?: string;
   serviceCode?: string;
   bookable?: boolean;
+  regions?: string[];
   locations: Location[];
+  // switch to mark whether we should get all locations for this service
+  getAllLocations?: boolean;
+}
+
+// different to above - groups locations by region for location filter logic
+export interface LocationsByRegion {
+  regionId: string,
+  locations: string[]
 }
 
 export interface CaseSearchParameter {

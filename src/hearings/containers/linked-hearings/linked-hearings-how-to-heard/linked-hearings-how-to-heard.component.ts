@@ -146,10 +146,16 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         const hearing = this.selectedLinkedCases.find(linked => linked.caseRef === formValue.caseReference);
         const selectedHearing = hearing && hearing.caseHearings.find(selected => selected.isSelected);
         if (selectedHearing) {
-          linkedHearingGroupMainModel.hearingsInGroup.push({
-            hearingId: selectedHearing.hearingID,
-            hearingOrder: Number(formValue.position),
-          });
+          if (formValue && formValue.position && Number(formValue.position) > 0) {
+            linkedHearingGroupMainModel.hearingsInGroup.push({
+              hearingId: selectedHearing.hearingID,
+              hearingOrder: Number(formValue.position),
+            });
+          } else {
+            linkedHearingGroupMainModel.hearingsInGroup.push({
+              hearingId: selectedHearing.hearingID
+            });
+          }
         }
       });
       this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesGroupDetail(linkedHearingGroupMainModel));

@@ -29,6 +29,7 @@ import {HearingVenueComponent} from './containers/request-hearing/hearing-venue/
 import {HearingViewEditSummaryComponent} from './containers/request-hearing/hearing-view-edit-summary/hearing-view-edit-summary.component';
 import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
+import {HearingAdjournedSummaryComponent} from './containers/view-hearing/hearing-adjourned-summary/hearing-adjourned-summary.component';
 import {HearingCancellationSummaryComponent} from './containers/view-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
 import {HearingCancelledSummaryComponent} from './containers/view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import {HearingCompletedSummaryComponent} from './containers/view-hearing/hearing-completed-summary/hearing-completed-summary.component';
@@ -510,7 +511,7 @@ export const ROUTES: Routes = [
           hearingRoles: HearingActualRoleResolverService,
           adjournReasons: AdjournHearingActualReasonResolver,
         },
-        component: HearingCompletedSummaryComponent,
+        component: HearingAdjournedSummaryComponent,
         data: {
           title: 'HMCTS Hearings | Hearing Actuals | Adjourned',
           isChildRequired: [HearingCategory.HearingChannel]

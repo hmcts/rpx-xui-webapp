@@ -94,7 +94,7 @@
         [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__row" *ngIf="displayPanelMembersSection">
       <dt class="govuk-summary-list__key">Panel members</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.PANEL_MEMBERS | transformAnswer:hearingState$ | async"></dd>

@@ -26,9 +26,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public title: string = 'Participant attendance';
   public partiesFormArray: FormArray;
   public formValid: boolean = true;
-  public partyChannels$: Observable<LovRefDataModel[]>;
-  public hearingLevelChannels$: Observable<LovRefDataModel[]>;
+  public partyChannels: LovRefDataModel[];
+  public hearingLevelChannels: LovRefDataModel[];
   public selectionValid: boolean = true;
+  public isAttendanceSelected: boolean = true;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -38,24 +39,32 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     private readonly fb: FormBuilder,
     protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, route);
+    this.hearingLevelChannels = this.route.snapshot.data.hearingChannels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR && channel.key !== HearingChannelEnum.NotAttending);
+    this.partyChannels = this.route.snapshot.data.hearingChannels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
     this.attendanceFormGroup = fb.group({
       estimation: [null, [Validators.pattern(/^\d+$/)]],
       parties: fb.array([]),
-      hearingLevelChannels: fb.array([]),
+      hearingLevelChannels: this.getHearingLevelChannels,
       paperHearing: [this.hearingRequestMainModel.hearingDetails.hearingChannels && this.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR) ? RadioOptions.YES : RadioOptions.NO],
     });
     this.partiesFormArray = fb.array([]);
   }
 
+  public get getHearingLevelChannels(): FormArray {
+    const hearingLevelSelectedAttendance = this.hearingRequestMainModel.hearingDetails.hearingLevelParticipantAttendance;
+    return this.fb.array(this.hearingLevelChannels.map(val => this.fb.group({
+      key: [val.key],
+      value_en: [val.value_en],
+      value_cy: [val.value_cy],
+      hint_text_en: [val.hint_text_en],
+      hint_text_cy: [val.hint_text_cy],
+      lov_order: [val.lov_order],
+      parent_key: [val.parent_key],
+      selected: [!!val.selected || (hearingLevelSelectedAttendance && hearingLevelSelectedAttendance.includes(val.key))]
+    })), [this.validatorsUtils.formArraySelectedValidator()]);
+  }
+
   public ngOnInit(): void {
-    this.partyChannels$ = this.lovRefDataService.getListOfValues(HearingCategory.HearingChannel,
-      this.serviceHearingValuesModel.hmctsServiceID).pipe(
-        map((channels: LovRefDataModel[]) =>
-          channels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR)));
-    this.hearingLevelChannels$ = this.partyChannels$.pipe(
-      map((channels: LovRefDataModel[]) =>
-        channels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.NotAttending))
-    );
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {
@@ -120,12 +129,14 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         preferredHearingChannelsList.indexOf(item) === pos
       );
     }
+    const hearingLevelParticipantAttendance: string[] = this.attendanceFormGroup.controls.hearingLevelChannels.value.filter((channel) => channel.selected).map(channel => channel.key);
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       partyDetails,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         hearingChannels,
+        hearingLevelParticipantAttendance,
         numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
       }
     };
@@ -135,6 +146,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.validationErrors = [];
     let formValid = true;
     let selectionValid = true;
+    this.isAttendanceSelected = true;
 
     if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
       return formValid;
@@ -155,6 +167,11 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     if (!this.attendanceFormGroup.controls.estimation.valid) {
       formValid = false;
       this.validationErrors.push({ id: 'attendance-number', message: 'Enter a valid number of attendees' });
+    }
+    if (this.attendanceFormGroup.controls.hearingLevelChannels.invalid) {
+      formValid = false;
+      this.isAttendanceSelected = false;
+      this.validationErrors.push({ id: 'attendance-selection-error', message: 'Select a way of participant attendance' });
     }
 
     this.selectionValid = selectionValid;

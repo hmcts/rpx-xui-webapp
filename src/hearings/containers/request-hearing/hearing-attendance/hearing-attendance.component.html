@@ -35,18 +35,21 @@
             </div>
         </fieldset>
       </div>
-      <div class="govuk-form-group" *ngIf="attendanceFormGroup.controls.paperHearing.value === 'No'">
+      <div class="govuk-form-group" *ngIf="attendanceFormGroup.controls.paperHearing.value === 'No'" [ngClass]="{'govuk-form-group--error' : !isAttendanceSelected}">
+        <span *ngIf="!isAttendanceSelected" id="attendance-selection-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span>Select a way of participant attendance
+        </span>
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h1 class="govuk-fieldset__heading">
               In which ways can the participants attend this hearing?
             </h1>
           </legend>
-          <div class="govuk-form-group govuk-!-margin-bottom-3" id="facilitiesList">
+          <div class="govuk-form-group govuk-!-margin-bottom-3" id="hearingLevelChannelList">
             <fieldset class="govuk-fieldset">
               <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                 <div id="checkbox-addition-facility" class="govuk-checkboxes checkbox-row" formArrayName="hearingLevelChannels" data-module="govuk-checkboxes">
-                  <div class="govuk-checkboxes__item" *ngFor="let attendance of hearingLevelChannels$ | async" [formGroupName]="pos">
+                  <div class="govuk-checkboxes__item" *ngFor="let attendance of hearingLevelChannels;index as pos" [formGroupName]="pos">
                     <input class="govuk-checkboxes__input" id="{{attendance.key}}" name="pos" type="checkbox" formControlName="selected" [value]="attendance.value_en">
                     <label class="govuk-label govuk-checkboxes__label" for="{{attendance.key}}" >{{attendance.value_en}}</label>
                   </div>
@@ -70,7 +73,7 @@
           <ng-container formGroupName="individualDetails">
             <select class="govuk-select" [id]="'partyChannel'+i" [name]="'partyChannel'+i" formControlName="preferredHearingChannel">
               <option value="" selected>Please select</option>
-              <option *ngFor="let party of partyChannels$ | async" [ngValue]="party.key">{{party.value_en}}</option>
+              <option *ngFor="let party of partyChannels" [ngValue]="party.key">{{party.value_en}}</option>
             </select>
           </ng-container>
         </div>

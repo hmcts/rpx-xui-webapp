@@ -275,8 +275,12 @@ export const ROUTES: Routes = [
       {
         path: 'hearing-attendance',
         component: HearingAttendanceComponent,
+        resolve: {
+          hearingChannels: RefDataResolver
+        },
         data: {
-          title: 'HMCTS Hearings | Request Hearing | How Party Attend'
+          title: 'HMCTS Hearings | Request Hearing | How Party Attend',
+          category: HearingCategory.HearingChannel
         }
       },
       {

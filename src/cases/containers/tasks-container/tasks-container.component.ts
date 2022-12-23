@@ -62,8 +62,7 @@ export class TasksContainerComponent implements OnInit {
 
   public onTaskRefreshRequired(): void {
     const caseId = this.caseDetails.case_id;
-    const tasksSearch$ = this.isUpdatedTaskPermissions$.pipe(mergeMap(enabled => !enabled
-       ? this.waCaseService.getTasksByCaseId(caseId) : this.waCaseService.getTasksByCaseIdUpdated(caseId)));
+    const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
     tasksSearch$.pipe(first(), mergeMap(taskList => {
       this.tasks = taskList;
       return this.getAssignedNamesForTasks();

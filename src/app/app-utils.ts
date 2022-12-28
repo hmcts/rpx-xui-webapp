@@ -73,16 +73,15 @@ export class AppUtils {
     let fullUrl = false;
     let matchingUrl = '';
     [fullUrl, matchingUrl] = AppUtils.checkTabs(items, currentUrl);
-    return items.map(item => {
-      return {
+    return items.map(item => ({
         ...item,
         active: fullUrl ? item.href === currentUrl : item.href === matchingUrl
-      };
-    });
+      }));
   }
 
   /**
    * Tab logic - Works out which tab needs to be selected via the current tab urls and the given url
+   *
    * @param items - the tab urls
    * @param currentUrl - the url being tested
    * @return - a list including boolean stating whether the full url is given or the similar matching url
@@ -116,6 +115,7 @@ export class AppUtils {
 
   /**
    * Check if item's href is equivalent to the current url
+   *
    * @param href - one of the tab urls
    * @param currentUrl - the url being tested
    * @return - boolean value
@@ -138,6 +138,7 @@ export class AppUtils {
 
   /**
    * Get the data at the lowest child element of the activated route.
+   *
    * @param activatedRoute The starting (parent) route to use.
    */
   public static getRouteData(activatedRoute: ActivatedRouteSnapshot): any {

@@ -19,14 +19,10 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements On
   @ViewChild('fieldContainer', {static: false, read: ViewContainerRef})
   public fieldContainer: ViewContainerRef;
 
-  constructor(private readonly resolver: ComponentFactoryResolver,
+  public constructor(private readonly resolver: ComponentFactoryResolver,
               private readonly paletteService: PaletteService,
               private readonly formValidatorsService: FormValidatorsService) {
     super();
-  }
-
-  protected addValidators(nocQuestion: NocQuestion, control: FormControl): void {
-    this.formValidatorsService.addValidators(nocQuestion, control);
   }
 
   public ngOnInit(): void {
@@ -45,5 +41,9 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements On
     component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
     component.instance['idPrefix'] = this.idPrefix;
     this.fieldContainer.insert(component.hostView);
+  }
+
+  protected addValidators(nocQuestion: NocQuestion, control: FormControl): void {
+    this.formValidatorsService.addValidators(nocQuestion, control);
   }
 }

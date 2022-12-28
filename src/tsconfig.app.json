@@ -3,7 +3,9 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "skipLibCheck": true,
-    "types": []
+    "types": [
+      "dns"
+    ]
   },
   "files": [
     "main.ts",

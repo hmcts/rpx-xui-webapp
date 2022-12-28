@@ -35,39 +35,6 @@ export class CaseFlagsUtils {
     }
   }
 
-  private static getAllActiveDisplayFlags(partyFlags: PartyFlagsModel[], caseFlagsRefDataModels: CaseFlagReferenceModel[]): PartyFlagsDisplayModel[] {
-    const displayCaseFlags: PartyFlagsDisplayModel[] = partyFlags.map(flag => {
-      const flagPath: CaseFlagReferenceModel = this.findFlagByFlagId(caseFlagsRefDataModels, flag.flagId);
-      if (flagPath) {
-        return {
-          ...flag,
-          displayName: flagPath.name,
-          displayPath: flagPath.Path,
-        };
-      } else {
-        return {
-          ...flag,
-          displayName: null,
-          displayPath: null,
-        };
-      }
-    });
-    return displayCaseFlags.filter(flag => flag.displayPath ? flag.flagStatus.toLowerCase() === CaseFlagsUtils.ACTIVE : false);
-  }
-
-  private static getAllRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {
-    const allRAFsWithGroup = _.groupBy(flags, CaseFlagsUtils.PARTY_NAME);
-    return this.convertMapToArray(allRAFsWithGroup);
-  }
-
-  private static getAllNonRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {
-    const nonRAPFs = flags.filter(nonRAF => nonRAF.displayPath.includes(CaseFlagType.PARTY_FLAGS));
-    const nonRAPFsWithGroup = _.groupBy(nonRAPFs, CaseFlagsUtils.PARTY_NAME);
-    const caseFlags = flags.filter(nonRAF => nonRAF.displayPath.includes(CaseFlagType.CASE_FLAG));
-    const caseFlagsWithGroup = _.groupBy(caseFlags, CaseFlagsUtils.PARTY_NAME);
-    return this.convertMapToArray({...nonRAPFsWithGroup, ...caseFlagsWithGroup});
-  }
-
   public static findFlagByFlagId(caseFlagReferenceModels: CaseFlagReferenceModel[], flagId: string): CaseFlagReferenceModel {
     let foundFlag = null;
     for (const caseFlag of caseFlagReferenceModels) {
@@ -101,6 +68,39 @@ export class CaseFlagsUtils {
       }
     });
     return partyWithFlags;
+  }
+
+  private static getAllActiveDisplayFlags(partyFlags: PartyFlagsModel[], caseFlagsRefDataModels: CaseFlagReferenceModel[]): PartyFlagsDisplayModel[] {
+    const displayCaseFlags: PartyFlagsDisplayModel[] = partyFlags.map(flag => {
+      const flagPath: CaseFlagReferenceModel = this.findFlagByFlagId(caseFlagsRefDataModels, flag.flagId);
+      if (flagPath) {
+        return {
+          ...flag,
+          displayName: flagPath.name,
+          displayPath: flagPath.Path,
+        };
+      } else {
+        return {
+          ...flag,
+          displayName: null,
+          displayPath: null,
+        };
+      }
+    });
+    return displayCaseFlags.filter(flag => flag.displayPath ? flag.flagStatus.toLowerCase() === CaseFlagsUtils.ACTIVE : false);
+  }
+
+  private static getAllRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {
+    const allRAFsWithGroup = _.groupBy(flags, CaseFlagsUtils.PARTY_NAME);
+    return this.convertMapToArray(allRAFsWithGroup);
+  }
+
+  private static getAllNonRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {
+    const nonRAPFs = flags.filter(nonRAF => nonRAF.displayPath.includes(CaseFlagType.PARTY_FLAGS));
+    const nonRAPFsWithGroup = _.groupBy(nonRAPFs, CaseFlagsUtils.PARTY_NAME);
+    const caseFlags = flags.filter(nonRAF => nonRAF.displayPath.includes(CaseFlagType.CASE_FLAG));
+    const caseFlagsWithGroup = _.groupBy(caseFlags, CaseFlagsUtils.PARTY_NAME);
+    return this.convertMapToArray({...nonRAPFsWithGroup, ...caseFlagsWithGroup});
   }
 
   private static convertMapToArray(caseFlags: Record<string, PartyFlagsDisplayModel[]>): CaseFlagGroup[] {

@@ -18,17 +18,17 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   styleUrls: ['./hearing-venue.component.scss']
 })
 export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild(SearchLocationComponent, {static: false}) public searchLocationComponent: SearchLocationComponent;
+
   public locationType: string;
   public locationSub: Subscription;
   public selectedLocation: LocationByEPIMMSModel;
-  public serviceIds: string = '';
+  public serviceIds = '';
   public findLocationFormGroup: FormGroup;
-
-  @ViewChild(SearchLocationComponent, {static: false}) public searchLocationComponent: SearchLocationComponent;
   public selectedLocations: LocationByEPIMMSModel[];
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
 
-  constructor(public readonly hearingStore: Store<fromHearingStore.State>,
+  public constructor(public readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly fb: FormBuilder,
               protected readonly hearingsService: HearingsService,
               protected readonly locationsDataService: LocationsDataService,
@@ -65,11 +65,6 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
       this.setLocationError(HearingErrorMessage.ENTER_A_VALID_LOCATION);
     }
-  }
-
-  private setLocationError(message: string) {
-    this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
-    this.validationErrors.push({id: 'input-selected-location-label', message});
   }
 
   public appendLocation(selectedLocations: LocationByEPIMMSModel[]) {
@@ -113,14 +108,12 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public prepareHearingRequestData(): void {
-    const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMMSModel => {
-      return {
+    const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMMSModel => ({
         locationType: HMCLocationType.COURT,
         locationId: locationByEPIMMSModel.epimms_id,
         locationName: locationByEPIMMSModel.court_name,
         region: locationByEPIMMSModel.region,
-      } as HearingLocationModel;
-    });
+      } as HearingLocationModel));
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
@@ -131,7 +124,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public isFormValid(): boolean {
-    let returnValue: boolean = true;
+    let returnValue = true;
     if (this.findLocationFormGroup.controls.locationSelectedFormControl.valid) {
       returnValue = false;
       this.setLocationError(HearingErrorMessage.ENTER_A_VALID_LOCATION);
@@ -153,5 +146,10 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
     if (this.locationSub) {
       this.locationSub.unsubscribe();
     }
+  }
+
+  private setLocationError(message: string) {
+    this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
+    this.validationErrors.push({id: 'input-selected-location-label', message});
   }
 }

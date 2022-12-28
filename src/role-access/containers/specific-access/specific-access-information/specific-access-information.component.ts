@@ -1,10 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -28,11 +27,11 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   public infoCtrl: FormControl;
   public error: any = null;
   public controlName = 'infoCtrl';
-  public submitted: boolean = true;
+  public submitted = true;
   public specificAccessBody: SpecificAccessStateData;
-  private  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
+  private  readonly rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
 
-  constructor(public readonly store: Store<fromFeature.State>, private readonly fb: FormBuilder) {
+  public constructor(public readonly store: Store<fromFeature.State>, private readonly fb: FormBuilder) {
   }
 
   public ngOnInit(): void {
@@ -60,7 +59,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
           roleCategory: specificAccessState.roleCategory,
           requestCreated: specificAccessState.requestCreated,
           person: {id: specificAccessState.actorId, name: null, domain: null},
-        }
+        };
       }
     });
   }

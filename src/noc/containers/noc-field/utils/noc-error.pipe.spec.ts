@@ -1,3 +1,4 @@
+/* eslint-disable id-blacklist */
 import { NocErrorPipe } from './noc-error.pipe';
 
 describe('NocErrorPipe', () => {

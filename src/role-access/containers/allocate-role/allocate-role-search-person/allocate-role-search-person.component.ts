@@ -24,14 +24,15 @@ import { getTitleText } from '../../../utils';
   templateUrl: './allocate-role-search-person.component.html'
 })
 export class AllocateRoleSearchPersonComponent implements OnInit {
+  @Input() public navEvent: AllocateRoleNavigation;
+
   public allocateAction = 'Allocate';
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
-  @Input() public navEvent: AllocateRoleNavigation;
   public domain = PersonRole.JUDICIAL;
   public title: string;
   public assignedUser: string;
-  public userIncluded: boolean = true;
-  public boldTitle: string = 'Find the person';
+  public userIncluded = true;
+  public boldTitle = 'Find the person';
   public formGroup: FormGroup = new FormGroup({});
   public personName: string;
   public person: Person;
@@ -41,27 +42,10 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public roleType: SpecificRole;
   public services: string[];
 
-  constructor(private readonly store: Store<fromFeature.State>) {}
+  public constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
     this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocateRoleStateData => this.setData(allocateRoleStateData));
-  }
-
-  private setData(allocateRoleStateData: AllocateRoleStateData): void {
-    const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
-    if (allocateRoleStateData.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
-      this.domain = PersonRole.CASEWORKER;
-    } else if (allocateRoleStateData.roleCategory === RoleCategory.ADMIN) {
-      this.domain = PersonRole.ADMIN;
-    }
-    this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
-    this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
-    this.person = allocateRoleStateData.person;
-    // hide user when allocate as user can select allocate to me
-    this.userIncluded = !(allocateRoleStateData.action === Actions.Allocate);
-    this.assignedUser = allocateRoleStateData.personToBeRemoved ? allocateRoleStateData.personToBeRemoved.id : null;
-    this.roleType = allocateRoleStateData.typeOfRole;
-    this.services = [allocateRoleStateData.jurisdiction];
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
@@ -88,6 +72,23 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   public selectedPerson(person: Person): void {
     this.person = person;
+  }
+
+  private setData(allocateRoleStateData: AllocateRoleStateData): void {
+    const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
+    if (allocateRoleStateData.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
+      this.domain = PersonRole.CASEWORKER;
+    } else if (allocateRoleStateData.roleCategory === RoleCategory.ADMIN) {
+      this.domain = PersonRole.ADMIN;
+    }
+    this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
+    this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
+    this.person = allocateRoleStateData.person;
+    // hide user when allocate as user can select allocate to me
+    this.userIncluded = !(allocateRoleStateData.action === Actions.Allocate);
+    this.assignedUser = allocateRoleStateData.personToBeRemoved ? allocateRoleStateData.personToBeRemoved.id : null;
+    this.roleType = allocateRoleStateData.typeOfRole;
+    this.services = [allocateRoleStateData.jurisdiction];
   }
 
   private getDisplayName(selectedPerson: Person): string {

@@ -1,4 +1,4 @@
-/* tslint:disable:object-literal-sort-keys */
+/* eslint-disable */
 import {CaseCategoryModel} from './caseCategory.model';
 import {HearingLocationModel} from './hearingLocation.model';
 import {HearingWindowModel} from './hearingWindow.model';

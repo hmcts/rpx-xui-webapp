@@ -25,12 +25,11 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public bookingTypeForm: FormGroup;
   public existingBookings: Booking[];
-  private bookings$: Observable<any[]> | any;
   private combineResult$: Observable<any[]> | any;
   private existingBookingsSubscription: Subscription;
   private refreshAssignmentsSubscription: Subscription;
 
-  constructor(
+  public constructor(
     private readonly fb: FormBuilder,
     private readonly bookingService: BookingService,
     private readonly router: Router,
@@ -52,7 +51,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
             if (bookingResults) {
               this.existingBookings = bookingResults as any;
               this.orderByCurrentThenFuture();
-              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter(p => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map(p => p.locationId) : null;
+              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter(p => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map((p: any) => p.locationId) : null;
               this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(new Set(this.bookingProcess.selectedBookingLocationIds))));
             }
           })).subscribe();
@@ -66,20 +65,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public checkIfButtonDisabled(beginTime: Date): boolean {
     return (new Date().getTime() < new Date(beginTime).getTime());
-  }
-
-  private orderByCurrentThenFuture() {
-    const featureBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
-    const currentBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortBookings);
-    this.existingBookings = currentBookings.sort(this.sortBookings).concat(featureBookings.sort(this.sortBookings));
-  }
-
-  private sortBookings(current, next) {
-    if (current.locationName > next.locationName) { return 1; }
-    if (current.locationName < next.locationName) { return -1; }
-    if (current.beginTime > next.beginTime) { return 1; }
-    if (current.beginTime < next.beginTime) { return -1; }
-    return 0;
   }
 
   public onSelectOption(index) {
@@ -141,4 +126,17 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     }
   };
 
+  private orderByCurrentThenFuture() {
+    const featureBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
+    const currentBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortBookings);
+    this.existingBookings = currentBookings.sort(this.sortBookings).concat(featureBookings.sort(this.sortBookings));
+  }
+
+  private sortBookings(current, next) {
+    if (current.locationName > next.locationName) { return 1; }
+    if (current.locationName < next.locationName) { return -1; }
+    if (current.beginTime > next.beginTime) { return 1; }
+    if (current.beginTime < next.beginTime) { return -1; }
+    return 0;
+  }
 }

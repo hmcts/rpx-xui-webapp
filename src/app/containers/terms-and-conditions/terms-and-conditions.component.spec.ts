@@ -27,9 +27,9 @@ describe('TermsAndConditionsComponent', () => {
 
     let testHostComponent: TestDummyHostComponent;
     let testHostFixture: ComponentFixture<TestDummyHostComponent>;
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     let el: DebugElement;
-    // tslint:disable-next-line
+    // eslint-disable-next-line
     let de: any;
     let component: TermsAndConditionsComponent;
     let fixture: ComponentFixture<TermsAndConditionsComponent>;

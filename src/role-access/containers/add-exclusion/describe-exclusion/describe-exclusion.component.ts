@@ -14,16 +14,16 @@ import * as fromFeature from '../../../store';
 export class DescribeExclusionComponent implements OnInit, OnDestroy {
 
   @Input() public navEvent: ExclusionNavigation;
-  @Input() public title: string = 'Describe the exclusion';
-  @Input() public caption: string = 'Add an exclusion';
+  @Input() public title = 'Describe the exclusion';
+  @Input() public caption = 'Add an exclusion';
 
-  public submitted: boolean = true;
+  public submitted = true;
   public controlName = 'text';
   public formGroup: FormGroup;
   public error: ErrorMessage = null;
   public subscription: Subscription;
 
-  constructor(public readonly store: Store<fromFeature.State>,
+  public constructor(public readonly store: Store<fromFeature.State>,
               public readonly fb: FormBuilder) {
       this.formGroup = this.fb.group({[this.controlName]: ['', [Validators.required]]
     });

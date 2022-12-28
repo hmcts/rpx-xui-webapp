@@ -43,19 +43,19 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
-  @ViewChild('chooseRole', {static: false, read: ChooseRoleComponent})
+  @ViewChild('chooseRole', { static: false, read: ChooseRoleComponent })
   public chooseRoleComponent: ChooseRoleComponent;
 
-  @ViewChild('chooseAllocateTo', {static: false, read: ChooseAllocateToComponent})
+  @ViewChild('chooseAllocateTo', { static: false, read: ChooseAllocateToComponent })
   public chooseAllocateToComponent: ChooseAllocateToComponent;
 
-  @ViewChild('searchPerson', {static: false, read: AllocateRoleSearchPersonComponent})
+  @ViewChild('searchPerson', { static: false, read: AllocateRoleSearchPersonComponent })
   public searchPersonComponent: AllocateRoleSearchPersonComponent;
 
-  @ViewChild('chooseDuration', {static: false, read: ChooseDurationComponent})
+  @ViewChild('chooseDuration', { static: false, read: ChooseDurationComponent })
   public chooseDurationComponent: ChooseDurationComponent;
 
-  @ViewChild('checkAnswers', {static: false, read: AllocateRoleCheckAnswersComponent})
+  @ViewChild('checkAnswers', { static: false, read: AllocateRoleCheckAnswersComponent })
   public checkAnswersComponent: AllocateRoleCheckAnswersComponent;
 
   public noRolesErrorVisibilityStates = noRolesErrorVisibilityStates;
@@ -83,13 +83,13 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public typeOfRole: SpecificRole;
   public action: string;
 
-  public showSpinner: boolean = false;
+  public showSpinner = false;
 
-  constructor(private readonly appStore: Store<fromAppStore.State>,
-              private readonly store: Store<fromFeature.State>,
-              private readonly allocateRoleService: AllocateRoleService,
-              private readonly route: ActivatedRoute,
-              private readonly router: Router) {
+  public constructor(private readonly appStore: Store<fromAppStore.State>,
+    private readonly store: Store<fromFeature.State>,
+    private readonly allocateRoleService: AllocateRoleService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router) {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
         this.isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
@@ -112,39 +112,16 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     if (this.action === Actions.Reallocate) {
       this.instantiateReallocateRoleData();
     } else {
-      this.store.dispatch(new fromFeature.AllocateRoleSetInitData({caseId: this.caseId, jurisdiction: this.jurisdiction, roleCategory: this.roleCategory}));
+      this.store.dispatch(new fromFeature.AllocateRoleSetInitData({ caseId: this.caseId, jurisdiction: this.jurisdiction, roleCategory: this.roleCategory }));
     }
     const extras = this.router.getCurrentNavigation().extras;
     this.allocateRoleService.backUrl = extras.state && extras.state.backUrl ? extras.state.backUrl : `cases/case-details/${this.caseId}/roles-and-access`;
   }
 
-  private instantiateReallocateRoleData(): void {
-    const personToBeRemoved: Person = {id: this.userIdToBeRemoved, name: this.userNameToBeRemoved, domain: this.roleCategory};
-    const allocateRoleState: AllocateRoleStateData = {
-      caseId: this.caseId,
-      jurisdiction: this.jurisdiction,
-      assignmentId: this.assignmentId,
-      state: this.instantiateState(),
-      typeOfRole: this.typeOfRole,
-      allocateTo: null,
-      personToBeRemoved,
-      person: null,
-      durationOfRole: DurationOfRole.INDEFINITE,
-      roleCategory: RoleCategory[EnumUtil(RoleCategory).getKeyOrDefault(this.roleCategory)],
-      action: Actions.Reallocate,
-      period: null,
-      lastError: null
-    };
-    this.store.dispatch(new fromFeature.AllocateRoleInstantiate(allocateRoleState));
-  }
-
-  private instantiateState(): AllocateRoleState {
-    return AllocateRoleState.SEARCH_PERSON;
-  }
 
   public ngOnInit(): void {
     if (this.action !== Actions.Reallocate) {
-      this.store.dispatch(new fromFeature.LoadRoles({jurisdiction: this.jurisdiction, roleCategory: this.roleCategory}));
+      this.store.dispatch(new fromFeature.LoadRoles({ jurisdiction: this.jurisdiction, roleCategory: this.roleCategory }));
     }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
@@ -157,13 +134,6 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   public isComponentVisible(currentNavigationState: AllocateRoleState, requiredNavigationState: AllocateRoleState[]): boolean {
     return requiredNavigationState.includes(currentNavigationState);
-  }
-
-  private setReallocatedRole(roleId: string): void {
-    if (roleId) {
-      const role = DEFINED_ROLES.find(r => r.id === roleId);
-      this.typeOfRole = role && role.name ? role : {id: roleId, name: convertToName(roleId)};
-    }
   }
 
   public onNavEvent(event: AllocateRoleNavigationEvent): void {
@@ -278,7 +248,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_DURATION));
             break;
           default:
-          throw new Error('Invalid allocation state');
+            throw new Error('Invalid allocation state');
         }
         break;
       }
@@ -333,5 +303,36 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.allocateRoleStateDataSub.unsubscribe();
     }
     this.store.dispatch(new fromFeature.AllocateRoleReset());
+  }
+
+  private setReallocatedRole(roleId: string): void {
+    if (roleId) {
+      const role = DEFINED_ROLES.find(r => r.id === roleId);
+      this.typeOfRole = role && role.name ? role : { id: roleId, name: convertToName(roleId) };
+    }
+  }
+
+  private instantiateReallocateRoleData(): void {
+    const personToBeRemoved: Person = { id: this.userIdToBeRemoved, name: this.userNameToBeRemoved, domain: this.roleCategory };
+    const allocateRoleState: AllocateRoleStateData = {
+      caseId: this.caseId,
+      jurisdiction: this.jurisdiction,
+      assignmentId: this.assignmentId,
+      state: this.instantiateState(),
+      typeOfRole: this.typeOfRole,
+      allocateTo: null,
+      personToBeRemoved,
+      person: null,
+      durationOfRole: DurationOfRole.INDEFINITE,
+      roleCategory: RoleCategory[EnumUtil(RoleCategory).getKeyOrDefault(this.roleCategory)],
+      action: Actions.Reallocate,
+      period: null,
+      lastError: null
+    };
+    this.store.dispatch(new fromFeature.AllocateRoleInstantiate(allocateRoleState));
+  }
+
+  private instantiateState(): AllocateRoleState {
+    return AllocateRoleState.SEARCH_PERSON;
   }
 }

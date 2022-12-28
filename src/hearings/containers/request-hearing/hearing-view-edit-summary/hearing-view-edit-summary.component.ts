@@ -22,15 +22,9 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   private initialAndCurrentStatesSubscription: Subscription;
   private readonly notUpdatedMessage = 'The request has not been updated';
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+  public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
-  }
-
-  private getInitialAndCurrentState(): Observable<[HearingRequestStateData, HearingRequestStateData]> {
-    const initialHearingState$ = this.hearingStore.select(fromHearingStore.getHearingRequestToCompare);
-    const currentHearingState$ = this.hearingStore.select(fromHearingStore.getHearingRequest);
-    return combineLatest([initialHearingState$, currentHearingState$]);
   }
 
   public executeAction(action: ACTION): void {
@@ -54,5 +48,11 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
     if (this.initialAndCurrentStatesSubscription) {
       this.initialAndCurrentStatesSubscription.unsubscribe();
     }
+  }
+
+  private getInitialAndCurrentState(): Observable<[HearingRequestStateData, HearingRequestStateData]> {
+    const initialHearingState$ = this.hearingStore.select(fromHearingStore.getHearingRequestToCompare);
+    const currentHearingState$ = this.hearingStore.select(fromHearingStore.getHearingRequest);
+    return combineLatest([initialHearingState$, currentHearingState$]);
   }
 }

@@ -17,7 +17,7 @@ export const initialState: NocStateData = {
   validationErrors: null
 };
 
-export function nocReducer(currentState = initialState, action: fromActions.NocAction): NocStateData {
+export const nocReducer = (currentState = initialState, action: fromActions.NocAction): NocStateData => {
   switch (action.type) {
     case fromActions.CHANGE_NAVIGATION: {
       return {
@@ -147,14 +147,9 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
       };
     }
   }
-}
+};
 
-export function orderQuestions(questions: NocQuestion[]): NocQuestion[] {
-  return questions.slice().sort((question1, question2) => {
-    return Number(question1.order) > Number(question2.order) ? 1 : Number(question2.order) > Number(question1.order) ? -1 : 0;
-  });
-}
-
+export const orderQuestions = (questions: NocQuestion[]): NocQuestion[] => questions.slice().sort((question1, question2) => Number(question1.order) > Number(question2.order) ? 1 : Number(question2.order) > Number(question1.order) ? -1 : 0);
 export const getNocActiveState = (nocState) => nocState.state;
 export const getLastError = (nocState) => nocState.lastError;
 export const getValidationErrors = (nocState) => nocState.validationErrors;

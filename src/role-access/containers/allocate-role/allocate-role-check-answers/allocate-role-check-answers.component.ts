@@ -2,8 +2,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { RoleCategory } from '../../../../booking/models';
 import { $enum as EnumUtil } from 'ts-enum-util';
+import { RoleCategory } from '../../../../booking/models';
 import {
   Actions,
   AllocateRoleNavigation,
@@ -28,15 +28,16 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
   @Input() public navEvent: AllocateRoleNavigation;
 
   public answers: Answer[] = [];
-  public caption: string = '';
+  public caption = '';
   public heading: AnswerHeaderText = AnswerHeaderText.CheckAnswers;
   public hint: AnswerHeaderText = AnswerHeaderText.CheckInformation;
   public storeSubscription: Subscription;
-  private allocateRoleStateData: AllocateRoleStateData;
   public typeOfRole: string;
   public allocateTo: AllocateTo;
 
-  constructor(private readonly store: Store<fromFeature.State>) {
+  private allocateRoleStateData: AllocateRoleStateData;
+
+  public constructor(private readonly store: Store<fromFeature.State>) {
   }
 
   public ngOnInit(): void {

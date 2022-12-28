@@ -266,7 +266,7 @@ describe('Manage Linking - HowLinkedHearingsBeHeardComponent', () => {
   });
 });
 
-function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterService: any, modeOfLinking: Mode) {
+const ConfigureTestBedModule = (hearingMockService: HearingsService, mockRouterService: any, modeOfLinking: Mode) => {
   const STATE = _.cloneDeep(initialState);
   STATE.hearings.hearingLinks.linkedHearingGroup = mockLinkedHearingGroup.linkedHearingGroup;
 

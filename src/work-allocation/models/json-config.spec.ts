@@ -6,7 +6,7 @@ describe('WorkAllocation', () => {
   describe('JsonConfig', () => {
 
     it('should correctly coerce a partial JSON object to a Task', () => {
-      const JSON: object = { id: 'Bob' };
+      const JSON: Record<string, unknown> = { id: 'Bob' };
       const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();
       expect(TASK.id).toEqual('Bob');
@@ -14,7 +14,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should correctly coerce a JSON object to a Task with actions', () => {
-      const JSON: object = {
+      const JSON: Record<string, unknown> = {
         id: 'Bob',
         actions: [
           { id: 'Action ID', title: 'Action title' }
@@ -31,7 +31,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should correctly coerce a JSON object to a Task with an unexpected property', () => {
-      const JSON: object = {
+      const JSON: Record<string, unknown> = {
         id: 'Bob',
         'surprise-property': 'Surprise value'
       };
@@ -53,7 +53,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle coercion of an empty JSON object', () => {
-      const JSON: object = {};
+      const JSON: Record<string, unknown> = {};
       const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();
       expect(Object.keys.length).toEqual(1);

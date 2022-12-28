@@ -17,7 +17,7 @@ export class AppConfig extends AbstractAppConfig {
   public workallocationUrl: string;
   protected config: CaseEditorConfig;
 
-  constructor(
+  public constructor(
     private readonly appConfigService: AppConfigService,
     private readonly featureToggleService: FeatureToggleService,
     private readonly environmentService: EnvironmentService
@@ -190,7 +190,7 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.wa_service_config;
   }
 
-  public getAccessManagementBasicViewMock(): {} {
+  public getAccessManagementBasicViewMock(): any {
     return this.config.access_management_basic_view_mock;
   }
 

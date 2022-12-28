@@ -14,9 +14,9 @@ export class HearingSpecificDateAnswerConverter implements AnswerConverter {
   }
 
   private createAnswer(state: State): string {
-    let specificDateSelection: string = '';
-    let earliestHearingDate: string = '';
-    let latestHearingDate: string = '';
+    let specificDateSelection = '';
+    let earliestHearingDate = '';
+    let latestHearingDate = '';
     const hearingWindow = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow;
 
     if (hearingWindow && (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd)) {

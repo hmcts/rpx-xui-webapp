@@ -212,6 +212,7 @@ export class SpecificAccessDurationComponent implements OnInit {
 
   /**
    * Handler for when the duration is changed
+   *
    * @param item the DurationType the user selected
    */
   public onDurationChange(item: DurationType): void {

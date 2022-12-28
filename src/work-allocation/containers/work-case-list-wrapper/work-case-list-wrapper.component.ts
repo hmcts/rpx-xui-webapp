@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, forkJoin, merge, Observable, of, Subscription } from 'rxjs';
-import { debounceTime, filter, flatMap, map, mergeMap, switchMap } from 'rxjs/operators';
+import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
+import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -32,7 +32,8 @@ import { getAssigneeName, handleFatalErrors, servicesMap, WILDCARD_SERVICE_DOWN 
 })
 export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
-  public specificPage: string = '';
+  public specificPage = '';
+  public selectedLocations: string[] = [];
   public caseworkers: Caseworker[] = [];
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
@@ -43,11 +44,13 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public pagination: PaginationParameter;
   public backUrl: string = null;
   public supportedRoles$: Observable<Role[]>;
+  public routeEventsSubscription: Subscription;
+
   protected allJurisdictions: Jurisdiction[];
   protected allRoles: Role[];
-  protected defaultLocation: string = 'all';
+  protected defaultLocation = 'all';
+
   private pCases: Case[];
-  public selectedLocations: string[] = [];
 
   /**
    * Mock CaseServiceConfig.
@@ -60,7 +63,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   };
   private pCasesTotal: number;
   private pUniqueCases: number;
-  public routeEventsSubscription: Subscription;
 
   // subscriptions
   private selectedLocationsSubscription: Subscription;

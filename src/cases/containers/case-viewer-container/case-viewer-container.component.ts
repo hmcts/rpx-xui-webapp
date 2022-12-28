@@ -6,6 +6,7 @@ import {select, Store} from '@ngrx/store';
 import {combineLatest, of} from 'rxjs';
 import {Observable} from 'rxjs/Observable';
 import {catchError, map} from 'rxjs/operators';
+import { WAFeatureConfig } from 'src/work-allocation/models/common/service-config.model';
 import { AllocateRoleService } from '../../../role-access/services';
 import {AppUtils} from '../../../app/app-utils';
 import {AppConstants} from '../../../app/app.constants';
@@ -13,7 +14,6 @@ import * as fromRoot from '../../../app/store';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import {FeatureVariation} from '../../models/feature-variation.model';
 import {Utils} from '../../utils/utils';
-import { WAFeatureConfig } from 'src/work-allocation/models/common/service-config.model';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -53,7 +53,7 @@ export class CaseViewerContainerComponent implements OnInit {
     }
   ];
 
-  constructor(private readonly route: ActivatedRoute,
+  public constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromRoot.State>,
               private readonly featureToggleService: FeatureToggleService,
               private readonly allocateRoleService: AllocateRoleService,
@@ -61,6 +61,13 @@ export class CaseViewerContainerComponent implements OnInit {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map(userDetails => userDetails.userInfo.roles)
     );
+  }
+
+  public ngOnInit(): void {
+    this.caseDetails = this.route.snapshot.data.case as CaseView;
+    this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
+    this.prependedTabs$ = this.prependedCaseViewTabs();
+    this.appendedTabs$ = this.appendedCaseViewTabs();
   }
 
   private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
@@ -71,15 +78,8 @@ export class CaseViewerContainerComponent implements OnInit {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
           requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2 ? true : false ;
       }
-    })
+    });
     return requiredFeature && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
-  }
-
-  public ngOnInit(): void {
-    this.caseDetails = this.route.snapshot.data.case as CaseView;
-    this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
-    this.prependedTabs$ = this.prependedCaseViewTabs();
-    this.appendedTabs$ = this.appendedCaseViewTabs();
   }
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {

@@ -20,31 +20,8 @@ import * as hearingRequestActions from '../actions/hearing-request.action';
 
 @Injectable()
 export class HearingRequestEffects {
-  public static WELSH_PAGE = 'hearing-welsh';
-  public screenNavigations$: Observable<ScreenNavigationModel[]>;
-  public caseId: string;
-  public mode: Mode;
-  public fragmentId: string;
 
-  constructor(
-    private readonly actions$: Actions,
-    private readonly hearingStore: Store<fromHearingReducers.State>,
-    private readonly hearingsService: HearingsService,
-    private readonly pageFlow: AbstractPageFlow,
-    private readonly router: Router,
-    private readonly location: Location,
-    private readonly appStore: Store<fromAppReducers.State>
-  ) {
-    this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
-      map(hearingValuesModel => hearingValuesModel ? hearingValuesModel.screenFlow : []));
-    this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
-      state => {
-        this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
-        this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
-        this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';
-      }
-    );
-  }
+  public static WELSH_PAGE = 'hearing-welsh';
 
   @Effect({dispatch: false})
   public backNavigation$ = this.actions$.pipe(
@@ -96,8 +73,7 @@ export class HearingRequestEffects {
   public loadHearingRequest$ = this.actions$.pipe(
     ofType(hearingRequestActions.LOAD_HEARING_REQUEST),
     map((action: hearingRequestActions.LoadHearingRequest) => action.payload),
-    switchMap(payload => {
-      return this.hearingsService.loadHearingRequest(payload.hearingID).pipe(
+    switchMap(payload => this.hearingsService.loadHearingRequest(payload.hearingID).pipe(
         tap(hearingRequestMainModel => {
           this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
           this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
@@ -109,53 +85,67 @@ export class HearingRequestEffects {
           this.appStore.dispatch(new fromAppStoreActions.Go({path: ['/hearings/error']}));
           return of(error);
         })
-      );
-    })
+      ))
   );
 
   @Effect({dispatch: false})
   public submitHearingRequest$ = this.actions$.pipe(
     ofType(hearingRequestActions.SUBMIT_HEARING_REQUEST),
     map((action: hearingRequestActions.SubmitHearingRequest) => action.payload),
-    switchMap(payload => {
-      return this.hearingsService.submitHearingRequest(payload).pipe(
+    switchMap(payload => this.hearingsService.submitHearingRequest(payload).pipe(
         tap(
-          () => {
-            return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
-          }),
+          () => this.router.navigate(['hearings', 'request', 'hearing-confirmation'])),
           catchError(error => {
             this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
             return of(error);
           })
-      );
-    })
+      ))
   );
 
   @Effect({dispatch: false})
   public submitHearingReason$ = this.actions$.pipe(
     ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REASON),
-    tap(() => {
-      return this.router.navigate(['hearings', 'request', 'hearing-change-reason']);
-    })
+    tap(() => this.router.navigate(['hearings', 'request', 'hearing-change-reason']))
   );
 
   @Effect({dispatch: false})
   public viewEditSubmitHearingRequest$ = this.actions$.pipe(
     ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REQUEST),
     map((action: hearingRequestActions.ViewEditSubmitHearingRequest) => action.payload),
-    switchMap(payload => {
-      return this.hearingsService.updateHearingRequest(payload).pipe(
+    switchMap(payload => this.hearingsService.updateHearingRequest(payload).pipe(
         tap(
-          () => {
-            return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
-          }),
+          () => this.router.navigate(['hearings', 'request', 'hearing-confirmation'])),
           catchError(error => {
             this.hearingStore.dispatch(new hearingRequestActions.UpdateHearingRequestFailure(error));
             return of(error);
           })
-      );
-    })
+      ))
   );
+
+  public screenNavigations$: Observable<ScreenNavigationModel[]>;
+  public caseId: string;
+  public mode: Mode;
+  public fragmentId: string;
+
+  public constructor(
+    private readonly actions$: Actions,
+    private readonly hearingStore: Store<fromHearingReducers.State>,
+    private readonly hearingsService: HearingsService,
+    private readonly pageFlow: AbstractPageFlow,
+    private readonly router: Router,
+    private readonly location: Location,
+    private readonly appStore: Store<fromAppReducers.State>
+  ) {
+    this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
+      map(hearingValuesModel => hearingValuesModel ? hearingValuesModel.screenFlow : []));
+    this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
+      state => {
+        this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
+        this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
+        this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';
+      }
+    );
+  }
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {

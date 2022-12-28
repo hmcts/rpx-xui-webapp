@@ -20,8 +20,8 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
   roles: null
 };
 
-export function allocateRoleReducer(currentState = allocateRoleInitialState,
-                                    action: AllocateRoleAction): AllocateRoleStateData {
+export const allocateRoleReducer = (currentState = allocateRoleInitialState,
+                                    action: AllocateRoleAction): AllocateRoleStateData => {
   switch (action.type) {
     case AllocateRoleActionTypes.CHANGE_NAVIGATION: {
       return {
@@ -93,13 +93,13 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         ...currentState,
         roles: action.payload.roles,
         state: AllocateRoleState.CHOOSE_ROLE
-      }
+      };
     }
     case AllocateRoleActionTypes.NO_ROLES_FOUND: {
       return {
         ...currentState,
         state: AllocateRoleState.NO_ROLES_FOUND
-      }
+      };
     }
     default: {
       return {
@@ -107,7 +107,7 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
       };
     }
   }
-}
+};
 
 export const allocateRoleActiveState = (allocateRoleState: AllocateRoleStateData) => allocateRoleState.state;
 export const allocateRoleLastErrors = (allocateRoleState: AllocateRoleStateData) => allocateRoleState.lastError;

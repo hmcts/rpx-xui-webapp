@@ -46,22 +46,22 @@ export class LoadFeatureToggleConfig implements Action {
 
 export class LoadFeatureToggleConfigSuccess implements Action {
   public readonly type = LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS;
-  constructor(public payload: any) { }
+  public constructor(public payload: any) { }
 }
 
 export class LoadFeatureToggleConfigFail implements Action {
   public readonly type = LOAD_FEATURE_TOGGLE_CONFIG_FAIL;
-  constructor(public payload: any) { }
+  public constructor(public payload: any) { }
 }
 
 export class LoadConfigSuccess implements Action {
   public readonly type = APP_LOAD_CONFIG_SUCCESS;
-  constructor(public payload: any) { }
+  public constructor(public payload: any) { }
 }
 
 export class LoadConfigFail implements Action {
   public readonly type = APP_LOAD_CONFIG_FAIL;
-  constructor(public payload: any) { }
+  public constructor(public payload: any) { }
 }
 
 export class StartAppInitilizer implements Action {
@@ -81,33 +81,33 @@ export class IdleUserLogOut implements Action {
 }
 
 export class LoadHasAcceptedTC implements Action {
-  constructor(public payload: string) {}
   public readonly type = LOAD_HAS_ACCEPTED_TC;
+  public constructor(public payload: string) {}
 }
 
 export class LoadHasAcceptedTCSuccess implements Action {
   public readonly type = LOAD_HAS_ACCEPTED_TC_SUCCESS;
-  constructor(public payload: boolean) {}
+  public constructor(public payload: boolean) {}
 }
 
 export class LoadHasAcceptedTCFail implements Action {
   public readonly type = LOAD_HAS_ACCEPTED_TC_FAIL;
-  constructor(public payload: boolean) {}
+  public constructor(public payload: boolean) {}
 }
 
 export class AcceptTandC implements Action {
   public readonly type = ACCEPT_T_AND_C;
-  constructor(public payload: string) {}
+  public constructor(public payload: string) {}
 }
 
 export class AcceptTandCSuccess implements Action {
   public readonly type = ACCEPT_T_AND_C_SUCCESS;
-  constructor(public payload: boolean) {}
+  public constructor(public payload: boolean) {}
 }
 
 export class AcceptTandCFail implements Action {
   public readonly type = ACCEPT_T_AND_C_FAIL;
-  constructor(public payload: boolean) {}
+  public constructor(public payload: boolean) {}
 }
 
 export class LoadTermsConditions implements Action {
@@ -116,12 +116,12 @@ export class LoadTermsConditions implements Action {
 
 export class LoadTermsConditionsSuccess implements Action {
   public readonly type = LOAD_TERMS_CONDITIONS_SUCCESS;
-  constructor(public payload: TCDocument) {}
+  public constructor(public payload: TCDocument) {}
 }
 
 export class LoadTermsConditionsFail implements Action {
   public readonly type = LOAD_TERMS_CONDITIONS_FAIL;
-  constructor(public payload: any) {}
+  public constructor(public payload: any) {}
 }
 
 export class LoadUserDetails implements Action {
@@ -131,12 +131,12 @@ export class LoadUserDetails implements Action {
 // TODO: strong type the payload
 export class LoadUserDetailsSuccess implements Action {
   public readonly type = LOAD_USER_DETAILS_SUCCESS;
-  constructor(public payload) {}
+  public constructor(public payload) {}
 }
 
 export class LoadUserDetailsFail implements Action {
   public readonly type = LOAD_USER_DETAILS_FAIL;
-  constructor(public payload: any) {}
+  public constructor(public payload: any) {}
 }
 
 export class StartIdleSessionTimeout implements Action {
@@ -149,7 +149,7 @@ export class StopIdleSessionTimeout implements Action {
 
 export class Decorate16DigitCaseReferenceSearchBoxInHeader implements Action {
   public readonly type = DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX_IN_HEADER;
-  constructor(public payload: boolean) {}
+  public constructor(public payload: boolean) {}
 }
 
 export type AppActions =

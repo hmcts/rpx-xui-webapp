@@ -1,11 +1,11 @@
-import { Task, TaskSearchParameters } from '.';
 import JsonConfig from '../json-config';
+import { Task, TaskSearchParameters } from '.';
 
 describe('WorkAllocation', () => {
   describe('JsonConfig', () => {
 
     it('should correctly coerce a partial JSON object to a Task', () => {
-      const JSON: object = {
+      const JSON: Record<string, unknown> = {
         assignee: { userId: 'id1', userName: 'userName' },
         caseData: {
           category: 'category',
@@ -31,7 +31,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should correctly coerce a partial JSON object to a TaskSearchParameters', () => {
-      const JSON: object = {parameters: [{
+      const JSON: Record<string, unknown> = {parameters: [{
         ccdId: '123456',
         eventId: 'eventId',
         jurisdiction: ['DIVORCE', 'FPLA'],

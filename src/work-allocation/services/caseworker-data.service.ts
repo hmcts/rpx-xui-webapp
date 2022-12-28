@@ -9,9 +9,9 @@ import { getAllCaseworkersFromServices, getCaseworkerSessionStorageKeyForService
 
 @Injectable({ providedIn: 'root' })
 export class CaseworkerDataService {
-  public static caseWorkerUrl: string = '/workallocation/caseworker';
-  public static caseWorkerForServices: string = 'workallocation/retrieveCaseWorkersForServices';
-  public static caseworkersKey: string = 'caseworkers';
+  public static caseWorkerUrl = '/workallocation/caseworker';
+  public static caseWorkerForServices = 'workallocation/retrieveCaseWorkersForServices';
+  public static caseworkersKey = 'caseworkers';
   public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 
   public getAll(): Observable<Caseworker[]> {
@@ -50,9 +50,7 @@ export class CaseworkerDataService {
           }
         });
       }),
-      map(caseworkersByService => {
-        return getAllCaseworkersFromServices(caseworkersByService);
-      })
+      map(caseworkersByService => getAllCaseworkersFromServices(caseworkersByService))
     );
   }
   public getForLocation(locationId: string): Observable<Caseworker[]> {

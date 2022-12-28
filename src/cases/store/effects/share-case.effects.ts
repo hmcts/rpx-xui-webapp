@@ -12,16 +12,6 @@ import * as shareCases from '../reducers/share-case.reducer';
 @Injectable()
 export class ShareCaseEffects {
 
-  public payload: any;
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly caseShareService: CaseShareService,
-    private readonly router: Router,
-    private readonly store: Store<shareCases.ShareCasesState>
-  ) {
-  }
-
   @Effect()
   public addShareCases$ = this.actions$.pipe(
     ofType(shareCaseActions.ADD_SHARE_CASES),
@@ -86,4 +76,13 @@ export class ShareCaseEffects {
     })
   );
 
+  public payload: any;
+
+  public constructor(
+    private readonly actions$: Actions,
+    private readonly caseShareService: CaseShareService,
+    private readonly router: Router,
+    private readonly store: Store<shareCases.ShareCasesState>
+  ) {
+  }
 }

@@ -11,9 +11,9 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/
 })
 export class CaseTasksResolverService implements Resolve<TaskList> {
 
-  public static CASE_TASKS_URL: string = '/workallocation/case/task';
+  public static CASE_TASKS_URL = '/workallocation/case/task';
 
-  constructor(private readonly http: HttpClient, private readonly router: Router) {
+  public constructor(private readonly http: HttpClient, private readonly router: Router) {
   }
 
   public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TaskList> {

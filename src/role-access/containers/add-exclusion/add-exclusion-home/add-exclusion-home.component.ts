@@ -39,9 +39,6 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   @ViewChild('checkAnswers', {static: false, read: AddExclusionCheckAnswersComponent})
   public checkAnswersComponent: AddExclusionCheckAnswersComponent;
 
-  private exclusionStateDataSub: Subscription;
-
-  private readonly exclusionStateData: ExclusionStateData;
   public navigationCurrentState: ExclusionState;
   public exclusionOption: ExcludeOption;
   public caseId: string;
@@ -57,7 +54,11 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
 
   public showSpinner: boolean;
 
-  constructor(private readonly store: Store<fromFeature.State>,
+  private exclusionStateDataSub: Subscription;
+
+  private readonly exclusionStateData: ExclusionStateData;
+
+  public constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
     this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?

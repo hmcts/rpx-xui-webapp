@@ -5,7 +5,7 @@ import { ServiceRefData } from '../models/common';
 
 @Injectable({ providedIn: 'root' })
 export class ServiceRefDataService {
-  public static refDataUrl: string = '/api/service-ref-data/get';
+  public static refDataUrl = '/api/service-ref-data/get';
   public constructor(private readonly http: HttpClient) {}
 
   public getServiceRefData(): Observable<ServiceRefData[]> {

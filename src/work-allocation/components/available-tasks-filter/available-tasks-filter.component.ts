@@ -13,31 +13,22 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
   styleUrls: ['available-tasks-filter.component.scss']
 })
 export class AvailableTasksFilterComponent implements OnInit {
-
   // Getting CheckboxListComponent from DOM ensures it will be defined
   @ViewChild('locationFilter', {static: false}) public locationFilter: CheckboxListComponent<Location>;
   @ViewChild('filterDetails', {static: false})
   public filterDetails: ElementRef<HTMLDetailsElement>;
+  @Input() public get selection(): Location[] { return this.pSelection; }
 
-  public get detailsElement(): HTMLDetailsElement {
-    return this.filterDetails ? this.filterDetails.nativeElement : undefined;
-  }
-
-  @Input()
-  public get selection(): Location[] {
-    return this.pSelection;
-  }
   public set selection(value: Location[]) {
     /* istanbul ignore else*/
     if (this.pSelection !== value) {
       this.pSelection = value;
     }
   }
-  private pSelection: Location[] = [];
 
-  public locations: Location[];
-  public preselection: Location[];
-  private handledInitialSelection = false;
+  public get detailsElement(): HTMLDetailsElement {
+    return this.filterDetails ? this.filterDetails.nativeElement : undefined;
+  }
 
   /**
    * Emit an event to notify the parent component that the selected
@@ -46,10 +37,16 @@ export class AvailableTasksFilterComponent implements OnInit {
    */
   @Output() public selectionChanged: EventEmitter<Location[]> = new EventEmitter<Location[]>();
 
+  public locations: Location[];
+  public preselection: Location[];
+
+  private pSelection: Location[] = [];
+  private handledInitialSelection = false;
+
   /**
    * Take in the locationService so we can navigate when actions are clicked.
    */
-  constructor(
+  public constructor(
     private readonly locationService: LocationDataService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly router: Router
@@ -81,6 +78,7 @@ export class AvailableTasksFilterComponent implements OnInit {
 
   /**
    * Returns a label to represent a location.
+   *
    * @param location The Location to render a label for.
    */
   public locationLabelFunction(location: Location): string {

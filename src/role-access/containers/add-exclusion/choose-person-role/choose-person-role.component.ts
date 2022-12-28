@@ -16,15 +16,14 @@ import * as fromFeature from '../../../store';
   templateUrl: './choose-person-role.component.html'
 })
 export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
-  public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
 
+  public ERROR_MESSAGE = ERROR_MESSAGE;
   public roles$: Observable<Role[]>;
   public title = RoleAllocationTitleText.ExclusionChoose;
   public caption = RoleAllocationCaptionText.Exclusion;
   public optionsList: OptionsModel[];
-
-  public submitted: boolean = false;
+  public submitted = false;
 
   public formGroup: FormGroup;
   public radioOptionControl: FormControl;
@@ -34,7 +33,7 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
 
   public personRole: PersonRole;
 
-  constructor(private readonly store: Store<fromFeature.State>,
+  public constructor(private readonly store: Store<fromFeature.State>,
               private readonly roleExclusionsService: RoleExclusionsService) {
   }
 
@@ -50,11 +49,9 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
 
     this.roles$ = this.roleExclusionsService.getRolesCategory();
     this.roles$.subscribe((roles) => {
-      this.optionsList = roles.map(role => {
-        return {
+      this.optionsList = roles.map(role => ({
           optionId: role.roleId, optionValue: role.roleName
-        } as OptionsModel;
-      });
+        } as OptionsModel));
     });
   }
 

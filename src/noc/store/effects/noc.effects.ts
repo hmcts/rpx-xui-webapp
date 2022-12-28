@@ -11,11 +11,6 @@ import * as nocActions from '../actions/noc.action';
 @Injectable()
 export class NocEffects {
 
-    constructor(
-        private readonly actions$: Actions,
-        private readonly nocService: NocService,
-    ) { }
-
     @Effect()
     public setCaseReference$ = this.actions$.pipe(
       ofType(nocActions.SET_CASE_REFERENCE),
@@ -28,9 +23,7 @@ export class NocEffects {
           return this.nocService.getNoCQuestions(caseReference).pipe(
             map(
               (response) => new nocActions.SetQuestions({questions: response.questions, caseReference})),
-              catchError(error => {
-                return NocEffects.handleError(error, nocActions.SET_CASE_REFERENCE);
-              })
+              catchError(error => NocEffects.handleError(error, nocActions.SET_CASE_REFERENCE))
           );
         } else {
           return of(new nocActions.SetCaseRefValidationFailure());
@@ -51,9 +44,7 @@ export class NocEffects {
           return this.nocService.validateNoCAnswers(payload).pipe(
             map(
               (response) => new nocActions.CheckAnswers(answers)),
-              catchError(error => {
-                return NocEffects.handleError(error, nocActions.SET_ANSWERS);
-              })
+              catchError(error => NocEffects.handleError(error, nocActions.SET_ANSWERS))
           );
         } else {
           return of(new nocActions.SetAnswersIncomplete());
@@ -65,9 +56,7 @@ export class NocEffects {
     public submitNoc$ = this.actions$.pipe(
       ofType(nocActions.SUBMIT_NOC),
       map((action: nocActions.SubmitNoc) => action.payload),
-      switchMap(payload => {
-
-        return this.nocService.submitNoCEvent(payload).pipe(
+      switchMap(payload => this.nocService.submitNoCEvent(payload).pipe(
           map(
             (response: {approval_status?: string}) => {
               if (response.approval_status === 'PENDING') {
@@ -76,12 +65,14 @@ export class NocEffects {
                 return new nocActions.SetSubmissionSuccessApproved();
               }
             }),
-            catchError(error => {
-              return NocEffects.handleError(error, nocActions.SUBMIT_NOC);
-            })
-        );
-      })
+            catchError(error => NocEffects.handleError(error, nocActions.SUBMIT_NOC))
+        ))
     );
+
+    public constructor(
+      private readonly actions$: Actions,
+      private readonly nocService: NocService,
+  ) { }
 
     public static handleError(error: NocHttpError, action: string): Observable<Action> {
       if (error && error.status) {

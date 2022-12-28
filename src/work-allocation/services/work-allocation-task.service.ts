@@ -7,12 +7,10 @@ import { AppUtils } from '../../app/app-utils';
 import { UserInfo, UserRole } from '../../app/models';
 
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
-import { Task } from '../models/tasks';
+import { Task, TaskRole } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
-import { TaskRole } from '../models/tasks';
 
-
-const BASE_URL: string = '/workallocation/task';
+const BASE_URL = '/workallocation/task';
 
 export enum ACTION {
   ASSIGN = 'assign',
@@ -26,11 +24,12 @@ export enum ACTION {
 export class WorkAllocationTaskService {
   public currentTasks$: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
 
-  constructor(private readonly http: HttpClient) {}
+  public constructor(private readonly http: HttpClient) {}
 
   /**
    * Call the API to complete a task.
-   * @param taskId specifies which task should be completed.
+   *
+   * @param taskId specifies which task should be completed
    */
   public completeTask(taskId: string, hasNoAssigneeOnComplete: boolean): Observable<Response> {
     return this.performActionOnTask(taskId, ACTION.COMPLETE, hasNoAssigneeOnComplete);
@@ -42,6 +41,7 @@ export class WorkAllocationTaskService {
 
   /**
    * Call the API to assign a task to a user.
+   *
    * @param taskId specifies which task should be assigned.
    * @param user specifies who this task should be assigned to.
    */

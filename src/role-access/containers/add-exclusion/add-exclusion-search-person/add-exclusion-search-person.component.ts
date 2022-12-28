@@ -14,8 +14,9 @@ import * as fromFeature from '../../../store';
   templateUrl: './add-exclusion-search-person.component.html'
 })
 export class AddExclusionSearchPersonComponent implements OnInit {
-  public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
+
+  public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
   public domain = PersonRole.ALL;
   public formGroup: FormGroup = new FormGroup({});
   public personName: string;
@@ -30,14 +31,6 @@ export class AddExclusionSearchPersonComponent implements OnInit {
 
   public ngOnInit(): void {
     this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setPerson(exclusion));
-  }
-
-  private setPerson(exclusion: ExclusionStateData): void {
-    this.personName = exclusion && exclusion.person ? this.getDisplayName(exclusion.person) : null;
-    this.person = exclusion.person;
-    this.personRole = exclusion.personRole;
-    this.services = [exclusion.jurisdiction];
-    this.assignedUser = exclusion.person ? exclusion.person.id : null;
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent): void {
@@ -67,5 +60,13 @@ export class AddExclusionSearchPersonComponent implements OnInit {
 
   private getDisplayName(selectedPerson: Person): string {
     return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
+  }
+
+  private setPerson(exclusion: ExclusionStateData): void {
+    this.personName = exclusion && exclusion.person ? this.getDisplayName(exclusion.person) : null;
+    this.person = exclusion.person;
+    this.personRole = exclusion.personRole;
+    this.services = [exclusion.jurisdiction];
+    this.assignedUser = exclusion.person ? exclusion.person.id : null;
   }
 }

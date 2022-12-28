@@ -28,11 +28,11 @@ export class CaseHearingsListComponent implements OnInit {
   public actions: Actions[];
 
   public caseId: string;
-  public hasUpdateAction: boolean = false;
-  public hasDeleteAction: boolean = false;
-  public hasReadOnlyAction: boolean = false;
+  public hasUpdateAction = false;
+  public hasDeleteAction = false;
+  public hasReadOnlyAction = false;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+  public constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router) {
     this.caseId = this.activatedRoute.snapshot.params.cid;

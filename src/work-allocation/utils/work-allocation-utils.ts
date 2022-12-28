@@ -5,13 +5,12 @@ import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { ServiceRefData } from '../models/common';
-import { Service, ServiceCode } from '../models/common/service.enum';
 import { Caseworker, CaseworkersByService, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';
 
 interface Navigator {
-  url: string;
-  navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
+  url: string
+  navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>
 }
 
 export interface FatalRedirect {
@@ -117,12 +116,12 @@ export const getCaseworkers = (serviceId: string, sessionStorageService: ISessio
   if (value) {
     return JSON.parse(value) as Caseworker[];
   }
-}
+};
 
 export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], sessionStorageService: ISessionStorageService): void => {
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
-}
+};
 
 export const getAssigneeName = (caseworkers: any [], assignee: string): string => {
   if (assignee && caseworkers && caseworkers.some(cw => cw.idamId === assignee)) {
@@ -137,7 +136,7 @@ export const servicesMap: {[key: string]: string} =  {
   SSCS: 'Social security and child support'
 };
 
-export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
+export const getOptions = (taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] => {
   const options = new Array<OptionsModel>();
   // Consider role categories only with either OWN or EXECUTE permissions
   const roleCategories = taskRoles.filter(role => role.role_category
@@ -168,21 +167,19 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
   return options;
 }
 
-export function getRoleCategoryToBeSelectedByDefault(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): RoleCategory {
+export const getRoleCategoryToBeSelectedByDefault = (taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): RoleCategory => {
   // Consider only role categories with OWN permission for radio button default selection
   const uniqueRoleCategoriesWithOwnPermissions = taskRoles.filter(role => role.role_category
     && (roleIncludes(role.permissions, TaskPermission.OWN))).
     map(taskRole => taskRole.role_category as RoleCategory).
-    filter((role, index, taskRolesToFilter) => {
-      return taskRolesToFilter.indexOf(role) === index;
-    });
+    filter((role, index, taskRolesToFilter) => taskRolesToFilter.indexOf(role) === index);
 
   // If more than one role category with OWN permission then use current user's role category
   return uniqueRoleCategoriesWithOwnPermissions.length === 1
     ? uniqueRoleCategoriesWithOwnPermissions[0] : getCurrentUserRoleCategory(sessionStorageService);
 }
 
-export function getLabel(roleCategory: RoleCategory): PersonRole {
+export const getLabel = (roleCategory: RoleCategory): PersonRole => {
   switch (roleCategory) {
     case RoleCategory.ADMIN:
       return PersonRole.ADMIN;
@@ -191,11 +188,11 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
     case RoleCategory.LEGAL_OPERATIONS:
       return PersonRole.CASEWORKER;
     default:
-      throw new Error('Invalid roleCategory ' + roleCategory);
+      throw new Error(`Invalid roleCategory ${  roleCategory}`);
   }
-}
+};
 
-export function getRoleCategory(role: string): RoleCategory {
+export const getRoleCategory = (role: string): RoleCategory => {
   if (role === PersonRole.JUDICIAL) {
     return RoleCategory.JUDICIAL;
   } else if (role === PersonRole.CASEWORKER) {
@@ -204,9 +201,9 @@ export function getRoleCategory(role: string): RoleCategory {
     return RoleCategory.ADMIN;
   }
   return null;
-}
+};
 
-export function roleIncludes(roles: string[], permission: string): boolean {
+export const roleIncludes = (roles: string[], permission: string): boolean => {
   let includesRole = false;
   if (roles && permission) {
     roles.forEach(role => {
@@ -216,9 +213,9 @@ export function roleIncludes(roles: string[], permission: string): boolean {
     });
   }
   return includesRole;
-}
+};
 
-export function getDestinationUrl(url: string): string {
+export const getDestinationUrl = (url: string): string => {
   if (url.includes('/assign/confirm')) {
     return url.replace('/assign/confirm', '/person-not-authorised');
   }
@@ -228,18 +225,18 @@ export function getDestinationUrl(url: string): string {
   }
 
   return REDIRECTS.NotAuthorised;
-}
+};
 
-export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorageService): RoleCategory {
+export const getCurrentUserRoleCategory = (sessionStorageService: ISessionStorageService): RoleCategory => {
   const userInfoStr = sessionStorageService.getItem('userDetails');
   if (userInfoStr) {
     const userInfo: UserInfo = JSON.parse(userInfoStr);
     return userInfo.roleCategory as RoleCategory;
   }
   return null;
-}
+};
 
-export function addLocationToLocationsByServiceCode(locationsByServices: LocationsByService[], location: any, service_code: string): LocationsByService[] {
+export const addLocationToLocationsByServiceCode = (locationsByServices: LocationsByService[], location: any, service_code: string): LocationsByService[] => {
   let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.serviceCode === service_code);
   if (!locationsByService) {
     locationsByServices.push({serviceCode: service_code, locations: [location]});
@@ -249,9 +246,9 @@ export function addLocationToLocationsByServiceCode(locationsByServices: Locatio
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;
-}
+};
 
-export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, bookable = false): LocationsByService[] {
+export const addLocationToLocationsByService = (locationsByServices: LocationsByService[], location: any, service: string, bookable = false): LocationsByService[] => {
   let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.service === service);
   if (!locationsByService) {
     locationsByServices.push({service, locations: [location], bookable});
@@ -262,9 +259,9 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;
-}
+};
 
-export function getServiceFromServiceCode(serviceCode: string, serviceRefData: ServiceRefData[]): string {
+export const getServiceFromServiceCode = (serviceCode: string, serviceRefData: ServiceRefData[]): string => {
   const desiredServiceData = serviceRefData.find(serviceData => serviceData.serviceCodes.includes(serviceCode));
   return desiredServiceData.service;
-}
+};

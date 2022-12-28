@@ -49,7 +49,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   public task: Task;
   public role: CaseRole;
 
-  private specificAccessStateDataSub: Subscription;
   public specificAccessReviewStateData: SpecificAccessStateData;
   public navigationCurrentState: SpecificAccessState;
   public navEvent: SpecificAccessNavigation;
@@ -60,7 +59,9 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   public specificAccessDeniedVisibilityStates = specificAccessDeniedVisibilityStates;
   public specificAccessDuplicateRecordVisibilityStates = specificAccessDuplicateRecordVisibilityStates;
 
-  constructor(
+  private specificAccessStateDataSub: Subscription;
+
+  public constructor(
     private readonly store: Store<fromFeature.State>,
     private readonly route: ActivatedRoute,
     private readonly router: Router

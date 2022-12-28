@@ -17,12 +17,12 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
   public caseId: string;
   public linkedCases: ServiceLinkedCasesModel[];
   public hearingLinkForm: FormGroup;
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
   public caseName: string;
-  public showSpinner: boolean = true;
+  public showSpinner = true;
   public hearingLinksSub: Subscription;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+  public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected readonly route: ActivatedRoute,
               private readonly formBuilder: FormBuilder) {

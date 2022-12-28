@@ -4,7 +4,7 @@ import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseRole, RoleCategory } from '../../models';
 
 interface Item extends CaseRole {
-  open: boolean;
+  open: boolean
 }
 
 @Component({
@@ -13,17 +13,18 @@ interface Item extends CaseRole {
   styleUrls: ['./case-roles-table.component.scss']
 })
 export class CaseRolesTableComponent implements OnInit {
-  public backUrl: string;
-  public items: Item[] = [];
   @Input() public caseDetails: CaseView;
   @Input() public showAllocateRoleLink: boolean;
   @Input() public roleCategory: RoleCategory;
+
+  public backUrl: string;
+  public items: Item[] = [];
   public roleCategoryTitle: string;
 
-  constructor(private readonly router: Router) {
-  }
-
   private _roles: CaseRole[] = [];
+
+  public constructor(private readonly router: Router) {
+  }
 
   public get roles(): CaseRole[] {
     return this._roles;

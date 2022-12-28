@@ -34,7 +34,7 @@ describe('ErrorMessageComponent', () => {
   });
 
   it('should display the correct title', () => {
-    const title: string = 'This is an example title';
+    const title = 'This is an example title';
 
     // Add the title and it should now be available
     wrapper.error = { title, description: '' };
@@ -43,7 +43,7 @@ describe('ErrorMessageComponent', () => {
   });
 
   it('should display the correct error description', () => {
-    const description: string = 'This is an example description';
+    const description = 'This is an example description';
 
     // Add the error description and it should now be available
     wrapper.error = { title: '', description };

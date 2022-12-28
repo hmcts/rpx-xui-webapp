@@ -6,10 +6,10 @@ export const initialHearingActualsState: HearingActualsStateData = {
   lastError: null,
 };
 
-export function hearingActualsReducer(
+export const hearingActualsReducer = (
   currentState = initialHearingActualsState,
   action: fromActions.HearingActualsAction
-): HearingActualsStateData {
+): HearingActualsStateData => {
   switch (action.type) {
     case fromActions.RESET_HEARING_ACTUALS: {
       return {
@@ -72,6 +72,6 @@ export function hearingActualsReducer(
       };
     }
   }
-}
+};
 
 export const hearingActualsLastError = (hearingActualsState) => hearingActualsState.lastError;

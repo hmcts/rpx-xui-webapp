@@ -11,7 +11,7 @@ import { WorkFieldComponent } from './work-field.component';
   template: `<exui-work-field [config]="config" [workField]="task"></exui-work-field>`
 })
 class WrapperComponent {
-  @ViewChild(WorkFieldComponent, {static: true}) public appComponentRef: WorkFieldComponent;
+  @ViewChild(WorkFieldComponent, { static: true }) public appComponentRef: WorkFieldComponent;
   @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
@@ -23,21 +23,19 @@ describe('WorkAllocation', () => {
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    function getConfig(name: string, type: FieldType): FieldConfig {
-      return {
-        name,
-        type,
-        columnLabel: name,
-        views: TaskView.ALL_VIEWS
-      };
-    }
+    const getConfig = (name: string, type: FieldType): FieldConfig => ({
+      name,
+      type,
+      columnLabel: name,
+      views: TaskView.ALL_VIEWS
+    });
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule, RouterTestingModule]
       })
-      .compileComponents();
+        .compileComponents();
     }));
 
     beforeEach(() => {
@@ -502,8 +500,8 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a URL type', () => {
-      const HMCTS_URL: string = 'http://hmcts.gov.uk';
-      const GOOGLE_URL: string = 'http://google.com';
+      const HMCTS_URL = 'http://hmcts.gov.uk';
+      const GOOGLE_URL = 'http://google.com';
 
       // No anchor shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
@@ -577,8 +575,8 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle an image type', () => {
-      const EXAMPLE1_IMAGE: string = '/assets/images/test.jpg';
-      const EXAMPLE2_IMAGE: string = '/assets/images/govuk-crest.png';
+      const EXAMPLE1_IMAGE = '/assets/images/test.jpg';
+      const EXAMPLE2_IMAGE = '/assets/images/govuk-crest.png';
 
       // No image shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
@@ -609,7 +607,7 @@ describe('WorkAllocation', () => {
       expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
       expect(element.getAttribute('alt')).toBe('Image');
 
-       // Change the value of task.image
+      // Change the value of task.image
       task['image'] = EXAMPLE2_IMAGE;
       fixture.detectChanges();
       expect(element).not.toBeNull();

@@ -13,7 +13,7 @@ import * as fromHearingStore from '../store';
   providedIn: 'root'
 })
 export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> {
-  constructor(
+  public constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
   ) { }
@@ -21,22 +21,11 @@ export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> 
   public resolve(route?: ActivatedRouteSnapshot): Observable<JudicialUserModel[]> {
     return this.getUsersByPanelRequirements$()
       .pipe(
-        switchMap(panelRequirements => {
-          return of(
+        switchMap(panelRequirements => of(
             panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => this.checkMemberType(preferences, route)).map(preferences => preferences.memberID)
-          );
-        }), take(1),
-        switchMap((personalCodes) => {
-          return personalCodes && personalCodes.length ? this.getUsersData$(personalCodes) : of([]);
-        })
+          )), take(1),
+        switchMap((personalCodes) => personalCodes && personalCodes.length ? this.getUsersData$(personalCodes) : of([]))
       );
-  }
-
-  private checkMemberType(preferences: PanelPreferenceModel, route: ActivatedRouteSnapshot): boolean {
-    if (route.data['memberType']) {
-      return preferences.memberType === route.data['memberType'];
-    }
-    return true;
   }
 
   public getUsersByPanelRequirements$(): Observable<PanelRequirementsModel> {
@@ -47,9 +36,14 @@ export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> 
 
   public getUsersData$(judgePersonalCodesList: string[]): Observable<JudicialUserModel[]> {
     return this.judicialRefDataService.searchJudicialUserByPersonalCodes(judgePersonalCodesList).pipe(
-      catchError(() => {
-        return [];
-      })
+      catchError(() => [])
     );
+  }
+
+  private checkMemberType(preferences: PanelPreferenceModel, route: ActivatedRouteSnapshot): boolean {
+    if (route.data['memberType']) {
+      return preferences.memberType === route.data['memberType'];
+    }
+    return true;
   }
 }

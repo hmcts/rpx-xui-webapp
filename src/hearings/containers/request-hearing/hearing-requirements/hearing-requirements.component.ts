@@ -26,11 +26,21 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public caseFlagType: CaseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
   public reasonableAdjustmentFlags: CaseFlagGroup[] = [];
-  public lostFocus: boolean = false;
+  public lostFocus = false;
   public referenceId: string;
   public strRegions: string;
   public caseTypeRefData: LovRefDataModel[];
   public caseTypes: CaseCategoryDisplayModel[];
+
+  public constructor(protected readonly route: ActivatedRoute,
+    public readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    public readonly locationsDataService: LocationsDataService) {
+    super(hearingStore, hearingsService, route);
+    this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
+    this.caseTypeRefData = this.route.snapshot.data.caseType;
+    this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
+  }
 
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
@@ -47,16 +57,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   @HostListener('window:blur', ['$event'])
   public onBlur(): void {
     this.lostFocus = true;
-  }
-
-  constructor(protected readonly route: ActivatedRoute,
-              public readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              public readonly locationsDataService: LocationsDataService) {
-    super(hearingStore, hearingsService, route);
-    this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
-    this.caseTypeRefData = this.route.snapshot.data.caseType;
-    this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
   }
 
   public ngOnInit(): void {
@@ -170,15 +170,15 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     }
   }
 
-  protected executeAction(action: ACTION): void {
-    super.navigateAction(action);
-  }
-
   public ngAfterViewInit(): void {
     this.fragmentFocus();
   }
 
   public ngOnDestroy() {
     super.unsubscribe();
+  }
+
+  protected executeAction(action: ACTION): void {
+    super.navigateAction(action);
   }
 }

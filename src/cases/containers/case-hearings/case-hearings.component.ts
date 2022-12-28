@@ -44,9 +44,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingValuesLastErrorState$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
   public roleCatSubscription: Subscription;
-  public hasRequestAction: boolean = false;
-  public caseId: string = '';
-  public serverError: { id: string, message: string } = null;
+  public hasRequestAction = false;
+  public caseId = '';
+  public serverError: { id: string; message: string } = null;
   public isOgdRole$: Observable<boolean>;
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;

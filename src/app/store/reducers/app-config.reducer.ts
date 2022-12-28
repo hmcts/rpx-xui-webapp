@@ -3,15 +3,15 @@ import { ConfigurationModel, TermsAndCondition, UserDetails } from '../../models
 import * as fromActions from '../actions/';
 
 export interface AppConfigState {
-  config: ConfigurationModel | {};
-  termsAndCondition: TermsAndCondition;
-  loaded: boolean;
-  loading: boolean;
-  termsAndConditions: TCDocument;
-  isTermsAndConditionsFeatureEnabled: boolean;
-  useIdleSessionTimeout: boolean;
-  userDetails: UserDetails;
-  decorate16digitCaseReferenceSearchBoxInHeader: boolean;
+  config: ConfigurationModel | any
+  termsAndCondition: TermsAndCondition
+  loaded: boolean
+  loading: boolean
+  termsAndConditions: TCDocument
+  isTermsAndConditionsFeatureEnabled: boolean
+  useIdleSessionTimeout: boolean
+  userDetails: UserDetails
+  decorate16digitCaseReferenceSearchBoxInHeader: boolean
 }
 
 export const initialState: AppConfigState = {
@@ -33,9 +33,9 @@ export const initialState: AppConfigState = {
   decorate16digitCaseReferenceSearchBoxInHeader: false
 };
 
-export function reducer(
+export const reducer = (
   state = initialState,
-  action: fromActions.AppActions): AppConfigState {
+  action: fromActions.AppActions): AppConfigState => {
   switch (action.type) {
     case fromActions.APP_LOAD_CONFIG_SUCCESS: {
       const config = action.payload;
@@ -109,13 +109,13 @@ export function reducer(
       return {
         ...state,
         decorate16digitCaseReferenceSearchBoxInHeader: action.payload
-      }
+      };
     default:
       return {
         ...state
       };
   }
-}
+};
 
 
 export const getFeatureConfig = (state: AppConfigState) => state.config;

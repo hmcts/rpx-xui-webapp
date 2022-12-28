@@ -7,7 +7,8 @@ export class SearchStateFilter {
   public caseState: CaseState;
   public metadataFields: any;
   public page: number;
-  constructor() {
+
+  public constructor() {
     this.jurisdiction = new Jurisdiction();
     this.caseType = new CaseType();
     this.caseState = new CaseState();
@@ -45,10 +46,10 @@ export const initialSearchState: SearchState = {
   loaded: false
 };
 
-export function reducer(
+export const reducer = (
   state = initialSearchState,
   action: fromCases.CaseSearchAction
-): SearchState {
+): SearchState => {
   switch (action.type) {
     case fromCases.APPLY_SEARCH_FILTER:
     case fromCases.APPLY_SEARCH_FILTER_FOR_ES: {

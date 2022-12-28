@@ -32,20 +32,18 @@ export class DeleteExclusionComponent implements OnInit {
 
   public showSpinner: boolean;
 
-  constructor(private readonly route: ActivatedRoute,
-              private readonly router: Router,
-              private readonly roleExclusionsService: RoleExclusionsService,
-              private readonly allocateService: AllocateRoleService,
-              private readonly caseworkerDataService: CaseworkerDataService) {}
+  public constructor(private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly roleExclusionsService: RoleExclusionsService,
+    private readonly allocateService: AllocateRoleService,
+    private readonly caseworkerDataService: CaseworkerDataService) { }
 
   public ngOnInit(): void {
 
     const paramMap$ = this.route.queryParamMap;
-    paramMap$.pipe(mergeMap(queryMap => {
-        return this.getExclusionFromQuery(queryMap);
-      })).subscribe(exclusions => {
-        this.findAndSetExclusion(exclusions);
-      });
+    paramMap$.pipe(mergeMap(queryMap => this.getExclusionFromQuery(queryMap))).subscribe(exclusions => {
+      this.findAndSetExclusion(exclusions);
+    });
   }
 
   public findAndSetExclusion(exclusions: RoleExclusion[]): void {
@@ -73,20 +71,9 @@ export class DeleteExclusionComponent implements OnInit {
 
   public populateAnswers(exclusion: RoleExclusion): void {
     const person = exclusion.name ? exclusion.name : 'Awaiting person details';
-    this.answers.push({label: AnswerLabelText.Person, value: person});
-    this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes ? exclusion.notes : ''});
-    this.answers.push({label: AnswerLabelText.DateAdded, value: moment.parseZone(new Date(exclusion.added)).format('D MMMM YYYY')});
-  }
-
-  private getNamesIfNeeded(): void {
-    if (!this.roleExclusion.name) {
-      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe(caseworkers => {
-        const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.roleExclusion.actorId);
-        this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
-        this.answers = [];
-        this.populateAnswers(this.roleExclusion);
-      });
-    }
+    this.answers.push({ label: AnswerLabelText.Person, value: person });
+    this.answers.push({ label: AnswerLabelText.DescribeExclusion, value: exclusion.notes ? exclusion.notes : '' });
+    this.answers.push({ label: AnswerLabelText.DateAdded, value: moment.parseZone(new Date(exclusion.added)).format('D MMMM YYYY') });
   }
 
   public onNavEvent(navEvent: ExclusionNavigationEvent): void {
@@ -99,11 +86,10 @@ export class DeleteExclusionComponent implements OnInit {
           this.router.navigate([goToCaseUrl], {
             state: {
               showMessage: true,
-              messageText: ExclusionMessageText.Delete}
-            });
-        }, error => {
-          return handleError(error, this.router, goToCaseUrl);
-        });
+              messageText: ExclusionMessageText.Delete
+            }
+          });
+        }, error => handleError(error, this.router, goToCaseUrl));
         break;
       }
       case ExclusionNavigationEvent.CANCEL: {
@@ -114,6 +100,17 @@ export class DeleteExclusionComponent implements OnInit {
         this.showSpinner = false;
         throw new Error('Invalid option');
       }
+    }
+  }
+
+  private getNamesIfNeeded(): void {
+    if (!this.roleExclusion.name) {
+      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe(caseworkers => {
+        const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.roleExclusion.actorId);
+        this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
+        this.answers = [];
+        this.populateAnswers(this.roleExclusion);
+      });
     }
   }
 }

@@ -52,8 +52,8 @@ export const initialHearingRequestState: HearingRequestStateData = {
   lastError: null,
 };
 
-export function hearingRequestReducer(currentState = initialHearingRequestState,
-                                      action: fromActions.HearingRequestAction): HearingRequestStateData {
+export const hearingRequestReducer = (currentState = initialHearingRequestState,
+                                      action: fromActions.HearingRequestAction): HearingRequestStateData => {
   switch (action.type) {
     case fromActions.RESET_HEARING_REQUEST: {
       return {

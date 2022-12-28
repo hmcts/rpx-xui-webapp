@@ -24,9 +24,8 @@ export class HearingsUtils {
   }
 
   public static getValues(keys: string[], lovRefDataModels: LovRefDataModel[]): string[] {
-    let result: string[];
     const flatChannels = HearingsUtils.flattenArray(lovRefDataModels);
-    result = keys && keys.length && keys.map(key => {
+    const result = keys && keys.length && keys.map(key => {
       const foundChannel = flatChannels.find(channel => channel.key === key);
       return foundChannel ? foundChannel.value_en : key;
     });

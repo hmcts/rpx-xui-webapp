@@ -24,14 +24,14 @@ import * as fromFeature from '../../../store';
   templateUrl: './choose-role.component.html',
 })
 export class ChooseRoleComponent implements OnInit, OnDestroy {
-  public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
 
+  public ERROR_MESSAGE = ERROR_MESSAGE;
   public error: any;
   public title = RoleAllocationTitleText.NonExclusionChoose;
-  public caption: string = '';
+  public caption = '';
   public optionsList: OptionsModel[];
-  public submitted: boolean = false;
+  public submitted = false;
 
   public formGroup: FormGroup;
   public radioOptionControl: FormControl;
@@ -41,10 +41,10 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   public typeOfRole: SpecificRole;
 
-  public roleCategory: string = '';
+  public roleCategory = '';
   public jurisdiction: string;
 
-  constructor(private readonly store: Store<fromFeature.State>,
+  public constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute) {
   }
 

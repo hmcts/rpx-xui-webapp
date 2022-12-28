@@ -9,6 +9,11 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
   templateUrl: './roles-and-access.component.html'
 })
 export class RolesAndAccessComponent implements OnInit, OnChanges {
+  @Input() public exclusions: RoleExclusion[] = [];
+  @Input() public showAllocateRoleLink = false;
+  @Input() public caseDetails: CaseView;
+  @Input() public caseworkers: Caseworker[];
+
   public exclusionsNotNamed = false;
   public legalRolesNotNamed = false;
   public legalOpsRoles: CaseRole[] = [];
@@ -21,15 +26,10 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public judicial = RoleCategory.JUDICIAL;
   public caseId: string;
   public jurisdiction: string;
-
-  @Input() public exclusions: RoleExclusion[] = [];
-  @Input() public showAllocateRoleLink: boolean = false;
-  @Input() public caseDetails: CaseView;
-  @Input() public caseworkers: Caseworker[];
-
-  private pRoles: CaseRole[] = [];
   public jurisdictionFieldId = '[JURISDICTION]';
   public showLegalOpsAllocate: boolean;
+
+  private pRoles: CaseRole[] = [];
 
   public get roles(): CaseRole[] {
     return this.pRoles;

@@ -17,11 +17,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   public searchSubscription$: Subscription;
   public jurisdictions: Jurisdiction[];
   public searchResultDisplay: SearchResultDisplay[];
-  public showSpinner: boolean = true;
-  public moreResultsToGo: boolean = false;
-  public caseStartRecord: number = 1;
+  public showSpinner = true;
+  public moreResultsToGo = false;
+  public caseStartRecord = 1;
 
-  constructor(private readonly searchService: SearchService,
+  public constructor(private readonly searchService: SearchService,
               private readonly jurisdictionService: JurisdictionService,
               private readonly router: Router,
               private readonly route: ActivatedRoute) { }
@@ -84,6 +84,12 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     this.retrieveSearchResults();
   }
 
+  public ngOnDestroy(): void {
+    if (this.searchSubscription$) {
+      this.searchSubscription$.unsubscribe();
+    }
+  }
+
   private retrieveSearchResults(): void {
     this.showSpinner = true;
     this.searchSubscription$ = combineLatest([
@@ -129,11 +135,5 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     }
 
     return 'View';
-  }
-
-  public ngOnDestroy(): void {
-    if (this.searchSubscription$) {
-      this.searchSubscription$.unsubscribe();
-    }
   }
 }

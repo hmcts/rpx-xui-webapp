@@ -9,13 +9,13 @@ export class HealthCheckService implements OnDestroy {
 
     public routeSubscription: Subscription;
 
-    constructor(
+    public constructor(
         private readonly http: HttpClient,
         private readonly store: Store<fromRoot.State>,
     ) { }
 
     public doHealthCheck(): Observable<any> {
-        const healthState: boolean = true;
+        const healthState = true;
         const result: { healthState } = { healthState };
         let path = '';
 

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
@@ -11,8 +12,6 @@ import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 import * as fromActions from '../../../app/store';
-import { map } from 'rxjs/operators';
-
 
 @Component({
   selector: 'exui-all-work-tasks',
@@ -37,9 +36,9 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     locationName: '',
     services: [],
   };
-  private selectedTaskCategory: string = 'All';
-  private selectedPerson: string = '';
-  private selectedTaskType: string = 'All';
+  private selectedTaskCategory = 'All';
+  private selectedPerson = '';
+  private selectedTaskType = 'All';
 
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.AllWork;
@@ -70,9 +69,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.waSupportedJurisdictions$ = combineLatest(
       [userRoles$,
         waJurisdictions$]
-    ).pipe(map(jurisdictions => {
-      return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
-    }));
+    ).pipe(map(jurisdictions => jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0]));
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
@@ -112,7 +109,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location: string, service: string, selectPerson: string, person: Person, taskType: string }): void {
+  public onSelectionChanged(selection: { location: string; service: string; selectPerson: string; person: Person; taskType: string }): void {
     this.selectedLocation.id = selection.location;
     this.selectedServices = [selection.service];
     this.selectedTaskCategory = selection.selectPerson;

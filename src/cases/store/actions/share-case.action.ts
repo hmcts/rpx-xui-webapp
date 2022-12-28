@@ -1,3 +1,4 @@
+import { AnySoaRecord } from 'dns';
 import { NavigationExtras } from '@angular/router';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
@@ -19,51 +20,51 @@ export const RESET_CASE_SELECTION = '[ShareCase] Reset Case Selection';
 
 export class LoadUserFromOrgForCase implements Action {
   public readonly type = LOAD_USERS_FROM_ORG_FOR_CASE;
-  constructor() {}
+  public constructor() {}
 }
 
 export class NavigateToShareCase implements Action {
   public readonly type = NAVIGATE_TO_SHARE_CASES;
-  constructor(public payload: SharedCase[]) {}
+  public constructor(public payload: SharedCase[]) {}
 }
 
 export class LoadShareCase implements Action {
   public readonly type = LOAD_SHARE_CASES;
-  constructor(public payload: SharedCase[]) {}
+  public constructor(public payload: SharedCase[]) {}
 }
 
 export class LoadShareCaseSuccess implements Action {
   public readonly type = LOAD_SHARE_CASES_SUCCESS;
-  constructor(public payload: SharedCase[]) {}
+  public constructor(public payload: SharedCase[]) {}
 }
 
 export class LoadUserFromOrgForCaseSuccess implements Action {
   public readonly type = LOAD_USERS_FROM_ORG_FOR_CASE_SUCCESS;
-  constructor(public payload: UserDetails[]) {}
+  public constructor(public payload: UserDetails[]) {}
 }
 
 export class LoadShareCaseFailure implements Action {
   public readonly type = LOAD_SHARE_CASES_FAILURE;
-  constructor(public payload: Error) {}
+  public constructor(public payload: Error) {}
 }
 
 export class AddShareCases implements Action {
   public readonly type = ADD_SHARE_CASES;
-  constructor(public payload: {
-    path?: any[];
-    query?: object;
-    extras?: NavigationExtras;
+  public constructor(public payload: {
+    path?: any[]
+    query?: AnySoaRecord
+    extras?: NavigationExtras
     sharedCases: SharedCase[]
   }) {}
 }
 
 export class AddShareCaseGo implements Action {
   public readonly type = ADD_SHARE_CASE_GO;
-  constructor(
+  public constructor(
     public payload: {
-      path: any[];
-      query?: object;
-      extras?: NavigationExtras;
+      path: any[]
+      query?: any
+      extras?: NavigationExtras
       sharedCases: SharedCase[]
     }
   ) {}
@@ -71,31 +72,31 @@ export class AddShareCaseGo implements Action {
 
 export class DeleteAShareCase implements Action {
   public readonly type = DELETE_A_SHARE_CASE;
-  constructor(
+  public constructor(
     public payload: {
-      caseId: string;
+      caseId: string
     }
   ) {}
 }
 
 export class SynchronizeStateToStore implements Action {
   public readonly type = SYNCHRONIZE_STATE_TO_STORE;
-  constructor(public payload: SharedCase[]) {}
+  public constructor(public payload: SharedCase[]) {}
 }
 
 export class AssignUsersToCase implements Action {
   public readonly type = ASSIGN_USERS_TO_CASE;
-  constructor(public payload: SharedCase[]) {}
+  public constructor(public payload: SharedCase[]) {}
 }
 
 export class AssignUsersToCaseSuccess implements Action {
   public readonly type = ASSIGN_USERS_TO_CASE_SUCCESS;
-  constructor(public payload: SharedCase[]) {}
+  public constructor(public payload: SharedCase[]) {}
 }
 
 export class ResetCaseSelection implements Action {
   public readonly type = RESET_CASE_SELECTION;
-  constructor() {}
+  public constructor() {}
 }
 
 export type Actions = NavigateToShareCase | LoadShareCase | LoadShareCaseSuccess | LoadShareCaseFailure

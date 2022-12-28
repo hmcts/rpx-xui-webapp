@@ -6,11 +6,12 @@ import { CaseRole, RoleCategory, TypeOfRole } from '../../role-access/models';
 })
 export class ShowAllocateLinkDirective implements OnInit {
   private static readonly CASE_MANAGERS_LIMIT = 1;
-  @Input() public showAllocateRoleLink: boolean = false;
+
+  @Input() public showAllocateRoleLink = false;
   @Input() public roles: CaseRole[];
   @Input() public roleCategory: RoleCategory;
 
-  constructor(private readonly element: ElementRef<HTMLElement>) {
+  public constructor(private readonly element: ElementRef<HTMLElement>) {
   }
 
   private static canDisplayLink(roles: CaseRole[], roleCategory: RoleCategory, showAllocateRoleLink: boolean): boolean {

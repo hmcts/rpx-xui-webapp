@@ -8,7 +8,6 @@ import { filter, first } from 'rxjs/operators';
 import { ActualHearingDayModel, HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingActualsTimingErrorMessages } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
@@ -20,7 +19,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup;
   public caseTitle: string;
-  public submitted: boolean = false;
+  public submitted = false;
   public errors: any[] = [];
   private hearingActuals: HearingActualsMainModel;
   private sub: Subscription;

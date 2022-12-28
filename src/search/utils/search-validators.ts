@@ -11,6 +11,7 @@ export class SearchValidators {
   /**
    * Validates case reference entry. Excluding spaces and '-' characters, it accepts exactly 16 digits only. All other characters are
    * invalid.
+   *
    * @returns `ValidationErrors` object if validation fails; `null` if it passes
    */
   public static caseReferenceValidator(): ValidatorFn {
@@ -26,6 +27,7 @@ export class SearchValidators {
   /**
    * Validates case reference entry. Excluding spaces and '-' as separators, it accepts either exactly 16 digits or a combination of
    * digits and asterisk (*) wildcard characters up to a maximum of 16, with at least a 1-digit separation between wildcards.
+   *
    * @returns `ValidationErrors` object if validation fails; `null` if it passes
    */
   public static caseReferenceWithWildcardsValidator(): ValidatorFn {
@@ -94,6 +96,7 @@ export class SearchValidators {
 
   /**
    * Validates the form state. At least one field, excluding the "Services" drop-down list field, must have a value on form submission.
+   *
    * @returns `ValidationErrors` object if validation fails; `null` if it passes
    */
   public static searchFormValidator(): ValidatorFn {

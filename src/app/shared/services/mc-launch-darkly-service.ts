@@ -16,7 +16,7 @@ export class McLaunchDarklyService extends RootInjectorGuard implements FeatureT
     private readonly ready = new BehaviorSubject<boolean>(false);
     private readonly features: Record<string, BehaviorSubject<any>> = {};
 
-    constructor(@Inject(MCLAUNCHDARKLYKEY) key: string) {
+    public constructor(@Inject(MCLAUNCHDARKLYKEY) key: string) {
         super(FeatureToggleService);
         this.client = LDClient.initialize(key, { anonymous: true }, {});
         this.client.on('ready', () => { this.ready.next(true); });
@@ -58,6 +58,7 @@ export class McLaunchDarklyService extends RootInjectorGuard implements FeatureT
      * once. It calls the LD SDK directly, and should only be used in circumstances where
      * only one value should be emitted, that value coming directly from LD. This will likely
      * only apply for Guards, and should be used only when absolutely necessary.
+     *
      * @see getValue for regular usage.
      * @param feature string
      * @param defaultValue R

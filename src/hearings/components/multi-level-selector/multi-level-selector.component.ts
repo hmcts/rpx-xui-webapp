@@ -11,12 +11,13 @@ import { ControlTypeEnum } from '../../models/hearings.enum';
 })
 export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
   @Input() public multiLevelSelect: FormArray;
-  @Input() public configLevels: { level: number, controlType: ControlTypeEnum }[];
-  @Input() public level: number = 1;
-  @Input() public hasValidationRequested: boolean = false;
+  @Input() public configLevels: { level: number; controlType: ControlTypeEnum }[];
+  @Input() public level = 1;
+  @Input() public hasValidationRequested = false;
   public formGroup: FormGroup;
   private readonly subscription: Subscription;
-  constructor(public fb: FormBuilder) {
+
+  public constructor(public fb: FormBuilder) {
     this.formGroup = fb.group({ item: [''] });
     this.subscription = this.formGroup.controls.item.valueChanges.subscribe(value => {
       if (this.multiLevelSelect) {

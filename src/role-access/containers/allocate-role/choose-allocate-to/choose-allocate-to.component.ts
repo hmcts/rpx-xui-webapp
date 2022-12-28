@@ -16,13 +16,14 @@ import { getTitleText } from '../../../utils';
 })
 export class ChooseAllocateToComponent implements OnInit {
 
-  public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
+
+  public ERROR_MESSAGE = ERROR_MESSAGE;
 
   public title = RoleAllocationTitleText.NonExclusionAllocate;
   public caption = 'Allocate hearing judge';
   public optionsList: OptionsModel[];
-  public submitted: boolean = false;
+  public submitted = false;
 
   public formGroup: FormGroup;
   public radioOptionControl: FormControl;
@@ -33,7 +34,7 @@ export class ChooseAllocateToComponent implements OnInit {
   public typeOfRole: SpecificRole;
   public allocateTo: AllocateTo;
 
-  constructor(private readonly store: Store<fromFeature.State>) { }
+  public constructor(private readonly store: Store<fromFeature.State>) { }
 
   public ngOnInit(): void {
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(

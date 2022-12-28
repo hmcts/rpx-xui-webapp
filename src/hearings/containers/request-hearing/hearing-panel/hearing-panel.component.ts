@@ -24,6 +24,9 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-panel.component.html',
 })
 export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('includedJudge', {static: false}) public includedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('excludedJudge', {static: false}) public excludedJudge: HearingJudgeNamesListComponent;
+
   public panelJudgeForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public includedJudgeList: JudicialUserModel[] = [];
@@ -32,15 +35,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public panelSelection: string;
   public multiLevelSelections: LovRefDataModel[] = [];
   public panelSelectionError: string;
-  public hasValidationRequested: boolean = false;
+  public hasValidationRequested = false;
   public childNodesValidationError: string;
   public personalCodejudgeList: JudicialUserModel[] = [];
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   public serviceId: string;
-  @ViewChild('includedJudge', {static: false}) public includedJudge: HearingJudgeNamesListComponent;
-  @ViewChild('excludedJudge', {static: false}) public excludedJudge: HearingJudgeNamesListComponent;
 
-  constructor(
+  public constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     protected readonly route: ActivatedRoute,
@@ -66,7 +67,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   }
 
   public childNodesValidation(): boolean {
-    let childNodeValid: boolean = true;
+    let childNodeValid = true;
     const panelRoles = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     panelRoles.filter(panelRole => panelRole.selected && panelRole.child_nodes && panelRole.child_nodes.length)
       .forEach(selectedPanelRole => {

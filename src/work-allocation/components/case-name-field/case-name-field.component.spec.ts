@@ -20,8 +20,8 @@ describe('WorkAllocation', () => {
 
   describe('CaseNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
-    const CASE_NAME: string = 'Casename';
-    const CASE_ID: string = 'CaseId';
+    const CASE_NAME = 'Casename';
+    const CASE_ID = 'CaseId';
 
     let component: CaseNameFieldComponent;
     let wrapper: WrapperComponent;
@@ -136,8 +136,8 @@ describe('WorkAllocation', () => {
 
   describe('CaseNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
-    const CASE_NAME: string = 'Casename';
-    const CASE_ID: string = 'CaseId';
+    const CASE_NAME = 'Casename';
+    const CASE_ID = 'CaseId';
 
     let component: CaseNameFieldComponent;
     let wrapper: Wrapper1Component;

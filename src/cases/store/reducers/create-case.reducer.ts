@@ -1,15 +1,15 @@
 import * as fromCases from '../actions/create-case.action';
 
 export interface CreatedCaseModel {
-  caseId: string;
-  status: string;
+  caseId: string
+  status: string
 }
 
 export interface CasesState {
-  createdCase: CreatedCaseModel | {};
-  createCaseFilters: any;
-  loading: boolean;
-  loaded: boolean;
+  createdCase: CreatedCaseModel | any
+  createCaseFilters: any
+  loading: boolean
+  loaded: boolean
 }
 
 export const initialState: CasesState = {
@@ -19,12 +19,11 @@ export const initialState: CasesState = {
   loading: false,
 };
 
-export function reducerCreateCase(
+export const reducerCreateCase = (
   state = initialState,
   action: fromCases.CreateCasesAction
-): CasesState {
+): CasesState => {
   switch (action.type) {
-
     case fromCases.CREATE_CASE_APPLY: {
       return {
         ...state,
@@ -49,9 +48,8 @@ export function reducerCreateCase(
     }
 
   }
-
   return state;
-}
+};
 
 
 export const getCreatedCase = (state: CasesState) => state.createdCase;

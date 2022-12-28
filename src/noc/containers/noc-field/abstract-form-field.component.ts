@@ -20,7 +20,7 @@ export abstract class AbstractFormFieldComponent {
   @Input()
   public registerControl?: <T extends AbstractControl> (control: T) => T;
 
-  public answerValue: string = '';
+  public answerValue = '';
 
   protected defaultControlRegister(): (control: FormControl) => AbstractControl {
     return control => {

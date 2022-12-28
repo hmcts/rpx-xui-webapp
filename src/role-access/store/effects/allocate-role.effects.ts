@@ -51,16 +51,14 @@ export class AllocateRoleEffects {
                 }
               });
             }),
-            catchError(error => {
-                return AllocateRoleEffects.handleError(error, AllocateRoleActionTypes.CONFIRM_ALLOCATION);
-              }
+            catchError(error => AllocateRoleEffects.handleError(error, AllocateRoleActionTypes.CONFIRM_ALLOCATION)
             )
           )
       )
     );
   private readonly payload: any;
 
-  constructor(
+  public constructor(
     private readonly actions$: Actions,
     private readonly allocateRoleService: AllocateRoleService
   ) {
@@ -92,7 +90,6 @@ export class AllocateRoleEffects {
     }
   }
 }
-export function getRolesForRoleCategory(roles: Role[], roleCategory: string, jurisdiction: string): Role [] {
-  return roles.filter(role => role.roleCategory === roleCategory);
-}
+
+export const getRolesForRoleCategory = (roles: Role[], roleCategory: string, jurisdiction: string): Role [] => roles.filter(role => role.roleCategory === roleCategory);
 

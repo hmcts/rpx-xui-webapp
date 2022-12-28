@@ -25,21 +25,19 @@ describe('WorkAllocation', () => {
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    function getConfig(name: string, type: FieldType): FieldConfig {
-      return {
-        name,
-        type,
-        columnLabel: name,
-        views: TaskView.ALL_VIEWS
-      };
-    }
+    const getConfig = (name: string, type: FieldType): FieldConfig => ({
+      name,
+      type,
+      columnLabel: name,
+      views: TaskView.ALL_VIEWS
+    });
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule, RouterTestingModule]
       })
-      .compileComponents();
+        .compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -48,7 +46,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should show only if there is both a config and a task set', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Expect the nativeElement to be empty.
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
@@ -85,7 +83,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a STRING type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('case_id', FieldType.STRING);
       const task: Task = {
@@ -120,7 +118,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATE_DUE type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // No DueDateComponent shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('.due-date')).toBeNull();
 
@@ -177,7 +175,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATE_AGE_DAYS type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATE_AGE_DAYS);
       const task: Task = {
@@ -227,7 +225,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATE type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATE);
       const task: Task = {
@@ -262,7 +260,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a FORMATTED_DATE type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.FORMATTED_DATE);
       const task: Task = {
@@ -297,7 +295,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATETIME type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATETIME);
       const task: Task = {
@@ -332,7 +330,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a PRIORITY type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.PRIORITY);
       const task: Task = {
@@ -367,7 +365,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a BOOLEAN type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('happy', FieldType.BOOLEAN);
       const task: Task = {
@@ -445,7 +443,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle an INTEGER type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('pi', FieldType.INTEGER);
       const task: Task = {
@@ -513,7 +511,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle an DECIMAL_2 type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('pi', FieldType.DECIMAL_2);
       const task: Task = {
@@ -581,9 +579,9 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a URL type', () => {
-      component =wrapper.appComponentRef ;
-      const HMCTS_URL: string = 'http://hmcts.gov.uk';
-      const GOOGLE_URL: string = 'http://google.com';
+      component = wrapper.appComponentRef;
+      const HMCTS_URL = 'http://hmcts.gov.uk';
+      const GOOGLE_URL = 'http://google.com';
 
       // No anchor shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
@@ -657,9 +655,9 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle an image type', () => {
-      component =wrapper.appComponentRef ;
-      const EXAMPLE1_IMAGE: string = '/assets/images/test.jpg';
-      const EXAMPLE2_IMAGE: string = '/assets/images/govuk-crest.png';
+      component = wrapper.appComponentRef;
+      const EXAMPLE1_IMAGE = '/assets/images/test.jpg';
+      const EXAMPLE2_IMAGE = '/assets/images/govuk-crest.png';
 
       // No image shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
@@ -690,7 +688,7 @@ describe('WorkAllocation', () => {
       expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
       expect(element.getAttribute('alt')).toBe('Image');
 
-       // Change the value of task.image
+      // Change the value of task.image
       task['image'] = EXAMPLE2_IMAGE;
       fixture.detectChanges();
       expect(element).not.toBeNull();
@@ -733,7 +731,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a CASE_REFERENCE type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // No anchor shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
@@ -790,7 +788,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a CASE_REFERENCE_AS_STRING type', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE_STRING);
       const task: Task = {
@@ -824,8 +822,8 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
     });
 
-    it('should appropriately parse an ISO date string with toDate',  fakeAsync(() => {
-      component =wrapper.appComponentRef ;
+    it('should appropriately parse an ISO date string with toDate', fakeAsync(() => {
+      component = wrapper.appComponentRef;
       const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE_STRING);
       const task: Task = {
         assignee: null,
@@ -856,7 +854,7 @@ describe('WorkAllocation', () => {
     }));
 
     it('should appropriately parse a number with toDate', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       const DATE = '2020-12-03T15:00:00';
       const EPOCH = Date.parse(DATE);
       const output = component.toDate(EPOCH);
@@ -869,7 +867,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should appropriately parse a date with toDate', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       const DATE = new Date(2020, 11, 3, 15, 0, 0);
       const output = component.toDate(DATE);
       expect(output).toBeDefined();
@@ -881,25 +879,25 @@ describe('WorkAllocation', () => {
     });
 
     it('should appropriately handle an invalid input in toDate', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       const output = component.toDate('bob');
       expect(output).toBeNull();
     });
 
     it('should appropriately handle an null input in toDate', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       const output = component.toDate(null);
       expect(output).toBeNull();
     });
 
     it('should appropriately handle an undefined input in toDate', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       const output = component.toDate(undefined);
       expect(output).toBeNull();
     });
 
     it('should appropriately handle an empty string input in toDate', () => {
-      component =wrapper.appComponentRef ;
+      component = wrapper.appComponentRef;
       const output = component.toDate('');
       expect(output).toBeNull();
     });

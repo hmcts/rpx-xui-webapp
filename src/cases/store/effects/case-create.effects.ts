@@ -10,12 +10,6 @@ import * as fromActions from '../actions';
 
 @Injectable()
 export class CaseCreateEffects {
-  constructor(
-    private readonly actions$: Actions,
-    private readonly alertService: AlertService,
-    private readonly loggerService: LoggerService
-  ) {}
-
   @Effect()
   public applyChangeCaseCreateFilter$ = this.actions$.pipe(
     ofType(fromActions.CREATE_CASE_FILTER_APPLY),
@@ -58,4 +52,11 @@ export class CaseCreateEffects {
        return new fromRoot.NewCaseLoadedSuccessfully();
     }),
   );
+
+  public constructor(
+    private readonly actions$: Actions,
+    private readonly alertService: AlertService,
+    private readonly loggerService: LoggerService
+  ) {}
+
 }

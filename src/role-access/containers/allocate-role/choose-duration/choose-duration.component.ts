@@ -46,7 +46,7 @@ export class ChooseDurationComponent implements OnInit {
   public endDateErrorMessage: string;
   public dateFormat = 'YYYY-MM-DD';
 
-  constructor(private readonly store: Store<fromFeature.State>,
+  public constructor(private readonly store: Store<fromFeature.State>,
               private readonly builder: FormBuilder) {
     this.allDurations = [
       { id: '1', duration: DurationOfRole.SEVEN_DAYS, description: ChooseDurationComponent.sevenDaysDesc, checked: false },
@@ -75,6 +75,26 @@ export class ChooseDurationComponent implements OnInit {
     this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(roleAllocate => {
       this.selectDurationRole(roleAllocate);
     });
+  }
+
+
+  public getTodayDate(): Date {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    return currentDate;
+  }
+
+  public getStartDate(): Date {
+    return new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value);
+  }
+
+  public getEndDate(): Date {
+    return new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value);
+  }
+
+  public onItemChange(item: DurationOfRole): void {
+    this.anotherPeriod = item === DurationOfRole.ANOTHER_PERIOD;
+    this.selectedDuration = item;
   }
 
   public selectDurationRole(roleAllocate: AllocateRoleStateData) {
@@ -211,30 +231,11 @@ export class ChooseDurationComponent implements OnInit {
   private formatString(month: number) {
     return month >= 10 ? month.toString() : `0${month}`;
   }
-
-  public getTodayDate(): Date {
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    return currentDate;
-  }
-
-  public getStartDate(): Date {
-    return new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value);
-  }
-
-  public getEndDate(): Date {
-    return new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value);
-  }
-
-  public onItemChange(item: DurationOfRole): void {
-    this.anotherPeriod = item === DurationOfRole.ANOTHER_PERIOD;
-    this.selectedDuration = item;
-  }
 }
 
 export interface DurationDescription {
-  id: string;
-  duration: DurationOfRole;
-  description: string;
-  checked: boolean;
+  id: string
+  duration: DurationOfRole
+  description: string
+  checked: boolean
 }

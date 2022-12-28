@@ -32,7 +32,7 @@ import * as fromActions from '../../../app/store';
 })
 export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
-  public specificPage: string = '';
+  public specificPage = '';
   public caseworkers: Caseworker[];
   public locations: Location[] = new Array<Location>();
   public showSpinner$: Observable<boolean>;
@@ -43,16 +43,18 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public selectedWorkTypes: string[] = [];
   public selectedServices: string[] = [];
   public taskServiceConfig: TaskServiceConfig;
-  protected userDetailsKey: string = 'userDetails';
+  public routeEventsSubscription: Subscription;
+
+  protected userDetailsKey = 'userDetails';
+
   private pTasks: Task[] = [];
   private myWorkSubscription: Subscription;
   private pTasksTotal: number;
-  public routeEventsSubscription: Subscription;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
-  constructor(
+  public constructor(
     protected ref: ChangeDetectorRef,
     protected taskService: WorkAllocationTaskService,
     protected router: Router,

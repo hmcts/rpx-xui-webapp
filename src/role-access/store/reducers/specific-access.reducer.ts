@@ -21,7 +21,7 @@ export const specificAccessInitialState: SpecificAccessStateData = {
   person: null
 };
 
-export function specificAccessReducer(currentState = specificAccessInitialState, action: SpecificAccessAction): SpecificAccessStateData {
+export const specificAccessReducer = (currentState = specificAccessInitialState, action: SpecificAccessAction): SpecificAccessStateData => {
   switch (action.type) {
     case SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST: {
       return {
@@ -77,7 +77,7 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
       };
     }
   }
-}
+};
 
 export const getSpecificAccessActiveState = (specificAccessState: SpecificAccessStateData) => specificAccessState.state;
 export const getSpecificAccessLastErrors = (specificAccessState: SpecificAccessStateData) => specificAccessState.lastError;

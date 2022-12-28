@@ -78,7 +78,7 @@ export class SetNotifyEveryParty implements Action {
 
 export class SetAffirmationError implements Action {
   public readonly type = SET_AFFIRMATION_ERROR;
-  constructor(public payload: {}) {}
+  constructor(public payload: Record<string, unknown>) {}
 }
 
 export class SubmitNoc implements Action {

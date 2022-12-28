@@ -10,7 +10,7 @@ export const CREATED_CASE_LOADED = '[CreateCase] Load Finished';
 
 export class ApplyChange implements Action {
   public readonly type = CREATE_CASE_APPLY;
-  constructor(public payload: any) {}
+  public constructor(public payload: any) {}
 }
 
 export class CreateCaseReset implements Action {
@@ -18,18 +18,19 @@ export class CreateCaseReset implements Action {
 }
 
 export class CreateCaseLoaded implements Action {
-  constructor(public caseId: any) {}
   public readonly type = CREATED_CASE_LOADED;
+
+  public constructor(public caseId: any) {}
 }
 
 export class CaseCreateFilterApply implements Action {
   public readonly type = CREATE_CASE_FILTER_APPLY;
-  constructor(public payload: any) {}
+  public constructor(public payload: any) {}
 }
 
 export class CaseCreateFilterChanged implements Action {
   public readonly type = CREATE_CASE_FILTER_CHANGED;
-  constructor(public payload: any) {}
+  public constructor(public payload: any) {}
 }
 export type CreateCasesAction =
   | ApplyChange

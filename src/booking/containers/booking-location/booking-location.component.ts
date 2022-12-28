@@ -18,15 +18,15 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
 
+  @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
+
   public bookingCheckType = BookingCheckType.POSSIBLE_BOOKINGS;
   public selectedLocations: LocationByEPIMMSModel[] = [];
   public jurisdictions: string;
   public findLocationFormGroup: FormGroup;
   public formError: boolean;
 
-  @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
-
-  constructor(
+  public constructor(
     private readonly fb: FormBuilder,
     private readonly store: Store<fromRoot.State>,
   ) {

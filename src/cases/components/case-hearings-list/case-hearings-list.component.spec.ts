@@ -617,9 +617,8 @@ describe('CaseHearingsListComponent', () => {
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   const mockFeatureService = new MockRoleCategoryMappingService();
   let mockStore: Store<fromHearingStore.State>;
-  let mockRouter: any;
 
-  mockRouter = {
+  const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
     navigateByUrl: jasmine.createSpy('navigateByUrl')
   };

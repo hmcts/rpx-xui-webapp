@@ -41,10 +41,10 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public isHearingsAvailable: boolean;
   public linkedHearingEnum = HearingLinkedSelectionEnum;
   public mode: Mode;
-  public showSpinner: boolean = true;
+  public showSpinner = true;
   public hearingStageOptions: LovRefDataModel[];
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+  public constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
               private readonly validators: ValidatorsUtils,
               private readonly route: ActivatedRoute,

@@ -11,12 +11,12 @@ import * as fromFeature from '../../store';
 })
 export class NocCheckYourAnswersComponent implements OnInit {
 
-  public caseReference$: Observable<string>;
-
   @Input()
   public qAndA$: Observable<NocAnswer[]>;
 
-  constructor(private readonly store: Store<fromFeature.State>) {  }
+  public caseReference$: Observable<string>;
+
+  public constructor(private readonly store: Store<fromFeature.State>) {  }
 
   public ngOnInit() {
     this.caseReference$ = this.store.pipe(select(fromFeature.caseReference));

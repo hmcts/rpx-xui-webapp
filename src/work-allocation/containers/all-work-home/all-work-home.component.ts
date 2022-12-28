@@ -19,10 +19,9 @@ export class AllWorkHomeComponent implements OnInit, OnDestroy {
 
   private routeSubscription: Subscription;
 
-  constructor(
+  public constructor(
     private readonly router: Router
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.routeSubscription = this.router.events.subscribe(event => {
@@ -50,6 +49,7 @@ export class AllWorkHomeComponent implements OnInit, OnDestroy {
 
   /**
    * Set the active sub-navigation item, based on the supplied active url.
+   *
    * @param activeUrl The URL considered active.
    */
   public setupActiveSubNavigationItem(activeUrl: string): void {
@@ -62,6 +62,7 @@ export class AllWorkHomeComponent implements OnInit, OnDestroy {
 
   /**
    * Sets up the page data (the title) for the activated route.
+   *
    * @param activatedRoute The activated (parent) route to start with.
    */
   public setupPageData(activatedRoute: ActivatedRouteSnapshot): void {

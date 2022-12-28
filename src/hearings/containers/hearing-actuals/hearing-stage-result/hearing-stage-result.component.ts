@@ -33,10 +33,10 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public submitted = false;
   public adjournHearingErrorMessage = '';
   public cancelHearingErrorMessage = '';
-  private id: string;
   public hearingDate: string;
+  private id: string;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+  public constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly formBuilder: FormBuilder,
               private readonly route: ActivatedRoute) {
     this.route.params.subscribe(params => {
@@ -127,6 +127,15 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     }
   }
 
+  public onHearingResult(hearingResult: HearingResult): void {
+    this.hearingResult = hearingResult;
+  }
+
+  public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
+    const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
+    return moment.min(moments).toISOString();
+  }
+
   private isFormValid(): boolean {
     this.validationErrors = [];
     this.adjournHearingErrorMessage = '';
@@ -172,10 +181,6 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  public onHearingResult(hearingResult: HearingResult): void {
-    this.hearingResult = hearingResult;
-  }
-
   private getHearingResultReasonType(): string {
     if (this.hearingResult === this.hearingResultEnum.ADJOURNED) {
       return this.hearingStageResultForm.get('adjournedReason').value;
@@ -184,10 +189,5 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       return this.hearingStageResultForm.get('cancelledReason').value;
     }
     return '';
-  }
-
-  public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
-    const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
-    return moment.min(moments).toISOString();
   }
 }

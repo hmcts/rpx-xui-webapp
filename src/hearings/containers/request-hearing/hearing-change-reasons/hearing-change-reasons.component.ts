@@ -16,8 +16,8 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 export class HearingChangeReasonsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public hearingChangeReasons: LovRefDataModel[];
   public hearingChangeReasonForm: FormGroup;
-  public errors: { id: string, message: string }[] = [];
-  public selectionValid: boolean = true;
+  public errors: { id: string; message: string }[] = [];
+  public selectionValid = true;
   public hearingRequestLastError$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
   public hearingChangeReasonMessages = HearingChangeReasonMessages;

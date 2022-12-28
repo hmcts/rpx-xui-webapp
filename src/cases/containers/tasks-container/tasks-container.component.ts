@@ -20,11 +20,11 @@ export class TasksContainerComponent implements OnInit {
 
   public caseDetails: CaseView;
   public tasks: Task[] = [];
-  public tasksRefreshed: boolean = false;
+  public tasksRefreshed = false;
   public caseworkers: Caseworker[] = [];
   public warningIncluded: boolean;
 
-  constructor(private readonly waCaseService: WorkAllocationCaseService,
+  public constructor(private readonly waCaseService: WorkAllocationCaseService,
               private readonly route: ActivatedRoute,
               private readonly caseworkerService: CaseworkerDataService,
               private readonly rolesService: AllocateRoleService) { }
@@ -54,6 +54,14 @@ export class TasksContainerComponent implements OnInit {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
   }
 
+  public getJudicialNamedTasks(judicialUserData: CaseRoleDetails[]): Observable<Task[]> {
+    this.tasks.forEach(task => {
+      const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
+      task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
+    });
+    return of(this.tasks);
+  }
+
   public onTaskRefreshRequired(): void {
     this.waCaseService.getTasksByCaseId(this.caseDetails.case_id).pipe(first(), mergeMap(taskList => {
       this.tasks = taskList;
@@ -73,16 +81,6 @@ export class TasksContainerComponent implements OnInit {
         assignedJudicialUsers.push(task.assignee);
       }
     });
-    return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(switchMap(judicialUserData => {
-      return this.getJudicialNamedTasks(judicialUserData);
-    }));
-  }
-
-  public getJudicialNamedTasks(judicialUserData: CaseRoleDetails[]): Observable<Task[]> {
-    this.tasks.forEach(task => {
-      const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
-      task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
-    });
-    return of(this.tasks);
+    return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(switchMap(judicialUserData => this.getJudicialNamedTasks(judicialUserData)));
   }
 }

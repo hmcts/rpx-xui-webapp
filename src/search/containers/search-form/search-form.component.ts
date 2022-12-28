@@ -33,10 +33,10 @@ export class SearchFormComponent implements OnInit {
   public dateOfBirthErrorMessage: ErrorMessagesModel;
   public dateOfDeathErrorMessage: ErrorMessagesModel;
 
-  constructor(private readonly fb: FormBuilder,
-              private readonly searchService: SearchService,
-              private readonly router: Router,
-              private readonly route: ActivatedRoute) {
+  public constructor(private readonly fb: FormBuilder,
+    private readonly searchService: SearchService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute) {
 
     this.caseRefConfig = {
       id: 'caseRef',
@@ -101,7 +101,7 @@ export class SearchFormComponent implements OnInit {
       label: 'Services'
     };
     this.services = [
-      {label: 'All', value: 'ALL', id: 'ALL'}
+      { label: 'All', value: 'ALL', id: 'ALL' }
     ];
   }
 
@@ -138,7 +138,6 @@ export class SearchFormComponent implements OnInit {
     if (searchParameters) {
       // Note: Intentional use of != throughout this if block, to check for search parameter values being not null and not undefined
       /* eslint-disable eqeqeq */
-      /* tslint:disable:triple-equals */
       const caseReferences = searchParameters.caseReferences;
       if (caseReferences != null) {
         this.formGroup.get(SearchFormControl.CASE_REF).setValue(caseReferences[0] || '');
@@ -172,7 +171,65 @@ export class SearchFormComponent implements OnInit {
         this.formGroup.get(SearchFormControl.SERVICES_LIST).setValue(serviceSelection[0]);
       }
       /* eslint-enable eqeqeq */
-      /* tslint:enable:triple-equals */
+    }
+  }
+
+/**
+ * Function to reset validation error messages
+ *
+ */
+  public resetValidationErrorMessages(): void {
+    this.searchValidationErrors = [];
+    this.caseRefErrorMessage =
+      this.emailErrorMessage =
+      this.postcodeErrorMessage =
+      this.dateOfBirthErrorMessage =
+      this.dateOfDeathErrorMessage = null;
+  }
+
+  /**
+   * Function to check if any error exists
+   *
+   */
+  public isAnyError(): boolean {
+    return Array.isArray(this.searchValidationErrors) && this.searchValidationErrors.length > 0;
+  }
+
+  /**
+   * Function to handle form submit
+   *
+   */
+  public onSubmit(): void {
+    if (!this.validateForm()) {
+      // Scroll to error summary
+      window.scrollTo({ top: 0, left: 0 });
+    } else {
+      // Populate a SearchParameters instance with the form inputs and persist via the SearchService
+      const searchParameters: SearchParameters = {
+        caseReferences: this.formGroup.get(SearchFormControl.CASE_REF).value !== '' ? [this.formGroup.get(SearchFormControl.CASE_REF).value] : null,
+        CCDJurisdictionIds:
+          // If the selected value is not "All", use it; else, use the entire Services list (except the "All") item
+          this.formGroup.get(SearchFormControl.SERVICES_LIST).value !== 'ALL'
+            ? [this.formGroup.get(SearchFormControl.SERVICES_LIST).value]
+            : this.services.slice(1).map(service => service.id),
+        otherReferences: this.formGroup.get(SearchFormControl.OTHER_REF).value !== '' ? [this.formGroup.get(SearchFormControl.OTHER_REF).value] : null,
+        fullName: this.formGroup.get(SearchFormControl.FULL_NAME).value !== '' ? this.formGroup.get(SearchFormControl.FULL_NAME).value : null,
+        address: this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value !== '' ? this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value : null,
+        postcode: this.formGroup.get(SearchFormControl.POSTCODE).value !== '' ? this.formGroup.get(SearchFormControl.POSTCODE).value : null,
+        emailAddress: this.formGroup.get(SearchFormControl.EMAIL).value !== '' ? this.formGroup.get(SearchFormControl.EMAIL).value : null,
+        // Date format expected by API endpoint is yyyy-mm-dd
+        dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
+        dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH)
+      };
+
+      // Store the search parameters to session
+      this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
+
+      // Set the starting record number to 1
+      this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);
+
+      // Navigate to the Search Results page
+      this.router.navigate(['results'], { relativeTo: this.route });
     }
   }
 
@@ -237,65 +294,6 @@ export class SearchFormComponent implements OnInit {
   }
 
   /**
-   * Function to reset validation error messages
-   *
-   */
-  public resetValidationErrorMessages(): void {
-    this.searchValidationErrors = [];
-    this.caseRefErrorMessage =
-    this.emailErrorMessage =
-    this.postcodeErrorMessage =
-    this.dateOfBirthErrorMessage =
-    this.dateOfDeathErrorMessage = null;
-  }
-
-  /**
-   * Function to check if any error exists
-   *
-   */
-  public isAnyError(): boolean {
-    return Array.isArray(this.searchValidationErrors) && this.searchValidationErrors.length > 0;
-  }
-
-  /**
-   * Function to handle form submit
-   *
-   */
-  public onSubmit(): void {
-    if (!this.validateForm()) {
-      // Scroll to error summary
-      window.scrollTo({ top: 0, left: 0 });
-    } else {
-      // Populate a SearchParameters instance with the form inputs and persist via the SearchService
-      const searchParameters: SearchParameters = {
-        caseReferences: this.formGroup.get(SearchFormControl.CASE_REF).value !== '' ? [this.formGroup.get(SearchFormControl.CASE_REF).value] : null,
-        CCDJurisdictionIds:
-          // If the selected value is not "All", use it; else, use the entire Services list (except the "All") item
-          this.formGroup.get(SearchFormControl.SERVICES_LIST).value !== 'ALL'
-            ? [this.formGroup.get(SearchFormControl.SERVICES_LIST).value]
-            : this.services.slice(1).map(service => service.id),
-        otherReferences: this.formGroup.get(SearchFormControl.OTHER_REF).value !== '' ? [this.formGroup.get(SearchFormControl.OTHER_REF).value] : null,
-        fullName: this.formGroup.get(SearchFormControl.FULL_NAME).value !== '' ? this.formGroup.get(SearchFormControl.FULL_NAME).value : null,
-        address: this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value !== '' ? this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value : null,
-        postcode: this.formGroup.get(SearchFormControl.POSTCODE).value !== '' ? this.formGroup.get(SearchFormControl.POSTCODE).value : null,
-        emailAddress: this.formGroup.get(SearchFormControl.EMAIL).value !== '' ? this.formGroup.get(SearchFormControl.EMAIL).value : null,
-        // Date format expected by API endpoint is yyyy-mm-dd
-        dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
-        dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH)
-      };
-
-      // Store the search parameters to session
-      this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
-
-      // Set the starting record number to 1
-      this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);
-
-      // Navigate to the Search Results page
-      this.router.navigate(['results'], {relativeTo: this.route});
-    }
-  }
-
-  /**
    * Function to return date in a format expected by the backend service
    *
    */
@@ -323,7 +321,7 @@ export class SearchFormComponent implements OnInit {
 }
 
 export interface SearchFormServiceListItem {
-  label: string;
-  value: string;
-  id: string;
+  label: string
+  value: string
+  id: string
 }

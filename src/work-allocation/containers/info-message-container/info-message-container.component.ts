@@ -10,13 +10,13 @@ import { InformationMessage } from '../../models/comms';
 })
 export class InfoMessageContainerComponent implements OnInit {
 
-  public showInfoMessage: boolean = false;
+  public showInfoMessage = false;
   public infoMessages: InformationMessage[];
   public lastMessage: InformationMessage;
   private currentUrl: string;
-  private excludeUrls = ['#manage', 'role-access'];
+  private readonly excludeUrls = ['#manage', 'role-access'];
 
-  constructor(
+  public constructor(
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService
   ) {

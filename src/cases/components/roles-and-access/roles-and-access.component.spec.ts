@@ -217,7 +217,3 @@ describe('RolesAndAccessComponent', () => {
     expect(component.namedExclusions[3].name).toBe('D Test');
   });
 });
-function waitForAsync(arg0: () => void): Mocha.Func {
-  throw new Error('Function not implemented.');
-}
-

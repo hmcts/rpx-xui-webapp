@@ -53,7 +53,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public jurisdictionsBehaviourSubject$: BehaviorSubject<Jurisdiction[]> = new BehaviorSubject<Jurisdiction[]>([]);
   public shareCases$: Observable<SharedCase[]>;
   public shareableJurisdictions$: Observable<string[]>;
-  private pIsCaseShareVisible$: Observable<boolean>;
   public get isCaseShareVisible$(): Observable<boolean> {
     // This is a getter simply because some unit tests rely on being
     // able to spy on it for mocking.
@@ -87,7 +86,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public jurisdictions: Jurisdiction[];
   public selectedCases: SearchResultViewItem[] = [];
 
-  public elasticSearchFlag: boolean = false;
+  public elasticSearchFlag = false;
   public elasticSearchFlagSubsription: Subscription;
 
   public sortParameters;
@@ -95,11 +94,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public userDetails: Observable<any>;
   public organisationDetails: Partial<OrganisationDetails>;
 
-  public resultViewIsReady: boolean = false;
+  public resultViewIsReady = false;
 
   private readonly unsubscribe$ = new Subject();
+  private pIsCaseShareVisible$: Observable<boolean>;
 
-  constructor(
+  public constructor(
     public store: Store<fromCaseList.State>,
     private readonly orgStore: Store<fromStore.OrganisationState>,
     private readonly appConfig: AppConfig,
@@ -173,7 +173,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
       this.onPaginationSubscribeHandler(paginationMetadata));
-  }
+  };
 
   public doesIdExist(arr = [], id): boolean {
     return arr.some(element => element.id === id);
@@ -202,10 +202,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
           }
         }
       });
-  }
+  };
 
   /**
    * result
+   *
    * @param result - [
    * { id: 'PROBATE' },
    * { id: 'GrantOfRepresentation' },
@@ -227,13 +228,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.metadataFields = {
       ...result[3]
     };
-  }
+  };
 
   public onToogleHandler = showFilter => {
 
     this.showFilter = showFilter;
     this.toggleButtonName = this.getToggleButtonName(this.showFilter);
-  }
+  };
 
   public onResultsViewHandler = resultView => {
     if (this.elasticSearchFlag) {
@@ -250,15 +251,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.resultView = {
       ...resultView,
       columns: resultView.columns ? resultView.columns : [],
-      results: resultView.results ? resultView.results.map(item => {
-        return {
+      results: resultView.results ? resultView.results.map(item => ({
           ...item,
           hydrated_case_fields: null
-        };
-      }) : [],
+        })) : [],
       hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
     };
-  }
+  };
 
   /**
    * Handles the return of Pagination Metadata.
@@ -276,7 +275,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
         this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
     }
-  }
+  };
 
   public getEvent() {
     let formGroupFromLS = null;
@@ -313,8 +312,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * We should think about calling this function makePaginationMetadataQuery as it looks like it's only being used to construct the
    * Case List Pagination Metadata payload?
    */
-  public createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page, sortParameters) => {
-    return {
+  public createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page, sortParameters) => ({
       selected: {
         jurisdiction,
         caseType,
@@ -327,8 +325,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
         view: 'WORKBASKET'
       },
       sortParameters
-    };
-  }
+    });
 
   /**
    * Display the name seen on the toggle button.
@@ -430,13 +427,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.getElasticSearchResults(this.getEvent());
   }
 
-  private triggerQuery() {
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata(this.getEvent());
-    } else {
-      this.getElasticSearchResults(this.getEvent());
-    }
-  }
 
   public ngOnDestroy() {
     if (this.filterSubscription) {
@@ -468,4 +458,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  private triggerQuery() {
+    if (!this.elasticSearchFlag) {
+      this.findCaseListPaginationMetadata(this.getEvent());
+    } else {
+      this.getElasticSearchResults(this.getEvent());
+    }
+  }
+
 }

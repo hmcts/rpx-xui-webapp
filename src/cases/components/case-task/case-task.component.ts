@@ -27,23 +27,6 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
-  public manageOptions: {id: string, title: string }[];
-  public isUserJudicial: boolean;
-  private pTask: Task;
-
-  constructor(private readonly alertService: AlertService,
-              private readonly router: Router,
-              private readonly sessionStorageService: SessionStorageService,
-              protected taskService: WorkAllocationTaskService) {
-  }
-
-  public get task(): Task {
-    return this.pTask;
-  }
-
-  public get returnUrl(): string {
-    return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
-  }
 
   @Input()
   public set task(value: Task) {
@@ -58,6 +41,24 @@ export class CaseTaskComponent implements OnInit {
    */
    @Output() public taskRefreshRequired: EventEmitter<void>
    = new EventEmitter();
+
+  public manageOptions: {id: string, title: string }[];
+  public isUserJudicial: boolean;
+  private pTask: Task;
+
+  public constructor(private readonly alertService: AlertService,
+              private readonly router: Router,
+              private readonly sessionStorageService: SessionStorageService,
+              protected taskService: WorkAllocationTaskService) {
+  }
+
+  public get task(): Task {
+    return this.pTask;
+  }
+
+  public get returnUrl(): string {
+    return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
+  }
 
   public static replaceVariablesWithRealValues(task: Task): string {
     if (!task.description) {

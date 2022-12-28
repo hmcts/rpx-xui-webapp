@@ -147,6 +147,11 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1102.19",
+    "@angular-eslint/builder": "4.3.1",
+    "@angular-eslint/eslint-plugin": "4.3.1",
+    "@angular-eslint/eslint-plugin-template": "4.3.1",
+    "@angular-eslint/schematics": "4.3.1",
+    "@angular-eslint/template-parser": "4.3.1",
     "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular/cli": "^11.2.19",
     "@angular/compiler-cli": "^11.2.14",
@@ -176,6 +181,8 @@
     "@types/node": "^12.11.1",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",
+    "@typescript-eslint/eslint-plugin": "4.16.1",
+    "@typescript-eslint/parser": "4.16.1",
     "base-64": "^0.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "7.1.1",
@@ -185,6 +192,7 @@
     "cucumber-html-reporter": "^4.0.5",
     "cucumber-pretty": "1.5.0",
     "cucumberjs-allure-reporter": "1.0.3",
+    "eslint": "^7.6.0",
     "jasmine-core": "~3.4.0",
     "jasmine-marbles": "^0.5.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -222,7 +230,10 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^4.10.0",
     "webpack-node-externals": "^3.0.0",
-    "webpack-source-map-support": "^2.0.1"
+    "webpack-source-map-support": "^2.0.1",
+    "eslint-plugin-import": "latest",
+    "eslint-plugin-jsdoc": "latest",
+    "eslint-plugin-prefer-arrow": "latest"
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",

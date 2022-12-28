@@ -16,20 +16,20 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   @Input()
   public navEvent: NocNavigation;
 
+  @Input()
+  public qAndA$: Observable<NocAnswer[]>;
+
   public answers$: Observable<NocAnswer[]>;
 
   public questions$: Observable<NocQuestion[]>;
 
-  @Input()
-  public qAndA$: Observable<NocAnswer[]>;
-
   public submitForm: FormGroup;
 
   public affirmationAgreedSub: Subscription;
-  public affirmationAgreed: boolean = false;
+  public affirmationAgreed = false;
 
   public notifyEveryPartySub: Subscription;
-  public notifyEveryParty: boolean = false;
+  public notifyEveryParty = false;
 
   public validationErrors$: Observable<any>;
   public hasDisagreeError$: Observable<boolean>;
@@ -41,7 +41,7 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   public nocAnswersSub: Subscription;
   public nocAnswers: NocAnswer[];
 
-  constructor(private readonly store: Store<fromFeature.State>) {
+  public constructor(private readonly store: Store<fromFeature.State>) {
     this.navEvent = {
       event: null,
       timestamp: null
@@ -58,14 +58,10 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
           const nocAnswerWithQuestionText: NocAnswer = {
             question_id: answer.question_id,
             question_text: this.questions$.pipe(map(
-              questions => {
-                return questions.find(ques => ques.question_id === answer.question_id).question_text;
-              }
+              questions => questions.find(ques => ques.question_id === answer.question_id).question_text
             )),
             question_type: this.questions$.pipe(map(
-              questions => {
-                return questions.find(ques => ques.question_id === answer.question_id).answer_field_type.type;
-              }
+              questions => questions.find(ques => ques.question_id === answer.question_id).answer_field_type.type
             )),
             value: answer.value
           };
@@ -78,12 +74,8 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
     this.notifyEveryPartySub = this.store.pipe(select(fromFeature.notifyEveryParty)).subscribe(
       notifyEveryParty => this.notifyEveryParty = notifyEveryParty);
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
-    this.hasDisagreeError$ = this.validationErrors$.pipe(map(errors => {
-      return errors ? errors.hasOwnProperty(AFFIRMATION_DEFAULT_DISAGREE_ERROR.code) : false;
-    }));
-    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(map(errors => {
-      return errors ? errors.hasOwnProperty(AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR.code) : false;
-    }));
+    this.hasDisagreeError$ = this.validationErrors$.pipe(map(errors => errors ? errors.hasOwnProperty(AFFIRMATION_DEFAULT_DISAGREE_ERROR.code) : false));
+    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(map(errors => errors ? errors.hasOwnProperty(AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR.code) : false));
     this.caseReferenceSub = this.store.pipe(select(fromFeature.caseReference)).subscribe(
       caseReference => this.caseRefernce = caseReference);
     this.nocAnswersSub = this.store.pipe(select(fromFeature.answers)).subscribe(

@@ -14,9 +14,9 @@ import { ServiceIdResolverResolve } from './service-id-resolver.resolve';
   providedIn: 'root'
 })
 export class RefDataResolver extends ServiceIdResolverResolve implements Resolve<LovRefDataModel[]> {
-  public serviceId: string = '';
+  public serviceId = '';
 
-  constructor(
+  public constructor(
     protected readonly lovRefDataService: LovRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly router: Router,

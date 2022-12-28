@@ -9,13 +9,13 @@ export const NEW_CASE_LOADED = '[Router] Case Loaded';
 
 export class Go implements Action {
   public readonly type = GO;
-  constructor(
+  public constructor(
     public payload: {
-      path: any[];
-      query?: object;
-      extras?: NavigationExtras;
-      callback?(): void;
-      errorHandler?(err): void;
+      path: any[]
+      query?: any
+      extras?: NavigationExtras
+      callback?(): void
+      errorHandler?(err): void
     }
   ) {}
 }
@@ -24,11 +24,11 @@ export class NewCaseLoadedSuccessfully implements Action {
 }
 export class CreateCaseGo implements Action {
     public readonly type = CREATE_CASE_GO;
-    constructor(
+    public constructor(
       public payload: {
-        path: any[];
-        query?: object;
-        extras?: NavigationExtras;
+        path: any[]
+        query?: any
+        extras?: NavigationExtras
         caseId: string
       }
     ) {}

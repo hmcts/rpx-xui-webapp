@@ -45,7 +45,7 @@ describe('HealthCheckGuard', () => {
 
     describe('canActivate', () => {
         it('should trigger service call', inject([HealthCheckGuard], (guard: HealthCheckGuard) => {
-            const healthState: boolean = true;
+            const healthState = true;
             const result: { healthState } = { healthState };
             healthCheckServiceMock.doHealthCheck.and.returnValue(of(result));
             guard.canActivate().subscribe(() => {
@@ -54,7 +54,7 @@ describe('HealthCheckGuard', () => {
         }));
 
         it('should trigger service down when there is a false healthstate', inject([HealthCheckGuard], (guard: HealthCheckGuard) => {
-            const healthState: boolean = false;
+            const healthState = false;
             const result: { healthState } = { healthState };
             healthCheckServiceMock.doHealthCheck.and.returnValue(of(result));
             guard.canActivate().subscribe(() => {

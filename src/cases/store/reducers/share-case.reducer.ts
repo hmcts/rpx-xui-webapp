@@ -3,21 +3,21 @@ import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.m
 import * as ShareCasesActions from '../actions/share-case.action';
 
 export interface ShareCasesState {
-  shareCases: SharedCase[];
-  loading: boolean;
-  error: Error;
-  users: UserDetails[];
+  shareCases: SharedCase[]
+  loading: boolean
+  error: Error
+  users: UserDetails[]
 }
 
-export let initialSharedCasesState: ShareCasesState = {
+export const initialSharedCasesState: ShareCasesState = {
   shareCases: [],
   loading: false,
   error: undefined,
   users: []
 };
 
-export function shareCasesReducer(state: ShareCasesState = initialSharedCasesState,
-                                  action: ShareCasesActions.Actions): ShareCasesState {
+export const shareCasesReducer = (state: ShareCasesState = initialSharedCasesState,
+                                  action: ShareCasesActions.Actions): ShareCasesState => {
   switch (action.type) {
     case ShareCasesActions.NAVIGATE_TO_SHARE_CASES:
       const navigateToShareCases = state.shareCases.slice();
@@ -122,15 +122,13 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
     default:
       return state;
   }
-}
+};
 
-export function sortedUserInCases(pendingSortedCases: SharedCase[]): SharedCase[] {
+export const sortedUserInCases = (pendingSortedCases: SharedCase[]): SharedCase[] => {
   const cases: SharedCase[] = [];
   for (const aCase of pendingSortedCases) {
     if (aCase.sharedWith) {
-      const sortedUsers: UserDetails[] = aCase.sharedWith.slice().sort((user1, user2) => {
-        return user1.firstName > user2.firstName ? 1 : (user2.firstName > user1.firstName ? -1 : 0);
-      });
+      const sortedUsers: UserDetails[] = aCase.sharedWith.slice().sort((user1, user2) => user1.firstName > user2.firstName ? 1 : (user2.firstName > user1.firstName ? -1 : 0));
       const caseWithSortedUser = {
         ...aCase,
         sharedWith: sortedUsers
@@ -141,7 +139,7 @@ export function sortedUserInCases(pendingSortedCases: SharedCase[]): SharedCase[
     }
   }
   return cases;
-}
+};
 
 export const getShareCases = (state: ShareCasesState) => state.shareCases;
 export const getOrganisationUsers = (state: ShareCasesState) => state.users;

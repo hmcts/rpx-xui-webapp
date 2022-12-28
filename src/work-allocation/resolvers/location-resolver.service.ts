@@ -31,7 +31,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   private userId: string;
   private serviceRefData: ServiceRefData[];
 
-  constructor(
+  public constructor(
     private readonly store: Store<fromCaseList.State>,
     private readonly router: Router,
     private readonly http: HttpClient,
@@ -39,32 +39,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     private readonly sessionStorageService: SessionStorageService,
     private readonly serviceRefDataService: ServiceRefDataService
   ) {
-  }
-
-  public resolve(): Observable<LocationModel[]> {
-    return this.userDetails()
-      .pipe(
-        first(),
-        mergeMap((userDetails: UserDetails) => this.serviceRefDataService.getServiceRefData()
-          .pipe(
-            map((serviceRefData) => this.getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails))
-          )
-        ),
-        mergeMap((locations: Location[]) => this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([])
-          .pipe(
-            map((bookings: Booking[]) => this.addBookingLocations(locations, bookings)),
-          )
-        ),
-        mergeMap((locations: Location[]) => this.getLocations(locations)),
-        catchError(error => {
-          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-          return EMPTY;
-        })
-      );
-  }
-
-  private userDetails(): Observable<UserDetails> {
-    return this.store.pipe(select(fromRoot.getUserDetails));
   }
 
   public getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails: UserDetails): Location[] {
@@ -104,6 +78,32 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.sessionStorageService.setItem('userLocations', JSON.stringify(userLocationsByService));
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
     return locations;
+  }
+
+  public resolve(): Observable<LocationModel[]> {
+    return this.userDetails()
+      .pipe(
+        first(),
+        mergeMap((userDetails: UserDetails) => this.serviceRefDataService.getServiceRefData()
+          .pipe(
+            map((serviceRefData) => this.getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails))
+          )
+        ),
+        mergeMap((locations: Location[]) => this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([])
+          .pipe(
+            map((bookings: Booking[]) => this.addBookingLocations(locations, bookings)),
+          )
+        ),
+        mergeMap((locations: Location[]) => this.getLocations(locations)),
+        catchError(error => {
+          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+          return EMPTY;
+        })
+      );
+  }
+
+  private userDetails(): Observable<UserDetails> {
+    return this.store.pipe(select(fromRoot.getUserDetails));
   }
 
   private addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {

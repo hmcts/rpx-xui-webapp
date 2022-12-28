@@ -24,7 +24,7 @@ export class CaseTypesUtils {
     return allCaseTypesWithChildren;
   }
 
-  public static generateCaseTypesRefDataMap(caseTypeRefData: LovRefDataModel[]): {} {
+  public static generateCaseTypesRefDataMap(caseTypeRefData: LovRefDataModel[]): any {
     const caseTypeMap = {};
     caseTypeRefData.forEach(caseType => {
       if (caseType.child_nodes && caseType.child_nodes.length > 0) {

@@ -22,9 +22,10 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     page_number: 1,
     page_size: 25
   };
+  public backUrl = 'work/all-work/cases';
   public jurisdictions: string[];
-  private selectedPerson: string = '';
-  private selectedRole: string = 'All';
+  private selectedPerson = '';
+  private selectedRole = 'All';
   private readonly selectedLocation: Location = {
     id: '231596',
     locationName: 'Birmingham',
@@ -50,8 +51,6 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   public get fields(): FieldConfig[] {
     return ConfigConstants.AllWorkCases;
   }
-
-  public backUrl: string = 'work/all-work/cases';
 
   public ngOnInit(): void {
     this.setUpLocationsAndJurisdictions();
@@ -86,7 +85,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location: string, jurisdiction: string, actorId: string, role: string, person: any }): void {
+  public onSelectionChanged(selection: { location: string; jurisdiction: string; actorId: string; role: string; person: any }): void {
     this.selectedLocation.id = !selection.location ? '' : selection.location;
     this.selectedServices = [selection.jurisdiction];
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;

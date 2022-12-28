@@ -67,15 +67,15 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public bookingLocations: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
+  public hideFilter: boolean;
   private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
-  public hideFilter: boolean;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
    */
-  constructor(
+  public constructor(
     private readonly route: ActivatedRoute,
     private readonly location: AngularLocation,
     private readonly filterService: FilterService,
@@ -201,6 +201,21 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.routeSubscription.unsubscribe();
     }
   }
+
+  /**
+   * Toggles the filter state
+   *
+   * @param showTypesOfWorkFilter - used to determine whether the types-of-work filters will be displayed
+   */
+     public onToggleFilter(showTypesOfWorkFilter: boolean): void {
+      this.toggleFilter = !this.toggleFilter;
+      if (this.toggleFilter) {
+        setTimeout(() => {
+          const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
+          (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+        }, 0);
+      }
+    }
 
   private subscribeToFilters(assignedTasks: Task[]): void {
     this.selectedLocationsSubscription = combineLatest([
@@ -350,7 +365,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         if (!services.length) {
           return;
         }
-        if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some(p => p.jurisdiction != undefined)) {
+        if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some(p => p.jurisdiction !== undefined)) {
           return;
         }
         const filteredServices = _.intersection.apply(_, [
@@ -370,12 +385,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
             },
             ...filteredServices
               .sort()
-              .map(service => {
-                return {
+              .map(service => ({
                   key: service,
                   label: servicesMap[service] || service
-                };
-              })
+                }))
           ],
           minSelected: 1,
           maxSelected: null,
@@ -412,20 +425,5 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    */
   private setAllowTypesOfWorkFilter(url: string, myCasesUrl = 'my-work/my-cases'): void {
     this.allowTypesOfWorkFilter = !url.includes(myCasesUrl);
-  }
-
-  /**
-   * Toggles the filter state
-   *
-   * @param showTypesOfWorkFilter - used to determine whether the types-of-work filters will be displayed
-   */
-  public onToggleFilter(showTypesOfWorkFilter: boolean): void {
-    this.toggleFilter = !this.toggleFilter;
-    if (this.toggleFilter) {
-      setTimeout(() => {
-        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
-        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
-      }, 0);
-    }
   }
 }

@@ -17,17 +17,17 @@ import { TaskPermission, TaskRole } from '../../models/tasks';
 export class TaskAssignmentChooseRoleComponent implements OnInit {
 
   private static readonly userDetails: string = 'userDetails';
-  public title: string = 'Choose a role type';
-  public verb: string = '';
-  public caption: string = 'Reassign task';
-  public description: string = 'Which role type are you reassigning the task to?';
-  public submitted: boolean = true;
+  public title = 'Choose a role type';
+  public verb = '';
+  public caption = 'Reassign task';
+  public description = 'Which role type are you reassigning the task to?';
+  public submitted = true;
   public taskRoles: TaskRole[] = [];
   public service: string;
   public form: FormGroup;
   public roles: OptionsModel[];
 
-  constructor(private readonly fb: FormBuilder,
+  public constructor(private readonly fb: FormBuilder,
               private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
               private readonly route: ActivatedRoute) {
@@ -36,7 +36,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   private get returnUrl(): string {
     // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
     // buttons, which clear the `window.history.state` object
-    let url: string = '';
+    let url = '';
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
     if (window && window.history && window.history.state && window.history.state.returnUrl) {

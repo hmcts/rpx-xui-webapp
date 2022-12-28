@@ -26,7 +26,6 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   public nocCheckAndSubmitComponent: NocCheckAndSubmitComponent;
 
   public nocNavigationCurrentState: NocState;
-  private nocNavigationCurrentStateSub: Subscription;
   public navEvent: NocNavigation;
 
   public caseRefVisibilityStates = caseRefVisibilityStates;
@@ -37,7 +36,10 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   public checkAnswerVisibilityStates = checkAnswerVisibilityStates;
   public nocSubmitSuccessStates = nocSubmitSuccessStates;
 
-  constructor(
+
+  private nocNavigationCurrentStateSub: Subscription;
+
+  public constructor(
     private readonly store: Store<fromFeature.State>,
     private readonly router: Router
   ) { }

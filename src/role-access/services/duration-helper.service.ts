@@ -10,6 +10,7 @@ export class DurationHelperService {
 
   /**
    * Return todays Date object for provided FormControl's
+   *
    * @param dayControl day form control
    * @param monthControl month form control
    * @param yearControl year form control
@@ -42,6 +43,7 @@ export class DurationHelperService {
 
   /**
    * Return todays date as a Date object
+   *
    * @return date object
    */
   public getTodaysDate(): Date {
@@ -51,6 +53,7 @@ export class DurationHelperService {
 
   /**
    * For given number returns string representation with 0 prefix if it's single digit
+   *
    * @param n the number to convert to string
    * @return string representation of number
    */
@@ -63,6 +66,7 @@ export class DurationHelperService {
 
   /**
    * For given startDate and endDate strings return object representing validity of dates
+   *
    * @param startDate the start date string e.g. YYYY-MM-DD
    * @param endDate the end date string e.g. YYYY-MM-DD
    * @return object representing date validity
@@ -81,6 +85,7 @@ export class DurationHelperService {
 
   /**
    * For provided date form controls returns a string representation of the date
+   *
    * @param dayControl the day form control
    * @param monthControl the day form control
    * @param yearControl the day form control
@@ -100,6 +105,7 @@ export class DurationHelperService {
 
   /**
    * Returns a string used for the class on date input fields
+   *
    * @param isError whether there is an input error
    * @param isYear whether the input is a year field. Default = false
    * @return the class string for the input field
@@ -111,6 +117,7 @@ export class DurationHelperService {
 
   /**
    * Returns a date in the future based on daysToAdd parameter
+   *
    * @param daysToAdd number of days to add to todays date
    * @return Date object
    */
@@ -124,6 +131,7 @@ export class DurationHelperService {
 
   /**
    * Returns boolean representing whether the start date is in the past or not
+   *
    * @param startDate the start date to compare to todays date
    * @return boolean
    */
@@ -133,6 +141,7 @@ export class DurationHelperService {
 
   /**
    * Returns boolean representing whether the start date is before the end date
+   *
    * @param startDate the start date
    * @param endDate the end date
    * @return boolean

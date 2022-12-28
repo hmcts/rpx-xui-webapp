@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TaskAlertBannerComponent } from '..';
 import { Task } from '../../../work-allocation/models/tasks';
 
@@ -20,8 +20,7 @@ describe('TaskAlertBannerComponent', () => {
     fixture.detectChanges();
   });
 
-  function getTasks(): Task[] {
-    return [
+  const getTasks = (): Task[] => [
       {
         assignee: null,
         assigneeName: null,
@@ -82,7 +81,6 @@ describe('TaskAlertBannerComponent', () => {
         ]
       }
     ];
-  }
 
   it('should have the relevant text', () => {
     component.alertTitle = 'This is the title';

@@ -8,9 +8,9 @@ import { Location, LocationByEPIMMSModel } from '../models/dtos';
 
 @Injectable()
 export class LocationDataService {
-  public static locationUrl: string = '/workallocation/location';
-  public static fullLocationUrl: string = '/workallocation/full-location';
-  public static allLocationsKey: string = 'allLocations';
+  public static locationUrl = '/workallocation/location';
+  public static fullLocationUrl = '/workallocation/full-location';
+  public static allLocationsKey = 'allLocations';
   public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) { }
 
   public getLocations(): Observable<Location[]> {

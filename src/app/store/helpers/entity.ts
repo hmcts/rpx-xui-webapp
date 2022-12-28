@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 export class Entity {
   public id: string | string[] ;
   public value: {id: string; [key: string]: any};

@@ -8,8 +8,8 @@ export const initialHearingLinksState: HearingLinksStateData = {
   lastError: null
 };
 
-export function hearingLinksReducer(currentState = initialHearingLinksState,
-                                    action: fromActions.HearingLinksAction): HearingLinksStateData {
+export const hearingLinksReducer = (currentState = initialHearingLinksState,
+                                    action: fromActions.HearingLinksAction): HearingLinksStateData => {
   switch (action.type) {
     case fromActions.RESET_HEARING_LINKS: {
       return {
@@ -73,7 +73,7 @@ export function hearingLinksReducer(currentState = initialHearingLinksState,
       };
     }
   }
-}
+};
 
 export const serviceLinkedCases = (hearingLinksStateData) => hearingLinksStateData.serviceLinkedCases;
 export const serviceLinkedCasesWithHearings = (hearingLinksStateData) => hearingLinksStateData.serviceLinkedCasesWithHearings;

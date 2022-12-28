@@ -26,13 +26,13 @@ export class AppComponent implements OnInit, OnDestroy {
     isVisible: false,
   };
 
-  private userId: string = null;
-  public cookieName;
-  public isCookieBannerVisible: boolean = false;
+  public cookieName: any;
+  public isCookieBannerVisible = false;
   private cookieBannerEnabledSubscription: Subscription;
-  private cookieBannerEnabled: boolean = false;
+  private cookieBannerEnabled = false;
+  private userId: string = null;
 
-  constructor(
+  public constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,

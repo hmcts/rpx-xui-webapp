@@ -18,20 +18,21 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-judge.component.html',
 })
 export class HearingJudgeComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('excludedJudge', {static: false}) public excludedJudge: HearingJudgeNamesListComponent;
+
   public hearingJudgeForm: FormGroup;
   public specificJudgeSelection: string;
   public excludedJudgeList: JudicialUserModel[] = [];
   public hearingJudgeTypes: LovRefDataModel[];
   public personalCodejudgeList: JudicialUserModel[] = [];
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
   public specificJudgeSelectionError: string;
   public selectJudgeTypesError: string;
   public selectJudgeNameError: string;
-  public hearingJudgeFormInfo: { includedJudges: string[], judgeTypes: string[], excludedJudges: string[] };
+  public hearingJudgeFormInfo: { includedJudges: string[]; judgeTypes: string[]; excludedJudges: string[] };
   public serviceId: string;
-  @ViewChild('excludedJudge', {static: false}) public excludedJudge: HearingJudgeNamesListComponent;
 
-  constructor(protected readonly route: ActivatedRoute,
+  public constructor(protected readonly route: ActivatedRoute,
               private readonly formBuilder: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,

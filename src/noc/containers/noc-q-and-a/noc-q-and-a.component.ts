@@ -13,21 +13,24 @@ import * as fromFeature from '../../store';
 })
 export class NocQAndAComponent implements OnInit, OnDestroy {
 
+  @Input() public navEvent: NocNavigation;
+
   public questions$: Observable<NocQuestion[]>;
   public answers$: Observable<NocAnswer[]>;
   public formGroup: FormGroup;
-  @Input() public navEvent: NocNavigation;
 
   public nocNavigationCurrentState: NocState;
-  private nocNavigationCurrentStateSub: Subscription;
+
   public nocCaseReference: string;
-  private nocCaseReferenceSub: Subscription;
   public lastError$: Observable<NocHttpError>;
   public lastError: NocHttpError;
-  public allAnswerEmpty: boolean = false;
-  public allAnswerValid: boolean = true;
+  public allAnswerEmpty = false;
+  public allAnswerValid = true;
 
-  constructor(private readonly store: Store<fromFeature.State>) { }
+  private nocCaseReferenceSub: Subscription;
+  private nocNavigationCurrentStateSub: Subscription;
+
+  public constructor(private readonly store: Store<fromFeature.State>) { }
 
   public ngOnInit() {
     this.lastError$ = this.store.pipe(select(fromFeature.lastError));
@@ -43,7 +46,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   }
 
   public setPossibleIncorrectAnswerError(): void {
-    this.lastError$.subscribe( lastError => {
+    this.lastError$.subscribe(lastError => {
       this.lastError = lastError;
       if (this.lastError && this.lastError.error && this.lastError.error.code === 'answers-not-matched-any-litigant') {
         Object.keys(this.formGroup.controls).forEach(key => {
@@ -89,7 +92,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
     if (navEvent === NocNavigationEvent.SET_ANSWERS && this.formGroup) {
       const answers: NocAnswer[] = [];
       Object.keys(this.formGroup.value).forEach(key => {
-        answers.push({question_id: key, value: this.formGroup.value[key]});
+        answers.push({ question_id: key, value: this.formGroup.value[key] });
       });
       const nocEvent: NocEvent = {
         case_id: this.nocCaseReference,

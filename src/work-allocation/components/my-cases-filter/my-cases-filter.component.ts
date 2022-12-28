@@ -40,17 +40,17 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
   };
   public selectedLocations: string[] = [];
   public toggleFilter = false;
+  public errorSubscription: Subscription;
 
   private locationSubscription: Subscription;
   private selectedLocationsSubscription: Subscription;
-  public errorSubscription: Subscription;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
    */
-  constructor(private readonly route: ActivatedRoute,
-              private readonly filterService: FilterService,
-              private readonly locationService: LocationDataService) {
+  public constructor(private readonly route: ActivatedRoute,
+    private readonly filterService: FilterService,
+    private readonly locationService: LocationDataService) {
   }
 
   public ngOnInit(): void {
@@ -70,6 +70,44 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
     });
     this.subscribeToSelectedLocations();
     this.toggleFilter = false;
+  }
+
+  public ngOnDestroy(): void {
+    if (this.locationSubscription) {
+      this.locationSubscription.unsubscribe();
+    }
+
+    if (this.selectedLocationsSubscription) {
+      this.selectedLocationsSubscription.unsubscribe();
+    }
+
+    if (this.errorSubscription) {
+      this.errorSubscription.unsubscribe();
+    }
+  }
+
+  // if there is no local storage available, default locations need to be reset
+  public getDefaultLocations(): string[] {
+    if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
+      this.fieldsConfig.cancelSetting.fields.forEach(field => {
+        if (field.name === 'case_locations') {
+          this.defaultLocations = field.value;
+        }
+      });
+    }
+    return this.defaultLocations;
+  }
+
+  public subscribeToSelectedLocations(): void {
+    this.selectedLocationsSubscription = this.filterService.getStream(MyCasesFilterComponent.FILTER_NAME)
+      .pipe(
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+      )
+      .subscribe((f: FilterSetting) => {
+        this.selectedLocations = f.fields.find((field) => field.name === MyCasesFilterComponent.FILTER_NAME).value;
+        this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
+        this.toggleFilter = false;
+      });
   }
 
   private setUpLocationFilter(locations: Location[]): void {
@@ -101,30 +139,6 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
     this.fieldsConfig.fields.push(field);
   }
 
-  // if there is no local storage available, default locations need to be reset
-  public getDefaultLocations(): string[] {
-    if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
-      this.fieldsConfig.cancelSetting.fields.forEach(field => {
-        if (field.name === 'case_locations') {
-          this.defaultLocations = field.value;
-        }
-      });
-    }
-    return this.defaultLocations;
-  }
-
-  public subscribeToSelectedLocations(): void {
-    this.selectedLocationsSubscription = this.filterService.getStream(MyCasesFilterComponent.FILTER_NAME)
-      .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
-      )
-      .subscribe((f: FilterSetting) => {
-        this.selectedLocations = f.fields.find((field) => field.name === MyCasesFilterComponent.FILTER_NAME).value;
-        this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
-        this.toggleFilter = false;
-      });
-  }
-
   private hasBeenFiltered(f: FilterSetting, defaultLocations: string[]): boolean {
     const selectedFields = f.fields.find(field => field.name === MyCasesFilterComponent.FILTER_NAME);
     // check if selected fields are the same as cancelled filter settings
@@ -132,19 +146,5 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
     // check if the amount of fields selected is the same as the amount in the cancel settings
     const notSameSize = !(defaultLocations.length === selectedFields.value.length);
     return (containsNonDefaultFields || notSameSize) && (defaultLocations.length !== 0);
-  }
-
-  public ngOnDestroy(): void {
-    if (this.locationSubscription) {
-      this.locationSubscription.unsubscribe();
-    }
-
-    if (this.selectedLocationsSubscription) {
-      this.selectedLocationsSubscription.unsubscribe();
-    }
-
-    if (this.errorSubscription) {
-      this.errorSubscription.unsubscribe();
-    }
   }
 }

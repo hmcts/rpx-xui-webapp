@@ -11,9 +11,9 @@ import {RoleCategory} from '../models';
 
 @Injectable()
 export class BookingGuard implements CanActivate {
-  public static defaultUrl: string = '/cases';
+  public static defaultUrl = '/cases';
 
-  constructor(private readonly router: Router,
+  public constructor(private readonly router: Router,
               private readonly store: Store<fromActions.State>,
               private readonly featureToggleService: FeatureToggleService) {
   }

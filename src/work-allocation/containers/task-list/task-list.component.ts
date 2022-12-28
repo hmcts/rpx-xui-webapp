@@ -19,11 +19,11 @@ export class TaskListComponent implements OnChanges {
    * These are the tasks & fields as returned from the WA Api.
    */
   @Input() public tasks: Task[];
-  @Input() public enablePagination: boolean = true;
+  @Input() public enablePagination = true;
   @Input() public tasksTotal: number;
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: SortField;
-  @Input() public addActionsColumn: boolean = true;
+  @Input() public addActionsColumn = true;
   @Input() public pagination: PaginationParameter;
   @Input() public showManage = {};
   @Input() public pageSessionKey: string;
@@ -48,19 +48,19 @@ export class TaskListComponent implements OnChanges {
 
   public displayedColumns: string[];
 
-  private selectedTask: Task;
-
   public defaultSortElement: HTMLElement;
   public newUrl: string;
 
-  constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {
+  private selectedTask: Task;
+
+  public constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {
   }
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
       return false;
     }
-    const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
+    const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
     return !(this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection);
   }
 
@@ -207,13 +207,13 @@ export class TaskListComponent implements OnChanges {
   public isPaginationEnabled(): boolean {
     return this.pagination &&
       this.enablePagination &&
-      typeof(this.tasks) !== 'undefined' &&
+      typeof (this.tasks) !== 'undefined' &&
       this.tasks.length > 0;
   }
 
   private setDefaultSort(): void {
-    const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
-    this.sortedBy = {fieldName: defaultSortFieldName, order: defaultSortDirection};
+    const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
+    this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
   }
 
   private setupHash(): void {

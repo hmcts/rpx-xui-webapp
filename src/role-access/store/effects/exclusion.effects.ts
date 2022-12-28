@@ -13,51 +13,50 @@ import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
 
 @Injectable()
 export class ExclusionEffects {
+
+  @Effect() public confirmExclusion$ = this.actions$
+  .pipe(
+    ofType<ConfirmExclusionAction>(ExclusionActionTypes.CONFIRM_EXCLUSION),
+    mergeMap(
+      (data) => this.roleExclusionsService.confirmExclusion(data.payload)
+        .pipe(
+          map(() => {
+            if (data.payload.exclusionOption === ExcludeOption.EXCLUDE_ME) {
+              return new routeAction.Go({
+                path: [`/work/my-work/list`],
+                extras: {
+                  state: {
+                    showMessage: true,
+                    message: { type: InfoMessageType.SUCCESS, message: ExclusionMessageText.ExcludeMe }
+                  }
+                }
+              });
+            }
+            // exclude another person
+            return new routeAction.CreateCaseGo({
+              path: [`/cases/case-details/${data.payload.caseId}/roles-and-access`],
+              caseId: data.payload.caseId,
+              extras: {
+                state: {
+                  showMessage: true,
+                  messageText: ExclusionMessageText.ExcludeAnother
+                }
+              }
+            });
+          }),
+          catchError(error => ExclusionEffects.handleError(error, ExclusionActionTypes.CONFIRM_EXCLUSION)
+          )
+        )
+    )
+  );
+
   private readonly payload: any;
 
-  constructor(
+  public constructor(
     private readonly actions$: Actions,
     private readonly roleExclusionsService: RoleExclusionsService
   ) {
   }
-
-  @Effect() public confirmExclusion$ = this.actions$
-    .pipe(
-      ofType<ConfirmExclusionAction>(ExclusionActionTypes.CONFIRM_EXCLUSION),
-      mergeMap(
-        (data) => this.roleExclusionsService.confirmExclusion(data.payload)
-          .pipe(
-            map(() => {
-              if (data.payload.exclusionOption === ExcludeOption.EXCLUDE_ME) {
-                return new routeAction.Go({
-                  path: [`/work/my-work/list`],
-                  extras: {
-                    state: {
-                      showMessage: true,
-                      message: { type: InfoMessageType.SUCCESS, message: ExclusionMessageText.ExcludeMe }
-                    }
-                  }
-                });
-              }
-              // exclude another person
-              return new routeAction.CreateCaseGo({
-                path: [`/cases/case-details/${data.payload.caseId}/roles-and-access`],
-                caseId: data.payload.caseId,
-                extras: {
-                  state: {
-                    showMessage: true,
-                    messageText: ExclusionMessageText.ExcludeAnother
-                  }
-                }
-              });
-            }),
-            catchError(error => {
-              return ExclusionEffects.handleError(error, ExclusionActionTypes.CONFIRM_EXCLUSION);
-            }
-            )
-          )
-      )
-    );
 
   public static handleError(error: RoleAccessHttpError, action?: string): Observable<Action> {
     if (error && error.status) {

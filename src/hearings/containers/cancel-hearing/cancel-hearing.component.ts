@@ -16,8 +16,8 @@ import * as fromHearingStore from '../../store';
 export class CancelHearingComponent implements OnInit {
   public hearingCancelOptions: LovRefDataModel[];
   public hearingCancelForm: FormGroup;
-  public validationErrors: { id: string, message: string }[] = [];
-  public selectionValid: boolean = true;
+  public validationErrors: { id: string; message: string }[] = [];
+  public selectionValid = true;
   public hearingId: string;
   public caseId: string;
   public caseHearing: HearingListModel;

@@ -20,8 +20,8 @@ describe('WorkAllocation', () => {
 
   describe('TaskNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
-    const TASK_NAME: string = 'Taskname';
-    const CASE_ID: string = 'CaseId';
+    const TASK_NAME = 'Taskname';
+    const CASE_ID = 'CaseId';
 
     let component: TaskNameFieldComponent;
     let wrapper: WrapperComponent;

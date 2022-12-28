@@ -8,11 +8,6 @@ import * as acceptTandCActions from '../actions';
 
 @Injectable()
 export class AcceptTcEffects {
-  constructor(
-    private readonly actions$: Actions,
-    private readonly acceptTcService: AcceptTermsService
-  ) { }
-
   @Effect()
   public loadHasAccepted$ = this.actions$.pipe(
     ofType(acceptTandCActions.LOAD_HAS_ACCEPTED_TC),
@@ -38,4 +33,9 @@ export class AcceptTcEffects {
       );
     })
   );
+
+  public constructor(
+    private readonly actions$: Actions,
+    private readonly acceptTcService: AcceptTermsService
+  ) { }
 }

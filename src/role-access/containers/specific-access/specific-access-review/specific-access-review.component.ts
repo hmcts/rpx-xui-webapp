@@ -22,8 +22,9 @@ import * as fromFeature from '../../../store';
 
 export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
 
-  public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: SpecificAccessNavigation;
+
+  public ERROR_MESSAGE = ERROR_MESSAGE;
   public title = SpecificAccessText.TITLE;
   public hint = SpecificAccessText.HINT;
   public caseRefLabel = SpecificAccessText.CASE_REF;
@@ -35,7 +36,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   };
   public optionsList: OptionsModel[];
 
-  public submitted: boolean = false;
+  public submitted = false;
 
   public requesterName: string;
 
@@ -48,12 +49,12 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
 
   public readonly accessReasons: DisplayedAccessReason[];
 
-  constructor(
+  public constructor(
     private readonly fb: FormBuilder,
     private readonly store: Store<fromFeature.State>,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly caseworkerDataService: CaseworkerDataService,
-    private waSupportedJurisdictionsService: WASupportedJurisdictionsService
+    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService
   ) {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
@@ -78,7 +79,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
           (caseworkers) => {
             const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.specificAccessStateData.actorId);
             if (caseworker) {
-              this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`
+              this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`;
             }
           });
       });
@@ -145,7 +146,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
                   requestCreated: specificAccess.requestCreated,
                   roleCategory: specificAccess.roleCategory,
                   person: { id: specificAccess.actorId, name: null, domain: null },
-                }
+                };
               }
             });
             this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessBody));

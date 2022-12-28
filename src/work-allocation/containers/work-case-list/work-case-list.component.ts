@@ -8,7 +8,6 @@ import CaseServiceConfig from '../../models/cases/case-service-config.model';
 import { FieldConfig, SortField } from '../../models/common';
 import { Location, PaginationParameter } from '../../models/dtos';
 
-
 @Component({
   selector: 'exui-work-case-list',
   templateUrl: './work-case-list.component.html',
@@ -25,11 +24,11 @@ export class WorkCaseListComponent implements OnChanges {
   @Input() public uniqueCases: number;
   @Input() public caseServiceConfig: CaseServiceConfig;
   @Input() public sortedBy: SortField;
-  @Input() public addActionsColumn: boolean = true;
+  @Input() public addActionsColumn = true;
   @Input() public pagination: PaginationParameter;
   @Input() public view: string;
   @Input() public showManage = {};
-  @Input() public showResultsSummary: boolean = true;
+  @Input() public showResultsSummary = true;
 
   /**
    * The message to display when there are no cases to display in the list.
@@ -51,10 +50,11 @@ export class WorkCaseListComponent implements OnChanges {
 
   public displayedColumns: string[];
 
-  private selectedCase: Case;
   public newUrl: string;
 
-  constructor(private readonly router: Router) {}
+  private selectedCase: Case;
+
+  public constructor(private readonly router: Router) {}
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {

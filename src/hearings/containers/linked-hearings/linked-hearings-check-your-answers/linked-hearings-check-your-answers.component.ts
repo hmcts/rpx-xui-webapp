@@ -42,10 +42,10 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   ];
   public error$: Observable<HttpError>;
   public isManageJourneyFinalPage: boolean;
-  public showSpinner: boolean = true;
+  public showSpinner = true;
   public hearingStageOptions: LovRefDataModel[];
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+  public constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {

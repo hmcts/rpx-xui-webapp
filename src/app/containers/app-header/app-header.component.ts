@@ -36,21 +36,21 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public userNav: UserNavModel;
   public backgroundColor: string;
   public logo: string;
-  public logoIsUsed: boolean = false;
+  public logoIsUsed = false;
   public showNavItems: Observable<boolean>;
 
   public featureToggleKey: string;
   public serviceMessageCookie: string;
   public userRoles: string[] = [];
-
-  private subscription: Subscription;
   public userDetails$: Observable<UserDetails>;
   public defaultTheme: ApplicationTheme = AppConstants.DEFAULT_USER_THEME;
   public defaultMenuItems: NavigationItem[] = AppConstants.DEFAULT_MENU_ITEMS;
   public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
+
+  private subscription: Subscription;
   private userDetails: UserDetails;
 
-  constructor(
+  public constructor(
     private readonly store: Store<fromActions.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly loggerService: LoggerService,

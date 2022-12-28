@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import { Action } from '@ngrx/store';
 
 export enum LoggerStateActionTypes {
@@ -11,33 +12,33 @@ export enum LoggerStateActionTypes {
 }
 
 export class Debug implements Action {
-  readonly type = LoggerStateActionTypes.Debug;
-  constructor(public payload: string) {}
+  public readonly type = LoggerStateActionTypes.Debug;
+  public constructor(public payload: string) {}
 }
 export class Trace implements Action {
-  readonly type = LoggerStateActionTypes.Trace;
-  constructor(public payload: string) {}
+  public readonly type = LoggerStateActionTypes.Trace;
+  public constructor(public payload: string) {}
 }
 export class Info implements Action {
-  readonly type = LoggerStateActionTypes.Info;
-  constructor(public payload: string) {}
+  public readonly type = LoggerStateActionTypes.Info;
+  public constructor(public payload: string) {}
 }
 export class Warning implements Action {
-  readonly type = LoggerStateActionTypes.Warning;
-  constructor(public payload: string) {}
+  public readonly type = LoggerStateActionTypes.Warning;
+  public constructor(public payload: string) {}
 
 }
 export class Error implements Action {
-  readonly type = LoggerStateActionTypes.Error;
-  constructor(public payload: string) {}
+  public readonly type = LoggerStateActionTypes.Error;
+  public constructor(public payload: string) {}
 }
 export class Fatal implements Action {
-  readonly type = LoggerStateActionTypes.Fatal;
-  constructor(public payload: string) {}
+  public readonly type = LoggerStateActionTypes.Fatal;
+  public constructor(public payload: string) {}
 }
 export class Clear implements Action {
-  readonly type = LoggerStateActionTypes.Clear;
-  constructor(public payload: string) {}
+  public readonly type = LoggerStateActionTypes.Clear;
+  public constructor(public payload: string) {}
 }
 
 

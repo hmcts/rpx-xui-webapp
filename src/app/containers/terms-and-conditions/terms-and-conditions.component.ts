@@ -12,11 +12,10 @@ import * as fromRoot from '../../store';
 export class TermsAndConditionsComponent implements OnInit, OnDestroy {
 
     public document: TCDocument = null;
+    public isTandCEnabled = false;
     private readonly subscriptions = new Subscription();
 
-    public isTandCEnabled: boolean = false;
-
-    constructor(private readonly store: Store<fromRoot.State>,
+    public constructor(private readonly store: Store<fromRoot.State>,
                 private readonly termsAndConditionsService: TermsConditionsService) {
     }
 

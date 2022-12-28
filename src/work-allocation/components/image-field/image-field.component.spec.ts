@@ -39,7 +39,7 @@ describe('WorkAllocation', () => {
 
 
       // Set up the image
-      const EXAMPLE_IMAGE: string = '/assets/images/test.jpg';
+      const EXAMPLE_IMAGE = '/assets/images/test.jpg';
 
       // Add the image src and it should now be available
       component.src = EXAMPLE_IMAGE;
@@ -78,8 +78,8 @@ describe('WorkAllocation', () => {
 
 
       // Set up the image
-      const EXAMPLE1_IMAGE: string = '/assets/images/test.jpg';
-      const EXAMPLE2_IMAGE: string = '/assets/images/govuk-crest.png';
+      const EXAMPLE1_IMAGE = '/assets/images/test.jpg';
+      const EXAMPLE2_IMAGE = '/assets/images/govuk-crest.png';
 
       // Add the first image src and it should now be available
       component.src = EXAMPLE1_IMAGE;
@@ -113,8 +113,8 @@ describe('WorkAllocation', () => {
 
 
       // Set up the image
-      const EXAMPLE_IMAGE: string = '/assets/images/test.jpg';
-      const ALT_STRING: string = 'Example for alt';
+      const EXAMPLE_IMAGE = '/assets/images/test.jpg';
+      const ALT_STRING = 'Example for alt';
 
       // Add the image src and it should now be available with default Image alt setting
       component.src = EXAMPLE_IMAGE;

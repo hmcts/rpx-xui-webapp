@@ -17,7 +17,7 @@ class WrapperComponent {
 describe('WorkAllocation', () => {
 
   describe('AccessViewFieldComponent', () => {
-    const REJECTED_REQUEST_URL: string = `/role-access/rejected-request`;
+    const REJECTED_REQUEST_URL = `/role-access/rejected-request`;
 
     let component: AccessViewFieldComponent;
     let wrapper: WrapperComponent;

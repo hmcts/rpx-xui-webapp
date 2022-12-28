@@ -43,6 +43,7 @@ import {
   EnvironmentConfig,
   ENVIRONMENT_CONFIG
 } from '../models/environmentConfig.model';
+import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { initApplication } from './app-initilizer';
 // app routes
 import { ROUTES, routingConfiguration } from './app.routes';
@@ -50,7 +51,6 @@ import { AppComponent } from './containers/app/app.component';
 // common provider
 import { ProvidersModule } from './providers/providers.module';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
@@ -68,11 +68,9 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
   : [];
 
-export function launchDarklyClientIdFactory(
+export const launchDarklyClientIdFactory = (
   envConfig: EnvironmentConfig
-): string {
-  return envConfig.launchDarklyClientId || '';
-}
+): string => envConfig.launchDarklyClientId || '';
 
 @NgModule({
   declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent  ],

@@ -26,9 +26,18 @@ export class TaskActionContainerComponent implements OnInit {
   public tasks: any [];
   public sortedBy: any;
   public routeData: RouteData;
-  protected userDetailsKey: string = 'userDetails';
   public isJudicial: boolean;
-  constructor(
+
+  public taskServiceConfig: TaskServiceConfig = {
+    service: TaskService.IAC,
+    defaultSortDirection: SortOrder.ASC,
+    defaultSortFieldName: 'dueDate',
+    fields: this.fields,
+  };
+
+  protected userDetailsKey = 'userDetails';
+
+  public constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -52,12 +61,6 @@ export class TaskActionContainerComponent implements OnInit {
     return '/work/my-work/list';
   }
 
-  public taskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: SortOrder.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
   public ngOnInit(): void {
     this.isJudicial = this.isCurrentUserJudicial();
     // Set up the default sorting.
@@ -77,9 +80,23 @@ export class TaskActionContainerComponent implements OnInit {
       if (!this.tasks[0].assigneeName) {
         this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe(judicialDetails => {
           this.tasks[0].assigneeName = judicialDetails[0].known_as;
-        })
+        });
       }
     }
+  }
+
+  public returnWithMessage(message: InformationMessage, state: any): void {
+    if (message) {
+      if (this.returnUrl.includes('case-details')) {
+        state = {
+          showMessage: true,
+          messageText: message.message
+        };
+      } else {
+        this.messageService.nextMessage(message);
+      }
+    }
+    this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
   }
 
   public isCurrentUserJudicial(): boolean {
@@ -89,7 +106,7 @@ export class TaskActionContainerComponent implements OnInit {
       const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
       return isJudge;
     }
-    return false
+    return false;
   }
 
   public performAction(): void {
@@ -152,19 +169,5 @@ export class TaskActionContainerComponent implements OnInit {
       { type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE },
       { badRequest: true }
     );
-  }
-
-  public returnWithMessage(message: InformationMessage, state: any): void {
-    if (message) {
-      if (this.returnUrl.includes('case-details')) {
-        state = {
-          showMessage: true,
-          messageText: message.message
-        };
-      } else {
-        this.messageService.nextMessage(message);
-      }
-    }
-    this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
   }
 }

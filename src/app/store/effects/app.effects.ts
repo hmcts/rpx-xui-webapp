@@ -12,16 +12,6 @@ import * as fromActions from '../actions';
 
 @Injectable()
 export class AppEffects {
-  constructor(
-    private readonly actions$: Actions,
-    private readonly configurationServices: AppConfigService,
-    private readonly authService: AuthService,
-    private readonly termsService: TermsConditionsService,
-    private readonly userService: UserService,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly roleService: RoleService
-  ) { }
-
   @Effect()
   public config = this.actions$.pipe(
     ofType(fromActions.APP_LOAD_CONFIG),
@@ -96,4 +86,14 @@ export class AppEffects {
       );
     })
   );
+
+  public constructor(
+    private readonly actions$: Actions,
+    private readonly configurationServices: AppConfigService,
+    private readonly authService: AuthService,
+    private readonly termsService: TermsConditionsService,
+    private readonly userService: UserService,
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly roleService: RoleService
+  ) { }
 }

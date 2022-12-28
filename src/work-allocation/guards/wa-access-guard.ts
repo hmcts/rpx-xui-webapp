@@ -7,8 +7,8 @@ import { AppConstants } from '../../app/app.constants';
 
 @Injectable()
 export class WorkAllocationAccessGuard implements CanActivate {
-  public static defaultUrl: string = '/cases';
-  constructor(private readonly featureToggleService: FeatureToggleService,
+  public static defaultUrl = '/cases';
+  public constructor(private readonly featureToggleService: FeatureToggleService,
               private readonly router: Router) {
   }
 

@@ -13,10 +13,10 @@ export const initialState: OrganisationState = {
   loading: false,
 };
 
-export function reducer(
+export const reducer = (
   state = initialState,
   action: fromOrganisation.organisationActions
-): OrganisationState {
+): OrganisationState => {
   switch (action.type) {
     case fromOrganisation.LOAD_ORGANISATION: {
       return {
@@ -36,7 +36,7 @@ export function reducer(
     default:
       return state;
   }
-}
+};
 
 export const getOrganisation = (state: OrganisationState) => state.organisationDetails;
 export const getOrganisationLoaded = (state: OrganisationState) => state.loaded;

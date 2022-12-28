@@ -10,11 +10,11 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/
   providedIn: 'root'
 })
 export class CaseAllocateRoleLinkResolverService implements Resolve<boolean> {
-  private static CASE_ALLOCATE_ROLE_LINK_URL: string = '/workallocation/roles';
+  private static readonly CASE_ALLOCATE_ROLE_LINK_URL = '/workallocation/roles';
   private caseId: string = null;
   private showAllocateRoleLink: boolean = null;
 
-  constructor(private readonly http: HttpClient, private readonly router: Router) {
+  public constructor(private readonly http: HttpClient, private readonly router: Router) {
   }
 
   public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {

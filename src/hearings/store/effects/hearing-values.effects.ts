@@ -13,14 +13,6 @@ import * as fromHearingReducers from '../../store/reducers';
 @Injectable()
 export class HearingValuesEffects {
 
-  constructor(
-    private readonly actions$: Actions,
-    private readonly hearingStore: Store<fromHearingReducers.State>,
-    private readonly hearingsService: HearingsService,
-    private readonly sessionStorage: SessionStorageService,
-  ) {
-  }
-
   @Effect()
   public loadHearingValue$ = this.actions$.pipe(
     ofType(hearingValuesActions.LOAD_HEARING_VALUES),
@@ -38,6 +30,14 @@ export class HearingValuesEffects {
       );
     })
   );
+
+  public constructor(
+    private readonly actions$: Actions,
+    private readonly hearingStore: Store<fromHearingReducers.State>,
+    private readonly hearingsService: HearingsService,
+    private readonly sessionStorage: SessionStorageService,
+  ) {
+  }
 
   public static handleError(error: HttpError, caseId: string): Observable<Action> {
     if (error && error.status) {

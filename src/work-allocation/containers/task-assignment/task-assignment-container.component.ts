@@ -22,7 +22,7 @@ import { TaskServiceConfig } from '../../models/tasks';
 export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public error: ErrorMessage = null;
   public tasks: any[];
-  public showManage: boolean = false;
+  public showManage = false;
   public caseworker: Caseworker;
   public verb: TaskActionType;
   public location: Location;
@@ -43,10 +43,10 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-  protected userDetailsKey: string = 'userDetails';
+  protected userDetailsKey = 'userDetails';
   private readonly assignTask: Subscription;
 
-  constructor(
+  public constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly angularLocation: AngularLocation,
@@ -63,7 +63,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   private get returnUrl(): string {
     // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
     // buttons, which clear the `window.history.state` object
-    let url: string = '';
+    let url = '';
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
     if (window && window.history && window.history.state && window.history.state.returnUrl) {

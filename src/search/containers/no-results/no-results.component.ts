@@ -11,11 +11,11 @@ import { NoResultsMessageId } from '../../enums';
 })
 export class NoResultsComponent implements OnInit {
 
-  private readonly extras: NavigationExtras;
   public messageId: number;
   public noResultsMessageId = NoResultsMessageId;
+  private readonly extras: NavigationExtras;
 
-  constructor(private readonly store: Store<fromActions.State>,
+  public constructor(private readonly store: Store<fromActions.State>,
               private readonly router: Router) {
     // Get current navigation
     const currentNavigation = this.router.getCurrentNavigation();

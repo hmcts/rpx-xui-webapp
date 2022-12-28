@@ -1,34 +1,34 @@
 export interface RoleRequestPayload {
-  roleRequest: RoleRequest,
+  roleRequest: RoleRequest
   requestedRoles: RequestedRole[]
 }
 
 export interface RequestedRole {
-  actorIdType: 'IDAM',
-  actorId: string,
-  roleType: RoleType,
-  roleName: string,
-  classification: RoleClassification,
-  grantType: RoleGrantTypeCategory,
-  roleCategory: RoleCategory,
-  readOnly?: boolean,
-  beginTime: Date,
-  endTime: Date,
-  authorisations?: string[],
-  attributes: object,
+  actorIdType: 'IDAM'
+  actorId: string
+  roleType: RoleType
+  roleName: string
+  classification: RoleClassification
+  grantType: RoleGrantTypeCategory
+  roleCategory: RoleCategory
+  readOnly?: boolean
+  beginTime: Date
+  endTime: Date
+  authorisations?: string[]
+  attributes: Record<string, unknown>
   notes: RequestedRoleNote[]
 }
 
 export interface RoleRequest {
-  assignerId: string,
-  process: string,
-  replaceExisting: boolean,
+  assignerId: string
+  process: string
+  replaceExisting: boolean
   reference: string
 }
 
 export interface RequestedRoleNote {
-  userId: string,
-  time: Date,
+  userId: string
+  time: Date
   comment: string
 }
 

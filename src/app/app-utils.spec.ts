@@ -90,7 +90,7 @@ describe('setActiveLink', () => {
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
     ];
-    const CURRENT_URL: string = '/a';
+    const CURRENT_URL = '/a';
     const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
     expect(result.length).toEqual(ITEMS.length);
     expect(result[0].active).toEqual(true);
@@ -107,7 +107,7 @@ describe('setActiveLink', () => {
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
     ];
-    const CURRENT_URL: string = '/b';
+    const CURRENT_URL = '/b';
     const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
     expect(result.length).toEqual(ITEMS.length);
     expect(result[0].active).toEqual(false);
@@ -125,7 +125,7 @@ describe('setActiveLink', () => {
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
     ];
-    const CURRENT_URL: string = '/d';
+    const CURRENT_URL = '/d';
     const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
     expect(result.length).toEqual(ITEMS.length);
     expect(result[0].active).toEqual(false);

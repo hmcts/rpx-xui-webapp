@@ -41,7 +41,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public latestDateOfHearingError: ErrorMessagesModel;
   public priorityFormInfo: { days: string, hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
 
-  constructor(private readonly formBuilder: FormBuilder,
+  public constructor(private readonly formBuilder: FormBuilder,
               protected readonly route: ActivatedRoute,
               private readonly validatorsUtils: ValidatorsUtils,
               protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -77,14 +77,12 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   public getFormData(): void {
     let duration: number;
-    let hearingWindow: HearingWindowModel;
     let startDate: Date = null;
     let firstDate: Date = null;
     let secondDate: Date = null;
-    let priority: string;
     duration = this.hearingRequestMainModel.hearingDetails.duration ?
       this.hearingRequestMainModel.hearingDetails.duration : 0;
-    hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+    const hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
     if (hearingWindow && (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd)) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
       startDate = hearingWindow.dateRangeStart && new Date(hearingWindow.dateRangeStart);
@@ -95,7 +93,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     } else if (hearingWindow === null) {
       this.checkedHearingAvailability = RadioOptions.NO;
     }
-    priority = this.hearingRequestMainModel.hearingDetails.hearingPriorityType ?
+    const priority = this.hearingRequestMainModel.hearingDetails.hearingPriorityType ?
       this.hearingRequestMainModel.hearingDetails.hearingPriorityType : '';
 
     let days = 0;

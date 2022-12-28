@@ -11,17 +11,18 @@ import {ValidatorsUtils} from '../../utils/validators.utils';
 })
 export class HearingJudgeNamesListComponent {
   @Input() public subTitle: string;
-  @Input() public idValue: string = 'Exclude';
-  @Input() public serviceId: string = '';
-  @Input() public placeholderContent: string = '';
-  @Input() public submitButtonName: string = '';
+  @Input() public idValue = 'Exclude';
+  @Input() public serviceId = '';
+  @Input() public placeholderContent = '';
+  @Input() public submitButtonName = '';
   @Input() public isColumnView: boolean;
   @Input() public judgeList: JudicialUserModel[];
-  public validationError: { id: string, message: string };
+
+  public validationError: { id: string; message: string };
   public selectedJudge: JudicialUserModel;
   public personFormGroup: FormGroup;
 
-  constructor(private readonly formBuilder: FormBuilder,
+  public constructor(private readonly formBuilder: FormBuilder,
               private readonly validatorsUtils: ValidatorsUtils) {
     this.personFormGroup = this.formBuilder.group({ selectedFormControl: '' });
   }

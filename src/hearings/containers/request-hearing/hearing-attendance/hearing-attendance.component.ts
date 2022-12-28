@@ -22,14 +22,14 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 export class HearingAttendanceComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public attendanceFormGroup: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
-  public hint: string = 'Where known, contact details for remote attendees will be included in the request.';
-  public title: string = 'Participant attendance';
+  public hint = 'Where known, contact details for remote attendees will be included in the request.';
+  public title = 'Participant attendance';
   public partiesFormArray: FormArray;
-  public formValid: boolean = true;
+  public formValid = true;
   public partyChannels$: Observable<LovRefDataModel[]>;
-  public selectionValid: boolean = true;
+  public selectionValid = true;
 
-  constructor(
+  public constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     private readonly validatorsUtils: ValidatorsUtils,
@@ -120,6 +120,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         hearingChannels,
+        // eslint-disable-next-line radix
         numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
       }
     };

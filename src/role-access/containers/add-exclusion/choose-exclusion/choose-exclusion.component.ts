@@ -19,13 +19,14 @@ import * as fromFeature from '../../../store';
 
 export class ChooseExclusionComponent implements OnInit, OnDestroy {
 
-  public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
+
+  public ERROR_MESSAGE = ERROR_MESSAGE;
   public title = RoleAllocationTitleText.ExclusionAllocate;
   public caption = RoleAllocationCaptionText.Exclusion;
   public userDetails$: Observable<UserDetails>;
 
-  public submitted: boolean = false;
+  public submitted = false;
 
   public formGroup: FormGroup;
   public radioOptionControl: FormControl;
@@ -44,7 +45,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
   };
   public optionsList: OptionsModel[] = [this.excludeMe, this.excludeOther];
 
-  constructor(private readonly store: Store<fromFeature.State>) {
+  public constructor(private readonly store: Store<fromFeature.State>) {
   }
 
   public ngOnInit(): void {

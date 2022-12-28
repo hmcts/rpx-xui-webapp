@@ -28,12 +28,11 @@ export class RemoveRoleComponent implements OnInit {
   public heading = RemoveRoleText.heading;
   public hint = RemoveRoleText.hint;
   public role: CaseRole;
+  public showSpinner: boolean;
 
   private backUrl: string;
 
-  public showSpinner: boolean;
-
-  constructor(private readonly route: ActivatedRoute,
+  public constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
               private readonly location: Location,
               private readonly allocateRoleService: AllocateRoleService,
@@ -45,9 +44,7 @@ export class RemoveRoleComponent implements OnInit {
   public ngOnInit(): void {
     this.backUrl = window.history.state && window.history.state.backUrl ? window.history.state.backUrl : '';
     const paramMap$ = this.route.queryParamMap;
-    paramMap$.pipe(mergeMap(queryMap => {
-      return this.getRoleAssignmentFromQuery(queryMap);
-    })).subscribe((caseRoles: CaseRole[]) => {
+    paramMap$.pipe(mergeMap(queryMap => this.getRoleAssignmentFromQuery(queryMap))).subscribe((caseRoles: CaseRole[]) => {
       this.role = caseRoles.find(role => role.id === this.assignmentId);
       if (!this.role.email && this.role.actorId) {
         const caseworkers = JSON.parse(this.sessionStorageService.getItem('caseworkers'));

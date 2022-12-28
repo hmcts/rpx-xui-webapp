@@ -28,7 +28,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
     return ConfigConstants.MyCases;
   }
 
-  public backUrl: string = 'work/my-work/my-cases';
+  public backUrl = 'work/my-work/my-cases';
 
   public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');

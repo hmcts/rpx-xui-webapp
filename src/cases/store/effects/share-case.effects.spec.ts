@@ -19,7 +19,7 @@ import {
   LoadUserFromOrgForCase,
   LoadUserFromOrgForCaseSuccess
 } from '../actions';
-// tslint:disable-next-line:no-duplicate-imports
+// eslint-disable-next-line no-duplicate-imports
 import * as fromShareCaseEffects from './share-case.effects';
 import { ShareCaseEffects } from './share-case.effects';
 

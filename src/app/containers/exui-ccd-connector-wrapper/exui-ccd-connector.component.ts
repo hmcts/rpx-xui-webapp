@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 /**
  * CCD Connector
  * Smart Components responsible for connecting CCD components to ExUI App
+ *
  * @Input store - passing on generic store used to dispatch actions
  * @Input fromFeatureStore - specific store actions
  * @Input eventsBindings - bind CCD event to ExUI actions
@@ -33,7 +34,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
   @HostBinding('attr.data-selector') public hostBindingValue: string;
 
   public subscriptions: Subscription[] = [];
-  public dispatcherContainer: { type: string } | {};
+  public dispatcherContainer: { type: string } | any;
 
   public ngAfterContentInit() {
     if (this.ccdComponent) {

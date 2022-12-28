@@ -14,9 +14,9 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 export class HearingWelshComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public error: ErrorMessage = null;
   public welshForm: FormGroup;
-  public hearingInWelshFlag: boolean = false;
+  public hearingInWelshFlag = false;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+  public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);

@@ -21,7 +21,8 @@ import * as fromCasesFeature from '../../store';
 })
 export class CaseSearchComponent implements OnInit, OnDestroy {
   public caseSearchFilterEventsBindings: ActionBindingModel[];
-  public fromCasesFeature; public any;
+  // eslint-disable-next-line id-blacklist
+  public fromCasesFeature; public any: any;
 
   public jurisdiction$: Observable<Jurisdiction>;
   public caseType$: Observable<CaseType>;
@@ -53,14 +54,14 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   public state: any;
   public toggleButtonName: string;
 
-  public elasticSearchFlag: boolean = false;
+  public elasticSearchFlag = false;
   public elasticSearchFlagSubsription: Subscription;
 
   public sortParameters;
 
-  public resultViewIsReady: boolean = false;
+  public resultViewIsReady = false;
 
-  constructor(
+  public constructor(
     public store: Store<fromCasesFeature.State>,
     private readonly appConfig: AppConfig,
     private readonly featureToggleService: FeatureToggleService,
@@ -121,7 +122,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
       this.onPaginationSubscribeHandler(paginationMetadata));
-  }
+  };
 
   /**
    * Handles the return of Pagination Metadata.
@@ -138,7 +139,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
       }
     }
-  }
+  };
 
   public onResultsViewHandler = resultView => {
     if (this.elasticSearchFlag) {
@@ -155,15 +156,13 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.resultView = {
       ...resultView,
       columns: resultView.columns ? resultView.columns : [],
-      results: resultView.results ? resultView.results.map(item => {
-        return {
+      results: resultView.results ? resultView.results.map(item => ({
           ...item,
           hydrated_case_fields: null
-        };
-      }) : [],
+        })) : [],
       hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
     };
-  }
+  };
 
   public getEvent() {
     let event = null;
@@ -232,14 +231,6 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.getElasticSearchResults();
   }
 
-  private triggerQuery() {
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata();
-    } else {
-      this.getElasticSearchResults();
-    }
-  }
-
   public ngOnDestroy() {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
@@ -255,6 +246,14 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     if (this.elasticSearchFlagSubsription) {
       this.elasticSearchFlagSubsription.unsubscribe();
+    }
+  }
+
+  private triggerQuery() {
+    if (!this.elasticSearchFlag) {
+      this.findCaseListPaginationMetadata();
+    } else {
+      this.getElasticSearchResults();
     }
   }
 

@@ -5,9 +5,9 @@ import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 import * as fromHearingStore from '../store';
 
 export class ServiceIdResolverResolve {
-  public serviceId: string = '';
+  public serviceId = '';
 
-  constructor(
+  public constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>
   ) { }
 

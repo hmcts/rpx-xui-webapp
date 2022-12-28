@@ -1,10 +1,11 @@
 import { SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 
-const BLANK_SPACE: string = ' ';
-const EMPTY_SPACE: string = '';
-const VERSUS_SPACE: string = ' Vs ';
-export function toShareCaseConverter(selectedCases: SearchResultViewItem[]): SharedCase[] {
+const BLANK_SPACE = ' ';
+const EMPTY_SPACE = '';
+const VERSUS_SPACE = ' Vs ';
+
+export const toShareCaseConverter = (selectedCases: SearchResultViewItem[]): SharedCase[] => {
   const sharedCases: SharedCase[] = [];
   for (const selectCase of selectedCases) {
     const caseTypeId = getValueByPropertyName(selectCase, '[CASE_TYPE]');
@@ -17,9 +18,9 @@ export function toShareCaseConverter(selectedCases: SearchResultViewItem[]): Sha
     sharedCases.push(shareCase);
   }
   return sharedCases;
-}
+};
 
-export function toSearchResultViewItemConverter(shareCases: SharedCase[]): SearchResultViewItem[] {
+export const toSearchResultViewItemConverter = (shareCases: SharedCase[]): SearchResultViewItem[] => {
   const searchResultViewItems: SearchResultViewItem[] = [];
   for (const shareCase of shareCases) {
     const searchResultViewItem = {
@@ -32,14 +33,12 @@ export function toSearchResultViewItemConverter(shareCases: SharedCase[]): Searc
     searchResultViewItems.push(searchResultViewItem);
   }
   return searchResultViewItems;
-}
+};
 
-function getValueByPropertyName(selectCase: SearchResultViewItem, propName: string): any {
-  return selectCase.case_fields && selectCase.case_fields.hasOwnProperty(propName) ?
+const getValueByPropertyName = (selectCase: SearchResultViewItem, propName: string): any => selectCase.case_fields && selectCase.case_fields.hasOwnProperty(propName) ?
     selectCase.case_fields[propName] : '';
-}
 
-function combineCaseTitleByCaseType(caseTypeId: string, selectCase: SearchResultViewItem): string {
+const combineCaseTitleByCaseType = (caseTypeId: string, selectCase: SearchResultViewItem): string => {
   if (caseTypeId.includes('FinancialRemedy')) {
     const applicantName = getApplicantName(selectCase);
     const respondentName = getRespondentName(selectCase);
@@ -51,15 +50,15 @@ function combineCaseTitleByCaseType(caseTypeId: string, selectCase: SearchResult
   } else {
     return selectCase.case_id;
   }
-}
+};
 
-function getApplicantName(selectCase: SearchResultViewItem) {
+const getApplicantName = (selectCase: SearchResultViewItem) => {
   return getValueByPropertyName(selectCase, 'applicantFMName') && getValueByPropertyName(selectCase, 'applicantLName') ?
     getValueByPropertyName(selectCase, 'applicantFMName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'applicantLName') :
     getValueByPropertyName(selectCase, 'applicantLName') ? getValueByPropertyName(selectCase, 'applicantLName') : EMPTY_SPACE;
 }
 
-function getRespondentName(selectCase: SearchResultViewItem) {
+const getRespondentName = (selectCase: SearchResultViewItem) => {
   let respondentName = getValueByPropertyName(selectCase, 'appRespondentFMName') && getValueByPropertyName(selectCase, 'appRespondentLName') ?
     getValueByPropertyName(selectCase, 'appRespondentFMName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'appRespondentLName') :
     getValueByPropertyName(selectCase, 'appRespondentLName') ? getValueByPropertyName(selectCase, 'appRespondentLName') : EMPTY_SPACE;
@@ -69,12 +68,12 @@ function getRespondentName(selectCase: SearchResultViewItem) {
       getValueByPropertyName(selectCase, 'respondentLName') ? getValueByPropertyName(selectCase, 'respondentLName') : EMPTY_SPACE;
   }
   return respondentName;
-}
+};
 
-function showVersus(v1, v2) {
+const showVersus = (v1, v2) => {
   if (v1 && v2) {
     return VERSUS_SPACE;
   } else {
     return EMPTY_SPACE;
   }
-}
+};

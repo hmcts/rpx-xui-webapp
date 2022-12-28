@@ -42,7 +42,7 @@ describe('WorkAllocation', () => {
 
 
       // Set up the href
-      const HMCTS_URL: string = 'http://hmcts.gov.uk';
+      const HMCTS_URL = 'http://hmcts.gov.uk';
 
       // Add the href and it should now be available
       component.href = HMCTS_URL;
@@ -71,8 +71,8 @@ describe('WorkAllocation', () => {
 
 
       // Set up the href
-      const HMCTS_URL: string = 'http://hmcts.gov.uk';
-      const GOOGLE_URL: string = 'http://google.co.uk';
+      const HMCTS_URL = 'http://hmcts.gov.uk';
+      const GOOGLE_URL = 'http://google.co.uk';
 
       // Add the href and it should now be available
       component.href = HMCTS_URL;
@@ -94,8 +94,8 @@ describe('WorkAllocation', () => {
     it('should show the label if the label and href is provided', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
-      const label: string = 'Example label';
-      const HMCTS_URL: string = 'http://hmcts.gov.uk';
+      const label = 'Example label';
+      const HMCTS_URL = 'http://hmcts.gov.uk';
 
 
       // Add the label and make sure it does not display
@@ -117,9 +117,9 @@ describe('WorkAllocation', () => {
     it('should allow a target string to be applied', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
-      const initial: string = '_self';
-      const target: string = 'Example label';
-      const HMCTS_URL: string = 'http://hmcts.gov.uk';
+      const initial = '_self';
+      const target = 'Example label';
+      const HMCTS_URL = 'http://hmcts.gov.uk';
 
 
       // Verify HTML object does not yet exist

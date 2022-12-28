@@ -19,9 +19,7 @@ class WrapperComponent {
 /**
  * Mock tasks
  */
-function getTasks(): Task[] {
-  return getMockTasks();
-}
+const getTasks = (): Task[] => getMockTasks();
 
 describe('WorkAllocation', () => {
 
@@ -48,8 +46,8 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('svg');
 
       // Set up the column names
-      const firstExampleColumn: string = 'location';
-      const secondExampleColumn: string = 'caseName';
+      const firstExampleColumn = 'location';
+      const secondExampleColumn = 'caseName';
 
       // Set the task, column and value to match with
       component.task = getTasks()[0];
@@ -93,8 +91,8 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('svg');
 
       // Set up the column names
-      const firstExampleColumn: string = 'location';
-      const secondExampleColumn: string = 'caseName';
+      const firstExampleColumn = 'location';
+      const secondExampleColumn = 'caseName';
 
       // Set the task, column and value to match with
       component.task = getTasks()[0];
@@ -124,8 +122,8 @@ describe('WorkAllocation', () => {
         let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('svg');
 
         // Set up the column names
-        const firstExampleColumn: string = 'location';
-        const hoverWarning: string = 'this is a warning message 3';
+        const firstExampleColumn = 'location';
+        const hoverWarning = 'this is a warning message 3';
 
         // Set the task, column and value to match with
         component.task = getTasks()[0];

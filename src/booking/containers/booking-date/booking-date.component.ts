@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
-import { BookingDateValidationError, BookingNavigationEvent, BookingProcess } from '../../models';
-import { DateValidators } from '../utils';
-
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { BookingDateValidationError, BookingNavigationEvent, BookingProcess } from '../../models';
+import { DateValidators } from '../utils';
+
 import {
   BookingDateFormErrorMessage,
   BookingDateOption,
@@ -36,7 +36,7 @@ export class BookingDateComponent implements OnInit {
   public endDateErrorMessage: ErrorMessagesModel;
   public formStatus: string;
 
-  constructor(
+  public constructor(
     private readonly fb: FormBuilder
   ) {
     this.dateInterval = [
@@ -84,77 +84,6 @@ export class BookingDateComponent implements OnInit {
     this.setValidators();
   }
 
-  private displayBookingDates(): void {
-    this.formGroup.get(DateFormControl.BOOKING_START_DAY).setValue(this.bookingProcess.startDate.getDate().toString().padStart(2, '0'));
-    this.formGroup.get(DateFormControl.BOOKING_START_MONTH).setValue((this.bookingProcess.startDate.getMonth() + 1).toString().padStart(2, '0'));
-    this.formGroup.get(DateFormControl.BOOKING_START_YEAR).setValue(this.bookingProcess.startDate.getFullYear());
-    this.formGroup.get(DateFormControl.BOOKING_END_DAY).setValue(this.bookingProcess.endDate.getDate().toString().padStart(2, '0'));
-    this.formGroup.get(DateFormControl.BOOKING_END_MONTH).setValue((this.bookingProcess.endDate.getMonth() + 1).toString().padStart(2, '0'));
-    this.formGroup.get(DateFormControl.BOOKING_END_YEAR).setValue(this.bookingProcess.endDate.getFullYear());
-  }
-
-  public setValidators(): void {
-    const bookingDateValidator = DateValidators.bookingDateValidator();
-    const bookingEmptyValidator = DateValidators.bookingEmptyValidator();
-    this.formGroup.setValidators([bookingDateValidator, bookingEmptyValidator]);
-    this.formGroup.updateValueAndValidity();
-    this.formGroup.get(DateFormControl.BOOKING_START_DAY).updateValueAndValidity();
-    this.formGroup.get(DateFormControl.BOOKING_END_DAY).updateValueAndValidity();
-  }
-
-  private validateForm(): boolean {
-    // Reset validation error messages
-    this.resetValidationErrorMessages();
-    this.formGroup.updateValueAndValidity();
-    this.formGroup.get(DateFormControl.BOOKING_START_DAY).updateValueAndValidity();
-    this.formGroup.get(DateFormControl.BOOKING_END_DAY).updateValueAndValidity();
-
-    if (!this.formGroup.valid) {
-      if (this.formGroup.errors && this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_BOTH_DATE_EMPTY_CHECK) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED });
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_END_DAY, documentHRef: this.configEnd.id, errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED });
-        this.startDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED] };
-        this.endDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED] };
-        return false;
-      }
-      if (this.formGroup.errors && this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED });
-        this.startDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED] };
-        return false;
-      }
-      if (this.formGroup.errors && this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_END_DAY, documentHRef: this.configEnd.id, errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED });
-        this.endDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED] };
-        return false;
-      }
-      if (! this.formGroup.get(DateFormControl.BOOKING_START_DAY).valid) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_FAILED });
-        this.startDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_FAILED] };
-      }
-      if (!this.formGroup.get(DateFormControl.BOOKING_END_DAY).valid) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_END_DAY, documentHRef: this.configEnd.id, errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_FAILED });
-        this.endDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_FAILED] };
-      }
-      if (!this.formGroup.get(DateFormControl.BOOKING_DATE_TYPE).valid) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.NO_SELECTION });
-      }
-      switch (this.formGroup.errors && this.formGroup.errors.errorType) {
-        case BookingDateFormErrorMessage.PAST_DATE_CHECK:
-          this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.PAST_DATE_CHECK_FAILED });
-          break;
-        case BookingDateFormErrorMessage.DATE_COMPARISON:
-          this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_DATE_COMPARISON_FAILED });
-          break;
-        default:
-          break;
-      }
-    }
-    if (this.isAnyError()) {
-      return false;
-    } else {
-      return true;
-    }
-  }
 
   public resetValidationErrorMessages(): void {
     this.dateValidationErrors = [];
@@ -176,7 +105,7 @@ export class BookingDateComponent implements OnInit {
     this.bookingProcess.selectedDateOption = selectedOption;
   }
 
-  public getStartEndDate(bookingDateOption: BookingDateOption): {startDate: Date, endDate: Date} {
+  public getStartEndDate(bookingDateOption: BookingDateOption): {startDate: Date; endDate: Date} {
     let startDate: Date;
     let endDate: Date;
     switch (bookingDateOption) {
@@ -234,10 +163,82 @@ export class BookingDateComponent implements OnInit {
       this.submitted = true;
     }
   }
+
+  public setValidators(): void {
+    const bookingDateValidator = DateValidators.bookingDateValidator();
+    const bookingEmptyValidator = DateValidators.bookingEmptyValidator();
+    this.formGroup.setValidators([bookingDateValidator, bookingEmptyValidator]);
+    this.formGroup.updateValueAndValidity();
+    this.formGroup.get(DateFormControl.BOOKING_START_DAY).updateValueAndValidity();
+    this.formGroup.get(DateFormControl.BOOKING_END_DAY).updateValueAndValidity();
+  }
+
+  private displayBookingDates(): void {
+    this.formGroup.get(DateFormControl.BOOKING_START_DAY).setValue(this.bookingProcess.startDate.getDate().toString().padStart(2, '0'));
+    this.formGroup.get(DateFormControl.BOOKING_START_MONTH).setValue((this.bookingProcess.startDate.getMonth() + 1).toString().padStart(2, '0'));
+    this.formGroup.get(DateFormControl.BOOKING_START_YEAR).setValue(this.bookingProcess.startDate.getFullYear());
+    this.formGroup.get(DateFormControl.BOOKING_END_DAY).setValue(this.bookingProcess.endDate.getDate().toString().padStart(2, '0'));
+    this.formGroup.get(DateFormControl.BOOKING_END_MONTH).setValue((this.bookingProcess.endDate.getMonth() + 1).toString().padStart(2, '0'));
+    this.formGroup.get(DateFormControl.BOOKING_END_YEAR).setValue(this.bookingProcess.endDate.getFullYear());
+  }
+
+  private validateForm(): boolean {
+    // Reset validation error messages
+    this.resetValidationErrorMessages();
+    this.formGroup.updateValueAndValidity();
+    this.formGroup.get(DateFormControl.BOOKING_START_DAY).updateValueAndValidity();
+    this.formGroup.get(DateFormControl.BOOKING_END_DAY).updateValueAndValidity();
+
+    if (!this.formGroup.valid) {
+      if (this.formGroup.errors && this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_BOTH_DATE_EMPTY_CHECK) {
+        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED });
+        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_END_DAY, documentHRef: this.configEnd.id, errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED });
+        this.startDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED] };
+        this.endDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED] };
+        return false;
+      }
+      if (this.formGroup.errors && this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK) {
+        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED });
+        this.startDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED] };
+        return false;
+      }
+      if (this.formGroup.errors && this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK) {
+        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_END_DAY, documentHRef: this.configEnd.id, errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED });
+        this.endDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED] };
+        return false;
+      }
+      if (! this.formGroup.get(DateFormControl.BOOKING_START_DAY).valid) {
+        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_FAILED });
+        this.startDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_FAILED] };
+      }
+      if (!this.formGroup.get(DateFormControl.BOOKING_END_DAY).valid) {
+        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_END_DAY, documentHRef: this.configEnd.id, errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_FAILED });
+        this.endDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_FAILED] };
+      }
+      if (!this.formGroup.get(DateFormControl.BOOKING_DATE_TYPE).valid) {
+        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.NO_SELECTION });
+      }
+      switch (this.formGroup.errors && this.formGroup.errors.errorType) {
+        case BookingDateFormErrorMessage.PAST_DATE_CHECK:
+          this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.PAST_DATE_CHECK_FAILED });
+          break;
+        case BookingDateFormErrorMessage.DATE_COMPARISON:
+          this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_DATE_COMPARISON_FAILED });
+          break;
+        default:
+          break;
+      }
+    }
+    if (this.isAnyError()) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
 
 export interface DisplayedDateInterval {
-  date: BookingDateOption;
-  checked: boolean;
+  date: BookingDateOption
+  checked: boolean
 }
 

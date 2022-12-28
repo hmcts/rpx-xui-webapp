@@ -38,9 +38,9 @@ class MockAutoCompleteInputBox {
   template: '',
 })
 class MockLocationSearchContainerComponent {
-  @Input() public serviceIds: string = '';
-  @Input() public locationType: string = '';
-  @Input() public disabled: boolean = false;
+  @Input() public serviceIds = '';
+  @Input() public locationType = '';
+  @Input() public disabled = false;
   @Input() public selectedLocations: LocationByEPIMMSModel[];
   @Input() public submitted?: boolean = true;
   @Input() public control: AbstractControl;

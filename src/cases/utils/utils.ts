@@ -19,8 +19,8 @@ export class Utils {
     return fieldName;
   }
 
-  public static escapeRegExp(string: string): string {
-    return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  public static escapeRegExp(str: string): string {
+    return str.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   }
 
   public static replaceAll(str: string, find: string, replace: string): string {
@@ -70,11 +70,8 @@ export class Utils {
   }
 }
 
-export function escapeRegExp(string: string): string {
-  return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
+export const escapeRegExp = (str: string): string =>
+   str.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&');
 
 
-export function replaceAll(str: string, find: string, replace: string): string {
-  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
-}
+export const replaceAll = (str: string, find: string, replace: string): string => str.replace(new RegExp(escapeRegExp(find), 'g'), replace);

@@ -11,12 +11,12 @@ import {Utils} from '../../cases/utils/utils';
 
 @Injectable()
 export class HearingsGuard {
-  public static CASE_INFO: string = 'caseInfo';
-  public static JURISDICTION: string = 'jurisdiction';
-  public static DEFAULT_URL: string = '/cases';
+  public static CASE_INFO = 'caseInfo';
+  public static JURISDICTION = 'jurisdiction';
+  public static DEFAULT_URL = '/cases';
   public userRoles$: Observable<string[]>;
 
-  constructor(protected readonly appStore: Store<fromAppStore.State>,
+  public constructor(protected readonly appStore: Store<fromAppStore.State>,
               protected readonly sessionStorageService: SessionStorageService,
               protected readonly featureToggleService: FeatureToggleService) {
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(

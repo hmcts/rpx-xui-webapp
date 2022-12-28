@@ -14,15 +14,6 @@ import {HearingsService} from '../../services/hearings.service';
 @Injectable()
 export class HearingLinksEffects {
 
-  constructor(
-    private readonly actions$: Actions,
-    private readonly hearingStore: Store<fromHearingReducers.State>,
-    private readonly hearingsService: HearingsService,
-    private readonly router: Router,
-    private readonly sessionStorage: SessionStorageService,
-  ) {
-  }
-
   @Effect()
   public loadServiceLinkedCases$ = this.actions$.pipe(
     ofType(hearingLinksActions.LOAD_SERVICE_LINKED_CASES),
@@ -55,20 +46,17 @@ export class HearingLinksEffects {
   public loadLinkedHearingGroup$ = this.actions$.pipe(
     ofType(hearingLinksActions.LOAD_LINKED_HEARING_GROUP),
     map((action: hearingLinksActions.LoadLinkedHearingGroup) => action.payload),
-    switchMap(payload => {
-      return this.hearingsService.getLinkedHearingGroup(payload.groupId).pipe(
+    switchMap(payload => this.hearingsService.getLinkedHearingGroup(payload.groupId).pipe(
         map(response => new hearingLinksActions.LoadLinkedHearingGroupSuccess(response)),
         catchError((error: HttpError) => of(new hearingLinksActions.LoadLinkedHearingGroupFailure(error)))
-      );
-    })
+      ))
   );
 
   @Effect({dispatch: false})
   public submitLinkedHearingGroup$ = this.actions$.pipe(
     ofType(hearingLinksActions.SUBMIT_LINKED_HEARING_GROUP),
     map((action: hearingLinksActions.SubmitLinkedHearingGroup) => action.payload),
-    switchMap(payload => {
-      return this.hearingsService.postLinkedHearingGroup(payload.linkedHearingGroup).pipe(
+    switchMap(payload => this.hearingsService.postLinkedHearingGroup(payload.linkedHearingGroup).pipe(
         tap(
           () => {
             if (payload.isManageLink) {
@@ -80,8 +68,7 @@ export class HearingLinksEffects {
           this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
           return of(error);
         })
-      );
-    })
+      ))
   );
 
   @Effect({dispatch: false})
@@ -97,9 +84,7 @@ export class HearingLinksEffects {
       }
       return apiCall.pipe(
         tap(
-          () => {
-            return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingGroupRequestId, payload.hearingId, 'final-confirmation']);
-          }),
+          () => this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingGroupRequestId, payload.hearingId, 'final-confirmation'])),
         catchError(error => {
           this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
           return of(error);
@@ -107,6 +92,15 @@ export class HearingLinksEffects {
       );
     })
   );
+
+  public constructor(
+    private readonly actions$: Actions,
+    private readonly hearingStore: Store<fromHearingReducers.State>,
+    private readonly hearingsService: HearingsService,
+    private readonly router: Router,
+    private readonly sessionStorage: SessionStorageService,
+  ) {
+  }
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {

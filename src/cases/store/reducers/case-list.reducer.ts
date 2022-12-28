@@ -8,7 +8,8 @@ export class CaselistStateFilter {
   public caseState: CaseState;
   public metadataFields: any;
   public page: number;
-  constructor() {
+
+  public constructor() {
     this.jurisdiction = new Jurisdiction();
     this.caseType = new CaseType();
     this.caseState = new CaseState();
@@ -46,10 +47,10 @@ export const initialCaselistState: CaselistState = {
   loaded: false,
 };
 
-export function caselistReducer(
+export const caselistReducer = (
   state = initialCaselistState,
   action: fromCases.CaselistAction
-): CaselistState {
+): CaselistState => {
   switch (action.type) {
     case fromCases.APPLY_CASELIST_FILTER:
     case fromCases.APPLY_CASELIST_FILTER_FOR_ES: {
@@ -101,7 +102,7 @@ export function caselistReducer(
       return initialCaselistState;
   }
   return state;
-}
+};
 
 export const getCaselistFilterJurisdiction = (state) => state.filter.jurisdiction;
 export const getCaselistFilterCaseType = (state) => state.filter.caseType;

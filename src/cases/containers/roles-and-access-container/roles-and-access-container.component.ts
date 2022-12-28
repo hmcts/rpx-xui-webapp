@@ -19,14 +19,14 @@ import {Utils} from '../../utils/utils';
 })
 export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;
-  public showAllocateRoleLink: boolean = false;
+  public showAllocateRoleLink = false;
   public caseworkers$: Observable<Caseworker[]>;
   public exclusions$: Observable<RoleExclusion[]>;
   public roles$: Observable<CaseRole[]>;
   public jurisdictionFieldId = '[JURISDICTION]';
   public caseJurisdiction: string;
 
-  constructor(private readonly route: ActivatedRoute,
+  public constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromRoot.State>,
               private readonly roleExclusionsService: RoleExclusionsService,
               private readonly allocateService: AllocateRoleService,

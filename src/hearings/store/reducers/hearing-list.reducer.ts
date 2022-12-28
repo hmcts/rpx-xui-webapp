@@ -6,8 +6,8 @@ export const initialHearingListState: HearingListStateData = {
   lastError: null,
 };
 
-export function hearingListReducer(currentState = initialHearingListState,
-                                   action: fromActions.HearingListAction): HearingListStateData {
+export const hearingListReducer = (currentState = initialHearingListState,
+                                   action: fromActions.HearingListAction): HearingListStateData => {
   switch (action.type) {
     case fromActions.RESET_HEARING_LIST: {
       return {
@@ -33,6 +33,6 @@ export function hearingListReducer(currentState = initialHearingListState,
       };
     }
   }
-}
+};
 
 export const hearingListLastError = (hearingListState) => hearingListState.lastError;

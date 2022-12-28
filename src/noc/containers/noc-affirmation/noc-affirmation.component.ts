@@ -13,9 +13,10 @@ import * as fromFeature from '../../store';
 export class NocAffirmationComponent implements OnInit {
 
   @Input()
-  public affirmationAgreed: boolean = false;
+  public affirmationAgreed = false;
+
   @Input()
-  public notifyEveryParty: boolean = false;
+  public notifyEveryParty = false;
 
   public validationErrors$: Observable<any>;
   public hasDisagreeError$: Observable<boolean>;

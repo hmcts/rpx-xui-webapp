@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { FieldConfig } from '../../models/common';
 import { Case } from '.././../models/cases';
 import { Task } from '.././../models/tasks';
 
 import { FieldType } from '../../enums';
-import { Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-work-field',
@@ -28,12 +28,13 @@ export class WorkFieldComponent {
   @Input() public workField: Task | Case;
   @Output() public itemClick = new EventEmitter<Task | Case>();
 
+  public clickSubject = new Subject<Task | Case>();
+
   // This is here for the ngSwitch in the template, so we don't have
   // hard-coded strings floating around the place.
   protected fieldType = FieldType;
-  public clickSubject = new Subject<Task | Case>();
 
-  constructor() {
+  public constructor() {
     this.clickSubject.pipe(
       take(1)
     ).subscribe(item => this.itemClick.emit(item));

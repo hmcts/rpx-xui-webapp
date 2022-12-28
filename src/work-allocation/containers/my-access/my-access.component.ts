@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CasesService } from '@hmcts/ccd-case-ui-toolkit';
+import { take } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
@@ -7,7 +8,6 @@ import { Case } from '../../models/cases';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-my-access',
@@ -30,7 +30,7 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
     return ConfigConstants.MyAccess;
   }
 
-  public backUrl: string = 'work/my-work/my-access';
+  public backUrl = 'work/my-work/my-access';
 
   public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');

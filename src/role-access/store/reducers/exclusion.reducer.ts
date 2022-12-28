@@ -12,7 +12,7 @@ export const initialState: ExclusionStateData = {
   lastError: null
 };
 
-export function exclusionReducer(currentState = initialState, action: ExclusionAction): ExclusionStateData {
+export const exclusionReducer = (currentState = initialState, action: ExclusionAction): ExclusionStateData => {
   switch (action.type) {
     case ExclusionActionTypes.CHANGE_NAVIGATION: {
       return {
@@ -67,7 +67,7 @@ export function exclusionReducer(currentState = initialState, action: ExclusionA
       };
     }
   }
-}
+};
 
 export const getExclusionActiveState = (exclusionState: ExclusionStateData) => exclusionState.state;
 export const getLastErrors = (exclusionState: ExclusionStateData) => exclusionState.lastError;

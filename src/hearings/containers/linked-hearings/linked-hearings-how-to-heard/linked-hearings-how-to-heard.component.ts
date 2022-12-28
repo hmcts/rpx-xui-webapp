@@ -33,7 +33,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public validationErrors: { id: string; message: string }[] = [];
   public positionDropdownValues = [];
   public selectedOption: GroupLinkType;
-  public selectionValid: boolean = true;
+  public selectionValid = true;
   public form: FormGroup;
   public mode: Mode = Mode.LINK_HEARINGS;
   public hearingLinks: HearingLinksStateData;
@@ -43,7 +43,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public groupLinkType = GroupLinkType;
   public hearingStageOptions: LovRefDataModel[];
 
-  constructor(
+  public constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     protected readonly route: ActivatedRoute,
@@ -80,19 +80,6 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     return this.form.get('hearingOrder') as FormArray;
   }
 
-  private addRow(linkCase: ServiceLinkedCasesWithHearingsModel): void {
-    if (!linkCase || !linkCase.caseHearings) {
-      return;
-    }
-
-    this.hearingOrder.push(this.fb.group({
-      caseReference: [linkCase.caseRef],
-      caseName: [linkCase.caseName],
-      hearingStage: [linkCase.caseHearings[0] && linkCase.caseHearings[0].hearingType || ''],
-      position: [this.getPosition(linkCase.caseHearings[0]), this.validators.mandatory('')]
-    }));
-  }
-
   public getPosition(hearing: HearingDetailModel): number {
     const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup && this.hearingsInGroup.filter(x => x.hearingId === hearing.hearingID);
     if (linkedHearings && linkedHearings.length > 0) {
@@ -107,29 +94,6 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
       this.mapLinkedCase(linkedCase);
     });
     this.initiateFormCreation();
-  }
-
-  private initiateFormCreation() {
-    if (this.selectedLinkedCases && this.selectedLinkedCases.length) {
-      this.positionDropdownValues = Array.from({length: this.selectedLinkedCases.length}, (_, i) => i + 1);
-      this.createForm();
-    }
-  }
-
-  private mapLinkedCase(linkedCase: ServiceLinkedCasesWithHearingsModel): void {
-    const selectedHearings = linkedCase.caseHearings && linkedCase.caseHearings.filter(hearing => hearing.isSelected);
-    if (selectedHearings && selectedHearings.length) {
-      this.selectedLinkedCases.push({
-        ...linkedCase,
-        caseHearings: selectedHearings,
-      });
-    }
-  }
-
-  private createForm(): void {
-    this.selectedLinkedCases.forEach((linked) => {
-      this.addRow(linked);
-    });
   }
 
   public onSubmit(): void {
@@ -226,6 +190,42 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+  }
+
+  private addRow(linkCase: ServiceLinkedCasesWithHearingsModel): void {
+    if (!linkCase || !linkCase.caseHearings) {
+      return;
+    }
+
+    this.hearingOrder.push(this.fb.group({
+      caseReference: [linkCase.caseRef],
+      caseName: [linkCase.caseName],
+      hearingStage: [linkCase.caseHearings[0] && linkCase.caseHearings[0].hearingType || ''],
+      position: [this.getPosition(linkCase.caseHearings[0]), this.validators.mandatory('')]
+    }));
+  }
+
+  private initiateFormCreation() {
+    if (this.selectedLinkedCases && this.selectedLinkedCases.length) {
+      this.positionDropdownValues = Array.from({length: this.selectedLinkedCases.length}, (_, i) => i + 1);
+      this.createForm();
+    }
+  }
+
+  private mapLinkedCase(linkedCase: ServiceLinkedCasesWithHearingsModel): void {
+    const selectedHearings = linkedCase.caseHearings && linkedCase.caseHearings.filter(hearing => hearing.isSelected);
+    if (selectedHearings && selectedHearings.length) {
+      this.selectedLinkedCases.push({
+        ...linkedCase,
+        caseHearings: selectedHearings,
+      });
+    }
+  }
+
+  private createForm(): void {
+    this.selectedLinkedCases.forEach((linked) => {
+      this.addRow(linked);
+    });
   }
 }
 

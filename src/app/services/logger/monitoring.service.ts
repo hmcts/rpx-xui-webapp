@@ -5,9 +5,9 @@ import { AbstractAppInsights} from './appInsightsWrapper';
 
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any,
-              measurements?: any, duration?: number);
-  logEvent(name: string, properties?: any, measurements?: any);
-  logException(exception: Error);
+              measurements?: any, duration?: number)
+  logEvent(name: string, properties?: any, measurements?: any)
+  logException(exception: Error)
 }
 
 export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
@@ -51,9 +51,9 @@ export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
 @Injectable()
 export class MonitoringService implements IMonitoringService {
 
-  public areCookiesEnabled: boolean = false;
+  public areCookiesEnabled = false;
 
-  constructor(private readonly http: HttpClient, @Optional() private config?: MonitorConfig,
+  public constructor(private readonly http: HttpClient, @Optional() private config?: MonitorConfig,
               @Optional() private readonly appInsights?: AbstractAppInsights) {
                 if (!appInsights) {
                 appInsights = AppInsights;
@@ -89,7 +89,7 @@ export class MonitoringService implements IMonitoringService {
     } else {
       this.http.get('/api/monitoring-tools').subscribe(it => {
         this.config = {
-          // tslint:disable-next-line: no-string-literal
+          // eslint-disable-next-line dot-notation, @typescript-eslint/dot-notation
           instrumentationKey: it['key']
         };
         if (!this.areCookiesEnabled) {

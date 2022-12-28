@@ -37,28 +37,22 @@ class WrapperComponent {
 /**
  * Mock cases
  */
-function getCases(): Case[] {
-  return getMockCases();
-}
+const getCases = (): Case[] => getMockCases();
 
 /**
  * Mock fields
  */
-function getFields(): FieldConfig[] {
-  return ConfigConstants.MyCases;
-}
+const getFields = (): FieldConfig[] => ConfigConstants.MyCases;
 
 /**
  * Mock CaseServiceConfig.
  */
-function getCaseService(): CaseServiceConfig {
-  return {
-    service: CaseService.IAC,
-    defaultSortDirection: SortOrder.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: getFields(),
-  };
-}
+const getCaseService = (): CaseServiceConfig => ({
+  service: CaseService.IAC,
+  defaultSortDirection: SortOrder.ASC,
+  defaultSortFieldName: 'dueDate',
+  fields: getFields(),
+});
 
 describe('CaseListComponent', () => {
   let component: WorkCaseListComponent;

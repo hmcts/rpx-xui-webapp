@@ -33,7 +33,6 @@ describe('CaseHearingsComponent', () => {
   let spyStore: any;
   let mockRoleCategoryMappingService: RoleCategoryMappingService;
   let mockLovRefDataService: any;
-  let mockRouter: any;
 
   const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
     hearingStartDateTime: '',
@@ -394,7 +393,7 @@ describe('CaseHearingsComponent', () => {
     }
   ];
 
-  mockRouter = {
+  const mockRouter = {
     navigate: jasmine.createSpy('navigate')
   };
 

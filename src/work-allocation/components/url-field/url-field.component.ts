@@ -19,5 +19,5 @@ export class UrlFieldComponent {
   /**
    * The target for the link. Defaults to "_self".
    */
-  @Input() public target: string = '_self';
+  @Input() public target = '_self';
 }

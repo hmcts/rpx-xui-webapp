@@ -14,8 +14,9 @@ import * as fromApp from '../../store';
 @Injectable()
 export class AppConfigService {
 
-  constructor(private readonly http: HttpClient,  private readonly store: Store<fromApp.State>) {}
   private configuration: ConfigurationModel | any;
+
+  public constructor(private readonly http: HttpClient,  private readonly store: Store<fromApp.State>) {}
   /**
    * Loading configuration json file
    */

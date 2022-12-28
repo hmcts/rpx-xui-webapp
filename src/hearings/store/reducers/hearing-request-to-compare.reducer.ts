@@ -6,8 +6,8 @@ export const initialHearingRequestToCompareState: HearingRequestStateData = {
   ...fromHearingRequestReducer.initialHearingRequestState
 };
 
-export function hearingRequestToCompareReducer(currentState = initialHearingRequestToCompareState,
-                                               action: fromHearingRequestCompareActions.HearingRequestToCompareAction): HearingRequestStateData {
+export const hearingRequestToCompareReducer = (currentState = initialHearingRequestToCompareState,
+                                               action: fromHearingRequestCompareActions.HearingRequestToCompareAction): HearingRequestStateData => {
   switch (action.type) {
     case fromHearingRequestCompareActions.INITIALIZE_HEARING_REQUEST_TO_COMPARE: {
       return {

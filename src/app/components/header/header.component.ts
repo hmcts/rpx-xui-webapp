@@ -22,13 +22,13 @@ export class HeaderComponent implements OnInit {
   @Input() public userNav: UserNavModel;
   @Input() public backgroundColor: string;
   @Input() public logo: string;
-  @Input() public logoIsUsed: boolean = false;
+  @Input() public logoIsUsed = false;
   @Input() public showNavItems: Observable<boolean>;
   @Input() public currentUrl: string;
   @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
-  constructor(
+  public constructor(
     public store: Store<fromRoot.State>,
   ) {}
 

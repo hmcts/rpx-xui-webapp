@@ -12,10 +12,12 @@ import {HearingsUtils} from '../../utils/hearings.utils';
 })
 export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {
 
-  @Input() public warningMsg: string = '';
+  @Input() public warningMsg = '';
+
   public hearingConditionsSub: Subscription;
-  public isViewEditMode: boolean = false;
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>) { }
+  public isViewEditMode = false;
+
+  public constructor(private readonly hearingStore: Store<fromHearingStore.State>) { }
 
   public ngOnInit(): void {
     this.hearingConditionsSub = this.hearingStore.pipe(select(fromHearingStore.getHearingConditions)).subscribe(

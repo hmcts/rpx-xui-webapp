@@ -23,9 +23,9 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public additionSecurityError: string;
   public validationErrors: { id: string, message: string }[] = [];
   public additionalFacilities: LovRefDataModel[];
-  public additionSecurityRequiredValid: boolean = true;
+  public additionSecurityRequiredValid = true;
 
-  constructor(protected readonly route: ActivatedRoute,
+  public constructor(protected readonly route: ActivatedRoute,
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected fb: FormBuilder) {

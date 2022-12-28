@@ -9,7 +9,7 @@ import { SessionStorageService } from '../../app/services';
   providedIn: 'root'
 })
 export class TaskTypesService {
-  public static typesOfWorkStorageKey: string = 'typesOfWork_cache';
+  public static typesOfWorkStorageKey = 'typesOfWork_cache';
   public constructor(private readonly http: HttpClient, private readonly sessionStorage: SessionStorageService) {
   }
 

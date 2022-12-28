@@ -50,28 +50,22 @@ class TaskFieldComponent {
 /**
  * Mock tasks
  */
-function getTasks(): Task[] {
-  return getMockTasks();
-}
+const getTasks = (): Task[] => getMockTasks();
 
 /**
  * Mock fields
  */
-function getFields(): FieldConfig[] {
-  return ConfigConstants.AvailableTasksForJudicial;
-}
+const getFields = (): FieldConfig[] => ConfigConstants.AvailableTasksForJudicial;
 
 /**
  * Mock TaskServiceConfig.
  */
-function getTaskService(): TaskServiceConfig {
-  return {
-    service: TaskService.IAC,
-    defaultSortDirection: SortOrder.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: getFields(),
-  };
-}
+const getTaskService = (): TaskServiceConfig => ({
+  service: TaskService.IAC,
+  defaultSortDirection: SortOrder.ASC,
+  defaultSortFieldName: 'dueDate',
+  fields: getFields(),
+});
 
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
@@ -455,10 +449,10 @@ describe('TaskListComponent', () => {
   describe('act upon deep linking', () => {
     const id = '12345678';
 
-    it('should select appropriate task from location hash', fakeAsync(async ()=> {
+    it('should select appropriate task from location hash', fakeAsync(async () => {
       component = fixture.componentInstance.appComponentRef;
       const task = { id } as Task;
-      wrapper.tasks = [ task ];
+      wrapper.tasks = [task];
       component.addActionsColumn = true;
       fixture.detectChanges();
       component.setSelectedTask(task);
@@ -469,7 +463,7 @@ describe('TaskListComponent', () => {
     it('should handle a location hash for a task that does not exist', fakeAsync(async () => {
       component = fixture.componentInstance.appComponentRef;
       const task = { id: '99999999' } as Task;
-      wrapper.tasks = [ task ];
+      wrapper.tasks = [task];
       component.addActionsColumn = true;
       fixture.detectChanges();
       expect(component.getSelectedTask()).toBeNull();

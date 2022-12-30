@@ -1474,7 +1474,7 @@
   dependencies:
     tslib "^2.0.0"
 
-"@hmcts/ccpay-web-component@5.0.10-beta10":
+"@hmcts/ccpay-web-component@5.0.10-beta13":
   version "5.0.10-beta13"
   resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.10-beta13.tgz#8c6bb1c9ad5e8644e71b1154d4f782fe2b90d293"
   integrity sha512-GZwKyJZMmI/9ys/WnTroIBI20BDk9CrHu4xBM/ueVtyraa9dZyJ7fw7W83C9+UeUeUacUGeY7ak9WKgd6nY8NA==

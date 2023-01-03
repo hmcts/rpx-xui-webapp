@@ -73,6 +73,8 @@ export const SERVICES_PRD_COMMONDATA_API = 'services.prd.commondataApi';
 export const SERVICES_REFUNDS_API_URL = 'services.refunds';
 export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 
+export const SERVICES_WELSH_TRANSLATION_API_URL = 'services.welsh_translation';
+
 export const PROTOCOL = 'protocol';
 export const MICROSERVICE = 'microservice';
 export const NOW = 'now';

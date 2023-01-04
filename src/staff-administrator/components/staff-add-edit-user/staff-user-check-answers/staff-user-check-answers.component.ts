@@ -108,7 +108,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
   private prepareUserTypePayload() {
     this.userType.map(userType => {
-      this.userTypesPayload.push(this.staffFilterOptions.userTypes.find(userTypes => userTypes.key === userType));
+      this.userTypesPayload.push(this.staffFilterOptions.userTypes.find(userTypes => userTypes.key.toString() === userType.toString()));
     });
   }
 

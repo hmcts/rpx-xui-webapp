@@ -1,7 +1,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
     <exui-page-wrapper [title]="'Check your answers before adding a new user'" [backLink]="'/staff/add-user'">
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="firstName">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Name</dt>
             <dd class="govuk-summary-list__value">{{firstName}} {{lastName}}</dd>
@@ -13,7 +13,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="email">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Email address</div>
             <div class="govuk-summary-list__value">{{email}}</div>
@@ -25,7 +25,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="servicePayload">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Services</div>
             <div class="govuk-summary-list__value">
@@ -44,7 +44,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="regionPayload">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Region</div>
             <div class="govuk-summary-list__value">
@@ -61,7 +61,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="primaryLocations">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Primary location</div>
             <div class="govuk-summary-list__value">{{primaryLocations.site_name}}</div>
@@ -73,7 +73,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="additionalLocations">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Additional locations</div>
             <div class="govuk-summary-list__value">
@@ -90,7 +90,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="userTypesPayload">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">User type</div>
             <div class="govuk-summary-list__value">
@@ -107,7 +107,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="rolesPayload">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Roles</div>
             <div class="govuk-summary-list__value">
@@ -124,7 +124,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="jobTitlesPayload">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Job title</div>
             <div class="govuk-summary-list__value">
@@ -141,7 +141,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="skillsPayload">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Skills</div>
             <div class="govuk-summary-list__value">

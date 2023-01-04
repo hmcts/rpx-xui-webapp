@@ -1,24 +1,23 @@
 import { Component, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CaseReferencePipe } from '@hmcts/ccd-case-ui-toolkit';
+import { DueDateComponent } from '@hmcts/rpx-xui-common-lib';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { FieldType, TaskView } from '../../enums';
 import { FieldConfig } from '../../models/common';
-import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
-import { Task } from './../../models/tasks';
-import { WorkFieldComponent } from './work-field.component';
+import { DaysFromTodayPipe, IntegerPipe, TwoDPPipe, YesNoPipe } from '../../pipes';
 import { AccessViewFieldComponent } from '../access-view-field/access-view-field.component';
 import { CaseNameFieldComponent } from '../case-name-field/case-name-field.component';
 import { CaseReferenceFieldComponent } from '../case-reference-field/case-reference-field.component';
 import { DerivedIconFieldComponent } from '../derived-icon-field/derived-icon-field.component';
 import { ImageFieldComponent } from '../image-field/image-field.component';
+import { PriorityFieldComponent } from '../priority-field/priority-field.component';
 import { TaskFieldComponent } from '../task-field/task-field.component';
 import { TaskNameFieldComponent } from '../task-name-field/task-name-field.component';
 import { UrlFieldComponent } from '../url-field/url-field.component';
-import { PriorityFieldComponent } from '../priority-field/priority-field.component';
-import { DueDateComponent } from '@hmcts/rpx-xui-common-lib';
-import { CaseReferencePipe } from '@hmcts/ccd-case-ui-toolkit';
-import { DaysFromTodayPipe, IntegerPipe, TwoDPPipe, YesNoPipe } from '../../pipes';
+import { Task } from './../../models/tasks';
+import { WorkFieldComponent } from './work-field.component';
 
 @Component({
   template: `<exui-work-field [config]="config" [workField]="task"></exui-work-field>`

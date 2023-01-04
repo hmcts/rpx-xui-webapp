@@ -135,9 +135,9 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public onSubmit(): void {
     const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
       groupDetails: {
-        groupComments: 'TBU',
+        groupComments: '',
         groupLinkType: this.selectedOption,
-        groupName: 'TBU',
+        groupName: '',
         groupReason: '1' // This is the only value accepted LA
       }, hearingsInGroup: []
     };
@@ -146,14 +146,14 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         const hearing = this.selectedLinkedCases.find(linked => linked.caseRef === formValue.caseReference);
         const selectedHearing = hearing && hearing.caseHearings.find(selected => selected.isSelected);
         if (selectedHearing) {
-          if (formValue && formValue.position && Number(formValue.position) > 0) {
+          if (this.form.value.hearingGroup === GroupLinkType.SAME_SLOT) {
             linkedHearingGroupMainModel.hearingsInGroup.push({
-              hearingId: selectedHearing.hearingID,
-              hearingOrder: Number(formValue.position),
+              hearingId: selectedHearing.hearingID
             });
           } else {
             linkedHearingGroupMainModel.hearingsInGroup.push({
-              hearingId: selectedHearing.hearingID
+              hearingId: selectedHearing.hearingID,
+              hearingOrder: Number(formValue.position),
             });
           }
         }

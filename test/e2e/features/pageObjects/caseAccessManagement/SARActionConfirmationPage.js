@@ -23,7 +23,7 @@ class SARActionConfirmationPage{
        let tag = '';
         action = action.toLowerCase();
         switch(action){
-            case 'rejected':
+            case 'reject':
             case 'denied':
                 tag = 'exui-specific-access-denied';
                 break;

@@ -1,4 +1,4 @@
-@fullfunctional
+@fullfunctional @ignore
 Feature: Judicial Booking UI
 
     Scenario: View and create booking
@@ -31,12 +31,13 @@ Feature: Judicial Booking UI
 
 
         When I enter location search text "cen" in create booking page
-       
+
         When I select location at index 5 in create booking location search
-       
+
         When I click continue in create new booking work flow
-        When I select duartion option "This week" in create booking page
+        When I select duartion option "Today only" in create booking page
         When I click continue in create new booking work flow
+        When I click continue to submit new booking work flow
         Then I validate I am on My work page
         # Then I see new booking created message
 

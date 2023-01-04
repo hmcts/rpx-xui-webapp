@@ -46,8 +46,7 @@ export class DurationHelperService {
    */
   public getTodaysDate(): Date {
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    return currentDate;
+    return this.setStartTimeOfDay(currentDate);
   }
 
   /**
@@ -119,9 +118,8 @@ export class DurationHelperService {
     if (daysToAdd < 0) {
       throw new Error('Invalid value for daysToAdd param');
     }
-    return moment()
-      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-      .add(daysToAdd, 'd').toDate();
+    const date = moment().add(daysToAdd, 'd').toDate();
+    return this.setEndTimeOfDay(date);
   }
 
   /**
@@ -151,4 +149,19 @@ export class DurationHelperService {
     return date;
   }
 
+  public setStartTimeOfDay(date: Date): Date {
+    if (!date) {
+      return null;
+    }
+    date.setUTCHours(0, 0, 0, 0);
+    return date;
+  }
+
+  public setEndTimeOfDay(date: Date): Date {
+    if (!date) {
+      return null;
+    }
+    date.setUTCHours(23, 59, 59, 999);
+    return date;
+  }
 }

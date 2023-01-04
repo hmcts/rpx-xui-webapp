@@ -72,6 +72,7 @@ class NodeAppMockData {
 
     getUIConfiguration() {
         return {
+            "accessManagementEnabled":true,
             "googleAnalyticsKey": "UA-124734893-4",
             "idamWeb": "https://idam-web-public.aat.platform.hmcts.net",
             "launchDarklyClientId": "5de6610b23ce5408280f2268",

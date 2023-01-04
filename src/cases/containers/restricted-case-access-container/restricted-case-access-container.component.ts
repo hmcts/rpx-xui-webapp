@@ -1,18 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { CaseRole } from '../../../role-access/models/case-role.interface';
 import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services/caseworker-data.service';
-
-export interface RestrictedCase {
-  user: string;
-  role: string;
-  email: string;
-}
+import { RestrictedCase } from '../../models/restricted-case.model';
 
 @Component({
   selector: 'exui-restricted-case-access-container',
@@ -20,10 +14,11 @@ export interface RestrictedCase {
 })
 export class RestrictedCaseAccessContainerComponent implements OnInit {
 
-  public caseReference: string;
-  public caseDetails: CaseView;
+  public caseId: string;
   public caseRoles: CaseRole[];
   public caseWorkers: Caseworker[];
+  public idamIds: string[];
+  public restrictedCases: RestrictedCase[] = [];
   
   constructor(private route: ActivatedRoute,
               private readonly allocateService: AllocateRoleService,
@@ -31,62 +26,51 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.caseReference = this.route.snapshot.params.cid;
-    this.caseDetails = this.route.snapshot.data.case as CaseView;
-    console.log('CASE ID', this.caseReference);
-    console.log('CASE DETAILS', this.caseDetails);
+    this.caseId = this.route.snapshot.params.cid;
+    console.log('CASE ID', this.caseId);
     this.loadRoles();
   }
 
   public loadRoles(): void {
-    this.caseworkerDataService.getCaseworkersForServices(['IA']).subscribe(caseworkers => {
-      this.allocateService.getCaseRoles(this.caseReference, 'IA', 'Asylum').pipe(
-        switchMap(caseRoles => {
-          this.caseRoles = caseRoles;
-          console.log('CASE ROLES', this.caseRoles);
-          return caseRoles.map(role => role.actorId);
-        }),
-        switchMap(idamIds => {
-          console.log('IDAM IDS', idamIds);
-          return this.caseworkerDataService.getCaseworkersForServices(['IA']);
-        }),
-        switchMap(caseWorkers => {
-          return of(caseWorkers)
-        })
-      ).subscribe(result => {
-        console.log('SWITCH MAP', result);
-      });
-    });
-
-    this.allocateService.getCaseRoles(this.caseReference, 'IA', 'Asylum').pipe(
+    this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
       switchMap(caseRoles => {
         this.caseRoles = caseRoles;
-        console.log('CASE ROLES', this.caseRoles);
-        return caseRoles.map(role => role.actorId);
-      }),
+        // console.log('CASE ROLES', this.caseRoles);
+        return of(this.getUniqueIdamIds());
+      }), take(1),
       switchMap(idamIds => {
-        console.log('IDAM IDS', idamIds);
+        // console.log('IDAM IDS', idamIds);
         return this.caseworkerDataService.getCaseworkersForServices(['IA']);
-      }),
-      switchMap(caseWorkers => {
-        return of(caseWorkers)
+      }), take(1),
+      switchMap(caseworkers => {
+        // console.log('CASE WORKERS', caseworkers);
+        return of(this.getRestrictedCases(caseworkers));
       })
-    ).subscribe(result => {
-      console.log('SWITCH MAP', result);
+    ).subscribe(restrictedCases => {
+      this.restrictedCases = restrictedCases;
+      // console.log('RESTRICTED CASES', restrictedCases);
     });
-
-    this.allocateService.getCaseRoles(this.caseReference, 'IA', 'Asylum').subscribe(result => {
-      console.log('CASE ROLES', result);
-    });
-
-    // this.caseworkerDataService.getCaseworkersForServices(['IA']).subscribe(result => {
-    //   console.log('CASE WORKERS', result);
-    // });
-
-    // this.caseworkerDataService.getDetails('740306ad-4fbd-42a8-9f5c-32ca38148c06').subscribe(result => {
-    // 	console.log('RESULT', result);
-    // });
   }
 
+  public getUniqueIdamIds(): string[] {
+    const idamIds = this.caseRoles.map(role => role.actorId);
+    this.idamIds = idamIds.filter((value, index) => idamIds.indexOf(value) === index);
+    return this.idamIds;
+  }
 
+  public getRestrictedCases(caseworkers: Caseworker[]): RestrictedCase[] {
+    const restrictedCases: RestrictedCase[] = [];
+    this.idamIds.forEach(id => {
+      const user = caseworkers.find(caseworker => caseworker.idamId === id);
+      const role = this.caseRoles.find(role => role.actorId === id);
+      if (user && role) {
+        restrictedCases.push({
+          user: `${user.firstName} ${user.lastName}`,
+          email: user.email,
+          role: role.roleName
+        });
+      }
+    });
+    return restrictedCases;
+  }
 }

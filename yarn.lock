@@ -1467,17 +1467,17 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.33-angular11-upgrade":
-  version "5.0.33-angular11-upgrade"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.33-angular11-upgrade.tgz#622b82e45991cbd35dabb64e7a6da89ef9df6e1d"
-  integrity sha512-L6B/Lg1szeFYjZkteju40LbrD/DuftVQmEf+5ETRU5ePxRbnKo9rm1klTqJeg0OhIR9XDCQhyokKU0sfZHWTvA==
+"@hmcts/ccd-case-ui-toolkit@5.0.44-case-flags-integration-fixes":
+  version "5.0.44-case-flags-integration-fixes"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.44-case-flags-integration-fixes.tgz#204b0997546f9f883888e470a27ad355646d78a8"
+  integrity sha512-0O0gHz94grEAjWcUMsPpsHaf+s+GobEru7os7ukDjPxoEduEvvh9YlakLbSRfvd+ItMJEYxhQDG91/gkJ70CFg==
   dependencies:
     tslib "^2.0.0"
 
-"@hmcts/ccpay-web-component@5.0.10-beta08":
-  version "5.0.10-beta08"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.10-beta08.tgz#c0b5c07c3efebd658e96bdebd5c6eedfa663712e"
-  integrity sha512-0QdltXAoitIf1tbKP7mN7AoK43RY6X2PI62VqTofmHuAfOWNLNWyUghGce5NhyVlDxLWNQjKzGvsay6oU4KSLw==
+"@hmcts/ccpay-web-component@5.0.10-beta14":
+  version "5.0.10-beta14"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.10-beta14.tgz#59bb816f9f069fb7d181eb76325031cb5f9a406f"
+  integrity sha512-d+sJecBVEWz2/FR9Lp3JFQ1zOAynKaIUKZivkV+qMdg3c6RaYp0Pse4n2FsJEOFTq5vSWYAF9FTqcCjyywf/pQ==
   dependencies:
     tslib "^2.0.0"
 
@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@2.1.6-angular-upgrade-11":
-  version "2.1.6-angular-upgrade-11"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-angular-upgrade-11.tgz#5cd751843ea4802f585e8a21fa01d4eb0cc79612"
-  integrity sha512-MowQP493mz+CMRbnDdpj5JTteBwRZj+wmUkDM9gc2JW0j3CEIXLh6cLriXPkxvP1D335OXq/7UgldpWV3Adm9Q==
+"@hmcts/rpx-xui-common-lib@2.1.6-angular-upgrade-11-fix-field-issue":
+  version "2.1.6-angular-upgrade-11-fix-field-issue"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-angular-upgrade-11-fix-field-issue.tgz#0b9887457eb0a06523c5b82e5a6d7e1e776ec756"
+  integrity sha512-lpwlbgUK/8v8SmzscpE/YAfZwkkOpI3P97YAlWR5OYZYBMugoWEv04BOYM62UQ71fUaJt3cJ6absBvNyowT4Bg==
   dependencies:
     tslib "^2.0.0"
 

@@ -88,6 +88,7 @@ class WorkAllocationModels {
             "case_role":"Mock Test case role",
             "role" : "case role",
             "role_category" : "role-categpry",
+            "hasAccess":true
             
         };
     }

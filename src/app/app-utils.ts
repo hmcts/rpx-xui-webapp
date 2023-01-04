@@ -156,6 +156,16 @@ export class AppUtils {
     // check that userRoles do not have pui-case-manager
   }
 
+  public static getRoleCategory(userRoles: string[]): UserRole {
+    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.Judicial;
+    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.LegalOps;
+    }
+    // TODO: When we know roles for Admin we can put this in this method
+    return null;
+  }
+
   public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
     if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
       return UserRole.Judicial;
@@ -186,8 +196,8 @@ export class AppUtils {
 
 
   public static getFilterPersistenceByRoleType(userDetails: UserDetails): FilterPersistence {
-    const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-    const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
+    const roleCategory = AppUtils.getRoleCategory(userDetails.userInfo.roles);
+    const roleType = AppUtils.convertDomainToLabel(roleCategory);
     switch (roleType) {
       case 'LegalOps':
         return 'session';

@@ -136,8 +136,12 @@ describe('CaseViewerContainerComponent', () => {
 
   class MockFeatureToggleService implements FeatureToggleService {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
+      if (_key === 'wa-service-config') {
+        // @ts-ignore
+        return of({configurations: [{serviceName: 'SSCS', caseTypes: ['TestAddressBookCase'], releaseVersion: '3.0'}]});
+      }
       // @ts-ignore
-      return of('WorkAllocationRelease2');
+      return of([]);
     }
 
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {

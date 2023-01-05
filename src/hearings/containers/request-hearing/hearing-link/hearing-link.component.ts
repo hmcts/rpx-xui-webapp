@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { HearingLinksStateData } from 'src/hearings/models/hearingLinksStateData.model';
 import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { LovRefDataByServiceModel } from '../../../models/lovRefData.model';
@@ -53,22 +54,25 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
         this.caseLinkingReasons = reasons;
         return this.hearingStore.pipe(select(fromHearingStore.getHearingLinks))
       })
-    ).subscribe(hearingLinks => {
-      if (hearingLinks.serviceLinkedCases) {
-        this.linkedCases = [];
-        hearingLinks.serviceLinkedCases.forEach(linkedCase => {
-          const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter(reason => linkedCase.reasonsForLink.some(reasonCode => reason.key === reasonCode));
-          const caseLinkingReasonsValues = caseLinkingReasons.map(x => x.value_en);
-          if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
-            this.linkedCases.push({caseName: linkedCase.caseName, caseReference: linkedCase.caseReference, reasonsForLink: caseLinkingReasonsValues});
-          } else {
-            this.linkedCases.push(linkedCase);
-          }
-        });
+    ).subscribe({
+      next: (hearingLinks: HearingLinksStateData) => {
+        if (hearingLinks.serviceLinkedCases) {
+          this.linkedCases = [];
+          hearingLinks.serviceLinkedCases.forEach(linkedCase => {
+            const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter(reason => linkedCase.reasonsForLink.some(reasonCode => reason.key === reasonCode));
+            const caseLinkingReasonsValues = caseLinkingReasons.map(x => x.value_en);
+            if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
+              this.linkedCases.push({caseName: linkedCase.caseName, caseReference: linkedCase.caseReference, reasonsForLink: caseLinkingReasonsValues});
+            } else {
+              this.linkedCases.push(linkedCase);
+            }
+          });
+        }
+        this.showSpinner = false;
+      },
+      error: () => {
+        this.router.navigate(['/hearings/error']);
       }
-      this.showSpinner = false;
-    }, () => {
-      this.router.navigate(['/hearings/error']);
     });
   }
 

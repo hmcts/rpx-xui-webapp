@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MockRpxTranslatePipe } from '../../shared/test/mock-rpx-translate.pipe';
 import { ErrorMessage } from '../../models';
 import { ErrorMessageComponent } from './error-message.component';
 
@@ -20,7 +21,7 @@ describe('ErrorMessageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ WrapperComponent, ErrorMessageComponent ],
+      declarations: [ WrapperComponent, ErrorMessageComponent, MockRpxTranslatePipe ],
       imports: [ RouterTestingModule ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

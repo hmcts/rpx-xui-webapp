@@ -546,10 +546,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.49-add-default-option1":
-  version "1.7.49-add-default-option1"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.49-add-default-option1.tgz#3c8070b72299f1c3e5af746cfd39b6a661dd7805"
-  integrity sha512-dpyn7HDfp72Nw3LEdcR56XMvFFp+HGsF3rv03/vfJCgN6cCzYbar9e5BVkqPNoNTsJLhE2jtAFzumxJvZaq0fQ==
+"@hmcts/rpx-xui-common-lib@1.7.49-add-default-option1-filter-skill-by-service":
+  version "1.7.49-add-default-option1-filter-skill-by-service"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.49-add-default-option1-filter-skill-by-service.tgz#c5100b79b975e805bb84d77eb8b99a22cad649f4"
+  integrity sha512-DrpA++A90nTcnY2Guh2L+EJsHj57IRsjdZcxuejeyWs79oqXslt6dWp1EkS3zGjMSTsb5PtRJ5bApy7Luq8ZSA==
   dependencies:
     tslib "^1.9.0"
 

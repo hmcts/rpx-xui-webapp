@@ -148,7 +148,8 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         if (selectedHearing) {
           if (this.form.value.hearingGroup === GroupLinkType.SAME_SLOT) {
             linkedHearingGroupMainModel.hearingsInGroup.push({
-              hearingId: selectedHearing.hearingID
+              hearingId: selectedHearing.hearingID,
+              hearingOrder: 1
             });
           } else {
             linkedHearingGroupMainModel.hearingsInGroup.push({

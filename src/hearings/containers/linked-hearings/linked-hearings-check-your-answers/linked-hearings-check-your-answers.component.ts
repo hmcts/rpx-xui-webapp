@@ -73,8 +73,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
           } else {
             this.setHearingLinkedGroup(this.hearingLinks);
           }
-          this.showSpinner = false;
         }
+        this.showSpinner = false;
       },
       () => {
         this.showSpinner = false;

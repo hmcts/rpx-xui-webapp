@@ -35,7 +35,7 @@ export interface GroupDetailsModel {
 
 export interface LinkedHearingsDetailModel {
   hearingId: string;
-  hearingOrder?: number;
+  hearingOrder: number;
   caseRef?: string;
 }
 

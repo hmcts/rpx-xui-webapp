@@ -163,7 +163,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
     this.skillsPayload = nonEmptySkillsPayload.reduce((a, b) => {
       return a.concat(b);
-    });
+    }, []);
   }
 
   public addNewUser() {

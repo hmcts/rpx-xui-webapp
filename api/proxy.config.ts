@@ -15,7 +15,8 @@ import {
   SERVICES_MARKUP_API_URL,
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_COMMONDATA_API,
-  SERVICES_REFUNDS_API_URL
+  SERVICES_REFUNDS_API_URL,
+  SERVICES_NOTIFICATIONS_API_URL
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
@@ -127,6 +128,13 @@ export const initProxy = (app: Express) => {
     rewriteUrl: '/refund',
     source: '/api/refund',
     target: getConfigValue(SERVICES_REFUNDS_API_URL),
+  });
+
+  applyProxy(app, {
+    rewrite: true,
+    rewriteUrl: '/notification',
+    source: '/api/notification',
+    target: getConfigValue(SERVICES_NOTIFICATIONS_API_URL),
   });
 
   applyProxy(app, {

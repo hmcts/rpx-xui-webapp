@@ -5,6 +5,7 @@
     "node": ">=12.13.0"
   },
   "scripts": {
+    "cve": "yarn audit --groups dependencies --json | grep auditAdvisory > yarn-audit-known-issues",
     "clean": "rimraf node_modules",
     "nuke": "rm -rf dist",
     "build": "yarn build:prod && yarn build:node",

@@ -17,9 +17,9 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-link.component.html'
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  private caseLinkingReasons: LovRefDataByServiceModel;
   public caseId: string;
   public linkedCases: ServiceLinkedCasesModel[];
-  public caseLinkingReasons: LovRefDataByServiceModel;
   public hearingLinkForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public caseName: string;
@@ -70,9 +70,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
         }
         this.showSpinner = false;
       },
-      error: () => {
-        this.router.navigate(['/hearings/error']);
-      }
+      error: () => this.router.navigate(['/hearings/error'])
     });
   }
 

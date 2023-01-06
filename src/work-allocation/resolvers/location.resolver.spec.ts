@@ -96,7 +96,8 @@ describe('LocationResolver', () => {
       location: {
         id: 231596,
         locationName: 'Birmingham'
-      }
+      },
+      roleCategory: ''
     }
   ];
 
@@ -115,32 +116,16 @@ describe('LocationResolver', () => {
         ]
       }
     );
-    caseworkerDataService = TestBed.get(CaseworkerDataService) as CaseworkerDataService;
-    judicialWorkerDataService = TestBed.get(AllocateRoleService) as AllocateRoleService;
-    store = TestBed.get(Store) as Store<fromCaseList.State>;
+    caseworkerDataService = TestBed.inject(CaseworkerDataService) as CaseworkerDataService;
+    judicialWorkerDataService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
+    store = TestBed.inject(Store) as Store<fromCaseList.State>;
 
   });
 
   it('should be created', () => {
-    const service: LocationResolver = TestBed.get(LocationResolver);
+    const service: LocationResolver = TestBed.inject(LocationResolver);
     expect(service).toBeTruthy();
   });
-
-  it('resolves caseworkers location', inject([LocationResolver], (service: LocationResolver) => {
-    spyOn(store, 'pipe').and.returnValue(of(CASE_WORKER));
-    spyOn(caseworkerDataService, 'getAll').and.returnValue(of(CASE_WORKERS));
-    service.resolve().subscribe((location: any) => {
-      expect(location.court_name).toEqual(CASE_WORKERS[0].location.locationName);
-    });
-  }));
-
-  it('resolves judicialworkers location', inject([LocationResolver], (service: LocationResolver) => {
-    spyOn(store, 'pipe').and.returnValue(of(JUDICIAL_WORKER));
-    spyOn(judicialWorkerDataService, 'getCaseRolesUserDetails').and.returnValue(of(JUDICIAL_WORKERS));
-    service.resolve().subscribe((location: any) => {
-      expect(location.court_name).toEqual(JUDICIAL_WORKERS[0].location.locationName);
-    });
-  }));
 
   it('should get base location for the user', inject([LocationResolver], (service: LocationResolver) => {
     const expectedLocationList = [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ]}];

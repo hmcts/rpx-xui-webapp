@@ -1,13 +1,13 @@
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import {cold} from 'jasmine-marbles';
+import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import {UserDetails, UserRole} from '../../app/models';
-import {SessionStorageService} from '../../app/services';
-import {RoleCategoryMappingService} from '../../app/services/role-category-mapping/role-category-mapping.service';
+import { UserDetails, UserRole } from '../../app/models';
+import { SessionStorageService } from '../../app/services';
+import { RoleCategoryMappingService } from '../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../app/store';
-import {HearingsViewGuard} from './hearings-view-guard';
+import { HearingsViewGuard } from './hearings-view-guard';
 
 describe('HearingsViewGuard', () => {
   const USER_1: UserDetails = {

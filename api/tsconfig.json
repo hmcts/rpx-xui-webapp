@@ -2,10 +2,12 @@
     "compileOnSave": false,
     "compilerOptions": {
         "outDir": "../dist/rpx-exui/api",
-        "target": "es5",
+        "target": "esnext",
+        "module": "commonjs",
+        "skipLibCheck": true,
         "types": ["node", "mocha", "rxjs"],
         "baseUrl": ".",
-        "lib": ["es2017", "dom"]
+        "lib": ["es2017", "dom"],
     },
     "include": ["**/*.ts", "../*.ts"],
     "exclude": ["**/*.spec.ts"]

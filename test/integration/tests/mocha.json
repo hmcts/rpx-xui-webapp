@@ -4,7 +4,7 @@
   "package": "./package.json",
   "reporter": "mochawesome",
  "reporterOptions": {
-   "reportDir" : "reports/tests/api_functional/",
+   "reportDir" : "functional-output/tests/api_functional/",
    "reportFilename": "XUI_MC_API_Functional_Tests"
  },
  "reportDir": "reports/tests/api_functional/",

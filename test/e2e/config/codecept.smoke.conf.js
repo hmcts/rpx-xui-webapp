@@ -1,23 +1,25 @@
 
-const global = require('./globals')
 
 const functional_output_dir = '../../../functional_output'
+const codeceptCommonDir = '../../codeceptCommon'
+
+const global = require(`${codeceptCommonDir}/globals`)
 
 
 exports.config = {
   grep: '@smoke',
-  timeout: 20,
+  timeout: 120,
   "gherkin": {
-    "features": "../e2e/features/app/**/mediaViewer.feature",
-    "steps": "../e2e/features/step_definitions/**/*.steps.js"
+    "features": "../features/app/**/*.feature",
+    "steps": "../features/step_definitions/**/*.steps.js"
   },
-  output: './output',
+  output: `${functional_output_dir}/output`,
   helpers: {
     Puppeteer: {
       url: 'https://manage-case.aat.platform.hmcts.net/',
       browser: 'chrome',
       show: true,
-      restart:false,
+      restart: true,
       // chrome: {
       //   args: ['--no-sandbox', '--headless1', '--window-size=1920,1080', '--disable-web-security'],
       //   ignoreHTTPSErrors: true,
@@ -39,26 +41,26 @@ exports.config = {
       }
     },
     "mochawesome": {
-      "stdout": `${functional_output_dir}/smoke/console.log`,
+      "stdout": `${functional_output_dir}/functional/console.log`,
       "options": {
-        "reportDir": `${functional_output_dir}/smoke/`,
+        "reportDir": `${functional_output_dir}/functional/`,
         "reportFilename": "report"
       }
     },
     "mocha-junit-reporter": {
-      "stdout": `${functional_output_dir}/smoke/console.log`,
+      "stdout": `${functional_output_dir}/functional/console.log`,
       "options": {
-        "mochaFile": `${functional_output_dir}/smoke/junit.xml`,
+        "mochaFile": `${functional_output_dir}/functional/junit.xml`,
         "attachments": true //add screenshot for a failed test
       }
     }
   },
-  plugins:{
+  plugins: {
     "allure": {
       "enabled": true
     },
     "myPlugin": {
-      "require": "./hooks.js",
+      "require": `${codeceptCommonDir}/hooks.js`,
       "enabled": true
     }
   },
@@ -67,7 +69,7 @@ exports.config = {
   bootstrap: null,
   teardown: () => {
     console.log("Run complete...")
-    
+
     return true
   }
 }

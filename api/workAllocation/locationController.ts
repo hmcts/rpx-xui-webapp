@@ -64,7 +64,7 @@ export async function getFullLocations(req: EnhancedRequest, res: Response, next
  * Get locations by region
  *
  */
- export async function getLocationsByRegion(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getLocationsByRegion(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
     const response = await getRegionLocationsForServices(req);

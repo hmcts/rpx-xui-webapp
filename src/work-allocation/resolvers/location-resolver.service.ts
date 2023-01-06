@@ -17,7 +17,7 @@ import { Booking } from '../../booking/models';
 import { BookingService } from '../../booking/services';
 import { Location, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { LocationDataService } from '../services';
-import { addLocationToLocationsByService, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
+import { addLocationToLocationsByService, handleFatalErrors, locationWithinRegion, WILDCARD_SERVICE_DOWN } from '../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +67,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     return this.store.pipe(select(fromRoot.getUserDetails));
   }
 
-  // Will call location service API with list of derived possible services
+  // Will call location service API with list of derived possible services to get locations by region
   public getRegionLocations(userDetails: UserDetails): Observable<LocationsByRegion[]> {
     const possibleServices = [];
     // simple loop as idea is just to get list of possible services to check
@@ -80,7 +80,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   }
 
   public getJudicialWorkersOrCaseWorkers(regionLocations: LocationsByRegion[], userDetails: UserDetails): Location[] {
-    console.log(regionLocations, 'are region locations');
     this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
     this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
     let userLocationsByService: LocationsByService[] = [];
@@ -96,32 +95,32 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       if (roleJurisdiction && !allLocationServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
         && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
         if (!roleAssignment.region && !roleAssignment.baseLocation) {
-          console.log('case 0', roleAssignment)
           // if there are no restrictions, via union logic, all locations selectable
           allLocationServices.push(roleJurisdiction);
-          //TODO: Need to remove all base locations/regions in this scenario
         } else if (roleAssignment.region && roleAssignment.baseLocation) {
-          console.log('case 1', roleAssignment);
-          if (this.locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)) {
+          if (locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)) {
             this.setBaseLocationForAdding(roleAssignment, roleJurisdiction);
+          } else {
+            if (!this.locations.find((location) => location.services.includes(roleJurisdiction))) {
+              const location = { id: null, userId: this.userId, locationId: null, locationName: '', services: [roleAssignment.jurisdiction] };
+              this.locations.push(location);
+              this.locationServices.add(roleAssignment.jurisdiction);
+            }
           }
         } else if (roleAssignment.region) {
-          console.log('case 2', roleAssignment);
           if (!this.locations.find((location) => location.regionId === roleAssignment.region && location.services.includes(roleJurisdiction))) {
             const location = { id: undefined, userId: this.userId, locationId: undefined, locationName: '', services: [roleAssignment.jurisdiction], regionId: roleAssignment.region };
             this.locations.push(location);
             this.locationServices.add(roleAssignment.jurisdiction);
           }
         } else {
-          console.log('case 3', roleAssignment)
           this.setBaseLocationForAdding(roleAssignment, roleJurisdiction);
         }
       }
     });
-    console.log(this.locations, 'ab');
     this.locations.forEach(location => {
       location.services.map((service) => {
-        userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, true) : addLocationToLocationsByService(userLocationsByService, location, service);
+        userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices, true) : addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices);
       });
     });
     this.bookableServices.forEach(bookableService => {
@@ -133,18 +132,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.sessionStorageService.setItem('userLocations', JSON.stringify(userLocationsByService));
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
     return this.locations;
-  }
-
-  // Maybe we can use this as a util method actually?
-  private locationWithinRegion(regionLocations: LocationsByRegion[], region: string, location: string): boolean {
-    regionLocations.forEach(regionLocation => {
-      if (regionLocation.regionId === region) {
-        if (regionLocation.locations.includes(location)) {
-          return true;
-        }
-      }
-    })
-    return false;
   }
 
   private addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
@@ -186,7 +173,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {
     locations = locations.filter(location => location.id !== undefined);
-    console.log(locations, 'after');
     if (!locations || locations.length === 0) {
       return of(null);
     }

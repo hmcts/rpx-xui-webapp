@@ -16,7 +16,7 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 const workAllocationDateUtil = require("../../../e2e/features/pageObjects/workAllocation/common/workAllocationDateUtil");
 const { LOG_LEVELS } = require('../../../e2e/support/constants');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Given('I set mock for existing bookings', async function (bookingDatatAble) {
         const bookingsTestData = bookingDatatAble.hashes();

@@ -11,7 +11,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 const workFlowPage = require("../../pageObjects/caseAccessManagement/SARWorkflow");
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     const reviewSARPage = workFlowPage.reviewRequestPage; 
     const durationSelectionPage = workFlowPage.durationSelectionPage; 
 
@@ -173,6 +173,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await workFlowPage.requestMoreInfoPage.enterInTextArea(moreInfotext);
            
     });
-
-});
 

@@ -14,7 +14,7 @@ const checkYourAnswersPage = require("../../pageObjects/workAllocation/common/ch
 
 const workAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
 
     Then('I see Check your answers page has total {int} questions', async function (expectedQuestionsCount) {
@@ -86,6 +86,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
     }
-
-});
 

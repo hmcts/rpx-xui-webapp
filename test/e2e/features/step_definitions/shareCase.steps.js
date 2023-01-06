@@ -7,7 +7,7 @@ const BrowserWaits = require("../../support/customWaits");
 var { defineSupportCode } = require('cucumber');
 const { browser } = require("protractor");
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     var shareCasePage = new ShareCasePage();
     var shareCaseCheckAndConfirmPage = new ShareCaseCheckAndConfirmPage();
 
@@ -121,6 +121,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
  
  
-
-
-});

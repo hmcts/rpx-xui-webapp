@@ -15,7 +15,7 @@ const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 
 const caseDetailsData = require('../../../nodeMock/ccd/caseDetails_data');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Then('I see search case page displayed', async function () {
         expect(await searchCasePage.amOnPage(), "Search case page is not displayed").to.be.true;

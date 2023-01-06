@@ -17,7 +17,7 @@ const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisd
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Given('I set mock case create config {string}', async function (configReference) {
         const caseConfig = getTestJurisdiction();

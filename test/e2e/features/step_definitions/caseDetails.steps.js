@@ -7,7 +7,7 @@ const caseDetailsPage = require("../pageObjects/caseDetailsPage");
 
 const caseDetailsBasicViewPage = require('../pageObjects/caseAccessManagement/caseDetailsBasicView');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
    
     Then('I see case details tab label {string} is displayed is {string}', async function (tabLabel, boolString) {
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -91,4 +91,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I click request access button in case basic view page', async () => {
         await caseDetailsBasicViewPage.requestAccessButton.click() 
     })
-});
+

@@ -11,7 +11,7 @@ const exuiErrorMessage = require('../pageObjects/common/exuiErrorMessage');
 const headerPage = require("../pageObjects/headerPage");
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     const messageBanner = new MessageBanner($('exui-root'));
     Then('I see error message of type {string} displayed with message {string}', async function(errorType, errorMessage){
         const errorTypePage = errorType.toLowerCase();
@@ -52,5 +52,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-});
+
 

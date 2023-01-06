@@ -16,7 +16,7 @@ const caseDetailsPage = require("../pageObjects/caseDetailsPage");
 
 const creatCaseStepTimeout = 600*1000;
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     var caseListPage = new CaseListPage();
     let frCase = new FRCase();
     let probateCase = new ProbateCase();
@@ -86,4 +86,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I am on case form page', async function () {
         await caseManager.AmOnCCDCaseEditPage();
     });
-});

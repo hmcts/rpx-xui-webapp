@@ -17,7 +17,7 @@ const waMockData = require('../../../../nodeMock/workAllocation/mockData');
 
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     const waCasesTable = new WACasesTable();
 
 

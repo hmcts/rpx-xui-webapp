@@ -58,7 +58,8 @@
     "test:ngIntegrationMockEnv": "node -e 'require(`./test/nodeMock/availablePortFinder.js`).configureTestProxyPort()'",
     "test:ngIntegration": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:ngIntegrationDebug": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js --debug",
-    "test:nodeMock": "nodemon test/nodeMock/app --standalone"
+    "test:nodeMock": "nodemon test/nodeMock/app --standalone",
+    "test:codecept": "npx codeceptjs run --config=./test/codeceptCommon/codecept.conf.js --steps  --features"
   },
   "private": true,
   "dependencies": {
@@ -73,6 +74,7 @@
     "@angular/platform-browser": "^11.2.14",
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
+    "@codeceptjs/helper": "^2.0.1",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccd-case-ui-toolkit": "5.0.44-case-flags-integration-fixes",
     "@hmcts/ccpay-web-component": "5.0.10-beta14",
@@ -91,11 +93,13 @@
     "@nguniversal/express-engine": "^7.1.1",
     "@nicky-lenaers/ngx-scroll-to": "^1.1.1",
     "accessibility-checker": "^3.0.6",
+    "allure-commandline": "^2.20.1",
     "applicationinsights": "1.7.2",
     "applicationinsights-js": "^1.0.20",
     "axios": "^0.21.1",
     "axios-mock-adapter": "^1.18.2",
     "class-transformer": "^0.3.2",
+    "codeceptjs": "^3.3.7",
     "config": "^3.2.5",
     "cookie-parser": "^1.4.4",
     "core-js": "^3.19.3",
@@ -141,6 +145,7 @@
     "ts-enum-util": "4.0.2",
     "tslib": "^2.0.0",
     "web-animations-js": "^2.3.2",
+    "webdriverio": "^6.12.1",
     "xlsx": "^0.15.4",
     "yarn": "^1.22.18",
     "zone.js": "~0.10.2"

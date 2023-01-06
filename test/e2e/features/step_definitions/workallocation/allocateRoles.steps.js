@@ -11,7 +11,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 const workFlowPage = require("../../pageObjects/workAllocation/workFlow");
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Then('I see Allocate role work flow page {string} with caption {string} is displayed', async function (workFlowPageType,captionHeader) {
         let workFlowPageObject = getWorkflowPageObject(workFlowPageType);
@@ -155,6 +155,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const durationOptionInput = workFlowPage.durationOfRolePage.getRadioOptionInputElement(durationOption);
         expect(await durationOptionInput.isSelected()).to.be.true;
     });
-
-});
 

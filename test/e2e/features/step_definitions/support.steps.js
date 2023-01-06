@@ -7,7 +7,7 @@ const { browser } = require("protractor");
 const BrowserLogs = require('../../support/browserLogs');
 
 const cucumberReporter = require('../../support/reportLogger');
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
    
 
     Given('I switch to new window opened', async function(){
@@ -56,5 +56,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const unKnownWindowHandles = await ArrayUtil.filter(allWindowHandles, async (handle) => !knownWindowHandles.includes(handle));
         return unKnownWindowHandles;
     }
-
-});

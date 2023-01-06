@@ -5,7 +5,7 @@ const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 
 const taskForEventCompletionValidationPage = require('../../pageObjects/workAllocation/taskForEventValidatiosPage');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
 
     Then('I see task event validation error page', async function (datatable) {
@@ -55,5 +55,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     
-
-});

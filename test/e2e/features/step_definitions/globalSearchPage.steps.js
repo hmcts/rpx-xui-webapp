@@ -12,7 +12,7 @@ const headerPage = require('../pageObjects/headerPage');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const CaseManager = require('../pageObjects/common/CaseManager');
 
-defineSupportCode(function ({ Given, When, Then }) {
+
     const caseManager = new CaseManager();
     When('I input case reference in header search field {string}', async function(caseRef){
         await headerPage.headerSearch.input.clear();
@@ -373,4 +373,3 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     });
 
-});

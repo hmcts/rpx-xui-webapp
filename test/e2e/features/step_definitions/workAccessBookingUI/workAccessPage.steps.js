@@ -13,7 +13,7 @@ const workAllocationDateUtil = require("../../pageObjects/workAllocation/common/
 const createNewBookingWorkflow = require('../../pageObjects/workAccessBookingUI/createNewBookingWorkflow');
 const customWaits = require('../../../support/customWaits');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     function getWorkAccessRadioButton(radioButtonName){
         const normalisedName = radioButtonName.toLowerCase();
@@ -195,4 +195,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(bookingDetails.value.length > 0, `Create booking details ${bookingDetails.key} is not displayed`).to.be.true
         }
     });
-});
+

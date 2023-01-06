@@ -12,7 +12,7 @@ const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 const ArrayUtil = require('../../../utils/ArrayUtil');
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Then('I see work filter of type {string} is displayed',async function(filterType){
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -293,7 +293,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await myWorkPage.clearAllSelectedLocations();
     });
 
-    
-});
-
+  
 

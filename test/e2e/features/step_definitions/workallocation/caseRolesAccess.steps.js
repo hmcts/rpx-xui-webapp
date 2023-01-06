@@ -10,7 +10,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 
 const checkYourAnswersPage = require('../../pageObjects/workAllocation/common/checkYourAnswersPage');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     Then('I see Roles and access page is displayed', async function(){
         expect(await caseRolesAndAccessPage.isPageDisplayed()).to.be.true
     });
@@ -206,4 +206,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
         
     });
-});

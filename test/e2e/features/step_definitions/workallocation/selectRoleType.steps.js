@@ -12,7 +12,7 @@ const workflowUtil = require('../../pageObjects/common/workflowUtil');
 const exclusionWorkFlow = require("../../pageObjects/workAllocation/exclusionRolesWorkFlow");
 const findPersonPage = require('../../pageObjects/workAllocation/common/findPersonComponent');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
 
     Then('In workflow {string}, I see select role type page displayed with caption {string}', async function (workflow, selctRoleTypeCaption) {
@@ -47,5 +47,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-
-});

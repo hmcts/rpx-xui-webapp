@@ -183,18 +183,15 @@ class BrowserUtil{
     }
 
     async scrollToElement(element){
-        await browser.executeScript('arguments[0].scrollIntoView()',
-            element);
+        await browser.scrollToElement(element);
     }
 
     async getFromSessionStorage(key){
-        return await browser.executeScript('return window.sessionStorage["'+key+'"]',
-            key);
+        return await browser.getSessionStorage(key);
     }
 
     async getFromLocalStorage(key) {
-        return await browser.executeScript('return window.localStorage["' + key + '"]',
-            key);
+        return await browser.getLocalStorage(key);
     }
 
 }

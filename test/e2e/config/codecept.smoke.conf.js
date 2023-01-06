@@ -1,11 +1,12 @@
 
 const global = require('./globals')
 
-
 const functional_output_dir = '../../../functional_output'
 
+
 exports.config = {
-  timeout: 120,
+  grep: '@smoke',
+  timeout: 20,
   "gherkin": {
     "features": "../e2e/features/app/**/mediaViewer.feature",
     "steps": "../e2e/features/step_definitions/**/*.steps.js"
@@ -38,16 +39,16 @@ exports.config = {
       }
     },
     "mochawesome": {
-      "stdout": `${functional_output_dir}/`,
+      "stdout": `${functional_output_dir}/smoke/console.log`,
       "options": {
-        "reportDir": "./output",
+        "reportDir": `${functional_output_dir}/smoke/`,
         "reportFilename": "report"
       }
     },
     "mocha-junit-reporter": {
-      "stdout": "./output/console.log",
+      "stdout": `${functional_output_dir}/smoke/console.log`,
       "options": {
-        "mochaFile": "./output/result.xml",
+        "mochaFile": `${functional_output_dir}/smoke/junit.xml`,
         "attachments": true //add screenshot for a failed test
       }
     }

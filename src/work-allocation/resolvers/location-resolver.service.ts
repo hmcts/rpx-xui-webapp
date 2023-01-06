@@ -81,7 +81,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
 
   public getJudicialWorkersOrCaseWorkers(regionLocations: LocationsByRegion[], userDetails: UserDetails): Location[] {
     this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
-    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.getUserRole(userDetails.userInfo.roles);
     let userLocationsByService: LocationsByService[] = [];
     const allLocationServices: string[] = [];
     // TODO: Take bookable role assignments into consideration

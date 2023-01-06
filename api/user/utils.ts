@@ -29,11 +29,10 @@ export function isCurrentUserCaseAllocator(currentUserRoleAssignment: RoleAssign
                                            currentJurisdiction?: string,
                                            currentLocation?: string): boolean {
   return !!currentUserRoleAssignment
-   && currentUserRoleAssignment.roleType === ORGANISATION_ROLE_TYPE
-   && currentUserRoleAssignment.roleName === CASE_ALLOCATOR_ROLE
-   && (!currentJurisdiction || currentUserRoleAssignment.attributes.jurisdiction === currentJurisdiction)
-   // primaryLocation changed to baseLocation here
-   && (!currentLocation || currentUserRoleAssignment.attributes.baseLocation === currentLocation);
+    && currentUserRoleAssignment.roleType === ORGANISATION_ROLE_TYPE
+    && currentUserRoleAssignment.roleName === CASE_ALLOCATOR_ROLE
+    && (!currentJurisdiction || currentUserRoleAssignment.attributes.jurisdiction === currentJurisdiction)
+    && (!currentLocation || currentUserRoleAssignment.attributes.primaryLocation === currentLocation);
 }
 
 // Returns the roles

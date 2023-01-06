@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import { LinkedHearingsFinalConfirmationComponent } from './linked-hearings-final-confirmation.component';
 
@@ -19,7 +19,7 @@ describe('LinkedHearingsFinalConfirmationComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsFinalConfirmationComponent],
       providers: [

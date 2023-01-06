@@ -4,7 +4,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { SessionStorageService } from '../../app/services';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
@@ -43,12 +43,12 @@ describe('Ref Data Resolver', () => {
         ]
       }
     );
-    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
+    lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
     mockStore = jasmine.createSpyObj('mockStore', ['pipe']);
   });
 
   it('should be created', () => {
-    const service: RefDataResolver = TestBed.get(RefDataResolver);
+    const service: RefDataResolver = TestBed.inject(RefDataResolver);
     expect(service).toBeTruthy();
   });
 
@@ -84,7 +84,7 @@ describe('Ref Data Resolver', () => {
   }));
 
   it('should call router navigate if error', inject([RefDataResolver], (service: RefDataResolver) => {
-    spyOn(lovRefDataService, 'getListOfValues').and.returnValue(Observable.throwError('mocked api error'));
+    spyOn(lovRefDataService, 'getListOfValues').and.returnValue(throwError('mocked api error'));
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {

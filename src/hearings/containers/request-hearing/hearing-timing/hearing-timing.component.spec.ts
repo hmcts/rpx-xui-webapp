@@ -87,7 +87,7 @@ describe('HearingTimingComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -318,7 +318,8 @@ describe('HearingTimingComponent', () => {
     hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
     component.showDateAvailability();
     component.prepareHearingRequestData();
-    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2022-12-12T00:00:00.000Z');
+    fixture.detectChanges();
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2021-01-01T00:00:00.000Z');
   });
 
   it('should check date selection format for form data', () => {

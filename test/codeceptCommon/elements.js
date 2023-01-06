@@ -23,7 +23,7 @@ class Element {
     }
 
     wait() {
-        getActor().waitForElement(this.selector, 15)
+        getActor().waitForElement(this.selector, 30)
     }
 
     locator() {

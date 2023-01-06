@@ -45,6 +45,22 @@ class Browser{
     async browserLogs(){
         return await getActor().grabBrowserLogs();  
     }
+
+    async scrollToElement(elementObj){
+        return await getActor().scrollIntoView(elementObj.selector)
+    }
+
+    async getSessionStorage(key) {
+        return await getActor().executeScript(() => {
+            return window.sessionStorage[key]
+        }); 
+    }
+
+    async getLocalStorage(key) {
+        return await getActor().executeScript(() => {
+            return window.localStorage[key]
+        });
+    }
 }
 
 

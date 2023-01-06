@@ -26,7 +26,6 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
   try {
     const bookings = await http.post(fullPath, {"queryRequest" : {"userIds" : [req.body.userId]}}, { headers });
     const fullLocations = await getFullLocationsForServices(req);
-    console.log('foxylady', fullLocations);
     const bookingAndLocationName = bookings.data.bookings.map(booking => {
       const location = fullLocations.filter(thisLocation =>
         booking.locationId === thisLocation.epimms_id);

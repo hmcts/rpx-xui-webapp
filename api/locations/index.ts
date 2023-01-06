@@ -28,7 +28,6 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
-  console.log('yabba dabba doo', userLocations);
   const bookingLocations = req.body.bookingLocations ? req.body.bookingLocations : [];
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
@@ -51,6 +50,8 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       results = results.filter(location => location.is_case_management_location === 'Y');
     }
     // add in check to make sure user only able to select base locations if specified
+    // if service not present all locations available for service
+    // else check locations/regions, if there are none, provide no locations for service
     userLocations.forEach(userLocation => {
       const courtTypes = getCourtTypeIdsByService([userLocation.service]);
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
@@ -74,9 +75,10 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 
 }
 
-export function filterOutResults(locations: LocationModel[], locationIds: string[], regionIds: string[], courtTypes: string[]): LocationModel[] {
+export function filterOutResults(locations: LocationModel[], locationIds: string[],
+                                 regions: string[], courtTypes: string[]): LocationModel[] {
   return locations.filter(location => !(courtTypes.includes(location.court_type_id))
-    || (locationIds.includes(location.epimms_id) || regionIds.includes(location.region_id) || ((!regionIds || regionIds.length === 0) && (!locationIds || locationIds.length === 0))));
+    || (locationIds.includes(location.epimms_id) || regions.includes(location.region_id)));
 }
 
 /**

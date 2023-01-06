@@ -16,7 +16,6 @@ export async function handleLocationGet(fullPath: string, req: EnhancedRequest):
 export async function commonGetFullLocation(req: EnhancedRequest) {
   let serviceCodes = [];
   let courtVenues = [];
-  console.log('asmrservicecode', req.query.serviceCodes);
   const services = req.query.serviceCodes.split(',');
   const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
   const serviceRefDataMapping = getServiceRefDataMappingList();
@@ -29,7 +28,6 @@ export async function commonGetFullLocation(req: EnhancedRequest) {
   for (const serviceCode of serviceCodes) {
     const path: string = prepareGetLocationsUrl(basePath, serviceCode);
     const response = await handleLocationGet(path, req);
-    console.log('asmrgibio', JSON.stringify(response));
     courtVenues = [...courtVenues, ...response.data.court_venues];
   }
   courtVenues = courtVenues.filter((value, index, self) =>
@@ -41,7 +39,6 @@ export async function commonGetFullLocation(req: EnhancedRequest) {
 }
 
 export async function getFullLocationsForServices(req: EnhancedRequest) {
-  console.log('tingles', req);
   const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
   const serviceRefDataMapping = getServiceRefDataMappingList();
   const services = req.body.bookableServices;
@@ -64,7 +61,6 @@ export async function getFullLocationsForServices(req: EnhancedRequest) {
 // Similar to above function but used to get only small portion of full data
 // Used to get region -> location information for location filter functionality
 export async function getRegionLocationsForServices(req: EnhancedRequest) {
-  console.log('tingles', req);
   const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
   const serviceRefDataMapping = getServiceRefDataMappingList();
   const services = req.body.serviceIds;
@@ -75,21 +71,18 @@ export async function getRegionLocationsForServices(req: EnhancedRequest) {
       serviceCodes = [...serviceCodes, ...serviceRef.serviceCodes];
     }
   });
-  let regionLocations = [];
-  let regions = [];
+  const regionLocations = [];
+  const regions = [];
   for (const serviceCode of serviceCodes) {
-    console.log('multipack', serviceCode);
     const path: string = prepareGetLocationsUrl(basePath, serviceCode);
     const response = await handleLocationGet(path, req);
-    response.data.court_venues.forEach((court_venue) => {
-      console.log(court_venue, 'pedantic', regions, 'yabaa', regionLocations);
-      if (!regions.includes(court_venue.region_id)) {
-        regions.push(court_venue.region_id);
-        regionLocations.push({regionId: court_venue.region_id, locations: [court_venue.epimms_id]})
+    response.data.court_venues.forEach(courtVenue => {
+      if (!regions.includes(courtVenue.region_id)) {
+        regions.push(courtVenue.region_id);
+        regionLocations.push({regionId: courtVenue.region_id, locations: [courtVenue.epimms_id]})
       } else {
-        console.log('maltesers', regionLocations.find(locationList => locationList.regionId === court_venue.region_id));
-        regionLocations.find(locationList => locationList.regionId === court_venue.region_id).locations.push(court_venue.epimms_id);
-        console.log('galaxy', regionLocations);
+        regionLocations.find(locationList =>
+           locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
       }
     })
   }

@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import 'mocha';
 import * as sinonChai from 'sinon-chai';
 import { mockReq } from 'sinon-express-mock';
-import { CASE_ALLOCATOR_ROLE, JUDICIAL_TYPE, LEGAL_OPS_TYPE} from '../user/constants';
+import { CASE_ALLOCATOR_ROLE, JUDICIAL_TYPE, LEGAL_OPS_TYPE } from '../user/constants';
 import { checkIfCaseAllocator } from './roleService';
 
 chai.use(sinonChai);
@@ -22,7 +22,7 @@ describe('RoleService', () => {
       readOnly: false,
       created: Date.UTC.toString(),
       attributes: {
-        baseLocation: '231596',
+        primaryLocation: '231596',
         jurisdiction: 'IA',
       },
     },
@@ -38,7 +38,7 @@ describe('RoleService', () => {
       readOnly: false,
       created: Date.UTC.toString(),
       attributes: {
-        baseLocation: '331234',
+        primaryLocation: '331234',
         jurisdiction: 'IA',
       },
     },

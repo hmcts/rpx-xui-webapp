@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -8,12 +8,12 @@ import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Store } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
-import * as fromActions from '../../../app/store';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { InfoMessage, InfoMessageType, TaskActionIds, TaskContext } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
@@ -117,7 +117,9 @@ describe('AvailableTasksComponent', () => {
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
+    component.isUpdatedTaskPermissions$ = of(true);
     spyOn(mockRouter, 'navigate');
     fixture.detectChanges();
   });
@@ -138,17 +140,17 @@ describe('AvailableTasksComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const exampleLocations = ['location1', 'location2', 'location3'];
     component.selectedLocations = exampleLocations;
-    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[0];
-    expect(searchParameter.key).toBe('available_tasks_only');
-    expect(searchParameter.operator).toBe('BOOLEAN');
-    expect(searchParameter.value).toBe(true);
+    const searchRequest = component.getSearchTaskRequestPagination();
+    expect(searchRequest.request_context).toEqual(TaskContext.AVAILABLE_TASKS);
   });
 
   it('should allow searching via work types', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
     component.selectedWorkTypes = workTypes;
-    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[3];
+    const searchRequest = component.getSearchTaskRequestPagination();
+    const searchParameter = searchRequest.search_parameters[2];
+    expect(searchRequest.request_context).toEqual(TaskContext.AVAILABLE_TASKS);
     expect(searchParameter.key).toBe('work_type');
     expect(searchParameter.values).toBe(workTypes);
   });

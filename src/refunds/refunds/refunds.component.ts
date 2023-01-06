@@ -9,6 +9,7 @@ import { UserService } from '../../app/services/user/user.service';
 export class RefundsComponent implements OnInit {
 
   public refundsApiRoot = 'api/refund';
+  public notificationsApiRoot = 'api/notication';
   public ccdCaseNumber = 0;
   public userEmail = '';
   public userRoles = [];

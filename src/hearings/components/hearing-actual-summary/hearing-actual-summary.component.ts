@@ -30,8 +30,6 @@ export class HearingActualSummaryComponent implements OnInit {
       this.hearingActualsMainModel.hearingActuals.hearingOutcome;
     this.isCompleted = hearingOutcome && hearingOutcome.hearingResult === HearingResult.COMPLETED;
     this.isAdjourned = hearingOutcome && hearingOutcome.hearingResult === HearingResult.ADJOURNED;
-    console.log('IS ADJOURNED', this.isAdjourned);
-    console.log('adjournReasons', this.adjournReasons);
 
     if (this.isAdjourned) {
       const adjournReasonType = this.adjournReasons.find(reason => reason.key === hearingOutcome.hearingResultReasonType);

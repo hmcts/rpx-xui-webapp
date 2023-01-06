@@ -28,8 +28,10 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
         filter(state => !!state.hearingActuals.hearingActualsMainModel),
     );
 
-    this.subscription = this.hearingState$.subscribe(state => {
-      this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
+    this.subscription = this.hearingState$.subscribe({
+      next: (state: fromHearingStore.State) => {
+        this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
+      }
     });
   }
 

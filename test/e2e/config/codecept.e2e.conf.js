@@ -1,9 +1,9 @@
 
 
 const functional_output_dir = '../../../functional_output'
-const codeceptCommonDir = '../../codeceptCommon/'
+const codeceptCommonDir = '../../codeceptCommon'
 
-const global = require(`${codeceptCommonDir}globals`)
+const global = require(`${codeceptCommonDir}/globals`)
 
 
 exports.config = {
@@ -13,7 +13,7 @@ exports.config = {
     "features": "../features/app/**/*.feature",
     "steps": "../features/step_definitions/**/*.steps.js"
   },
-  output: `${codeceptCommonDir}output`,
+  output: `${functional_output_dir}/output`,
   helpers: {
     Puppeteer: {
       url: 'https://manage-case.aat.platform.hmcts.net/',
@@ -60,7 +60,7 @@ exports.config = {
       "enabled": true
     },
     "myPlugin": {
-      "require": `${codeceptCommonDir}hooks.js`,
+      "require": `${codeceptCommonDir}/hooks.js`,
       "enabled": true
     }
   },

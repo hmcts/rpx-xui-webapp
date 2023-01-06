@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { HearingLinksStateData } from 'src/hearings/models/hearingLinksStateData.model';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { LovRefDataByServiceModel } from '../../../models/lovRefData.model';

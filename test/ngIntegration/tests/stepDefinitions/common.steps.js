@@ -14,7 +14,7 @@ const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 
 const ccdApi = require('../../../nodeMock/ccd/ccdApi');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     Given('I reload app if {string}', async function(isReadRequired){
         if (isReadRequired.toLowerCase().includes("yes") || isReadRequired.toLowerCase().includes("true")){
             await browserUtil.gotoHomePage();

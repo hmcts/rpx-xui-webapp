@@ -35,7 +35,7 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     const taskListTable = new TaskListTable();
     const waCaseListTable = new CaseListTable();
 

@@ -18,7 +18,7 @@ const userRolesConfig = require('../../../../e2e/config/userRolesConfig');
 
 const userUtil = require('../../../util/userRole');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     const taskListTable = new TaskListTable();
 
    const testData = require('../../../../e2e/config/appTestConfig');

@@ -14,7 +14,7 @@ const taskManagerPage = require('../../pageObjects/workAllocation/taskManagerPag
 const featureToggleUtil = require('../../../../ngIntegration/util/featureToggleUtil');
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
 
     Then('I see Task list sub navigation tabs', async function () {
@@ -306,6 +306,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await taskListPage.paginationContainer.isDisplayed(), 'Pagination display is expected to be ' + toggleVal).to.equal(toggleVal);
 
     });
-
-});
 

@@ -6,7 +6,6 @@ const headerPage = require('../pageObjects/headerPage');
 const { defineSupportCode } = require('cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 const config = require('../../config/conf.js');
-const EC = protractor.ExpectedConditions;
 const BrowserWaits = require("../../support/customWaits");
 const CucumberReportLogger = require('../../support/reportLogger');
 
@@ -14,12 +13,9 @@ const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 const testConfig = require('../../config/appTestConfig');
 
 async function waitForElement(el) {
-  await browser.wait(result => {
-    return element(by.className(el)).isPresent();
-  }, 20000);
+  return element(`.${el}`).isDisplayed();
 }
 
-defineSupportCode(function ({ Given, When, Then }) {
   let invalidCredentialsCounter = 0;
   let testCounter = 0;
 
@@ -78,7 +74,6 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
           console.log(err + " : Login re attempt " + loginAttemptRetryCounter);
-          world.attach(err + " : Login re attempt " + loginAttemptRetryCounter);
         console.log(err);
           await browser.driver.manage()
             .deleteAllCookies();
@@ -92,10 +87,8 @@ defineSupportCode(function ({ Given, When, Then }) {
       }
     }
     console.log("ONE ATTEMPT:  EUI-1856 issue occured / total logins => " + firstAttemptFailedLogins + " / " + loginAttempts);
-    world.attach("ONE ATTEMPT:  EUI-1856 issue occured / total logins => " + firstAttemptFailedLogins + " / " + loginAttempts);
 
     console.log("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
-    world.attach("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
 
   }
 
@@ -113,12 +106,14 @@ defineSupportCode(function ({ Given, When, Then }) {
       await browser.get(config.config.baseUrl);
       await BrowserWaits.waitForElement(loginPage.signinTitle);
       expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
+    }).catch(err => {
+      throw err
     });
 
   });
 
   Then(/^I should see failure error summary$/, async function () {
-    await waitForElement('heading-large');
+    await element('.heading-large').wait();
     await expect(loginPage.failure_error_heading.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.failure_error_heading.getText())
       .to
@@ -129,11 +124,10 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Then(/^I am on Idam login page$/, async function () {
-    await waitForElement('heading-large');
+    await loginPage.signinTitle.wait();
     await expect(loginPage.signinTitle.isDisplayed()).to.eventually.be.true;
-    await expect(loginPage.signinTitle.getText())
+    await expect(await loginPage.signinTitle.getText())
       .to
-      .eventually
       .contains('Sign in');
     await expect(loginPage.emailAddress.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.password.isDisplayed()).to.eventually.be.true;
@@ -179,14 +173,11 @@ defineSupportCode(function ({ Given, When, Then }) {
   Then(/^I select the sign out link$/, async function () {
 
     await BrowserWaits.retryWithActionCallback(async () => {
-      await browser.sleep(SHORT_DELAY);
       await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
-      await browser.sleep(SHORT_DELAY);
       await BrowserWaits.waitForElementClickable(loginPage.signOutlink);
       await loginPage.signOutlink.click();
     });
 
-    browser.sleep(SHORT_DELAY);
   });
 
 
@@ -196,11 +187,11 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     await BrowserWaits.retryWithActionCallback(async () => {
       try{
-        await BrowserUtil.waitForLD();
+        // await BrowserUtil.waitForLD();
         await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
         await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
         
-        await BrowserUtil.waitForLD();
+
       }catch(err){
         await browser.get(config.config.baseUrl);
         throw new Error(err);
@@ -208,19 +199,20 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     });
 
+    console.log("step completed ....")
+    
   });
 
   Given('I am logged into Expert UI with valid user details', async function () {
     const matchingUsers = testConfig.users[testConfig.testEnv].filter(user => user.userIdentifier === 'PROD_LIKE');
 
     await loginPage.givenIAmLoggedIn(matchingUsers[0].email, matchingUsers[0].key);
-    const world = this;
 
     loginAttempts++;
-    await loginattemptCheckAndRelogin(matchingUsers[0].email, matchingUsers[0].key, this);
+    // await loginattemptCheckAndRelogin(matchingUsers[0].email, matchingUsers[0].key, this);
 
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
-      world.attach("Login success page load load attempt : " + message)
+      console.log("Login success page load load attempt : " + message)
     });
 
   });
@@ -384,4 +376,3 @@ defineSupportCode(function ({ Given, When, Then }) {
     browser.sleep(LONG_DELAY);
   });
 
-});

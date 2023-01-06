@@ -11,7 +11,7 @@ const browserUtil = require("../../../ngIntegration/util/browserUtil");
 const { LOG_LEVELS } = require("../../support/constants");
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     var caseListPage = new CaseListPage();
 
     Then('I am on case list page', async function () {
@@ -186,4 +186,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     async function validateNoResultsDisplayed(){
         expect(await caseListPage.hasCaseListAnyResults()).to.be.false;
     }
-});
+

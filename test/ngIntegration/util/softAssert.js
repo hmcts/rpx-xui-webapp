@@ -55,9 +55,12 @@ class SoftAssert {
             scrs = `${scrs} \n ${scr}`;
         }
         scrs = scrs + "\n\n";
+
+        reportLogger.AddMessage(`************* All Scenarios \n\n ${scrs}`);
+        console.log(`************* All Scenarios \n\n ${scrs}`)
         expect(this.isPassed).to.be.true;
         expect(this.assertions.length, `${this.assertions.length} of ${this.assertCount} assertions failed => Error(s) :` + scrs).to.equal(0);
-        reportLogger.AddMessage(`************* All Scenarios \n\n ${scrs}`);
+        
 
     }
 

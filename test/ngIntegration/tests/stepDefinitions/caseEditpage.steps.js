@@ -18,7 +18,7 @@ const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 const { Browser } = require('selenium-webdriver');
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Then('I see case edit page displayed', async function () {
         expect(await caseEditPage.amOnPage(), "Case edit page is not displayed").to.be.true;

@@ -5,7 +5,7 @@ const CucumberReportLogger = require('../../support/reportLogger');
 
 var { defineSupportCode } = require('cucumber');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Given('I update object values in reference {string}', async function (objectReference,datatable){
         const objectAtReference = global.scenarioData[objectReference];
@@ -20,4 +20,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
-});

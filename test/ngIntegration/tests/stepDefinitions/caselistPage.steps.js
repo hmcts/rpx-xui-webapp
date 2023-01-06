@@ -14,7 +14,7 @@ const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 
 const ccdApi = require('../../../nodeMock/ccd/ccdApi');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Then('I see case list page displayed', async function () {
         expect(await caseListPage.amOnPage(), "Case list page is not displayed").to.be.true;

@@ -13,7 +13,7 @@ const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
 
     When('I navigate to My work sub navigation tab {string}', async function (secondaryNavTab) {
@@ -97,5 +97,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
  
-
-});

@@ -1,4 +1,3 @@
-const { $, browser } = require('protractor');
 const BrowserWaits = require('../../support/customWaits');
 
 class RefundsPage {

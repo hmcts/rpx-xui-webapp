@@ -10,14 +10,13 @@ const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = requir
 const CucumberReporter = require("../../support/reportLogger");
 const BrowserWaits = require('../../support/customWaits');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
-var {defineSupportCode} = require('cucumber');
+ 
 const { browser } = require('protractor');
 const config = require('../../utils/config/config.js');
 
 const RuntimeTestData = require("../../support/runtimeTestData");
 
 
-defineSupportCode(function ({And, But, Given, Then, When}) {
   let searchPage= new SearchPage();
   let caseListPage = new CaseListPage();
   When(/^I click on search button$/, async function () {
@@ -238,4 +237,4 @@ Then(/^search criteria details should be reset$/, async function () {
   await searchPage.waitForSearchWithNoResults();
   expect(await searchPage.hasSearchReturnedResults()).to.be.false;
 });
-});
+

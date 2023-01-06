@@ -31,7 +31,7 @@ const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocat
 const CreateCasePage = require('../../../../e2e/features/pageObjects/caseCreatedPage');
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     const testErrorResponseCodes = [500, 400, 401, 403];
     const myTask_actions = ["Reassign task", "Unassign task"];

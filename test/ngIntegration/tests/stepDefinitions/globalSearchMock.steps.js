@@ -10,7 +10,7 @@ const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const globalSearchMockData = require('../../../nodeMock/globalSearch/mockData');
 const globalSearchDataModel = require('../../../dataModels/globalSearch'); 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Given('I set global search mock results count {int}', async function (count) {
         globalSearchMockData.searchResponse.resultInfo.caseStartRecord = 1;

@@ -16,7 +16,7 @@ const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisd
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     Given('I set MOCK case workers', async function(datatable){
         const dtHashes = datatable.hashes();
         let i = 0;

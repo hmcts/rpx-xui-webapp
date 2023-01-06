@@ -10,7 +10,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 
 const exclusionWorkFlow = require("../../pageObjects/workAllocation/exclusionRolesWorkFlow");
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Then('I see Add an exclusion work flow page {string} is displayed', async function (workFlowPage) {
         let workFlowPageObject = getWorkflowPageObject(workFlowPage);
@@ -115,5 +115,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     }
 
 
-
-});

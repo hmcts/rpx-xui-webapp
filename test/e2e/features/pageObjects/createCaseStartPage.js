@@ -13,7 +13,7 @@ class CreateCaseStartPage {
     this._jurisdiction = new Dropdown('#cc-jurisdiction');
     this._caseType = new Dropdown('#cc-case-type');
     this._event = new Dropdown('#cc-event');
-    this._submitButton = new Button('#content button');
+    this._submitButton = element('#content button');
     this._jurisdictionSelector = '#cc-jurisdiction' ;
 
     this._startBtn = element(by.xpath("//button[text() = 'Start']"));
@@ -26,52 +26,58 @@ class CreateCaseStartPage {
 
   async selectJurisdiction(jurisdiction){
 
-    let locatorString = "//*[@id = 'cc-jurisdiction']/option[";
-    let i = 0;
-    const options = jurisdiction.split('|');
-    for (const option of options) {
-      if (i === 0) {
-        locatorString += `contains(text(), '${option.trim()}')`;
-      } else {
-        locatorString += ` or contains(text(), '${option.trim()}')`;
-      }
-      i++;
-    }
-    locatorString = locatorString + ']';
+    // let locatorString = "//*[@id = 'cc-jurisdiction']/option[";
+    // let i = 0;
+    // const options = jurisdiction.split('|');
+    // for (const option of options) {
+    //   if (i === 0) {
+    //     locatorString += `contains(text(), '${option.trim()}')`;
+    //   } else {
+    //     locatorString += ` or contains(text(), '${option.trim()}')`;
+    //   }
+    //   i++;
+    // }
+    // locatorString = locatorString + ']';
     
-    var e = element(by.xpath(locatorString));
-    await BrowserWaits.waitForElement(e);
-    await e.click();
+    var e = element(by.xpath("//*[@id = 'cc-jurisdiction']"));
+    await e.select(jurisdiction)
+    // await BrowserWaits.waitForElement(e);
+    // await e.click();
      
   }
 
   async selectCaseType(caseType){
     
-    let locatorString = "//*[@id = 'cc-case-type']/option[";
-    let i = 0;
-    const options = caseType.split('|'); 
-    for (const option of options) {
-      if (i === 0) {
-        locatorString += `contains(text(), '${option.trim()}')`;
-      } else {
-        locatorString += ` or contains(text(), '${option.trim()}')`;
-      }
-      i++;
-    }
-    locatorString = locatorString + ']';
+    // let locatorString = "//*[@id = 'cc-case-type']/option[";
+    // let i = 0;
+    // const options = caseType.split('|'); 
+    // for (const option of options) {
+    //   if (i === 0) {
+    //     locatorString += `contains(text(), '${option.trim()}')`;
+    //   } else {
+    //     locatorString += ` or contains(text(), '${option.trim()}')`;
+    //   }
+    //   i++;
+    // }
+    // locatorString = locatorString + ']';
 
-    var e = element(by.xpath(locatorString));
-    await BrowserWaits.waitForElement(e);
-    await e.click(); 
+    // var e = element(by.xpath(locatorString));
+    // await BrowserWaits.waitForElement(e);
+    // await e.click();
+    
+    var e = element(by.xpath("//*[@id = 'cc-case-type']"));
+    await e.select(caseType)
 
     // await this._caseType.selectFromDropdownByText(option);
   }
 
   async selectEvent(option){
-    var e = element(by.xpath('//*[@id = "cc-event"]/option[text() = "' + option + '"]'));
-    await BrowserWaits.waitForElement(e)
-    await e.click(); 
+    // var e = element(by.xpath('//*[@id = "cc-event"]/option[text() = "' + option + '"]'));
+    // await BrowserWaits.waitForElement(e)
+    // await e.click(); 
 
+    var e = element(by.xpath("//*[@id = 'cc-event']"));
+    await e.select(option)
       // await this._event.selectFromDropdownByText(option);
   }
 
@@ -84,7 +90,7 @@ class CreateCaseStartPage {
   }
 
   async clickStartButton() {
-    await this._submitButton.waitForElementToBeClickable();
+    await this._submitButton.wait();
     await this._submitButton.click();
 
     // await BrowserWaits.waitForElementClickable(this._startBtn);

@@ -87,18 +87,22 @@ class BrowserUtil{
         let startTime = new Date();
         let elapsedTime = 0;
         let ldDone = false;
+        // let logs = await browser.browserLogs()
         while (!ldDone && elapsedTime < 15) {
-            let perf = await browser.executeScript("return window.performance.getEntriesByType('resource')");
+            let perf = await browser.executeScript(function(){
+                return JSON.stringify(window.performance.getEntriesByType('resource')) 
+            });
             if(!perf){
                 break;
             }
+            perf = JSON.parse(perf)
             for (let i = 0; i < perf.length; i++) {
                 if (perf[i].name.includes(url)) {
                     ldDone = true;
                     await this.stepWithRetry(async () => global.scenarioData['featureToggles'] = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request')
                     // await browser.sleep(2000);
                     reportLogger.AddMessage("LD response received");
-                    this.logFeatureToggleForScenario();
+                    // this.logFeatureToggleForScenario();
                     //reportLogger.AddJson(global.scenarioData['featureToggles']);
                     return true;
                 }

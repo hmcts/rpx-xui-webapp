@@ -13,7 +13,7 @@ const { LOG_LEVELS } = require('../../support/constants');
 
 const appTestData = require('../../config/appTestConfig')
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
 
     Then('I see header tab Task list', async function () {
@@ -241,4 +241,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
     });
 
-});
+

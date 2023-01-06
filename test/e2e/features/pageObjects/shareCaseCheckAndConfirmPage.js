@@ -2,7 +2,7 @@
 
 
 const BrowserWaits = require('../../support/customWaits');
-const { browser, $ } = require('protractor');
+ 
 const CucumberReportLog = require("../../support/reportLogger");
 
 

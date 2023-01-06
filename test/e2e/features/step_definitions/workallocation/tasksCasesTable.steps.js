@@ -9,7 +9,7 @@ const CaseListTable = require('../../pageObjects/workAllocation/casesTable');
 
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     const taskListTable = new TaskListTable();
     const caseListTable = new CaseListTable();
 
@@ -93,4 +93,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             throw new Error(`${waTableFor} is not recognised WA table`);
         }
     }
-});

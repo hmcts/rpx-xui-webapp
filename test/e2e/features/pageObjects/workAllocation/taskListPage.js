@@ -1,7 +1,6 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
-const { $ } = require('protractor');
 
 var TaskMessageBanner = require('../messageBanner');
 const { LOG_LEVELS } = require('../../../support/constants');

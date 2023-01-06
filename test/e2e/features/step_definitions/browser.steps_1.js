@@ -8,9 +8,9 @@ const { browser } = require("protractor");
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const browserutil = require('../../../ngIntegration/util/browserUtil');
-const headerPage = require('../../../e2e/features/pageObjects/headerPage');
+const headerPage = require('../pageObjects/headerPage');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Given('I save current window handle reference {string}', async function (windowReference) {
         global.scenarioData["window." + windowReference] = await browser.driver.getWindowHandle();

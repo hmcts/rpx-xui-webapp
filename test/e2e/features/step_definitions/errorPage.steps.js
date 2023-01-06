@@ -6,7 +6,6 @@ const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 const errorPage = require('../pageObjects/common/errorPage');
 const validationError = require('../pageObjects/common/exuiErrorMessage');
 
-defineSupportCode(function ({ Given, When, Then }) {
 
     Then('I see error page with message {string}', async function (errorMessage) {
 
@@ -27,4 +26,3 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
 
-});

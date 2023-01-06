@@ -1,0 +1,46 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1672998826099' stop='1672998830881'>
+    <name>Check media viewer @fullfunctional</name>
+    <title>Check media viewer @fullfunctional</title>
+    <test-cases>
+        <test-case start='1672998830105' status='failed' stop='1672998830162'>
+            <name>Start create case for Hearing Recordings and check document</name>
+            <title>Start create case for Hearing Recordings and check document</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1672998830141' status='failed' stop='1672998830161'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1672998830141' status='failed' stop='1672998830154'>
+                            <name>I am on page "http://localhost:3000/"</name>
+                            <title>I am on page "http://localhost:3000/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments>
+                <attachment title='Last Seen Screenshot' source='86565c31-85bf-4ad0-862b-e91aee09a6f3-attachment.png' type='image/png' size='27119'/>
+            </attachments>
+            <failure>
+                <message>net::ERR_CONNECTION_REFUSED at http://localhost:3000/</message>
+                <stack-trace>Error: net::ERR_CONNECTION_REFUSED at http://localhost:3000/
+                    at navigate (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/src/common/FrameManager.ts:218:13)
+                    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                    at async FrameManager.navigateFrame (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/src/common/FrameManager.ts:188:17)
+                    at async Frame.goto (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/src/common/FrameManager.ts:765:12)
+                    at async Page.goto (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/src/common/Page.ts:1766:12)
+                    at async Puppeteer.amOnPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:644:5)
+                    at async Element.isDisplayed (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/codeceptCommon/elements.js:60:13)
+                    at async /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/loginLogout.steps.js:108:14
+                    at async BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:165:32)
+                    at async /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/loginLogout.steps.js:102:5
+                    at async runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9)</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

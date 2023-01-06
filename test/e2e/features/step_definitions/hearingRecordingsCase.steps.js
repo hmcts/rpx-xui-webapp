@@ -6,7 +6,7 @@ const cucumberReporter = require('../../support/reportLogger');
 var { defineSupportCode } = require('cucumber');
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
   let hearingRecordingsCase = new HearingRecordingsCase();
 
@@ -57,4 +57,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
   });
 
-});
+

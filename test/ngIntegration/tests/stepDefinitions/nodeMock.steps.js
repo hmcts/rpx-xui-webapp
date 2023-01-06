@@ -11,7 +11,7 @@ const workAllocationDataModel = require("../../../dataModels/workAllocation");
 const reportLogger = require('../../../e2e/support/reportLogger');
 const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Given('I init MockApp', async function () {
         MockApp.init();

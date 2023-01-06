@@ -7,7 +7,7 @@ const WorkAllocationDateUtil = require('../../pageObjects/workAllocation/common/
 const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
 const caseRolesAndAccessPage = require("../../pageObjects/workAllocation/caseRolesAccessPage");
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     When('I click manage link {string} for task at position {int} in case details tasks tab', async function(manageLinkText,taskPos){
         
@@ -200,6 +200,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
     });
 
-
-});
 

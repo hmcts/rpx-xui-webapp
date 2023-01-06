@@ -7,7 +7,7 @@ var { defineSupportCode } = require('cucumber');
 const BrowserWaits = require("../../support/customWaits");
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Then('I validate launch darkly feature toggles response received', async function(){ 
         expect(global.scenarioData['featureToggles']).to.not.be.a('null');
@@ -62,4 +62,3 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-});

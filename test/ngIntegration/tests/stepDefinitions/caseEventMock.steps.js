@@ -10,7 +10,7 @@ const MockApp = require('../../../nodeMock/app');
 const CCDCaseConfig = require('../../../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
   
     Given('I create mock Case event {string}', function (moduleRef) {

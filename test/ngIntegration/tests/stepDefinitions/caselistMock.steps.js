@@ -7,7 +7,7 @@ var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../nodeMock/app');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Given('I setup caselist mock {string}', async function (caselistMockRef) {
         const caseListConfig = new CaseListConfig();

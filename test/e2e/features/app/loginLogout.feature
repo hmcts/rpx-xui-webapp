@@ -11,13 +11,14 @@ Feature: Login
     Then I should be redirected to the Idam login page
     Then I should see failure error summary
 
+
   Scenario: login and log out from EUI with valid user
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
     Then I should be redirected to the Idam login page
 
-    @all @crossbrowser @aat
+@all @crossbrowser @aat 
   Scenario: login and log out from EUI as Probate user
     Given I am logged into Expert UI with Probate user details
     Then I should be redirected to EUI dashboard page
@@ -30,7 +31,7 @@ Feature: Login
     Given I navigate to Expert UI Url direct link
     Then I should be redirected back to Login page after direct link
 
-  @iauserslogin @aat
+@iauserslogin @aat @test
   Scenario Outline: Login as IA "<Usertype>"
     Given I am logged into Expert UI as IA "<Usertype>"
     Then I should be redirected to EUI dashboard page

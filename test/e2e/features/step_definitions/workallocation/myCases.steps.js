@@ -12,7 +12,7 @@ const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
 const ArrayUtil = require('../../../utils/ArrayUtil');
 
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
     const casesListTable = new WACasesListTable();
 
     Then('I validate work allocation cases table columns displayed', async function (datatable) {
@@ -69,7 +69,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await casesListTable.clickCaseColLink(colName, rowPos);
         });
     });
-
-});
 
 

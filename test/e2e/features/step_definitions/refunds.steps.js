@@ -2,7 +2,6 @@ const RefundsPage = require('../pageObjects/refundsPage.js');
 const headerPage = require('../pageObjects/headerPage');
 const {defineSupportCode} = require('cucumber');
 
-defineSupportCode(function ({Then, When}) {
   let refundsPage = new RefundsPage();
 
   When(/^I click on Refunds button$/, async function () {
@@ -85,4 +84,4 @@ defineSupportCode(function ({Then, When}) {
       expect(reviewDetailsInfo[key]).to.include.all.members(reviewRefundPageFields[key]);
     });
   });
-});
+

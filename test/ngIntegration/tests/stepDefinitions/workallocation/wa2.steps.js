@@ -31,7 +31,7 @@ const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocat
 
 const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/myWorkPage');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     const caseListPage = new CaseListPage();
 

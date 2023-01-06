@@ -5,7 +5,7 @@ class CucumberReportLog{
 
     setScenarioWorld(world){
         this.scenarioWorld = world;
-        this.logLevel = process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : LOG_LEVELS.Info; 
+        this.logLevel = process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : LOG_LEVELS.Debug; 
     }
 
     FormatPrintJson(jsonObj,basePad){

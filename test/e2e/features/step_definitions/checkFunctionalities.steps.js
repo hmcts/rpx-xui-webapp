@@ -2,7 +2,7 @@ var IacCase = require('../pageObjects/iacCase');
 
 var { defineSupportCode } = require('cucumber');
 
-defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
   let iacCase = new IacCase();
 
@@ -24,7 +24,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     await iacCase.legalRepDetailsPage();
   })
 
-});
+
 
 
 

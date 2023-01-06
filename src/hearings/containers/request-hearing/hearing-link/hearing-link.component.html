@@ -54,7 +54,7 @@
               {{linkedCase.caseReference | caseReference}}
             </a>
           </td>
-          <td class="govuk-table__cell">{{linkedCase.reasonsForLink}}</td>
+          <td class="govuk-table__cell">{{linkedCase.reasonsForLink | convertArrayToString}}</td>
         </tr>
       </tbody>
     </table>

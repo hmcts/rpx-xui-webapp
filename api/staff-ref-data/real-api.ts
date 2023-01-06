@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import * as querystring from 'querystring';
 import { handleGet } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
+import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
 import { StaffDataUser } from './models/staff-data-user.model';
 import { GropuOption, StaffFilterOption } from './models/staff-filter-option.model';
 
@@ -44,13 +44,20 @@ export async function getJobTitles(req, res: Response, next: NextFunction) {
 
 export async function getServices(req, res: Response, next: NextFunction) {
   const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/skill`;
-
   try {
     const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
 
     const options: StaffFilterOption[] = [];
+
+    const serviceRefData = getConfigValue(SERVICE_REF_DATA_MAPPING) as any;
+    
     data.service_skill.forEach(element => {
-      options.push({ key: element.id, label: element.id });
+      serviceRefData.forEach(service => {
+        const selectedServiceCodes = service.serviceCodes.filter(s=>s == element.id);
+        if (selectedServiceCodes.length > 0) {
+          options.push({ key: element.id, label: service.service });
+        }
+      });
     });
 
     res.status(status).send(options);

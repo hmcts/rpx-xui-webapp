@@ -4,7 +4,7 @@ import { handleGet } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
 import { StaffDataUser } from './models/staff-data-user.model';
-import { GropuOption, StaffFilterOption } from './models/staff-filter-option.model';
+import { GropuOption, StaffFilterOption, Service } from './models/staff-filter-option.model';
 
 const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 
@@ -49,11 +49,10 @@ export async function getServices(req, res: Response, next: NextFunction) {
 
     const options: StaffFilterOption[] = [];
 
-    const serviceRefData = getConfigValue(SERVICE_REF_DATA_MAPPING) as any;
-    
+    const serviceRefData = getConfigValue(SERVICE_REF_DATA_MAPPING) as Service[];
     data.service_skill.forEach(element => {
       serviceRefData.forEach(service => {
-        const selectedServiceCodes = service.serviceCodes.filter(s=>s == element.id);
+        const selectedServiceCodes = service.serviceCodes.filter(s => s === element.id);
         if (selectedServiceCodes.length > 0) {
           options.push({ key: element.id, label: service.service });
         }

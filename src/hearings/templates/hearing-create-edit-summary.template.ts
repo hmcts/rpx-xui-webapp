@@ -72,7 +72,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
       },
       {
         id: 'howParticipantsAttendant',
-        answerTitle: 'Ways participants attend this hearing',
+        answerTitle: 'What will be the methods of attendance for this hearing?',
         answerSource: AnswerSource.HOW_PARTICIPANTS_ATTEND,
         isHiddenSource: IsHiddenSource.PAPER_HEARING,
         changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList',

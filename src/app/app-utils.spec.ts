@@ -189,35 +189,35 @@ describe('getFeatureToggledUrl', () => {
   });
 });
 
-describe('getRoleCategory', () => {
+describe('getUserRole', () => {
 
   it('should return legal ops role if user has any legal ops role', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker-ia-caseofficer']);
+    const roleCategory = AppUtils.getUserRole(['caseworker-ia-caseofficer']);
     expect(roleCategory).toBe(UserRole.LegalOps);
   });
 
   it('should return judicial role if user has any judicial role', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker-ia-iacjudge']);
+    const roleCategory = AppUtils.getUserRole(['caseworker-ia-iacjudge']);
     expect(roleCategory).toBe(UserRole.Judicial);
   });
 
   it('should return null if user has no judicial or legal ops role', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker']);
+    const roleCategory = AppUtils.getUserRole(['caseworker']);
     expect(roleCategory).toBeNull();
   });
 
   it('should return legal ops role if user is an task supervisor', () => {
-    const roleCategory = AppUtils.getRoleCategory(['task-supervisor']);
+    const roleCategory = AppUtils.getUserRole(['task-supervisor']);
     expect(roleCategory).toBe('legalops');
   });
 
   it('should return legal ops role if user is an caseworker-ia', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker-ia']);
+    const roleCategory = AppUtils.getUserRole(['caseworker-ia']);
     expect(roleCategory).toBe('legalops');
   });
 
   it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
-    const roleCategory = AppUtils.getRoleCategory(['caseworker-ia-admofficer']);
+    const roleCategory = AppUtils.getUserRole(['caseworker-ia-admofficer']);
     expect(roleCategory).toBe('legalops');
   });
 
@@ -304,7 +304,7 @@ describe('getFilterPersistenceByRoleType', () => {
         canShareCases: true,
         roleAssignmentInfo: [{
           bookable: true,
-          primaryLocation: 'Glasgow',
+          baseLocation: 'Glasgow',
           jurisdiction: 'IA',
           isCaseAllocator: true
       }],

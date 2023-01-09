@@ -1,4 +1,4 @@
-@fullfunctional @demo1
+@fullfunctional @demo
 Feature: WA Release 2: : Case details WA tabs tabs
 
        Scenario: Case details WA Tabs

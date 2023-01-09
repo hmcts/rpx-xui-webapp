@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { BookingCheckType, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
@@ -38,10 +38,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     cancelSetting: {
       id: TaskManagerFilterComponent.FILTER_NAME,
       fields: [
-        {
-          name: 'service',
-          value: ['IA']
-        },
         {
           name: 'selectLocation',
           value: ['location_all']
@@ -223,6 +219,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           name: 'role',
           value: [this.roleType]
         },
+        {
+          name: 'service',
+          value: [this.jurisdictions[0]]
+        }
         );
       }
     );

@@ -17,6 +17,7 @@ export interface RoleAssignmentInfo {
   substantive?: string;
   isCaseAllocator: boolean;
   bookable?: boolean | string;
+  region?: string;
   roleType?: string;
   roleName?: string;
 }

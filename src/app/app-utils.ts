@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence, RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
+import { ADMIN_ROLE_LIST, AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
 import { Theme, UserTypeRole } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
@@ -226,6 +226,18 @@ export class AppUtils {
     } else {
       return 'LegalOps';
     }
+  }
+
+  public static getUserRole(userRoles: string[]): UserRole {
+    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => userRole.includes(role)))) {
+      return UserRole.Judicial;
+    } else if (userRoles.some(userRole => ADMIN_ROLE_LIST.some(role => userRole.includes(role)))) {
+      return UserRole.Admin;
+    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => userRole.includes(role)))) {
+      return UserRole.LegalOps;
+    // TODO: Use actual admin and cts roles within respective role lists
+    }
+    return null;
   }
 
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {

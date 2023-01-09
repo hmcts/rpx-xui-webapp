@@ -6,7 +6,7 @@ import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { ServiceRefData } from '../models/common';
 import { Service, ServiceCode } from '../models/common/service.enum';
-import { Caseworker, CaseworkersByService, LocationsByService } from '../models/dtos';
+import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';
 
 interface Navigator {
@@ -239,26 +239,18 @@ export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorag
   return null;
 }
 
-export function addLocationToLocationsByServiceCode(locationsByServices: LocationsByService[], location: any, service_code: string): LocationsByService[] {
-  let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.serviceCode === service_code);
-  if (!locationsByService) {
-    locationsByServices.push({serviceCode: service_code, locations: [location]});
-  } else {
-    const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.serviceCode !== service_code);
-    locationsByService = {serviceCode: service_code, locations: locationsByService.locations.concat([location])}
-    locationsByServices = finalDataWithoutService.concat([locationsByService]);
+export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[], bookable = false): LocationsByService[] {
+  if (allLocationServices.includes(service)) {
+    // if we know that all location services includes the current service we need to ensure this is present
+    return locationsByServices;
   }
-  return locationsByServices;
-}
-
-export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, bookable = false): LocationsByService[] {
-  let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.service === service);
+  let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.serviceCode === service);
   if (!locationsByService) {
-    locationsByServices.push({service, locations: [location], bookable});
+    // check to ensure that if service present with null location (i.e. a base location not within region), we register this
+    !location.id && !location.regionId ? locationsByServices.push({service, locations: [], bookable}) : locationsByServices.push({service, locations: [location], bookable});
   } else {
-    const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
-    // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
-    locationsByService = {service, locations: locationsByService.locations.concat([location]), bookable}
+    const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.serviceCode !== service);
+    locationsByService = {service, locations: locationsByService.locations.concat([location])}
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;
@@ -267,4 +259,17 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
 export function getServiceFromServiceCode(serviceCode: string, serviceRefData: ServiceRefData[]): string {
   const desiredServiceData = serviceRefData.find(serviceData => serviceData.serviceCodes.includes(serviceCode));
   return desiredServiceData.service;
+}
+
+export function locationWithinRegion(regionLocations: LocationsByRegion[], region: string, location: string): boolean {
+  let withinRegion = false;
+  regionLocations.forEach(regionLocation => {
+    if (regionLocation.regionId === region) {
+      if (regionLocation.locations.includes(location)) {
+        withinRegion = true;
+        return withinRegion;
+      }
+    }
+  })
+  return withinRegion;
 }

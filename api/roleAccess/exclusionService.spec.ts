@@ -71,7 +71,7 @@ describe('exclusions.exclusionService', () => {
           caseId: '334455',
           isCaseAllocator: false,
           jurisdiction: 'jurisdiction',
-          primaryLocation: 'loc123',
+          baseLocation: 'loc123',
           region: 'region1',
         },
         authorisations: [],

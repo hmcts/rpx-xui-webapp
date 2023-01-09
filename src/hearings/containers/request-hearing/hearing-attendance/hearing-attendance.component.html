@@ -60,8 +60,7 @@
             </div>
           </fieldset>
         </div>
-        <div  class="govuk-form-group"
-              [ngClass]="{'govuk-form-group--error' : !selectionValid}" formGroupName="parties">
+        <div  class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : !selectionValid}" formGroupName="parties">
            <span *ngIf=" !selectionValid"
               id="party-selection-error"
               class="govuk-error-message">

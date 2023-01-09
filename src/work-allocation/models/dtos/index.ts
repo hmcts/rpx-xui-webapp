@@ -80,8 +80,8 @@ export interface LocationsByService {
 
 // different to above - groups locations by region for location filter logic
 export interface LocationsByRegion {
-  regionId: string,
-  locations: string[]
+  regionId: string;
+  locations: string[];
 }
 
 export interface CaseSearchParameter {

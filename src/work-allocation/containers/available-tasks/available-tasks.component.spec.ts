@@ -150,11 +150,7 @@ describe('AvailableTasksComponent', () => {
     const exampleLocations = ['location1', 'location2', 'location3'];
     component.selectedLocations = exampleLocations;
     const searchRequest = component.getSearchTaskRequestPagination();
-    const searchParameter = searchRequest.search_parameters[0];
     expect(searchRequest.request_context).toEqual(TaskContext.AVAILABLE_TASKS);
-    expect(searchParameter.key).toBe('available_tasks_only');
-    expect(searchParameter.operator).toBe('BOOLEAN');
-    expect(searchParameter.value).toBe(true);
   });
 
   it('should allow searching via work types', () => {
@@ -162,7 +158,7 @@ describe('AvailableTasksComponent', () => {
     const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
     component.selectedWorkTypes = workTypes;
     const searchRequest = component.getSearchTaskRequestPagination();
-    const searchParameter = searchRequest.search_parameters[3];
+    const searchParameter = searchRequest.search_parameters[2];
     expect(searchRequest.request_context).toEqual(TaskContext.AVAILABLE_TASKS);
     expect(searchParameter.key).toBe('work_type');
     expect(searchParameter.values).toBe(workTypes);

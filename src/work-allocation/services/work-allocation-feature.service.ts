@@ -28,6 +28,6 @@ export class WorkAllocationFeatureService {
     }
 
     public getActiveUpdatedTaskPermissionsFeature(): Observable<string> {
-        return this.featureToggleService.getValue<string>(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, 'true');
-    }
+      return this.featureToggleService.getValue<string>(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, 'true');
+  }
 }

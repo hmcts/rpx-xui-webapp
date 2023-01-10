@@ -280,7 +280,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       }];
     }
 
-    return [];
+    return [] as SortParameter[];
   }
 
   public getPaginationParameter(): PaginationParameter {
@@ -345,7 +345,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getRoleCategory(userInfo.roles) === UserRole.Judicial;
+      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
     }
     return false;
   }
@@ -359,7 +359,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     }
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    const tasksSearch$ = this.isUpdatedTaskPermissions$.pipe(mergeMap(enabled => enabled ? this.performSearchUpdatedTaskPermissions() : this.performSearchPreviousTaskPermissions()))
+    const tasksSearch$ = this.performSearchPreviousTaskPermissions();
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
       const assignedJudicialUsers: string[] = [];
       result.tasks.forEach(task => {

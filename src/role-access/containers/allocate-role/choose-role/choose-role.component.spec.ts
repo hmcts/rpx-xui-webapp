@@ -150,6 +150,31 @@ describe('ChooseRoleComponent', () => {
     }));
   });
 
+  it('should dispatchEvent for CTSC user assign ctsc role', () => {
+    const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
+    const roleCategory: RoleCategory = RoleCategory.CTSC;
+    const userRole: UserRole = UserRole.CTSC;
+    component.radioOptionControl.setValue('Lead judge');
+    component.dispatchEvent(navEvent, roleCategory, userRole);
+    fixture.detectChanges();
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
+      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
+    }));
+  });
+  it('should dispatchEvent for CTSC user assign judicial role', () => {
+    const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
+    const roleCategory: RoleCategory = RoleCategory.CTSC;
+    const userRole: UserRole = UserRole.Judicial;
+    component.radioOptionControl.setValue('Lead judge');
+    component.dispatchEvent(navEvent, roleCategory, userRole);
+    fixture.detectChanges();
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
+      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      allocateRoleState: AllocateRoleState.SEARCH_PERSON
+    }));
+  });
+
   it('should dispatchEvent for judicial user assign legal ops user', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
     const roleCategory: RoleCategory = RoleCategory.LEGAL_OPERATIONS;

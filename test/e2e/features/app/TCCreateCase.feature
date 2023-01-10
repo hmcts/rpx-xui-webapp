@@ -6,7 +6,7 @@ Feature: Test case type case creation and case details validations
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
 
-@test
+
     Scenario: Start create case page form fields validating against API response
         When I click on primary navigation header tab "Create case", I see selected tab page displayed
         Then Create case page should be displayed

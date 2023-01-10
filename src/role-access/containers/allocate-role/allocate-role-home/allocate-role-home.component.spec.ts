@@ -22,8 +22,8 @@ import * as fromContainers from '../../allocate-role';
 import { AllocateRoleHomeComponent } from './allocate-role-home.component';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
-      { roleId: '2', roleName: 'Role 2' },
-      { roleId: '3', roleName: 'Role 3' }];
+{ roleId: '2', roleName: 'Role 2' },
+{ roleId: '3', roleName: 'Role 3' }];
 
 describe('AllocateRoleHomeComponent', () => {
   const USER = {
@@ -120,7 +120,7 @@ describe('AllocateRoleHomeComponent', () => {
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');
     storePipeMock.and.returnValue(of(USER));
-    routerMock.getCurrentNavigation.and.returnValue({extras: {state: {backUrl: null}}});
+    routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: null } } });
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
   });
@@ -144,6 +144,14 @@ describe('AllocateRoleHomeComponent', () => {
       component.roleCategory = RoleCategory.JUDICIAL;
       component.navigationHandler(navEvent);
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+    });
+
+    it('on SEARCH_PERSON page CTSC user assign judicial user', () => {
+      component.navigationCurrentState = AllocateRoleState.SEARCH_PERSON;
+      component.userRole = UserRole.CTSC;
+      component.roleCategory = RoleCategory.CTSC;
+      component.navigationHandler(navEvent);
+      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
     });
 
     it('on SEARCH_PERSON page judicial user assign judicial user', () => {
@@ -185,6 +193,51 @@ describe('AllocateRoleHomeComponent', () => {
       component.allocateTo = AllocateTo.RESERVE_TO_ME;
       component.navigationHandler(navEvent);
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+    });
+
+    it('on CHOOSE_DURATION page when CTSC user allocate judicial user if reserve to me', () => {
+      component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
+      component.action = Actions.Allocate;
+      component.userRole = UserRole.CTSC;
+      component.roleCategory = RoleCategory.CTSC;
+      component.allocateTo = AllocateTo.RESERVE_TO_ME;
+      component.navigationHandler(navEvent);
+      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+    });
+
+    it('on CHOOSE_DURATION page when CTSC user allocate judicial user if reserve to me', () => {
+      component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
+      component.action = Actions.Allocate;
+      component.userRole = UserRole.CTSC;
+      component.roleCategory = RoleCategory.CTSC;
+      component.allocateTo = AllocateTo.ALLOCATE_TO_ANOTHER_PERSON;
+      component.navigationHandler(navEvent);
+      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+    });
+
+    it('on CHOOSE_DURATION page on invalid details Invalid role category', () => {
+      component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
+      component.action = Actions.Allocate;
+      component.userRole = UserRole.CTSC;
+      component.roleCategory = RoleCategory.JUDICIAL;
+      component.allocateTo = AllocateTo.ALLOCATE_TO_ANOTHER_PERSON;
+      expect(() => { component.navigationHandler(navEvent); }).toThrow(new Error('Invalid role category'));
+    });
+    it('on CHOOSE_DURATION page on invalid details Invalid allocate to', () => {
+      component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
+      component.action = Actions.Allocate;
+      component.userRole = UserRole.CTSC;
+      component.roleCategory = RoleCategory.CTSC;
+      component.allocateTo = AllocateTo.REALLOCATE_TO_ANOTHER_PERSON;
+      expect(() => { component.navigationHandler(navEvent); }).toThrow(new Error('Invalid allocate to'));
+    });
+    it('on CHOOSE_DURATION page on invalid details invalid user role', () => {
+      component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
+      component.action = Actions.Allocate;
+      component.userRole = UserRole.Ogd;
+      component.roleCategory = RoleCategory.CTSC;
+      component.allocateTo = AllocateTo.REALLOCATE_TO_ANOTHER_PERSON;
+      expect(() => { component.navigationHandler(navEvent); }).toThrow(new Error('invalid user role'));
     });
 
     it('on CHOOSE_DURATION page when judicial user allocate judicial user if allocate to another person', () => {
@@ -318,7 +371,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
 
     it('on CHECK_ANSWERS page', () => {
-      const CURRENT_STATE = { ...STATE_DATA,
+      const CURRENT_STATE = {
+        ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
@@ -340,7 +394,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
 
     it('should be true when allocation is confirmed', () => {
-      const CURRENT_STATE = { ...STATE_DATA,
+      const CURRENT_STATE = {
+        ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
@@ -353,7 +408,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
 
     it('should be false if navigation event is unhandled case', () => {
-      const CURRENT_STATE = { ...STATE_DATA,
+      const CURRENT_STATE = {
+        ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
@@ -372,7 +428,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
 
     it('on cancel event', () => {
-      const CURRENT_STATE = { ...STATE_DATA,
+      const CURRENT_STATE = {
+        ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));

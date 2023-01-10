@@ -39,7 +39,6 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
 }
 
 export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any[]> {
-  let locationInfo = [];
   let userRoleAssignments = [];
   const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const id = userInfo.id ? userInfo.id : userInfo.uid;
@@ -54,7 +53,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     const idamRoles = getOrganisationRoles(activeRoleAssignments);
     userInfo.roles = userInfo.roles.concat(idamRoles);
     const roleAssignments: string[] = userRoleAssignments.filter(role => !!role.roleCategory).length > 0 ?
-      userRoleAssignments.map(roles => roles.roleCategory) : [];
+    userRoleAssignments.map(roles => roles.roleCategory) : [];
     // We check for the roleAssignments to determine the roleCategory. If not we try IDAM roles
     userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleAssignments) || getUserRoleCategory(userInfo.roles);
     req.session.roleAssignmentResponse = activeRoleAssignments;

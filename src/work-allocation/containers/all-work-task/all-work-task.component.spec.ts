@@ -151,6 +151,7 @@ describe('AllWorkTaskComponent', () => {
       uid: '1233434'
     }));
     const searchRequest = component.getSearchTaskRequestPagination();
+    const payload = {searchRequest, view: component.view, refined: false, currentUser: '1233434'};
     expect(searchRequest.search_by).toEqual('caseworker');
     expect(searchRequest.request_context).toEqual(TaskContext.ALL_WORK);
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });

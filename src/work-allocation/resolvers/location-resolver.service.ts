@@ -67,10 +67,10 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     return this.store.pipe(select(fromRoot.getUserDetails));
   }
 
-  private getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails: UserDetails): Location[] {
+  public getJudicialWorkersOrCaseWorkers(serviceRefData, userDetails: UserDetails): Location[] {
     this.serviceRefData = serviceRefData;
     this.userId = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
-    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.getRoleCategory(userDetails.userInfo.roles);
+    this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.getUserRole(userDetails.userInfo.roles);
     let userLocationsByService: LocationsByService[] = [];
     const locations: Location[] = [];
     const locationServices = new Set<string>();
@@ -82,9 +82,9 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         this.bookableServices.push(roleJurisdiction);
       }
       if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION'
-        && roleAssignment.primaryLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
-        if (!locations.find((location) => location.id === roleAssignment.primaryLocation && location.services.includes(roleJurisdiction))) {
-          const location = { id: roleAssignment.primaryLocation, userId: this.userId, locationId: roleAssignment.primaryLocation, locationName: '', services: [roleAssignment.jurisdiction] };
+        && roleAssignment.baseLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
+        if (!locations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(roleJurisdiction))) {
+          const location = { id: roleAssignment.baseLocation, userId: this.userId, locationId: roleAssignment.baseLocation, locationName: '', services: [roleAssignment.jurisdiction] };
           locations.push(location);
           locationServices.add(roleAssignment.jurisdiction);
         }
@@ -107,6 +107,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   }
 
   private addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
+    // TODO: Check if user still has valid bookable role assignment for service
     const bookingLocations: string[] = [];
     bookings.filter(booking => {
       // if this is an active booking

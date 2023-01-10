@@ -39,7 +39,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I set MOCK task required for event as "false"
@@ -86,7 +86,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
 
@@ -147,7 +147,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
 
@@ -192,7 +192,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
 
@@ -234,7 +234,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
 
@@ -273,7 +273,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
 
@@ -351,7 +351,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
 
@@ -411,7 +411,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
 

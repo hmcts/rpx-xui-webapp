@@ -1,22 +1,22 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { FindPersonComponent, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
@@ -39,6 +39,13 @@ class WrapperComponent {
 class NothingComponent {
 }
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
 describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
@@ -59,26 +66,27 @@ describe('TaskAssignmentContainerComponent2', () => {
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         TaskAssignmentContainerComponent,
         WrapperComponent,
         TaskListComponent,
         ErrorMessageComponent,
-        NothingComponent
+        NothingComponent,
+        FindPersonComponent,
+        RpxTranslateMockPipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
-        WorkAllocationComponentsModule,
         ReactiveFormsModule,
         CdkTableModule,
         FormsModule,
         MatAutocompleteModule,
         HttpClientTestingModule,
         EffectsModule.forRoot([]),
-        ExuiCommonLibModule,
         PaginationModule,
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(
@@ -110,7 +118,8 @@ describe('TaskAssignmentContainerComponent2', () => {
           }
         },
         {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
-        {provide: Router, useValue: {url: 'localhost/test'}}
+        {provide: Router, useValue: {url: 'localhost/test'}},
+        {provide: RpxTranslationService, useFactory: rpxTranslationServiceStub}
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -121,7 +130,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
     // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
     // data with a different verb ("Assign")
-  });
+  }));
 
   afterEach(() => {
     fixture.destroy();

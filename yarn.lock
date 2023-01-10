@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.44-case-flags-integration-fixes":
-  version "5.0.44-case-flags-integration-fixes"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.44-case-flags-integration-fixes.tgz#204b0997546f9f883888e470a27ad355646d78a8"
-  integrity sha512-0O0gHz94grEAjWcUMsPpsHaf+s+GobEru7os7ukDjPxoEduEvvh9YlakLbSRfvd+ItMJEYxhQDG91/gkJ70CFg==
+"@hmcts/ccd-case-ui-toolkit@5.0.44-angular11-updgrade-welsh-release-v4":
+  version "5.0.44-angular11-updgrade-welsh-release-v4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.44-angular11-updgrade-welsh-release-v4.tgz#a305efe923b6759b549cdad09a0e1ba1028537f7"
+  integrity sha512-+Sn/qc5a5qSzs0Xp/mm9baX76+8eBCApJymxVJWrTIxKKPf0ty5DBZTrWVGK/RvQr/WGuCwZSQOh65RZtpiGTw==
   dependencies:
     tslib "^2.0.0"
 
@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@2.1.6-angular-upgrade-11-fix-field-issue":
-  version "2.1.6-angular-upgrade-11-fix-field-issue"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-angular-upgrade-11-fix-field-issue.tgz#0b9887457eb0a06523c5b82e5a6d7e1e776ec756"
-  integrity sha512-lpwlbgUK/8v8SmzscpE/YAfZwkkOpI3P97YAlWR5OYZYBMugoWEv04BOYM62UQ71fUaJt3cJ6absBvNyowT4Bg==
+"@hmcts/rpx-xui-common-lib@2.1.6-welsh-translation-v2":
+  version "2.1.6-welsh-translation-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-welsh-translation-v2.tgz#964a8f21cd937cefa151bfe8a83284b0035cb1ac"
+  integrity sha512-hWqZ4MHIvbzrln9Cjh83EZoftW4kzJ4ByMnx7bMmZvV2e0U9dPTEwvAZi0DRz10xwGV4EdtfnT+r3ilcGHgVgg==
   dependencies:
     tslib "^2.0.0"
 
@@ -13141,10 +13141,10 @@ rollup@2.38.4:
   optionalDependencies:
     fsevents "~2.3.1"
 
-rpx-xui-translation@^0.1.1:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/rpx-xui-translation/-/rpx-xui-translation-0.1.2.tgz#db0c1b9f0d799bbbda55580ff08d6f3eb656e221"
-  integrity sha512-ubuFrwRENeZLnKMXb9CVtyvd+ahczjoge4pPO5C3f+VXuR+NF+bwoByz7qybR/gMsxESLojqrnKawzegk2dxaA==
+rpx-xui-translation@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/rpx-xui-translation/-/rpx-xui-translation-0.1.3.tgz#07412eeafa0c40803b7df731c274f874657607b3"
+  integrity sha512-WwiRPIvc7g2m/1rEj4E6SMGPSqT46hSVKrh9d+NAiF12vXbfL6els8dMZq5I3eUERRd6rHU17pNATFXKvG8usA==
   dependencies:
     dexie "^3.2.2"
     luxon "^2.4.0"

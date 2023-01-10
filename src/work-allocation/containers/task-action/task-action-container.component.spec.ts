@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
@@ -19,7 +20,6 @@ import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskActionContainerComponent } from './task-action-container.component';
-
 
 @Component({
   template: `
@@ -53,6 +53,7 @@ describe('WorkAllocation', () => {
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
 
     beforeEach(waitForAsync (() => {
       TestBed.configureTestingModule({
@@ -85,7 +86,11 @@ describe('WorkAllocation', () => {
               params: of({task: mockTasks[0]})
             }
           },
-          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
+          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+          {
+            provide: RpxTranslationService,
+            useFactory: rpxTranslationServiceStub
+          },
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);

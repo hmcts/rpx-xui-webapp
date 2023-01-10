@@ -10,19 +10,15 @@ export interface UserInfo {
 }
 
 export interface RoleAssignmentInfo {
-  primaryLocation: string;
+  // TODO: Review model changes
+  primaryLocation?: string;
+  baseLocation?: string;
   jurisdiction: string;
   substantive?: string;
   isCaseAllocator: boolean;
   bookable?: boolean | string;
   roleType?: string;
   roleName?: string;
-}
-
-export interface RoleAssignmentInfo {
-  primaryLocation: string;
-  jurisdiction: string;
-  isCaseAllocator: boolean;
 }
 
 export interface UserDetails {

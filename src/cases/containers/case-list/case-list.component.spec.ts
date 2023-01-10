@@ -12,7 +12,7 @@ import * as converts from '../../converters/case-converter';
 import { CaseListComponent } from './case-list.component';
 
 @Pipe({ name: 'rpxTranslate' })
-class RpxTranslationMockPipe implements PipeTransform {
+class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
   }
@@ -38,7 +38,7 @@ describe('CaseListComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      declarations: [CaseListComponent, RpxTranslationMockPipe],
+      declarations: [CaseListComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

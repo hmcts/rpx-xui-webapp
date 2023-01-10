@@ -1,8 +1,15 @@
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertComponent as CCDAlertComponent, AlertIconClassPipe, AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { AlertComponent } from './alert.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('AlertComponent', () => {
   let component: AlertComponent;
@@ -14,10 +21,8 @@ describe('AlertComponent', () => {
         RouterTestingModule.withRoutes([
         ])
       ],
-      declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe],
-      providers: [
-        AlertService
-      ]
+      declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
+      providers: [AlertService]
     })
       .compileComponents();
   }));

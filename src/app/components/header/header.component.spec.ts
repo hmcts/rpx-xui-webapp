@@ -11,7 +11,7 @@ import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner
 import { HeaderComponent } from './header.component';
 
 @Pipe({ name: 'rpxTranslate' })
-class RpxTranslationMockPipe implements PipeTransform {
+class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
   }
@@ -26,7 +26,7 @@ describe('Header Component', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent, RpxTranslationMockPipe],
+      declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent, RpxTranslateMockPipe],
       imports: [HttpClientModule, RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

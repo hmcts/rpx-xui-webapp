@@ -18,6 +18,7 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA',
         },
       };
@@ -37,6 +38,7 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA',
         },
       };
@@ -60,6 +62,7 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA',
         },
       };
@@ -79,6 +82,7 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA',
         },
       };
@@ -111,6 +115,7 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA',
         },
       },
@@ -127,6 +132,7 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
+          baseLocation: '231596',
           jurisdiction: 'IA',
         },
       }];
@@ -142,7 +148,7 @@ describe('user.utils', () => {
                      'caseworker-ia-caseofficer', 'cwd-user',
                      'case-allocator', 'tribunal-caseworker',
                      'hmcts-legal-operations', 'task-supervisor'];
-      expect(getUserRoleCategory(roles)).to.equal(ADMIN_ROLE_NAME);
+      expect(getUserRoleCategory(roles)).to.equal('legal-operations');
     });
   });
 });

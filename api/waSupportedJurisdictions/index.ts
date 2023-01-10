@@ -6,7 +6,8 @@ import { EnhancedRequest } from '../lib/models';
 export async function getWASupportedJurisdictions(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
     const jurisdictions = getConfigValue(WA_SUPPORTED_JURISDICTIONS);
-    res.send(jurisdictions).status(200);
+    const jurisdictionsArray = jurisdictions.split(',');
+    res.send(jurisdictionsArray).status(200);
   } catch (error) {
     next(error);
   }
@@ -15,7 +16,8 @@ export async function getWASupportedJurisdictions(req: EnhancedRequest, res: Res
 export function getWASupportedJurisdictionsList(): any {
   try {
     const jurisdictions = getConfigValue(WA_SUPPORTED_JURISDICTIONS);
-    return jurisdictions;
+    const jurisdictionsArray = jurisdictions.split(',');
+    return jurisdictionsArray;
   } catch (error) {
     console.log(error);
   }

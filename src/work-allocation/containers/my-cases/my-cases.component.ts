@@ -43,7 +43,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.getRoleCategory(userInfo.roles);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
 
       // get 'locations' key from local storage
       const locationsFromLS = JSON.parse(localStorage.getItem('locations'));

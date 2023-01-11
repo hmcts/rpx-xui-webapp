@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 // import mocha from 'mocha';
-import { getXSRFToken } from './utils/authUtil'
-import Request from './utils/request';
+import { getXSRFToken } from './utils/authUtil';
 import { setTestContext } from './utils/helper';
+import Request from './utils/request';
 const config = require('./config/config').config;
 
 

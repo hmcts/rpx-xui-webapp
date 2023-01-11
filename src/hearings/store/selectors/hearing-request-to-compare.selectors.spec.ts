@@ -1,8 +1,8 @@
-import {TestBed} from '@angular/core/testing';
-import {select, Store, StoreModule} from '@ngrx/store';
-import {reducers} from '../index';
-import {initialHearingRequestState, State} from '../reducers';
-import {getHearingRequestToCompare} from './hearing-request-to-compare.selectors';
+import { TestBed } from '@angular/core/testing';
+import { select, Store, StoreModule } from '@ngrx/store';
+import { reducers } from '../index';
+import { initialHearingRequestState, State } from '../reducers';
+import { getHearingRequestToCompare } from './hearing-request-to-compare.selectors';
 
 describe('Hearing Request to compare selectors', () => {
   let store: Store<State>;
@@ -13,7 +13,7 @@ describe('Hearing Request to compare selectors', () => {
         StoreModule.forFeature('hearings', reducers),
       ],
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   });
 

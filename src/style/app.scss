@@ -1,4 +1,4 @@
-@import '~@hmcts/ccd-case-ui-toolkit/dist/cut-styles/components/typography';
+@import '_typography';
 @import '~govuk-frontend/govuk/all';
 @import 'shims';
 @import 'conditionals';
@@ -16,6 +16,12 @@ $govuk-compatibility-govukelements: true;
 $govuk-compatibility-govuktemplate: true;
 $govuk-compatibility-govukfrontendtoolkit: true;
 
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss';
+// @import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss';
+
+// @import 'node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss';
+// @import 'node_modules/govuk-elements-sass/public/sass/_elements.scss';
+
 @import "govuk-elements";
 
 // Organise SASS (TODO / TS)
@@ -25,6 +31,10 @@ $govuk-compatibility-govukfrontendtoolkit: true;
 @import "./print";
 @import "./vendor/prism.scss";
 @import "./material";
+
+// Ensure Media Viewer CSS styles and icons are available globally across Manage Cases. Required for correct display
+// of the Media Viewer toolbar when this component is embedded in another CCD Case UI Toolkit component
+@import '@hmcts/media-viewer/assets/all';
 
 body {
   margin: 0;
@@ -56,7 +66,7 @@ main {
 }
 
 .mat-autocomplete-panel-extend {
-  max-height: 470px!important;
+  max-height: 470px !important;
 }
 
 @media (max-width: 991px) {
@@ -102,7 +112,7 @@ table.form-table {
 }
 
 .field-label {
-    font-weight: 900;
+  font-weight: 900;
 }
 
 .dialog {
@@ -111,9 +121,11 @@ table.form-table {
     background: #cecccc;
   }
 }
+
 .tooltip {
   position: relative;
 }
+
 .tooltip .tooltiptext {
   visibility: hidden;
   background-color: #005ea5;
@@ -127,6 +139,7 @@ table.form-table {
   bottom: 150%;
   left: 0%;
 }
+
 .tooltip .tooltiptext::after {
   content: "";
   position: absolute;
@@ -137,17 +150,21 @@ table.form-table {
   border-style: solid;
   border-color: #005ea5 transparent transparent transparent;
 }
+
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
 .ccd-error-summary-li {
   margin-left: 40px;
 }
+
 select::-ms-expand {
   display: none;
 }
+
 .ccd-dropdown {
-  background: url('./assets/img/dropdown-arrow.PNG') no-repeat 98%;
+  background: url("../assets/img/dropdown-arrow.PNG") no-repeat 98%;
   background-size: 9px;
   font-size: 16px;
   -moz-appearance: none;
@@ -159,11 +176,20 @@ select::-ms-expand {
   padding: 2px 30px 0 10px;
   margin: 0 0 30px 0;
 }
+
 .cancel {
   margin: 25px 0px 25px 0px;
 }
-.form-money { position: relative; width: 41%; }
-.form-money input { text-indent: 25px;}
+
+.form-money {
+  position: relative;
+  width: 41%;
+}
+
+.form-money input {
+  text-indent: 25px;
+}
+
 .form-money .form-currency {
   position: absolute;
   top: 3px;
@@ -171,11 +197,13 @@ select::-ms-expand {
   font-size: 19px;
   font-weight: bold;
 }
+
 .search-left {
   float: left;
   padding-left: 15px;
   width: 17%;
 }
+
 .search-right {
   float: right;
   width: 80%;
@@ -184,148 +212,184 @@ select::-ms-expand {
   padding-left: 1.3%;
   border-left: 1px solid #BFC1C3;
 }
+
 .screen-990 {
   width: 990px;
   margin: 0 auto;
 }
+
 %headers {
   font-weight: bold;
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
 .heading-h1 {
   @extend %headers;
   font-size: 32px;
 }
+
 .heading-h2 {
   @extend %headers;
   font-size: 24px;
 }
+
 .heading-h3 {
   @extend %headers;
   font-size: 18px;
 }
+
 .heading-h4 {
   @extend %headers;
   font-size: 16px;
 }
+
 .heading-span {
   @extend %headers;
   font-size: 24px;
   display: block;
 }
-.form-group, .bottom-0 {
+
+.form-group,
+.bottom-0 {
   margin-bottom: 0;
 }
-.bottom-30{
+
+.bottom-30 {
   margin-bottom: 30px;
 }
+
 .panel .form-group {
   margin-bottom: 15px;
 }
+
 .form-label {
   font-size: 16px;
   margin-bottom: 5px;
   padding-bottom: 0px;
 }
+
 .form-hint {
   font-size: 14px;
   margin-top: 5px;
   margin-bottom: 5px;
   font-family: "nta", Arial, sans-serif;
 }
+
 .multiple-choice {
-  [type=checkbox] + label::before {
+  [type=checkbox]+label::before {
     border: 1px solid;
   }
 }
+
 .form-control {
   border: 1px solid;
   font-size: 16px;
   width: 100%;
 }
+
 .dropdown-50 {
   width: 50%;
 }
+
 .dropdown-100 {
   width: 100%;
 }
+
 .width-50 {
   width: 50%;
 }
-.text-16, .error-message {
+
+.text-16,
+.error-message {
   font-size: 16px;
   font-family: "nta", Arial, sans-serif;
   white-space: normal;
 }
+
 .postcodeinput {
   width: 49%;
 }
+
 .button-30 {
   height: 30px;
 }
+
 .markdown {
   h1 {
     @extend %headers;
     font-size: 32px;
   }
+
   h2 {
     @extend %headers;
     font-size: 24px;
   }
+
   h3 {
     @extend %headers;
     font-size: 18px;
   }
+
   h4 {
     @extend %headers;
     font-size: 16px;
   }
+
   p {
     font-size: 19px;
     margin-bottom: 25px;
     white-space: normal;
   }
+
   ul {
     font-size: 16px;
     margin-bottom: 25px;
     white-space: normal;
+
     li {
       margin-bottom: 5px;
       list-style-type: disc;
     }
   }
 }
+
 tr.compound-field .markdown ul,
 tr.compound-field .markdown p,
-form.check-your-answers table  td .markdown ul,
-form.check-your-answers table  td .markdown p {
+form.check-your-answers table td .markdown ul,
+form.check-your-answers table td .markdown p {
   margin: 10px 0px;
 }
-#fileInputWrapper{
-  position:absolute;
-  width:50%;
-  height:41px;
+
+#fileInputWrapper {
+  position: absolute;
+  width: 50%;
+  height: 41px;
 }
+
 .footer-menu {
   float: left;
   margin-bottom: 30px;
   padding-right: 30px;
   font-size: 16px;
 }
+
 .label-text {
   font-size: 16px;
   font-family: "nta", Arial, sans-serif;
   font-weight: bold;
 }
+
 .pagination-top {
   float: left;
   margin-bottom: 10px;
 }
+
 .caption {
   text-align: left;
   margin-bottom: 10px;
 }
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -336,17 +400,19 @@ form.check-your-answers table  td .markdown p {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
 .govuk-skip-link {
-  display:block;
+  display: block;
   font-size: 0px;
   height: 0px;
+
   &:focus {
     font-size: 16px;
     padding-left: 15px;
     width: 100%;
     height: 41px;
-    display:flex;
-    align-items:center;
+    display: flex;
+    align-items: center;
     text-decoration: underline;
   }
 }

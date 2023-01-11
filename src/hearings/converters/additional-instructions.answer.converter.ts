@@ -1,7 +1,7 @@
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class AdditionalInstructionsAnswerConverter implements AnswerConverter {
 
@@ -11,7 +11,7 @@ export class AdditionalInstructionsAnswerConverter implements AnswerConverter {
         const additionalInstructions = state.hearingRequest.hearingRequestMainModel.hearingDetails.listingComments;
         if (!additionalInstructions) {
           return additionalInstructions;
-        };
+        }
 
         const formattedInstructions = additionalInstructions.replace(/(?:\r\n|\r|\n)/g, '<br>');
         return formattedInstructions;

@@ -138,7 +138,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public initializeFeature(userInfo: UserInfo, ldClientId: string) {
     if (userInfo) {
-
       const featureUser: FeatureUser = {
         key: userInfo.id || userInfo.uid,
         custom: {

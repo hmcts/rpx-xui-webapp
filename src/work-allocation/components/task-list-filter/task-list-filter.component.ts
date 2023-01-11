@@ -296,7 +296,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       displayMinSelectedError: true,
       minSelectedError: 'Search for a location by name',
       type: 'find-location',
-      enableAddLocationButton: true,
+      enableAddButton: true,
       bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
     };
     let baseLocation = null;

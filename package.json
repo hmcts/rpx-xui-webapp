@@ -123,7 +123,7 @@
     "mochawesome": "^6.2.1",
     "mochawesome-merge": "^4.1.0",
     "mochawesome-report-generator": "^5.1.0",
-    "moment-timezone": "^0.5.28",
+    "moment-timezone": "^0.5.35",
     "ngx-chips": "2.1.0",
     "ngx-logger": "^4.3.3",
     "ngx-md": "^7.0.0",

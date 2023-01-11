@@ -60,7 +60,9 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   public get fields(): FieldConfig[] {
     let fields = [];
     this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
-        fields = this.isCurrentUserJudicial() ? ConfigConstants.AllWorkTasksForJudicial : (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
+        fields = this.isCurrentUserJudicial() ?
+        (isRelease4 ? ConfigConstants.AllWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForJudicial) :
+        (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
     });
     return fields;
   }

@@ -28,7 +28,7 @@ data "azurerm_subnet" "core_infra_redis_subnet" {
 
 resource "azurerm_key_vault_secret" "redis_connection_string" {
   name = "${var.component}-redis-connection-string"
-  value = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
+  value = "redis://${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 

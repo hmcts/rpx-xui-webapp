@@ -1,10 +1,17 @@
-import { Component, DebugElement, Input, ViewChild } from '@angular/core';
+import { Component, DebugElement, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RpxTranslationModule } from 'rpx-xui-translation';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { AppConstants } from '../../app.constants';
 import { Helper, Navigation } from '../../containers/footer/footer.model';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('HmctsGlobalFooterComponent', () => {
     @Component({
@@ -30,24 +37,22 @@ describe('HmctsGlobalFooterComponent', () => {
     let component: HmctsGlobalFooterComponent;
     let fixture: ComponentFixture<HmctsGlobalFooterComponent>;
 
-
     const helpData: Helper = AppConstants.FOOTER_DATA;
     const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
     beforeEach(waitForAsync(() => {
       const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
+
       TestBed.configureTestingModule({
-        declarations: [ HmctsGlobalFooterComponent ],
+        declarations: [ HmctsGlobalFooterComponent, RpxTranslateMockPipe ],
         imports: [
-          RouterTestingModule,
-          RpxTranslationModule.forRoot({
-            baseUrl: '',
-            debounceTimeMs: 300,
-            validity: {
-              days: 1
-            },
-            testMode: true,
-          })
+          RouterTestingModule
+        ],
+        providers: [
+          {
+            provide: RpxTranslationService,
+            useFactory: rpxTranslationServiceStub
+          }
         ]
       })
       .compileComponents();

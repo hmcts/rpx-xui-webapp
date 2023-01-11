@@ -1,4 +1,4 @@
-import { EnhancedRequest } from 'lib/models';
+import { EnhancedRequest } from '../lib/models';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';

@@ -1,4 +1,4 @@
-@fullfunctional @test
+@fullfunctional1
 Feature: Test case type case list and find case workflow
 
   Background:

@@ -20,7 +20,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   public get fields(): FieldConfig[] {
     let fields = [];
     this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
-      fields = this.isCurrentUserJudicial() ? ConfigConstants.AvailableTasksForJudicial : (isRelease4 ? ConfigConstants.AvailableTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForLegalOps);
+      fields = this.isCurrentUserJudicial() ?
+      (isRelease4 ? ConfigConstants.AvailableTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForJudicial) :
+      (isRelease4 ? ConfigConstants.AvailableTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AvailableTasksForLegalOps);
     });
     return fields;
   }

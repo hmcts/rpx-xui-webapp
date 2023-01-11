@@ -29,7 +29,7 @@ describe('Noc Effects', () => {
       ]
     });
 
-    effects = TestBed.get(NocEffects);
+    effects = TestBed.inject(NocEffects);
 
   });
 
@@ -58,9 +58,9 @@ describe('Noc Effects', () => {
       };
       nocServiceMock.getNoCQuestions.and.returnValue(of(dummy));
       const action = new nocActions.SetCaseReference('1223-2212-4422-3131');
-      const completion = new nocActions.SetQuestions({questions: dummy.questions, caseReference: '1223221244223131'});
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      const completion = new nocActions.SetQuestions({ questions: dummy.questions, caseReference: '1223221244223131' });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.setCaseReference$).toBeObservable(expected);
     });
 
@@ -68,8 +68,8 @@ describe('Noc Effects', () => {
 
       const action = new nocActions.SetCaseReference('1223-2212-4422131');
       const completion = new nocActions.SetCaseRefValidationFailure();
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.setCaseReference$).toBeObservable(expected);
     });
 
@@ -77,8 +77,8 @@ describe('Noc Effects', () => {
 
       const action = new nocActions.SetCaseReference(null);
       const completion = new nocActions.SetCaseRefValidationFailure();
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.setCaseReference$).toBeObservable(expected);
     });
 
@@ -89,9 +89,9 @@ describe('Noc Effects', () => {
       };
       nocServiceMock.getNoCQuestions.and.returnValue(throwError(dummyError));
       const action = new nocActions.SetCaseReference('1223-2212-4422-3131');
-      const completion = new Go({path: ['/service-down']});
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      const completion = new Go({ path: ['/service-down'] });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.setCaseReference$).toBeObservable(expected);
     });
   });
@@ -109,8 +109,8 @@ describe('Noc Effects', () => {
         answers: dummy
       });
       const completion = new nocActions.CheckAnswers(dummy);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.setAnswers$).toBeObservable(expected);
     });
 
@@ -121,8 +121,8 @@ describe('Noc Effects', () => {
         answers: []
       });
       const completion = new nocActions.SetAnswersIncomplete();
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.setAnswers$).toBeObservable(expected);
     });
 
@@ -141,8 +141,8 @@ describe('Noc Effects', () => {
         answers: dummy
       });
       const completion = new nocActions.SetAnswerSubmissionFailure(dummyError);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.setAnswers$).toBeObservable(expected);
     });
   });
@@ -162,8 +162,8 @@ describe('Noc Effects', () => {
         answers: dummy
       });
       const completion = new nocActions.SetSubmissionSuccessPending();
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.submitNoc$).toBeObservable(expected);
     });
 
@@ -181,8 +181,8 @@ describe('Noc Effects', () => {
         answers: dummy
       });
       const completion = new nocActions.SetSubmissionSuccessApproved();
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.submitNoc$).toBeObservable(expected);
     });
 
@@ -201,23 +201,23 @@ describe('Noc Effects', () => {
         answers: dummy
       });
       const completion = new nocActions.SetSubmissionFailure(dummyError);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.submitNoc$).toBeObservable(expected);
     });
   });
 
   describe('handleError', () => {
     it('should handle 400', () => {
-      const action$ = NocEffects.handleError({status: 400, message: 'error'}, nocActions.SET_CASE_REFERENCE);
-      action$.subscribe(action => expect(action).toEqual(new nocActions.SetCaseRefSubmissionFailure({status: 400, message: 'error'})));
+      const action$ = NocEffects.handleError({ status: 400, message: 'error' }, nocActions.SET_CASE_REFERENCE);
+      action$.subscribe(action => expect(action).toEqual(new nocActions.SetCaseRefSubmissionFailure({ status: 400, message: 'error' })));
     });
   });
 
   describe('handleError', () => {
     it('should handle 500', () => {
-      const action$ = NocEffects.handleError({status: 500, message: 'error'}, nocActions.SET_CASE_REFERENCE);
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
+      const action$ = NocEffects.handleError({ status: 500, message: 'error' }, nocActions.SET_CASE_REFERENCE);
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
     });
   });
 

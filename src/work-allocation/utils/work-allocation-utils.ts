@@ -150,7 +150,7 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
     if (!options.find(option => option.optionId === roleCategory)) {
       let label;
       try {
-        label = this.getLabel(roleCategory);
+        label = getLabel(roleCategory);
       } catch (error) {}
       const option: OptionsModel = {
         optionId: roleCategory,

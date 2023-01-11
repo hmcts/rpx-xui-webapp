@@ -234,6 +234,10 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     }
   }
 
+  public onCancel(): void {
+    this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
+  }
+
   public ngOnDestroy(): void {
     if (this.sub) {
       this.sub.unsubscribe();

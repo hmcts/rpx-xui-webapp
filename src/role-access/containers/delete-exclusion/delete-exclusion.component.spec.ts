@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of } from 'rxjs';
 
@@ -11,12 +11,13 @@ import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../m
 import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
 
+
 @Component({
   template: `
     <exui-delete-exclusion></exui-delete-exclusion>`
 })
 class WrapperComponent {
-  @ViewChild(DeleteExclusionComponent) public appComponentRef: DeleteExclusionComponent;
+  @ViewChild(DeleteExclusionComponent, { static: true }) public appComponentRef: DeleteExclusionComponent;
 }
 
 const mockCaseworker: Caseworker = {
@@ -44,7 +45,7 @@ describe('DeleteExclusionComponent', () => {
   const caseType = 'caseType';
   const exclusion = { caseId: exampleCaseId, exclusionId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
@@ -172,7 +173,7 @@ describe('DeleteExclusionComponent with no name', () => {
   const caseType = 'caseType';
   const exclusion = { id: exclusionId, notes: null, added: new Date('21-01-2022'), caseId: exampleCaseId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA

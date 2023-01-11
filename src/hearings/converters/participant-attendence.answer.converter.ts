@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { State } from '../store';
+import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
@@ -22,12 +23,18 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
     return (partyDetails && partyDetails.partyName) || partyInfo.partyID;
   }
 
-  public transformAnswer(hearingState$: Observable<State>): Observable<string> {
+  public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
     const partyChannels = this.route.snapshot.data.partyChannels;
 
     return hearingState$.pipe(
       map(state => {
-        const partiesFromRequest: PartyDetailsModel[] = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].attendees;
+        const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
+        let hearingDaySchedule = hearingResponse && hearingResponse.hearingDaySchedule;
+        if (!hearingDaySchedule) {
+          return '';
+        }
+        hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
+        const partiesFromRequest: PartyDetailsModel[] = hearingDaySchedule[index || 0].attendees;
         const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
         return partiesFromRequest.map((partyInfo) => {
           const name = ParticipantAttendenceAnswerConverter.getPartyName(partiesFromServiceValue, partyInfo);

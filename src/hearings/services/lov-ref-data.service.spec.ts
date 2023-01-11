@@ -1,4 +1,4 @@
-import {HttpParams} from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataService } from './lov-ref-data.service';
 

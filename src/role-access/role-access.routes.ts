@@ -89,4 +89,4 @@ export const ROUTES: Routes = [
   },
 ];
 
-export const roleAccessRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const roleAccessRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

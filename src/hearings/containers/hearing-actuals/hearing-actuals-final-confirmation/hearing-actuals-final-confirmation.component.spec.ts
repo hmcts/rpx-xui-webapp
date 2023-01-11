@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
@@ -10,7 +10,7 @@ describe('HearingActualsFinalConfirmationComponent', () => {
   let fixture: ComponentFixture<HearingActualsFinalConfirmationComponent>;
   let mockStore: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsFinalConfirmationComponent],
       providers: [

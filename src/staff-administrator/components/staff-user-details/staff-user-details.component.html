@@ -64,7 +64,7 @@
       <button class="govuk-button" data-module="govuk-button">
         Update
       </button>
-      <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="changeStatus()">
         {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
       </button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button">

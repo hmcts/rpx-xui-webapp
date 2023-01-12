@@ -11,7 +11,7 @@ const mockSessionStorageService = {
 };
 
 @Pipe({ name: 'rpxTranslate' })
-class RpxTranslationMockPipe implements PipeTransform {
+class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
   }
@@ -32,7 +32,7 @@ describe('PhaseBannerComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [PhaseBannerComponent, RpxTranslationMockPipe],
+      declarations: [PhaseBannerComponent, RpxTranslateMockPipe],
       providers: [
         {
           provide: RpxTranslationService,

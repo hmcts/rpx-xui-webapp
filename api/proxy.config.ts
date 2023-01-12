@@ -16,7 +16,7 @@ import {
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_COMMONDATA_API,
   SERVICES_REFUNDS_API_URL,
-  SERVICES_WELSH_TRANSLATION_API_URL
+  SERVICES_TRANSLATION_API_URL
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
@@ -167,9 +167,10 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-    rewrite: false,
-    source: '/api/welsh-translation',
-    target: getConfigValue(SERVICES_WELSH_TRANSLATION_API_URL),
+    rewrite: true,
+    source: '/api/translation',
+    rewriteUrl: '/translation',
+    target: getConfigValue(SERVICES_TRANSLATION_API_URL)
   });
 
   applyProxy(app, {

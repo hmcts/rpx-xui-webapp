@@ -13,7 +13,7 @@ export async function handleLocationGet(fullPath: string, req: EnhancedRequest):
   return response;
 }
 
-export async function commonGetFullLocation(req: EnhancedRequest) {
+export async function commonGetFullLocation(req) {
   let serviceCodes = [];
   let courtVenues = [];
   const services = req.query.serviceCodes.split(',');

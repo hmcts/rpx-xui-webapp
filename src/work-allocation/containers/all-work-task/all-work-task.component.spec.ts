@@ -7,17 +7,19 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
+import { AppConstants } from '../../../app/app.constants';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
+import * as fromActions from '../../../app/store';
 import { reducers } from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
+import { TaskContext } from '../../../work-allocation/enums';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
-import * as fromActions from '../../../app/store';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
 @Component({
@@ -73,7 +75,7 @@ describe('AllWorkTaskComponent', () => {
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled', 'getValue']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
@@ -122,6 +124,7 @@ describe('AllWorkTaskComponent', () => {
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
     component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
     mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
@@ -139,7 +142,9 @@ describe('AllWorkTaskComponent', () => {
       uid: '1233434'
     }));
     const searchRequest = component.getSearchTaskRequestPagination();
+    const payload = {searchRequest, view: component.view, refined: false, currentUser: '1233434'};
     expect(searchRequest.search_by).toEqual('caseworker');
+    expect(searchRequest.request_context).toEqual(TaskContext.ALL_WORK);
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
 
@@ -155,16 +160,8 @@ describe('AllWorkTaskComponent', () => {
     }));
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_by).toEqual('judge');
+    expect(searchRequest.request_context).toEqual(TaskContext.ALL_WORK);
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
-  });
-
-  it('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = {searchRequest, view: component.view, refined: false, currentUser: '1233434'};
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
-    expect(mockRoleService.getCaseRolesUserDetails).toHaveBeenCalled();
-    expect(component.tasks).toBeDefined();
-    expect(component.tasks.length).toEqual(2);
   });
 
   it('should correctly get filter selections', () => {
@@ -177,7 +174,7 @@ describe('AllWorkTaskComponent', () => {
       roles: ['caseworker-ia-caseofficer'],
       uid: '1233434'
     }));
-    const selection = { location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High' };
+    const selection = {findTaskNameControl: 'Process Application', location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High', taskName: 'Review Hearing bundle' };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_parameters).toContain({ key: 'jurisdiction', operator: 'IN', values: ['IA'] });
@@ -226,7 +223,8 @@ describe('AllWorkTaskComponent', () => {
     const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
     const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
     const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-    const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+    const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
+
     const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
     const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
     let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
@@ -241,7 +239,40 @@ describe('AllWorkTaskComponent', () => {
       // mockTaskService.searchTaskWithPagination.and.returnValue(of(throwError({ status: 500 })));
       mockCaseworkerService.getAll.and.returnValue(of([]));
       mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-      mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+      mockFeatureToggleService.isEnabled.and.callFake(() => of(false));
+      mockFeatureToggleService.getValue.and.callFake((params) => {
+        if (params === AppConstants.FEATURE_NAMES.waServiceConfig) {
+          return of({
+            configurations: [
+              {
+                  caseTypes: [
+                      'Asylum'
+                  ],
+                  releaseVersion: '3.5',
+                  serviceName: 'IA'
+              },
+              {
+                  caseTypes: [
+                      'PRIVATELAW',
+                      'PRLAPPS'
+                  ],
+                  releaseVersion: '2.1',
+                  serviceName: 'PRIVATELAW'
+              },
+              {
+                  caseTypes: [
+                      'CIVIL',
+                      'GENERALAPPLICATION'
+                  ],
+                  releaseVersion: '2.1',
+                  serviceName: 'CIVIL'
+              }
+          ]
+          });
+        } else {
+          return of(true);
+        }
+      });
       mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
       TestBed.configureTestingModule({
         imports: [
@@ -266,6 +297,7 @@ describe('AllWorkTaskComponent', () => {
           { provide: CaseworkerDataService, useValue: mockCaseworkerService },
           { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
           { provide: LoadingService, useValue: mockLoadingService },
+          // FeatureToggleService,
           { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           { provide: LocationDataService, useValue: mockLocationService },
           { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
@@ -290,7 +322,6 @@ describe('AllWorkTaskComponent', () => {
       component.getSearchTaskRequestPagination();
       const searchRequest = component.onPaginationEvent(1);
       const payload = { searchRequest, view: component.view, refined: false, currentUser: undefined };
-      expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
 

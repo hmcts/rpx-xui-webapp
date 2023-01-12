@@ -1,20 +1,12 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
-import {
-  addNewUser,
-  getFilteredUsers,
-  getJobTitles,
-  getServices,
-  getSkills,
-  getStaffRefUserDetails,
-  getUsersByPartialName,
-  getUserTypes
-} from './index';
+import { addNewUser, getStaffRefUserDetails } from './index';
+import { getFilteredUsers, getJobTitles, getServices, getSkills, getUsersByPartialName, getUserTypes } from './real-api';
 
 const router = express.Router({ mergeParams: true });
 
 router.use(authInterceptor);
-router.post('/getFilteredUsers', getFilteredUsers);
+router.get('/getFilteredUsers', getFilteredUsers);
 router.get('/getUsersByPartialName', getUsersByPartialName);
 router.get('/getStaffRefUserDetails/:id', getStaffRefUserDetails);
 router.get('/getUserTypes', getUserTypes);

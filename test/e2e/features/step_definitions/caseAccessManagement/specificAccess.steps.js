@@ -148,20 +148,30 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const detailsParaText = await workFlowPage.approveConfirmationPage.detailsPara.getText();
 
             expect(header).to.includes("Access approved");
-            expect(detailsParaText).to.includes("You can find the details in the 'Roles and access' tab");
+            expect(detailsParaText).to.includes("The requester has been granted access to this case.");
 
         }
 
-        if (action.toLowerCase() === 'denied' || action.toLowerCase() === 'rejected') {
-            await workFlowPage.approveConfirmationPage.waitForContainer();
+        if (action.toLowerCase() === 'denied' || action.toLowerCase() === 'reject') {
+            await workFlowPage.rejectConfirmationPage.waitForContainer();
 
             const header = await workFlowPage.rejectConfirmationPage.header.getText();
             const detailsParaText = await workFlowPage.rejectConfirmationPage.detailsPara.getText();
 
-            expect(header).to.includes("Access denied");
-            expect(detailsParaText).to.includes("You can find the details in the 'Roles and access' tab");
+            expect(header).to.includes("Request for access denied");
+            expect(detailsParaText).to.includes("The requester has been denied access to this case.");
 
         }
+    });
+
+
+    Then('I validate SAR, request more information page displayed', async function () {
+        expect(await workFlowPage.requestMoreInfoPage.isDisplayed()).to.be.true;
+    });
+
+    When('I am in SAR request more information page, enter in text area {string}', async function (moreInfotext) {
+        await workFlowPage.requestMoreInfoPage.enterInTextArea(moreInfotext);
+           
     });
 
 });

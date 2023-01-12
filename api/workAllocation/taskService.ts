@@ -33,7 +33,7 @@ export async function handleTaskRolesGet(path: string, req: EnhancedRequest): Pr
 }
 
 export async function handleTaskSearch(path: string, payload: any, req: EnhancedRequest): Promise<any> {
-  logger.info('search task for', payload);
+  logger.info('search task for', JSON.stringify(payload));
   const headers = setHeaders(req);
   return await http.post(path, payload, {headers});
 }

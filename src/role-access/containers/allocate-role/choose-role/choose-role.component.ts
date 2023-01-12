@@ -57,7 +57,13 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
       this.route.snapshot.queryParams.jurisdiction : '';
     const userTypePlaceHolder = getLabel(this.roleCategory as RoleCategory).toLowerCase();
-    this.caption = this.roleCategory === RoleCategory.ADMIN ? 'Allocate an admin role' : `Allocate a ${userTypePlaceHolder} role`;
+    if (this.roleCategory === RoleCategory.ADMIN) {
+      this.caption = 'Allocate an admin role';
+    } else if (this.roleCategory === RoleCategory.CTSC) {
+      this.caption = 'Allocate a CTSC role';
+    } else {
+      this.caption = `Allocate a ${userTypePlaceHolder} role`;
+    }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
@@ -70,7 +76,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, userRole: UserRole): void {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
@@ -79,10 +85,10 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.error = ERROR_MESSAGE;
       return;
     }
-    this.dispatchEvent(navEvent, roleCategory, isLegalOpsOrJudicialRole);
+    this.dispatchEvent(navEvent, roleCategory, userRole);
   }
 
-  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
+  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, userRole: UserRole): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const roleChosen = this.radioOptionControl.value;
@@ -94,36 +100,47 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
         switch (roleCategory) {
           case RoleCategory.JUDICIAL: {
-            switch (isLegalOpsOrJudicialRole) {
+            switch (userRole) {
               case UserRole.LegalOps:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
                 }));
                 break;
-              case UserRole.Judicial:
+              default:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
                 }));
                 break;
-              default:
-                throw new Error('Invalid user role');
             }
             break;
           }
           case RoleCategory.LEGAL_OPERATIONS: {
-            switch (isLegalOpsOrJudicialRole) {
+            switch (userRole) {
               case UserRole.LegalOps:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
                 }));
                 break;
-              case UserRole.Judicial:
+              default:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
                   typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
                 }));
                 break;
+            }
+            break;
+          }
+          case RoleCategory.CTSC: {
+            switch (userRole) {
+              case UserRole.CTSC:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
+                }));
+                break;
               default:
-                throw new Error('Invalid user role');
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
+                }));
+                break;
             }
             break;
           }

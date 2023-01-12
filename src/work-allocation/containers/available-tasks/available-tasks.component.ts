@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
-import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
+import { InfoMessageType } from '../../../role-access/models/enums';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { TaskActionIds } from '../../enums';
+import { TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
@@ -46,9 +46,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters: SearchTaskParameter [] = [
-        { key: 'available_tasks_only', operator: 'BOOLEAN', value: true },
         { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }
       ];
       const locationParameter = this.getLocationParameter();
@@ -59,12 +58,16 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       if (typesOfWorkParameter) {
         searchParameters.push(typesOfWorkParameter);
       }
-      return {
+      const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
-        sorting_parameters: this.getSortParameter(),
+        sorting_parameters: [...this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
+      if (this.updatedTaskPermission) {
+        searchTaskParameter.request_context = TaskContext.AVAILABLE_TASKS;
+      }
+      return searchTaskParameter;
     }
   }
 

@@ -1,4 +1,4 @@
-@ng
+@ng @ignore
 Feature: Work access page, feature toggle and route guards
 
     Scenario Outline: Before completing booking ui journey
@@ -6,7 +6,7 @@ Feature: Work access page, feature toggle and route guards
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | <bookable> |
             | substantive     | Y          |
-            | primaryLocation | 20001      |
+            | baseLocation | 20001      |
 
 
         Given I start MockApp

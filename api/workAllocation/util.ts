@@ -99,6 +99,16 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
   // Assign actions to the tasks on the data from the API.
   if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
+    // TEMPORARY CODE: for next_hearing_date until it is enabled in Task API
+    const sortingParameters = req.body.searchRequest.sorting_parameters;
+    if (sortingParameters && sortingParameters.length > 0) {
+      sortingParameters.forEach( sortParam => {
+        if (sortParam.sort_by === 'hearing_date') {
+          sortParam.sort_by = 'caseName';
+        }
+      });
+    }
+    //TEMPORARY CODE: end
     const paginationConfig = req.body.searchRequest.pagination_parameters;
     const pageSize = paginationConfig.page_size;
     const pageNumber = (paginationConfig.page_number - 1) * pageSize;
@@ -244,7 +254,7 @@ export function
         firstName: caseWorkerApi.first_name,
         idamId: caseWorkerApi.id,
         lastName: caseWorkerApi.last_name,
-        location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
+        location: mapCaseworkerLocation(caseWorkerApi.base_location),
         roleCategory: getRoleCategory(roleAssignments, caseWorkerApi),
         service: jurisdiction ? jurisdiction : null,
       };
@@ -259,12 +269,12 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
   return roleAssignment ? roleAssignment.roleCategory : null;
 }
 
-export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Location {
-  let primaryLocation: Location = null;
+export function mapCaseworkerLocation(baseLocation: LocationApi[]): Location {
+  let thisBaseLocation: Location = null;
   if (baseLocation) {
     baseLocation.forEach((location: LocationApi) => {
       if (location.is_primary) {
-        primaryLocation = {
+        thisBaseLocation = {
           id: location.location_id,
           locationName: location.location,
           services: location.services,
@@ -272,7 +282,7 @@ export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Locat
       }
     });
   }
-  return primaryLocation;
+  return thisBaseLocation;
 }
 
 export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number): any {
@@ -282,6 +292,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
 
   const payload = {
     attributes,
+    // TODO: This should not be hard-coded list
     roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
       'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
       'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
@@ -289,7 +300,8 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
     validAt: Date.UTC,
   };
   if (locationId) {
-    payload.attributes.primaryLocation = [locationId];
+    // TODO: Not sure whether this is even being used
+    payload.attributes.baseLocation = [locationId];
   }
   return payload;
 }
@@ -303,7 +315,8 @@ export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Rol
       jurisdiction: [jurisdiction],
     };
     if (locationId) {
-      attributes.primaryLocation = [locationId];
+      // TODO: Again does not seem to be being used
+      attributes.baseLocation = [locationId];
     }
     const payload = {
       attributes,
@@ -500,20 +513,24 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
 
   let cases = [];
   caseResults.forEach( caseResult => cases = [...cases, ...caseResult.cases]);
+
   return cases;
+}
+
+export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment[]) {
+  return roleAssignmentList.filter(roleAssignment =>
+    (
+      roleAssignment.grantType === 'SPECIFIC' ||
+      roleAssignment.roleName === 'specific-access-requested' ||
+      roleAssignment.roleName === 'specific-access-denied'
+    ) &&
+    (!roleAssignment.attributes || roleAssignment.attributes.substantive !== 'Y')
+  );
 }
 
 export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
   : Promise<RoleCaseData[]> {
-  const specificRoleAssignments = roleAssignmentList.filter(roleAssignment =>
-    roleAssignment.grantType === 'SPECIFIC'
-    ||
-    roleAssignment.roleName === 'specific-access-requested'
-    ||
-    roleAssignment.roleName === 'specific-access-denied'
-    ||
-    roleAssignment.grantType === 'CHALLENGED'
-  );
+  const specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignmentList);
 
   const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
 
@@ -574,10 +591,11 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
   return null;
 }
 
+// Only called in test function - why is it here?
 export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments.filter(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.primaryLocation
+  return roleAssignments.filter(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.baseLocation
     && roleAssignment.roleName === CASE_ALLOCATOR_ROLE)
-    .map(roleAssignment => roleAssignment.attributes.primaryLocation)
+    .map(roleAssignment => roleAssignment.attributes.baseLocation)
     .reduce((acc, locationId) => acc.includes(locationId) ? acc : `${acc}${locationId},`, '')
     .split(',')
     .filter(location => location.length);
@@ -593,7 +611,7 @@ export function constructRoleAssignmentQuery(
     queryRequests: [searchTaskParameters
       .map((param: SearchTaskParameter) => {
         if (param.key === 'location_id') {
-          param.key = 'primaryLocation';
+          param.key = 'baseLocation';
           const values = param.values as string;
           param.values = [values]
             .filter(location => location.length);
@@ -637,7 +655,7 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
       .filter((param: SearchTaskParameter) => param.key === 'actorId' || param.values && param.values.length)
       .map((param: SearchTaskParameter) => {
         if (param.key === 'location_id') {
-          param.key = 'primaryLocation';
+          param.key = 'baseLocation';
         }
         if (param.key === 'roleCategory') {
           param.values = mapRoleType(param.values as string);
@@ -649,7 +667,7 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
         if (param.key === 'actorId') {
           param.values = userId;
         }
-        if (param.key === 'jurisdiction' || param.key === 'primaryLocation') {
+        if (param.key === 'jurisdiction' || param.key === 'baseLocation') {
           const attributes = acc.attributes || {};
           return {
             ...acc, attributes: {
@@ -733,9 +751,11 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     isNew: roleAssignment.attributes.isNew,
     hasAccess: getAccessStatus(roleAssignment),
     infoRequired: roleAssignment.attributes.infoRequired,
+    infoRequiredComment: roleAssignment.attributes.infoRequiredComment,
     reviewer: roleAssignment.attributes.reviewer,
     specificAccessReason: roleAssignment.attributes.specificAccessReason,
     requestDate: roleAssignment.attributes.requestDate,
+    reviewerRoleCategory: roleAssignment.attributes.reviewerRoleCategory,
   };
 }
 export function getGrantType(roleAssignment: RoleAssignment) {

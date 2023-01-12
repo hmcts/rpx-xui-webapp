@@ -3,7 +3,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 
@@ -85,7 +85,9 @@ describe('TaskHomeComponent', () => {
   };
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
   const locationDataService = jasmine.createSpyObj('locationDataService', ['getItem', 'getSpecificLocations']);
+  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
   locationDataService.getSpecificLocations.and.returnValue(of([]));
+  featureToggleService.getValue.and.returnValue(of(true));
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -106,6 +108,9 @@ describe('TaskHomeComponent', () => {
         },
         {
           provide: SessionStorageService, useValue: sessionStorageService
+        },
+        {
+          provide: FeatureToggleService, useValue: featureToggleService
         }
       ]
     }).compileComponents();

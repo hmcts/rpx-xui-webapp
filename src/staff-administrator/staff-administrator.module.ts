@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from '../app/shared/shared.module';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
@@ -46,6 +47,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     ExuiCommonLibModule,
     ReactiveFormsModule,
     staffAdministratorRouting,
+    NgxPaginationModule
   ],
   providers: [
     StaffDataAccessService,

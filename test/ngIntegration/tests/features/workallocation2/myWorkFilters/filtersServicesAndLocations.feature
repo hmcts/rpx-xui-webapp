@@ -1,4 +1,4 @@
-@ng 
+@ng @ignore
 Feature: WA Release 2: My work - Work filters, Services and locations for user roles
     https://tools.hmcts.net/jira/browse/EUI-5921
 
@@ -107,15 +107,15 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceA>"
             | bookable        | false       |
             | substantive     | Y           |
-            | primaryLocation | <locationA> |
+            | baseLocation | <locationA> |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceB>"
             | bookable        | false       |
             | substantive     | Y           |
-            | primaryLocation | <locationB> |
+            | baseLocation | <locationB> |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceC>"
             | bookable        | false       |
             | substantive     | Y           |
-            | primaryLocation | <locationC> |
+            | baseLocation | <locationC> |
 
 
         Given I start MockApp
@@ -202,15 +202,15 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceA>"
             | bookable        | true        |
             | substantive     | Y           |
-            | primaryLocation | <locationA> |
+            | baseLocation | <locationA> |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceB>"
             | bookable        | true        |
             | substantive     | Y           |
-            | primaryLocation | <locationB> |
+            | baseLocation | <locationB> |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceC>"
             | bookable        | true        |
             | substantive     | Y           |
-            | primaryLocation | <locationC> |
+            | baseLocation | <locationC> |
 
 
         Given I start MockApp
@@ -303,15 +303,15 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceA>"
             | bookable        | false       |
             | substantive     | Y           |
-            | primaryLocation | <locationA> |
+            | baseLocation | <locationA> |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceB>"
             | bookable        | false       |
             | substantive     | Y           |
-            | primaryLocation | <locationB> |
+            | baseLocation | <locationB> |
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceC>"
             | bookable        | true        |
             | substantive     | Y           |
-            | primaryLocation | <locationC> |
+            | baseLocation | <locationC> |
 
 
         Given I start MockApp

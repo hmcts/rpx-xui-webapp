@@ -20,16 +20,15 @@ import { MyAccessComponent } from './containers/my-access/my-access.component';
 import { TaskAssignmentPersonNotAuthorisedComponent } from './containers/messages-container/task-assignment-person-not-authorised/task-assignment-person-not-authorised.component';
 import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
-import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
 import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
+import { WorkAllocationAccessGuard } from './guards';
 
 export const ROUTES: Routes = [
   {
     path: '',
     component: WorkAllocationHomeComponent,
-    canActivate: [ WorkAllocationFeatureToggleGuard ],
     children: [
       {
         path: 'my-work',
@@ -67,6 +66,7 @@ export const ROUTES: Routes = [
           {
             path: 'my-access',
             component: MyAccessComponent,
+            canActivate: [WorkAllocationAccessGuard],
             data: {
               title: 'HMCTS Manage cases | My work | My access', subTitle: 'My access'
             }
@@ -76,7 +76,7 @@ export const ROUTES: Routes = [
       {
         path: 'all-work',
         component: AllWorkHomeComponent,
-        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard, TaskSupervisorGuard],
+        canActivate: [ HealthCheckGuard, TaskSupervisorGuard],
         data: {
           title: 'HMCTS Manage cases | Task manager'
         },
@@ -104,7 +104,6 @@ export const ROUTES: Routes = [
       {
         path: ':taskId',
         resolve: { taskAndCaseworkers: TaskResolver, roles: TaskRoleResolverService},
-        canActivate: [ WorkAllocationFeatureToggleGuard ],
         children: [
           {
             path: 'assign',

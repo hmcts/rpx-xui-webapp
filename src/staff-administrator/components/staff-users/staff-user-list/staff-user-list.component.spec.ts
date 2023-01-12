@@ -1,8 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffStatusComponent } from '../../staff-status/staff-status.component';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
@@ -18,7 +19,9 @@ describe('StaffUserListComponent', () => {
       imports: [
         HttpClientTestingModule,
         CdkTableModule,
-        RouterTestingModule
+        RouterTestingModule,
+        NgxPaginationModule,
+        ExuiCommonLibModule
       ],
       providers: [
         StaffDataFilterService,

@@ -85,6 +85,8 @@ export const JURISDICTIONS = 'jurisdictions';
 
 export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
 
+export const HEARINGS_SUPPORTED_JURISDICTIONS = 'services.hearings.hearingsJurisdictions';
+
 export const SERVICE_REF_DATA_MAPPING = 'serviceRefDataMapping';
 
 export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields';
@@ -112,7 +114,6 @@ export const FEATURE_SUBSTANTIVE_ROLE_ENABLED = 'substantiveRoleEnabled';
 export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
-
 export const FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED = 'updatedTaskPermissionsEnabled';
 
 export const HELMET = 'helmet';

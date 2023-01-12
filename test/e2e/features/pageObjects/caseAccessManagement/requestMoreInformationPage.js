@@ -9,6 +9,15 @@ class SARRequestMoreInformationPage{
         this.textArea = $('exui-specific-access-information textarea');
 
     }
+
+    async isDisplayed(){
+        return await this.header.isDisplayed(); 
+    }
+
+
+    async enterInTextArea(text) {
+        return await this.textArea.sendKeys(text);
+    }
 }
 
 module.exports = new SARRequestMoreInformationPage();

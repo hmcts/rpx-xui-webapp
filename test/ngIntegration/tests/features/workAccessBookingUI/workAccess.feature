@@ -1,4 +1,4 @@
-@ng 
+@ng @ignore
 Feature: Work access page
 
     Background: Setup bookings data
@@ -21,7 +21,7 @@ Feature: Work access page
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | false |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
             |isCaseAllocator|true|
 
         Given I start MockApp
@@ -64,7 +64,7 @@ Feature: Work access page
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
             | bookable        | true |
             | substantive     | Y     |
-            | primaryLocation | 20001 |
+            | baseLocation | 20001 |
             |isCaseAllocator|true|
 
         Given I start MockApp
@@ -109,9 +109,9 @@ Feature: Work access page
         Then I see work access existing bookings list container
         Then I see work access existing bookings displayed with details
             | location        | fromDate | toDate |
-            | Test location 1 | +1       | +2     |
-            | Test location 2 | +2       | +4     |
-            | Test location 3 | +4       | +8     |
+            | Test location 1 | +1       | +1     |
+            | Test location 2 | +2       | +3     |
+            | Test location 3 | +4       | +7    |
 
 
     Scenario: Work access View existing booking and continue

@@ -27,7 +27,7 @@ import {
   WorkAllocationCaseService
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
-import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { getAssigneeName, handleFatalErrors, servicesMap, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -158,7 +158,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.loadSupportedJurisdictions();
-    this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
     this.addSelectedLocationsSubscriber();
@@ -377,7 +376,9 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
       }
     }));
 
-    mappedSearchResult$.subscribe(result => {
+    Observable.forkJoin([mappedSearchResult$, this.jurisdictionsService.getJurisdictions()]).subscribe(results => {
+      const result = results[0];
+      this.allJurisdictions = results[1];
       this.loadingService.unregister(loadingToken);
       this.cases = result.cases;
       this.casesTotal = result.total_records;
@@ -388,6 +389,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
         }
         if (this.allJurisdictions && this.allJurisdictions.find(jur => jur.id === item.jurisdiction)) {
           item.jurisdiction = this.allJurisdictions.find(jur => jur.id === item.jurisdiction).name;
+        } else if (servicesMap[item.jurisdiction]) {
+          item.jurisdiction = servicesMap[item.jurisdiction];
         }
         if (this.allRoles && this.allRoles.find(role => role.roleId === item.case_role)) {
           item.role = this.allRoles.find(role => role.roleId === item.case_role).roleName;

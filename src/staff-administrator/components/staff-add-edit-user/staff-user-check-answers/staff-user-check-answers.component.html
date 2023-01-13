@@ -6,7 +6,7 @@
             <dt class="govuk-summary-list__key">Name</dt>
             <dd class="govuk-summary-list__value">{{firstName}} {{lastName}}</dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
                 Change<span class="govuk-visually-hidden"> name </span>
               </a>
             </dd>
@@ -18,7 +18,7 @@
             <div class="govuk-summary-list__key">Email address</div>
             <div class="govuk-summary-list__value">{{email}}</div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
                 Change<span class="govuk-visually-hidden"> email </span>
               </a>
             </div>
@@ -35,11 +35,9 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <div routerLink="/staff/add-user">
-                <a class="govuk-link" routerLink="/staff/add-user">
-                  Change<span class="govuk-visually-hidden"> services </span>
-                </a>
-              </div>
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
+                Change<span class="govuk-visually-hidden"> services </span>
+              </a>
             </div>
           </div>
         </dl>
@@ -54,7 +52,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -66,7 +64,7 @@
             <div class="govuk-summary-list__key">Primary location</div>
             <div class="govuk-summary-list__value">{{primaryLocations.site_name}}</div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -83,7 +81,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -94,13 +92,10 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">User type</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let userType of userTypesPayload; let isLast=last">
-                {{userType.label}}
-                <span *ngIf="!isLast"><br/></span>
-              </span>
+              {{ userType.label }}
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -117,7 +112,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -134,7 +129,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -151,7 +146,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" routerLink="/staff/add-edit-user">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>

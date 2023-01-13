@@ -24,6 +24,7 @@ import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-optio
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
 import { StaffDataAccessService } from './services/staff-data-access/staff-data-access.service';
 import { staffAdministratorRouting } from './staff-administrator.routes';
+import { PluckAndJoinPipe } from './pipes/pluckAndJoin.pipe';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffUserCheckAnswersContainerComponent,
     StaffUserDetailsContainerComponent,
     StaffUserDetailsComponent,
-    StaffStatusComponent
+    StaffStatusComponent,
+    PluckAndJoinPipe
   ],
   imports: [
     CommonModule,

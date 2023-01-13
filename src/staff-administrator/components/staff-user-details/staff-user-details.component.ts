@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { StaffUser } from '../../../staff-administrator/models/staff-user.model';
 
 @Component({
@@ -11,7 +11,14 @@ export class StaffUserDetailsComponent {
   public userDetails: StaffUser;
   public showAction: boolean = false;
 
-  constructor(private route: ActivatedRoute) {
-    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails.results[0];
-   }
+  constructor(private readonly router: Router) {
+    const routerStateUserDetails = router.getCurrentNavigation().extras.state &&
+      router.getCurrentNavigation().extras.state.user;
+
+    if (routerStateUserDetails) {
+      this.userDetails = { ...routerStateUserDetails };
+    } else {
+      this.router.navigateByUrl('/staff');
+    }
+  }
 }

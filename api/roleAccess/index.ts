@@ -79,12 +79,12 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
   const headers = setHeaders(req, release2ContentType);
   try {
 
-		console.log('BASE PATH', basePath);
-		console.log('FULL PATH', fullPath);
+    console.log('BASE PATH', basePath);
+    console.log('FULL PATH', fullPath);
 
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
 
-		console.log('RESPONSE DATA', response.data);
+    console.log('RESPONSE DATA', response.data);
 
     const finalRoles: CaseRole[] = mapResponseToCaseRoles(
       response.data.roleAssignmentResponse,
@@ -93,7 +93,7 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
     );
     return res.status(response.status).send(finalRoles);
   } catch (error) {
-		console.log('ERROR', error);
+    console.log('ERROR', error);
     next(error);
   }
 }
@@ -377,7 +377,7 @@ export function getAccessRolesRequestPayloadForCaseId(caseId: string): CaseRoleR
     queryRequests: [
       {
         attributes: {
-        caseId: [caseId]
+          caseId: [caseId]
         }
       }
     ]

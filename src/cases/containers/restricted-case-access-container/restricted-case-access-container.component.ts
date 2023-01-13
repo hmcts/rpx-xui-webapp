@@ -19,8 +19,8 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
   public caseWorkers: Caseworker[];
   public idamIds: string[];
   public restrictedCases: RestrictedCase[] = [];
-  
-  constructor(private route: ActivatedRoute,
+
+  constructor(private readonly route: ActivatedRoute,
               private readonly allocateService: AllocateRoleService,
               private readonly caseworkerDataService: CaseworkerDataService) {
   }
@@ -62,12 +62,12 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
     const restrictedCases: RestrictedCase[] = [];
     this.idamIds.forEach(id => {
       const user = caseworkers.find(caseworker => caseworker.idamId === id);
-      const role = this.caseRoles.find(role => role.actorId === id);
-      if (user && role) {
+      const caseRole = this.caseRoles.find(role => role.actorId === id);
+      if (user && caseRole) {
         restrictedCases.push({
           user: `${user.firstName} ${user.lastName}`,
           email: user.email,
-          role: role.roleName
+          role: caseRole.roleName
         });
       }
     });

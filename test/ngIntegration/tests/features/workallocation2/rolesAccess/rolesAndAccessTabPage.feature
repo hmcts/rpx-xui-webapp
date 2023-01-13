@@ -20,7 +20,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I set MOCK case roles
@@ -61,7 +61,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I set MOCK case roles
@@ -101,7 +101,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I set MOCK case roles
@@ -149,7 +149,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
 
         Given I set MOCK case roles
@@ -234,7 +234,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | false           | IA           | 12345           |
 
         Given I set MOCK case roles

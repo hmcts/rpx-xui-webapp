@@ -78,6 +78,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         this.prepareRolesPayload();
         this.prepareRegionPayload();
         this.prepareSkillsPayload();
+
+        console.log("**staffFilterOptions");
+        console.log(this.staffFilterOptions);
+
       }
     });
   }
@@ -98,12 +102,23 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   private prepareJobTitlesPayload() {
     const jobTitlesNamePayload = [];
     this.addUserData[9].value.map(jobTitle => {
-      jobTitlesNamePayload.push(this.staffFilterOptions.jobTitles.find(jobTitles => jobTitles.key === jobTitle));
+      jobTitlesNamePayload.push(this.staffFilterOptions.jobTitles.find(jobTitles => jobTitles.key.toString() === jobTitle.toString()));
     });
 
     jobTitlesNamePayload.map(jobTitleName => {
       this.jobTitlesPayload.push(StaffJobTitles.jobTitles.find(jobTitle => jobTitle.role === jobTitleName.label));
     });
+    console.log("jobTitlesPayload");
+
+    console.log(this.jobTitlesPayload);
+
+    // this.jobTitlesPayload = [
+    //   {
+    //     "role_id": 5,
+    //     "role": "Court Clerk",
+    //     "is_primary": true
+    //   }
+    // ];
   }
 
   private prepareUserTypePayload() {
@@ -115,13 +130,13 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   private prepareLocationPayload() {
     const locationPayload = [];
     locationPayload.push({
-      location_id: this.primaryLocations.court_venue_id,
+      location_id: +this.primaryLocations.court_venue_id,
       location: this.primaryLocations.site_name,
       is_primary: true
     });
     this.additionalLocations.map(location => {
       locationPayload.push({
-        location_id: location.court_venue_id,
+        location_id: +location.court_venue_id,
         location: location.site_name,
         is_primary: false
       });
@@ -186,20 +201,41 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     });
 
     const addNewUserPayload = {
+      base_locations: this.prepareLocationPayload(),
+      case_allocator: case_allocator_flag,
       email_id: this.email,
       first_name: this.firstName,
+      "idam_roles": [
+        "cwd-user",
+        "caseworker-ia",
+        "cwd-system-user",
+        "cwd-admin",
+        "caseworker-ia-caseofficer",
+        "caseworker"
+      ],
       last_name: this.lastName,
-      services: this.servicePayload,
       region: this.regionPayload.length ? this.regionPayload[0].label : '' ,
       region_id: 1,
       roles: this.jobTitlesPayload,
-      task_supervisor: task_supervisor_flag,
-      case_allocator: case_allocator_flag,
+      // services: this.servicePayload,
+      "services": [
+        {
+          "service": "Immigration and Asylum Appeals",
+          "service_code": "BFA1"
+        }
+      ],
+      "skills": [
+        {
+          "skill_id": 9,
+          "description": "testskill1",
+          "skill_code": "testskill1"
+        }
+      ],
+      // skills: this.skillsPayload,
       staff_admin: staff_admin_flag,
       suspended: false,
-      base_locations: this.prepareLocationPayload(),
+      task_supervisor: task_supervisor_flag,
       user_type: this.userTypesPayload[0].label,
-      skills: this.skillsPayload
     };
 
     this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {

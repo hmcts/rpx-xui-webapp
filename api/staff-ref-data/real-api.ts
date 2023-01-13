@@ -1,10 +1,10 @@
 import { NextFunction, Response } from 'express';
 import * as querystring from 'querystring';
-import { handleGet } from '../common/crudService';
+import { handleGet, handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
 import { StaffDataUser } from './models/staff-data-user.model';
-import { GropuOption, StaffFilterOption } from './models/staff-filter-option.model';
+import { GroupOption, StaffFilterOption } from './models/staff-filter-option.model';
 
 const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 
@@ -104,4 +104,20 @@ export async function getUsersByPartialName(req, res: Response, next: NextFuncti
 
 export function sortArray(array: StaffFilterOption[]) {
   return array.sort((a, b) => a.label.localeCompare(b.label));
+}
+
+export async function addNewUser(req, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const apiPath: string = `/refdata/case-worker/profile`;
+  // const headers = setHeaders(req);
+  console.log("**url");
+  console.log(`${baseCaseWorkerRefUrl}${apiPath}`);
+  console.log(JSON.stringify(reqBody));
+
+  try {
+    const {status, data}: { status: number, data: StaffDataUser } = await handlePost(`${baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
 }

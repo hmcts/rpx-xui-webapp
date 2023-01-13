@@ -1,7 +1,7 @@
-import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -118,7 +118,7 @@ describe('StaffAddEditUserFormComponent', () => {
   beforeEach(async () => {
     class routerClass {
       getCurrentNavigation() {
-        return { previousNavigation: {finalUrl: '/staff'}}
+        return { previousNavigation: {finalUrl: '/staff'}};
       }
     }
     await TestBed.configureTestingModule({
@@ -126,7 +126,7 @@ describe('StaffAddEditUserFormComponent', () => {
       imports: [
         RouterTestingModule.withRoutes([
           { path: 'staff', component: StaffMainContainerStubComponent },
-          { path: 'staff/add-user/check-your-answers', component: StaffUserCheckAnswersComponent }
+          { path: 'staff/add-edit-user/check-your-answers', component: StaffUserCheckAnswersComponent }
         ]),
         ReactiveFormsModule,
         HttpClientTestingModule,

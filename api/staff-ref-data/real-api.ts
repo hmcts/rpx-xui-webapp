@@ -16,7 +16,7 @@ export async function getUserTypes(req, res: Response, next: NextFunction) {
 
     const options: StaffFilterOption[] = [];
     data.user_type.forEach(element => {
-      options.push({ key: element.id, label: element.code });
+      options.push({ key: element.code, label: element.code });
     });
 
     res.status(status).send(sortArray(options));
@@ -70,7 +70,7 @@ export async function getSkills(req, res: Response, next: NextFunction) {
       const options: StaffFilterOption[] = [];
       services.skills.forEach(skill => {
         options.push({ key: skill.id, label: skill.description });
-      })
+      });
       groupOptions.push({ group: services.id, options });
     });
 

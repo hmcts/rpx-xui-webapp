@@ -1,16 +1,41 @@
 export interface StaffUser {
-  id?: number;
-  firstName: string;
-  lastName: string;
-  userCategory: string;
-  userType: string;
-  jobTitle: string;
-  locations: string[];
-  region: string;
-  services: string[];
+  email_id: string;
+  first_name: string;
+  last_name: string;
   suspended: boolean;
-  email: string;
-  primaryLocation: string;
-  roles: string;
-  skills?: string[];
+  user_type: string;
+
+  task_supervisor: boolean;
+  case_allocator: boolean;
+  staff_admin: boolean;
+
+  roles: {
+    role_id: number,
+    role: string,
+    is_primary: true
+    created_time?: Date,
+    last_updated_time?: Date,
+  }[];
+
+  skills: {
+    skill_id: number;
+    description: string;
+    skill_code: string
+  }[];
+
+  services: {
+    service: string;
+    service_code: string;
+  }[];
+
+  base_locations: {
+    created_time?: Date,
+    last_updated_time?: Date,
+    location_id: number,
+    location: string,
+    is_primary: boolean
+  }[];
+
+  region: string;
+  region_id: number;
 }

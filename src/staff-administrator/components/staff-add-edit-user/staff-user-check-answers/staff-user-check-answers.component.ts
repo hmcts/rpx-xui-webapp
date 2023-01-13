@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
@@ -8,6 +7,7 @@ import { Roles } from 'src/staff-administrator/models/roles.enum';
 import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffJobTitles } from '../../../models/staff-job-titles';
+import { STAFF_REGIONS } from '../staff-add-edit-user-form/staff-regions';
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -34,14 +34,14 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public services: string[];
   public primaryLocations;
   public additionalLocations;
-  public userType: string[];
+  public userType: { label: string };
   public roles: string[];
   public skills: string[];
   public servicePayload;
   public rolesPayload = [];
   public jobTitlesPayload = [];
   public regionPayload = [];
-  public userTypesPayload = [];
+  public userTypesPayload: { label: string };
   public skillsPayload;
 
   constructor(
@@ -68,7 +68,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         this.region = this.addUserData[3].value;
         this.primaryLocations = this.addUserData[5].value[0];
         this.additionalLocations = this.addUserData[6].value;
-        this.userType = this.addUserData[7].value;
+        this.userType = this.staffFilterOptions.userTypes.find(item => item.key === this.addUserData[7].value[0]);
         this.roles = this.addUserData[8].value;
         this.skills = this.addUserData[10].value;
 
@@ -91,7 +91,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       return {
         service: service.label,
         service_code: service.key
-      }
+      };
     });
   }
 
@@ -107,9 +107,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   private prepareUserTypePayload() {
-    this.userType.map(userType => {
-      this.userTypesPayload.push(this.staffFilterOptions.userTypes.find(userTypes => userTypes.key === userType));
-    });
+    this.userTypesPayload = this.userType;
   }
 
   private prepareLocationPayload() {
@@ -137,17 +135,14 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     ];
     this.roles.map(role => {
       this.rolesPayload.push(roleObj.find(roles => roles.key === role));
-    })
+    });
   }
 
   private prepareRegionPayload() {
-    const regionObj = [
-      { key: 'region-1', label: 'Region 1'}
-    ];
-
+    console.log(this.region);
     this.region.map(region => {
-      this.regionPayload.push(regionObj.find(regions => regions.key === region));
-    })
+      this.regionPayload.push(STAFF_REGIONS.find(regions => regions.key === region));
+    });
   }
 
   private prepareSkillsPayload() {
@@ -198,7 +193,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       staff_admin: staff_admin_flag,
       suspended: false,
       base_locations: this.prepareLocationPayload(),
-      user_type: this.userTypesPayload[0].label,
+      user_type: this.userTypesPayload.label,
       skills: this.skillsPayload
     };
 

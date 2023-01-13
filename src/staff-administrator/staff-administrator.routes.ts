@@ -12,7 +12,6 @@ import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-op
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
-import { StaffUserDetailsResolverService } from './resolvers/staff-user-details-resolver.service';
 
 export const ROUTES: Routes = [
   {
@@ -20,13 +19,10 @@ export const ROUTES: Routes = [
     component: StaffUserDetailsContainerComponent,
     children: [
       {
-        path: 'user-details/:id',
+        path: 'user-details',
         component: StaffUserDetailsComponent,
         data: {
           title: 'User Details'
-        },
-        resolve: {
-          staffUserDetails: StaffUserDetailsResolverService
         }
       }]
   },
@@ -44,7 +40,7 @@ export const ROUTES: Routes = [
         },
       },
       {
-        path: 'add-user',
+        path: 'add-edit-user',
         resolve: {
           jobTitles: StaffFilterOptionsJobTitlesResolver,
           services: StaffFilterOptionsServicesResolver,

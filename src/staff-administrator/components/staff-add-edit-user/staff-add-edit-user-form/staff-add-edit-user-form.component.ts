@@ -1,19 +1,21 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingCheckType, FilterConfig, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
+import { FilterFieldOption } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
+import { StaffUser } from '../../../models/staff-user.model';
+import { STAFF_REGIONS } from './staff-regions';
 
 @Component({
   selector: 'exui-staff-add-edit-user-form',
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit {
-  @Input() public formGroup: FormGroup;
+export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   public formId: string = 'staff-add-edit-user';
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
@@ -24,6 +26,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
   private previousUrl: string;
+  private userDetails: StaffUser | undefined;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
@@ -39,6 +42,10 @@ export class StaffAddEditUserFormComponent implements OnInit {
         this.previousUrl = previousNavigation.finalUrl.toString();
       }
     }
+
+    this.userDetails = this.router.getCurrentNavigation().extras.state &&
+      this.router.getCurrentNavigation().extras.state.userDetails;
+
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
@@ -49,13 +56,14 @@ export class StaffAddEditUserFormComponent implements OnInit {
 
   public ngOnInit() {
     this.initFormConfig();
+
     this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
         if (data.reset) {
           this.resetForm();
         } else {
-          const checkYourAnswerUrl = '/staff/add-user/check-your-answers';
-          if (this.previousUrl !== checkYourAnswerUrl) {
+          if (this.genericFilterComponent.submitted) {
+            const checkYourAnswerUrl = '/staff/add-edit-user/check-your-answers';
             this.router.navigateByUrl(checkYourAnswerUrl);
           }
         }
@@ -78,6 +86,80 @@ export class StaffAddEditUserFormComponent implements OnInit {
     );
   }
 
+  public ngAfterViewInit() {
+    if (this.userDetails) {
+      const modifySelectedIndexes = (selectedKeys: string[] | number[], options: any[], previousValues: boolean[]) => {
+        const trueIndexes = [];
+        options.forEach((item, index) => {
+          // @ts-ignore
+          if (selectedKeys.includes(item.key)) {
+            trueIndexes.push(index);
+          }
+        });
+
+        const updatedValues = previousValues;
+        trueIndexes.forEach(item => {
+          updatedValues[item] = true;
+        });
+
+        return updatedValues;
+      };
+
+      const formValues = this.genericFilterComponent.form.value;
+
+      const userServices = modifySelectedIndexes(
+        this.userDetails.services.map(item => item.service_code),
+        this.staffFilterOptions.services,
+        formValues['user-services']
+      );
+      const userJobTitles = modifySelectedIndexes(
+        this.userDetails.roles.map(item => Number(item.role_id)),
+        this.staffFilterOptions.jobTitles,
+        formValues['jobTitle']
+      );
+
+      const userSkills = modifySelectedIndexes(
+        this.userDetails.skills.map(item => Number(item.skill_id)),
+        this.staffFilterOptions.skills.reduce((prevValue: FilterFieldOption[], currentValue) => {
+          prevValue.push(...currentValue.options);
+          return prevValue;
+        }, []),
+        formValues['user-skills']
+      );
+      this.genericFilterComponent.form.patchValue({
+        ...this.userDetails,
+        'user-services': userServices,
+        roles: [
+          this.userDetails.case_allocator,
+          this.userDetails.task_supervisor,
+          this.userDetails.staff_admin,
+        ],
+        jobTitle: userJobTitles,
+        'user-skills': userSkills,
+      });
+
+      const primaryLocation = this.userDetails.base_locations.find(item => item.is_primary);
+      (this.genericFilterComponent.form.get('primaryLocation') as FormArray).push(new FormControl(
+        {
+          epimms_id: primaryLocation.location_id,
+          site_name: primaryLocation.location
+        }
+      ));
+
+      const additionalLocations = this.userDetails.base_locations.filter(item => !item.is_primary);
+      additionalLocations.forEach(location => {
+        const singleAdditionalLocationControl = new FormControl(
+          {
+            epimms_id: location.location_id,
+            site_name: location.location
+          }
+        );
+
+        (this.genericFilterComponent.form.get('additionalLocations') as FormArray).push(singleAdditionalLocationControl);
+      });
+    }
+  }
+
   public resetForm() {
     this.filterService.clearSessionAndLocalPersistance(this.formId);
     this.filterService.givenErrors.next(null);
@@ -95,7 +177,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxSelected: 0
         },
         {
-          name: 'firstName',
+          name: 'first_name',
           type: 'text-input',
           title: 'First Name',
           titleClasses: 'govuk-label',
@@ -109,7 +191,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxlength: 255,
         },
         {
-          name: 'lastName',
+          name: 'last_name',
           type: 'text-input',
           title: 'Last Name',
           titleClasses: 'govuk-label',
@@ -123,7 +205,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxlength: 255,
         },
         {
-          name: 'email',
+          name: 'email_id',
           type: 'email-input',
           title: 'Email',
           titleClasses: 'govuk-label',
@@ -137,11 +219,11 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxWidth480px: true,
         },
         {
-          name: 'region',
+          name: 'region_id',
           type: 'select',
           title: 'Region',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [{ key: 'region-1', label: 'Region 1'}],
+          options: [...STAFF_REGIONS],
           minSelected: 1,
           maxSelected: 10,
           minSelectedError: 'Select at least one region',
@@ -178,7 +260,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           subTitle: 'A user can only have one primary location.',
           locationTitle: 'Enter a location name',
           options: [],
-          minSelected: 1,
+          minSelected: 0,
           maxSelected: 1,
           displayMinSelectedError: true,
           minSelectedError: 'Select at least one location',
@@ -198,7 +280,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxWidth480px: true,
         },
         {
-          name: 'userType',
+          name: 'user_type',
           type: 'select',
           title: 'User type',
           titleClasses: 'govuk-label govuk-label--m',
@@ -246,7 +328,6 @@ export class StaffAddEditUserFormComponent implements OnInit {
           titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
           options: [...this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b))],
-          // options: [],
           groupOptions: this.staffFilterOptions.skills,
           minSelected: 0,
           maxSelected: 10,

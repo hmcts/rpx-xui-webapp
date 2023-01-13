@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
+import { WASupportedJurisdictionsService } from '../../../work-allocation/services/wa-supported-jurisdiction.service';
 import { CaseRole } from '../../../role-access/models/case-role.interface';
 import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
 import { Caseworker } from '../../../work-allocation/models/dtos';
@@ -22,7 +23,8 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
 
   constructor(private readonly route: ActivatedRoute,
               private readonly allocateService: AllocateRoleService,
-              private readonly caseworkerDataService: CaseworkerDataService) {
+              private readonly caseworkerDataService: CaseworkerDataService,
+              private waSupportedJurisdictionsService: WASupportedJurisdictionsService) {
   }
 
   public ngOnInit(): void {
@@ -40,7 +42,11 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
       }), take(1),
       switchMap(idamIds => {
         console.log('IDAM IDS', idamIds);
-        return this.caseworkerDataService.getCaseworkersForServices(['IA']);
+        return this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+      }), take(1),
+      switchMap(jurisdictions => {
+        console.log('Jurisdictions', jurisdictions);
+        return this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
       }), take(1),
       switchMap(caseworkers => {
         console.log('CASE WORKERS', caseworkers);

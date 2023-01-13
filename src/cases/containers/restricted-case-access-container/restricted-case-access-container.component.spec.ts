@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RestrictedCaseAccessContainerComponent } from './restricted-case-access-container.component';
 
-describe('RestrictedCaseAccessContainerComponent', () => {
+fdescribe('RestrictedCaseAccessContainerComponent', () => {
   let component: RestrictedCaseAccessContainerComponent;
   let fixture: ComponentFixture<RestrictedCaseAccessContainerComponent>;
 

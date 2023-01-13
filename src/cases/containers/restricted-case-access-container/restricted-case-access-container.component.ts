@@ -18,7 +18,7 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
   public caseRoles: CaseRole[];
   public caseWorkers: Caseworker[];
   public idamIds: string[];
-  public restrictedCases: RestrictedCase[] = [];
+  public restrictedCases: RestrictedCase[];
 
   constructor(private readonly route: ActivatedRoute,
               private readonly allocateService: AllocateRoleService,
@@ -35,20 +35,20 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
     this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
       switchMap(caseRoles => {
         this.caseRoles = caseRoles;
-        // console.log('CASE ROLES', this.caseRoles);
+        console.log('CASE ROLES', this.caseRoles);
         return of(this.getUniqueIdamIds());
       }), take(1),
       switchMap(idamIds => {
-        // console.log('IDAM IDS', idamIds);
+        console.log('IDAM IDS', idamIds);
         return this.caseworkerDataService.getCaseworkersForServices(['IA']);
       }), take(1),
       switchMap(caseworkers => {
-        // console.log('CASE WORKERS', caseworkers);
+        console.log('CASE WORKERS', caseworkers);
         return of(this.getRestrictedCases(caseworkers));
       })
     ).subscribe(restrictedCases => {
       this.restrictedCases = restrictedCases;
-      // console.log('RESTRICTED CASES', restrictedCases);
+      console.log('RESTRICTED CASES', restrictedCases);
     });
   }
 

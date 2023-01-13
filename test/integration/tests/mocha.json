@@ -4,7 +4,7 @@
   "package": "./package.json",
   "reporter": "mochawesome",
  "reporterOptions": {
-   "reportDir" : "reports/tests/api_functional/",
+   "reportDir" : "functional-output/tests/api_functional/",
    "reportFilename": "XUI_MC_API_Functional_Tests"
  },
  "reportDir": "reports/tests/api_functional/",
@@ -18,7 +18,8 @@
         "./test/integration/tests/workallocation/release2Cases.spec.ts",
         "./test/integration/tests/workallocation/release2Tasks.spec.ts",
         "./test/integration/tests/workallocation/release2CaseRoles.spec.ts",
-        "./test/integration/tests/workallocation/person.spec.ts"
+        "./test/integration/tests/workallocation/person.spec.ts",
+        "./test/integration/tests/workallocation/findPerson.spec.ts"
   ],
   "file": ["./test/integration/tests/utils/helper.ts"]
 }

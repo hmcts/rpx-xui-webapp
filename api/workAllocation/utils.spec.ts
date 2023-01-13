@@ -319,6 +319,7 @@ const availableTasks = [
   },
 ];
 
+
 describe('workAllocation.utils', () => {
 
   describe('prepareGetTaskUrl', () => {

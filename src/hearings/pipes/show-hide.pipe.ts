@@ -7,12 +7,14 @@ import { JudgeNameHiddenConverter } from '../converters/judge-name.hidden.conver
 import { JudgeTypesHiddenConverter } from '../converters/judge-types.hidden.converter';
 import { ListedHiddenConverter } from '../converters/listed.hidden.converter';
 import { NotListedHiddenConverter } from '../converters/not-listed.hidden.converter';
+import { PanelDetailsExclusionHiddenConverter } from '../converters/panel-details-exclusion.hidden.converter';
 import { PanelExclusionHiddenConverter } from '../converters/panel-exclusion.hidden.converter';
 import { PanelInclusionHiddenConverter } from '../converters/panel-inclusion.hidden.converter';
 import { PanelRolesHiddenConverter } from '../converters/panel-roles.hidden.converter';
+import { PaperHearingHiddenConverter } from '../converters/paper-hearing.hidden.converter';
 import { WelshHiddenConverter } from '../converters/welsh.hidden.converter';
 import { IsHiddenSource } from '../models/hearings.enum';
-import {LocationsDataService} from '../services/locations-data.service';
+import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
 
 @Pipe({
@@ -38,11 +40,17 @@ export class ShowHidePipe implements PipeTransform {
       case IsHiddenSource.JUDGE_EXCLUSION:
         converter = new JudgeExclusionHiddenConverter();
         break;
+      case IsHiddenSource.PAPER_HEARING:
+        converter = new PaperHearingHiddenConverter();
+        break;
       case IsHiddenSource.PANEL_INCLUSION:
         converter = new PanelInclusionHiddenConverter();
         break;
       case IsHiddenSource.PANEL_EXCLUSION:
         converter = new PanelExclusionHiddenConverter();
+        break;
+      case IsHiddenSource.PANEL_DETAILS_EXCLUSION:
+        converter = new PanelDetailsExclusionHiddenConverter();
         break;
       case IsHiddenSource.PANEL_ROLES:
         converter = new PanelRolesHiddenConverter();

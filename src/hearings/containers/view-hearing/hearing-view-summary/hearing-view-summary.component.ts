@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 import { Mode } from '../../../models/hearings.enum';
+import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 
 @Component({
   selector: 'exui-hearing-viewsummary',

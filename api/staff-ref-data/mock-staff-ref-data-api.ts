@@ -90,4 +90,16 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
       next(error);
     }
   }
+
+  async getStaffRefUserDetails(req, res: Response, next: NextFunction) {
+    const id = req.params.id;
+    const apiPath: string = `/refdata/case-worker/user-details/${id}`;
+
+    try {
+      const {status, data}: { status: number, data: StaffDataUser } = await handleGet(apiPath, req);
+      res.status(status).send(data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

@@ -1,8 +1,6 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
-import { getStaffRefUserDetails } from './index';
-import {  } from './real-api';
-import { getFilteredUsers, addNewUser, getSkills, getJobTitles, getServices, getUsersByPartialName, getUserTypes } from './staff-ref-data.controller';
+import { getFilteredUsers, getStaffRefUserDetails, addNewUser, getSkills, getJobTitles, getServices, getUsersByPartialName, getUserTypes } from './staff-ref-data.controller';
 
 const router = express.Router({ mergeParams: true });
 

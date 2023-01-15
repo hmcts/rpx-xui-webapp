@@ -3,8 +3,10 @@ import { MockStaffRefDataAPI } from './mock-staff-ref-data-api';
 import { RealStaffRefDataAPI } from './real-staff-ref-data-api';
 
 class StaffRefDataService {
-  public constructor(private service: MockStaffRefDataAPI) {}
-  // public constructor(private service: RealStaffRefDataAPI) {}
+  // Use below line to mock staff ref API
+  // public constructor(private service: MockStaffRefDataAPI) {}
+  // Use below line to use real staff ref API
+  public constructor(private service: RealStaffRefDataAPI) {}
 
   async getFilteredUsers(req, res: Response, next: NextFunction) {
     return this.service.getFilteredUsers(req, res, next);
@@ -32,6 +34,10 @@ class StaffRefDataService {
 
   async addNewUser(req, res: Response, next: NextFunction) {
     return this.service.addNewUser(req, res, next);
+  }
+
+  async getStaffRefUserDetails(req, res: Response, next: NextFunction) {
+    return this.service.getStaffRefUserDetails(req, res, next);
   }
 
 }

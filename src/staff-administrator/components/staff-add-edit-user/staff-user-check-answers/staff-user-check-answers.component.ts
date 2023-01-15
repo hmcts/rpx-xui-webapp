@@ -4,10 +4,16 @@ import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
-import { Roles } from 'src/staff-administrator/models/roles.enum';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { Roles } from '../../../models/roles.enum';
 import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffJobTitles } from '../../../models/staff-job-titles';
+import * as fromAppStore from '../../../../app/store';
+import { UserDetails } from '../../../../app/models/user-details.model';
+import { map } from 'rxjs/operators';
+
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -27,6 +33,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     skills: StaffFilterOption[],
     services: StaffFilterOption[]
   };
+  public userDetails$: Observable<UserDetails>;
   public firstName: string;
   public lastName: string;
   public email: string;
@@ -43,8 +50,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public regionPayload = [];
   public userTypesPayload = [];
   public skillsPayload;
+  public idamRoles = [];
 
   constructor(
+    private readonly appStore: Store<fromAppStore.State>,
     private filterService: FilterService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -59,6 +68,11 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public ngOnInit() {
+    this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
+    this.userDetails$.pipe(
+      map(details => {
+       this.idamRoles = details.userInfo.roles
+    }));
     this.filterService.getStream(this.formId).subscribe(data => {
       this.addUserData = data.fields;
       if (this.addUserData) {
@@ -205,14 +219,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       case_allocator: case_allocator_flag,
       email_id: this.email,
       first_name: this.firstName,
-      "idam_roles": [
-        "cwd-user",
-        "caseworker-ia",
-        "cwd-system-user",
-        "cwd-admin",
-        "caseworker-ia-caseofficer",
-        "caseworker"
-      ],
+      idam_roles: this.idamRoles,
       last_name: this.lastName,
       region: this.regionPayload.length ? this.regionPayload[0].label : '' ,
       region_id: 1,

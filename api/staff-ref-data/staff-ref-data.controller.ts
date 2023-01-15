@@ -3,8 +3,10 @@ import { MockStaffRefDataAPI } from './mock-staff-ref-data-api';
 import { RealStaffRefDataAPI } from './real-staff-ref-data-api';
 const StaffRefDataService = require('./staff-ref-data.service')
 
-const staffRefDataService = new StaffRefDataService(new MockStaffRefDataAPI());
-// const staffRefDataService = new StaffRefDataService(new RealStaffRefDataAPI());
+// Use below line to mock staff ref API
+// const staffRefDataService = new StaffRefDataService(new MockStaffRefDataAPI());
+// Use below line to use real staff ref API
+const staffRefDataService = new StaffRefDataService(new RealStaffRefDataAPI());
 
 export async function getFilteredUsers(req: any, res: Response, next: NextFunction) {
   staffRefDataService.getFilteredUsers(req, res, next);
@@ -32,4 +34,8 @@ export async function getUsersByPartialName(req: any, res: Response, next: NextF
 
 export async function addNewUser(req: any, res: Response, next: NextFunction) {
   staffRefDataService.addNewUser(req, res, next);
+}
+
+export async function getStaffRefUserDetails(req: any, res: Response, next: NextFunction) {
+  staffRefDataService.getStaffRefUserDetails(req, res, next);
 }

@@ -1,7 +1,7 @@
 import { StaffRefDataAPI } from './models/staff-ref-data.model';
 import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
 import { getConfigValue } from '../configuration';
-import { handleGet, handlePost } from '../common/crudService';
+import { handleGet, handlePost, handlePut } from '../common/crudService';
 import * as querystring from 'querystring';
 import { NextFunction, Response } from 'express';
 import { StaffDataUser } from './models/staff-data-user.model';
@@ -118,6 +118,21 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
 
     try {
       const {status, data}: { status: number, data: StaffDataUser } = await handlePost(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);
+      res.status(status).send(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+
+  // Yet to integrate the real API
+  async getStaffRefUserDetails(req, res: Response, next: NextFunction) {
+    const reqBody = req.body;
+    const id = req.params.id;
+    const apiPath: string = `/refdata/case-worker/user-details/${id}`;
+
+    try {
+      const {status, data}: { status: number, data: StaffDataUser } = await handlePut(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);
       res.status(status).send(data);
     } catch (error) {
       next(error);

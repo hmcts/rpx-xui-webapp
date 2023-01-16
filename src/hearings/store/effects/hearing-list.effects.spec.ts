@@ -1,18 +1,18 @@
-import {TestBed} from '@angular/core/testing';
-import {provideMockActions} from '@ngrx/effects/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold, hot} from 'jasmine-marbles';
-import {of, throwError} from 'rxjs';
+import { TestBed } from '@angular/core/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { of, throwError } from 'rxjs';
 import * as fromHearingStore from '../../../hearings/store';
-import {HttpError} from '../../../models/httpError.model';
-import {HearingDayScheduleModel} from '../../models/hearingDaySchedule.model';
-import {HearingListModel} from '../../models/hearingList.model';
-import {HearingListMainModel} from '../../models/hearingListMain.model';
-import {EXUISectionStatusEnum, HearingListingStatusEnum} from '../../models/hearings.enum';
-import {HearingsService} from '../../services/hearings.service';
+import { HttpError } from '../../../models/httpError.model';
+import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
+import { HearingListModel } from '../../models/hearingList.model';
+import { HearingListMainModel } from '../../models/hearingListMain.model';
+import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/hearings.enum';
+import { HearingsService } from '../../services/hearings.service';
 import * as hearingListActions from '../actions/hearing-list.action';
-import {HearingListEffects} from './hearing-list.effects';
+import { HearingListEffects } from './hearing-list.effects';
 
 describe('Hearing List Effects', () => {
   let actions$;
@@ -33,7 +33,7 @@ describe('Hearing List Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -42,8 +42,8 @@ describe('Hearing List Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(HearingListEffects);
-    store = TestBed.get(Store) as Store<fromHearingStore.State>;
+    effects = TestBed.inject(HearingListEffects);
+    store = TestBed.inject(Store) as Store<fromHearingStore.State>;
 
   });
 
@@ -81,8 +81,8 @@ describe('Hearing List Effects', () => {
       hearingsServiceMock.getAllHearings.and.returnValue(of(HEARINGS_LIST));
       const action = new hearingListActions.LoadAllHearings('1111222233334444');
       const completion = new hearingListActions.LoadAllHearingsSuccess(HEARINGS_LIST);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadHearingList$).toBeObservable(expected);
     });
   });
@@ -96,8 +96,8 @@ describe('Hearing List Effects', () => {
       hearingsServiceMock.getAllHearings.and.returnValue(throwError(errorResponse));
       const action = new hearingListActions.LoadAllHearings('h1000000');
       const completion = new hearingListActions.LoadAllHearingsFailure(errorResponse);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadHearingList$).toBeObservable(expected);
     });
   });

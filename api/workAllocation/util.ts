@@ -196,7 +196,7 @@ export function
         firstName: caseWorkerApi.first_name,
         idamId: caseWorkerApi.id,
         lastName: caseWorkerApi.last_name,
-        location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
+        location: mapCaseworkerLocation(caseWorkerApi.base_location),
         roleCategory: getRoleCategory(roleAssignments, caseWorkerApi),
         service: jurisdiction ? jurisdiction : null,
       };
@@ -211,12 +211,12 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
   return roleAssignment ? roleAssignment.roleCategory : null;
 }
 
-export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Location {
-  let primaryLocation: Location = null;
+export function mapCaseworkerLocation(baseLocation: LocationApi[]): Location {
+  let thisBaseLocation: Location = null;
   if (baseLocation) {
     baseLocation.forEach((location: LocationApi) => {
       if (location.is_primary) {
-        primaryLocation = {
+        thisBaseLocation = {
           id: location.location_id,
           locationName: location.location,
           services: location.services,
@@ -224,7 +224,7 @@ export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Locat
       }
     });
   }
-  return primaryLocation;
+  return thisBaseLocation;
 }
 
 export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number): any {
@@ -234,6 +234,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
 
   const payload = {
     attributes,
+    // TODO: This should not be hard-coded list
     roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
       'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
       'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
@@ -241,7 +242,8 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
     validAt: Date.UTC,
   };
   if (locationId) {
-    payload.attributes.primaryLocation = [locationId];
+    // TODO: Not sure whether this is even being used
+    payload.attributes.baseLocation = [locationId];
   }
   return payload;
 }
@@ -255,7 +257,8 @@ export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Rol
       jurisdiction: [jurisdiction],
     };
     if (locationId) {
-      attributes.primaryLocation = [locationId];
+      // TODO: Again does not seem to be being used
+      attributes.baseLocation = [locationId];
     }
     const payload = {
       attributes,
@@ -344,27 +347,31 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   }
   const data: CaseDataType = getCaseDataFromRoleAssignments(roleAssignmentList);
 
-  const casePromises: Array<Promise<CaseList>> = getCaseListPromises(data, req);
+  const casePromises: Promise<CaseList>[] = getCaseListPromises(data, req);
 
   const response = await Promise.all(casePromises.map(reflect));
   const caseResults = response.filter(x => x.status === 'fulfilled' && x.value ).map( x => x.value );
 
   let cases = [];
   caseResults.forEach( caseResult => cases = [...cases, ...caseResult.cases]);
+
   return cases;
+}
+
+export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment[]) {
+  return roleAssignmentList.filter(roleAssignment =>
+    (
+      roleAssignment.grantType === 'SPECIFIC' ||
+      roleAssignment.roleName === 'specific-access-requested' ||
+      roleAssignment.roleName === 'specific-access-denied'
+    ) &&
+    (!roleAssignment.attributes || roleAssignment.attributes.substantive !== 'Y')
+  );
 }
 
 export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
   : Promise<RoleCaseData[]> {
-  const specificRoleAssignments = roleAssignmentList.filter(roleAssignment =>
-    roleAssignment.grantType === 'SPECIFIC'
-    ||
-    roleAssignment.roleName === 'specific-access-requested'
-    ||
-    roleAssignment.roleName === 'specific-access-denied'
-    ||
-    roleAssignment.grantType === 'CHALLENGED'
-  );
+  const specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignmentList);
 
   const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
 
@@ -425,10 +432,11 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
   return null;
 }
 
+// Only called in test function - why is it here?
 export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments.filter(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.primaryLocation
+  return roleAssignments.filter(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.baseLocation
     && roleAssignment.roleName === CASE_ALLOCATOR_ROLE)
-    .map(roleAssignment => roleAssignment.attributes.primaryLocation)
+    .map(roleAssignment => roleAssignment.attributes.baseLocation)
     .reduce((acc, locationId) => acc.includes(locationId) ? acc : `${acc}${locationId},`, '')
     .split(',')
     .filter(location => location.length);
@@ -444,7 +452,7 @@ export function constructRoleAssignmentQuery(
     queryRequests: [searchTaskParameters
       .map((param: SearchTaskParameter) => {
         if (param.key === 'location_id') {
-          param.key = 'primaryLocation';
+          param.key = 'baseLocation';
           const values = param.values as string;
           param.values = [values]
             .filter(location => location.length);
@@ -488,7 +496,7 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
       .filter((param: SearchTaskParameter) => param.key === 'actorId' || param.values && param.values.length)
       .map((param: SearchTaskParameter) => {
         if (param.key === 'location_id') {
-          param.key = 'primaryLocation';
+          param.key = 'baseLocation';
         }
         if (param.key === 'roleCategory') {
           param.values = mapRoleType(param.values as string);
@@ -500,7 +508,7 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
         if (param.key === 'actorId') {
           param.values = userId;
         }
-        if (param.key === 'jurisdiction' || param.key === 'primaryLocation') {
+        if (param.key === 'jurisdiction' || param.key === 'baseLocation') {
           const attributes = acc.attributes || {};
           return {
             ...acc, attributes: {

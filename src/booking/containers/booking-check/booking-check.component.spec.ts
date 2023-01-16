@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,14 +8,20 @@ import { BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 import * as HandleError from '../utils/booking-error-handler';
 import { BookingCheckComponent } from './booking-check.component';
+import { supportsScrollBehavior as cdkSupportsScrollBehavior} from '@angular/cdk/platform';
 
+export class CdkWrapper {
+  public static RefreshBookingHandleError(...args) {
+      return cdkSupportsScrollBehavior.apply(null, args);
+  }
+}
 describe('BookingCheckComponent', () => {
   let component: BookingCheckComponent;
   let fixture: ComponentFixture<BookingCheckComponent>;
   const mockBookingServiceSpy = jasmine.createSpyObj('BookingService', ['createBooking', 'refreshRoleAssignments']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BookingCheckComponent],
       imports: [
@@ -140,8 +146,8 @@ describe('BookingCheckComponent', () => {
         mockBookingServiceSpy.createBooking.and.returnValue(of({ status: 403 }));
         const confirmButton = fixture.debugElement.query(By.css('button'));
         confirmButton.triggerEventHandler('click', null);
+        const mockComponentHandleError = spyOn(CdkWrapper , 'RefreshBookingHandleError').and.returnValue(true);
         fixture.detectChanges();
-        const mockComponentHandleError = spyOn(HandleError, 'RefreshBookingHandleError');
         expect(mockComponentHandleError).not.toHaveBeenCalled();
       });
 

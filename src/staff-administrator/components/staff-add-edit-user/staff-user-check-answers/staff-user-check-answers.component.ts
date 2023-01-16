@@ -92,10 +92,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         this.prepareRolesPayload();
         this.prepareRegionPayload();
         this.prepareSkillsPayload();
-
-        console.log("**staffFilterOptions");
-        console.log(this.staffFilterOptions);
-
       }
     });
   }
@@ -125,14 +121,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     console.log("jobTitlesPayload");
 
     console.log(this.jobTitlesPayload);
-
-    // this.jobTitlesPayload = [
-    //   {
-    //     "role_id": 5,
-    //     "role": "Court Clerk",
-    //     "is_primary": true
-    //   }
-    // ];
   }
 
   private prepareUserTypePayload() {
@@ -184,7 +172,14 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     let nonEmptySkillsPayload = [[]];
     this.skills.map(skill => {
       this.staffFilterOptions.skills.map(skillgroup => {
-        skillsPayload.push(skillgroup.options.filter(skills => skills.key === skill));
+        const matchingSkills = skillgroup.options.filter(skills => skills.key === skill)
+        skillsPayload.push(matchingSkills.map(matchingSkill => {
+          return {
+            skill_id: matchingSkill.key,
+            description: matchingSkill.label,
+            skill_code: matchingSkill.label
+          }
+        }));
       });
     });
 
@@ -224,21 +219,21 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       region: this.regionPayload.length ? this.regionPayload[0].label : '' ,
       region_id: 1,
       roles: this.jobTitlesPayload,
-      // services: this.servicePayload,
-      "services": [
-        {
-          "service": "Immigration and Asylum Appeals",
-          "service_code": "BFA1"
-        }
-      ],
-      "skills": [
-        {
-          "skill_id": 9,
-          "description": "testskill1",
-          "skill_code": "testskill1"
-        }
-      ],
-      // skills: this.skillsPayload,
+      services: this.servicePayload,
+      // "services": [
+      //   {
+      //     "service": "Immigration and Asylum Appeals",
+      //     "service_code": "BFA1"
+      //   }
+      // // ],
+      // "skills": [
+      //   {
+      //     "skill_id": 9,
+      //     "description": "testskill1",
+      //     "skill_code": "testskill1"
+      //   }
+      // ],
+      skills: this.skillsPayload,
       staff_admin: staff_admin_flag,
       suspended: false,
       task_supervisor: task_supervisor_flag,

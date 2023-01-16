@@ -61,10 +61,9 @@
       </dl>
 
       <div class="govuk-button-group">
-        <a class="govuk-button" data-module="govuk-button" [routerLink]="['/staff/add-edit-user']"
-                [state]="{userDetails: userDetails}">
+        <button class="govuk-button" data-module="govuk-button" (click)="setDataAndNavigateToUpdateUser()">
           Update
-        </a>
+        </button>
         <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
           {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
         </button>

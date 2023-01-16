@@ -119,13 +119,13 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `/refdata/case-worker/profile`;
 
     try {
-      const {status, data}: { status: number, data: StaffDataUser } = await handlePost(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);
+      const {status, data}: { status: number, data: StaffDataUser } =
+        await handlePost(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);
       res.status(status).send(data);
     } catch (error) {
       next(error);
     }
   }
-
 
   // Yet to integrate the real API
   async getStaffRefUserDetails(req, res: Response, next: NextFunction) {
@@ -134,7 +134,8 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `/refdata/case-worker/user-details/${id}`;
 
     try {
-      const {status, data}: { status: number, data: StaffDataUser } = await handlePut(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);
+      const {status, data}: { status: number, data: StaffDataUser } =
+        await handlePut(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);
       res.status(status).send(data);
     } catch (error) {
       next(error);

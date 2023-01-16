@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { StaffUser } from '../../../staff-administrator/models/staff-user.model';
+import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
 @Component({
   selector: 'exui-staff-user-details',
@@ -10,8 +12,12 @@ import { StaffUser } from '../../../staff-administrator/models/staff-user.model'
 export class StaffUserDetailsComponent {
   public userDetails: StaffUser;
   public showAction: boolean = false;
+  public loading = false;
+  public suspendedStatus: 'suspended' | 'restored' | 'error';
 
-  constructor(private readonly router: Router) {
+  constructor(private readonly router: Router,
+              private staffDataAccessService: StaffDataAccessService
+  ) {
     const routerStateUserDetails = router.getCurrentNavigation().extras.state &&
       router.getCurrentNavigation().extras.state.user;
 
@@ -19,6 +25,32 @@ export class StaffUserDetailsComponent {
       this.userDetails = { ...routerStateUserDetails };
     } else {
       this.router.navigateByUrl('/staff');
+    }
+  }
+
+  public updateUserStatus(userId: string, isSuspended: boolean) {
+    if (!this.loading) {
+      const updatedStatus = !isSuspended;
+
+      this.loading = true;
+      this.staffDataAccessService.updateUserStatus(userId, updatedStatus).pipe(
+        finalize(() => this.loading = false),
+      )
+        .subscribe(
+          (res) => {
+            this.userDetails.suspended = res.suspended;
+            window.scrollTo(0, 0);
+            this.suspendedStatus = res.suspended ? 'suspended' : 'restored';
+          },
+          (err) => {
+            if (err.status === 401 || err.status.toString().startsWith('5')) {
+              this.router.navigateByUrl('/service-down');
+            } else {
+              window.scrollTo(0, 0);
+              this.suspendedStatus = 'error';
+            }
+          }
+        );
     }
   }
 

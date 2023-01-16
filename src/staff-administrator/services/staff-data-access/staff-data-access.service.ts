@@ -43,4 +43,8 @@ export class StaffDataAccessService {
   public updateUser(staffUser: StaffUser) {
     return this.http.post<[{ case_worker_id: string }]>(`${this.API_PATH}/updateUser`, staffUser);
   }
+
+  public updateUserStatus(userId: string, suspended: boolean) {
+    return this.http.post<{ suspended: boolean }>(`${this.API_PATH}/updateUserStatus/${userId}`, { suspended });
+  }
 }

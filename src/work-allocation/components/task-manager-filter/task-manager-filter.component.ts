@@ -1,14 +1,15 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { BookingCheckType, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { BookingCheckType, FeatureToggleService, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
+import { AppConstants } from '../../../app/app.constants';
 import { getRoleCategory } from '../../utils';
 
 @Component({
@@ -26,6 +27,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public filterSub: Subscription;
   public roleType: string;
   public userRole: UserRole;
+  public isRelease4: boolean;
 
   public fieldsConfig: FilterConfig = {
     persistence: 'local',
@@ -59,6 +61,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   };
 
   constructor(private readonly filterService: FilterService,
+              private featureToggleService: FeatureToggleService,
               private readonly appStore: Store<fromAppStore.State>) {
   }
 
@@ -77,7 +80,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   }
 
   private static initLocationFilter(): FilterFieldConfig {
-
     return {
       name: 'location',
       options: [],
@@ -230,9 +232,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.checkForReleaseVersion();
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
-        this.userRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getRoleCategory(userDetails.userInfo.roles) : null;
+        this.userRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getUserRole(userDetails.userInfo.roles) : null;
         this.roleType = AppUtils.convertDomainToLabel(this.userRole);
         this.fieldsConfig.cancelSetting.fields.push({
           name: 'taskType',
@@ -254,8 +257,11 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(),
       TaskManagerFilterComponent.initTaskTypeFilter(),
-      TaskManagerFilterComponent.initTaskNameFilter()
+
     ];
+    if (this.isRelease4) {
+      this.fieldsConfig.fields.push(TaskManagerFilterComponent.initTaskNameFilter());
+    }
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
       .pipe(
         map((f: FilterSetting) => {
@@ -290,5 +296,11 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     if (this.filterSub && !this.filterSub.closed) {
       this.filterSub.unsubscribe();
     }
+  }
+
+  public checkForReleaseVersion(): void {
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null).subscribe(features => {
+      this.isRelease4 = features.configurations.findIndex(serviceConfig =>  parseFloat(serviceConfig.releaseVersion) === 4) > -1;
+    });
   }
 }

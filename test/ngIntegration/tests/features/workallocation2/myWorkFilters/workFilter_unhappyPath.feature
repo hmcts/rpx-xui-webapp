@@ -23,7 +23,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
     Scenario Outline:  Work filters api error <responseCode> on apply
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | primaryLocation | roleType     |
+            | jurisdiction | baseLocation | roleType     |
             | IA | 20001 | ORGANISATION |
             | SSCS         |            | ORGANISATION |
         Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator"

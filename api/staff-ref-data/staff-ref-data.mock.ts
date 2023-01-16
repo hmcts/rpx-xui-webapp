@@ -6,37 +6,12 @@ import { STAFF_REF_USERS_LIST } from './mock-data/staff-ref-users-list.mock.data
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
-  const getFilteredUsers = /refdata\/case-worker\/profile/;
-  const getUsersByPartialName = /refdata\/case-worker\/profile\/search/;
   const getStaffRefUserDetails = /refdata\/case-worker\/user-details\/[0-9]/;
-
   const getUserTypes = /refdata\/case-worker\/user-type/;
   const getJobTitles = /refdata\/case-worker\/job-title/;
   const getSkills = /refdata\/case-worker\/skill/;
   const getServices = /refdata\/case-worker\/services/;
-
   const updateUserStatus = /refdata\/case-worker\/user-status\/[0-99]/;
-
-  mock.onPost(getFilteredUsers).reply(() => {
-    return [
-      200,
-      STAFF_REF_USERS_LIST,
-    ];
-  });
-
-  mock.onGet(getUsersByPartialName).reply(config => {
-    const searchParam = config.params.search.toLowerCase();
-    const filteredUsers = STAFF_REF_USERS_LIST
-      .filter(item => item.firstName.toLowerCase().includes(searchParam) || item.lastName.toLowerCase().includes(searchParam));
-
-    return [
-      200,
-      {
-        totalItems: STAFF_REF_USERS_LIST.length,
-        results: filteredUsers,
-      },
-    ];
-  });
 
   mock.onGet(getServices).reply(() => {
     return [

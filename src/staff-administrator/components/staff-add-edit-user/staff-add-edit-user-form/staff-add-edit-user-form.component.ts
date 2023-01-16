@@ -1,8 +1,6 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingCheckType, FilterConfig, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
-import { FilterFieldOption } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
@@ -88,75 +86,6 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
 
   public ngAfterViewInit() {
     if (this.userDetails) {
-      const modifySelectedIndexes = (selectedKeys: string[] | number[], options: any[], previousValues: boolean[]) => {
-        const trueIndexes = [];
-        options.forEach((item, index) => {
-          // @ts-ignore
-          if (selectedKeys.includes(item.key)) {
-            trueIndexes.push(index);
-          }
-        });
-
-        const updatedValues = previousValues;
-        trueIndexes.forEach(item => {
-          updatedValues[item] = true;
-        });
-
-        return updatedValues;
-      };
-
-      const formValues = this.genericFilterComponent.form.value;
-
-      const userServices = modifySelectedIndexes(
-        this.userDetails.services.map(item => item.service_code),
-        this.staffFilterOptions.services,
-        formValues['user-services']
-      );
-      const userJobTitles = modifySelectedIndexes(
-        this.userDetails.roles.map(item => Number(item.role_id)),
-        this.staffFilterOptions.jobTitles,
-        formValues['jobTitle']
-      );
-
-      const userSkills = modifySelectedIndexes(
-        this.userDetails.skills.map(item => Number(item.skill_id)),
-        this.staffFilterOptions.skills.reduce((prevValue: FilterFieldOption[], currentValue) => {
-          prevValue.push(...currentValue.options);
-          return prevValue;
-        }, []),
-        formValues['user-skills']
-      );
-      this.genericFilterComponent.form.patchValue({
-        ...this.userDetails,
-        'user-services': userServices,
-        roles: [
-          this.userDetails.case_allocator,
-          this.userDetails.task_supervisor,
-          this.userDetails.staff_admin,
-        ],
-        jobTitle: userJobTitles,
-        'user-skills': userSkills,
-      });
-
-      const primaryLocation = this.userDetails.base_locations.find(item => item.is_primary);
-      (this.genericFilterComponent.form.get('primaryLocation') as FormArray).push(new FormControl(
-        {
-          epimms_id: primaryLocation.location_id,
-          site_name: primaryLocation.location
-        }
-      ));
-
-      const additionalLocations = this.userDetails.base_locations.filter(item => !item.is_primary);
-      additionalLocations.forEach(location => {
-        const singleAdditionalLocationControl = new FormControl(
-          {
-            epimms_id: location.location_id,
-            site_name: location.location
-          }
-        );
-
-        (this.genericFilterComponent.form.get('additionalLocations') as FormArray).push(singleAdditionalLocationControl);
-      });
     }
   }
 

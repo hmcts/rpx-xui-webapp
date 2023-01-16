@@ -139,9 +139,8 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   private prepareRegionPayload() {
-    console.log(this.region);
     this.region.map(region => {
-      this.regionPayload.push(STAFF_REGIONS.find(regions => regions.key === region));
+      this.regionPayload.push(STAFF_REGIONS.find(regions => String(regions.key) === String(region)));
     });
   }
 

@@ -14,17 +14,19 @@ import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filt
 import { StaffSearchComponent } from './components/staff-users/staff-search/staff-search.component';
 import { StaffUserListComponent } from './components/staff-users/staff-user-list/staff-user-list.component';
 import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
+import {
+  StaffEditUserContainerComponent
+} from './containers/staff-edit-user-container/staff-edit-user-container.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
-import { StaffUserCheckAnswersContainerComponent } from './containers/staff-user-check-answers-container/staff-user-check-answers-container.component';
 import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
+import { PluckAndJoinPipe } from './pipes/pluckAndJoin.pipe';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
 import { StaffDataAccessService } from './services/staff-data-access/staff-data-access.service';
 import { staffAdministratorRouting } from './staff-administrator.routes';
-import { PluckAndJoinPipe } from './pipes/pluckAndJoin.pipe';
 
 @NgModule({
   declarations: [
@@ -36,11 +38,11 @@ import { PluckAndJoinPipe } from './pipes/pluckAndJoin.pipe';
     StaffAddEditUserFormComponent,
     StaffAddUserComponent,
     StaffUserCheckAnswersComponent,
-    StaffUserCheckAnswersContainerComponent,
     StaffUserDetailsContainerComponent,
     StaffUserDetailsComponent,
     StaffStatusComponent,
-    PluckAndJoinPipe
+    PluckAndJoinPipe,
+    StaffEditUserContainerComponent,
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,4 @@
-import { FilterSetting, GroupOptions } from '../../../../rpx-xui-common-lib/dist/exui-common-lib';
+import { FilterSetting, GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { STAFF_REGIONS } from '../components/staff-add-edit-user/staff-add-edit-user-form/staff-regions';
 import { Roles } from './roles.enum';
 import { StaffFilterOption } from './staff-filter-option.model';

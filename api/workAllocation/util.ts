@@ -354,20 +354,24 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
 
   let cases = [];
   caseResults.forEach( caseResult => cases = [...cases, ...caseResult.cases]);
+
   return cases;
+}
+
+export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment[]) {
+  return roleAssignmentList.filter(roleAssignment =>
+    (
+      roleAssignment.grantType === 'SPECIFIC' ||
+      roleAssignment.roleName === 'specific-access-requested' ||
+      roleAssignment.roleName === 'specific-access-denied'
+    ) &&
+    (!roleAssignment.attributes || roleAssignment.attributes.substantive !== 'Y')
+  );
 }
 
 export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
   : Promise<RoleCaseData[]> {
-  const specificRoleAssignments = roleAssignmentList.filter(roleAssignment =>
-    roleAssignment.grantType === 'SPECIFIC'
-    ||
-    roleAssignment.roleName === 'specific-access-requested'
-    ||
-    roleAssignment.roleName === 'specific-access-denied'
-    ||
-    roleAssignment.grantType === 'CHALLENGED'
-  );
+  const specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignmentList);
 
   const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
 

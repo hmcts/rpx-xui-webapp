@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.46-case-file-view-media-viewer-scrolling-behaviour":
-  version "5.0.46-case-file-view-media-viewer-scrolling-behaviour"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.46-case-file-view-media-viewer-scrolling-behaviour.tgz#82b13f7fa3cb6e1b91e23764f0ae5800101dab4c"
-  integrity sha512-5UOKCpKWkOuWGKfOgi/6lMAV/gsUiPj3QQNnoqfJRGdR0SWfoAZC15BVrQnhlZPzDclrfPM4JTJKqqCAOtWPkA==
+"@hmcts/ccd-case-ui-toolkit@5.0.46-fix-case-link":
+  version "5.0.46-fix-case-link"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.46-fix-case-link.tgz#49ca914c41eddc699423218019ef7a63059fd373"
+  integrity sha512-dGLVtf1RcYQbgc+ooIoxN48b/2e+bxOYk9/WBEYi93or8lrj+YH08dF1a3QTDMHBW0evsy20ffcWFbR/kU083A==
   dependencies:
     tslib "^2.0.0"
 

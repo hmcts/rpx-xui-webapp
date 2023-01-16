@@ -39,4 +39,8 @@ export class StaffDataAccessService {
   public addNewUser(addNewUserBody) {
     return this.http.post<StaffUser[]>(`${this.API_PATH}/addNewUser`, addNewUserBody);
   }
+
+  public updateUserStatus(userId: string, suspended: boolean) {
+    return this.http.post<{ suspended: boolean }>(`${this.API_PATH}/updateUserStatus/${userId}`, { suspended });
+  }
 }

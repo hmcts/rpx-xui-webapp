@@ -1,4 +1,8 @@
 <ng-container *ngIf="userDetails">
+  <div *ngIf="suspendedStatus">
+    <exui-staff-suspended-banner [messageType]="suspendedStatus"></exui-staff-suspended-banner>
+  </div>
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop"><br><br>
       <h2 class="govuk-heading-m">User details</h2>
@@ -56,7 +60,6 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Status</dt>
           <dd class="govuk-summary-list__value"><exui-staff-status [status]="userDetails.suspended" ></exui-staff-status></dd>
-          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
       </dl>
 
@@ -64,7 +67,8 @@
         <button class="govuk-button" data-module="govuk-button" (click)="setDataAndNavigateToUpdateUser()">
           Update
         </button>
-        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
+                (click)="updateUserStatus(userDetails.email_id, userDetails.suspended)">
           {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
         </button>
         <button class="govuk-button govuk-button--secondary" data-module="govuk-button">

@@ -8,6 +8,7 @@ import { SharedModule } from '../app/shared/shared.module';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffStatusComponent } from './components/staff-status/staff-status.component';
+import { StaffSuspendedBannerComponent } from './components/staff-suspended-banner/staff-suspended-banner.component';
 import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
 import { StaffDataFilterService } from './components/staff-users/services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filter/staff-adv-filter.component';
@@ -25,6 +26,7 @@ import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-op
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
+import { StaffUserDetailsResolverService } from './resolvers/staff-user-details-resolver.service';
 import { StaffDataAccessService } from './services/staff-data-access/staff-data-access.service';
 import { staffAdministratorRouting } from './staff-administrator.routes';
 
@@ -43,6 +45,8 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffStatusComponent,
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,
+    StaffStatusComponent,
+    StaffSuspendedBannerComponent
   ],
   imports: [
     CommonModule,
@@ -59,7 +63,9 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffFilterOptionsServicesResolver,
     StaffFilterOptionsSkillsResolver,
     StaffFilterOptionsJobTitlesResolver,
-    StaffFilterOptionsUserTypesResolver
+    StaffFilterOptionsUserTypesResolver,
+    StaffUserDetailsResolverService,
+    StaffDataAccessService
   ],
   exports: []
 })

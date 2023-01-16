@@ -5,6 +5,9 @@ import {
 } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
 import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
+import {
+  StaffEditUserContainerComponent
+} from './containers/staff-edit-user-container/staff-edit-user-container.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
 import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
@@ -47,8 +50,23 @@ export const ROUTES: Routes = [
           skills: StaffFilterOptionsSkillsResolver,
           userTypes: StaffFilterOptionsUserTypesResolver,
         },
+        data: {formId: 'staff-add-user'},
         children: [
           { path: '', component: StaffAddUserComponent },
+          { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
+        ]
+      },
+      {
+        path: 'update-user',
+        resolve: {
+          jobTitles: StaffFilterOptionsJobTitlesResolver,
+          services: StaffFilterOptionsServicesResolver,
+          skills: StaffFilterOptionsSkillsResolver,
+          userTypes: StaffFilterOptionsUserTypesResolver,
+        },
+        data: { formId: 'staff-update-user' },
+        children: [
+          { path: '', component: StaffEditUserContainerComponent },
           { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
         ]
       }

@@ -1,8 +1,15 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BookingCheckType, FilterConfig, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
+import {
+  BookingCheckType,
+  FilterConfig,
+  FilterService,
+  FilterSetting,
+  GenericFilterComponent,
+  GroupOptions
+} from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffUser } from '../../../models/staff-user.model';
@@ -13,8 +20,9 @@ import { STAFF_REGIONS } from './staff-regions';
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
-  public formId: string = 'staff-add-edit-user';
+export class StaffAddEditUserFormComponent implements OnInit {
+  @Input() public editMode = false;
+  public formId = '';
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
     jobTitles: StaffFilterOption[],
@@ -23,8 +31,6 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   };
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
-  private previousUrl: string;
-  private userDetails: StaffUser | undefined;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
@@ -33,16 +39,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     private filterService: FilterService,
     private router: Router
   ) {
-    const currentNavigation = this.router.getCurrentNavigation();
-    if (currentNavigation) {
-      const previousNavigation = currentNavigation.previousNavigation;
-      if (previousNavigation) {
-        this.previousUrl = previousNavigation.finalUrl.toString();
-      }
-    }
-
-    this.userDetails = this.router.getCurrentNavigation().extras.state &&
-      this.router.getCurrentNavigation().extras.state.userDetails;
+    this.formId = activatedRoute.snapshot.data.formId;
 
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
@@ -61,8 +58,11 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
           this.resetForm();
         } else {
           if (this.genericFilterComponent.submitted) {
-            const checkYourAnswerUrl = '/staff/add-edit-user/check-your-answers';
-            this.router.navigateByUrl(checkYourAnswerUrl);
+            if (this.editMode) {
+              this.onSubmitEditMode(data);
+            } else {
+              this.router.navigate(['check-your-answers'], {relativeTo: this.activatedRoute});
+            }
           }
         }
       }
@@ -80,18 +80,24 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
         } else {
           return;
         }
+      }),
+      tap((errors) => {
+        if (errors) {
+          window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
+        }
       })
     );
-  }
-
-  public ngAfterViewInit() {
-    if (this.userDetails) {
-    }
   }
 
   public resetForm() {
     this.filterService.clearSessionAndLocalPersistance(this.formId);
     this.filterService.givenErrors.next(null);
+  }
+
+  public onSubmitEditMode(data: FilterSetting) {
+    const staffUser = new StaffUser();
+    staffUser.initFromGenericFilter(data, this.staffFilterOptions);
+    console.log(staffUser);
   }
 
   public initFormConfig() {
@@ -146,6 +152,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
           subTitle: '',
           options: [],
           maxWidth480px: true,
+          readonly: this.editMode
         },
         {
           name: 'region_id',
@@ -265,7 +272,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
         },
       ],
       persistence: 'session',
-      applyButtonText: 'Continue',
+      applyButtonText: this.editMode ? 'Save changes' : 'Continue',
       cancelButtonText: 'Cancel',
       enableDisabledButton: false,
       showCancelFilterButton: true,

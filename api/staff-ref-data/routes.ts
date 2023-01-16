@@ -1,7 +1,15 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import { addNewUser, getStaffRefUserDetails } from './index';
-import { getFilteredUsers, getJobTitles, getServices, getSkills, getUsersByPartialName, getUserTypes } from './real-api';
+import {
+  getFilteredUsers,
+  getJobTitles,
+  getServices,
+  getSkills,
+  getUsersByPartialName,
+  getUserTypes,
+  updateUser
+} from './real-api';
 
 const router = express.Router({ mergeParams: true });
 
@@ -14,5 +22,6 @@ router.get('/getJobTitles', getJobTitles);
 router.get('/getSkills', getSkills);
 router.get('/getServices', getServices);
 router.post('/addNewUser', addNewUser);
+router.post('/updateUser', updateUser);
 
 export default router;

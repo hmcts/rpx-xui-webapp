@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 import * as querystring from 'querystring';
-import { handleGet } from '../common/crudService';
+import { handleGet, handlePut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
 import { StaffDataUser } from './models/staff-data-user.model';
@@ -96,6 +96,18 @@ export async function getUsersByPartialName(req, res: Response, next: NextFuncti
   const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile/search-by-name?search=${searchParam}`;
   try {
     const { status, data }: { status: number, data: StaffDataUser[] } = await handleGet(apiPath, req, next);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateUser(req, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const apiPath: string = `/refdata/case-worker/profile`;
+
+  try {
+    const {status, data}: { status: number, data: StaffDataUser } = await handlePut(apiPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);

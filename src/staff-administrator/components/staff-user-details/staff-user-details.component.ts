@@ -23,7 +23,7 @@ export class StaffUserDetailsComponent {
   }
 
   public setDataAndNavigateToUpdateUser() {
-    const FILTER_ID = 'staff-add-edit-user';
+    const FILTER_ID = 'staff-update-user';
 
     const primaryLocation = this.userDetails.base_locations.find(item => item.is_primary);
     const formValues = {
@@ -81,7 +81,10 @@ export class StaffUserDetailsComponent {
         }
       ]
     };
+
     sessionStorage.setItem(FILTER_ID, JSON.stringify(formValues));
-    this.router.navigateByUrl('/staff/add-edit-user', { state: {userDetails: this.userDetails}});
+    this.router.navigateByUrl('/staff/update-user',
+      { state: {userDetails: this.userDetails} }
+    );
   }
 }

@@ -131,7 +131,6 @@ describe('StaffAddEditUserFormComponent', () => {
         ReactiveFormsModule,
         HttpClientTestingModule,
         ExuiCommonLibModule,
-
       ],
       providers: [
         { provide: FilterService, useValue: mockFilterService },

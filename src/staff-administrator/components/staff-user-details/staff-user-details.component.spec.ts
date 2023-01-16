@@ -20,11 +20,11 @@ describe('StaffUserDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StaffUserDetailsComponent, StaffStatusComponent ],
+      declarations: [ StaffUserDetailsComponent, StaffStatusComponent, StubComponent ],
       imports: [
         RouterTestingModule.withRoutes([
           { path: '/staff', component: StubComponent },
-          { path: '/staff/', component: StubComponent }
+          { path: '/staff/update-user', component: StubComponent },
         ]),
         HttpClientTestingModule
       ],
@@ -51,10 +51,6 @@ describe('StaffUserDetailsComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should navigate to /staff if userDetails it not set', () => {
     expect(component).toBeTruthy();
   });
 });

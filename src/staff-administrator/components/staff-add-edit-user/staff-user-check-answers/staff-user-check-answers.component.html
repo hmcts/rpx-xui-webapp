@@ -1,12 +1,12 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
-    <exui-page-wrapper [title]="'Check your answers before adding a new user'" [backLink]="'/staff/add-user'">
+    <exui-page-wrapper [title]="'Check your answers before adding a new user'" [backLink]="'../'">
         <dl class="govuk-summary-list govuk-!-margin-bottom-5">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Name</dt>
-            <dd class="govuk-summary-list__value">{{firstName}} {{lastName}}</dd>
+            <dd class="govuk-summary-list__value">{{ staffUser.first_name }} {{ staffUser.last_name }}</dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> name </span>
               </a>
             </dd>
@@ -16,9 +16,9 @@
         <dl class="govuk-summary-list govuk-!-margin-bottom-5">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Email address</div>
-            <div class="govuk-summary-list__value">{{email}}</div>
+            <div class="govuk-summary-list__value">{{ staffUser.email_id }}</div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> email </span>
               </a>
             </div>
@@ -29,13 +29,13 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Services</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let service of servicePayload; let isLast=last">
+              <span *ngFor="let service of staffUser.services; let isLast=last">
                 {{service.service}}
                 <span *ngIf="!isLast"><br/></span>
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> services </span>
               </a>
             </div>
@@ -46,13 +46,10 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Region</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let region of regionPayload; let isLast=last">
-                {{region.label}}
-                <span *ngIf="!isLast"><br/></span>
-              </span>
+              {{ staffUser.region }}
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -62,9 +59,15 @@
         <dl class="govuk-summary-list govuk-!-margin-bottom-5">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Primary location</div>
-            <div class="govuk-summary-list__value">{{primaryLocations.site_name}}</div>
+            <div class="govuk-summary-list__value">
+              <span *ngFor="let location of staffUser.base_locations; let isLast=last">
+                <ng-container *ngIf="location.is_primary">
+                  {{location.location}}
+                </ng-container>
+              </span>
+            </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -75,13 +78,15 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Additional locations</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let location of additionalLocations; let isLast=last">
-                {{location.site_name}}
-                <span *ngIf="!isLast"><br/></span>
+              <span *ngFor="let location of staffUser.base_locations; let isLast=last">
+                <ng-container *ngIf="!location.is_primary">
+                  {{location.location}}
+                  <span *ngIf="!isLast"><br/></span>
+                </ng-container>
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -92,10 +97,10 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">User type</div>
             <div class="govuk-summary-list__value">
-              {{ userType.label }}
+              {{ staffUser.user_type }}
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -106,13 +111,12 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Roles</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let role of rolesPayload; let isLast=last">
-                {{role.label}}
-                <span *ngIf="!isLast"><br/></span>
-              </span>
+              <div *ngIf="staffUser.case_allocator">Case Allocator</div>
+              <div *ngIf="staffUser.task_supervisor">Task Supervisor</div>
+              <div *ngIf="staffUser.staff_admin">Staff Administrator</div>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -123,13 +127,13 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Job title</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let jobTitle of jobTitlesPayload; let isLast=last">
+              <span *ngFor="let jobTitle of staffUser.roles; let isLast=last">
                 {{jobTitle.role}}
                 <span *ngIf="!isLast"><br/></span>
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -140,13 +144,13 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Skills</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let skill of skillsPayload; let isLast=last">
-                {{skill.label}}
+              <span *ngFor="let skill of staffUser.skills; let isLast=last">
+                {{skill.description}}
                 <span *ngIf="!isLast"><br/></span>
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-edit-user">
+              <a class="govuk-link" routerLink="../">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -166,7 +170,7 @@
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
           <button class="govuk-button govuk-!-margin-right-1 govuk-!-margin-bottom-0"
-            (click)="addNewUser()"
+            (click)="onSubmit()"
           >
             Submit
           </button>

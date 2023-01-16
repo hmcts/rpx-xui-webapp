@@ -36,7 +36,11 @@ export class StaffDataAccessService {
     return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getServices`);
   }
 
-  public addNewUser(addNewUserBody) {
-    return this.http.post<StaffUser[]>(`${this.API_PATH}/addNewUser`, addNewUserBody);
+  public addNewUser(staffUser: StaffUser) {
+    return this.http.post<[{ case_worker_id: string }]>(`${this.API_PATH}/addNewUser`, staffUser);
+  }
+
+  public updateUser(staffUser: StaffUser) {
+    return this.http.post<[{ case_worker_id: string }]>(`${this.API_PATH}/updateUser`, staffUser);
   }
 }

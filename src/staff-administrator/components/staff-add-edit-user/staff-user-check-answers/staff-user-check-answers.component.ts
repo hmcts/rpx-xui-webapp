@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  FilterService
+  FilterService, GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
 import { take } from 'rxjs/operators';
-import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffUser } from '../../../models/staff-user.model';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -20,7 +20,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
     jobTitles: StaffFilterOption[],
-    skills: StaffFilterOption[],
+    skills: GroupOptions[],
     services: StaffFilterOption[]
   };
 

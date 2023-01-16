@@ -75,7 +75,7 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "5.0.44-case-flags-integration-fixes",
+    "@hmcts/ccd-case-ui-toolkit": "5.0.47-fee-pay-props",
     "@hmcts/ccpay-web-component": "5.0.10-beta17",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.18-RC.3",

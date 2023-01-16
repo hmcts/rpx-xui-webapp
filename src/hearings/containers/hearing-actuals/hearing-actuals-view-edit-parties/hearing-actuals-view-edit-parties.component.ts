@@ -1,23 +1,22 @@
-import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ValidationErrors } from '@angular/forms/src/directives/validators';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import {Component, NgZone, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ValidationErrors} from '@angular/forms';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as moment from 'moment';
-import { combineLatest, Subscription } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
+import {combineLatest, Subscription} from 'rxjs';
+import {filter, first} from 'rxjs/operators';
 import {
   ActualDayPartyModel,
+  ActualHearingDayModel,
   HearingActualsMainModel,
-  PlannedDayPartyModel,
-  PlannedHearingDayModel,
+  PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
-import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { HearingChannelEnum } from '../../../models/hearings.enum';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { LovRefDataService } from '../../../services/lov-ref-data.service';
+import {HearingActualsStateData} from '../../../models/hearingActualsStateData.model';
+import {HearingChannelEnum} from '../../../models/hearings.enum';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
+import {ActualHearingsUtils} from '../../../utils/actual-hearings.utils';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-actuals-view-edit-parties',
@@ -46,19 +45,21 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   public hearingActualsMainModel: HearingActualsMainModel;
   public caseTitle: string;
   public id: string;
+  private hearingDate: string;
   public submitted: boolean;
   public errors: any[] = [];
   private sub: Subscription;
   private formSub: Subscription;
   public window: any = window;
+  private plannedDayIndex: number;
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly validators: ValidatorsUtils,
                      private readonly hearingStore: Store<fromHearingStore.State>,
-                     private readonly lovRefDataService: LovRefDataService,
                      private readonly route: ActivatedRoute,
                      private readonly renderer: Renderer2,
                      private readonly router: Router,
+                     private readonly ngZone: NgZone
   ) {
     this.form = this.fb.group({
       parties: this.fb.array([], [Validators.maxLength(50)]),
@@ -105,7 +106,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {
-    return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.some(plannedParty => plannedParty.partyID === actualDayParty.actualPartyId);
+    return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[this.plannedDayIndex]
+      .parties.some(plannedParty => plannedParty.partyID === actualDayParty.actualPartyId);
   }
 
   public ngOnInit(): void {
@@ -133,8 +135,12 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       )
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');
+        this.hearingDate = params.get('hearingDate');
         this.hearingActualsMainModel = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
         this.caseTitle = this.hearingActualsMainModel.caseDetails.hmctsInternalCaseName;
+
+        this.plannedDayIndex = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays
+          .findIndex(item => ActualHearingsUtils.getDate(item.plannedStartTime) === this.hearingDate);
         this.setUpRoleLists();
         this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
@@ -142,7 +148,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   private setUpRoleLists(): void {
-    const plannedParties = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties;
+    const plannedParties = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[this.plannedDayIndex].parties;
     for (const role of this.hearingRoles) {
       const isPlannedRole = plannedParties.some(plannedParty => plannedParty.partyRole === role.key);
       if (isPlannedRole) {
@@ -153,20 +159,20 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     }
   }
 
-  public hasActualParties(hearingActualsMainModel: HearingActualsMainModel): boolean {
-    return hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[0]
-      && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties && hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.length > 0;
-  }
-
   private createForm(hearingActualsMainModel: HearingActualsMainModel): void {
-    const hasActualParties = this.hasActualParties(hearingActualsMainModel);
+    const actualDayIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(hearingActualsMainModel, this.hearingDate);
+
+    const hasActualParties = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
+      && hearingActualsMainModel.hearingActuals.actualHearingDays.length && hearingActualsMainModel.hearingActuals.actualHearingDays[actualDayIndex]
+      && hearingActualsMainModel.hearingActuals.actualHearingDays[actualDayIndex].actualDayParties
+      && hearingActualsMainModel.hearingActuals.actualHearingDays[actualDayIndex].actualDayParties.length > 0;
+
     if (hasActualParties) {
-      hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.forEach((party: ActualDayPartyModel) => {
+      hearingActualsMainModel.hearingActuals.actualHearingDays[actualDayIndex].actualDayParties.forEach((party: ActualDayPartyModel) => {
         this.addActualParticipantsAndParties(party);
       });
     } else {
-      hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.forEach((party: PlannedDayPartyModel) => {
+      hearingActualsMainModel.hearingPlanned.plannedHearingDays[this.plannedDayIndex].parties.forEach((party: PlannedDayPartyModel) => {
         this.addPlannedParty(party);
       });
     }
@@ -243,7 +249,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       organisation: [null],
       attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
       isPlannedParty: [false]
-    }, { validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.') });
+    }, {validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.')});
   }
 
   public addRow($event: Event): void {
@@ -279,29 +285,22 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       return;
     }
     if (valid) {
-      const actualParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
-      const hearingActuals = {
-        ...this.hearingActualsMainModel.hearingActuals,
-        actualHearingDays: [
-          {
-            ...this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays && this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
-            actualDayParties: actualParties,
-            hearingDate: this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays)
-          }
-        ]
-      };
+      const actualDayParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
+      const hearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
+        this.hearingActualsMainModel, this.hearingDate, {actualDayParties} as ActualHearingDayModel
+      );
 
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
         hearingId: this.id,
         hearingActuals
       }));
-      this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
-    }
-  }
 
-  public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
-    const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
-    return moment.min(moments).toISOString();
+      if (this.id) {
+        this.ngZone.run(() => {
+          this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+        });
+      }
+    }
   }
 
   public getRole(value: string): string {
@@ -334,7 +333,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       if (!message) {
         return acc;
       }
-      return [...acc, { id: `participant${index}`, message }];
+      return [...acc, {id: `participant${index}`, message}];
     }, []);
   }
 }

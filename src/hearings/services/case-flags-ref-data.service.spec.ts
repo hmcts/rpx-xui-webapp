@@ -1,7 +1,7 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {inject, TestBed} from '@angular/core/testing';
-import {StoreModule} from '@ngrx/store';
-import {CaseFlagsRefDataService} from './case-flags-ref-data.service';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
+import { StoreModule } from '@ngrx/store';
+import { CaseFlagsRefDataService } from './case-flags-ref-data.service';
 
 describe('CaseFlagsRefDataService', () => {
 

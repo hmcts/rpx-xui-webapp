@@ -118,9 +118,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     jobTitlesNamePayload.map(jobTitleName => {
       this.jobTitlesPayload.push(StaffJobTitles.jobTitles.find(jobTitle => jobTitle.role === jobTitleName.label));
     });
-    console.log("jobTitlesPayload");
-
-    console.log(this.jobTitlesPayload);
   }
 
   private prepareUserTypePayload() {

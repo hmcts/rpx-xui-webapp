@@ -6,6 +6,7 @@ import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
+import { Store } from '@ngrx/store';
 
 
 describe('StaffUserCheckAnswersComponent', () => {
@@ -14,6 +15,24 @@ describe('StaffUserCheckAnswersComponent', () => {
   let mockFilterService: jasmine.SpyObj<FilterService>;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
+  const storeMock = jasmine.createSpyObj('Store', [
+    'dispatch', 'pipe'
+  ]);
+  const userDetails = {
+    sessionTimeout: {
+      idleModalDisplayTime: 10,
+      totalIdleTime: 1,
+    },
+    canShareCases: true,
+    userInfo: {
+      id: 'someId',
+      forename: 'foreName',
+      surname: 'surName',
+      email: 'email@email.com',
+      active: true,
+      roles: ['pui-case-manager']
+    }
+  };
 
   beforeEach(async(() => {
     mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
@@ -27,6 +46,10 @@ describe('StaffUserCheckAnswersComponent', () => {
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: FilterService, useValue: mockFilterService },
         { provide: Router, useValue: mockRouter},
+        {
+          provide: Store,
+          useValue: storeMock
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -229,6 +252,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffUserCheckAnswersComponent);
     component = fixture.componentInstance;
+    storeMock.pipe.and.returnValue(of(userDetails));
     fixture.detectChanges();
   });
 

@@ -1,11 +1,11 @@
 import { StaffRefDataAPI } from './models/staff-ref-data.model';
-import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
+import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
 import { getConfigValue } from '../configuration';
 import { handleGet, handlePost, handlePut } from '../common/crudService';
 import * as querystring from 'querystring';
 import { NextFunction, Response } from 'express';
 import { StaffDataUser } from './models/staff-data-user.model';
-import { GroupOption, StaffFilterOption } from './models/staff-filter-option.model';
+import { GroupOption, StaffFilterOption, Service } from './models/staff-filter-option.model';
 
 export class RealStaffRefDataAPI implements StaffRefDataAPI {
   public baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -62,8 +62,14 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
       const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
 
       const options: StaffFilterOption[] = [];
+      const serviceRefData = getConfigValue(SERVICE_REF_DATA_MAPPING) as Service[];
       data.service_skill.forEach(element => {
-        options.push({ key: element.id, label: element.id });
+        serviceRefData.forEach(service => {
+          const selectedServiceCodes = service.serviceCodes.filter(s => s === element.id);
+          if (selectedServiceCodes.length > 0) {
+            options.push({ key: element.id, label: service.service });
+          }
+        });
       });
 
       res.status(status).send(options);
@@ -111,10 +117,6 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
   async addNewUser(req, res: Response, next: NextFunction) {
     const reqBody = req.body;
     const apiPath: string = `/refdata/case-worker/profile`;
-    // const headers = setHeaders(req);
-    console.log("**url");
-    console.log(`${this.baseCaseWorkerRefUrl}${apiPath}`);
-    console.log(JSON.stringify(reqBody));
 
     try {
       const {status, data}: { status: number, data: StaffDataUser } = await handlePost(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);

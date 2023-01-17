@@ -16,7 +16,9 @@ export async function handleLocationGet(fullPath: string, req: EnhancedRequest):
 export async function commonGetFullLocation(req: EnhancedRequest) {
   let serviceCodes = [];
   let courtVenues = [];
-  const services = req.query.serviceCodes.split(',');
+
+  const serviceCodeQueryString = req.query.serviceCodes as string;
+  const services = serviceCodeQueryString.split(',');
   const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
   const serviceRefDataMapping = getServiceRefDataMappingList();
 

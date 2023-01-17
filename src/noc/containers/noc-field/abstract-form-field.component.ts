@@ -1,8 +1,11 @@
-import { Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { NocQuestion } from '../../models';
 
+@Component({
+  template: ''
+})
 export abstract class AbstractFormFieldComponent {
 
   @Input()

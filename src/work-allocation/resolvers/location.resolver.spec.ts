@@ -254,7 +254,8 @@ describe('LocationResolver', () => {
       location: {
         id: 231596,
         locationName: 'Birmingham'
-      }
+      },
+      roleCategory: ''
     }
   ];
 
@@ -284,7 +285,7 @@ describe('LocationResolver', () => {
   });
 
   it('should be created', () => {
-    const service: LocationResolver = TestBed.get(LocationResolver);
+    const service: LocationResolver = TestBed.inject(LocationResolver);
     expect(service).toBeTruthy();
   });
 

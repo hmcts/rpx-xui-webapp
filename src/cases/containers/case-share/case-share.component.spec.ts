@@ -11,7 +11,7 @@ describe('CaseShareComponent', () => {
   let component: CaseShareComponent;
   let fixture: ComponentFixture<CaseShareComponent>;
 
-  let mockStore: MockStore<State>;
+  let mockStore;
   let dispatchSpy: jasmine.Spy;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
 
@@ -27,7 +27,7 @@ describe('CaseShareComponent', () => {
       }]
   }];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ CaseShareComponent ],
@@ -39,7 +39,7 @@ describe('CaseShareComponent', () => {
         }
       ]
     }).compileComponents();
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     dispatchSpy = spyOn(mockStore, 'dispatch');
     fixture = TestBed.createComponent(CaseShareComponent);

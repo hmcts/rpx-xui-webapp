@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -11,14 +11,14 @@ import { NocQAndAComponent } from './noc-q-and-a.component';
 
 describe('NocQAndAComponent', () => {
   const FORM_GROUP = new FormGroup({});
-  let store: MockStore<fromNocStore.State>;
+  let store;
   let component: NocQAndAComponent;
   let fixture: ComponentFixture<NocQAndAComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocQAndAComponent ],
+      declarations: [NocQAndAComponent],
       imports: [
         ReactiveFormsModule
       ],
@@ -27,8 +27,8 @@ describe('NocQAndAComponent', () => {
         NocErrorPipe
       ]
     })
-    .compileComponents();
-    store = TestBed.get(Store);
+      .compileComponents();
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   }));
 
@@ -83,7 +83,7 @@ describe('NocQAndAComponent', () => {
       });
       component.setPossibleIncorrectAnswerError();
       Object.keys(component.formGroup.controls).forEach(key => {
-          expect(component.formGroup.controls[key].getError('possibleIncorrectAnswer')).toBeTruthy();
+        expect(component.formGroup.controls[key].getError('possibleIncorrectAnswer')).toBeTruthy();
       });
     });
 

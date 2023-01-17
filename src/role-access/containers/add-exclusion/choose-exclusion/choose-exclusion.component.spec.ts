@@ -1,15 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UserDetails } from '../../../../app/models';
 import { State } from '../../../../app/store';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { EXCLUSION_OPTION } from '../../../constants';
 import { ExcludeOption, ExclusionNavigationEvent } from '../../../models';
 import { ChooseExclusionComponent } from './choose-exclusion.component';
-import { UserDetails } from '../../../../app/models';
 
 describe('ChooseExclusionComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
@@ -17,12 +17,12 @@ describe('ChooseExclusionComponent', () => {
 
   let component: ChooseExclusionComponent;
   let fixture: ComponentFixture<ChooseExclusionComponent>;
-  let store: MockStore<State>;
+  let store;
 
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnStoreDispatch = jasmine.createSpy();
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChooseExclusionComponent],
@@ -37,7 +37,7 @@ describe('ChooseExclusionComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnStoreDispatch = spyOn(store, 'dispatch');
     fixture = TestBed.createComponent(ChooseExclusionComponent);

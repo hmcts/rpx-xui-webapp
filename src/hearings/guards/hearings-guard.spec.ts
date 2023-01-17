@@ -1,11 +1,11 @@
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
-import {Store} from '@ngrx/store';
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {UserDetails} from '../../app/models';
-import {SessionStorageService} from '../../app/services';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { UserDetails } from '../../app/models';
+import { SessionStorageService } from '../../app/services';
 import * as fromAppStore from '../../app/store';
-import {HearingsGuard} from './hearings-guard';
+import { HearingsGuard } from './hearings-guard';
 
 describe('HearingsGuard', () => {
   const USER_1: UserDetails = {

@@ -1,25 +1,25 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 
-import {Effect, Actions, ofType} from '@ngrx/effects';
+import {Actions, Effect, ofType} from '@ngrx/effects';
 import * as RouterActions from '../actions/router.action';
 
-import { tap, map } from 'rxjs/operators';
-import * as fromCases from '../../../cases/store/index';
 import { Store } from '@ngrx/store';
+import { map, tap } from 'rxjs/operators';
+import * as fromCases from '../../../cases/store/index';
 
 @Injectable()
 export class RouterEffects {
   constructor(
-    private actions$: Actions,
-    private router: Router,
-    private location: Location,
-    private store: Store<fromCases.State>
+    private readonly actions$: Actions,
+    private readonly router: Router,
+    private readonly location: Location,
+    private readonly store: Store<fromCases.State>
   ) {}
 
   @Effect({ dispatch: false })
-  navigate$ = this.actions$.pipe(
+  public navigate$ = this.actions$.pipe(
     ofType(RouterActions.GO),
     map((action: RouterActions.Go) => action.payload),
     tap(({ path, query: queryParams, extras, callback, errorHandler }) => {
@@ -30,7 +30,7 @@ export class RouterEffects {
   );
 
   @Effect({ dispatch: false })
-  navigateNewCase$ = this.actions$.pipe(
+  public navigateNewCase$ = this.actions$.pipe(
     ofType(RouterActions.CREATE_CASE_GO),
     map((action: RouterActions.CreateCaseGo) => action.payload),
     tap(({ path, query: queryParams, extras, caseId }) => {
@@ -42,14 +42,14 @@ export class RouterEffects {
   );
 
   @Effect({ dispatch: false })
-  navigateBack$ = this.actions$.pipe(
+  public navigateBack$ = this.actions$.pipe(
     ofType(RouterActions.BACK),
     tap(() => this.location.back())
   );
 
 
   @Effect({ dispatch: false })
-  navigateForward$ = this.actions$.pipe(
+  public navigateForward$ = this.actions$.pipe(
     ofType(RouterActions.FORWARD),
     tap(() => this.location.forward())
   );

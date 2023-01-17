@@ -1,15 +1,15 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../../hearing.test.data';
-import {ACTION} from '../../models/hearings.enum';
-import {HearingsService} from '../../services/hearings.service';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialState } from '../../hearing.test.data';
+import { ACTION } from '../../models/hearings.enum';
+import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
-import {AbstractPageFlow} from '../../utils/abstract-page-flow';
-import {RequestHearingComponent} from './request-hearing.component';
+import { AbstractPageFlow } from '../../utils/abstract-page-flow';
+import { RequestHearingComponent } from './request-hearing.component';
 
 describe('RequestHearingComponent', () => {
   let component: RequestHearingComponent;
@@ -32,7 +32,7 @@ describe('RequestHearingComponent', () => {
       ]
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     fixture = TestBed.createComponent(RequestHearingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

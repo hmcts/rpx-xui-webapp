@@ -1,12 +1,11 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
-
 
 describe('StaffUserCheckAnswersComponent', () => {
   let component: StaffUserCheckAnswersComponent;
@@ -257,7 +256,7 @@ describe('StaffUserCheckAnswersComponent', () => {
       roles: 'Case allocator',
       skills: ['SCSS'],
     }));
-    component.addNewUser();
+    component.onSubmit();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
   });
 
@@ -282,17 +281,17 @@ describe('StaffUserCheckAnswersComponent', () => {
       roles: 'Case allocator',
       skills: ['SCSS'],
     }));
-    component.addNewUser();
+    component.onSubmit();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
   });
 
   it('should call addNewUser and throw error', (done) => {
     mockStaffDataAccessService.addNewUser.and.returnValue(throwError({status: 500}));
-    component.addNewUser();
+    component.onSubmit();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down')
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down');
   });
 });
 

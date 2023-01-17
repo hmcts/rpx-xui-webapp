@@ -1,5 +1,6 @@
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { RoleCategory } from '../../role-access/models';
+import { LocationsByRegion } from '../models/dtos';
 import { TaskPermission } from '../models/tasks';
 import {
   getCurrentUserRoleCategory,

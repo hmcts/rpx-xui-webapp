@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -24,10 +24,13 @@ describe('WorkAllocation', () => {
     let fixture: ComponentFixture<WrapperComponent>;
     let router: Router;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
+        imports: [ WorkAllocationComponentsModule,
+          RouterTestingModule.withRoutes(
+            [{path: 'role-access/rejected-request', component: WrapperComponent}]
+        )]
       })
       .compileComponents();
     }));
@@ -70,7 +73,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should navigate to specific access rejected request view page', () => {
-      component.workField = {
+      wrapper.appComponentRef.workField = {
         role: 'specific-access-denied',
         case_name: 'Example name',
         case_id: '123456789',
@@ -84,7 +87,9 @@ describe('WorkAllocation', () => {
         reviewerRoleCategory: 'Judicial',
         infoRequiredComment: 'Need more Infomation'
       }
-      component.viewRejection();
+      fixture.detectChanges();
+      wrapper.appComponentRef.viewRejection();
+
       expect(router.navigate).toHaveBeenCalledWith([REJECTED_REQUEST_URL], {queryParams: {
         caseName: 'Example name',
         caseReference: '123456789',

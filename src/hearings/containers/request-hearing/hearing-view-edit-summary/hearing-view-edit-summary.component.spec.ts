@@ -1,11 +1,11 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingViewEditSummaryComponent} from './hearing-view-edit-summary.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.component';
 
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;
@@ -18,8 +18,8 @@ describe('HearingViewEditSummaryComponent', () => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent],
         providers: [
-          provideMockStore({initialState}),
-          {provide: HearingsService, useValue: hearingsService},
+          provideMockStore({ initialState }),
+          { provide: HearingsService, useValue: hearingsService },
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
@@ -44,8 +44,8 @@ describe('HearingViewEditSummaryComponent', () => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent],
         providers: [
-          provideMockStore({initialState: {hearings: {}}}),
-          {provide: HearingsService, useValue: hearingsService},
+          provideMockStore({ initialState: { hearings: {} } }),
+          { provide: HearingsService, useValue: hearingsService },
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();

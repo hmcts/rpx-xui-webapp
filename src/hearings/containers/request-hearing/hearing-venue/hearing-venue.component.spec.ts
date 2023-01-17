@@ -1,20 +1,20 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {AbstractControl, FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {By} from '@angular/platform-browser';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
-import {LocationByEPIMMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {LocationsDataService} from '../../../services/locations-data.service';
-import {HearingVenueComponent} from './hearing-venue.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AbstractControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
+import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { LocationsDataService } from '../../../services/locations-data.service';
+import { HearingVenueComponent } from './hearing-venue.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -77,7 +77,7 @@ describe('HearingVenueComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const locationsDataService: LocationsDataService = new LocationsDataService(mockedHttpClient);
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent],
@@ -117,15 +117,11 @@ describe('HearingVenueComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set hearingList.hearingListMainModel to SSCS', () => {
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
+  it('should set hearingList.hearingListMainModel to SSCS', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable().then(() => {
       expect(component.selectedLocations).toEqual([
-        {
-          epimms_id: '123',
-          court_name: 'test location',
-          region: 'Wales',
-        } as LocationByEPIMMSModel
+        ...FOUND_LOCATIONS
       ]);
 
       expect(component.serviceIds).toEqual('BBA3');
@@ -183,12 +179,6 @@ describe('HearingVenueComponent', () => {
     expect(result).toEqual(true);
   });
 
-
-  it('should initialise component', async () => {
-    expect(component).toBeDefined();
-    component.ngOnInit();
-  });
-
   it('should display selection in selection list', async () => {
     const location = {
       court_venue_id: '100',
@@ -242,7 +232,7 @@ describe('HearingVenueComponent', () => {
     expect(component.selectedLocations.length).toBe(2);
   });
 
-  it('should show error when there is no locations found', async (done) => {
+  it('should show error when there is no locations found', async () => {
     const location = {
       court_venue_id: '100',
       epimms_id: '219164',
@@ -261,12 +251,11 @@ describe('HearingVenueComponent', () => {
     } as LocationByEPIMMSModel;
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     component.addSelection();
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      done();
-      const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary'));
-      expect(errorElement).toBeDefined();
-    });
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary'));
+    expect(errorElement).toBeDefined();
 
     component.selectedLocations = [location];
     component.removeSelection(location);
@@ -274,14 +263,11 @@ describe('HearingVenueComponent', () => {
     expect(component.selectedLocations.length).toEqual(0);
   });
 
-  it('should show summry header', async (done) => {
+  it('should show summry header', async () => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      done();
-      const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary__list'));
-      expect(errorElement).toEqual(null);
-    });
+    await fixture.whenStable();
+    const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary__list'));
+    expect(errorElement).toEqual(null);
   });
 
   it('should reset form control and set it pristine when appendLocation is called', () => {

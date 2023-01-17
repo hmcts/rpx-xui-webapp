@@ -30,10 +30,6 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
   public ngOnInit(): void {
     this.caseId = this.route.snapshot.params.cid;
     console.log('CASE ID', this.caseId);
-    this.loadRoles();
-  }
-
-  public loadRoles(): void {
     this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
       switchMap(caseRoles => {
         this.caseRoles = caseRoles;
@@ -58,13 +54,13 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
     });
   }
 
-  public getUniqueIdamIds(): string[] {
+  private getUniqueIdamIds(): string[] {
     const idamIds = this.caseRoles.map(role => role.actorId);
     this.idamIds = idamIds.filter((value, index) => idamIds.indexOf(value) === index);
     return this.idamIds;
   }
 
-  public getRestrictedCases(caseworkers: Caseworker[]): RestrictedCase[] {
+  private getRestrictedCases(caseworkers: Caseworker[]): RestrictedCase[] {
     const restrictedCases: RestrictedCase[] = [];
     this.idamIds.forEach(id => {
       const user = caseworkers.find(caseworker => caseworker.idamId === id);

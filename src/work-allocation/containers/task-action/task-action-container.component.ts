@@ -133,14 +133,26 @@ export class TaskActionContainerComponent implements OnInit {
     // add hasNoAssigneeOnComplete - only false if complete action and assignee not present
     const hasNoAssigneeOnComplete = action === Actions.Complete.toString() ? this.isTaskUnAssignedOrReAssigned(this.tasks[0]) : false;
     if (action) {
-      this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
-        this.reportSuccessAndReturn();
-      }, error => {
-        const handledStatus = handleFatalErrors(error.status, this.router);
-        if (handledStatus > 0) {
-          this.reportUnavailableErrorAndReturn();
-        }
-      });
+      if (action === ACTION.UNASSIGN) {
+        this.taskService.assignTask(this.tasks[0].id, { userId: null }).subscribe({
+          next: () => this.reportSuccessAndReturn(),
+          error: (error: any) => {
+            const handledStatus = handleFatalErrors(error.status, this.router);
+            if (handledStatus > 0) {
+              this.reportUnavailableErrorAndReturn();
+            }
+          }
+        });
+      } else {
+        this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
+          this.reportSuccessAndReturn();
+        }, error => {
+          const handledStatus = handleFatalErrors(error.status, this.router);
+          if (handledStatus > 0) {
+            this.reportUnavailableErrorAndReturn();
+          }
+        });
+      }
     }
   }
 

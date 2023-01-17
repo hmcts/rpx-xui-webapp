@@ -4,6 +4,7 @@ import * as amendedJurisdictions from './amendedJurisdictions';
 import { getConfigValue } from './configuration';
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,
   SERVICES_EM_ANNO_API_URL,
@@ -132,6 +133,36 @@ export const initProxy = (app: Express) => {
     rewrite: false,
     source: '/refdata/location',
     target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/refdata/location',
+    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/refdata/commondata/lov/categories/CaseLinkingReasonCode',
+    target: getConfigValue(SERVICES_PRD_COMMONDATA_API),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/categoriesAndDocuments',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/documentData/caseref',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/getLinkedCases',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {

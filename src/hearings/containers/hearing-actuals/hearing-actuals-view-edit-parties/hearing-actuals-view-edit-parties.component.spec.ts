@@ -196,6 +196,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
           useValue: {
             paramMap: of(convertToParamMap({
               id: '1',
+              hearingDate: '2021-03-12'
             })),
             snapshot: {
               data: {
@@ -210,7 +211,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -261,8 +262,6 @@ describe('HearingActualsViewEditPartiesComponent', () => {
 
   it('should remove a FormGroup from the FormArray', () => {
     expect(component.parties.length).toEqual(3);
-    const addBtn = fixture.debugElement.query(By.css('.btn-add'));
-
     expect(component.parties.get([component.parties.length - 1]).value)
       .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isPlannedParty: false }));
 
@@ -365,6 +364,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
           useValue: {
             paramMap: of(convertToParamMap({
               id: '1',
+              hearingDate: '2021-03-12'
             })),
             snapshot: {
               data: {

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { AnswersComponent } from '../../../components';
 import { ExcludeOption, ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import * as fromFeature from '../../../store';
@@ -87,7 +87,7 @@ describe('AddExclusionCheckAnswersComponent', () => {
 
   describe('onDestroy()', () => {
     it('should unsubscribe', () => {
-      component.storeSubscription = new Observable().subscribe();
+      component.storeSubscription = of().subscribe();
       spyOn(component.storeSubscription, 'unsubscribe').and.callThrough();
       component.ngOnDestroy();
       expect(component.storeSubscription.unsubscribe).toHaveBeenCalled();

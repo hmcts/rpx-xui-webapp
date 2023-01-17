@@ -14,7 +14,7 @@ import {
   AllocateRoleState,
   AllocateTo,
   DurationOfRole,
-  RoleCategory,
+  RoleCategory
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromStore from '../../../store';
@@ -22,8 +22,8 @@ import * as fromContainers from '../../allocate-role';
 import { AllocateRoleHomeComponent } from './allocate-role-home.component';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
-      { roleId: '2', roleName: 'Role 2' },
-      { roleId: '3', roleName: 'Role 3' }];
+{ roleId: '2', roleName: 'Role 2' },
+{ roleId: '3', roleName: 'Role 3' }];
 
 describe('AllocateRoleHomeComponent', () => {
   const USER = {
@@ -115,12 +115,12 @@ describe('AllocateRoleHomeComponent', () => {
       ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');
     storePipeMock.and.returnValue(of(USER));
-    routerMock.getCurrentNavigation.and.returnValue({extras: {state: {backUrl: null}}});
+    routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: null } } });
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
   });
@@ -318,7 +318,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
 
     it('on CHECK_ANSWERS page', () => {
-      const CURRENT_STATE = { ...STATE_DATA,
+      const CURRENT_STATE = {
+        ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
@@ -340,7 +341,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
 
     it('should be true when allocation is confirmed', () => {
-      const CURRENT_STATE = { ...STATE_DATA,
+      const CURRENT_STATE = {
+        ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
@@ -353,7 +355,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
 
     it('should be false if navigation event is unhandled case', () => {
-      const CURRENT_STATE = { ...STATE_DATA,
+      const CURRENT_STATE = {
+        ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
@@ -372,7 +375,8 @@ describe('AllocateRoleHomeComponent', () => {
     });
 
     it('on cancel event', () => {
-      const CURRENT_STATE = { ...STATE_DATA,
+      const CURRENT_STATE = {
+        ...STATE_DATA,
         state: AllocateRoleState.CHECK_ANSWERS
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));

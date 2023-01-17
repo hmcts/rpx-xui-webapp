@@ -1,16 +1,16 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {RequirementType} from 'api/hearings/models/hearings.enum';
-import {cold} from 'jasmine-marbles';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { RequirementType } from 'api/hearings/models/hearings.enum';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState, judgeRefData, judicailUsersRefData} from '../hearing.test.data';
-import {MemberType} from '../models/hearings.enum';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
-import {PanelExclusionAnswerConverter} from './panel-exclusion.answer.converter';
+import { of } from 'rxjs';
+import { initialState, judgeRefData, judicailUsersRefData } from '../hearing.test.data';
+import { MemberType } from '../models/hearings.enum';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
+import { PanelExclusionAnswerConverter } from './panel-exclusion.answer.converter';
 
 describe('PanelExclusionAnswerConverter', () => {
 
@@ -39,8 +39,8 @@ describe('PanelExclusionAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new PanelExclusionAnswerConverter(router);
   });
 

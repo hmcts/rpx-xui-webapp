@@ -44,7 +44,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
   });
 
   it('should check form validity', () => {
-    spyOn(hearingsService, 'navigateAction$');
+    spyOn<HearingsService>(hearingsService, 'navigateAction$' as never);
     component.instructionsForm.controls['instructions'].setValue('instructions');
     component.executeAction(ACTION.CONTINUE);
     expect(component.isFormValid()).toBeTruthy();

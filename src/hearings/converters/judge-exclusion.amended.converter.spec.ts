@@ -1,9 +1,9 @@
-import {cold} from 'jasmine-marbles';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
 import { MemberType, RequirementType } from '../models/hearings.enum';
-import {State} from '../store/reducers';
+import { State } from '../store/reducers';
 import { JudgeExclusionAmendedConverter } from './judge-exclusion.amended.converter';
 
 describe('JudgeExclusionAmendedConverter', () => {

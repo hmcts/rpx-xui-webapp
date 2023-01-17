@@ -3,9 +3,9 @@ import {
   AlertService,
   ErrorNotifierService,
   HttpError,
+  LoadingService as CCDLoadingService,
   NavigationNotifierService,
-  NavigationOrigin,
-  LoadingService as CCDLoadingService
+  NavigationOrigin
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';

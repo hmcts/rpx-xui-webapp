@@ -145,7 +145,11 @@ export class ChooseDurationComponent implements OnInit {
             endDate: this.getEndDate(),
           };
         }
+
+        break;
       }
+      default:
+        break;
     }
   }
 

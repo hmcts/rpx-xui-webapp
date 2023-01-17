@@ -148,7 +148,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         if (selectedHearing) {
           linkedHearingGroupMainModel.hearingsInGroup.push({
             hearingId: selectedHearing.hearingID,
-            hearingOrder: Number(formValue.position),
+            hearingOrder: this.form.value.hearingGroup === GroupLinkType.SAME_SLOT ? 1 : Number(formValue.position)
           });
         }
       });
@@ -216,6 +216,10 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
     }
+  }
+
+  public onCancel(): void {
+    this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
   }
 
   public ngOnDestroy(): void {

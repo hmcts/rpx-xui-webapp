@@ -347,27 +347,31 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   }
   const data: CaseDataType = getCaseDataFromRoleAssignments(roleAssignmentList);
 
-  const casePromises: Array<Promise<CaseList>> = getCaseListPromises(data, req);
+  const casePromises: Promise<CaseList>[] = getCaseListPromises(data, req);
 
   const response = await Promise.all(casePromises.map(reflect));
   const caseResults = response.filter(x => x.status === 'fulfilled' && x.value ).map( x => x.value );
 
   let cases = [];
   caseResults.forEach( caseResult => cases = [...cases, ...caseResult.cases]);
+
   return cases;
+}
+
+export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment[]) {
+  return roleAssignmentList.filter(roleAssignment =>
+    (
+      roleAssignment.grantType === 'SPECIFIC' ||
+      roleAssignment.roleName === 'specific-access-requested' ||
+      roleAssignment.roleName === 'specific-access-denied'
+    ) &&
+    (!roleAssignment.attributes || roleAssignment.attributes.substantive !== 'Y')
+  );
 }
 
 export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
   : Promise<RoleCaseData[]> {
-  const specificRoleAssignments = roleAssignmentList.filter(roleAssignment =>
-    roleAssignment.grantType === 'SPECIFIC'
-    ||
-    roleAssignment.roleName === 'specific-access-requested'
-    ||
-    roleAssignment.roleName === 'specific-access-denied'
-    ||
-    roleAssignment.grantType === 'CHALLENGED'
-  );
+  const specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignmentList);
 
   const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
 

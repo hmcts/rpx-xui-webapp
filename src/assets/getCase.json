@@ -1,0 +1,1215 @@
+{
+  "case_id": "1651062573622206",
+  "case_type": {
+    "id": "Benefit_Xui",
+    "name": "SSCS Case v5.14.16_Xui_DEMO",
+    "description": "SSCS Benefit Cases Xui Test",
+    "jurisdiction": {
+      "id": "SSCS",
+      "name": "Tribunals",
+      "description": "Social Security and Child Support"
+    },
+    "printEnabled": true
+  },
+  "tabs": [
+    {
+      "id": "linked_cases_sscs",
+      "label": "Linked cases",
+      "order": 30,
+      "fields": [
+        {
+          "id": "caseLinks",
+          "label": "Linked cases",
+          "hidden": null,
+          "value": [
+            {
+              "caseReference": "1652112127295261",
+              "modified_date_time": "2022-05-10",
+              "caseType": "Benefit_SCSS",
+              "reasons": [
+                {
+                  "reasonCode": "CLRC010",
+                  "OtherDescription": ""
+                }
+              ]
+            },
+            {
+              "caseReference": "1652111610080172",
+              "modified_date_time": "2022-05-10",
+              "caseType": "Benefit_SCSS",
+              "reasons": [
+                {
+                  "reasonCode": "CLRC015",
+                  "OtherDescription": ""
+                }
+              ]
+            },
+            {
+              "caseReference": "1652111179220086",
+              "modified_date_time": "2022-05-10",
+              "caseType": "Benefit_SCSS",
+              "reasons": [
+                {
+                  "reasonCode": "progressed",
+                  "OtherDescription": ""
+                },
+                {
+                  "reasonCode": "CLRC005",
+                  "OtherDescription": ""
+                }
+              ]
+            }
+          ],
+          "metadata": false,
+          "hint_text": null,
+          "field_type": {
+            "id": "caseLinks-47544f38-3151-4a71-887f-6bcfe0a11dc5",
+            "type": "Collection",
+            "min": null,
+            "max": null,
+            "regular_expression": null,
+            "fixed_list_items": [],
+            "complex_fields": [],
+            "collection_field_type": {
+              "id": "CaseLink",
+              "type": "Complex",
+              "min": null,
+              "max": null,
+              "regular_expression": null,
+              "fixed_list_items": [],
+              "complex_fields": [
+                {
+                  "id": "CaseReference",
+                  "label": "Case Reference",
+                  "hidden": null,
+                  "order": null,
+                  "metadata": false,
+                  "case_type_id": null,
+                  "hint_text": null,
+                  "value": "1234-1242-1223-2313",
+                  "field_type": {
+                    "id": "TextCaseReference",
+                    "type": "Text",
+                    "min": null,
+                    "max": null,
+                    "regular_expression": "(?:^[0-9]{16}$|^\\d{4}-\\d{4}-\\d{4}-\\d{4}$)",
+                    "fixed_list_items": [],
+                    "complex_fields": [],
+                    "collection_field_type": null
+                  },
+                  "security_classification": "PUBLIC",
+                  "live_from": null,
+                  "live_until": null,
+                  "show_condition": null,
+                  "acls": [
+                    {
+                      "create": true,
+                      "read": true,
+                      "update": true,
+                      "delete": true,
+                      "role": "caseworker-sscs"
+                    },
+                    {
+                      "create": true,
+                      "read": true,
+                      "update": true,
+                      "delete": true,
+                      "role": "caseworker-sscs-systemupdate"
+                    },
+                    {
+                      "create": true,
+                      "read": true,
+                      "update": true,
+                      "delete": true,
+                      "role": "caseworker-sscs-superuser"
+                    },
+                    {
+                      "create": true,
+                      "read": true,
+                      "update": true,
+                      "delete": true,
+                      "role": "caseworker-sscs-dwpresponsewriter"
+                    }
+                  ],
+                  "complexACLs": [],
+                  "display_context": null,
+                  "display_context_parameter": null,
+                  "retain_hidden_value": null,
+                  "formatted_value": []
+                }
+              ],
+              "collection_field_type": null
+            }
+          },
+          "validation_expr": null,
+          "security_label": "PUBLIC",
+          "order": null,
+          "formatted_value": null,
+          "display_context": "OPTIONAL",
+          "display_context_parameter": "#COLLECTION(allowDelete,allowInsert,allowUpdate)",
+          "show_condition": null,
+          "show_summary_change_option": null,
+          "show_summary_content_option": null,
+          "retain_hidden_value": null,
+          "publish": false,
+          "publish_as": null,
+          "acls": [
+            {
+              "create": true,
+              "read": true,
+              "update": true,
+              "delete": true,
+              "role": "caseworker-sscs"
+            },
+            {
+              "create": true,
+              "read": true,
+              "update": true,
+              "delete": true,
+              "role": "caseworker-sscs-systemupdate"
+            },
+            {
+              "create": true,
+              "read": true,
+              "update": true,
+              "delete": true,
+              "role": "caseworker-sscs-superuser"
+            },
+            {
+              "create": true,
+              "read": true,
+              "update": true,
+              "delete": true,
+              "role": "caseworker-sscs-dwpresponsewriter"
+            }
+          ]
+        }
+      ],
+      "role": null,
+      "show_condition": null
+    }
+  ],
+  "metadataFields": [
+    {
+      "id": "[STATE]",
+      "label": "State",
+      "hidden": false,
+      "value": "withDwp",
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "FixedList-Benefit_Xui[STATE]",
+        "type": "FixedList",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [
+          { "code": "withDwp", "label": "With FTA", "order": null },
+          { "code": "voidState", "label": "Void cases", "order": null },
+          { "code": "validAppeal", "label": "Valid Appeal", "order": null },
+          {
+            "code": "responseReceived",
+            "label": "Response received",
+            "order": null
+          },
+          { "code": "readyToList", "label": "Ready to list", "order": null },
+          { "code": "notListable", "label": "Not listable", "order": null },
+          {
+            "code": "interlocutoryReviewState",
+            "label": "Interlocutory Review - Pre-Valid",
+            "order": null
+          },
+          {
+            "code": "incompleteApplicationInformationReqsted",
+            "label": "Information requested",
+            "order": null
+          },
+          {
+            "code": "incompleteApplication",
+            "label": "Incomplete Application",
+            "order": null
+          },
+          { "code": "hearing", "label": "Hearing", "order": null },
+          { "code": "draftArchived", "label": "Draft Archived", "order": null },
+          { "code": "draft", "label": "Draft", "order": null },
+          { "code": "dormantAppealState", "label": "Dormant", "order": null },
+          { "code": "closed", "label": "Closed", "order": null },
+          { "code": "appealCreated", "label": "Appeal Created", "order": null }
+        ],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": []
+    },
+    {
+      "id": "[CASE_REFERENCE]",
+      "label": "Case Reference",
+      "hidden": false,
+      "value": 1651062573622206,
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "Text",
+        "type": "Text",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": []
+    },
+    {
+      "id": "[JURISDICTION]",
+      "label": "Jurisdiction",
+      "hidden": false,
+      "value": "SSCS",
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "Text",
+        "type": "Text",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": []
+    },
+    {
+      "id": "[CASE_TYPE]",
+      "label": "Case Type",
+      "hidden": false,
+      "value": "Benefit_Xui",
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "Text",
+        "type": "Text",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": []
+    },
+    {
+      "id": "[SECURITY_CLASSIFICATION]",
+      "label": "Security Classification",
+      "hidden": false,
+      "value": "PUBLIC",
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "Text",
+        "type": "Text",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": []
+    },
+    {
+      "id": "[CREATED_DATE]",
+      "label": "Created Date",
+      "hidden": false,
+      "value": "2022-04-27T12:29:33.624362",
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "DateTime",
+        "type": "DateTime",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": []
+    },
+    {
+      "id": "[LAST_MODIFIED_DATE]",
+      "label": "Last Modified Date",
+      "hidden": false,
+      "value": "2022-04-27T12:29:41.323856",
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "DateTime",
+        "type": "DateTime",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": []
+    },
+    {
+      "id": "[LAST_STATE_MODIFIED_DATE]",
+      "label": "Last State Modified Date",
+      "hidden": false,
+      "value": "2022-04-27T12:29:41.323704",
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "DateTime",
+        "type": "DateTime",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": []
+    },
+    {
+      "id": "[ACCESS_GRANTED]",
+      "label": "Access Granted",
+      "hidden": null,
+      "value": "STANDARD",
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "Text",
+        "type": "Text",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": null
+    },
+    {
+      "id": "[ACCESS_PROCESS]",
+      "label": "Access Process",
+      "hidden": null,
+      "value": "NONE",
+      "metadata": true,
+      "hint_text": null,
+      "field_type": {
+        "id": "Text",
+        "type": "Text",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "publish": null,
+      "publish_as": null,
+      "acls": null
+    }
+  ],
+  "state": {
+    "id": "withDwp",
+    "name": "With FTA",
+    "description": "Cases with FTA",
+    "title_display": "# ${[CASE_REFERENCE]}: ${appeal.appellant.name.lastName}"
+  },
+  "triggers": [
+    {
+      "id": "manageCaseLinks",
+      "name": "Manage case links",
+      "description": "UnLink a case",
+      "order": 104
+    },
+    {
+      "id": "linkCases",
+      "name": "Link cases",
+      "description": "Link a case - hard link - if cases need to be heard together",
+      "order": 104
+    },
+    {
+      "id": "updateWelshPreference",
+      "name": "Welsh - update lang preference",
+      "description": "Update Welsh Preference",
+      "order": 192
+    },
+    {
+      "id": "manageWelshDocuments",
+      "name": "Welsh – manage Welsh doc(s)",
+      "description": "Manage Welsh document(s)",
+      "order": 188
+    },
+    {
+      "id": "writeFinalDecision",
+      "name": "Write final decision",
+      "description": "Write a final decision notice for a case",
+      "order": 180
+    },
+    {
+      "id": "voidCase",
+      "name": "Void case",
+      "description": "Voids the case",
+      "order": 176
+    },
+    {
+      "id": "uploadHearingRecording",
+      "name": "Upload hearing recording",
+      "description": "Upload the hearing recording",
+      "order": 172
+    },
+    {
+      "id": "dwpUploadResponse",
+      "name": "Upload response",
+      "description": "Upload a response",
+      "order": 171
+    },
+    {
+      "id": "uploadDraftDocument",
+      "name": "Upload draft document",
+      "description": "Upload document",
+      "order": 169
+    },
+    {
+      "id": "uploadDocumentFurtherEvidence",
+      "name": "Upload document FE",
+      "description": "Upload document Further Evidence",
+      "order": 167
+    },
+    {
+      "id": "uploadDocument",
+      "name": "Upload document",
+      "description": "Upload document",
+      "order": 166
+    },
+    {
+      "id": "caseUpdated",
+      "name": "Update to case data",
+      "description": "Automatic update of data from GAPS 2 - no notification",
+      "order": 163
+    },
+    {
+      "id": "subscriptionUpdated",
+      "name": "Update subscription",
+      "description": "Update Subscription",
+      "order": 162
+    },
+    {
+      "id": "updateReasonableAdjustment",
+      "name": "Update reasonable adjustment",
+      "description": "Update reasonable adjustment",
+      "order": 161
+    },
+    {
+      "id": "eventsUpdates",
+      "name": "Update events",
+      "description": "Update Events Data for Notifications",
+      "order": 157
+    },
+    {
+      "id": "dwpSupplementaryResponse",
+      "name": "Supplementary response",
+      "description": "An additional response from FTA",
+      "order": 152
+    },
+    {
+      "id": "struckOut",
+      "name": "Strike out case",
+      "description": "Strike out due to no response",
+      "order": 151
+    },
+    {
+      "id": "asyncStitchingComplete",
+      "name": "Stitching bundle complete",
+      "description": null,
+      "order": 147
+    },
+    {
+      "id": "sendToRoboticsError",
+      "name": "Send to robotics error",
+      "description": "Flag error to Send to robotics",
+      "order": 144
+    },
+    {
+      "id": "tcwReferToJudge",
+      "name": "Send to Judge",
+      "description": "Send to Judge",
+      "order": 143
+    },
+    {
+      "id": "validSendToInterloc",
+      "name": "Send to interloc",
+      "description": "Send a case to a judge for review",
+      "order": 141
+    },
+    {
+      "id": "sendToAdmin",
+      "name": "Send to admin",
+      "description": "Return the case to an admin with a note",
+      "order": 137
+    },
+    {
+      "id": "reviewPhmeRequest",
+      "name": "Review PHE request",
+      "description": "Review PHE request",
+      "order": 134
+    },
+    {
+      "id": "reviewConfidentialityRequest",
+      "name": "Review confidentiality request",
+      "description": "Review confidentiality request",
+      "order": 133
+    },
+    {
+      "id": "responseReceived",
+      "name": "Response received",
+      "description": "Notification that FTA have responded to the appeal",
+      "order": 131
+    },
+    {
+      "id": "resendToDwp",
+      "name": "Resend to FTA via bulk print",
+      "description": "Resend case to FTa via bulk print",
+      "order": 130
+    },
+    {
+      "id": "resendCaseToGAPS2",
+      "name": "Resend case to GAPS 2",
+      "description": "Re-sends the case to GAPS 2",
+      "order": 129
+    },
+    {
+      "id": "removeLinkForCase",
+      "name": "Remove a case link",
+      "description": "Remove a case - hard link (linkACase)",
+      "order": 127
+    },
+    {
+      "id": "dwpRequestTimeExtension",
+      "name": "Request time extension",
+      "description": "Request time extension",
+      "order": 126
+    },
+    {
+      "id": "reissueFurtherEvidence",
+      "name": "Reissue further evidence",
+      "description": "Reissue further evidence",
+      "order": 125
+    },
+    {
+      "id": "reissueDocument",
+      "name": "Reissue document",
+      "description": "Reissue document",
+      "order": 124
+    },
+    {
+      "id": "readyToList",
+      "name": "Ready to list",
+      "description": "Makes an appeal ready to list",
+      "order": 123
+    },
+    {
+      "id": "processReasonableAdjustment",
+      "name": "Process reasonable adjustment",
+      "description": "Process reasonable adjustment",
+      "order": 119
+    },
+    {
+      "id": "processAudioVideo",
+      "name": "Process audio/video evidence",
+      "description": "Issue a direction notice based on audio and video evidence",
+      "order": 118
+    },
+    {
+      "id": "notListable",
+      "name": "Not listable",
+      "description": "Case is not listable",
+      "order": 115
+    },
+    {
+      "id": "dwpNoAction",
+      "name": "No action",
+      "description": "Take no action",
+      "order": 112
+    },
+    {
+      "id": "manageScannedDocuments",
+      "name": "Manage Unprocessed Corres",
+      "description": "Manage unprocessed correspondence",
+      "order": 111
+    },
+    {
+      "id": "makeCaseUrgent",
+      "name": "Mark case as urgent",
+      "description": null,
+      "order": 108
+    },
+    {
+      "id": "manageDwpDocuments",
+      "name": "Manage FTA document(s)",
+      "description": "Manage FTA document(s)",
+      "order": 107
+    },
+    {
+      "id": "manageAudioVideo",
+      "name": "Manage audio/video evidence",
+      "description": "Manage audio video unprocessed list",
+      "order": 106
+    },
+    {
+      "id": "linkACase",
+      "name": "Link a case",
+      "description": "Link a case - hard link - if cases need to be heard together",
+      "order": 104
+    },
+    {
+      "id": "dwpLapseCase",
+      "name": "Lapse appeal",
+      "description": "Revise decision",
+      "order": 102
+    },
+    {
+      "id": "requestInfoIncompleteApplication",
+      "name": "Issue generic letter",
+      "description": "Issue generic letter",
+      "order": 100
+    },
+    {
+      "id": "issueFurtherEvidence",
+      "name": "Issue further evidence",
+      "description": "Issue further evidence",
+      "order": 99
+    },
+    {
+      "id": "issueFinalDecision",
+      "name": "Issue final decision",
+      "description": "Issue a final decision notice for a case",
+      "order": 98
+    },
+    {
+      "id": "directionIssued",
+      "name": "Issue directions notice",
+      "description": "Send a directions notice",
+      "order": 97
+    },
+    {
+      "id": "decisionIssued",
+      "name": "Issue interlocutory decision",
+      "description": "Send an interlocutory decision notice",
+      "order": 94
+    },
+    {
+      "id": "interlocInformationReceived",
+      "name": "Information received",
+      "description": "Information received",
+      "order": 92
+    },
+    {
+      "id": "hearingReminder",
+      "name": "Hearing reminder",
+      "description": "1 day out and 1 week out",
+      "order": 89
+    },
+    {
+      "id": "hearingPostponed",
+      "name": "Hearing postponed",
+      "description": "Notification that a hearing has been postponed",
+      "order": 88
+    },
+    {
+      "id": "hearingHoldingReminder",
+      "name": "Hearing Holding Reminder",
+      "description": "Holding email when hearing not booked",
+      "order": 87
+    },
+    {
+      "id": "hearingBooked",
+      "name": "Hearing booked",
+      "description": "Notification about a hearing being booked",
+      "order": 86
+    },
+    {
+      "id": "hearingAdjourned",
+      "name": "Hearing adjourned",
+      "description": "Notification that the hearing has been adjourned",
+      "order": 85
+    },
+    {
+      "id": "handleEvidence",
+      "name": "Handle supplementary evidence",
+      "description": "Handle supplementary evidence",
+      "order": 84
+    },
+    {
+      "id": "generateCoversheet",
+      "name": "Generate coversheet",
+      "description": "Generates a coversheet",
+      "order": 83
+    },
+    {
+      "id": "createAppealPDF",
+      "name": "Generate appeal PDF",
+      "description": "Creates an appeal PDF if it's missing",
+      "order": 82
+    },
+    {
+      "id": "dwpEvidenceInProgress",
+      "name": "Further evidence in progress",
+      "description": "Further evidence is being considered",
+      "order": 81
+    },
+    {
+      "id": "finalHearingHoldingReminder",
+      "name": "Final Hearing Holding Reminder",
+      "description": "Final holding email when hearing not booked",
+      "order": 79
+    },
+    {
+      "id": "furtherEvidenceHandledOffline",
+      "name": "FE handled offline",
+      "description": "Further evidence handled offline",
+      "order": 78
+    },
+    {
+      "id": "evidenceReminder",
+      "name": "Evidence reminder",
+      "description": "2 days after submission",
+      "order": 77
+    },
+    {
+      "id": "evidenceReceived",
+      "name": "Evidence received",
+      "description": "Notification that evidence has been received",
+      "order": 76
+    },
+    {
+      "id": "dwpResponseLateReminder",
+      "name": "FTA Response Late Reminder",
+      "description": "Holding email when FTA has not responded in time",
+      "order": 75
+    },
+    {
+      "id": "dwpRaiseException",
+      "name": "FTA Raise an exception",
+      "description": "Raise an exception",
+      "order": 73
+    },
+    {
+      "id": "logDocsToDwp",
+      "name": "Decisions/directions to FTA",
+      "description": "Log sending decisions or directions to FTA",
+      "order": 70
+    },
+    {
+      "id": "deathOfAppellantActioned",
+      "name": "Death of appellant actioned",
+      "description": "Action the death of an appellant",
+      "order": 69
+    },
+    {
+      "id": "deathOfAppellant",
+      "name": "Death of appellant",
+      "description": "Record the death of an appellant",
+      "order": 69
+    },
+    {
+      "id": "createBundle",
+      "name": "Create a bundle",
+      "description": "Create a bundle in the case",
+      "order": 66
+    },
+    {
+      "id": "confirmLapsed",
+      "name": "Confirm lapsed",
+      "description": null,
+      "order": 55
+    },
+    {
+      "id": "dwpCaseInProgress",
+      "name": "Case in-progress",
+      "description": "Flag case as in-progress",
+      "order": 51
+    },
+    {
+      "id": "attachScannedDocs",
+      "name": "Attach scanned docs",
+      "description": "Attach scanned docs",
+      "order": 50
+    },
+    {
+      "id": "associateCase",
+      "name": "Associate case",
+      "description": "Soft links two cases - automatically based on NINO",
+      "order": 48
+    },
+    {
+      "id": "appealWithdrawn",
+      "name": "Appeal withdrawn",
+      "description": "Notification that an appeal has been withdrawn",
+      "order": 45
+    },
+    {
+      "id": "dwpAppealRegistered",
+      "name": "Appeal registered (FTA)",
+      "description": "Appeal successfully registered on PIP CS",
+      "order": 41
+    },
+    {
+      "id": "appealReceived",
+      "name": "Appeal received",
+      "description": "Notification that an appeal has been received",
+      "order": 40
+    },
+    {
+      "id": "appealLapsed",
+      "name": "Appeal lapsed",
+      "description": "Notification about appeal lapsed sent",
+      "order": 39
+    },
+    {
+      "id": "appealDormant",
+      "name": "Appeal dormant",
+      "description": "Dormant appeal - no notification",
+      "order": 38
+    },
+    {
+      "id": "interlocReviewStateAmend",
+      "name": "Amend interloc review state",
+      "description": "Ability to amend interloc review state flag",
+      "order": 36
+    },
+    {
+      "id": "amendElementsIssues",
+      "name": "Amend elements/issues",
+      "description": "Amend elements or issues",
+      "order": 35
+    },
+    {
+      "id": "amendDueDate",
+      "name": "Amend due date",
+      "description": "Amend due date",
+      "order": 34
+    },
+    {
+      "id": "amendNote",
+      "name": "Amend a note",
+      "description": "Amending a note",
+      "order": 33
+    },
+    {
+      "id": "editBundle",
+      "name": "Amend a bundle",
+      "description": "Amend a bundle in the case",
+      "order": 32
+    },
+    {
+      "id": "adminAppealWithdrawn",
+      "name": "Admin Appeal Withdrawn",
+      "description": "Admin Appeal Withdrawn",
+      "order": 29
+    },
+    {
+      "id": "adminUpdateEvent",
+      "name": "Admin - update event",
+      "description": null,
+      "order": 28
+    },
+    {
+      "id": "adminSendToVoidState",
+      "name": "Admin - send to Void",
+      "description": null,
+      "order": 26
+    },
+    {
+      "id": "adminSendToValidAppeal",
+      "name": "Admin - send to Valid",
+      "description": null,
+      "order": 25
+    },
+    {
+      "id": "adminSendTorRsponseReceived",
+      "name": "Admin - send to Response Rec'd",
+      "description": null,
+      "order": 24
+    },
+    {
+      "id": "adminSendToReadyToList",
+      "name": "Admin - send to Ready to List",
+      "description": null,
+      "order": 23
+    },
+    {
+      "id": "adminSendToInterlocutoryReviewState",
+      "name": "Admin - send to Interloc",
+      "description": null,
+      "order": 22
+    },
+    {
+      "id": "adminSendToIncompleteApplicationInformationReqsted",
+      "name": "Admin - send to Info Req'd",
+      "description": null,
+      "order": 21
+    },
+    {
+      "id": "adminSendToIncompleteApplication",
+      "name": "Admin - send to Incomplete App",
+      "description": null,
+      "order": 20
+    },
+    {
+      "id": "adminSendToHearing",
+      "name": "Admin - send to Hearing",
+      "description": null,
+      "order": 19
+    },
+    {
+      "id": "adminSendToDormantAppealState",
+      "name": "Admin - send to Dormant",
+      "description": null,
+      "order": 16
+    },
+    {
+      "id": "adminRestoreCases",
+      "name": "Admin - Restore cases",
+      "description": "Admin - Restore cases",
+      "order": 14
+    },
+    {
+      "id": "addHearing",
+      "name": "Add a hearing",
+      "description": "Add a hearing to the case",
+      "order": 13
+    },
+    {
+      "id": "addRepresentative",
+      "name": "Add a representative",
+      "description": "Add a rep or supporters details to a case",
+      "order": 12
+    },
+    {
+      "id": "addNote",
+      "name": "Add a note",
+      "description": "The online hearing has resolved the case",
+      "order": 11
+    },
+    {
+      "id": "addSCnumber",
+      "name": "Add / update SC number",
+      "description": "Add a SC number to the case",
+      "order": 10
+    },
+    {
+      "id": "dwpActionRepAdded",
+      "name": "Action new representative",
+      "description": null,
+      "order": 7
+    },
+    {
+      "id": "actionHearingRecordingRequest",
+      "name": "Action hearing recording req",
+      "description": "Action hearing recording request",
+      "order": 6
+    },
+    {
+      "id": "actionFurtherEvidence",
+      "name": "Action further evidence",
+      "description": "Action further evidence",
+      "order": 5
+    },
+    {
+      "id": "dwpActionDirection",
+      "name": "Action direction",
+      "description": null,
+      "order": 4
+    },
+    {
+      "id": "thirdHearingHoldingReminder",
+      "name": "3rd Hearing Holding Reminder",
+      "description": "Third holding email when hearing not booked",
+      "order": 2
+    },
+    {
+      "id": "secondHearingHoldingReminder",
+      "name": "2nd Hearing Holding Reminder",
+      "description": "Second holding email when hearing not booked",
+      "order": 1
+    }
+  ],
+  "events": [
+    {
+      "id": 646591,
+      "timestamp": "2022-04-27T12:29:41.323704",
+      "summary": "Sent to FTA",
+      "comment": "Case state is now sent to FTA",
+      "event_id": "sentToDwp",
+      "event_name": "Sent to FTA",
+      "user_id": "2c925c71-e662-4dfb-971e-df01f6dc9cba",
+      "user_last_name": "system",
+      "user_first_name": "sscs",
+      "state_name": "With FTA",
+      "state_id": "withDwp",
+      "significant_item": null,
+      "proxied_by": null,
+      "proxied_by_last_name": null,
+      "proxied_by_first_name": null
+    },
+    {
+      "id": 646589,
+      "timestamp": "2022-04-27T12:29:38.97383",
+      "summary": "Flag error to Send to robotics",
+      "comment": "appellant.postCode is invalid - please correct.appointee.postCode is invalid - please correct.representative.county is missing/not populated - please correct.representative.postCode is missing/not populated - please correct.representative.townOrCity is missing/not populated - please correct.representative.addressLine1 is missing/not populated - please correct.",
+      "event_id": "sendToRoboticsError",
+      "event_name": "Send to robotics error",
+      "user_id": "2c925c71-e662-4dfb-971e-df01f6dc9cba",
+      "user_last_name": "system",
+      "user_first_name": "sscs",
+      "state_name": "Valid Appeal",
+      "state_id": "validAppeal",
+      "significant_item": null,
+      "proxied_by": null,
+      "proxied_by_last_name": null,
+      "proxied_by_first_name": null
+    },
+    {
+      "id": 646588,
+      "timestamp": "2022-04-27T12:29:33.624362",
+      "summary": "Aut sed sequi vel ut minim ut",
+      "comment": "Minim labore et beatae occaecat assumenda unde adipisicing officia molestiae velit sed fugiat",
+      "event_id": "validAppealCreated",
+      "event_name": "Valid appeal created",
+      "user_id": "c9ca25c7-0554-4e05-b781-442f02a59907",
+      "user_last_name": "Superuser",
+      "user_first_name": "SSCS",
+      "state_name": "Valid Appeal",
+      "state_id": "validAppeal",
+      "significant_item": null,
+      "proxied_by": null,
+      "proxied_by_last_name": null,
+      "proxied_by_first_name": null
+    }
+  ]
+}

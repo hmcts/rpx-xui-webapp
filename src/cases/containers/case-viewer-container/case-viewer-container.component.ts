@@ -5,7 +5,7 @@ import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
 import {combineLatest, of} from 'rxjs';
 import {Observable} from 'rxjs/Observable';
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 import { AllocateRoleService } from '../../../role-access/services';
 import {AppUtils} from '../../../app/app-utils';
 import {AppConstants} from '../../../app/app.constants';
@@ -91,8 +91,9 @@ export class CaseViewerContainerComponent implements OnInit {
     ]).pipe(
       // @ts-ignore
       map(([feature, userRoles, supportedServices, excludedRoles]: [WAFeatureConfig, string[]]) =>
-        this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : [])
-    ).catch(() => this.prependedTabs$ = of([]));
+        this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []),
+      catchError(() => this.prependedTabs$ = of([]))
+    );
   }
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {

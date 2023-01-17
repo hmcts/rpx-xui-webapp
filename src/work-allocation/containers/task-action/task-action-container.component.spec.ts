@@ -331,7 +331,7 @@ describe('WorkAllocation', () => {
     let router: Router;
 
     const mockWorkAllocationService = {
-      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(Observable.of({}))
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -395,10 +395,10 @@ describe('WorkAllocation', () => {
       fixture.destroy();
     });
 
-    it('should perform the unclaim action successfully', () => {
+    it('should perform the Un-assign action successfully', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
       submit.click();
-      expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTask[0].id, ACTION.UNASSIGN, false);
+      expect(mockWorkAllocationService.assignTask).toHaveBeenCalledWith(mockTask[0].id, { userId: null });
     });
   });
 

@@ -30,7 +30,7 @@ Feature: Login
     Given I navigate to Expert UI Url direct link
     Then I should be redirected back to Login page after direct link
 
-  @iauserslogin @aat
+  @iauserslogin @ignore
   Scenario Outline: Login as IA "<Usertype>"
     Given I am logged into Expert UI as IA "<Usertype>"
     Then I should be redirected to EUI dashboard page

@@ -21,7 +21,7 @@ import {
   constructElasticSearchQuery,
   constructRoleAssignmentCaseAllocatorQuery,
   constructRoleAssignmentQuery,
-  filterByLocationId,
+  filterByLocationId, filterMyAccessRoleAssignments,
   getActionsByPermissions,
   getActionsFromMatrix,
   getCaseAllocatorLocations,
@@ -318,6 +318,7 @@ const availableTasks = [
     permissions: ['Execute'],
   },
 ];
+
 
 describe('workAllocation.utils', () => {
 
@@ -1732,4 +1733,109 @@ describe('workAllocation.utils', () => {
     });
   });
 
+  describe('My Access Cases', () => {
+    it('should filter the role assignments', () => {
+      const roleAssignments: RoleAssignment[] = [
+        {
+          'id': '508daf11-d968-4d65-bebb-863195b395c2',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'case-manager',
+          'classification': 'PUBLIC',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-20T23:00:00Z'),
+          'endTime': new Date('2021-10-27T23:00:00Z'),
+          'created': new Date('2021-10-21T14:55:04.103639Z'),
+          'attributes': {
+            'substantive': 'Y',
+            'caseId': '1634822871207303',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+        {
+          'id': '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'case-manager',
+          'classification': 'PUBLIC',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-13T23:00:00Z'),
+          'created': new Date('2021-10-14T15:55:58.586597Z'),
+          'attributes': {
+            'substantive': 'Y',
+            'caseId': '1547476018728634',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+        {
+          'id': '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'specific-access-requested',
+          'classification': 'PUBLIC',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-13T23:00:00Z'),
+          'created': new Date('2021-10-14T15:55:58.586597Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1547476018728634',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+        {
+          'id': '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'specific-access-denied',
+          'classification': 'PUBLIC',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-13T23:00:00Z'),
+          'created': new Date('2021-10-14T15:55:58.586597Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1547476018728634',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+        {
+          'id': '4e929e9f-3458-4aeb-83c3-5fb25ecfa30a',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'case-manager',
+          'classification': 'PUBLIC',
+          'grantType': 'CHALLENGED',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-13T23:00:00Z'),
+          'created': new Date('2021-10-14T15:55:58.586597Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1547476018728634',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+      ];
+
+      const filteredRoleAssignments = filterMyAccessRoleAssignments(roleAssignments);
+      expect(filteredRoleAssignments.length).to.equal(2);
+    });
+  });
 });

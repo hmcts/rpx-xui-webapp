@@ -1,13 +1,12 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-import { Observable, throwError } from 'rxjs';
+import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -21,12 +20,13 @@ import { ACTION } from '../../services/work-allocation-task.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskActionContainerComponent } from './task-action-container.component';
 
+
 @Component({
   template: `
     <exui-task-action-container></exui-task-action-container>`
 })
 class WrapperComponent {
-  @ViewChild(TaskActionContainerComponent) public appComponentRef: TaskActionContainerComponent;
+  @ViewChild(TaskActionContainerComponent, {static: true}) public appComponentRef: TaskActionContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -48,13 +48,13 @@ describe('WorkAllocation', () => {
     const mockTasks = getMockTasks();
 
     const mockWorkAllocationService = {
-      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(Observable.of({}))
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({}))
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
 
-    beforeEach(() => {
+    beforeEach(waitForAsync (() => {
       TestBed.configureTestingModule({
         declarations: [
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
@@ -82,7 +82,7 @@ describe('WorkAllocation', () => {
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: Observable.of({task: mockTasks[0]})
+              params: of({task: mockTasks[0]})
             }
           },
           {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
@@ -96,7 +96,7 @@ describe('WorkAllocation', () => {
       wrapper.tasks = null;
       window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
       fixture.detectChanges();
-    });
+    }));
 
     afterEach(() => {
       fixture.destroy();

@@ -6,10 +6,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {hearingActualsMainModel, initialState} from '../../hearing.test.data';
 import {LovRefDataModel} from '../../models/lovRefData.model';
 import {ConvertToValuePipe} from '../../pipes/convert-to-value.pipe';
+import {HearingAnswersPipe} from '../../pipes/hearing-answers.pipe';
 import {HearingActualSummaryComponent} from './hearing-actual-summary.component';
 
 describe('HearingActualSummaryComponent', () => {
@@ -350,51 +351,52 @@ describe('HearingActualSummaryComponent', () => {
   ];
   const HEARING_TYPES: LovRefDataModel[] = [
     {
-      category_key : 'HearingType',
-      key : 'BBA3-SUB',
-      value_en : 'Substantive',
-      value_cy : '',
-      hint_text_en : '',
-      hint_text_cy : '',
+      category_key: 'HearingType',
+      key: 'BBA3-SUB',
+      value_en: 'Substantive',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
       lov_order: null,
-      parent_category : '',
-      parent_key : '',
-      active_flag : 'Y',
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
       child_nodes: null
     },
     {
-      category_key : 'HearingType',
-      key : 'BBA3-DIR',
-      value_en : 'Direction Hearings',
-      value_cy : '',
-      hint_text_en : '',
-      hint_text_cy : '',
+      category_key: 'HearingType',
+      key: 'BBA3-DIR',
+      value_en: 'Direction Hearings',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
       lov_order: null,
-      parent_category : '',
-      parent_key : '',
-      active_flag : 'Y',
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
       child_nodes: null
     },
     {
-      category_key : 'HearingType',
-      key : 'BBA3-CHA',
-      value_en : 'Chambers Outcome',
-      value_cy : '',
-      hint_text_en : '',
-      hint_text_cy : '',
+      category_key: 'HearingType',
+      key: 'BBA3-CHA',
+      value_en: 'Chambers Outcome',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
       lov_order: null,
-      parent_category : '',
-      parent_key : '',
-      active_flag : 'Y',
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
       child_nodes: null
     }
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule,
-        HttpClientTestingModule],
-      declarations: [HearingActualSummaryComponent, ConvertToValuePipe],
+      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
+      declarations: [HearingActualSummaryComponent,
+        HearingAnswersPipe, ConvertToValuePipe
+      ],
       providers: [
         provideMockStore({initialState}),
         {
@@ -414,12 +416,13 @@ describe('HearingActualSummaryComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(HearingActualSummaryComponent);
     component = fixture.componentInstance;
     component.hearingActualsMainModel = hearingActualsMainModel;
-    router = TestBed.get(Router);
+    component.hearingState$ = new Observable();
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 

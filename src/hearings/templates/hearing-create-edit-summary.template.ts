@@ -62,18 +62,26 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Attendance</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
     answers: [
       {
+        id: 'paperHearing',
+        answerTitle: 'Will this be a paper hearing?',
+        answerSource: AnswerSource.IS_PAPER_HEARING,
+        changeLink: '/hearings/request/hearing-attendance#paperHearingYes',
+      },
+      {
         id: 'howAttendant',
-        answerTitle: 'How will each party attend the hearing?',
+        answerTitle: 'How will each participant attend the hearing?',
         answerSource: AnswerSource.HOW_ATTENDANT,
+        isHiddenSource: IsHiddenSource.PAPER_HEARING,
         changeLink: '/hearings/request/hearing-attendance#partyChannel0',
       },
       {
         id: 'attendantPersonAmount',
         answerTitle: 'How many people will attend the hearing in person?',
         answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
+        isHiddenSource: IsHiddenSource.PAPER_HEARING,
         changeLink: '/hearings/request/hearing-attendance#attendance-number',
       },
     ],
@@ -164,6 +172,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         isHiddenSource: IsHiddenSource.PANEL_ROLES
       },
     ],
+    isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',

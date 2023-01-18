@@ -1,6 +1,6 @@
-import {caseFlagsRefData, serviceHearingValuesModel} from '../hearing.test.data';
-import {CaseFlagType} from '../models/hearings.enum';
-import {CaseFlagsUtils} from './case-flags.utils';
+import { caseFlagsRefData, serviceHearingValuesModel } from '../hearing.test.data';
+import { CaseFlagType } from '../models/hearings.enum';
+import { CaseFlagsUtils } from './case-flags.utils';
 
 describe('CaseFlagsUtils', () => {
 

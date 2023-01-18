@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   BookingCheckType,
@@ -12,8 +12,9 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
+import { STAFF_REGIONS } from '../../../models/staff-regions';
 import { StaffUser } from '../../../models/staff-user.model';
-import { STAFF_REGIONS } from './staff-regions';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 
 @Component({
   selector: 'exui-staff-add-edit-user-form',
@@ -37,7 +38,8 @@ export class StaffAddEditUserFormComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private filterService: FilterService,
-    private router: Router
+    private router: Router,
+    private readonly staffDataAccessService: StaffDataAccessService
   ) {
     this.formId = activatedRoute.snapshot.data.formId;
 
@@ -97,6 +99,12 @@ export class StaffAddEditUserFormComponent implements OnInit {
   public onSubmitEditMode(data: FilterSetting) {
     const staffUser = new StaffUser();
     staffUser.initFromGenericFilter(data, this.staffFilterOptions);
+
+    this.staffDataAccessService.updateUser(staffUser).subscribe(res => {
+      this.router.navigateByUrl('/staff');
+    }, error => {
+      this.router.navigateByUrl('/service-down');
+    });
   }
 
   public initFormConfig() {

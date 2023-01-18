@@ -6,9 +6,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HmctsBannerComponent } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-import { staffUserDetailsTestData } from 'src/staff-administrator/test-data/staff-user-details.test.data';
 import { PluckAndJoinPipe } from '../../pipes/pluckAndJoin.pipe';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
+import { staffSingleUserDetailsTestData } from '../../test-data/staff-single-user-details.test.data';
 import { StaffStatusComponent } from '../staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from '../staff-suspended-banner/staff-suspended-banner.component';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
@@ -16,7 +16,7 @@ import { StaffUserDetailsComponent } from './staff-user-details.component';
 @Component({
   template: ''
 })
-class ServiceDownStubComponent {}
+class StubComponent {}
 
 describe('StaffUserDetailsComponent', () => {
   let component: StaffUserDetailsComponent;
@@ -35,24 +35,16 @@ describe('StaffUserDetailsComponent', () => {
         StaffStatusComponent,
         StaffSuspendedBannerComponent,
         HmctsBannerComponent,
-        ServiceDownStubComponent,
+        StubComponent,
         PluckAndJoinPipe
       ],
       imports: [HttpClientTestingModule,
         RouterTestingModule.withRoutes([
-          { path: 'service-down', component: ServiceDownStubComponent}
+          { path: 'service-down', component: StubComponent },
+          { path: 'staff/update-user', component: StubComponent }
         ])
       ],
-      providers: [{
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                staffUserDetails: staffUserDetailsTestData
-              }
-            },
-          }
-        },
+      providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
       ]
     })
@@ -62,7 +54,7 @@ describe('StaffUserDetailsComponent', () => {
   beforeEach(() => {
     router = TestBed.get(Router);
     spyOn(router, 'getCurrentNavigation').and.returnValue(
-      { extras: { state: { user: {} } } }
+      { extras: { state: { user: staffSingleUserDetailsTestData } } }
     );
 
     fixture = TestBed.createComponent(StaffUserDetailsComponent);
@@ -121,4 +113,17 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.userDetails.suspended).toBe(false);
     expect(component.suspendedStatus).toBe('restored');
   });
+
+  it('should userDetails property if it exists in routers extra state', () => {
+    expect(component.userDetails).toEqual(staffSingleUserDetailsTestData);
+  });
+
+  it('should set filterSettings on sessionStorage and navigate to /staff/update-user with userDetails as state on setDataAndNavigateToUpdateUser', fakeAsync(() => {
+    spyOn(router, 'navigateByUrl').and.callThrough();
+    component.setDataAndNavigateToUpdateUser();
+    tick();
+    expect(sessionStorage.getItem(component.FILTER_ID)).toBeTruthy();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/staff/update-user', { state: { userDetails: component.userDetails } });
+    expect(location.path()).toBe('/staff/update-user');
+  }));
 });

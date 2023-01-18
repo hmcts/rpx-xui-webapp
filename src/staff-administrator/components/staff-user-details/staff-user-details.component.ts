@@ -14,6 +14,7 @@ export class StaffUserDetailsComponent {
   public showAction: boolean = false;
   public loading = false;
   public suspendedStatus: 'suspended' | 'restored' | 'error';
+  public FILTER_ID = 'staff-update-user';
 
   constructor(private readonly router: Router,
               private staffDataAccessService: StaffDataAccessService
@@ -55,11 +56,9 @@ export class StaffUserDetailsComponent {
   }
 
   public setDataAndNavigateToUpdateUser() {
-    const FILTER_ID = 'staff-update-user';
-
     const primaryLocation = this.userDetails.base_locations.find(item => item.is_primary);
     const formValues = {
-      id: FILTER_ID,
+      id: this.FILTER_ID,
       fields: [
         {
           name: 'first_name',
@@ -114,7 +113,7 @@ export class StaffUserDetailsComponent {
       ]
     };
 
-    sessionStorage.setItem(FILTER_ID, JSON.stringify(formValues));
+    sessionStorage.setItem(this.FILTER_ID, JSON.stringify(formValues));
     this.router.navigateByUrl('/staff/update-user',
       { state: {userDetails: this.userDetails} }
     );

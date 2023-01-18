@@ -6,7 +6,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from '../staff-user-check-answers/staff-user-check-answers.component';
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 
@@ -14,96 +15,98 @@ import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.compon
 @Component({selector: 'exui-staff-main-container', template: ''})
 class StaffMainContainerStubComponent {}
 
-
 describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
   let fixture: ComponentFixture<StaffAddEditUserFormComponent>;
   let location: Location;
   let router: Router;
+  const streamTestData = {
+    reset: false,
+    fields: [
+      {
+        value: [
+          'Adele'
+        ],
+        name: 'firstName'
+      },
+      {
+        value: [
+          'Adkins'
+        ],
+        name: 'lastName'
+      },
+      {
+        value: [
+          'adele.adkins@dfsd.com'
+        ],
+        name: 'email'
+      },
+      {
+        value: [
+          'region-1'
+        ],
+        name: 'region'
+      },
+      {
+        value: [
+          'family-private-law',
+          'employment-tribunals'
+        ],
+        name: 'services'
+      },
+      {
+        value: [
+          {
+            court_venue_id: '10453',
+            epimms_id: '366796',
+            site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
+          }
+        ],
+        name: 'primaryLocation'
+      },
+      {
+        value: [
+          {
+            court_venue_id: '10253',
+            epimms_id: '366559',
+            site_name: 'Glasgow Tribunals Centre',
+          },
+          {
+            court_venue_id: '10453',
+            epimms_id: '366796',
+            site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
+          }
+        ],
+        name: 'additionalLocations'
+      },
+      {
+        value: [
+          'ctsc'
+        ],
+        name: 'userType'
+      },
+      {
+        value: [
+          'task-supervisor'
+        ],
+        name: 'roles'
+      },
+      {
+        value: [
+          'hearing-centre-team-leader'
+        ],
+        name: 'jobTitle'
+      },
+      {
+        value: [
+          'family-public-law-underwriter'
+        ],
+        name: 'skills'
+      }]
+  };
+  const streamSubject = new BehaviorSubject(streamTestData);
   const mockFilterService: any = {
-    getStream: () => of({
-        reset: true,
-        fields: [
-        {
-          value: [
-            'Adele'
-          ],
-          name: 'firstName'
-        },
-        {
-          value: [
-            'Adkins'
-          ],
-          name: 'lastName'
-        },
-        {
-          value: [
-            'adele.adkins@dfsd.com'
-          ],
-          name: 'email'
-        },
-        {
-          value: [
-            'region-1'
-          ],
-          name: 'region'
-        },
-        {
-          value: [
-            'family-private-law',
-            'employment-tribunals'
-          ],
-          name: 'services'
-        },
-        {
-          value: [
-            {
-              court_venue_id: '10453',
-              epimms_id: '366796',
-              site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
-            }
-          ],
-          name: 'primaryLocation'
-        },
-        {
-          value: [
-            {
-              court_venue_id: '10253',
-              epimms_id: '366559',
-              site_name: 'Glasgow Tribunals Centre',
-            },
-            {
-              court_venue_id: '10453',
-              epimms_id: '366796',
-              site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
-            }
-          ],
-          name: 'additionalLocations'
-        },
-        {
-          value: [
-            'ctsc'
-          ],
-          name: 'userType'
-        },
-        {
-          value: [
-            'task-supervisor'
-          ],
-          name: 'roles'
-        },
-        {
-          value: [
-            'hearing-centre-team-leader'
-          ],
-          name: 'jobTitle'
-        },
-        {
-          value: [
-            'family-public-law-underwriter'
-          ],
-          name: 'skills'
-        }]}),
+    getStream: () => streamSubject,
     get: jasmine.createSpy(),
     persist: jasmine.createSpy(),
     givenErrors: {
@@ -112,27 +115,28 @@ describe('StaffAddEditUserFormComponent', () => {
       next: () => null,
       unsubscribe: () => null
     },
-    clearSessionAndLocalPersistance: jasmine.createSpy()
+    clearSessionAndLocalPersistance: jasmine.createSpy(),
+    submitted: false
   };
+  let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
 
   beforeEach(async () => {
-    class routerClass {
-      getCurrentNavigation() {
-        return { previousNavigation: {finalUrl: '/staff'}};
-      }
-    }
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['updateUser']);
     await TestBed.configureTestingModule({
       declarations: [StaffAddEditUserFormComponent, StaffMainContainerStubComponent, StaffUserCheckAnswersComponent],
       imports: [
         RouterTestingModule.withRoutes([
           { path: 'staff', component: StaffMainContainerStubComponent },
-          { path: 'staff/add-edit-user/check-your-answers', component: StaffUserCheckAnswersComponent }
+          { path: 'staff/add-edit-user/check-your-answers', component: StaffUserCheckAnswersComponent },
+          { path: 'service-down', component: StaffUserCheckAnswersComponent }
+
         ]),
         ReactiveFormsModule,
         HttpClientTestingModule,
         ExuiCommonLibModule,
       ],
       providers: [
+        { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: FilterService, useValue: mockFilterService },
         {
           provide: ActivatedRoute,
@@ -279,6 +283,29 @@ describe('StaffAddEditUserFormComponent', () => {
     tick();
 
     expect(location.path()).toBe('/staff');
+    flush();
+  }));
+
+  it('should submit data and navigate to staff if editMode and form is marked as submitted', fakeAsync(() => {
+    component.genericFilterComponent.submitted = true;
+    component.editMode = true;
+    fixture.detectChanges();
+
+    mockStaffDataAccessService.updateUser.and.returnValue(of({}));
+    streamSubject.next(streamTestData);
+    tick();
+    expect(location.path()).toBe('/staff');
+    flush();
+  }));
+  it('should navigate to service down if editMode and form is marked as submitted', fakeAsync(() => {
+    component.genericFilterComponent.submitted = true;
+    component.editMode = true;
+    fixture.detectChanges();
+
+    mockStaffDataAccessService.updateUser.and.returnValue(throwError({status: 500}));
+    streamSubject.next(streamTestData);
+    tick();
+    expect(location.path()).toBe('/service-down');
     flush();
   }));
 });

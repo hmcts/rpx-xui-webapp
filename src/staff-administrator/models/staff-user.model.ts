@@ -1,7 +1,7 @@
 import { FilterSetting, GroupOptions } from '@hmcts/rpx-xui-common-lib';
-import { STAFF_REGIONS } from '../components/staff-add-edit-user/staff-add-edit-user-form/staff-regions';
 import { Roles } from './roles.enum';
 import { StaffFilterOption } from './staff-filter-option.model';
+import { STAFF_REGIONS } from './staff-regions';
 
 export class StaffUser {
   public email_id: string;

@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
@@ -11,20 +11,23 @@ import {
   CaseEventTrigger,
   CaseField,
   CasesService,
-  CaseUIToolkitModule,
   createCaseEventTrigger,
   DraftService,
   HttpErrorService,
+  HttpService,
+  LoadingService,
+  OrderService,
   RequestOptionsBuilder,
   SearchService,
+  SessionStorageService,
+  WorkAllocationService
 } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
-import {combineReducers, StoreModule} from '@ngrx/store';
+import { combineReducers, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { SharedModule } from '../../../app/shared/shared.module';
 import * as fromCases from '../../store/reducers';
 import { CaseCreateSubmitComponent } from './case-create-submit.component';
 
@@ -68,6 +71,13 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   ignore_warning: false
 };
 
+@Component({
+  selector: 'exui-ccd-connector',
+  template: '<div></div>'
+})
+
+class FakeExuidCcdConnectorComponent {}
+
 describe('CaseCreateSubmitComponent', () => {
   let component: CaseCreateSubmitComponent;
   let fixture: ComponentFixture<CaseCreateSubmitComponent>;
@@ -80,20 +90,18 @@ describe('CaseCreateSubmitComponent', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of({}));
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        CaseUIToolkitModule,
-        HttpClientTestingModule,
+        ExuiCommonLibModule,
         HttpClientTestingModule,
         StoreModule.forRoot({...fromCases.reducers, cases: combineReducers(fromCases.reducers)}),
         EffectsModule.forRoot([]),
-        SharedModule
       ],
-      declarations: [CaseCreateSubmitComponent],
+      declarations: [CaseCreateSubmitComponent, FakeExuidCcdConnectorComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
@@ -120,6 +128,11 @@ describe('CaseCreateSubmitComponent', () => {
         CCDAuthService,
         DraftService,
         AlertService,
+        HttpService,
+        OrderService,
+        WorkAllocationService,
+        LoadingService,
+        SessionStorageService,
         HttpErrorService,
         AppConfigService,
         AppConfig,
@@ -147,9 +160,10 @@ describe('CaseCreateSubmitComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(async (() => {
+  beforeEach(waitForAsync (() => {
     fixture = TestBed.createComponent(CaseCreateSubmitComponent);
     component = fixture.componentInstance;
+    casesService = fixture.debugElement.injector.get(CasesService);
     casesService = fixture.debugElement.injector.get(CasesService);
     draftService = fixture.debugElement.injector.get(DraftService);
 

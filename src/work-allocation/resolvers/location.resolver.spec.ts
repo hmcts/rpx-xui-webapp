@@ -254,7 +254,8 @@ describe('LocationResolver', () => {
       location: {
         id: 231596,
         locationName: 'Birmingham'
-      }
+      },
+      roleCategory: ''
     }
   ];
 
@@ -275,16 +276,16 @@ describe('LocationResolver', () => {
         ]
       }
     );
-    caseworkerDataService = TestBed.get(CaseworkerDataService) as CaseworkerDataService;
-    judicialWorkerDataService = TestBed.get(AllocateRoleService) as AllocateRoleService;
-    locationService = TestBed.get(LocationDataService) as LocationDataService;
-    sessionStorageService = TestBed.get(SessionStorageService) as SessionStorageService;
-    store = TestBed.get(Store) as Store<fromCaseList.State>;
+    caseworkerDataService = TestBed.inject(CaseworkerDataService) as CaseworkerDataService;
+    judicialWorkerDataService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
+    locationService = TestBed.inject(LocationDataService) as LocationDataService;
+    sessionStorageService = TestBed.inject(SessionStorageService) as SessionStorageService;
+    store = TestBed.inject(Store) as Store<fromCaseList.State>;
 
   });
 
   it('should be created', () => {
-    const service: LocationResolver = TestBed.get(LocationResolver);
+    const service: LocationResolver = TestBed.inject(LocationResolver);
     expect(service).toBeTruthy();
   });
 

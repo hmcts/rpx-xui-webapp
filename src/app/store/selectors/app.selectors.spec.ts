@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
-
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromActions from '../actions';
 import * as fromReducers from '../reducers';
 import * as fromSelectors from './app.selectors';
+
 
 
 describe('App Selectors', () => {
@@ -87,7 +87,7 @@ describe('App Selectors', () => {
       ],
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     spyOn(store, 'dispatch').and.callThrough();
   });

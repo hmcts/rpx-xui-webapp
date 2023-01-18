@@ -63,8 +63,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public ngOnInit(): void {
-    this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState), take(4)).subscribe(
-      state => {
+    this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe({
+      next: (state: fromHearingStore.State) => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
         this.hearingLinks = state.hearingLinks;
         if (this.hearingLinks.serviceLinkedCasesWithHearings && this.hearingLinks.serviceLinkedCasesWithHearings.length) {
@@ -73,10 +73,13 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
           } else {
             this.setHearingLinkedGroup(this.hearingLinks);
           }
-          this.showSpinner = false;
         }
+        this.showSpinner = false;
+      },
+      error: () => {
+        this.showSpinner = false;
       }
-    );
+    });
   }
 
   public setHearingLinkedGroup(hearingLinksStateData: HearingLinksStateData) {
@@ -217,12 +220,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public onCancel(): void {
-    if (this.isManageLink) {
-      this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
-    } else {
-      this.hearingStore.dispatch(new fromHearingStore.ResetLinkedHearingLastError());
-      this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
-    }
+    this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
   }
 
   public ngOnDestroy(): void {

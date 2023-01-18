@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocPhoneUkFieldComponent } from './noc-phone-uk-field.component';
+
 
 describe('NocPhoneUkFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -36,7 +36,7 @@ describe('NocPhoneUkFieldComponent', () => {
   let component: NocPhoneUkFieldComponent;
   let fixture: ComponentFixture<NocPhoneUkFieldComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [

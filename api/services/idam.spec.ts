@@ -3,15 +3,15 @@ import { expect } from 'chai'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
+import { getConfigValue } from '../configuration'
+import {
+    SERVICES_IDAM_API_URL
+} from '../configuration/references'
+import { http } from '../lib/http'
+import * as idam from './idam'
 chai.use(sinonChai)
 
-import { http } from '../lib/http'
 
-import {getConfigValue} from '../configuration'
-import {
-  SERVICES_IDAM_API_URL,
-} from '../configuration/references'
-import * as idam from './idam'
 
 
 describe('cohQA', () => {

@@ -1,9 +1,9 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 // import mocha from 'mocha';
 import { config } from './config/config';
-import { getXSRFToken } from './utils/authUtil'
+import { getXSRFToken } from './utils/authUtil';
+import { setTestContext } from './utils/helper';
 import Request from './utils/request';
-import { setTestContext} from './utils/helper';
 
 describe('CCD Endpoints',  () => {
     const userName = config.users[config.testEnv].solicitor.e;

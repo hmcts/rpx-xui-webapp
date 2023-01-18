@@ -46,7 +46,6 @@
     "no-non-null-assertion": true,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
-    "no-use-before-declare": true,
     "no-var-requires": false,
     "no-string-literal": false,
     "object-literal-key-quotes": [
@@ -61,20 +60,23 @@
     ],
     "trailing-comma": false,
     "no-output-on-prefix": true,
-    "use-input-property-decorator": true,
-    "use-output-property-decorator": true,
-    "use-host-property-decorator": true,
+    "no-inputs-metadata-property": true,
+    "no-outputs-metadata-property": true,
+    "no-host-metadata-property": true,
     "no-input-rename": true,
     "no-output-rename": true,
-    "use-life-cycle-interface": true,
+    "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
     "directive-class-suffix": true,
-    "no-attribute-parameter-decorator": true,
-
+    "no-attribute-decorator": true,
     "variable-name": {
       "options": [
-        "require-const-for-all-caps"
+        "require-const-for-all-caps",
+        "allow-pascal-case",
+        "allow-leading-underscore",
+        "allow-snake-case",
+        "allow-trailing-underscore"
       ],
       "severity": "warning"
     },
@@ -85,7 +87,6 @@
     "no-duplicate-switch-case": { "severity": "warning" },
     "no-duplicate-variable": { "severity": "warning" },
     "no-unused-expression": { "severity": "warning" },
-    "no-unused-variable": { "severity": "warning" },
     "switch-default": { "severity": "warning" },
     "triple-equals": { "severity": "warning" },
     "prefer-readonly": { "severity": "warning" },

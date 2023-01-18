@@ -2,6 +2,7 @@ import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
 import { BookingSystemErrorComponent } from 'src/booking/containers/utils/booking-system-error/booking-system-error.component';
+import { MyTasksComponent } from 'src/work-allocation/containers';
 import {
   AccessibilityComponent,
   ApplicationRoutingComponent,
@@ -11,7 +12,7 @@ import {
   NotAuthorisedComponent,
   PrivacyPolicyComponent,
   ServiceDownComponent,
-  SignedOutComponent,
+  SignedOutComponent
 } from './components';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
@@ -32,41 +33,34 @@ export const ROUTES: Routes = [
   {
     path: 'cases',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../cases/cases.module#CasesModule'
+    loadChildren: () => import('../cases/cases.module').then(m => m.CasesModule)
   },
   {
     path: 'booking',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../booking/booking.module#BookingModule'
+    loadChildren: () => import('../booking/booking.module').then(m => m.BookingModule)
   },
   {
     path: 'work',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
-  },
-  {
-    // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
-    path: 'tasks',
-    redirectTo: 'work/my-work/list',
-    canActivate: [AuthGuard, AcceptTermsGuard]
+    loadChildren: () => import('../work-allocation/work-allocation.module').then(m => m.WorkAllocationModule)
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks/:subRoute',
-    redirectTo: 'work/my-work/list',
     pathMatch: 'prefix',
-    canActivate: [AuthGuard, AcceptTermsGuard]
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    component: MyTasksComponent
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks',
-    redirectTo: 'work/my-work/list',
-    canActivate: [AuthGuard, AcceptTermsGuard]
+    redirectTo: 'work/my-work/list'
   },
   {
     path: 'role-access',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../role-access/role-access.module#RoleAccessModule'
+    loadChildren: () => import('../role-access/role-access.module').then(m => m.RoleAccessModule)
   },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
@@ -84,12 +78,12 @@ export const ROUTES: Routes = [
   {
     path: 'noc',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../noc/noc.module#NocModule'
+    loadChildren: () => import('../noc/noc.module').then(m => m.NocModule)
   },
   {
     path: 'hearings',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../hearings/hearings.module#HearingsModule'
+    loadChildren: () => import('../hearings/hearings.module').then(m => m.HearingsModule)
   },
   {
     path: 'cookies',
@@ -188,7 +182,7 @@ export const ROUTES: Routes = [
   {
     path: 'search',
     canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
-    loadChildren: '../search/search.module#SearchModule',
+    loadChildren: () => import('../search/search.module').then(m => m.SearchModule),
     data: {
       title: 'Search cases',
       needsFeaturesEnabled: ['feature-global-search'],
@@ -198,7 +192,7 @@ export const ROUTES: Routes = [
   {
     path: 'refunds',
     canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
-    loadChildren: '../refunds/refunds.module#RefundsModule',
+    loadChildren: () => import('../refunds/refunds.module').then(m => m.RefundsModule),
     data: {
       title: 'Refunds',
       needsFeaturesEnabled: ['feature-refunds'],

@@ -23,11 +23,11 @@ describe('HearingCompletedSummaryComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(HearingCompletedSummaryComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 

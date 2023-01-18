@@ -1,8 +1,8 @@
-import {TestBed} from '@angular/core/testing';
-import {select, Store, StoreModule} from '@ngrx/store';
-import {reducers} from '../index';
-import {initialHearingListState, State} from '../reducers';
-import {getHearingList} from './hearing-list.selectors';
+import { TestBed } from '@angular/core/testing';
+import { select, Store, StoreModule } from '@ngrx/store';
+import { reducers } from '../index';
+import { initialHearingListState, State } from '../reducers';
+import { getHearingList } from './hearing-list.selectors';
 
 describe('Hearing List selectors', () => {
   let store: Store<State>;
@@ -13,7 +13,7 @@ describe('Hearing List selectors', () => {
         StoreModule.forFeature('hearings', reducers),
       ],
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   });
 

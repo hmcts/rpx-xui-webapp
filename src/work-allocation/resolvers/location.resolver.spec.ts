@@ -281,7 +281,6 @@ describe('LocationResolver', () => {
     locationService = TestBed.inject(LocationDataService) as LocationDataService;
     sessionStorageService = TestBed.inject(SessionStorageService) as SessionStorageService;
     store = TestBed.inject(Store) as Store<fromCaseList.State>;
-
   });
 
   it('should be created', () => {

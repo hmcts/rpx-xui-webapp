@@ -97,7 +97,6 @@ export class StaffAddEditUserFormComponent implements OnInit {
   public onSubmitEditMode(data: FilterSetting) {
     const staffUser = new StaffUser();
     staffUser.initFromGenericFilter(data, this.staffFilterOptions);
-    console.log(staffUser);
   }
 
   public initFormConfig() {

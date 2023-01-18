@@ -2,11 +2,12 @@ import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HmctsBannerComponent } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 import { staffUserDetailsTestData } from 'src/staff-administrator/test-data/staff-user-details.test.data';
+import { PluckAndJoinPipe } from '../../pipes/pluckAndJoin.pipe';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffStatusComponent } from '../staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from '../staff-suspended-banner/staff-suspended-banner.component';
@@ -15,7 +16,7 @@ import { StaffUserDetailsComponent } from './staff-user-details.component';
 @Component({
   template: ''
 })
-export class ServiceDownStubComponent {}
+class ServiceDownStubComponent {}
 
 describe('StaffUserDetailsComponent', () => {
   let component: StaffUserDetailsComponent;
@@ -23,12 +24,20 @@ describe('StaffUserDetailsComponent', () => {
   let route: ActivatedRoute;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let location: Location;
+  let router: jasmine.SpyObj<Router>;
 
   beforeEach(async(() => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['updateUserStatus']);
 
     TestBed.configureTestingModule({
-      declarations: [ StaffUserDetailsComponent, StaffStatusComponent, StaffSuspendedBannerComponent, HmctsBannerComponent, ServiceDownStubComponent ],
+      declarations: [
+        StaffUserDetailsComponent,
+        StaffStatusComponent,
+        StaffSuspendedBannerComponent,
+        HmctsBannerComponent,
+        ServiceDownStubComponent,
+        PluckAndJoinPipe
+      ],
       imports: [HttpClientTestingModule,
         RouterTestingModule.withRoutes([
           { path: 'service-down', component: ServiceDownStubComponent}
@@ -51,6 +60,11 @@ describe('StaffUserDetailsComponent', () => {
   }));
 
   beforeEach(() => {
+    router = TestBed.get(Router);
+    spyOn(router, 'getCurrentNavigation').and.returnValue(
+      { extras: { state: { user: {} } } }
+    );
+
     fixture = TestBed.createComponent(StaffUserDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

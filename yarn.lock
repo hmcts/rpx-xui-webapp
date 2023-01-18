@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.19-region-filter-changes-1":
-  version "1.7.19-region-filter-changes-1"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.19-region-filter-changes-1.tgz#56b1cb1cc2fd65baf484be299221a79e69d9a10a"
-  integrity sha512-ZAwQujTcKMD//tRgEwkY7OyrbX0Wjwc3LqjKSOE+jDoRieS+PgFMg6AhX7TYFd2Fpv2AH2Bb/JE6viTJF8Au7A==
+"@hmcts/rpx-xui-common-lib@2.1.6-angular-upgrade-11-fix-field-issue":
+  version "2.1.6-angular-upgrade-11-fix-field-issue"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-angular-upgrade-11-fix-field-issue.tgz#0b9887457eb0a06523c5b82e5a6d7e1e776ec756"
+  integrity sha512-lpwlbgUK/8v8SmzscpE/YAfZwkkOpI3P97YAlWR5OYZYBMugoWEv04BOYM62UQ71fUaJt3cJ6absBvNyowT4Bg==
   dependencies:
     tslib "^1.9.0"
 

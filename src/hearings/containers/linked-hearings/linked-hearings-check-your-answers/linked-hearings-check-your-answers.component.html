@@ -22,7 +22,9 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of linkedCaseHearingsResults">
           <td class="govuk-table__cell">
-            {{case.caseName}} {{case.caseRef | caseReference}}
+            {{case.caseName}}
+            <br>
+            {{case.caseRef | caseReference}}
           </td>
           <td class="govuk-table__cell">{{case.hearingType | convertToValue : hearingStageOptions}}</td>
           <td class="govuk-table__cell" *ngIf="showPositionColumn">{{case.position}}</td>

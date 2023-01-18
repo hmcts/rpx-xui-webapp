@@ -1,13 +1,13 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {LocationModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {CourtLocationAnswerConverter} from './court-location.answer.converter';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { CourtLocationAnswerConverter } from './court-location.answer.converter';
 
 describe('CourtLocationAnswerConverter', () => {
 
@@ -49,14 +49,14 @@ describe('CourtLocationAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     listedVenueAnswerConverter = new CourtLocationAnswerConverter(router);
   });
 
   it('should transform type', () => {
     const STATE: State = initialState.hearings;
-    const result$ = listedVenueAnswerConverter.transformAnswer(of(STATE));
+    const result$ = listedVenueAnswerConverter.transformAnswer(of(STATE), 0);
     const type = COURT_LOCATION[0].site_name;
     const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);

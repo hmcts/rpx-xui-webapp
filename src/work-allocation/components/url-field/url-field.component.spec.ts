@@ -1,15 +1,16 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RouterTestingModule } from '@angular/router/testing';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { UrlFieldComponent } from './url-field.component';
 
+
 @Component({
   template: `<exui-url-field [href]="href" [label]="label" [target]="target"></exui-url-field>`
 })
 class WrapperComponent {
-  @ViewChild(UrlFieldComponent) public appComponentRef: UrlFieldComponent;
+  @ViewChild(UrlFieldComponent, {static: true}) public appComponentRef: UrlFieldComponent;
   @Input() public href: string;
   @Input() public label: string;
   @Input() public target: string;
@@ -22,15 +23,13 @@ describe('WorkAllocation', () => {
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
       })
       .compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;

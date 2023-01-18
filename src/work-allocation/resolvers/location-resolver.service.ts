@@ -72,7 +72,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     const possibleServices = [];
     // simple loop as idea is just to get list of possible services to check
     userDetails.roleAssignmentInfo.forEach(roleAssignment => {
-      if (!possibleServices.includes(roleAssignment.jurisdiction)) {
+      if (roleAssignment.jurisdiction && !possibleServices.includes(roleAssignment.jurisdiction)) {
         possibleServices.push(roleAssignment.jurisdiction);
       }
     })
@@ -84,7 +84,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.getUserRole(userDetails.userInfo.roles);
     let userLocationsByService: LocationsByService[] = [];
     const allLocationServices: string[] = [];
-    // TODO: Take bookable role assignments into consideration
     userDetails.roleAssignmentInfo.forEach(roleAssignment => {
       const roleJurisdiction = roleAssignment.jurisdiction;
       if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
@@ -122,12 +121,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       location.services.map((service) => {
         userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices, true) : addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices);
       });
-    });
-    this.bookableServices.forEach(bookableService => {
-      if (!this.locationServices.has(bookableService)) {
-        const newBookableService: LocationsByService = { service: bookableService, locations: [], bookable: true };
-        userLocationsByService.push(newBookableService);
-      }
     });
     this.sessionStorageService.setItem('userLocations', JSON.stringify(userLocationsByService));
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
@@ -172,7 +165,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   }
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {
-    locations = locations.filter(location => location.id !== undefined);
+    locations = locations.filter(location => !!location.id);
     if (!locations || locations.length === 0) {
       return of(null);
     }

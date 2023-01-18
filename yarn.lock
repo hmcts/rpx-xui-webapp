@@ -546,10 +546,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.19-create-booking":
-  version "1.7.19-create-booking"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.19-create-booking.tgz#1164d1b30a317608974884bc30b0483f4eff1930"
-  integrity sha512-DiUU3JZmnX+rZYF2Ccno6CHENRf8YxILAG3eMzB1aWIlfo5xaqyHpNJPmvveOs6RVw6QxtXtcNSkDfinFm7DzA==
+"@hmcts/rpx-xui-common-lib@1.7.19-region-filter-changes-1":
+  version "1.7.19-region-filter-changes-1"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.19-region-filter-changes-1.tgz#56b1cb1cc2fd65baf484be299221a79e69d9a10a"
+  integrity sha512-ZAwQujTcKMD//tRgEwkY7OyrbX0Wjwc3LqjKSOE+jDoRieS+PgFMg6AhX7TYFd2Fpv2AH2Bb/JE6viTJF8Au7A==
   dependencies:
     tslib "^1.9.0"
 

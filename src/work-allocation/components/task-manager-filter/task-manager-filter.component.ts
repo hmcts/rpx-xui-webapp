@@ -146,6 +146,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         {
           key: PersonRole.ADMIN,
           label: PersonRole.ADMIN
+        },
+        {
+          key: PersonRole.CTSC,
+          label: PersonRole.CTSC
         }
       ],
       minSelected: 1,
@@ -194,6 +198,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         {
           key: 'ADMIN',
           label: 'Admin'
+        },
+        {
+          key: 'CTSC',
+          label: 'CTSC'
         }
       ],
       minSelected: 1,

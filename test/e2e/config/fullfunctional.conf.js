@@ -84,7 +84,7 @@ const config = {
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
+        format: ['node_modules/cucumber-pretty', 'json:functional-output/tests/json/results.json'],
         tags: ['@fullfunctional','not @ignore'],
         // tags: ['@test', 'not @ignore'],
 
@@ -107,8 +107,8 @@ const config = {
                 removeExistingJsonReportFile: true,
                 reportName: 'XUI Manage Cases Full Functional Tests',
                 // openReportInBrowser: true,
-                jsonDir: 'reports/tests/functional',
-                reportPath: 'reports/tests/functional',
+                jsonDir: 'functional-output/tests/functional',
+                reportPath: 'functional-output/tests/functional',
                 displayDuration: true,
                 durationInMS: false
             }

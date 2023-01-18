@@ -11,10 +11,8 @@ export interface ActualIndividualDetailsModel {
   lastName: string;
 }
 
-export interface IndividualDetailsModel {
+export interface IndividualDetailsModel extends ActualIndividualDetailsModel {
   title: string;
-  firstName: string;
-  lastName: string;
 }
 
 export interface OrganisationDetailsModel {
@@ -40,6 +38,14 @@ export interface ActualDayPartyModel {
   representedParty: string;
 }
 
+export interface DisplayDayPartyModel {
+  partyID: string;
+  partyRole: string;
+  individualDetails: ActualIndividualDetailsModel;
+  actualOrganisationName: string;
+  partyChannelSubType: string;
+}
+
 export interface PlannedHearingDayModel {
   plannedStartTime: string;
   plannedEndTime: string;
@@ -52,6 +58,7 @@ export interface ActualHearingDayModel {
   hearingEndTime: string;
   pauseDateTimes: PauseDateTimeModel[];
   actualDayParties: ActualDayPartyModel[];
+  notRequired: boolean;
 }
 
 export interface HearingOutcomeModel {

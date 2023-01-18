@@ -9,7 +9,7 @@ describe('CaseShareConfirmComponent', () => {
   let component: CaseShareConfirmComponent;
   let fixture: ComponentFixture<CaseShareConfirmComponent>;
 
-  let store: MockStore<State>;
+  let store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -19,7 +19,7 @@ describe('CaseShareConfirmComponent', () => {
         provideMockStore(),
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(CaseShareConfirmComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

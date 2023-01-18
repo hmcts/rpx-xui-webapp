@@ -128,6 +128,14 @@ export class LoadUserDetails implements Action {
   public readonly type = LOAD_USER_DETAILS;
 }
 
+export class StartIdleSessionTimeout {
+  public readonly type = START_IDLE_SESSION_TIMEOUT;
+}
+
+export class StopIdleSessionTimeout {
+  public readonly type = STOP_IDLE_SESSION_TIMEOUT;
+}
+
 // TODO: strong type the payload
 export class LoadUserDetailsSuccess implements Action {
   public readonly type = LOAD_USER_DETAILS_SUCCESS;
@@ -137,14 +145,6 @@ export class LoadUserDetailsSuccess implements Action {
 export class LoadUserDetailsFail implements Action {
   public readonly type = LOAD_USER_DETAILS_FAIL;
   constructor(public payload: any) {}
-}
-
-export class StartIdleSessionTimeout implements Action {
-  public readonly type = START_IDLE_SESSION_TIMEOUT;
-}
-
-export class StopIdleSessionTimeout implements Action {
-  public readonly type = STOP_IDLE_SESSION_TIMEOUT;
 }
 
 export class Decorate16DigitCaseReferenceSearchBoxInHeader implements Action {

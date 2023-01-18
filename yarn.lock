@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.2-add-ctsc-role":
-  version "6.10.2-add-ctsc-role"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.2-add-ctsc-role.tgz#62ffd40cd29f2ecd3cb8811f3f5f843c96b12699"
-  integrity sha512-klV7NxOxkdrmA2W3tJIjcbl/GsSClxGs0kLpws2NSRJIkncubyQ1pXDJZNOlPt81VHE70AUjTbOwiaZzFtWHoA==
+"@hmcts/ccd-case-ui-toolkit@6.10.2-fix-multiple-complete-task1":
+  version "6.10.2-fix-multiple-complete-task1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.2-fix-multiple-complete-task1.tgz#2806a28d625d1c348d451eda5b4293cf756d7bda"
+  integrity sha512-2YTJjqHs226AgG0eDeqCOxENHf/O1tIUBZ58kbX0n9shKOOUgCJhCK4Pw7FEc49TCNc8Vapil8AZ2yfGjVdU0g==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

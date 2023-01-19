@@ -2298,7 +2298,7 @@ export const initialState = {
           duration: 60,
           hearingType: 'final',
           hearingChannels: [],
-          hearingLevelParticipantAttendance: [],
+          hearingLevelParticipantAttendance: ['byPhone'],
           hearingLocations: [
             {
               locationId: '196538',

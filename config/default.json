@@ -221,7 +221,7 @@
     {
       "idleModalDisplayTime": 10,
       "pattern": "-solicitor",
-      "totalIdleTime": 50
+      "totalIdleTime": 11
     },
     {
       "idleModalDisplayTime": 10,

@@ -159,11 +159,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map(location => location.locationId).join(',');
       this.locationsDataService.getLocationById(strLocationIds).toPromise()
         .then(locations => {
-          this.strRegions = locations.map(location => location.region).join(',');
+          this.strRegions = locations.map(location => location.region_id).join(',');
         }).then(() => {
           const hearingCondition: HearingConditions = {
             isInit: false,
-            region: this.strRegions
+            regionId: this.strRegions
           };
           this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
         });

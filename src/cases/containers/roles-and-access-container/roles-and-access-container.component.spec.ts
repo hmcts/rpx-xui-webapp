@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AbstractAppConfig, AlertService, AuthService, CaseField, CasesService, CaseUIToolkitModule, CaseView, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, AlertService, AuthService, CaseField, CasesService, CaseView, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
@@ -163,7 +163,7 @@ describe('RolesContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule, CaseUIToolkitModule],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule],
       providers: [
         CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
         {
@@ -211,7 +211,9 @@ describe('RolesContainerComponent', () => {
   });
 
   it('setDisplayAllocateLink to set true for JUDICIAL', () => {
+
     component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
+
     expect(component.showAllocateRoleLink).toBeTruthy();
   });
 
@@ -272,6 +274,34 @@ describe('RolesContainerComponent', () => {
       expect(roles[0].roleCategory).toEqual('JUDICIAL');
     });
   });
+
+  // it('loadRoles should update with caseRoles', () => {
+  //   component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
+  //   const caseDetails = {} as CaseView;
+  //   caseDetails.case_id = '123456789';
+  //   caseDetails.case_type = {
+  //     id: '334',
+  //     name: '',
+  //     description: '',
+  //     jurisdiction: {
+  //       id: '',
+  //       name: '',
+  //       description: '',
+  //     },
+  //     printEnabled: false
+  //   }
+  //   component.caseDetails = caseDetails;
+  //   const caseRoles = [];
+  //   allocateService.getCaseRoles.and.returnValue(of(caseRoles));
+  //   const caseUserDetails = [{ known_as: 'some', idam_id: '234' }];
+  //   allocateService.getCaseRolesUserDetails.and.returnValue(of(caseUserDetails));
+  //   const casefield = {};
+  //   component.loadRoles(casefield);
+  //   component.roles$.subscribe(roles => {
+  //     expect(roles).toEqual(caseRoles);
+  //   });
+  // });
+
   it('loadExclusions', () => {
     component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
 
@@ -295,5 +325,31 @@ describe('RolesContainerComponent', () => {
     component.exclusions$.subscribe(() => {
       expect(allocateService.getCaseRolesUserDetails).toHaveBeenCalled();
     });
+  });
+
+  it('loadExclusions should update exclusions with empty array', () => {
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+
+    const jurisdiction = { value: 'ia' };
+    const exclusions = [];
+    const caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
+    component.caseDetails = caseDetails;
+    roleExclusionsService.getCurrentUserRoleExclusions.and.returnValue(of(exclusions));
+    component.loadExclusions(jurisdiction);
+    component.exclusions$.subscribe((actual) => {
+      expect(actual).toEqual(exclusions);
+    });
+  });
+
+  it('applyJurisdiction', () => {
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    spyOn(component, 'setDisplayAllocateLink');
+
+    store.select.and.returnValue(of({}));
+    component.applyJurisdiction(CASE_VIEW);
+
+    expect(component.setDisplayAllocateLink).toHaveBeenCalled();
+    expect(component.caseJurisdiction).toEqual('JUDICIAL');
+
   });
 });

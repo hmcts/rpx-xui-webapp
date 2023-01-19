@@ -1,16 +1,16 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Task } from '../../models/tasks';
 import { getMockTasks } from '../../tests/utils.spec';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { DerivedIconFieldComponent } from './derived-icon-field.component';
 
+
 @Component({
   template: `<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>`
 })
 class WrapperComponent {
-  @ViewChild(DerivedIconFieldComponent) public appComponentRef: DerivedIconFieldComponent;
+  @ViewChild(DerivedIconFieldComponent, {static: true}) public appComponentRef: DerivedIconFieldComponent;
   @Input() public task: Task = null;
   @Input() public sourceColumn: string;
   @Input() public matchValue: any;
@@ -30,15 +30,13 @@ describe('WorkAllocation', () => {
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ]
       })
       .compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;

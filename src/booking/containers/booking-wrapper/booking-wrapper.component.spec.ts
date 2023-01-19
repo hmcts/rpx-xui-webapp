@@ -1,17 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BookingNavigationEvent, BookingState } from '../../models';
 import { SessionStorageService } from '../../../app/services';
+import { BookingNavigationEvent, BookingState } from '../../models';
 import { BookingWrapperComponent } from './booking-wrapper.component';
-import session = require('express-session');
 
 describe('BookingWrapperComponent', () => {
   let component: BookingWrapperComponent;
   let fixture: ComponentFixture<BookingWrapperComponent>;
   let sessionStorageService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
 
     TestBed.configureTestingModule({

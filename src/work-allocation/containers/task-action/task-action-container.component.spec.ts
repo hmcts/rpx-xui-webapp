@@ -5,7 +5,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { TaskListComponent } from '..';
@@ -49,7 +49,8 @@ describe('WorkAllocation', () => {
     const mockTasks = getMockTasks();
 
     const mockWorkAllocationService = {
-      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({}))
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -95,7 +96,7 @@ describe('WorkAllocation', () => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
 
       wrapper.tasks = null;
       window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
@@ -252,7 +253,8 @@ describe('WorkAllocation', () => {
     let router: Router;
 
     const mockWorkAllocationService = {
-      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({}))
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -305,7 +307,7 @@ describe('WorkAllocation', () => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
 
       wrapper.tasks = null;
       window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
@@ -332,13 +334,16 @@ describe('WorkAllocation', () => {
     let router: Router;
 
     const mockWorkAllocationService = {
-      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({}))
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleService.getValue.and.returnValue(of(true));
+    const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
+    mockNotifierService.cachedCaseView = {};
     const userDetails = {
       id: 'id122',
       forename: 'John',
@@ -379,13 +384,14 @@ describe('WorkAllocation', () => {
               params: of({task: mockTask[0]})
             }
           },
-          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
+          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+          { provide: CaseNotifier, useValue: mockNotifierService }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
 
       wrapper.tasks = null;
       window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');

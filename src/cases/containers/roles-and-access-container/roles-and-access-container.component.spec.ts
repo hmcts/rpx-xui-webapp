@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AbstractAppConfig, AlertService, AuthService, CaseField, CasesService, CaseView, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, AlertService, AuthService, CaseField, CaseNotifier, CasesService, CaseView, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
@@ -129,6 +129,8 @@ describe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
   let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRoles', 'getCaseRolesUserDetails']);
+  const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
+  mockNotifierService.cachedCaseView = {};
   const data: CaseRoleDetails[] = [
     {
       idam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
@@ -166,6 +168,7 @@ describe('RolesContainerComponent', () => {
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule],
       providers: [
         CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
+        { provide: CaseNotifier, useValue: mockNotifierService },
         {
           provide: RoleExclusionsService,
           useClass: RoleExclusionsMockService
@@ -239,12 +242,14 @@ describe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
   let featureToggleService: FeatureToggleService;
   const route = jasmine.createSpyObj('route', ['navigate']);
-  const store = jasmine.createSpyObj('route', ['pipe']);
+  const store = jasmine.createSpyObj('route', ['pipe', 'select']);
   featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const roleExclusionsService = jasmine.createSpyObj('route', ['getCurrentUserRoleExclusions']);
   const allocateService = jasmine.createSpyObj('route', ['getCaseRoles', 'getCaseRolesUserDetails']);
   const caseworkerDataService = jasmine.createSpyObj('route', ['loadAll']);
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
+  const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
+    mockNotifierService.cachedCaseView = {};
   it('loadRoles', () => {
     component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
     const caseDetails = {} as CaseView;

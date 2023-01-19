@@ -1,7 +1,7 @@
-import {Store} from '@ngrx/store';
+import { Store } from '@ngrx/store';
+import { initApplication } from './app-initilizer';
 import * as fromApp from './store';
 
-import {initApplication} from './app-initilizer';
 
 describe('initApplication', () => {
 

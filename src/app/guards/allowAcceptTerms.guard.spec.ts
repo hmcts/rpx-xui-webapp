@@ -1,5 +1,5 @@
-import { AllowAcceptTermsGuard } from './allowAcceptTerms.guard';
 import { of } from 'rxjs';
+import { AllowAcceptTermsGuard } from './allowAcceptTerms.guard';
 
 describe('Allow Accept Terms guard', () => {
     let guard: AllowAcceptTermsGuard;

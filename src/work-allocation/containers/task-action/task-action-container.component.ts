@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { filter } from 'rxjs/operators';
+
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -87,7 +89,7 @@ export class TaskActionContainerComponent implements OnInit {
     }
 
     this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.filter(v => !!v).subscribe(value => {
+    this.isUpdatedTaskPermissions$.pipe(filter(v => !!v)).subscribe(value => {
       this.updatedTaskPermission = value;
     });
   }

@@ -22,12 +22,13 @@ import { getMockLocations, getMockTasks, MockRouter } from '../../tests/utils.sp
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
+
 @Component({
   template: `
     <exui-available-tasks></exui-available-tasks>`
 })
 class WrapperComponent {
-  @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
+  @ViewChild(AvailableTasksComponent, { static: true }) public appComponentRef: AvailableTasksComponent;
 }
 
 const userInfo =

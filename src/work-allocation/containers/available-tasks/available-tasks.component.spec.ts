@@ -55,7 +55,7 @@ describe('AvailableTasksComponent', () => {
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getCaseworkersForServices']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
@@ -90,7 +90,7 @@ describe('AvailableTasksComponent', () => {
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     mockLocationService.getLocations.and.returnValue(of(mockLocations));

@@ -26,8 +26,6 @@ export class AppComponent implements OnInit, OnDestroy {
     isVisible: false,
   };
 
-  private timeoutNotificationOnChange$: Observable<any>;
-
   private userId: string = null;
   public cookieName;
   public isCookieBannerVisible: boolean = false;
@@ -59,7 +57,9 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.timeoutNotificationOnChange$ = this.timeoutNotificationsService.notificationOnChange();
+    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
+      this.timeoutNotificationEventHandler(event);
+    });
   }
 
   public ngOnInit() {
@@ -123,7 +123,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.initializeFeature(userDetails.userInfo, ldClientId);
       if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
-        this.addTimeoutNotificationServiceListener();
         /**
          * Fix for EUI-4469 Live Defect - Google Tag Manager broken
          *
@@ -188,17 +187,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.cookieService.deleteCookieByPartialMatch('rxVisitor', '/', `.${domainName}`);
       this.cookieService.deleteCookieByPartialMatch('dt', '/', `.${domainName}`);
     }
-  }
-
-  /**
-   * Add Timeout Notification Service Listener
-   *
-   * We listen for Timeout Notification Service events.
-   */
-  public addTimeoutNotificationServiceListener() {
-    this.timeoutNotificationOnChange$.subscribe(event => {
-      this.timeoutNotificationEventHandler(event);
-    });
   }
 
   /**

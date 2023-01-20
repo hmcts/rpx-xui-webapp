@@ -57,8 +57,10 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
-      this.timeoutNotificationEventHandler(event);
+    this.timeoutNotificationsService.notificationOnChange().subscribe({
+      next: (event) => {
+        this.timeoutNotificationEventHandler(event);
+      }
     });
   }
 

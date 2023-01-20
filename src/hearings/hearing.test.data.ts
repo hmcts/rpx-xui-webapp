@@ -1659,16 +1659,16 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     },
     {
       screenName: 'hearing-venue',
-      conditionKey: 'region',
+      conditionKey: 'regionId',
       navigation: [
         {
           conditionOperator: 'INCLUDE',
-          conditionValue: 'Wales',
+          conditionValue: '7',
           resultValue: 'hearing-welsh',
         },
         {
           conditionOperator: 'NOT INCLUDE',
-          conditionValue: 'Wales',
+          conditionValue: '7',
           resultValue: 'hearing-judge',
         },
       ],

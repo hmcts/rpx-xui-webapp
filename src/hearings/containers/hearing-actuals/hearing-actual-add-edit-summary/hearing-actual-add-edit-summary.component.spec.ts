@@ -1,7 +1,6 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {ReactiveFormsModule} from '@angular/forms';
+import { Pipe, PipeTransform } from '@angular/core';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Store} from '@ngrx/store';
@@ -16,6 +15,13 @@ import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import {HearingActualAddEditSummaryComponent} from './hearing-actual-add-edit-summary.component';
 import {ActualHearingDayModel} from '../../../models/hearingActualsMainModel';
+
+@Pipe({name: 'transformAnswer'})
+export class MockHearingAnswersPipe implements PipeTransform {
+    public transform(answerSource, hearingState$, index?: number): string {
+        return '';
+    }
+}
 
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
@@ -590,7 +596,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe],
+      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
       imports: [RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),

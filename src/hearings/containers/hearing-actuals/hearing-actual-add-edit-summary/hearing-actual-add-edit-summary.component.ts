@@ -11,6 +11,7 @@ import {
 } from '../../../models/hearingActualsMainModel';
 import {
   ACTION,
+  AnswerSource,
   HearingActualAddEditSummaryEnum,
   HearingChannelEnum,
   HearingDateEnum,
@@ -56,6 +57,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingDateRange: string;
   public hearingDatesAccordion = {} as { [hearingDate: string]: boolean };
   public actualHearingUtils = ActualHearingsUtils;
+  public answerSource = AnswerSource;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;

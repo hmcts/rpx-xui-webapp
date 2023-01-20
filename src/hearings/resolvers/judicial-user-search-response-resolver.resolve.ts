@@ -32,9 +32,11 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
       map((hearingRequest) => {
         const hearingJudgeIds: string[] = [];
-        if (hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse
+        if (hearingRequest.hearingRequestMainModel
+          && hearingRequest.hearingRequestMainModel.hearingResponse
           && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
           && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length === 1
+          && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId
           && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId.trim().length > 0) {
           hearingJudgeIds.push(hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId);
         }

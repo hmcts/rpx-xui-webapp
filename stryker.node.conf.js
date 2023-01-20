@@ -15,8 +15,7 @@ const modulesArr = [
 
 const modulesString = modulesArr.join(",");
 
-module.exports = function (config) {
-    config.set({
+module.exports = {
         // fileLogLevel: 'trace',
         // logLevel: 'trace',
         mutate: [`api/{${modulesString}}/*.ts`, "!api/**/*.spec.ts", "!api/test/**/*.ts"],
@@ -30,13 +29,11 @@ module.exports = function (config) {
         tsconfigFile: 'tsconfig.json',
         mochaOptions: {
             spec: [ "dist/out-tsc/api/{,!(test)/**/}*.spec.js" ],
-            // timeout: 5000
+            require: ["ts-node/register"]
         },
         htmlReporter: {
             baseDir: 'reports/tests/mutation/node/' 
         },
         maxConcurrentTestRunners: 2
 
-    });
-}
-
+};

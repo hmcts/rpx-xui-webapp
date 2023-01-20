@@ -2,10 +2,10 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, of } from 'rxjs';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
@@ -27,6 +27,13 @@ export class MockHearingAnswersPipe implements PipeTransform {
     <div>Nothing</div>`
 })
 class NothingComponent {}
+
+@Pipe({name: 'transformAnswer'})
+export class MockHearingAnswersPipe implements PipeTransform {
+    public transform(answerSource, hearingState$, index?: number): string {
+        return '';
+    }
+}
 
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;

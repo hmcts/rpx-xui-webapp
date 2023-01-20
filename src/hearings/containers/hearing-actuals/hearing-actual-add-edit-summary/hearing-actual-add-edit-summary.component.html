@@ -56,6 +56,11 @@
           <dt class="govuk-summary-list__key">Hearing result</dt>
           <dd class="govuk-summary-list__value">{{hearingResult}}</dd>
         </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="!isPaperHearing">
+          <dt class="govuk-summary-list__key">Hearing methods</dt>
+          <dd class="govuk-summary-list__value" [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer:hearingState$ | async">
+          </dd>
+        </div>
       </dl>
     </div>
     <br>

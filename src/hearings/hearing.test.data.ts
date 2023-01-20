@@ -1547,6 +1547,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   autoListFlag: false,
   hearingType: 'Final',
   hearingChannels: [],
+  hearingLevelParticipantAttendance: [],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
@@ -1889,6 +1890,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     duration: 45,
     hearingType: 'final',
     hearingChannels: [],
+    hearingLevelParticipantAttendance: [],
     hearingLocations: [
       {
         locationId: '196538',
@@ -2270,6 +2272,7 @@ export const initialState = {
           duration: 60,
           hearingType: 'final',
           hearingChannels: [],
+          hearingLevelParticipantAttendance: [],
           hearingLocations: [
             {
               locationId: '196538',
@@ -2453,7 +2456,8 @@ export const initialState = {
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
-          hearingChannels: ['byPhone'],
+          hearingChannels: [],
+          hearingLevelParticipantAttendance: ['byPhone'],
           hearingLocations: [
             {
               locationId: '196538',
@@ -2923,6 +2927,7 @@ export const initialStateImmutable = {
           duration: 60,
           hearingType: 'final',
           hearingChannels: [],
+          hearingLevelParticipantAttendance: [],
           hearingLocations: [
             {
               locationId: '196538',
@@ -3107,6 +3112,7 @@ export const initialStateImmutable = {
           duration: 60,
           hearingType: 'final',
           hearingChannels: [],
+          hearingLevelParticipantAttendance: [],
           hearingLocations: [
             {
               locationId: '196538',

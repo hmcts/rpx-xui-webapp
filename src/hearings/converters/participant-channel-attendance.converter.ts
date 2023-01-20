@@ -6,21 +6,39 @@ import * as fromHearingStore from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class ParticipantChannelAttendenceAnswerConverter implements AnswerConverter {
+<<<<<<< HEAD
   constructor(
     protected readonly route: ActivatedRoute) {}
 
   private static getPartyChannelValue(refData: LovRefDataModel[], channelName: string): string {
     const participantChannelName = refData.find((ref) => ref.key === channelName);
+=======
+
+  constructor(
+    protected readonly route: ActivatedRoute) {
+  }
+
+  private static getPartyChannelValue(refData: LovRefDataModel[], channelName: string): string {
+    const participantChannelName = refData.find(ref => ref.key === channelName)
+>>>>>>> d0f9cbf68 (Story/e UI 7494 view details actuals (#2691))
     return participantChannelName && participantChannelName.value_en ? participantChannelName.value_en : '';
   }
 
   public transformAnswer(hearingState$: Observable<fromHearingStore.State>): Observable<string> {
     return hearingState$.pipe(
+<<<<<<< HEAD
       map((state) => {
         const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
         const participants = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
         let strReturn = '<ul>';
         participants?.forEach((channelName: string) => {
+=======
+      map(state => {
+        const partyChannels = this.route.snapshot.data.partyChannels;
+        const participants = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLevelParticipantAttendance;
+        let strReturn = '<ul>';
+        participants.forEach((channelName: string) => {
+>>>>>>> d0f9cbf68 (Story/e UI 7494 view details actuals (#2691))
           const name = ParticipantChannelAttendenceAnswerConverter.getPartyChannelValue(partyChannels, channelName);
           strReturn += `<li>${name}</li>`;
         });

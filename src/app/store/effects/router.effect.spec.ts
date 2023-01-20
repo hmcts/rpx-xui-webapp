@@ -1,22 +1,21 @@
+import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { Store, StoreModule } from '@ngrx/store';
+import { MockStore } from '@ngrx/store/testing';
+import { hot } from 'jasmine-marbles';
+import { AppConfigService } from '../../services/config/configuration.services';
+import { Back, CreateCaseGo, Forward, Go } from '../actions/router.action';
+import { State } from '../reducers';
 import * as fromRouterEffects from './router.effect';
 import { RouterEffects } from './router.effect';
-import { Go, CreateCaseGo, Back, Forward } from '../actions/router.action';
-import { Location } from '@angular/common';
-import { Store, StoreModule } from '@ngrx/store';
-import { AppConfigService } from '../../services/config/configuration.services';
-import { MockStore } from '@ngrx/store/testing';
-import { State } from '../reducers';
 
 describe('Router Effects', () => {
   let actions$;
   let effects: RouterEffects;
-  let store: MockStore<State>;
+  let store;
 
   const LocationMock = jasmine.createSpyObj('Location', [
     'back', 'forward',
@@ -48,10 +47,10 @@ describe('Router Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
 
-    effects = TestBed.get(RouterEffects);
+    effects = TestBed.inject(RouterEffects);
   });
 
   describe('navigate$', () => {

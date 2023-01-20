@@ -17,7 +17,7 @@ describe('LinkedHearingsAnswerConverter', () => {
   });
 
   it('should transform linked hearings answer selection to yes', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingIsLinkedFlag = true;
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.YES;
@@ -26,7 +26,7 @@ describe('LinkedHearingsAnswerConverter', () => {
   });
 
   it('should transform linked hearings answer selection to no', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingIsLinkedFlag = false;
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.NO;

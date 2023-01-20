@@ -1,8 +1,8 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {CaseNameAnswerConverter} from './case-name.answer.converter';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { CaseNameAnswerConverter } from './case-name.answer.converter';
 
 describe('CaseNameAnswerConverter', () => {
 
@@ -13,7 +13,7 @@ describe('CaseNameAnswerConverter', () => {
   });
 
   it('should transform case name', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = caseNameAnswerConverter.transformAnswer(of(STATE));
     const caseName = 'Jane vs DWP';
     const expected = cold('(b|)', {b: caseName});

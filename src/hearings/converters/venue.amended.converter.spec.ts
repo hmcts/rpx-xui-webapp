@@ -1,8 +1,8 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {VenueAmendedConverter} from './venue.amended.converter';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { VenueAmendedConverter } from './venue.amended.converter';
 
 describe('VenueAmendedConverter', () => {
 
@@ -13,7 +13,7 @@ describe('VenueAmendedConverter', () => {
   });
 
   it('should transform is amended for venue', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = venueAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;
     const expected = cold('(b|)', {b: isAmended});

@@ -65,6 +65,7 @@ describe('ParticipantChannelAttendance', () => {
   });
 
   it('should transform hearing attendance', () => {
+    initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLevelParticipantAttendance = ['byPhone']
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const room = '<ul><li>By phone</li></ul>';

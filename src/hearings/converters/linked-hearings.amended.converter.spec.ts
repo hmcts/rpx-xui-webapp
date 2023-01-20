@@ -12,7 +12,7 @@ describe('LinkedHearingsAmendedConverter', () => {
   });
 
   it('should transform to yes', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingIsLinkedFlag = true;
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = true;

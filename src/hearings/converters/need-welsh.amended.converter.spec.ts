@@ -1,8 +1,8 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {NeedWelshAmendedConverter} from './need-welsh.amended.converter';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { NeedWelshAmendedConverter } from './need-welsh.amended.converter';
 
 describe('NeedWelshAmendedConverter', () => {
 
@@ -13,7 +13,7 @@ describe('NeedWelshAmendedConverter', () => {
   });
 
   it('should transform need welsh flag based on selection', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = needWelshAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;
     const expected = cold('(b|)', {b: isAmended});

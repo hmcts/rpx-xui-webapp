@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
@@ -16,6 +17,8 @@ describe('Hearing Actuals Effects', () => {
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getHearingActuals', 'updateHearingActuals', 'updateHearingActualsStage', 'submitHearingActuals'
   ]);
+  const routerMock = jasmine.createSpyObj('Router', ['navigate']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -24,11 +27,15 @@ describe('Hearing Actuals Effects', () => {
           provide: HearingsService,
           useValue: hearingsServiceMock,
         },
+        {
+          provide: Router,
+          useValue: routerMock
+        },
         HearingActualsEffects,
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(HearingActualsEffects);
+    effects = TestBed.inject(HearingActualsEffects);
   });
 
   describe('loadHearingActual$', () => {

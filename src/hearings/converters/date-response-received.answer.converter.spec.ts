@@ -13,7 +13,7 @@ describe('DateResponseReceivedAnswerConverter', () => {
   });
 
   it('should transform type from request', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = dateRequestSubmittedAnswerConverter.transformAnswer(of(STATE));
     const type = '30 November 2021';
     const expected = cold('(b|)', { b: type });

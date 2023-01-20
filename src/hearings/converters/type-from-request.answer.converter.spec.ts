@@ -25,12 +25,12 @@ describe('TypeFromRequestAnswerConverter', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     typeFromRequestAnswerConverter = new TypeFromRequestAnswerConverter(router);
   });
 
   it('should transform type from request', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = typeFromRequestAnswerConverter.transformAnswer(of(STATE));
     const type = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', {b: type});

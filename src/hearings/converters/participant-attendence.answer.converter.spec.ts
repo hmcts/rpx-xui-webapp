@@ -191,13 +191,13 @@ describe('ParticipantAttendenceAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new ParticipantAttendenceAnswerConverter(router);
   });
 
   it('should transform hearing stage', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = converter.transformAnswer(of(STATE), 0);
     const room = 'Jane Smith - In person<br>DWP - By video';
     const expected = cold('(b|)', { b: room });

@@ -2,14 +2,11 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ACTION, HearingCategory, HearingChannelEnum, PartyType, RadioOptions } from '../../../models/hearings.enum';
+import { ACTION, HearingChannelEnum, PartyType, RadioOptions } from '../../../models/hearings.enum';
 import { IndividualDetailsModel } from '../../../models/individualDetails.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
-import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
@@ -35,7 +32,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     private readonly validatorsUtils: ValidatorsUtils,
-    private readonly lovRefDataService: LovRefDataService,
     private readonly fb: FormBuilder,
     protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, route);
@@ -147,6 +143,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     let formValid = true;
     let selectionValid = true;
     this.isAttendanceSelected = true;
+
+    if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
+      return formValid;
+    }
 
     if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
       return formValid;

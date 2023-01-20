@@ -100,7 +100,7 @@ describe('HearingLinkComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingLinkComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     component = fixture.componentInstance;
     spyOn(component, 'isFormValid').and.callThrough();
     spyOn(component, 'generateLinkedCasesWithReasonDescription').and.callThrough();

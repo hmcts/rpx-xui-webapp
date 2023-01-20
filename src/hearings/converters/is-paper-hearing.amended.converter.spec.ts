@@ -36,7 +36,7 @@ describe('IsPaperHearingAmendedConverter', () => {
   });
 
   it('should not transform the amended flag when previous vs current paper hearing selection', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = false;
     const expected = cold('(b|)', { b: isAmended });

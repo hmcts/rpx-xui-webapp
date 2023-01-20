@@ -6,7 +6,7 @@ describe('ActivityResolver', () => {
   let activityService: any;
   let activityResolver: ActivityResolver;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     activityService = jasmine.createSpyObj<ActivityService>('activityService', ['verifyUserIsAuthorized']);
     activityService.verifyUserIsAuthorized.and.returnValue(true);
 

@@ -14,7 +14,7 @@ describe('HearingResponseStageAnswerConverter', () => {
   });
 
   it('should transform type from request', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = hearingResponseStatusAnswerConverter.transformAnswer(of(STATE));
     const type = LaCaseStatus.PENDING_RELISTING;
     const expected = cold('(b|)', { b: type });

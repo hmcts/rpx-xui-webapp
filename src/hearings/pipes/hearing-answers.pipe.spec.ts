@@ -89,7 +89,7 @@ describe('HearingAnswersPipe', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     hearingAnswersPipe = new HearingAnswersPipe(router, locationsDataService);
     locationsDataService.getLocationById.and.returnValue(of(FOUND_LOCATIONS));
   });
@@ -132,14 +132,7 @@ describe('HearingAnswersPipe', () => {
   it('should transform how party attend', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE), 0);
     const partyFlags = '<ul><li>Jane and Smith - In person</li></ul>';
-    const expected = cold('(b|)', { b: partyFlags });
-    expect(result$).toBeObservable(expected);
-  });
-
-  it('should transform how party attend', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_PARTICIPANTS_ATTEND, of(STATE), 0);
-    const attendance = '<ul><li>By phone</li></ul>';
-    const expected = cold('(b|)', { b: attendance });
+    const expected = cold('(b|)', {b: partyFlags});
     expect(result$).toBeObservable(expected);
   });
 
@@ -151,7 +144,7 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform paper hearing', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.IS_PAPER_HEARING, of(STATE), 0);
-    const expected = cold('(b|)', { b: 'No' });
+    const expected = cold('(b|)', {b: 'No'});
     expect(result$).toBeObservable(expected);
   });
 
@@ -173,7 +166,7 @@ describe('HearingAnswersPipe', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 60;
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_LENGTH, of(STATE), 0);
     const hearingDuration = '1 Hour';
-    const expected = cold('(b|)', { b: hearingDuration });
+    const expected = cold('(b|)', {b: hearingDuration});
     expect(result$).toBeObservable(expected);
   });
 
@@ -185,7 +178,7 @@ describe('HearingAnswersPipe', () => {
     };
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_SPECIFIC_DATE, of(STATE), 0);
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022`;
-    const expected = cold('(b|)', { b: hearingDateRange });
+    const expected = cold('(b|)', {b: hearingDateRange});
     expect(result$).toBeObservable(expected);
   });
 

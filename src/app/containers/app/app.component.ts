@@ -31,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public isCookieBannerVisible: boolean = false;
   private cookieBannerEnabledSubscription: Subscription;
   private cookieBannerEnabled: boolean = false;
+  private timeoutNotificationServiceInitialised: boolean = false;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -54,12 +55,6 @@ export class AppComponent implements OnInit, OnDestroy {
         if (d.title) {
           this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
         }
-      }
-    });
-
-    this.timeoutNotificationsService.notificationOnChange().subscribe({
-      next: (event) => {
-        this.timeoutNotificationEventHandler(event);
       }
     });
   }
@@ -288,6 +283,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param totalIdleTime - Should reach here in minutes
    */
   public initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime) {
+    if (this.timeoutNotificationServiceInitialised) return;
 
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
     const idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
@@ -300,7 +296,11 @@ export class AppComponent implements OnInit, OnDestroy {
       idleServiceName: 'idleSession'
     };
 
+    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
+      this.timeoutNotificationEventHandler(event);
+    });
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
+    this.timeoutNotificationServiceInitialised = true;
   }
 
   public setCookieBannerVisibility(): void {

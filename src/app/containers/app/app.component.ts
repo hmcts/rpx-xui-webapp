@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -25,6 +25,8 @@ export class AppComponent implements OnInit, OnDestroy {
     countdown: '0 seconds',
     isVisible: false,
   };
+
+  private timeoutNotificationOnChange$: Observable<any>;
 
   private userId: string = null;
   public cookieName;
@@ -56,6 +58,8 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.timeoutNotificationOnChange$ = this.timeoutNotificationsService.notificationOnChange();
   }
 
   public ngOnInit() {
@@ -192,8 +196,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * We listen for Timeout Notification Service events.
    */
   public addTimeoutNotificationServiceListener() {
-
-    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
+    this.timeoutNotificationOnChange$.subscribe(event => {
       this.timeoutNotificationEventHandler(event);
     });
   }

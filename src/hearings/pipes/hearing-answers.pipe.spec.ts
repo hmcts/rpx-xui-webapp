@@ -91,7 +91,7 @@ describe('HearingAnswersPipe', () => {
         }
       ]
     });
-    router = TestBed.inject(ActivatedRoute);
+    router = TestBed.get(ActivatedRoute);
     hearingAnswersPipe = new HearingAnswersPipe(router, locationsDataService);
     locationsDataService.getLocationById.and.returnValue(of(FOUND_LOCATIONS));
   });

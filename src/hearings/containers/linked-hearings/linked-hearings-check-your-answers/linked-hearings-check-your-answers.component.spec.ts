@@ -140,7 +140,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(LinkedHearingsCheckYourAnswersComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

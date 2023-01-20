@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
   selector: 'exui-cookie-policy',
   templateUrl: './cookie-policy.component.html'
 })
-
 export class CookiePolicyComponent {
 
   public readonly googlePurpose = 'This helps us count how many people visit the service by tracking if you\'ve visited before';
@@ -36,6 +35,6 @@ export class CookiePolicyComponent {
   }
 
   public cookiesByCat(category: string): {name: string, cat: string, purpose: string, expires: string}[] {
-    return this.cookieDetails.filter(c => c.cat === category);
+    return this.cookieDetails && this.cookieDetails.filter(c => c.cat === category);
   }
 }

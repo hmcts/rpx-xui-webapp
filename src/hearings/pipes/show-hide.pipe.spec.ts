@@ -1,10 +1,10 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {IsHiddenSource} from '../models/hearings.enum';
-import {LocationByEPIMMSModel} from '../models/location.model';
-import {State} from '../store/reducers';
-import {ShowHidePipe} from './show-hide.pipe';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { IsHiddenSource } from '../models/hearings.enum';
+import { LocationByEPIMMSModel } from '../models/location.model';
+import { State } from '../store/reducers';
+import { ShowHidePipe } from './show-hide.pipe';
 
 describe('ShowHidePipe', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
@@ -39,7 +39,7 @@ describe('ShowHidePipe', () => {
   });
 
   it('should transform is welsh page hidden', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = showHidePipe.transform(IsHiddenSource.WELSH_LOCATION, of(STATE));
     const isHidden = false;
     const expected = cold('(b|)', {b: isHidden});

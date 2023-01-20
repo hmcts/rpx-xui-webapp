@@ -322,13 +322,13 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new ReasonForActualCancellationAnswerConverter(router);
   });
 
   it('should transform hearing request cancellation reason at first', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = converter.transformAnswer(of(STATE));
     const cancelReason = 'Withdrawn<br>Struck Out';
     const expected = cold('(b|)', {b: cancelReason});

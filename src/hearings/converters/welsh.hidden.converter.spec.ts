@@ -1,9 +1,9 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {LocationByEPIMMSModel} from '../models/location.model';
-import {State} from '../store/reducers';
-import {WelshHiddenConverter} from './welsh.hidden.converter';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { LocationByEPIMMSModel } from '../models/location.model';
+import { State } from '../store/reducers';
+import { WelshHiddenConverter } from './welsh.hidden.converter';
 
 describe('WelshHiddenConverter', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
@@ -39,7 +39,7 @@ describe('WelshHiddenConverter', () => {
   });
 
   it('should transform hidden of welsh answer', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings  as unknown as State;
     const result$ = welshHiddenConverter.transformHidden(of(STATE));
     const hideWelshPage = false;
     const expected = cold('(b|)', {b: hideWelshPage});

@@ -3,9 +3,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { switchMap } from 'rxjs/operators';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { LovRefDataByServiceModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
@@ -15,6 +18,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-link.component.html'
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  private caseLinkingReasons: LovRefDataByServiceModel;
   public caseId: string;
   public linkedCases: ServiceLinkedCasesModel[] = [];
   public caseLinkingReasonCodes: LovRefDataModel[] = [];
@@ -48,25 +52,28 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
   }
 
   public generateLinkedCasesWithReasonDescription(): void {
-    this.hearingsServiceSub = this.hearingsService.loadCaseLinkingReasonCodes().subscribe(reasons => {
-      this.hearingLinksSub = this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe(
-        hearingLinks => {
-          if (hearingLinks.serviceLinkedCases) {
-            hearingLinks.serviceLinkedCases.forEach(linkedCase => {
-              const caseLinkingReasons = reasons.list_of_values.filter(reason => linkedCase.reasonsForLink.some(reasonCode => reason.key === reasonCode));
-              const caseLinkingReasonsValues = caseLinkingReasons.map(x => x.value_en);
-              if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
-                this.linkedCases.push({caseName: linkedCase.caseName, caseReference: linkedCase.caseReference, reasonsForLink: caseLinkingReasonsValues});
-              } else {
-                this.linkedCases.push(linkedCase);
-              }
-            });
-            this.showSpinner = false;
-          }
+    this.hearingLinksSub = this.hearingsService.loadCaseLinkingReasonCodes().pipe(
+      switchMap(reasons => {
+        this.caseLinkingReasons = reasons;
+        return this.hearingStore.pipe(select(fromHearingStore.getHearingLinks))
+      })
+    ).subscribe({
+      next: (hearingLinks: HearingLinksStateData) => {
+        if (hearingLinks.serviceLinkedCases) {
+          this.linkedCases = [];
+          hearingLinks.serviceLinkedCases.forEach(linkedCase => {
+            const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter(reason => linkedCase.reasonsForLink.some(reasonCode => reason.key === reasonCode));
+            const caseLinkingReasonsValues = caseLinkingReasons.map(x => x.value_en);
+            if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
+              this.linkedCases.push({caseName: linkedCase.caseName, caseReference: linkedCase.caseReference, reasonsForLink: caseLinkingReasonsValues});
+            } else {
+              this.linkedCases.push(linkedCase);
+            }
+          });
         }
-      );
-    }, () => {
-      this.router.navigate(['/hearings/error']);
+        this.showSpinner = false;
+      },
+      error: () => this.router.navigate(['/hearings/error'])
     });
   }
 

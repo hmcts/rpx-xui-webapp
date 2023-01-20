@@ -1,8 +1,8 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store';
-import {AdditionalInstructionsAnswerConverter} from './additional-instructions.answer.converter';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store';
+import { AdditionalInstructionsAnswerConverter } from './additional-instructions.answer.converter';
 
 describe('AdditionalInstructionsAnswerConverter', () => {
 
@@ -13,7 +13,7 @@ describe('AdditionalInstructionsAnswerConverter', () => {
   });
 
   it('should transform additional instructions', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = converter.transformAnswer(of(STATE));
     const listingComments = 'blah blah blah';
     const expected = cold('(b|)', {b: listingComments});

@@ -144,7 +144,7 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
  * getLinkedHearingGroup - get linked hearing group
  */
 export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const groupId: string = req.query.groupId;
+  const groupId: string = req.query.groupId as string;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   try {
     const {status, data}: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
@@ -173,7 +173,7 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
  * putLinkedHearingGroup - put linked hearing group
  */
 export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const groupId: string = req.query.groupId;
+  const groupId: string = req.query.groupId as string;
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
@@ -189,7 +189,7 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
  * deleteLinkedHearingGroup - delete linked hearing group
  */
 export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const hearingGroupId: string = req.query.hearingGroupId;
+  const hearingGroupId: string = req.query.hearingGroupId as string;
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}`;
   try {

@@ -137,8 +137,26 @@ export const initProxy = (app: Express) => {
 
   applyProxy(app, {
     rewrite: false,
+    source: '/refdata/location',
+    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
     source: '/refdata/commondata/lov/categories/CaseLinkingReasonCode',
     target: getConfigValue(SERVICES_PRD_COMMONDATA_API),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/categoriesAndDocuments',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/documentData/caseref',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {

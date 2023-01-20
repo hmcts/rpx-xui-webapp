@@ -30,13 +30,13 @@ describe('RoomIdAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new RoomIdAnswerConverter();
   });
 
   it('should transform hearing stage', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = converter.transformAnswer(of(STATE), 0);
     const room = 'room 3';
     const expected = cold('(b|)', { b: room });

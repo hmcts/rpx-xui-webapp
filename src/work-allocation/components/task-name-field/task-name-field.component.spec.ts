@@ -1,16 +1,17 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { TaskNameFieldComponent } from './task-name-field.component';
 
+
 @Component({
   template: `<exui-task-name-field [taskName]="taskName" [caseId]='caseId'></exui-task-name-field>`
 })
 class WrapperComponent {
-  @ViewChild(TaskNameFieldComponent) public appComponentRef: TaskNameFieldComponent;
+  @ViewChild(TaskNameFieldComponent, {static: true}) public appComponentRef: TaskNameFieldComponent;
   @Input() public taskName: string;
   @Input() public caseId: string;
 }
@@ -26,7 +27,7 @@ describe('WorkAllocation', () => {
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule, RouterTestingModule ]
@@ -39,6 +40,11 @@ describe('WorkAllocation', () => {
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
       fixture.detectChanges();
+    });
+
+    afterEach(() => {
+      fixture.destroy();
+      TestBed.resetTestingModule();
     });
 
     it('should only show a link when it has a case id', () => {

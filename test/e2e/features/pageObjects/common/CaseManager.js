@@ -8,7 +8,6 @@ var CaseEditPage = require('../caseEditPage');
 const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 const App = require('./application');
 const BrowserLogs = require('../../../support/browserLogs');
-const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpers/accessibilityAuditor');
 const config = require('../../../config/functional.conf');
 
 const headerPage = require('../headerPage');

@@ -13,7 +13,7 @@ describe('DateResponseSubmittedMultiDayAnswerConverter', () => {
   });
 
   it('should transform type from request', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = dateResponseSubmittedMultiDayAnswerConverter.transformAnswer(of(STATE));
     const type = '12 December 2022 - 12 December 2022';
     const expected = cold('(b|)', { b: type });

@@ -13,7 +13,7 @@ describe('DateResponseSubmittedTimeAnswerConverter', () => {
   });
 
   it('should transform type from request', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = dateRequestSubmittedTimeAnswerConverter.transformAnswer(of(STATE), 0);
     const type = '09:00';
     const expected = cold('(b|)', { b: type });

@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import * as moment from 'moment';
 import {combineLatest, Observable, Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 import {
   ActualHearingDayModel,
   HearingActualsMainModel,
@@ -73,10 +73,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingState$.subscribe(state => {
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
     });
+
     this.errors$ = combineLatest([
       this.hearingStore.select(fromHearingStore.getHearingActualsLastError),
       this.hearingStore.select(fromHearingStore.getHearingRequestLastError)
-    ]).map((errors) => errors.filter(item => item).length);
+    ]).pipe(map((errors) => errors.filter(item => item).length));
 
     this.sub = this.hearingState$.pipe(
       filter((state) => !!state.hearingActuals.hearingActualsMainModel),

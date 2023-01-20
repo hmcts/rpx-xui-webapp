@@ -13,7 +13,7 @@ describe('IsPaperHearingAnswerConverter', () => {
   });
 
   it('should transform paper hearing answer', () => {
-    const STATE: State = initialState.hearings;
+    const STATE = initialState.hearings as unknown as State;
     const result$ = isPaperHearingAnswerConverter.transformAnswer(of(STATE));
     const paperHearing = 'No';
     const expected = cold('(b|)', { b: paperHearing });

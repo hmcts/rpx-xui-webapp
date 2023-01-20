@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../../hearings/store';
 import { HearingLocationModel } from '../../../models/hearingLocation.model';
-import { ACTION, HearingErrorMessage, HMCLocationType } from '../../../models/hearings.enum';
+import { ACTION, HMCLocationType, HearingErrorMessage } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';

@@ -120,8 +120,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         if (this.hearingsActions.includes(Actions.CREATE)) {
           this.hasRequestAction = true;
         }
+        if (this.hearingsActions.includes(Actions.CREATE)) {
+          this.hasRequestAction = true;
+        }
       }
     );
+    this.isOgdRole$ = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(map(userRole => userRole === UserRole.Ogd));
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {

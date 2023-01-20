@@ -167,13 +167,8 @@ const config = {
                 removeExistingJsonReportFile: true,
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
-<<<<<<< HEAD
-                jsonDir: 'functional-output/reports/tests/ngIntegration',
-                reportPath: 'functional-output/reports/tests/ngIntegration',
-=======
                 jsonDir: 'functional-output/tests/ngIntegration',
                 reportPath: 'functional-output/tests/ngIntegration',
->>>>>>> 680e5840b66b24fc23aa40609185597bd622df5b
                 displayDuration : true,
                 durationInMS : false
             }

@@ -16,6 +16,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   autoListFlag: false,
   hearingType: 'BBA3-DIR',
   hearingChannels: [HearingChannelEnum.ONPPR],
+  hearingLevelParticipantAttendance: [],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,

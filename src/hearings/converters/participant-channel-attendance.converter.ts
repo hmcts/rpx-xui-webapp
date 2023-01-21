@@ -20,7 +20,7 @@ export class ParticipantChannelAttendenceAnswerConverter implements AnswerConver
     return hearingState$.pipe(
       map(state => {
         const partyChannels = this.route.snapshot.data.partyChannels;
-        const participants = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLevelParticipantAttendance;
+        const participants = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
         let strReturn = '<ul>';
         participants.forEach((channelName: string) => {
           const name = ParticipantChannelAttendenceAnswerConverter.getPartyChannelValue(partyChannels, channelName);

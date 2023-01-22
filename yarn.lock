@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.4-angular-upgrade-r3.5":
-  version "6.10.4-angular-upgrade-r3.5"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.4-angular-upgrade-r3.5.tgz#aa668bfae3c343bc48a9b794086c12d48142f259"
-  integrity sha512-w5Wgsxl68f8IJ3ScI8A21epUzNkB+jG8kXRQhDXuWVj2Ppp/xado0qt8w8zPjdW6wjw//tYiFIx7gwXoxGl/0w==
+"@hmcts/ccd-case-ui-toolkit@6.10.5-angular-upgrade-r3.5":
+  version "6.10.5-angular-upgrade-r3.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.5-angular-upgrade-r3.5.tgz#923732de8ff6a0ee35a7b3333cd648d2c049a6d9"
+  integrity sha512-2JK8A/aMUkc7YPdaN1inyOcOippMhQI6399AJg18OpI3c/Dik02oOUPwi7MFBEjLRVQmxRCHGANFW9tRV2Lwag==
   dependencies:
     tslib "^2.0.0"
 

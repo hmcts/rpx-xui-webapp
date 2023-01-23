@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
-import { WASupportedJurisdictionsService } from '../../../work-allocation/services/wa-supported-jurisdiction.service';
 import { CaseRole } from '../../../role-access/models/case-role.interface';
 import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services/caseworker-data.service';
+import { WASupportedJurisdictionsService } from '../../../work-allocation/services/wa-supported-jurisdiction.service';
 import { RestrictedCase } from '../../models/restricted-case.model';
 
 @Component({
@@ -29,28 +29,22 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseId = this.route.snapshot.params.cid;
-    console.log('CASE ID', this.caseId);
     this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
       switchMap(caseRoles => {
         this.caseRoles = caseRoles;
-        console.log('CASE ROLES', this.caseRoles);
         return of(this.getUniqueIdamIds());
       }), take(1),
-      switchMap(idamIds => {
-        console.log('IDAM IDS', idamIds);
+      switchMap(() => {
         return this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
       }), take(1),
       switchMap(jurisdictions => {
-        console.log('Jurisdictions', jurisdictions);
         return this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
       }), take(1),
       switchMap(caseworkers => {
-        console.log('CASE WORKERS', caseworkers);
         return of(this.getRestrictedCases(caseworkers));
       })
     ).subscribe(restrictedCases => {
       this.restrictedCases = restrictedCases;
-      console.log('RESTRICTED CASES', restrictedCases);
     });
   }
 

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnDestroy } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ControlTypeEnum } from '../../models/hearings.enum';
@@ -6,7 +6,8 @@ import { ControlTypeEnum } from '../../models/hearings.enum';
 @Component({
   selector: 'exui-multi-level-selector',
   templateUrl: './multi-level-selector.component.html',
-  styleUrls: ['./multi-level-selector.component.scss']
+  styleUrls: ['./multi-level-selector.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
   @Input() public multiLevelSelect: FormArray;

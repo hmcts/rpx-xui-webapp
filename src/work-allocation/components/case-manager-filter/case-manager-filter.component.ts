@@ -17,7 +17,7 @@ import * as fromAppStore from '../../../app/store';
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
-  private static FILTER_NAME: string = 'all-work-cases-filter';
+  private static readonly FILTER_NAME: string = 'all-work-cases-filter';
   @Input() public jurisdictions: string[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {

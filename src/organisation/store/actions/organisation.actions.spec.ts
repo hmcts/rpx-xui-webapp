@@ -1,10 +1,11 @@
 import { Organisation } from '../../models';
-import { LOAD_ORGANISATION,
-  LOAD_ORGANISATION_FAIL,
-  LOAD_ORGANISATION_SUCCESS,
+import {
   LoadOrganisation,
   LoadOrganisationFail,
-  LoadOrganisationSuccess } from './organisation.actions';
+  LoadOrganisationSuccess, LOAD_ORGANISATION,
+  LOAD_ORGANISATION_FAIL,
+  LOAD_ORGANISATION_SUCCESS
+} from './organisation.actions';
 
 describe('Load Organisation', () => {
   it('should create an action', () => {

@@ -1,16 +1,16 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../models/enums';
 import { OptionsModel } from '../../models/options-model';
 import { ChooseRadioOptionComponent } from './choose-radio-option.component';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   template: `<exui-choose-radio-option [optionsList]="optionsList" [title]="title" [caption]="caption"></exui-choose-radio-option>`
 })
 class WrapperComponent {
-  @ViewChild(ChooseRadioOptionComponent) public ref: ChooseRadioOptionComponent;
+  @ViewChild(ChooseRadioOptionComponent, { static: true }) public ref: ChooseRadioOptionComponent;
   @Input() public optionsList: OptionsModel[];
   @Input() public title: RoleAllocationTitleText;
   @Input() public caption: RoleAllocationCaptionText;
@@ -23,7 +23,7 @@ const mockRoles: OptionsModel[] = [
 
 describe('ChooseRadioOptionComponent', () => {
   const RADIO_OPTION_CONTROL: FormControl = new FormControl('');
-  const FORM_GROUP: FormGroup = new FormGroup({['personRole']: RADIO_OPTION_CONTROL});
+  const FORM_GROUP: FormGroup = new FormGroup({ ['personRole']: RADIO_OPTION_CONTROL });
 
   let component: ChooseRadioOptionComponent;
   let wrapper: WrapperComponent;
@@ -31,7 +31,7 @@ describe('ChooseRadioOptionComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChooseRadioOptionComponent, WrapperComponent ],
+      declarations: [ChooseRadioOptionComponent, WrapperComponent],
       imports: [
         ReactiveFormsModule
       ],

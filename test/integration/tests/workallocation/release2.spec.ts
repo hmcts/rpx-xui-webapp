@@ -1,13 +1,11 @@
 import { expect } from 'chai';
-import { v4 as uuid } from 'uuid';
 // import mocha from 'mocha';
 import { config } from '../config/config';
-import { getUserId, getXSRFToken } from '../utils/authUtil';
+import { getXSRFToken } from '../utils/authUtil';
 import { reporterMsg, setTestContext } from '../utils/helper';
-
 import Request from '../utils/request';
 
-import TaskRequestBody from '../utils/wa/taskRequestBody';
+
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocations Release 2', () => {

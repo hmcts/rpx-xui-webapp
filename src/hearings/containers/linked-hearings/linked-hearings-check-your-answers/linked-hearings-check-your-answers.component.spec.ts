@@ -140,7 +140,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(LinkedHearingsCheckYourAnswersComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -255,6 +255,11 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalled();
     component.isManageLink = true;
     component.onBack();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', caseId, 'hearings']);
+  });
+
+  it('should navigate to hearings tab', () => {
+    component.onCancel();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', caseId, 'hearings']);
   });
 

@@ -22,12 +22,13 @@ import { getMockLocations, getMockTasks, MockRouter } from '../../tests/utils.sp
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
+
 @Component({
   template: `
     <exui-available-tasks></exui-available-tasks>`
 })
 class WrapperComponent {
-  @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
+  @ViewChild(AvailableTasksComponent, { static: true }) public appComponentRef: AvailableTasksComponent;
 }
 
 const userInfo =
@@ -54,7 +55,7 @@ describe('AvailableTasksComponent', () => {
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getCaseworkersForServices']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
@@ -89,7 +90,7 @@ describe('AvailableTasksComponent', () => {
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     mockLocationService.getLocations.and.returnValue(of(mockLocations));

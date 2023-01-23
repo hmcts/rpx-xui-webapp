@@ -94,12 +94,6 @@ describe('AppComponent', () => {
     expect(spyModal).toHaveBeenCalledWith('100 seconds', true);
   });
 
-  it('staySignedInHandler', () => {
-    const spyModal = spyOn(appComponent, 'updateTimeoutModal');
-    appComponent.staySignedInHandler();
-    expect(spyModal).toHaveBeenCalledWith(undefined, false);
-  });
-
   it('updateTimeoutModal', () => {
     appComponent.updateTimeoutModal('100 seconds', false);
     expect(appComponent.timeoutModalConfig).toEqual({

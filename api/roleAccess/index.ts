@@ -78,14 +78,7 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
   const fullPath = `${basePath}/am/role-assignments/query`;
   const headers = setHeaders(req, release2ContentType);
   try {
-
-    console.log('BASE PATH', basePath);
-    console.log('FULL PATH', fullPath);
-
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
-
-    console.log('RESPONSE DATA', response.data);
-
     const finalRoles: CaseRole[] = mapResponseToCaseRoles(
       response.data.roleAssignmentResponse,
       req.body.assignmentId,
@@ -377,10 +370,10 @@ export function getAccessRolesRequestPayloadForCaseId(caseId: string): CaseRoleR
     queryRequests: [
       {
         attributes: {
-          caseId: [caseId]
-        }
-      }
-    ]
+          caseId: [caseId],
+        },
+      },
+    ],
   };
 }
 

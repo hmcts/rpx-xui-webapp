@@ -146,7 +146,6 @@ export function getExclusionRequestPayload(caseId: string, jurisdiction: string,
 export function mapRoleCategory(roleCategory: string): RoleCategory {
   switch (roleCategory) {
     case 'LEGAL_OPERATIONS':
-		case 'PROFESSIONAL':
       return RoleCategory.LEGAL_OPERATIONS;
     case 'JUDICIAL':
       return RoleCategory.JUDICIAL;

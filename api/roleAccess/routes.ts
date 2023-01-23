@@ -5,7 +5,7 @@ import {
   confirmAllocateRole,
   createSpecificAccessApprovalRole,
   deleteRoleByCaseAndRoleId,
-	getAccessRoles,
+  getAccessRoles,
   getAccessRolesByCaseId,
   getJudicialUsers,
   getMyAccessNewCount,

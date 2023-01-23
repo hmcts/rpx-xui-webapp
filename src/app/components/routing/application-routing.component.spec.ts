@@ -54,13 +54,12 @@ describe('ApplicationRoutingComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   });
 
-  it('should navigateBasedOnUserRole caseworker-ia-caseofficer', async () => {
-  // it('should navigateBasedOnUserRole caseworker-ia-caseofficer', fakeAsync(async ()  => {
+  it('should navigateBasedOnUserRole caseworker-ia-caseofficer', fakeAsync(async ()  => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-ia-caseofficer']}}));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
-  });
+  }));
 
   it('should navigateBasedOnUserRole non judge role', () => {
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['somerole']}}));

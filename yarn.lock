@@ -1541,7 +1541,7 @@
   resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.7-angular-upgrade-r3.5.tgz#1758f1d4976bf4398bb4e7c2a3a0f66aac513e17"
   integrity sha512-Vr1JI5hBv6aFe5Ezz/nwBYTUl+1GlzaDznsJmAxF20+wYSH8NVxNcr0yvATAZKpoZpoE0Fv/mdsziyDNLUmuyA==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 "@hmcts/rpx-xui-node-lib@2.25.12":
   version "2.25.12"

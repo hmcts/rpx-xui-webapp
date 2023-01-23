@@ -13,6 +13,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 
 
+
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
 metadataField.value = 'JUDICIAL';

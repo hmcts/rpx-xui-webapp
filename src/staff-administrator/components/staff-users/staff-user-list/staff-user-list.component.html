@@ -8,7 +8,7 @@
       <ng-container cdkColumnDef="name">
         <th cdk-header-cell *cdkHeaderCellDef>Name</th>
         <td cdk-cell *cdkCellDef="let element">
-          <a href="{{'/staff/users/user-details/' + element.id }}">{{element.first_name}} {{element.last_name}}</a>
+          <a href="{{'/staff/users/user-details/' + element.case_worker_id }}">{{element.first_name}} {{element.last_name}}</a>
         </td>
       </ng-container>
 

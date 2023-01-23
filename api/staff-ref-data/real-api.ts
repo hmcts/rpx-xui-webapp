@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 import * as querystring from 'querystring';
-import { handleGet } from '../common/crudService';
+import { handleGet, handlePost, handlePut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
 import { StaffDataUser } from './models/staff-data-user.model';
@@ -18,7 +18,6 @@ export async function getUserTypes(req, res: Response, next: NextFunction) {
     data.user_type.forEach(element => {
       options.push({ key: element.id, label: element.code });
     });
-
     res.status(status).send(sortArray(options));
   } catch (error) {
     next(error);
@@ -104,4 +103,27 @@ export async function getUsersByPartialName(req, res: Response, next: NextFuncti
 
 export function sortArray(array: StaffFilterOption[]) {
   return array.sort((a, b) => a.label.localeCompare(b.label));
+}
+
+export async function getStaffRefUserDetails(req, res, next: NextFunction) {
+  const reqbody = req.body
+  const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`
+
+ try {
+     const { status, data }: { status: number; data: StaffDataUser } = await handlePost(apiPath, reqbody, req, next);
+     res.status(status).send(data)
+ } catch (error) {
+     next(error)
+ }
+}
+
+export async function updateUserStatus(req, res, next: NextFunction) {
+  const reqBody = req.body
+  const apiPath: string = `/refdata/case-worker/profile`
+  try {
+    const { status, data }: { status: number; data: StaffDataUser } = await handlePut(apiPath, reqBody, req, next);
+    res.status(status).send(data);
+  } catch (error) {
+      next(error)
+  }
 }

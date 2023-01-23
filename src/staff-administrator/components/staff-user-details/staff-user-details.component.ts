@@ -14,12 +14,18 @@ export class StaffUserDetailsComponent {
 
   constructor(private route: ActivatedRoute,
               private staffDataAccessService: StaffDataAccessService) {
-    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails.results[0];
+    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails[0];
    }
 
-   public changeStatus(): void {
-
-    this.staffDataAccessService.updateUserStatus(this.userDetails).subscribe((res: StaffUser) => {
+   public updateUserStatus(): void {
+    this.userDetails.suspended = !this.userDetails.suspended;
+    const user = {
+      ...this.userDetails,
+      "base_location": this.userDetails.primaryLocation,
+      "primary_role": this.userDetails.roles,
+      "primary_base_location": this.userDetails.locations
+    }
+    this.staffDataAccessService.updateUserStatus(user).subscribe((res: StaffUser) => {
       this.userDetails = res;
       // success banner
     }, error => {

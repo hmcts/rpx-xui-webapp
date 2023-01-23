@@ -31,7 +31,10 @@ export class StaffDataAccessService {
   }
 
   public getStaffRefUserDetails(id: number) {
-    return this.http.get<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails/${id}`);
+    const reqbody = {userIds:[
+      id
+   ]};
+    return this.http.post<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails`, reqbody);
   }
 
   public getServices() {
@@ -43,6 +46,7 @@ export class StaffDataAccessService {
   }
 
   public updateUserStatus(user) {
+    console.log('user', user);
     return this.http.put<StaffUser>(`${this.API_PATH}/updateUserStatus`, user);
   }
 }

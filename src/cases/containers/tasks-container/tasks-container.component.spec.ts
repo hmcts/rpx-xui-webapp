@@ -12,6 +12,7 @@ import { TasksContainerComponent } from './tasks-container.component';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 
+
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
 metadataField.value = 'JUDICIAL';

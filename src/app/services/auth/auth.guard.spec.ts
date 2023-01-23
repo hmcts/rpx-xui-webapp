@@ -1,11 +1,11 @@
-import { inject, TestBed } from '@angular/core/testing';
-import { AuthService } from './auth.service';
-import { SessionStorageService } from '../session-storage/session-storage.service';
-
 import { HttpClient } from '@angular/common/http';
+import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
+import { SessionStorageService } from '../session-storage/session-storage.service';
 import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
+
 
 class HttpClientMock {
   public get() {
@@ -45,7 +45,7 @@ describe('AuthGuard', () => {
     authService = jasmine.createSpyObj('authService', ['loginRedirect', 'isAuthenticated', 'setWindowLocationHref']);
     sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem', 'removeItem']);
     windowLocationService = jasmine.createSpyObj('windowLocationService', ['getPathName']);
-  })
+  });
 
   it('canActivate true', () => {
     authService.isAuthenticated.and.returnValue(of(true));
@@ -83,9 +83,9 @@ describe('AuthGuard', () => {
 
       expect(authService.isAuthenticated).toHaveBeenCalled();
       expect(authService.loginRedirect).toHaveBeenCalled();
-      expect(sessionStorageService.setItem).toHaveBeenCalledWith('redirectUrl', '/cases/1234')
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('redirectUrl', '/cases/1234');
     });
-  })
+  });
 
   describe('redirectToStoredUrl', () => {
     it('should not change the path when the users is not on root', () => {

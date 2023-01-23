@@ -1,5 +1,5 @@
-import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
-import {HMCLocationType} from '../../models/hearings.enum';
+import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
+import { HMCLocationType } from '../../models/hearings.enum';
 import * as fromHearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as fromHearingRequestToCompareReducer from './hearing-request-to-compare.reducer';
 

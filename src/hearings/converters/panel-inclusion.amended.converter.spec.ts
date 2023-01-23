@@ -1,14 +1,14 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {hearingStageRefData, initialState} from '../hearing.test.data';
-import {MemberType, RequirementType} from '../models/hearings.enum';
-import {State} from '../store';
-import {PanelInclusionAmendedConverter} from './panel-inclusion.amended.converter';
+import { of } from 'rxjs';
+import { hearingStageRefData, initialState } from '../hearing.test.data';
+import { MemberType, RequirementType } from '../models/hearings.enum';
+import { State } from '../store';
+import { PanelInclusionAmendedConverter } from './panel-inclusion.amended.converter';
 
 describe('PanelInclusionAmendedConverter', () => {
 
@@ -37,8 +37,8 @@ describe('PanelInclusionAmendedConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new PanelInclusionAmendedConverter();
   });
 

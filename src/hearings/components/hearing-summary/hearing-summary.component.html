@@ -42,8 +42,9 @@
                     class="govuk-tag govuk-tag--green amended-flag">Amended</strong>
             <a [id]="answer.id"
                *ngIf="answer.changeLink"
+               class="change-link"
                href="javascript:void(0)"
-               (click)="changeAnswer(answer.id, answer.changeLink)">Change</a>
+               (click)="changeAnswer($event, answer.id, answer.changeLink)">Change</a>
           </div>
         </div>
       </ng-container>

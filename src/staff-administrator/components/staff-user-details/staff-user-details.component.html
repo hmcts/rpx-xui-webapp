@@ -5,12 +5,12 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Name</dt>
-        <dd class="govuk-summary-list__value">{{userDetails.firstName}} {{userDetails.lastName}}</dd>
+        <dd class="govuk-summary-list__value">{{userDetails.first_name}} {{userDetails.last_name}}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
       </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Email address</dt>
-        <dd class="govuk-summary-list__value">{{ userDetails.email }}</dd>
+        <dd class="govuk-summary-list__value">{{ userDetails.email_id }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
       </div><br>
       <div class="govuk-summary-list__row">
@@ -35,7 +35,7 @@
       </div><br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">User type</dt>
-        <dd class="govuk-summary-list__value">{{ userDetails.userType }}</dd>
+        <dd class="govuk-summary-list__value">{{ userDetails.user_type }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
       </div><br>
       <div class="govuk-summary-list__row">
@@ -64,7 +64,7 @@
       <button class="govuk-button" data-module="govuk-button">
         Update
       </button>
-      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="changeStatus()">
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="updateUserStatus()">
         {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
       </button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button">

@@ -46,7 +46,6 @@ export class StaffDataAccessService {
   }
 
   public updateUserStatus(user) {
-    console.log('user', user);
     return this.http.put<StaffUser>(`${this.API_PATH}/updateUserStatus`, user);
   }
 }

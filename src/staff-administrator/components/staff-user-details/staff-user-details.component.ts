@@ -11,6 +11,8 @@ import { StaffUser } from '../../../staff-administrator/models/staff-user.model'
 export class StaffUserDetailsComponent {
   public userDetails: StaffUser;
   public showAction: boolean = false;
+  public loading = false;
+  public suspendedStatus: 'suspended' | 'restored' | 'error';
 
   constructor(private route: ActivatedRoute,
               private staffDataAccessService: StaffDataAccessService) {

@@ -10,6 +10,7 @@ import { UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import { reducers } from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
+import { RoleCategory } from '../../role-access/models';
 import { AllocateRoleService } from '../../role-access/services';
 import { LocationsByRegion } from '../models/dtos';
 import { CaseworkerDataService, LocationDataService } from '../services';
@@ -237,7 +238,13 @@ describe('LocationResolver', () => {
       email: 'JWR-func-test-user1-#s@justice.gov.uk',
       firstName: 'IAC',
       idamId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f',
+      idam_id: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f',
       lastName: 'CW2',
+      known_as: null,
+      full_name: 'IAC CW2',
+      surname: 'CW2',
+      sidam_id: null,
+      email_id: 'testemail@test.com',
       location: {
         id: 231596,
         locationName: 'Birmingham'
@@ -252,10 +259,11 @@ describe('LocationResolver', () => {
       idamId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f',
       lastName: 'CW2',
       location: {
-        id: 231596,
-        locationName: 'Birmingham'
+        id: '231596',
+        locationName: 'Birmingham',
+        services: null
       },
-      roleCategory: ''
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     }
   ];
 

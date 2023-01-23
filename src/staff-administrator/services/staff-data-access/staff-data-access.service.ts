@@ -31,7 +31,7 @@ export class StaffDataAccessService {
   }
 
   public getStaffRefUserDetails(id: number) {
-    const reqbody = {userIds:[
+    const reqbody = {userIds: [
       id
    ]};
     return this.http.post<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails`, reqbody);

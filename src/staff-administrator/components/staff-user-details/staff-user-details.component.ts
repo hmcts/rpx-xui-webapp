@@ -23,11 +23,11 @@ export class StaffUserDetailsComponent {
     this.userDetails.suspended = !this.userDetails.suspended;
     const user = {
       ...this.userDetails,
-      "base_location": this.userDetails.primaryLocation,
-      "primary_role": this.userDetails.roles,
-      "primary_base_location": this.userDetails.locations
+      base_location: this.userDetails.primaryLocation,
+      primary_role: this.userDetails.roles,
+      primary_base_location: this.userDetails.locations
     }
-    this.staffDataAccessService.updateUserStatus(user).subscribe((res: StaffUser) => {
+    this.staffDataAccessService.updateUserStatus(user).subscribe((res) => {
       this.userDetails = res;
       // success banner
     }, error => {

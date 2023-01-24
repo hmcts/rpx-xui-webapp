@@ -11,9 +11,6 @@ describe('RestrictedCaseAccessComponent', () => {
       declarations: [RestrictedCaseAccessComponent]
     })
     .compileComponents();
-  });
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(RestrictedCaseAccessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

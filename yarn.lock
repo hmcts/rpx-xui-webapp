@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.50-sscs-sit-release":
-  version "5.0.50-sscs-sit-release"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.50-sscs-sit-release.tgz#6904d72f7d3234efed0cd6a99c1c7a9ef63e95e4"
-  integrity sha512-zn6q5Wu0ckeQ8sejp9WIQn0z3NX84JSftkUCnvoFHAGAwmgvNoQ8Mkra//C3hLyEcfedleZo7dE9Wovp96yLkA==
+"@hmcts/ccd-case-ui-toolkit@6.10.5-fix-multiple-complete-task3":
+  version "6.10.5-fix-multiple-complete-task3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.5-fix-multiple-complete-task3.tgz#a1e69d3164501ce9fd73b527c4a133b7437a2c39"
+  integrity sha512-kD0xDR1UAq39RY5SKKps9jMbhk0uq9D5ATzJU0GtzgOctZ2PzHPLE0DA0MD7c8BCkfAn2CoyfB5FPhMH1mJGXw==
   dependencies:
     tslib "^2.0.0"
 
@@ -1536,12 +1536,12 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@2.1.6-angular-upgrade-11-fix-field-issue":
-  version "2.1.6-angular-upgrade-11-fix-field-issue"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-angular-upgrade-11-fix-field-issue.tgz#0b9887457eb0a06523c5b82e5a6d7e1e776ec756"
-  integrity sha512-lpwlbgUK/8v8SmzscpE/YAfZwkkOpI3P97YAlWR5OYZYBMugoWEv04BOYM62UQ71fUaJt3cJ6absBvNyowT4Bg==
+"@hmcts/rpx-xui-common-lib@1.8.7-angular-upgrade-r3.5":
+  version "1.8.7-angular-upgrade-r3.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.7-angular-upgrade-r3.5.tgz#1758f1d4976bf4398bb4e7c2a3a0f66aac513e17"
+  integrity sha512-Vr1JI5hBv6aFe5Ezz/nwBYTUl+1GlzaDznsJmAxF20+wYSH8NVxNcr0yvATAZKpoZpoE0Fv/mdsziyDNLUmuyA==
   dependencies:
-    tslib "^2.0.0"
+    tslib "^1.9.0"
 
 "@hmcts/rpx-xui-node-lib@2.25.12":
   version "2.25.12"

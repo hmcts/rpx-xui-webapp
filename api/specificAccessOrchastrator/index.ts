@@ -196,34 +196,16 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
       },
     }, { headers });
 
-    const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
+    const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse
+            .find(r => r.roleName === 'specific-access-granted');
 
-    delete singleRoleAssignment['id'];
-    singleRoleAssignment.attributes = {
-      ...singleRoleAssignment.attributes,
-      ...req.body.attributesToUpdate,
-    };
+    if (singleRoleAssignment) {
+      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, { headers });
+    }
 
-    singleRoleAssignment.notes = [{
-      userId: actorId,
-      time: new Date(),
-      comment: singleRoleAssignment.attributes.accessReason,
-    }];
-
-    const roleAssignmentUpdate = {
-      roleRequest: {
-        assignerId: actorId,
-        process: 'specific-access',
-        reference: `${caseId}/${singleRoleAssignment.roleName}/${actorId}`,
-        replaceExisting: true,
-      },
-      requestedRoles: [singleRoleAssignment],
-    };
-
-    const response = await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
 
-    return resp.status(response.status).send(response.data);
+    return resp.status(200).send([]);
   } catch (error) {
     next(error);
   }

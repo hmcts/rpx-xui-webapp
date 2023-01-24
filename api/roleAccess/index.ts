@@ -86,7 +86,6 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
     );
     return res.status(response.status).send(finalRoles);
   } catch (error) {
-    console.log('ERROR', error);
     next(error);
   }
 }

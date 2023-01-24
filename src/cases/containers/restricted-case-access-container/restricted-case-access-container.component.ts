@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { CaseRole } from '../../../role-access/models/case-role.interface';
@@ -22,9 +22,10 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
   public restrictedCases: RestrictedCase[];
 
   constructor(private readonly route: ActivatedRoute,
+              private readonly router: Router,
               private readonly allocateService: AllocateRoleService,
               private readonly caseworkerDataService: CaseworkerDataService,
-              private waSupportedJurisdictionsService: WASupportedJurisdictionsService) {
+              private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService) {
   }
 
   public ngOnInit(): void {
@@ -34,18 +35,15 @@ export class RestrictedCaseAccessContainerComponent implements OnInit {
         this.caseRoles = caseRoles;
         return of(this.getUniqueIdamIds());
       }), take(1),
-      switchMap(() => {
-        return this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-      }), take(1),
-      switchMap(jurisdictions => {
-        return this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
-      }), take(1),
-      switchMap(caseworkers => {
-        return of(this.getRestrictedCases(caseworkers));
-      })
-    ).subscribe(restrictedCases => {
-      this.restrictedCases = restrictedCases;
-    });
+      switchMap(() => this.waSupportedJurisdictionsService.getWASupportedJurisdictions()),
+      take(1),
+      switchMap(jurisdictions => this.caseworkerDataService.getCaseworkersForServices(jurisdictions)),
+      take(1),
+      switchMap(caseworkers => of(this.getRestrictedCases(caseworkers)))
+    ).subscribe(
+      restrictedCases => this.restrictedCases = restrictedCases,
+      () => this.router.navigate(['/', 'service-down'])
+    );
   }
 
   private getUniqueIdamIds(): string[] {

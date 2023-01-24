@@ -1,4 +1,4 @@
-@ng 
+@ng
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
@@ -29,6 +29,30 @@ Feature: WA Release 2: My work - Work filters
             | 20018 | SSCS Court Taylor House  |
 
 
+        Given I set MOCK caseworkers for service "IA"
+            | idamId                               | firstName   | lastName | email                   | roleCategory     |
+            | 3db21928-cbbc-4364-bd91-137c7031fe17 | caseworker1 | cw       | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be02 | caseworker2 | cw       | caseworker_user2@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be03 | caseworker3 | cw       | caseworker_user3@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be04 | caseworker4 | cw       | caseworker_user4@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be05 | caseworker5 | cw       | caseworker_user5@gov.uk | LEGAL_OPERATIONS |
+
+        Given I set MOCK caseworkers for service "SSCS"
+            | idamId                               | firstName   | lastName | email                   | roleCategory     |
+            | 3db21928-cbbc-4364-bd91-137c7031fe17 | caseworker1 | cw       | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be06 | caseworker6 | cw       | caseworker_user6@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be07 | caseworker7 | cw       | caseworker_user7@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be08 | caseworker8 | cw       | caseworker_user8@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be09 | caseworker9 | cw       | caseworker_user9@gov.uk | LEGAL_OPERATIONS |
+
+        Given I set MOCK caseworkers for service "CIVIL"
+            | idamId                               | firstName    | lastName | email                    | roleCategory     |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be10 | caseworker10 | cw       | caseworker_user10@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be11 | caseworker11 | cw       | caseworker_user11@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be12 | caseworker12 | cw       | caseworker_user12@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be13 | caseworker13 | cw       | caseworker_user13@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be14 | caseworker14 | cw       | caseworker_user14@gov.uk | LEGAL_OPERATIONS |
+
 
         Given I set MOCK request "/workallocation/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation/my-work/cases" intercept with reference "workallocationCasesRequest"
@@ -37,10 +61,13 @@ Feature: WA Release 2: My work - Work filters
 
     Scenario Outline:  Work filters show hide button and Apply for "<UserType>"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation | 20001 |
+        # Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType | baseLocation |
+            | IA | Y | ORGANISATION | 20001 |
+            | SSCS | Y | ORGANISATION | 20001 |
+
 
         Given I start MockApp
         Given I navigate to home page
@@ -72,10 +99,13 @@ Feature: WA Release 2: My work - Work filters
 
     Scenario Outline:  Work filters types for selected sub navigation tabs
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation | 20001 |
+        # Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
 
         Given I start MockApp
         Given I navigate to home page
@@ -130,15 +160,25 @@ Feature: WA Release 2: My work - Work filters
     # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline:  Work filters mandatory field validations and filter selection
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation | 20001 |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation |  |
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
+        # Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
+
+
+
+        Given I set MOCK caseworkers for service "IA", base location
+            | email                   | locationId |
+            | caseworker_user1@gov.uk | 20001      |
+
+        Given I set MOCK caseworkers for service "SSCS", base location
+            | email                   | locationId |
+            | caseworker_user1@gov.uk | 20001      |
+
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"

@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.50-update-flag-screen-v4":
-  version "5.0.50-update-flag-screen-v4"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.50-update-flag-screen-v4.tgz#36006127756f080a34420c80ffa95655ac730ece"
-  integrity sha512-jZddo+7Qz2uxxH1Y8JLsbPAYkF/O+U627G4FLEhJ/Mgytm5z7m4z5ZtkxSj75gA0PU7Q0a37hOHFAOKj8Lg66A==
+"@hmcts/ccd-case-ui-toolkit@5.0.50-update-flag-screen-v6":
+  version "5.0.50-update-flag-screen-v6"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.50-update-flag-screen-v6.tgz#8c024e761686bfc2212d3e1d88b9c96a63fc7921"
+  integrity sha512-cW7nt/WWfrUblZlcSfhe83iB0C+uRsFKWu6hcu1rIal718CMoNH+aDeWFu4HAvSoeCdQdm4d4S90m4LHkTvgJg==
   dependencies:
     tslib "^2.0.0"
 

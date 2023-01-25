@@ -19,7 +19,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             reportLogger.AddMessage(`getWorkflowPageObject : ${workFlowPageType} with header text ${await workFlowPageObject.getHeaderText()}`);
             expect(await workFlowPageObject.isDisplayed(), `${workFlowPageType} work flow page not displayed`).to.be.true;
             expect(await workFlowPageObject.getHeaderText(), `${workFlowPageType} work flow page header not matching`).to.include(workFlowPageType);
-            expect(await workFlowPageObject.getHeaderCaption().toLowerCase(), `${workFlowPageType} work flow page header caption not matching`).to.include(captionHeader.toLowerCase());
+            expect((await workFlowPageObject.getHeaderCaption()).toLowerCase(), `${workFlowPageType} work flow page header caption not matching`).to.include(captionHeader.toLowerCase());
 
         }); 
     });

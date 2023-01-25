@@ -1,12 +1,17 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { State } from '../../../app/store/reducers';
 import { CaseShareComponent } from './case-share.component';
-import { RpxTranslationModule } from 'rpx-xui-translation';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('CaseShareComponent', () => {
   let component: CaseShareComponent;
@@ -31,17 +36,7 @@ describe('CaseShareComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ CaseShareComponent ],
-      imports: [
-        RpxTranslationModule.forRoot({
-          baseUrl: '',
-          debounceTimeMs: 300,
-          validity: {
-            days: 1
-          },
-          testMode: true,
-        })
-      ],
+      declarations: [ CaseShareComponent, RpxTranslateMockPipe ],
       providers: [
         provideMockStore(),
         {

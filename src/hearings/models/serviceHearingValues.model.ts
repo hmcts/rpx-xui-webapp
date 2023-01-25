@@ -44,5 +44,4 @@ export interface ServiceHearingValuesModel {
   screenFlow: ScreenNavigationModel[];
   vocabulary: VocabularyModel[];
   hearingChannels: string[];
-  hearingLevelParticipantAttendance: string[],
 }

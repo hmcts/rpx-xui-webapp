@@ -41,7 +41,6 @@ describe('Hearing Values Effects', () => {
       autoListFlag: false,
       hearingType: 'Final',
       hearingChannels: [],
-      hearingLevelParticipantAttendance: [],
       caseAdditionalSecurityFlag: false,
       caseCategories: [
         {

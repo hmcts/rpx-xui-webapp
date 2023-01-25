@@ -61,37 +61,7 @@ describe('HearingAttendanceComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const lovRefDataService = jasmine.createSpyObj('lovRefDataService', ['getListOfValues']);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-  const refData: LovRefDataModel[] = [
-    {
-      key: 'INTER',
-      value_en: 'In Person',
-      value_cy: '',
-      hint_text_en: 'In Person',
-      hint_text_cy: '',
-      lov_order: 1,
-      parent_key: null,
-      category_key: 'inPerson',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-    {
-      key: 'TEL',
-      value_en: 'Telephone',
-      value_cy: '',
-      hint_text_en: 'Telephone',
-      hint_text_cy: '',
-      lov_order: 2,
-      parent_key: null,
-      category_key: 'Telephone',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-      selected: true,
-    }
-  ];
+
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -281,7 +251,6 @@ describe('HearingAttendanceComponent', () => {
     lovRefDataService.getListOfValues.and.returnValue(of([]));
     fixture.detectChanges();
   });
-
   it('should create', () => {
     expect(component).toBeTruthy();
   });

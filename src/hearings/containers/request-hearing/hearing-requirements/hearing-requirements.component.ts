@@ -98,7 +98,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         leadJudgeContractType: this.serviceHearingValuesModel.leadJudgeContractType,
         amendReasonCodes: null,
         hearingChannels: this.serviceHearingValuesModel.hearingChannels,
-        hearingLevelParticipantAttendance: this.serviceHearingValuesModel.hearingLevelParticipantAttendance,
         listingAutoChangeReasonCode: null
       },
       caseDetails: {

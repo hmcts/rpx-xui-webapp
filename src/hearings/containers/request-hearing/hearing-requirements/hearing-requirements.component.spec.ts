@@ -38,7 +38,6 @@ describe('HearingRequirementsComponent', () => {
     autoListFlag: false,
     hearingType: 'Final',
     hearingChannels: [],
-    hearingLevelParticipantAttendance: [],
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
@@ -540,7 +539,6 @@ describe('HearingRequirementsComponent', () => {
             duration: 60,
             hearingType: 'final',
             hearingChannels: [],
-            hearingLevelParticipantAttendance: [],
             hearingLocations: [
               {
                 locationId: '196538',
@@ -725,7 +723,6 @@ describe('HearingRequirementsComponent', () => {
             duration: 60,
             hearingType: 'final',
             hearingChannels: [],
-            hearingLevelParticipantAttendance: [],
             hearingLocations: [
               {
                 locationId: '196538',
@@ -2265,7 +2262,6 @@ describe('HearingRequirementsComponent', () => {
         duration: 45,
         hearingType: 'Final',
         hearingChannels: [],
-        hearingLevelParticipantAttendance: [],
         hearingLocations: [
           {
             locationId: '196538',

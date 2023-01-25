@@ -2,9 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ACTION, HearingCategory, HearingChannelEnum, PartyType, RadioOptions } from '../../../models/hearings.enum';
+import { ACTION, HearingChannelEnum, PartyType, RadioOptions } from '../../../models/hearings.enum';
 import { IndividualDetailsModel } from '../../../models/individualDetails.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -51,7 +49,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public get getHearingLevelChannels(): FormArray {
-    const hearingLevelSelectedAttendance = this.hearingRequestMainModel.hearingDetails.hearingLevelParticipantAttendance;
+    const hearingLevelParticipantChannels = this.hearingRequestMainModel.hearingDetails.hearingChannels;
     return this.fb.array(this.hearingLevelChannels.map(val => this.fb.group({
       key: [val.key],
       value_en: [val.value_en],
@@ -60,7 +58,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       hint_text_cy: [val.hint_text_cy],
       lov_order: [val.lov_order],
       parent_key: [val.parent_key],
-      selected: [!!val.selected || (hearingLevelSelectedAttendance && hearingLevelSelectedAttendance.includes(val.key))]
+      selected: [!!val.selected || (hearingLevelParticipantChannels && hearingLevelParticipantChannels.includes(val.key))]
     })), [this.validatorsUtils.formArraySelectedValidator()]);
   }
 
@@ -125,18 +123,14 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
       hearingChannels = [HearingChannelEnum.ONPPR];
     } else {
-      hearingChannels = preferredHearingChannelsList.filter((item, pos) =>
-        preferredHearingChannelsList.indexOf(item) === pos
-      );
+      hearingChannels = this.attendanceFormGroup.controls.hearingLevelChannels.value.filter((channel) => channel.selected).map(channel => channel.key);
     }
-    const hearingLevelParticipantAttendance: string[] = this.attendanceFormGroup.controls.hearingLevelChannels.value.filter((channel) => channel.selected).map(channel => channel.key);
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       partyDetails,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         hearingChannels,
-        hearingLevelParticipantAttendance,
         numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
       }
     };

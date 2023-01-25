@@ -1,5 +1,5 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
@@ -12,34 +12,39 @@ import {HearingsService} from '../../../services/hearings.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
 import {HearingActualsTimingComponent} from './hearing-actuals-timing.component';
 
+@Component({selector: 'exui-app-blank', template: ''})
+class BlankComponent {}
+
 describe('HearingActualsTimingComponent', () => {
   const hearingsService = jasmine.createSpyObj('HearingsService', ['updateHearingActuals']);
   let store: Store<any>;
   let component: HearingActualsTimingComponent;
   let fixture: ComponentFixture<HearingActualsTimingComponent>;
+  const mockActivatedRoute = {
+    paramMap: of(convertToParamMap({
+      id: '1',
+      hearingDate: '2021-03-12'
+    })),
+    snapshot: {
+      data: {},
+    },
+    navigate: (): boolean => true
+  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary',  component: BlankComponent}]), HttpClientTestingModule],
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
         {
           provide: ActivatedRoute,
-          useValue: {
-            paramMap: of(convertToParamMap({
-              id: '1',
-              hearingDate: '2021-03-12'
-            })),
-            snapshot: {
-              data: {},
-            },
-          },
+          useValue: mockActivatedRoute,
         },
         ValidatorsUtils
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HearingActualsTimingComponent]
+      declarations: [HearingActualsTimingComponent, BlankComponent]
     })
       .compileComponents();
   }));
@@ -60,11 +65,7 @@ describe('HearingActualsTimingComponent', () => {
     expect(component.formGroup.value.hearingEndTime).toBe('10:00');
   });
 
-  /** The below test is not working after Angular 11 upgrade
-   *  and had to comment it out due to business priority in releasing
-   *  the feature. This test should be looked at later.
-   */
-  xit('should submit form ', () => {
+  it('should submit form when hearingStartTime and hearingEndTime are present with recordTimes being no', () => {
     spyOn(store, 'dispatch');
     component.formGroup.patchValue({
       hearingStartTime: '09:00',
@@ -73,6 +74,42 @@ describe('HearingActualsTimingComponent', () => {
     });
     component.onSubmit(component.formGroup.value, component.formGroup.valid);
     expect(store.dispatch).toHaveBeenCalled();
+  });
+
+  it('should submit form when only hearingStartTime is present with recordTimes being no', () => {
+    spyOn(store, 'dispatch');
+    component.formGroup.patchValue({
+      hearingStartTime: '09:00',
+      hearingEndTime: '',
+      recordTimes: 'no'
+    });
+    component.onSubmit(component.formGroup.value, component.formGroup.valid);
+    expect(store.dispatch).toHaveBeenCalled();
+  });
+
+  it('should submit form when hearingStartTime and hearingEndTime are not present with recordTimes being no', () => {
+    spyOn(store, 'dispatch');
+    component.formGroup.patchValue({
+      hearingStartTime: '',
+      hearingEndTime: '',
+      recordTimes: 'no'
+    });
+    component.onSubmit(component.formGroup.value, component.formGroup.valid);
+    expect(store.dispatch).toHaveBeenCalled();
+  });
+
+  it('should NOT submit form when only hearingEndTime is present with recordTimes being no', () => {
+    spyOn(store, 'dispatch');
+    component.formGroup.patchValue({
+      hearingStartTime: '',
+      hearingEndTime: '10:00',
+      recordTimes: 'no'
+    });
+    component.onSubmit(component.formGroup.value, component.formGroup.valid);
+
+    expect(component.formGroup.get('hearingStartTime').hasError('mandatory')).toBeTruthy();
+    expect(component.formGroup.get('hearingStartTime').hasError('required')).toBeTruthy();
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
   it('should set errors enter valid time when the hearingStartTime and hearingEndTime are not valid', () => {

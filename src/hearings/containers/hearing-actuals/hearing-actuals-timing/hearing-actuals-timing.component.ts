@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
-import { combineLatest, Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { isEqual } from 'underscore';
 import { ActualHearingDayModel, HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
@@ -32,7 +32,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     this.validatorsUtils.mandatory('Enter hearing start time'),
     this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
   ];
-
   private readonly defaultHearingEndTimeValidators = [
     this.validatorsUtils.mandatory('Enter hearing finish time'),
     this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)

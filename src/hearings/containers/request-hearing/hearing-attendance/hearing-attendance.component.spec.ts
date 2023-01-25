@@ -87,7 +87,6 @@ describe('HearingAttendanceComponent', () => {
 
     fixture = TestBed.createComponent(HearingAttendanceComponent);
     component = fixture.componentInstance;
-    component.hearingRequestMainModel.hearingDetails.hearingLevelParticipantAttendance = ['TEL'];
     spyOn(component, 'initialiseFromHearingValues').and.callThrough();
     spyOn(component, 'prepareHearingRequestData').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();

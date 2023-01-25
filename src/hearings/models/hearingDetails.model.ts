@@ -21,6 +21,5 @@ export interface HearingDetailsModel {
   leadJudgeContractType?: string;
   amendReasonCodes: string[];
   hearingChannels: string[];
-  hearingLevelParticipantAttendance: string[];
   listingAutoChangeReasonCode: string;
 }

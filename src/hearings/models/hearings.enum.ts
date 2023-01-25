@@ -107,6 +107,11 @@ export enum RadioOptions {
   CHOOSE_DATE_RANGE = 'Choose a date range'
 }
 
+export enum RadioOptionType {
+  YES = 'yes',
+  NO = 'no',
+}
+
 export enum DOW {
   Monday = 'Monday',
   Tuesday = 'Tuesday',

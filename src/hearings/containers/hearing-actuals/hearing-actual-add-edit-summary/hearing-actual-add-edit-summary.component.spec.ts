@@ -1,6 +1,5 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import { Pipe, PipeTransform } from '@angular/core';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Store} from '@ngrx/store';
@@ -9,12 +8,12 @@ import * as _ from 'lodash';
 import {Observable, of} from 'rxjs';
 import {ActualHearingsUtils} from 'src/hearings/utils/actual-hearings.utils';
 import {hearingActualsMainModel, hearingStageRefData, initialState} from '../../../hearing.test.data';
+import {ActualHearingDayModel} from '../../../models/hearingActualsMainModel';
 import {ACTION, HearingActualAddEditSummaryEnum, HearingResult} from '../../../models/hearings.enum';
 import {ConvertToValuePipe} from '../../../pipes/convert-to-value.pipe';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import {HearingActualAddEditSummaryComponent} from './hearing-actual-add-edit-summary.component';
-import {ActualHearingDayModel} from '../../../models/hearingActualsMainModel';
 
 @Pipe({name: 'transformAnswer'})
 export class MockHearingAnswersPipe implements PipeTransform {

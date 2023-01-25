@@ -1,14 +1,19 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { NocNavigationEvent, NocState } from '../../models';
-import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCaseRefComponent } from './noc-case-ref.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocCaseRefComponent', () => {
   let fixture: ComponentFixture<NocCaseRefComponent>;
@@ -21,18 +26,16 @@ describe('NocCaseRefComponent', () => {
       imports: [
         ReactiveFormsModule,
         UtilsModule,
-        RpxTranslationModule.forChild(),
       ],
       schemas: [
         NO_ERRORS_SCHEMA
       ],
       declarations: [
-        NocCaseRefComponent
+        NocCaseRefComponent,
+        RpxTranslateMockPipe
       ],
       providers: [
         provideMockStore(),
-        RpxTranslationService,
-        RpxTranslationConfig,
       ]
     }).compileComponents();
 

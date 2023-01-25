@@ -1,11 +1,16 @@
+import { Pipe, PipeTransform } from '@angular/core';
 import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
-import * as fromNocStore from '../../store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocSubmitSuccessComponent } from './noc-submit-success.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocSubmitSuccessComponent', () => {
   let store;
@@ -14,15 +19,12 @@ describe('NocSubmitSuccessComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocSubmitSuccessComponent ],
+      declarations: [ NocSubmitSuccessComponent, RpxTranslateMockPipe ],
       imports: [
         UtilsModule,
-        RpxTranslationModule.forChild(),
       ],
       providers: [
         provideMockStore(),
-        RpxTranslationService,
-        RpxTranslationConfig,
       ]
     })
     .compileComponents();

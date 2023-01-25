@@ -21,7 +21,6 @@ describe('Hearing Values Reducer', () => {
         const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
           hmctsServiceID: 'BBA3',
           hearingChannels: [],
-          hearingLevelParticipantAttendance: [],
           hmctsInternalCaseName: 'Jane Smith vs DWP',
           publicCaseName: 'Jane Smith vs DWP',
           autoListFlag: false,

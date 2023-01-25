@@ -8,10 +8,9 @@ import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { ParticipantChannelAttendenceAmendedConverter } from './participant-channel-attendence.amended.converter';
 
 describe('ParticipantChannelAttendenceAmendedConverter', () => {
+
   let converter: ParticipantChannelAttendenceAmendedConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<any>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: any;
 
   beforeEach(() => {

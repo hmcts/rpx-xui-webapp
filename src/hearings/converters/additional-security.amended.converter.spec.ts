@@ -45,7 +45,6 @@ describe('AdditionalSecurityAmendedConverter', () => {
             duration: 60,
             hearingType: 'final',
             hearingChannels: [],
-            hearingLevelParticipantAttendance: [],
             hearingLocations: [
               {
                 locationId: '196538',
@@ -230,7 +229,6 @@ describe('AdditionalSecurityAmendedConverter', () => {
             duration: 60,
             hearingType: 'final',
             hearingChannels: [],
-            hearingLevelParticipantAttendance: [],
             hearingLocations: [
               {
                 locationId: '196538',

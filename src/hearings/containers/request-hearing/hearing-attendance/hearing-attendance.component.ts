@@ -119,7 +119,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       partyDetails.push(partyDetail);
     });
     let hearingChannels: string[];
-    const preferredHearingChannelsList: string[] = partyDetails.map(party => party.individualDetails.preferredHearingChannel);
     if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
       hearingChannels = [HearingChannelEnum.ONPPR];
     } else {

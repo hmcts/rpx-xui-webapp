@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -31,7 +31,6 @@ export class AppComponent implements OnInit, OnDestroy {
   public isCookieBannerVisible: boolean = false;
   private cookieBannerEnabledSubscription: Subscription;
   private cookieBannerEnabled: boolean = false;
-  private timeoutNotificationServiceInitialised: boolean = false;
 
   private idleModalDisplayTimeInMilliseconds: number;
   private totalIdleTimeInMilliseconds: number;
@@ -123,6 +122,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.initializeFeature(userDetails.userInfo, ldClientId);
       if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
+        this.addTimeoutNotificationServiceListener();
         /**
          * Fix for EUI-4469 Live Defect - Google Tag Manager broken
          *
@@ -187,6 +187,18 @@ export class AppComponent implements OnInit, OnDestroy {
       this.cookieService.deleteCookieByPartialMatch('rxVisitor', '/', `.${domainName}`);
       this.cookieService.deleteCookieByPartialMatch('dt', '/', `.${domainName}`);
     }
+  }
+
+  /**
+   * Add Timeout Notification Service Listener
+   *
+   * We listen for Timeout Notification Service events.
+   */
+  public addTimeoutNotificationServiceListener() {
+
+    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
+      this.timeoutNotificationEventHandler(event);
+    });
   }
 
   /**
@@ -287,7 +299,6 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param totalIdleTime - Should reach here in minutes
    */
   public initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime) {
-    if (this.timeoutNotificationServiceInitialised) return;
 
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
 
@@ -304,11 +315,7 @@ export class AppComponent implements OnInit, OnDestroy {
       idleServiceName: 'idleSession'
     };
 
-    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
-      this.timeoutNotificationEventHandler(event);
-    });
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
-    this.timeoutNotificationServiceInitialised = true;
   }
 
   public setCookieBannerVisibility(): void {

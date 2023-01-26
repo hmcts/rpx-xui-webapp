@@ -759,7 +759,6 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
 }
 
 export function checkIsNew(roleAssignment: RoleAssignment, newRoleAssignmentList: RoleAssignment[]): boolean {
-  console.log('getStartDate(roleAssignment)', getStartDate(roleAssignment))
   if (getStartDate(roleAssignment) === 'Pending') {
     // EUI-7018 Pending returns true
     return true;

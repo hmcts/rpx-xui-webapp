@@ -82,7 +82,11 @@ describe('Hearing Request Reducer', () => {
         hearingRequestMainModel: {
           requestDetails: {
             timeStamp: null,
+<<<<<<< HEAD
             versionNumber: 1
+=======
+            versionNumber: 1,
+>>>>>>> 5f752ad24 (feature/PrL-integration Chore added more Hearing Request Reducer tests to improve coverage)
           },
           hearingDetails: {
             duration: null,
@@ -90,12 +94,21 @@ describe('Hearing Request Reducer', () => {
             hearingChannels: [],
             hearingLocations: [{
               locationId: '196538',
+<<<<<<< HEAD
               locationType: HMCLocationType.COURT
             },
             {
               locationId: '219164',
               locationType: HMCLocationType.COURT
             }
+=======
+              locationType: HMCLocationType.COURT,
+            },
+            {
+              locationId: '219164',
+              locationType: HMCLocationType.COURT,
+            },
+>>>>>>> 5f752ad24 (feature/PrL-integration Chore added more Hearing Request Reducer tests to improve coverage)
             ],
             hearingIsLinkedFlag: false,
             hearingWindow: null,
@@ -127,11 +140,19 @@ describe('Hearing Request Reducer', () => {
             caseCategories: [],
             caseManagementLocationCode: null,
             caserestrictedFlag: false,
+<<<<<<< HEAD
             caseSLAStartDate: null
           },
           partyDetails: []
         },
         lastError: null
+=======
+            caseSLAStartDate: null,
+          },
+          partyDetails: [],
+        },
+        lastError: null,
+>>>>>>> 5f752ad24 (feature/PrL-integration Chore added more Hearing Request Reducer tests to improve coverage)
       };
 
       it('should update hearing request action and reset hearingInWelshFlag if no Wales location', () => {
@@ -147,7 +168,11 @@ describe('Hearing Request Reducer', () => {
         const action = new fromHearingRequestActions.UpdateHearingRequest(initialHearingRequestState.hearingRequestMainModel, {
           isInit: false,
           region: 'North West',
+<<<<<<< HEAD
           regionId: '7'
+=======
+          regionId: '7',
+>>>>>>> 5f752ad24 (feature/PrL-integration Chore added more Hearing Request Reducer tests to improve coverage)
         });
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState.hearingRequestMainModel.hearingDetails.hearingInWelshFlag).toEqual(true);

@@ -332,7 +332,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
 
 
-        Then I see filter "Role type" is displayed in all work page
+        Then I see filter "Select a role type" is displayed in all work page
 
         Then I see filter "Person" is displayed in all work page
 

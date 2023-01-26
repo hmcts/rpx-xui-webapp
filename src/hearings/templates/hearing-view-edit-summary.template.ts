@@ -94,10 +94,18 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
     answers: [
       {
+        id: 'paperHearing',
+        answerTitle: 'Will this be a paper hearing?',
+        answerSource: AnswerSource.IS_PAPER_HEARING,
+        changeLink: '/hearings/request/hearing-attendance#paperHearingYes',
+        isAmendedSource: AnswerSource.IS_PAPER_HEARING,
+      },
+      {
         id: 'howAttendant',
-        answerTitle: 'How will each party attend the hearing?',
+        answerTitle: 'How will each participant attend the hearing?',
         answerSource: AnswerSource.HOW_ATTENDANT,
         changeLink: '/hearings/request/hearing-attendance#partyChannel0',
+        isHiddenSource: IsHiddenSource.PAPER_HEARING,
         isAmendedSource: AnswerSource.HOW_ATTENDANT,
       },
       {
@@ -105,6 +113,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'How many people will attend the hearing in person?',
         answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
         changeLink: '/hearings/request/hearing-attendance#attendance-number',
+        isHiddenSource: IsHiddenSource.PAPER_HEARING,
         isAmendedSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
       },
     ],
@@ -205,6 +214,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         isAmendedSource: AnswerSource.PANEL_ROLES,
       },
     ],
+    isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',
@@ -213,7 +223,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'hearingLength',
         answerTitle: 'Length of hearing',
         answerSource: AnswerSource.HEARING_LENGTH,
-        changeLink: '/hearings/request/hearing-timing#durationhours',
+        changeLink: '/hearings/request/hearing-timing#durationdays',
         isAmendedSource: AnswerSource.HEARING_LENGTH,
       },
       {

@@ -98,7 +98,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   private prepareJobTitlesPayload() {
     const jobTitlesNamePayload = [];
     this.addUserData[9].value.map(jobTitle => {
-      jobTitlesNamePayload.push(this.staffFilterOptions.jobTitles.find(jobTitles => jobTitles.key === jobTitle));
+      jobTitlesNamePayload.push(this.staffFilterOptions.jobTitles.find(jobTitles => jobTitles.key.toString() === jobTitle.toString()));
     });
 
     jobTitlesNamePayload.map(jobTitleName => {
@@ -108,7 +108,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
   private prepareUserTypePayload() {
     this.userType.map(userType => {
-      this.userTypesPayload.push(this.staffFilterOptions.userTypes.find(userTypes => userTypes.key === userType));
+      this.userTypesPayload.push(this.staffFilterOptions.userTypes.find(userTypes => userTypes.key.toString() === userType.toString()));
     });
   }
 

@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Observable, Subscription} from 'rxjs';
-import {HearingConditions} from '../../models/hearingConditions';
-import {HearingSummaryEnum, HearingTemplate, Mode} from '../../models/hearings.enum';
-import {Section} from '../../models/section';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { HearingConditions } from '../../models/hearingConditions';
+import { HearingSummaryEnum, HearingTemplate, Mode } from '../../models/hearings.enum';
+import { Section } from '../../models/section';
 import * as fromHearingStore from '../../store';
 
 @Component({
@@ -25,7 +25,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly router: Router,
               protected readonly route: ActivatedRoute) {
-    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
+      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
@@ -35,7 +35,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
         this.validationErrors.push({
           id: '', message: HearingSummaryEnum.BackendError
         });
-        window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       }
     });
   }
@@ -60,7 +60,9 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  public changeAnswer(id: string, changeLink: string): void {
+  public changeAnswer(event: MouseEvent, id: string, changeLink: string): void {
+    event.preventDefault();
+
     const hearingCondition: HearingConditions = {
       fragmentId: id,
       mode: this.mode,

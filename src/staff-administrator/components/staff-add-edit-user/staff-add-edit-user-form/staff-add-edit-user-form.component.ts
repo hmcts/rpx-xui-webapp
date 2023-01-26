@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BookingCheckType, FilterConfig, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
+import { BookingCheckType, FilterConfig, FilterFieldOption, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
@@ -21,9 +21,16 @@ export class StaffAddEditUserFormComponent implements OnInit {
     skills: GroupOptions[],
     services: StaffFilterOption[]
   };
+  public roles: StaffFilterOption[] = [
+    { key: 'case-allocator', label: 'Case Allocator' },
+    { key: 'task-supervisor', label: 'Task Supervisor' },
+    { key: 'staff-administrator', label: 'Staff Administrator' },
+  ];
+  public locations: StaffFilterOption[] = [{key: 'location-x', label: 'Location X'}, {key: 'location-y', label: 'Location Y'}, {key: 'location-z', label: 'Location Z'}];
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
   private previousUrl: string;
+  private currentNavigation: Navigation;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
@@ -192,7 +199,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           titleHint: '(optional)',
           locationTitle: 'Enter a location name',
           enableAddButton: true,
-          options: [{key: 'location-1', label: 'Location 1'}, {key: 'location-2', label: 'Location 2'}],
+          options: [...this.locations],
           minSelected: 0,
           maxSelected: 0,
           maxWidth480px: true,
@@ -216,11 +223,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           title: 'Roles',
           titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [
-            { key: 'case-allocator', label: 'Case Allocator' },
-            { key: 'task-supervisor', label: 'Task Supervisor' },
-            { key: 'staff-administrator', label: 'Staff Administrator' },
-          ],
+          options: [...this.roles],
           minSelected: 0,
           maxSelected: 99,
           lineBreakBefore: true,
@@ -263,5 +266,54 @@ export class StaffAddEditUserFormComponent implements OnInit {
         this.router.navigateByUrl('/staff');
       }
     };
+
+    if (this.currentNavigation.extras && this.currentNavigation.extras.state && this.currentNavigation.extras.state.user && this.previousUrl.indexOf('/staff/users/user-details') >= 0) {
+      this.filterConfig.copyFields = (frm: FormGroup): FormGroup => {
+        frm.patchValue({
+          firstName: null,
+          lastName: null,
+          email: null,
+          region: this.currentNavigation.extras.state.user.region,
+          services: this.getSelected(this.staffFilterOptions.services, this.currentNavigation.extras.state.user.services),
+          jobTitle: this.getSelected(this.staffFilterOptions.jobTitles, this.currentNavigation.extras.state.user.jobTitle),
+          locations:  this.currentNavigation.extras.state.user.locations,
+          additionalLocations:  this.currentNavigation.extras.state.user.locations,
+          roles: this.getSelected(this.roles, this.currentNavigation.extras.state.user.roles),
+          skills: this.getSelectedSkills(this.staffFilterOptions.skills, this.currentNavigation.extras.state.user.skills),
+          userType: this.currentNavigation.extras.state.user.userType,
+          suspended: this.currentNavigation.extras.state.user.suspended,
+          userCategory: this.currentNavigation.extras.state.user.userCategory
+        });
+        return frm;
+      };
+    }
   }
+
+  private getSelected(allOptions: StaffFilterOption[], selectedOptions: string[]): boolean[] {
+    const selected: boolean[] = [] ;
+    allOptions.forEach((el: StaffFilterOption) => {
+      if (selectedOptions.filter(s => s === el.key).length > 0 ) {
+        selected.push(true);
+      } else {
+        selected.push(false);
+      }
+    });
+    return selected;
+  }
+
+  private getSelectedSkills(allOptions: GroupOptions[], selectedOptions: string[]): boolean[] {
+    const selected: boolean[] = [] ;
+    allOptions.forEach((el: GroupOptions) => {
+      el.options.forEach((op: FilterFieldOption) => {
+        const selctedOption = selectedOptions.filter(s => s === op.key)
+        if (selctedOption.length > 0 ) {
+          selected.push(true);
+        } else {
+          selected.push(false);
+        }
+      });
+    });
+    return selected;
+  }
+
 }

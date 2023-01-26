@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { first, mergeMap, switchMap } from 'rxjs/operators';
 
-import { AppConstants } from '../../../app/app.constants';
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { Caseworker, } from '../../../work-allocation/models/dtos';
@@ -25,22 +23,18 @@ export class TasksContainerComponent implements OnInit {
   public tasksRefreshed: boolean = false;
   public caseworkers: Caseworker[] = [];
   public warningIncluded: boolean;
-  public isUpdatedTaskPermissions$: Observable<boolean>;
 
   constructor(private readonly waCaseService: WorkAllocationCaseService,
               private readonly route: ActivatedRoute,
               private readonly caseworkerService: CaseworkerDataService,
-              private readonly rolesService: AllocateRoleService,
-              private readonly featureToggleService: FeatureToggleService) {
-                this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
-               }
+              private readonly rolesService: AllocateRoleService) { }
 
   public ngOnInit(): void {
     // note: internal logic used to be stored in resolver - resolver removed for smoother navigation purposes
     // i.e. navigating before loading
     const caseId = this.route.snapshot.paramMap.get('cid');
-    const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
-    tasksSearch$
+    const tasks$ = this.waCaseService.getTasksByCaseId(caseId);
+    tasks$
       .pipe(
         first(),
         mergeMap((tasks) => {
@@ -61,9 +55,7 @@ export class TasksContainerComponent implements OnInit {
   }
 
   public onTaskRefreshRequired(): void {
-    const caseId = this.caseDetails.case_id;
-    const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
-    tasksSearch$.pipe(first(), mergeMap(taskList => {
+    this.waCaseService.getTasksByCaseId(this.caseDetails.case_id).pipe(first(), mergeMap(taskList => {
       this.tasks = taskList;
       return this.getAssignedNamesForTasks();
     })).subscribe(tasks => {

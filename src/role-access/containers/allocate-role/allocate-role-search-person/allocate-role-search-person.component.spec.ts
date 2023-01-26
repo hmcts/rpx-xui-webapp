@@ -63,111 +63,6 @@ describe('AllocateRolePersonComponent', () => {
     expect(component.person).toBe(secondPerson);
   });
 
-  it('should set data in ngOnInit for CTSC data', () => {
-    const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
-      caseId: '1111111111111111',
-      jurisdiction: 'New jurisdiction',
-      assignmentId: 'a123456',
-      state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
-      typeOfRole: {id: 'ctsc', name: 'CTSC'},
-      allocateTo: AllocateTo.RESERVE_TO_ME,
-      personToBeRemoved: {
-        id: 'p111111',
-        name: 'test1',
-        domain: '',
-      },
-      person: {
-        id: 'p222222',
-        name: 'test2',
-        domain: '',
-      },
-      durationOfRole: DurationOfRole.SEVEN_DAYS,
-      action: Actions.Allocate,
-      period: {
-        startDate: new Date(),
-        endDate: new Date(),
-      },
-      roleCategory: RoleCategory.CTSC,
-    };
-    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
-    component.ngOnInit();
-    expect(component.title).toBe('Allocate a CTSC');
-    expect(component.personName).toBe('test2');
-    expect(component.roleType).toEqual({id: 'ctsc', name: 'CTSC'});
-    expect(component.assignedUser).toEqual('p111111');
-    expect(component.userIncluded).toEqual(false);
-  });
-
-  it('should set data in ngOnInit for empty data', () => {
-    const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
-      caseId: '1111111111111111',
-      jurisdiction: 'New jurisdiction',
-      assignmentId: 'a123456',
-      state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
-      typeOfRole: {id: '', name: ''},
-      allocateTo: AllocateTo.RESERVE_TO_ME,
-      personToBeRemoved: {
-        id: 'p111111',
-        name: 'test1',
-        domain: '',
-      },
-      person: {
-        id: 'p222222',
-        name: 'test2',
-        domain: '',
-      },
-      durationOfRole: DurationOfRole.SEVEN_DAYS,
-      action: Actions.Allocate,
-      period: {
-        startDate: new Date(),
-        endDate: new Date(),
-      },
-      roleCategory: null,
-    };
-    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
-    component.ngOnInit();
-    expect(component.title).toBe('Allocate a role');
-    expect(component.personName).toBe('test2');
-    expect(component.roleType).toEqual({id: '', name: ''});
-    expect(component.assignedUser).toEqual('p111111');
-    expect(component.userIncluded).toEqual(false);
-  });
-
-  it('should set data in ngOnInit for Admin data', () => {
-    const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
-      caseId: '1111111111111111',
-      jurisdiction: 'New jurisdiction',
-      assignmentId: 'a123456',
-      state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
-      typeOfRole: {id: 'admin', name: 'Admin'},
-      allocateTo: AllocateTo.RESERVE_TO_ME,
-      personToBeRemoved: {
-        id: 'p111111',
-        name: 'test1',
-        domain: '',
-      },
-      person: {
-        id: 'p222222',
-        name: 'test2',
-        domain: '',
-      },
-      durationOfRole: DurationOfRole.SEVEN_DAYS,
-      action: Actions.Allocate,
-      period: {
-        startDate: new Date(),
-        endDate: new Date(),
-      },
-      roleCategory: RoleCategory.ADMIN,
-    };
-    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
-    component.ngOnInit();
-    expect(component.title).toBe('Allocate an Admin');
-    expect(component.personName).toBe('test2');
-    expect(component.roleType).toEqual({id: 'admin', name: 'Admin'});
-    expect(component.assignedUser).toEqual('p111111');
-    expect(component.userIncluded).toEqual(false);
-  });
-
   it('should set data in ngOnInit', () => {
     const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
       caseId: '1111111111111111',
@@ -196,7 +91,7 @@ describe('AllocateRolePersonComponent', () => {
     };
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component.ngOnInit();
-    expect(component.title).toBe('Allocate a Lead judge');
+    expect(component.title).toBe('Allocate a lead judge');
     expect(component.personName).toBe('test2');
     expect(component.roleType).toEqual({id: 'lead-judge', name: 'Lead judge'});
     expect(component.assignedUser).toEqual('p111111');

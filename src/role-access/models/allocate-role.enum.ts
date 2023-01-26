@@ -8,8 +8,7 @@ export enum TypeOfRole {
 export enum RoleCategory {
   JUDICIAL = 'JUDICIAL',
   LEGAL_OPERATIONS = 'LEGAL_OPERATIONS',
-  ADMIN = 'ADMIN',
-  CTSC = 'CTSC'
+  ADMIN = 'ADMIN'
 }
 
 export enum AllocateTo {

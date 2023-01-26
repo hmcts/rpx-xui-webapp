@@ -84,7 +84,7 @@ describe('ChooseAllocateToComponent', () => {
     component.ngOnInit();
     expect(component.typeOfRole).toEqual({id: 'lead-judge', name: 'Lead judge'});
     expect(component.allocateTo).toBe('Reserve to me');
-    expect(component.caption).toBe('Allocate a Lead judge');
+    expect(component.caption).toBe('Allocate a lead judge');
   });
 
   it('should navigationHandler with error', () => {

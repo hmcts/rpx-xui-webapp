@@ -7,6 +7,9 @@ import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride'
 import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 
+
+
+
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_queryAssignment', port: 8000 });
@@ -19,7 +22,7 @@ const roles = [
 
 describe("access management service, query role assignments", () => {
 
-
+   
     const REQUEST_BODY = {
         queryRequests: [
             {
@@ -28,7 +31,7 @@ describe("access management service, query role assignments", () => {
                     caseType: ['asylum'],
                     jurisdiction: ['IAC'],
                 },
-                roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'],
+                roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL'],
             },
         ],
     };
@@ -89,7 +92,7 @@ describe("access management service, query role assignments", () => {
                 rolesResponseBody.push(dummyRole);
 
             }
-
+          
 
             const getRolesInteraction = {
                 state: "A list of role assignments for the search query",
@@ -108,7 +111,7 @@ describe("access management service, query role assignments", () => {
                     headers: {
                         "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
-                    body: rolesResponseBody,
+                    body: rolesResponseBody, 
                 },
             };
 
@@ -134,7 +137,7 @@ describe("access management service, query role assignments", () => {
 
             const { getRolesByCaseId } = requireReloaded('../../../../roleAccess/index');
 
-
+          
             const req = mockReq({
                 headers: {
                     'Authorization': 'Bearer someAuthorizationToken',

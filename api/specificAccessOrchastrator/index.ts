@@ -170,9 +170,6 @@ export function getTaskType(roleCategory: string): string {
     case 'ADMIN': {
       return 'reviewSpecificAccessRequestAdmin';
     }
-    case 'CTSC': {
-      return 'reviewSpecificAccessRequestCTSC';
-    }
   }
 }
 

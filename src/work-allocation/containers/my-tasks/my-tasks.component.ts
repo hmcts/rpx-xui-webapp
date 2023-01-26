@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
@@ -36,7 +37,7 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters: SearchTaskParameter [] = [
         { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] },
@@ -50,13 +51,12 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       if (typesOfWorkParameter) {
         searchParameters.push(typesOfWorkParameter);
       }
-      const searchTaskParameter: SearchTaskRequest = {
+      return {
         search_parameters: searchParameters,
-        sorting_parameters: [...this.getSortParameter()],
+        sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
-      return searchTaskParameter;
     }
   }
 

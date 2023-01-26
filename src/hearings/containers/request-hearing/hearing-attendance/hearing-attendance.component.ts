@@ -206,6 +206,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       relatedParties: [individualDetails.relatedParties],
       title: [individualDetails.title],
       vulnerabilityDetails: [individualDetails.vulnerabilityDetails],
+      hearingChannelEmail: [individualDetails.hearingChannelEmail],
+      hearingChannelPhone: [individualDetails.hearingChannelPhone]
     });
   }
 }

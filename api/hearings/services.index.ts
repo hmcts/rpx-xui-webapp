@@ -102,7 +102,14 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
       });
       // @ts-ignore
       const allResults = await Promise.allSettled(promises);
+			
+			console.log('ALL DATA', allData);
+			console.log('ALL RESULTS', allResults);
+
       const result = aggregateAllResults(allData, allResults);
+
+			console.log('RESULT', result);
+
       res.status(status).send(result);
     } else {
       res.status(status).send([]);

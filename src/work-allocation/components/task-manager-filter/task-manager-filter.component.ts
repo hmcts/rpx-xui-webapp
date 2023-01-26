@@ -20,6 +20,7 @@ import { getRoleCategory } from '../../utils';
 export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';
   @Input() public jurisdictions: string[] = [];
+  @Input() public waSupportedJurisdictions: string[];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
   public appStoreSub: Subscription;
@@ -164,7 +165,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
-  private static findPersonFilter(): FilterFieldConfig {
+  private static findPersonFilter(waSupportedJurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'person',
       options: [],
@@ -175,7 +176,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       domainField: 'role',
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person',
-      radioSelectionChange: 'selectPerson=Specific person'
+      radioSelectionChange: 'selectPerson=Specific person',
+      services: waSupportedJurisdictions
     };
   }
 
@@ -240,7 +242,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initLocationFilter(),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
-      TaskManagerFilterComponent.findPersonFilter(),
+      TaskManagerFilterComponent.findPersonFilter(this.waSupportedJurisdictions),
       TaskManagerFilterComponent.initTaskTypeFilter()
     ];
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)

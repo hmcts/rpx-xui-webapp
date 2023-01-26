@@ -308,4 +308,44 @@ describe('HmctsGlobalHeaderComponent', () => {
       done();
     });
   });
+
+  it('filters out menu items for which not all features are enabled correctly with non-left-right observable', (done) => {
+    component.items = [{
+      align: 'right',
+      text: '1',
+      href: '',
+      active: false,
+      flags: ['enabledFlag'],
+      roles: ['roleA']
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false,
+      // important to verify this
+      flags: ['enabledFlag2'],
+      roles: ['roleB']
+    },
+    {
+      align: 'right',
+      text: '3',
+      href: '',
+      active: false,
+      flags: ['enabledFlag'],
+      roles: ['roleC']
+    }];
+    component.ngOnChanges(changesMock);
+    const leftItems = component.leftItems;
+    const rightItems = component.rightItems;
+    leftItems.pipe(
+      switchMap(items => {
+        expect(items).toEqual([]);
+        return rightItems;
+      })
+    ).subscribe(items => {
+      expect(items).toEqual([component.items[0]]);
+      done();
+    });
+  });
 });

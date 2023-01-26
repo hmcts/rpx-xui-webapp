@@ -20,6 +20,14 @@ describe('WorkAllocation', () => {
       expect(mockHttpService.get).toHaveBeenCalledWith(LocationDataService.locationUrl);
     });
 
+    it('getLocationsByRegion should make correct api call', () => {
+      const service = new LocationDataService(mockHttpService, sessionStorageService);
+      sessionStorageService.getItem.and.returnValue(null);
+      mockHttpService.post.and.returnValue(of([]));
+      service.getLocationsByRegion(['IA']);
+      expect(mockHttpService.post).toHaveBeenCalledWith(LocationDataService.regionLocationUrl, {serviceIds: ['IA']});
+    });
+
     it('getSpecificLocations should make correct api call', () => {
       const service = new LocationDataService(mockHttpService, sessionStorageService);
       const options = {

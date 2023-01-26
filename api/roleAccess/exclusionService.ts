@@ -151,8 +151,6 @@ export function mapRoleCategory(roleCategory: string): RoleCategory {
       return RoleCategory.JUDICIAL;
     case 'ADMIN':
       return RoleCategory.ADMIN;
-    case 'CTSC':
-      return RoleCategory.CTSC;
     default:
       throw new Error('Invalid roleCategory');
   }

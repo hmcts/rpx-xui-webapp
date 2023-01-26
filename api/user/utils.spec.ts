@@ -142,7 +142,7 @@ describe('user.utils', () => {
                      'caseworker-ia-caseofficer', 'cwd-user',
                      'case-allocator', 'tribunal-caseworker',
                      'hmcts-legal-operations', 'task-supervisor'];
-      expect(getUserRoleCategory(roles)).to.equal('admin');
+      expect(getUserRoleCategory(roles)).to.equal('legal-operations');
     });
   });
 });

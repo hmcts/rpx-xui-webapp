@@ -30,7 +30,7 @@ describe('TaskListWrapperComponent', () => {
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
@@ -78,11 +78,10 @@ describe('TaskListWrapperComponent', () => {
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-    mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue('1');
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
-    store = TestBed.inject(Store);
+    store = TestBed.get(Store);
     fixture.detectChanges();
   }));
 

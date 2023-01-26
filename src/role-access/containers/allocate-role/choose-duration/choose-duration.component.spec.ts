@@ -85,7 +85,7 @@ describe('ChooseDurationComponent', () => {
   it('should navigationHandler', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
     const roleCategory: RoleCategory = RoleCategory.JUDICIAL;
-    const userRole: UserRole = UserRole.Judicial;
+    const isLegalOpsOrJudicialRole: UserRole = UserRole.Judicial;
     component.selectedDuration = DurationOfRole.SEVEN_DAYS;
     component.navigationHandler(navEvent);
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseDurationAndGo({

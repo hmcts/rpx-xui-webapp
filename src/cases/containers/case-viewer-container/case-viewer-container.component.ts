@@ -72,7 +72,7 @@ export class CaseViewerContainerComponent implements OnInit {
           requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2 ? true : false ;
       }
     })
-    return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
+    return requiredFeature && !!AppUtils.isLegalOpsOrJudicial(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
   }
 
   public ngOnInit(): void {

@@ -38,11 +38,11 @@ class AllWork extends TaskList {
             'Person input': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
             'Task type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select'),
             'Priority': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select'),
-            'Select a role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Role type")]/..//select')
+            'Select a role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Select a role type")]/..//select')
             
         } 
 
-        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Tasks by role type', 'Task type', 'Priority', 'Person','Tasks', 'Role type','Location radios'];
+        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Tasks by role type', 'Task type', 'Priority', 'Person', 'Tasks', 'Select a role type','Location radios'];
 
         this.filterApplyBtn = $('exui-all-work-home xuilib-generic-filter #applyFilter');
         this.filterResetBtn = $('exui-all-work-home xuilib-generic-filter #cancelFilter');

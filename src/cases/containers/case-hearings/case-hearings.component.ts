@@ -38,7 +38,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public listedHearings$: Observable<HearingListViewModel[]>;
 
   public hearingState$: Observable<fromHearingStore.State>;
-  public hearingsActions: Actions[] = [Actions.READ];
+  public hearingsActions: Actions[];
   public userRoles$: Observable<string[]>;
   public hearingListLastErrorState$: Observable<fromHearingStore.State>;
   public hearingValuesLastErrorState$: Observable<fromHearingStore.State>;
@@ -101,14 +101,15 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
     this.roleCatSubscription = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).subscribe(
       userRole => {
+        this.hearingsActions = [Actions.READ];
         if (userRole === UserRole.LegalOps) {
           this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
         }
+        if (this.hearingsActions.includes(Actions.CREATE)) {
+          this.hasRequestAction = true;
+        }
       }
     );
-    if (this.hearingsActions.includes(Actions.CREATE)) {
-      this.hasRequestAction = true;
-    }
     this.isOgdRole$ = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(map(userRole => userRole === UserRole.Ogd));
   }
 

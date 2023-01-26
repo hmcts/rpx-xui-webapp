@@ -39,7 +39,6 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const courtTypeIds = getCourtTypeIdsByService(serviceIds);
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
-
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
@@ -49,6 +48,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     } else if (locationType === LocationTypeEnum.CASE_MANAGEMENT) {
       results = results.filter(location => location.is_case_management_location === 'Y');
     }
+
     // if service not present all locations available for service
     // else check locations/regions, if there are none, provide no locations for service
     userLocations.forEach(userLocation => {
@@ -62,6 +62,8 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
         results = filterOutResults(results, locationIds, regionIds, courtTypes);
       }
     });
+    // added line below to ensure any locations from non-used services are removes (API occasionally sending irrelevant location previously)
+    results = results.filter(location => courtTypeIds.includes(location.court_type_id));
     response.data.results = results.filter((locationInfo, index, self) =>
       index === self.findIndex(location => (
         location.epimms_id === locationInfo.epimms_id

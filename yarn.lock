@@ -1536,12 +1536,12 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@2.1.6-angular-upgrade-11-fix-field-issue":
-  version "2.1.6-angular-upgrade-11-fix-field-issue"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-angular-upgrade-11-fix-field-issue.tgz#0b9887457eb0a06523c5b82e5a6d7e1e776ec756"
-  integrity sha512-lpwlbgUK/8v8SmzscpE/YAfZwkkOpI3P97YAlWR5OYZYBMugoWEv04BOYM62UQ71fUaJt3cJ6absBvNyowT4Bg==
+"@hmcts/rpx-xui-common-lib@2.1.8-booking-region-filter":
+  version "2.1.8-booking-region-filter"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.8-booking-region-filter.tgz#447d2c6f1c17d927de0f8c474ab73e78270604a4"
+  integrity sha512-cSW/trkZNhAb6i8JD4/fyIEDOtJC2GUAqFzYPLlwpNr/5kCix8iLpGSYhsS6k6dJciVmGZQbBEYw8XAxmrpFNg==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 "@hmcts/rpx-xui-node-lib@2.25.12":
   version "2.25.12"

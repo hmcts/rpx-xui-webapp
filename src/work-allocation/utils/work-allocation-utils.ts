@@ -247,7 +247,7 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
   let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.service === service);
   if (!locationsByService) {
     // check to ensure that if service present with null location (i.e. a base location not within region), we register this
-    !location.id && !location.regionId ? locationsByServices.push({service, locations: [location], bookable}) : locationsByServices.push({service, locations: [location], bookable});
+    !location.id && !location.regionId ? locationsByServices.push({service, locations: [], bookable}) : locationsByServices.push({service, locations: [location], bookable});
   } else {
     const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service

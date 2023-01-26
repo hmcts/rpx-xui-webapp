@@ -50,7 +50,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
             map((regionLocations) => this.getJudicialWorkersOrCaseWorkers(regionLocations, userDetails))
           )
         ),
-        mergeMap((locations: Location[]) => this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([])
+        mergeMap((locations: Location[]) => (this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([]))
           .pipe(
             map((bookings: Booking[]) => this.addBookingLocations(locations, bookings)),
           )
@@ -127,13 +127,15 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     return this.locations;
   }
 
-  private addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
+  public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
     // TODO: Check if user still has valid bookable role assignment for service
     const bookingLocations: string[] = [];
-    bookings.filter(booking => {
+    bookings.forEach(booking => {
       // if this is an active booking
       if (moment(new Date()).isSameOrAfter(booking.beginTime) && moment(new Date()).isSameOrBefore(booking.endTime)) {
         bookingLocations.push(booking.locationId);
+      } else {
+        locations = locations.filter(location => location.id !== booking.locationId);
       }
     });
     this.saveBookingLocation(bookingLocations);

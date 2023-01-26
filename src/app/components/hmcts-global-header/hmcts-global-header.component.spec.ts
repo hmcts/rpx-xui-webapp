@@ -55,8 +55,8 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
-      declarations: [ HmctsGlobalHeaderComponent ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [HmctsGlobalHeaderComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule,
@@ -108,7 +108,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
         { text: 'Nav item 2', emit: '#1' }
       ]
     };
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     storeMock.pipe.and.returnValue(of(userDetails));
     fixture.detectChanges();
   });
@@ -339,8 +339,8 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
-      declarations: [ HmctsGlobalHeaderComponent ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [HmctsGlobalHeaderComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         HttpClientTestingModule,
         RouterTestingModule,
@@ -464,7 +464,7 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
-    
+
     leftItems.pipe(
       switchMap(items => {
         expect(items).toEqual([]);

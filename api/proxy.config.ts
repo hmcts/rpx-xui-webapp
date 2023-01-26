@@ -170,7 +170,7 @@ export const initProxy = (app: Express) => {
     rewrite: true,
     source: '/api/translation',
     rewriteUrl: '/translation',
-    target: getConfigValue(SERVICES_TRANSLATION_API_URL)
+    target: getConfigValue(SERVICES_TRANSLATION_API_URL),
   });
 
   applyProxy(app, {

@@ -1,27 +1,21 @@
-<div class="task-list-header">
-  <div>
-    <div *ngIf="isPaginationEnabled()"
-         attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+<div *ngIf="isPaginationEnabled()" class="pagination-top"
+     attr.aria-label="{{ tasksTotal }} results have been found" role="status">
   <span class="text-16" data-test="search-result-summary__text">Showing
       <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
       to
       <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
       of
       <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }}</span> results</span>
-    </div>
+</div>
 
-    <div attr.aria-label="{{ tasksTotal }} results have been found" role="status"
-         *ngIf="!pagination && enablePagination">
-      <span class="text-16" data-test="search-result-summary__text">Showing <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>results</span>
-    </div>
-  </div>
+<div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status"
+     *ngIf="!pagination && enablePagination">
+  <span class="text-16" data-test="search-result-summary__text">Showing <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>results</span>
+</div>
 
-  <!-- Reset Sorting Button -->
-  <div class="reset-button-space" *ngIf="showResetSortButton">
-    <div class="reset-sort-button">
-      <button type="button" class="govuk-button hmcts-button--secondary" (click)="onResetSorting()">Reset sorting</button>
-    </div>
-  </div>
+<!-- Reset Sorting Button -->
+<div class="reset-button-space">
+<div *ngIf="showResetSortButton" class="reset-sort-button"><button type="button" class="govuk-button hmcts-button--secondary" (click)="onResetSorting()">Reset sorting</button></div>
 </div>
 
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
@@ -114,7 +108,7 @@
 
 </table>
 
-<ccd-pagination
-  [autoHide]="true"
-  (pageChange)="paginationEvent.emit($event)"
+<ccd-pagination 
+  [autoHide]="true" 
+  (pageChange)="paginationEvent.emit($event)" 
   *ngIf="isPaginationEnabled()"></ccd-pagination>

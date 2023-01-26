@@ -22,7 +22,7 @@ describe('Work allocation Release 2: locations search', () => {
     // [
     //     {
     //         serviceIds: "IA",
-    //         bookingLocations: ['765324'],
+    //         bookingLocations: ['765324'], 
     //         userLocations: [{ service: 'IA', bookable: true, locationIds: ['765324']}],
     //         resultLocationsFromFilter:{ minCount:1, andMore:false}
     //     },
@@ -78,16 +78,16 @@ describe('Work allocation Release 2: locations search', () => {
     //         };
 
     //         if (scr.bookingLocations.length > 0){
-    //             requestBody['bookingLocations'] = scr.bookingLocations;
+    //             requestBody['bookingLocations'] = scr.bookingLocations; 
     //         }
     //         if (userlocations.length > 0){
-    //             requestBody['userLocations'] = userlocations;
+    //             requestBody['userLocations'] = userlocations; 
     //         }
 
     //         const response = await Request.post(`api/locations/getLocations`, requestBody ,headers, 200);
     //         expect(response.status).to.equal(200);
 
-    //         const resultLocationids = response.data.map(loc => loc.epimms_id)
+    //         const resultLocationids = response.data.map(loc => loc.epimms_id) 
     //         // console.log(resultLocationids);
 
     //         const expectedMinLocations = [];
@@ -107,7 +107,7 @@ describe('Work allocation Release 2: locations search', () => {
     //     });
     // });
 
-
+   
 
 
 

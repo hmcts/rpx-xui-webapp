@@ -63,7 +63,8 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
 
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+
       return {
         search_parameters: [
           {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0]},

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { getOptions, getRoleCategoryFromUserRole } from '../../../work-allocation/utils';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { getOptions } from 'src/work-allocation/utils';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
@@ -50,12 +50,13 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public ngOnInit(): void {
     this.taskRoles = this.route.snapshot.data.roles;
     this.roles = getOptions(this.taskRoles, this.sessionStorageService);
+    const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.service = this.route.snapshot.queryParamMap.get('service');
     this.verb = this.route.snapshot.data.verb;
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
-      role: [this.setUpDefaultRoleType(this.getCurrentUserRoleCategory(), this.taskRoles), Validators.required],
+      role: [this.setUpDefaultRoleType(isJudicial, this.taskRoles), Validators.required],
       taskId: [taskId, Validators.required]
     });
   }
@@ -80,43 +81,30 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     }
   }
 
-  private getCurrentUserRoleCategory(): RoleCategory {
+  private isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(TaskAssignmentChooseRoleComponent.userDetails);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return getRoleCategoryFromUserRole(AppUtils.getUserRole(userInfo.roles));
+      return AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
     }
-    return null;
+    return false;
   }
 
-  private setUpDefaultRoleType(userRoleCategory: RoleCategory, roles: TaskRole[]): string {
+  private setUpDefaultRoleType(isCurrentUserJudicial: boolean, roles: TaskRole[]): RoleCategory {
     const roleCategory = this.route.snapshot.queryParamMap.get('roleCategory');
     if (roleCategory && (roleCategory as RoleCategory) !== null) {
       return roleCategory as RoleCategory;
     } else if (roles.length) {
-      const roleCategories = this.taskWithOwnPermission(roles);
-      // if there is only one role with relevant permissions, use that role
-      if (roleCategories && roleCategories.length === 1) {
-        return roleCategories[0].toUpperCase();
-      // if the user has a role that matches the relevant task role category
-      } else if (roleCategories.includes(userRoleCategory)) {
-        return userRoleCategory;
-      // else return simply the first role with an own permission
-      } else {
-        return roleCategories[0];
+      const role = this.userWithOwnPermission(roles);
+      if (role) {
+        return role.role_category === 'judicial' ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS;
       }
     }
+    return isCurrentUserJudicial ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS;
   }
 
-  private taskWithOwnPermission(roles: TaskRole[]): string[] {
+  private userWithOwnPermission(roles: TaskRole[]): TaskRole {
     // EUI-5236 - TaskPermission instead of Permission (i.e. not all caps)
-    const possibleRoles  =  roles.filter(role => role.permissions.includes(TaskPermission.OWN));
-    const roleList = [];
-    possibleRoles.forEach(possibleRole => {
-      if (!roleList.includes(possibleRole.role_category)) {
-        roleList.push(possibleRole.role_category.toUpperCase());
-      }
-    })
-    return roleList;
+    return roles.find(role => role.permissions.includes(TaskPermission.OWN));
   }
 }

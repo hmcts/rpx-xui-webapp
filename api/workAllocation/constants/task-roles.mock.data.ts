@@ -5,11 +5,11 @@ export const TASK_ROLES: TaskRole[] = [
     'role_category': 'LEGAL_OPERATIONS',
     'role_name': 'tribunal-caseworker',
     'permissions': [
-      'Own',
-      'Execute',
-      'Read',
-      'Manage',
-      'Cancel',
+      'OWN',
+      'EXECUTE',
+      'READ',
+      'MANAGE',
+      'CANCEL',
     ],
     'authorisations': [
       'IAC',
@@ -20,10 +20,10 @@ export const TASK_ROLES: TaskRole[] = [
     'role_category': 'LEGAL_OPERATIONS',
     'role_name': 'case-manager',
     'permissions': [
-      'Execute',
-      'Read',
-      'Manage',
-      'Cancel',
+      'EXECUTE',
+      'READ',
+      'MANAGE',
+      'CANCEL',
     ],
     'authorisations': [
       'IAC',
@@ -34,8 +34,8 @@ export const TASK_ROLES: TaskRole[] = [
     'role_category': 'JUDICIAL',
     'role_name': 'judge',
     'permissions': [
-      'Execute',
-      'Read',
+      'EXECUTE',
+      'READ',
     ],
     'authorisations': [
       'IAC',

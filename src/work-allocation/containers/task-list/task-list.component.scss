@@ -16,18 +16,12 @@
   border: 0;
   font-family: "GDS Transport", arial, sans-serif;
 }
-
-.task-list-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-
-  .reset-button-space {
-    .govuk-button {
-      margin-bottom: 0;
-    }
-  }
+.reset-button-space {
+  height: 60px;
+}
+.reset-sort-button {
+  float: right;
+  margin-bottom: -10px;
 }
 
 .column-sort {

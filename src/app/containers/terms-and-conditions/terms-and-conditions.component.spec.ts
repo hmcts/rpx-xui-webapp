@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Action, Store } from '@ngrx/store';
@@ -21,7 +21,7 @@ describe('TermsAndConditionsComponent', () => {
         template: `<exui-terms-and-conditions></exui-terms-and-conditions>`
     })
     class TestDummyHostComponent {
-        @ViewChild(TermsAndConditionsComponent)
+        @ViewChild(TermsAndConditionsComponent, {static: false})
         public footerComponent: TermsAndConditionsComponent;
     }
 
@@ -36,7 +36,7 @@ describe('TermsAndConditionsComponent', () => {
     let element: DebugElement;
     let termsConditionsService: TermsConditionsService;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         pipeSpy = spyOn(storeMock, 'pipe');
         dispatchSpy = spyOn(storeMock, 'dispatch');
         TestBed.configureTestingModule({

@@ -1,15 +1,15 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import {InfoMessage, InfoMessageType} from '../../enums';
-import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { InfoMessage, InfoMessageType } from './../../enums';
+import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
 import { InfoMessageComponent } from './info-message.component';
+
 
 @Component({
   template: `<exui-info-message [type]="type" [message]="message"></exui-info-message>`
 })
 class WrapperComponent {
-  @ViewChild(InfoMessageComponent) public appComponentRef: InfoMessageComponent;
+  @ViewChild(InfoMessageComponent, {static: true}) public appComponentRef: InfoMessageComponent;
   @Input() public type: InfoMessageType;
   @Input() public message: InfoMessage;
 }
@@ -21,15 +21,13 @@ describe('WorkAllocation', () => {
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ]
       })
       .compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;

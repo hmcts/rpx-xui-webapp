@@ -1,5 +1,4 @@
-import { AbstractControl, ValidatorFn } from '@angular/forms';
-import { ValidationErrors } from '@angular/forms/src/directives/validators';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import * as moment from 'moment';
 
 export class NocValidators {

@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FieldType, TaskView } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -11,7 +11,7 @@ import { WorkFieldComponent } from './work-field.component';
   template: `<exui-work-field [config]="config" [workField]="task"></exui-work-field>`
 })
 class WrapperComponent {
-  @ViewChild(WorkFieldComponent) public appComponentRef: WorkFieldComponent;
+  @ViewChild(WorkFieldComponent, {static: true}) public appComponentRef: WorkFieldComponent;
   @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
@@ -32,7 +32,7 @@ describe('WorkAllocation', () => {
       };
     }
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule, RouterTestingModule ]

@@ -64,7 +64,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       this.caption = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {
       if (this.typeOfRole) {
-        this.caption = `${action} a ${this.typeOfRole.toLowerCase()}`;
+        this.caption = `${action} a ${this.typeOfRole}`;
       } else if (roleCategory === RoleCategory.ADMIN) {
         this.caption = `${action} an admin role`;
       } else {

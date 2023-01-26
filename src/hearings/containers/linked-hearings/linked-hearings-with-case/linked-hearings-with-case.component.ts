@@ -65,6 +65,9 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         if (state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings) {
           this.isHearingsSelected(state.hearingLinks.serviceLinkedCasesWithHearings);
           this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings;
+
+					console.log('LINKED CASES', this.linkedCases);
+
           this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
           if (state.hearingLinks.lastError) {
             this.errors.push({id: 'httpError', message: HearingSummaryEnum.BackendError});

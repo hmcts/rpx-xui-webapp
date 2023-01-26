@@ -62,7 +62,8 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
         results = filterOutResults(results, locationIds, regionIds, courtTypes);
       }
     });
-    // added line below to ensure any locations from non-used services are removes (API occasionally sending irrelevant location previously)
+    // added line below to ensure any locations from non-used services are removes
+    // (API occasionally sending irrelevant location previously)
     results = results.filter(location => courtTypeIds.includes(location.court_type_id));
     response.data.results = results.filter((locationInfo, index, self) =>
       index === self.findIndex(location => (

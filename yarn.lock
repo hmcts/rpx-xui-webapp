@@ -1281,10 +1281,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.44-angular11-welsh-release-part1-2":
-  version "5.0.44-angular11-welsh-release-part1-2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.44-angular11-welsh-release-part1-2.tgz#fdfea34ac4f12f4b19d0e351ced4d72d1017f4a5"
-  integrity sha512-GJIe1stIpz03IWxlY7q1sKGRSFiAa/7hIlhuBt0ErHB3JClvIdXjTUBK3L3cUiZZxEuDZ8zcmkqwzOYEgh2fmg==
+"@hmcts/ccd-case-ui-toolkit@5.0.44-angular11-welsh-release-part1-4":
+  version "5.0.44-angular11-welsh-release-part1-4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.44-angular11-welsh-release-part1-4.tgz#fcbabb2486c6e1db083bfc509cc140296d6fa64a"
+  integrity sha512-Qdawzw58yQCgwp/gAnynaf+p4z4aK+3HeAzc5WMR1U3JBxn0luy22ArAShfwNdVetBgPB+hmDiiCbnvVJY7rVQ==
   dependencies:
     tslib "^2.0.0"
 
@@ -1341,10 +1341,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@2.1.6-welsh-translation-v3":
-  version "2.1.6-welsh-translation-v3"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-welsh-translation-v3.tgz#184e24e0588a449c07924f4c6567911111a15aef"
-  integrity sha512-5LFZVFQ4+mn9GsHXOYxEobaNSI5kVU1jp/UfPIk7IoxSXhh62wt9BgM1nMphRxIbgvzS+/sm+ymynLTE8Ug1DQ==
+"@hmcts/rpx-xui-common-lib@2.1.6-welsh-translation-v5":
+  version "2.1.6-welsh-translation-v5"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-welsh-translation-v5.tgz#990a41fb74cf4928136a2d36e9a4110deefa13d8"
+  integrity sha512-xvbmMk1uGntCqCrqjK+ug6t64oxQl9UXWGWJwF/CyhhZzp+HsiLkDVn9PS7ZyBio4h0zsaLZ0AfcoqtQtngJHw==
   dependencies:
     tslib "^2.0.0"
 

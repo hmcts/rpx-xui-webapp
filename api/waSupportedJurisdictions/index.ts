@@ -6,7 +6,7 @@ import { EnhancedRequest } from '../lib/models';
 export async function getWASupportedJurisdictions(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
     const jurisdictions = getConfigValue(WA_SUPPORTED_JURISDICTIONS);
-    const jurisdictionsArray = jurisdictions.split(',');
+    const jurisdictionsArray = getSupportedJurisdictionsListFromString(jurisdictions);
     res.send(jurisdictionsArray).status(200);
   } catch (error) {
     next(error);
@@ -16,11 +16,21 @@ export async function getWASupportedJurisdictions(req: EnhancedRequest, res: Res
 export function getWASupportedJurisdictionsList(): any {
   try {
     const jurisdictions = getConfigValue(WA_SUPPORTED_JURISDICTIONS);
-    const jurisdictionsArray = jurisdictions.split(',');
+    const jurisdictionsArray = getSupportedJurisdictionsListFromString(jurisdictions);
     return jurisdictionsArray;
   } catch (error) {
     console.log(error);
   }
+}
+
+export function getSupportedJurisdictionsListFromString(jurisdictionString:string): string[] {
+  let jurisdictionsArray = [];
+  if (jurisdictionString && jurisdictionString.includes(',')) {
+    jurisdictionsArray = jurisdictionString.split(',');
+  } else {
+    jurisdictionsArray = jurisdictionString ? [jurisdictionString] : [];
+  }
+  return jurisdictionsArray;
 }
 
 export const router = Router({mergeParams: true});

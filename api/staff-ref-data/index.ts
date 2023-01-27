@@ -54,20 +54,6 @@ export async function addNewUser(req, res, next: NextFunction) {
     }
 }
 
-export async function updateUserStatus(req, res, next: NextFunction) {
-    // Call the real api when we have actual user data
-    // const reqBody = req.body
-    // const apiPath: string = `/refdata/case-worker/profile`
-
-    try {
-       // const { status, data }: { status: number; data: StaffDataUser } = await handlePut(apiPath, reqBody, req)
-       mockUser.results[0].suspended =  !mockUser.results[0].suspended;
-       res.status(200).send(mockUser.results[0])
-    } catch (error) {
-        next(error)
-    }
-}
-
 export async function updateUserStatus(req, res: Response, next: NextFunction) {
     const id = req.params.id;
     const reqBody = req.body;

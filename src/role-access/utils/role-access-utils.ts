@@ -2,8 +2,9 @@ import { NavigationExtras } from '@angular/router';
 
 import { ISessionStorageService } from '../../work-allocation/interfaces/common';
 import { Role, RoleAccessHttpError, RolesByService, SpecificRole, TypeOfRole } from '../models';
-import { RoleCaptionText } from '../models/enums/allocation-text';
 import { InfoMessageType } from '../models/enums';
+import { RoleCaptionText } from '../models/enums/allocation-text';
+
 import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
 
 interface Navigator {
@@ -37,19 +38,19 @@ export const convertToName = (id: string): string => {
     return id.charAt(0).toUpperCase() + id.slice(1);
   }
   return '';
-}
+};
 
 export const getAllRolesFromServices = (rolesByService: RolesByService[]): Role[] => {
   let allRoles: Role[] = [];
   rolesByService.forEach(roleListByService => {
-    allRoles = allRoles.concat(roleListByService.roles)
+    allRoles = allRoles.concat(roleListByService.roles);
   });
   return allRoles;
-}
+};
 
 export const getRoleSessionStorageKeyForServiceId = (serviceId: string): string => {
   return `${serviceId}-roles`;
-}
+};
 
 export const getRoles = (serviceId: string, sessionStorageService: ISessionStorageService): Role[] => {
   const sessionKey = getRoleSessionStorageKeyForServiceId(serviceId);
@@ -57,38 +58,36 @@ export const getRoles = (serviceId: string, sessionStorageService: ISessionStora
   if (value) {
     return JSON.parse(value) as Role[];
   }
-}
+};
 
 export const setRoles = (serviceId: string, roles: Role[], sessionStorageService: ISessionStorageService): void => {
   const sessionKey = getRoleSessionStorageKeyForServiceId(serviceId);
   sessionStorageService.setItem(sessionKey, JSON.stringify(roles));
-}
+};
 
 export const handleError = (error: RoleAccessHttpError, navigator: Navigator, defaultUrl: string): void => {
   if (error && error.status) {
     switch (error.status) {
       case 401:
-      case 403:
-        {
-          navigator.navigate([REDIRECTS.NotAuthorised]);
-          return;
-        }
+      case 403: {
+        navigator.navigate([REDIRECTS.NotAuthorised]);
+        return;
+      }
       case 400:
       case 500:
-      case 503:
-        {
-          navigator.navigate([REDIRECTS.ServiceDown]);
-          return;
-        }
-      default:
-        {
+      case 503: {
+        navigator.navigate([REDIRECTS.ServiceDown]);
+        return;
+      }
+      default: {
         navigator.navigate([defaultUrl], {
           state: {
             showMessage: true,
             // show message based on error
-            message: { type: InfoMessageType.WARNING, message: error.message }}
-          });
-        }
+            message: { type: InfoMessageType.WARNING, message: error.message }
+          }
+        });
+      }
     }
   }
 };

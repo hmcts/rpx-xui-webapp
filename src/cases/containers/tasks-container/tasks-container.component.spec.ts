@@ -1,16 +1,15 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
 import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
+
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
@@ -119,7 +118,7 @@ describe('TasksContainerComponent', () => {
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TaskAlertBannerComponent, TasksContainerComponent],
       imports: [
@@ -179,7 +178,7 @@ describe('TasksContainerComponent', () => {
         name: 'Review the appeal',
         assignee: '09f1f25d-7d7e-4481-b8e3-8624227438ef'
       } as any
-    ]
+    ];
     const judicialUserData = [{
         sidam_id: '09f1f25d-7d7e-4481-b8e3-8624227438ef',
         object_id: 'e97296ca-8182-45ef-82d0-7e4eeb6dab49-test2',
@@ -189,11 +188,11 @@ describe('TasksContainerComponent', () => {
         post_nominals: 'Judge',
         email_id: '4920094EMP-@ejudiciary.net',
         personal_code: '4920094'
-    }]
+    }];
     component.getJudicialNamedTasks(judicialUserData as any).subscribe( task => {
         expect(task[0].assigneeName).toEqual('Joe Bloggs');
     });
-  })
+  });
 
   it('should refresh tasks when requested', () => {
     const firstTask = getMockTasks()[0];
@@ -204,7 +203,7 @@ describe('TasksContainerComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
-  })
+  });
 
   afterAll(() => {
     TestBed.resetTestingModule();

@@ -1,14 +1,14 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState, judicailUsersRefData} from '../hearing.test.data';
-import {MemberType, RequirementType} from '../models/hearings.enum';
-import {State} from '../store';
-import {JudicialMembersAnswerConverter} from './judicial-members.answer.converter';
+import { of } from 'rxjs';
+import { initialState, judicailUsersRefData } from '../hearing.test.data';
+import { MemberType, RequirementType } from '../models/hearings.enum';
+import { State } from '../store';
+import { JudicialMembersAnswerConverter } from './judicial-members.answer.converter';
 
 describe('JudicialMembersAnswerConverter', () => {
 
@@ -37,8 +37,8 @@ describe('JudicialMembersAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new JudicialMembersAnswerConverter(router);
   });
 
@@ -47,7 +47,7 @@ describe('JudicialMembersAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS
     };
-    const result$ = converter.transformAnswer(of(STATE));
+    const result$ = converter.transformAnswer(of(STATE), 0);
     const option = '';
     const expected = cold('(b|)', {b: option});
     expect(result$).toBeObservable(expected);

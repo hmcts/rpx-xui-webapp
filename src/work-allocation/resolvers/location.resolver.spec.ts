@@ -12,7 +12,6 @@ import * as fromCaseList from '../../app/store/reducers';
 import { AllocateRoleService } from '../../role-access/services';
 import { CaseworkerDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
-import { LocationModel } from 'api/locations/models/location.model';
 
 describe('LocationResolver', () => {
 
@@ -38,7 +37,15 @@ describe('LocationResolver', () => {
         'caseworker-ia-caseofficer',
         'cwd-user'
       ]
-    }
+    },
+    roleAssignmentInfo: [{
+      jurisdiction: 'IA',
+      isCaseAllocator: false,
+      baseLocation: '12345',
+      primaryLocation: '54321',
+      roleType: 'ORGANISATION',
+      substantive: 'y'
+    }]
   };
 
   const JUDICIAL_WORKER: UserDetails = {
@@ -56,7 +63,15 @@ describe('LocationResolver', () => {
       roles: [
         'judicialworker'
       ]
-    }
+    },
+    roleAssignmentInfo: [{
+      jurisdiction: 'IA',
+      isCaseAllocator: false,
+      baseLocation: '12345',
+      primaryLocation: '54321',
+      roleType: 'ORGANISATION',
+      substantive: 'y'
+    }]
   };
 
   const JUDICIAL_WORKERS = [
@@ -81,7 +96,8 @@ describe('LocationResolver', () => {
       location: {
         id: 231596,
         locationName: 'Birmingham'
-      }
+      },
+      roleCategory: ''
     }
   ];
 
@@ -100,30 +116,24 @@ describe('LocationResolver', () => {
         ]
       }
     );
-    caseworkerDataService = TestBed.get(CaseworkerDataService) as CaseworkerDataService;
-    judicialWorkerDataService = TestBed.get(AllocateRoleService) as AllocateRoleService;
-    store = TestBed.get(Store) as Store<fromCaseList.State>;
+    caseworkerDataService = TestBed.inject(CaseworkerDataService) as CaseworkerDataService;
+    judicialWorkerDataService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
+    store = TestBed.inject(Store) as Store<fromCaseList.State>;
 
   });
 
   it('should be created', () => {
-    const service: LocationResolver = TestBed.get(LocationResolver);
+    const service: LocationResolver = TestBed.inject(LocationResolver);
     expect(service).toBeTruthy();
   });
 
-  it('resolves caseworkers location', inject([LocationResolver], (service: LocationResolver) => {
-    spyOn(store, 'pipe').and.returnValue(of(CASE_WORKER));
-    spyOn(caseworkerDataService, 'getAll').and.returnValue(of(CASE_WORKERS));
-    service.resolve().subscribe((location: any) => {
-      expect(location.court_name).toEqual(CASE_WORKERS[0].location.locationName);
-    });
+  it('should get base location for the user', inject([LocationResolver], (service: LocationResolver) => {
+    const expectedLocationList = [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ]}];
+    expect(service.getJudicialWorkersOrCaseWorkers({service: 'IA', serviceCode: ['BFA1']}, CASE_WORKER)).toEqual(expectedLocationList);
   }));
 
-  it('resolves judicialworkers location', inject([LocationResolver], (service: LocationResolver) => {
-    spyOn(store, 'pipe').and.returnValue(of(JUDICIAL_WORKER));
-    spyOn(judicialWorkerDataService, 'getCaseRolesUserDetails').and.returnValue(of(JUDICIAL_WORKERS));
-    service.resolve().subscribe((location: any) => {
-      expect(location.court_name).toEqual(JUDICIAL_WORKERS[0].location.locationName);
-    });
+  it('should get base location for the judicial user', inject([LocationResolver], (service: LocationResolver) => {
+    const expectedLocationList = [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ]}];
+    expect(service.getJudicialWorkersOrCaseWorkers({service: 'IA', serviceCode: ['BFA1']}, JUDICIAL_WORKER)).toEqual(expectedLocationList);
   }));
 });

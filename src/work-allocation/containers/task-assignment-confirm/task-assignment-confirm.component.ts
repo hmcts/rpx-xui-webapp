@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
-import { RoleCategory } from '../../../role-access/models';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { RoleCategory } from '../../../role-access/models';
 import { AssignHintText, InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
@@ -27,7 +27,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   public selectedPerson: Person;
   public assignHintText: string;
   public isUserJudicial: boolean;
-  public roleCategory: RoleCategory
+  public roleCategory: RoleCategory;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,

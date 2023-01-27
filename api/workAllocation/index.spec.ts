@@ -9,6 +9,7 @@ import { http } from '../lib/http';
 import { RE_ALLOCATE, REMOVE_ALLOCATE } from './constants/actions';
 import { mockTasks } from './taskTestData.spec';
 
+
 chai.use(sinonChai);
 
 describe('workAllocation', () => {

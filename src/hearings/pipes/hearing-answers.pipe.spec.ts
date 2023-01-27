@@ -89,68 +89,74 @@ describe('HearingAnswersPipe', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     hearingAnswersPipe = new HearingAnswersPipe(router, locationsDataService);
     locationsDataService.getLocationById.and.returnValue(of(FOUND_LOCATIONS));
   });
 
   it('should transform additional instructions', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.ADDITIONAL_INSTRUCTION, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.ADDITIONAL_INSTRUCTION, of(STATE), 0);
     const listingComments = 'blah blah blah';
     const expected = cold('(b|)', {b: listingComments});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform case name', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NAME, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NAME, of(STATE), 0);
     const caseName = 'Jane vs DWP';
     const expected = cold('(b|)', {b: caseName});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform case number', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NUMBER, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NUMBER, of(STATE), 0);
     const caseNumber = '1111-2222-3333-4444';
     const expected = cold('(b|)', {b: caseNumber});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform type', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.Type, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.Type, of(STATE), 0);
     const type = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform case flag', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_FLAGS, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_FLAGS, of(STATE), 0);
     const caseFlags = '<strong class=\'bold\'>Jane and Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li><li>Language Interpreter</li></ul><br><strong class=\'bold\'>DWP</strong>\n<ul><li>Physical access and facilities</li></ul><br>';
     const expected = cold('(b|)', {b: caseFlags});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform how party attend', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE), 0);
     const partyFlags = '<ul><li>Jane and Smith - In person</li></ul>';
     const expected = cold('(b|)', {b: partyFlags});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform number of attendees', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.ATTENDANT_PERSON_AMOUNT, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.ATTENDANT_PERSON_AMOUNT, of(STATE), 0);
     const expected = cold('(b|)', {b: '3'});
     expect(result$).toBeObservable(expected);
   });
 
+  it('should transform paper hearing', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.IS_PAPER_HEARING, of(STATE), 0);
+    const expected = cold('(b|)', {b: 'No'});
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should transform venue', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.VENUE, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.VENUE, of(STATE), 0);
     const caseFlags = '<ul><li>LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL</li><li>CARDIFF CIVIL AND FAMILY JUSTICE CENTRE</li></ul>';
     const expected = cold('(b|)', {b: caseFlags});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform need welsh', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.NEED_WELSH, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.NEED_WELSH, of(STATE), 0);
     const needWelsh = 'Yes';
     const expected = cold('(b|)', {b: needWelsh});
     expect(result$).toBeObservable(expected);
@@ -158,8 +164,8 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform hearing length', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 60;
-    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_LENGTH, of(STATE));
-    const hearingDuration = '1 hour(s)';
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_LENGTH, of(STATE), 0);
+    const hearingDuration = '1 Hour';
     const expected = cold('(b|)', {b: hearingDuration});
     expect(result$).toBeObservable(expected);
   });
@@ -170,21 +176,21 @@ describe('HearingAnswersPipe', () => {
       dateRangeEnd: '2022-12-12T09:00:00.000Z',
       firstDateTimeMustBe: '',
     };
-    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_SPECIFIC_DATE, of(STATE));
-    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<dt class="heading-h3 bottom-0">Earliest hearing date</dt>12 December 2022<dt class="heading-h3 bottom-0">Latest hearing date</dt>12 December 2022`;
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_SPECIFIC_DATE, of(STATE), 0);
+    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022`;
     const expected = cold('(b|)', {b: hearingDateRange});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform need hearing priority', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_PRIORITY, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_PRIORITY, of(STATE), 0);
     const hearingPriority = 'Standard';
     const expected = cold('(b|)', {b: hearingPriority});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform linked hearings', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.LINKED_HEARINGS, of(STATE));
+    const result$ = hearingAnswersPipe.transform(AnswerSource.LINKED_HEARINGS, of(STATE), 0);
     const linkedHearings = 'No';
     const expected = cold('(b|)', {b: linkedHearings});
     expect(result$).toBeObservable(expected);

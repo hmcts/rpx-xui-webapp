@@ -1,15 +1,15 @@
-import {TestBed} from '@angular/core/testing';
-import {provideMockActions} from '@ngrx/effects/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold, hot} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {Go} from '../../../app/store';
-import {initialState} from '../../hearing.test.data';
-import {CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType} from '../../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
-import {HearingsService} from '../../services/hearings.service';
+import { TestBed } from '@angular/core/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { Go } from '../../../app/store';
+import { initialState } from '../../hearing.test.data';
+import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
+import { HearingsService } from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
-import {HearingValuesEffects} from './hearing-values.effects';
+import { HearingValuesEffects } from './hearing-values.effects';
 
 describe('Hearing Values Effects', () => {
   let actions$;
@@ -20,7 +20,7 @@ describe('Hearing Values Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -29,7 +29,7 @@ describe('Hearing Values Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(HearingValuesEffects);
+    effects = TestBed.inject(HearingValuesEffects);
   });
 
   describe('loadHearingValue$', () => {
@@ -157,8 +157,8 @@ describe('Hearing Values Effects', () => {
       hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
       const action = new hearingValuesActions.LoadHearingValues('1111222233334444');
       const completion = new hearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadHearingValue$).toBeObservable(expected);
     });
   });

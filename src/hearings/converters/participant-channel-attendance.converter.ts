@@ -34,7 +34,7 @@ export class ParticipantChannelAttendenceAnswerConverter implements AnswerConver
         participants?.forEach((channelName: string) => {
 =======
       map(state => {
-        const partyChannels = this.route.snapshot.data.partyChannels;
+        const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
         const participants = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
         let strReturn = '<ul>';
         participants.forEach((channelName: string) => {

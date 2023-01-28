@@ -8,7 +8,8 @@ import {
   caseTypeRefData,
   hearingPriorityRefData,
   initialState,
-  partyChannelsRefData
+  partyChannelsRefData,
+  partySubChannelsRefData
 } from '../hearing.test.data';
 import { AnswerSource, RadioOptions } from '../models/hearings.enum';
 import { LocationByEPIMMSModel } from '../models/location.model';
@@ -79,6 +80,7 @@ describe('HearingAnswersPipe', () => {
                 caseType: caseTypeRefData,
                 caseFlags: caseFlagsRefData,
                 partyChannels: partyChannelsRefData,
+                partySubChannels: partySubChannelsRefData
               },
             },
           },
@@ -89,7 +91,7 @@ describe('HearingAnswersPipe', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     hearingAnswersPipe = new HearingAnswersPipe(router, locationsDataService);
     locationsDataService.getLocationById.and.returnValue(of(FOUND_LOCATIONS));
   });

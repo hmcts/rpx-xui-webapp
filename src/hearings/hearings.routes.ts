@@ -49,6 +49,7 @@ import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { CaseTypesResolver } from './resolvers/case-types.resolver';
 import { CourtLocationsDataResolver } from './resolvers/court-locations-resolver.resolve';
 import { HearingActualPartyChannelResolverService } from './resolvers/hearing-actual-party-channel-resolver.service';
+import { HearingActualPartySubChannelResolverService } from './resolvers/hearing-actual-party-subchannel-resolver.service';
 import { HearingActualRoleResolverService } from './resolvers/hearing-actual-role-resolver.service';
 import { HearingChangeReasonResolver } from './resolvers/hearing-change-reason.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
@@ -172,7 +173,8 @@ export const ROUTES: Routes = [
     component: HearingActualsComponent,
     canActivate: [HearingsEditGuard],
     resolve: {
-      partyChannel: HearingActualPartyChannelResolverService,
+      partyChannels: HearingActualPartyChannelResolverService,
+      partySubChannels: HearingActualPartySubChannelResolverService,
       hearingRole: HearingActualRoleResolverService,
     },
     data: {
@@ -498,6 +500,7 @@ export const ROUTES: Routes = [
           panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          partySubChannels: HearingActualPartySubChannelResolverService,
           hearingRoles: HearingActualRoleResolverService,
         },
         component: HearingCompletedSummaryComponent,
@@ -515,6 +518,7 @@ export const ROUTES: Routes = [
           panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          partySubChannels: HearingActualPartySubChannelResolverService,
           hearingRoles: HearingActualRoleResolverService,
           adjournReasons: AdjournHearingActualReasonResolver,
         },
@@ -533,6 +537,7 @@ export const ROUTES: Routes = [
           panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          partySubChannels: HearingActualPartySubChannelResolverService,
           hearingRoles: HearingActualRoleResolverService,
         },
         component: HearingViewActualSummaryComponent,
@@ -549,6 +554,7 @@ export const ROUTES: Routes = [
           panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          partySubChannels: HearingActualPartySubChannelResolverService,
         },
         component: HearingRequestFailedSummaryComponent,
         data: {

@@ -1,17 +1,9 @@
 import { Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-<<<<<<< HEAD
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Subscription, combineLatest } from 'rxjs';
-=======
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
-import { combineLatest, Observable, Subscription } from 'rxjs';
->>>>>>> 5d20462e7 (CR comments fix)
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import {
   ActualDayPartyModel,
@@ -58,10 +50,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   private sub: Subscription;
   private formSub: Subscription;
   public window: any = window;
-<<<<<<< HEAD
-=======
   public showSpinner$: Observable<boolean>;
->>>>>>> 5d20462e7 (CR comments fix)
   private plannedDayIndex: number;
   public showSpinner: boolean = true;
 
@@ -124,11 +113,12 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public ngOnInit(): void {
-    const partyChannels: LovRefDataModel[] = this.route.snapshot.data.partyChannels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
+    const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
+    const filteredPartyChannels = partyChannels && partyChannels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
     // Get unique values to display in the dropdown
     // If a parent does not contain any child nodes then consider the parent
     const uniquePartyChannels: LovRefDataModel[] = [];
-    partyChannels.forEach((channel) => {
+    filteredPartyChannels.forEach(channel => {
       if (channel.child_nodes) {
         channel.child_nodes.forEach((childNode) => {
           if (!uniquePartyChannels.map((node) => node.key).includes(childNode.key)) {

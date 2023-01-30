@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -12,21 +12,7 @@ import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
-import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
-
-@Pipe({ name: 'transformAnswer' })
-export class MockHearingAnswersPipe implements PipeTransform {
-  public transform(): string {
-    return '';
-  }
-}
-
-@Component({
-  template: `
-    <div>Nothing</div>`
-})
-class NothingComponent {}
 
 @Pipe({name: 'transformAnswer'})
 export class MockHearingAnswersPipe implements PipeTransform {

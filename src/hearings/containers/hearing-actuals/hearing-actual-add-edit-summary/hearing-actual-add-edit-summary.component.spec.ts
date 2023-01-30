@@ -498,7 +498,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
               },
               data: {
                 partyChannels: partyChannelsRefData,
-                PartySubChannels: partySubChannelsRefData,
+                partySubChannels: partySubChannelsRefData,
                 hearingRole
               },
             },

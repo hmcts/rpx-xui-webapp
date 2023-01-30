@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
@@ -25,7 +24,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private static readonly AVAILABLE_TASKS = 'None / Available tasks';
   public locations: Location[];
   public waSupportedJurisdictions$: Observable<string[]>;
-  public supportedJurisdictions: string[];
   public sortedBy: SortField = {
     fieldName: '',
     order: SortOrder.NONE
@@ -73,7 +71,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       [userRoles$,
         waJurisdictions$]
     ).pipe(map(jurisdictions => {
-      this.supportedJurisdictions = jurisdictions[1];
       return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
     }));
   }

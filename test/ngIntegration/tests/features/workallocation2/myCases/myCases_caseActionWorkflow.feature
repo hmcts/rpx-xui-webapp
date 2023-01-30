@@ -13,11 +13,7 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
-
+      
         Given I start MockApp
         Given I navigate to home page
 

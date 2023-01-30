@@ -43,19 +43,19 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
-  @ViewChild('chooseRole', {read: ChooseRoleComponent})
+  @ViewChild('chooseRole', {static: false, read: ChooseRoleComponent})
   public chooseRoleComponent: ChooseRoleComponent;
 
-  @ViewChild('chooseAllocateTo', {read: ChooseAllocateToComponent})
+  @ViewChild('chooseAllocateTo', {static: false, read: ChooseAllocateToComponent})
   public chooseAllocateToComponent: ChooseAllocateToComponent;
 
-  @ViewChild('searchPerson', {read: AllocateRoleSearchPersonComponent})
+  @ViewChild('searchPerson', {static: false, read: AllocateRoleSearchPersonComponent})
   public searchPersonComponent: AllocateRoleSearchPersonComponent;
 
-  @ViewChild('chooseDuration', {read: ChooseDurationComponent})
+  @ViewChild('chooseDuration', {static: false, read: ChooseDurationComponent})
   public chooseDurationComponent: ChooseDurationComponent;
 
-  @ViewChild('checkAnswers', {read: AllocateRoleCheckAnswersComponent})
+  @ViewChild('checkAnswers', {static: false, read: AllocateRoleCheckAnswersComponent})
   public checkAnswersComponent: AllocateRoleCheckAnswersComponent;
 
   public noRolesErrorVisibilityStates = noRolesErrorVisibilityStates;

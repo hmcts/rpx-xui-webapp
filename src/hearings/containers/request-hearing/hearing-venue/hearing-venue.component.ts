@@ -1,16 +1,16 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
-import {LocationByEPIMMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import {Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../../hearings/store';
-import {HearingLocationModel} from '../../../models/hearingLocation.model';
-import {ACTION, HearingErrorMessage, HMCLocationType} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {LocationsDataService} from '../../../services/locations-data.service';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { HearingLocationModel } from '../../../models/hearingLocation.model';
+import { ACTION, HearingErrorMessage, HMCLocationType } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { LocationsDataService } from '../../../services/locations-data.service';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-venue',
@@ -24,7 +24,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public serviceIds: string = '';
   public findLocationFormGroup: FormGroup;
 
-  @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
+  @ViewChild(SearchLocationComponent, {static: false}) public searchLocationComponent: SearchLocationComponent;
   public selectedLocations: LocationByEPIMMSModel[];
   public validationErrors: { id: string, message: string }[] = [];
 

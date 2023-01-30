@@ -3,7 +3,7 @@ import { HearingsModule } from './hearings.module';
 describe('HearingsModule', () => {
   let hearingsFeatureModule: HearingsModule;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     hearingsFeatureModule = new HearingsModule(null);
   });
 

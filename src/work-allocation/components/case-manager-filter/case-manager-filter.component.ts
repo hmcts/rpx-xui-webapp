@@ -2,13 +2,12 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { AppUtils } from '../../../app/app-utils';
 import * as fromAppStore from '../../../app/store';
-import { Location } from '../../models/dtos';
 
 @Component({
   selector: 'exui-case-manager-filter',
@@ -18,7 +17,7 @@ import { Location } from '../../models/dtos';
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
-  private static FILTER_NAME: string = 'all-work-cases-filter';
+  private static readonly FILTER_NAME: string = 'all-work-cases-filter';
   @Input() public jurisdictions: string[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
@@ -28,14 +27,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
-    showCancelFilterButton:  true,
+    showCancelFilterButton: true,
     cancelSetting: {
       id: CaseManagerFilterComponent.FILTER_NAME,
       fields: [
-        {
-          name: 'jurisdiction',
-          value: ['IA', 'SSCS']
-        },
         {
           name: 'selectLocation',
           value: ['location_all']
@@ -159,6 +154,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         const isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getUserRole(userDetails.userInfo.roles) : null;
         const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
         this.filterConfig.cancelSetting.fields.push({
+            name: 'jurisdiction',
+            value: [this.jurisdictions[0]]
+          },
+          {
             name: 'role',
             value: [roleType]
           }

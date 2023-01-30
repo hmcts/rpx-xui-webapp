@@ -12,12 +12,12 @@ describe('StaffDataFilterService', () => {
   }));
 
   it('should be created', () => {
-    const service: StaffDataFilterService = TestBed.get(StaffDataFilterService);
+    const service: StaffDataFilterService = TestBed.inject(StaffDataFilterService);
     expect(service).toBeTruthy();
   });
 
   it('should set and emit errors', () => {
-    const service: StaffDataFilterService = TestBed.get(StaffDataFilterService);
+    const service: StaffDataFilterService = TestBed.inject(StaffDataFilterService);
     const errorsToSet = [{
       error: 'Error 1'
     }];
@@ -29,7 +29,7 @@ describe('StaffDataFilterService', () => {
   });
 
   it('should empty errors on calling filterByPartialName', () => {
-    const service: StaffDataFilterService = TestBed.get(StaffDataFilterService);
+    const service: StaffDataFilterService = TestBed.inject(StaffDataFilterService);
     const errorsToSet = [{
       error: 'Error 1'
     }];

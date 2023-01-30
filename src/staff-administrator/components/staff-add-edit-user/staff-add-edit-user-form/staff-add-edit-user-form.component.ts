@@ -39,9 +39,9 @@ export class StaffAddEditUserFormComponent implements OnInit {
     private filterService: FilterService,
     private router: Router
   ) {
-    const currentNavigation = this.router.getCurrentNavigation();
-    if (currentNavigation) {
-      const previousNavigation = currentNavigation.previousNavigation;
+    this.currentNavigation = this.router.getCurrentNavigation();
+    if (this.currentNavigation) {
+      const previousNavigation = this.currentNavigation.previousNavigation;
       if (previousNavigation) {
         this.previousUrl = previousNavigation.finalUrl.toString();
       }
@@ -292,6 +292,9 @@ export class StaffAddEditUserFormComponent implements OnInit {
 
   private getSelected(allOptions: StaffFilterOption[], selectedOptions: string[]): boolean[] {
     const selected: boolean[] = [] ;
+    if (!Array.isArray(selectedOptions)) {
+      selectedOptions = new Array(selectedOptions);
+    }
     allOptions.forEach((el: StaffFilterOption) => {
       if (selectedOptions.filter(s => s === el.key).length > 0 ) {
         selected.push(true);

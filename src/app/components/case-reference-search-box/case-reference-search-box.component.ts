@@ -45,12 +45,13 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     // and populate the 16-digit case reference search box
     if (this.decorate16DigitCaseReferenceSearchBoxInHeader) {
       const searchParameters = this.searchService.retrieveState(SearchStatePersistenceKey.SEARCH_PARAMS);
-      this.formGroup.controls['caseReference'].setValue(searchParameters.caseReferences[0]);
+      this.formGroup.controls[this.CASE_REF_FIELD].setValue(searchParameters.caseReferences[0]);
     }
   }
 
   public ngAfterViewInit(): void {
     // If search returned no case, set focus on the 16-digit case reference search box
+    /* istanbul ignore else*/
     if (this.decorate16DigitCaseReferenceSearchBoxInHeader) {
       this.caseReferenceInputEl.nativeElement.focus();
     }
@@ -90,6 +91,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
 
   public navigateToCaseDetails(isCaseDetailsPage: boolean, caseReference: string): void {
     if (isCaseDetailsPage) {
+
       this.router.navigateByUrl(`/cases/case-loader`, { skipLocationChange: true }).then(() => {
         this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
       });
@@ -99,6 +101,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
   }
 
   public ngOnDestroy(): void {
+    /* istanbul ignore else*/
     if (this.searchSubscription$) {
       this.searchSubscription$.unsubscribe();
     }

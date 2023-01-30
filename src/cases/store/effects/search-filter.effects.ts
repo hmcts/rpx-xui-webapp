@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { map, switchMap, catchError } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
-import * as caseSearchActions from '../actions/case-search.action';
+import { Observable, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { SearchFilterService } from '../../../cases/services';
+import * as caseSearchActions from '../actions/case-search.action';
 
 @Injectable()
 export class SearchFilterEffects {
-    payload: any;
+    public payload: any;
     constructor(
-        private actions$: Actions,
-        private searchService: SearchFilterService,
+        private readonly actions$: Actions,
+        private readonly searchService: SearchFilterService,
     ) { }
 
     @Effect()
-    applyPageMetadata$ = this.actions$.pipe(
+    public applyPageMetadata$ = this.actions$.pipe(
         ofType(caseSearchActions.FIND_SEARCH_PAGINATION_METADATA),
         map((action: caseSearchActions.FindSearchPaginationMetadata) => action.payload),
         switchMap(payload => {
@@ -28,7 +28,7 @@ export class SearchFilterEffects {
     );
 
     @Effect()
-    applySearchFilters$ = this.actions$.pipe(
+    public applySearchFilters$ = this.actions$.pipe(
       ofType(caseSearchActions.APPLY_SEARCH_FILTER),
       map((action: caseSearchActions.ApplySearchFilter) => action.payload),
       switchMap(payload => {
@@ -39,7 +39,7 @@ export class SearchFilterEffects {
       }));
 
     @Effect()
-    applySearchFiltersForES$ = this.actions$.pipe(
+    public applySearchFiltersForES$ = this.actions$.pipe(
       ofType(caseSearchActions.APPLY_SEARCH_FILTER_FOR_ES),
       map((action: caseSearchActions.ApplySearchFilterForES) => action.payload),
       switchMap(payload => {
@@ -50,7 +50,7 @@ export class SearchFilterEffects {
       }));
 
     @Effect()
-    applySearchFilterToggle$ = this.actions$.pipe(
+    public applySearchFilterToggle$ = this.actions$.pipe(
       ofType(caseSearchActions.SEARCH_FILTER_DISPLAY_TOGGLE),
       map((action: caseSearchActions.SearchFilterToggle) => new caseSearchActions.SearchFilterToggleSuccess(action.payload)),
           catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error))));

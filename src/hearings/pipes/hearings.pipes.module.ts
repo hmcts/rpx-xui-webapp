@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CaseReferencePipe} from './case-reference.pipe';
+import {ConvertArrayToStringPipe} from './convert-array-to-string.pipe';
 import {ConvertToValuePipe} from './convert-to-value.pipe';
 import {HearingAnswersPipe} from './hearing-answers.pipe';
 import {HearingsBadgePipe} from './hearings-badge.pipe';
@@ -14,6 +15,7 @@ import {ShowHidePipe} from './show-hide.pipe';
     ShowHidePipe,
     ConvertToValuePipe,
     CaseReferencePipe,
+    ConvertArrayToStringPipe
   ],
   exports: [
     HearingsBadgePipe,
@@ -21,7 +23,8 @@ import {ShowHidePipe} from './show-hide.pipe';
     ConvertToValuePipe,
     IsAmendedPipe,
     ShowHidePipe,
-    CaseReferencePipe
+    CaseReferencePipe,
+    ConvertArrayToStringPipe
   ]
 })
 export class HearingsPipesModule {

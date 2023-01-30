@@ -5,7 +5,7 @@ export interface ElasticSearchQuery {
 
 export interface RequestBodySearch {
   from?: number;
-  sort?: Array<{ [key: string]: {} }>;
+  sort?: { [key: string]: {} }[];
   query?: Query;
   size?: number;
 }

@@ -2,13 +2,12 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { AppUtils } from '../../../app/app-utils';
 import * as fromAppStore from '../../../app/store';
-import { Location } from '../../models/dtos';
 
 @Component({
   selector: 'exui-case-manager-filter',
@@ -18,7 +17,7 @@ import { Location } from '../../models/dtos';
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
-  private static FILTER_NAME: string = 'all-work-cases-filter';
+  private static readonly FILTER_NAME: string = 'all-work-cases-filter';
   @Input() public jurisdictions: string[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
@@ -28,14 +27,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
-    showCancelFilterButton:  true,
+    showCancelFilterButton: true,
     cancelSetting: {
       id: CaseManagerFilterComponent.FILTER_NAME,
       fields: [
-        {
-          name: 'jurisdiction',
-          value: ['IA', 'SSCS']
-        },
         {
           name: 'selectLocation',
           value: ['location_all']
@@ -101,7 +96,8 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
       title: 'Location',
-      type: 'radio'
+      type: 'radio',
+      lineBreakBefore: true
     };
   }
 
@@ -130,33 +126,8 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       lineBreakBefore: true,
       minSelectedError: 'You must select a role type',
       maxSelectedError: null,
-      title: 'Role type',
+      title: 'Select a role type',
       type: 'select'
-    };
-  }
-
-  private static initPersonFilter(): FilterFieldConfig {
-    return {
-      name: 'actorId',
-      options: [
-        {
-          key: PersonRole.ALL,
-          label: PersonRole.ALL
-        },
-        {
-          key: 'Specific person',
-          label: 'Specific person'
-        }
-      ],
-      minSelected: 1,
-      maxSelected: 1,
-      lineBreakBefore: true,
-      findPersonField: 'person',
-      changeResetFields: ['findPersonControl', 'person'],
-      minSelectedError: 'You must select a person',
-      maxSelectedError: null,
-      title: 'Person',
-      type: 'radio'
     };
   }
 
@@ -164,23 +135,29 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     return {
       name: 'person',
       options: [],
-      minSelected: 0,
-      maxSelected: 0,
+      minSelected: 1,
+      maxSelected: 1,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
       domainField: 'role',
-      enableCondition: 'actorId=Specific person',
       type: 'find-person',
-      radioSelectionChange: 'actorId=Specific person'
+      title: 'Person',
+      subTitle: 'Search for a person',
+      lineBreakBefore: true,
+      placeholderContent: 'You must specify a person...'
     };
   }
 
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
-        const isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles) : null;
+        const isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getUserRole(userDetails.userInfo.roles) : null;
         const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
         this.filterConfig.cancelSetting.fields.push({
+            name: 'jurisdiction',
+            value: [this.jurisdictions[0]]
+          },
+          {
             name: 'role',
             value: [roleType]
           }
@@ -189,11 +166,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     );
     this.filterConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
-      CaseManagerFilterComponent.initSelectLocationFilter(),
-      CaseManagerFilterComponent.initLocationFilter(),
       CaseManagerFilterComponent.initRoleTypeFilter(),
-      CaseManagerFilterComponent.initPersonFilter(),
-      CaseManagerFilterComponent.findPersonFilter()
+      CaseManagerFilterComponent.findPersonFilter(),
+      CaseManagerFilterComponent.initSelectLocationFilter(),
+      CaseManagerFilterComponent.initLocationFilter()
     ];
     this.sub = this.filterService.getStream(CaseManagerFilterComponent.FILTER_NAME)
       .pipe(

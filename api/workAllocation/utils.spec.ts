@@ -21,8 +21,9 @@ import {
   constructElasticSearchQuery,
   constructRoleAssignmentCaseAllocatorQuery,
   constructRoleAssignmentQuery,
-  filterByLocationId,
+  filterByLocationId, filterMyAccessRoleAssignments,
   getActionsByPermissions,
+  getActionsByRefinedPermissions,
   getActionsFromMatrix,
   getCaseAllocatorLocations,
   getCaseIdListFromRoles,
@@ -36,7 +37,7 @@ import {
   getUniqueCasesCount,
   mapCasesFromData,
   mapCaseworkerData,
-  mapCaseworkerPrimaryLocation,
+  mapCaseworkerLocation,
   mapRoleType,
   prepareGetTaskUrl,
   preparePaginationUrl,
@@ -319,6 +320,7 @@ const availableTasks = [
   },
 ];
 
+
 describe('workAllocation.utils', () => {
 
   describe('prepareGetTaskUrl', () => {
@@ -340,7 +342,7 @@ describe('workAllocation.utils', () => {
       const expectedResult = {
         attributes: {
           jurisdiction: jurisdictions,
-          primaryLocation: [locationId],
+          baseLocation: [locationId],
         },
         roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
           'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
@@ -623,11 +625,11 @@ describe('workAllocation.utils', () => {
 
       const caseworkerPayload = prepareServiceRoleApiRequest(jurisdictions, roles, locationId);
       expect(caseworkerPayload[0].attributes.jurisdiction).to.deep.equal(['IA']);
-      expect(caseworkerPayload[0].attributes.primaryLocation).to.deep.equal([locationId]);
+      expect(caseworkerPayload[0].attributes.baseLocation).to.deep.equal([locationId]);
       expect(caseworkerPayload[0].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
       expect(caseworkerPayload[0].roleType).to.deep.equal(['ORGANISATION']);
       expect(caseworkerPayload[1].attributes.jurisdiction).to.deep.equal(['Not-IA']);
-      expect(caseworkerPayload[1].attributes.primaryLocation).to.deep.equal([locationId]);
+      expect(caseworkerPayload[1].attributes.baseLocation).to.deep.equal([locationId]);
       expect(caseworkerPayload[1].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
       expect(caseworkerPayload[1].roleType).to.deep.equal(['ORGANISATION']);
     });
@@ -649,18 +651,18 @@ describe('workAllocation.utils', () => {
 
     it('should map the primary location correctly', () => {
       // check function seals with no locations
-      expect(mapCaseworkerPrimaryLocation(undefined)).to.equal(null);
+      expect(mapCaseworkerLocation(undefined)).to.equal(null);
 
       // check function deals correctly with example locations
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_1, LOCATIONAPI_2])).to.deep.equal(LOCATION_1);
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_2, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
+      expect(mapCaseworkerLocation([LOCATIONAPI_1, LOCATIONAPI_2])).to.deep.equal(LOCATION_1);
+      expect(mapCaseworkerLocation([LOCATIONAPI_2, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
 
       // for two primary locations, should return last one
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_1, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_3, LOCATIONAPI_1])).to.deep.equal(LOCATION_1);
+      expect(mapCaseworkerLocation([LOCATIONAPI_1, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
+      expect(mapCaseworkerLocation([LOCATIONAPI_3, LOCATIONAPI_1])).to.deep.equal(LOCATION_1);
 
       // if no primary location, return null
-      expect(mapCaseworkerPrimaryLocation([LOCATIONAPI_2])).to.deep.equal(null);
+      expect(mapCaseworkerLocation([LOCATIONAPI_2])).to.deep.equal(null);
 
     });
 
@@ -824,6 +826,53 @@ describe('workAllocation.utils', () => {
     });
   });
 
+  describe('getActionsByRefinedPermissions', () => {
+
+    it('should get correct actions for my tasks for certain permissions', () => {
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.UNCLAIM, TaskPermission.ASSIGN]))
+        .to.deep.equal([GO, REASSIGN, RELEASE]);
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.UNCLAIMASSIGN]))
+        .to.deep.equal([GO, REASSIGN]);
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.EXECUTE])).to.deep.equal([GO]);
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.COMPLETEOWN]))
+        .to.deep.equal([COMPLETE, GO]);
+      expect(getActionsByRefinedPermissions('MyTasks', [TaskPermission.CANCEL]))
+        .to.deep.equal([CANCEL, GO]);
+    });
+
+    it('should get correct actions for available tasks for certain permissions', () => {
+      expect(getActionsByRefinedPermissions('AvailableTasks', [TaskPermission.EXECUTE]))
+        .to.deep.equal([]);
+      expect(getActionsByRefinedPermissions('AvailableTasks', [TaskPermission.EXECUTE, TaskPermission.ASSIGN])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+      expect(getActionsByRefinedPermissions('AvailableTasks', [TaskPermission.OWN, TaskPermission.CLAIM])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+    });
+
+    it('should get correct actions for all work tasks for certain permissions', () => {
+      expect(getActionsByRefinedPermissions('AllWorkUnassigned', [TaskPermission.ASSIGN, TaskPermission.OWN])).to.deep.equal([ASSIGN, CLAIM, GO]);
+      expect(getActionsByRefinedPermissions('AllWorkAssignedCurrentUser', [TaskPermission.UNASSIGNASSIGN]))
+        .to.deep.equal([GO, REASSIGN]);
+      // EUI-5046 - ensure test includes check that own gives correct actions as well
+      expect(getActionsByRefinedPermissions('AllWorkAssignedCurrentUser', [TaskPermission.UNASSIGN, TaskPermission.CLAIM, TaskPermission.COMPLETEOWN, TaskPermission.OWN]))
+        .to.deep.equal([COMPLETE, GO, RELEASE]);
+      // ensure that in unlikely scenario of below that no duplication occurs
+      expect(getActionsByRefinedPermissions('AllWorkAssignedOtherUser', [TaskPermission.UNCLAIM, TaskPermission.CLAIM, TaskPermission.OWN]))
+        .to.deep.equal([GO]);
+    });
+
+    it('should get correct actions for active tasks for certain permissions', () => {
+      expect(getActionsByRefinedPermissions('ActiveTasksUnassigned', [TaskPermission.ASSIGN, TaskPermission.OWN])).to.deep.equal([ASSIGN, CLAIM]);
+      expect(getActionsByRefinedPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.UNASSIGNASSIGN, TaskPermission.CANCEL]))
+        .to.deep.equal([CANCEL, REASSIGN]);
+      // EUI-5046 - ensure test includes check that own gives correct actions as well
+      expect(getActionsByRefinedPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.UNCLAIM, TaskPermission.CLAIM, TaskPermission.COMPLETEOWN, TaskPermission.OWN]))
+        .to.deep.equal([COMPLETE, RELEASE]);
+      // ensure that in unlikely scenario of below that no duplication occurs
+      expect(getActionsByRefinedPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.UNASSIGN, TaskPermission.ASSIGN, TaskPermission.OWN]))
+        .to.deep.equal([CLAIM, REASSIGN, RELEASE]);
+    });
+
+  });
+
   describe('applySearchFilter', () => {
     it('PersonRole BOTH', () => {
       const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER};
@@ -956,7 +1005,7 @@ describe('workAllocation.utils', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           caseId: '123',
-          primaryLocation: '001',
+          baseLocation: '001',
           isNew: true
         },
       },
@@ -968,7 +1017,7 @@ describe('workAllocation.utils', () => {
         beginTime: new Date('01-01-2021'),
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
-          primaryLocation: '001',
+          baseLocation: '001',
           isNew: true
         },
       },
@@ -981,7 +1030,7 @@ describe('workAllocation.utils', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           caseId: '456',
-          primaryLocation: '001',
+          baseLocation: '001',
           isNew: true
         },
       },
@@ -1060,7 +1109,7 @@ describe('workAllocation.utils', () => {
       roleCategory: 'LEGAL_OPERATIONS',
       attributes: {
         caseId: '123',
-        primaryLocation: '001',
+        baseLocation: '001',
         substantive: 'Y',
       },
     },
@@ -1072,7 +1121,7 @@ describe('workAllocation.utils', () => {
         beginTime: new Date('01-01-2021'),
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
-          primaryLocation: '001',
+          baseLocation: '001',
           substantive: 'Y',
         },
       },
@@ -1085,7 +1134,7 @@ describe('workAllocation.utils', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           caseId: '456',
-          primaryLocation: '001',
+          baseLocation: '001',
           substantive: 'N',
         },
       }, ];
@@ -1255,7 +1304,7 @@ describe('workAllocation.utils', () => {
               'substantive': 'Y',
               'caseId': '1634822871207303',
               'jurisdiction': 'IA',
-              'primaryLocation': '229786',
+              'baseLocation': '229786',
               'caseType': 'Asylum',
             },
           },
@@ -1274,7 +1323,7 @@ describe('workAllocation.utils', () => {
             "attributes": {
               "substantive": "Y",
               "caseId": "1547476018728634",
-              "primaryLocation": "229786",
+              "baseLocation": "229786",
               "jurisdiction": "IA",
               "caseType": "Asylum",
             },
@@ -1290,7 +1339,7 @@ describe('workAllocation.utils', () => {
   describe('constructRoleAssignmentQuery', () => {
 
     it(
-      'should create a query with jurisdiction (IA), primaryLocation and roleType CASE',
+      'should create a query with jurisdiction (IA), baseLocation and roleType CASE',
       () => {
 
         const searchParameters = [
@@ -1732,4 +1781,109 @@ describe('workAllocation.utils', () => {
     });
   });
 
+  describe('My Access Cases', () => {
+    it('should filter the role assignments', () => {
+      const roleAssignments: RoleAssignment[] = [
+        {
+          'id': '508daf11-d968-4d65-bebb-863195b395c2',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'case-manager',
+          'classification': 'PUBLIC',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-20T23:00:00Z'),
+          'endTime': new Date('2021-10-27T23:00:00Z'),
+          'created': new Date('2021-10-21T14:55:04.103639Z'),
+          'attributes': {
+            'substantive': 'Y',
+            'caseId': '1634822871207303',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+        {
+          'id': '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'case-manager',
+          'classification': 'PUBLIC',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-13T23:00:00Z'),
+          'created': new Date('2021-10-14T15:55:58.586597Z'),
+          'attributes': {
+            'substantive': 'Y',
+            'caseId': '1547476018728634',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+        {
+          'id': '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'specific-access-requested',
+          'classification': 'PUBLIC',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-13T23:00:00Z'),
+          'created': new Date('2021-10-14T15:55:58.586597Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1547476018728634',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+        {
+          'id': '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'specific-access-denied',
+          'classification': 'PUBLIC',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-13T23:00:00Z'),
+          'created': new Date('2021-10-14T15:55:58.586597Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1547476018728634',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+        {
+          'id': '4e929e9f-3458-4aeb-83c3-5fb25ecfa30a',
+          'actorIdType': 'IDAM',
+          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          'roleType': 'CASE',
+          'roleName': 'case-manager',
+          'classification': 'PUBLIC',
+          'grantType': 'CHALLENGED',
+          'roleCategory': 'LEGAL_OPERATIONS',
+          'readOnly': false,
+          'beginTime': new Date('2021-10-13T23:00:00Z'),
+          'created': new Date('2021-10-14T15:55:58.586597Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1547476018728634',
+            'jurisdiction': 'IA',
+            'caseType': 'Asylum',
+          },
+        },
+      ];
+
+      const filteredRoleAssignments = filterMyAccessRoleAssignments(roleAssignments);
+      expect(filteredRoleAssignments.length).to.equal(2);
+    });
+  });
 });

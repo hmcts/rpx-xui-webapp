@@ -31,7 +31,7 @@ describe('LinkedHearingsComponent', () => {
       ]
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     fixture = TestBed.createComponent(LinkedHearingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

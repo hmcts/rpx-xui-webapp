@@ -1,8 +1,8 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {NeedWelshAnswerConverter} from './need-welsh.answer.converter';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { NeedWelshAnswerConverter } from './need-welsh.answer.converter';
 
 describe('NeedWelshAnswerConverter', () => {
 

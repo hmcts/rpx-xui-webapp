@@ -117,7 +117,5 @@ describe('Case Search Actions', () => {
         });
       });
     });
-
   });
-
 });

@@ -12,6 +12,7 @@ import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../m
 import { AllocateRoleService, RoleExclusionsService } from '../../services';
 import { handleError } from '../../utils';
 
+
 @Component({
   selector: 'exui-delete-exclusion',
   templateUrl: './delete-exclusion.component.html'
@@ -55,7 +56,7 @@ export class DeleteExclusionComponent implements OnInit {
           this.roleExclusion.name = userDetails[0].known_as;
           this.populateAnswers(this.roleExclusion);
         }
-      })
+      });
     } else {
       this.populateAnswers(this.roleExclusion);
       this.getNamesIfNeeded();

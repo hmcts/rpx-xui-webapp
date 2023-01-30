@@ -1,16 +1,16 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of} from 'rxjs';
-import {caseFlagsRefData, initialState} from '../../hearing.test.data';
-import {HearingConditions} from '../../models/hearingConditions';
-import {Mode} from '../../models/hearings.enum';
-import {HearingsPipesModule} from '../../pipes/hearings.pipes.module';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { caseFlagsRefData, initialState } from '../../hearing.test.data';
+import { HearingConditions } from '../../models/hearingConditions';
+import { Mode } from '../../models/hearings.enum';
+import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../store';
-import {HearingSummaryComponent} from './hearing-summary.component';
+import { HearingSummaryComponent } from './hearing-summary.component';
 
 describe('HearingSummaryComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
@@ -20,7 +20,7 @@ describe('HearingSummaryComponent', () => {
   let fixture: ComponentFixture<HearingSummaryComponent>;
   let store: any;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [HearingSummaryComponent],
       imports: [
@@ -28,7 +28,7 @@ describe('HearingSummaryComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: Router,
           useValue: routerMock
@@ -45,11 +45,11 @@ describe('HearingSummaryComponent', () => {
           },
         }
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
     fixture = TestBed.createComponent(HearingSummaryComponent);
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -59,16 +59,17 @@ describe('HearingSummaryComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.sub = new Observable().subscribe();
+    component.sub = of().subscribe();
     spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.sub.unsubscribe).toHaveBeenCalled();
   });
 
   it('should change answer', () => {
+    const mockMouseEvent = { preventDefault: () => { } } as MouseEvent;
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.mode = Mode.CREATE_EDIT;
-    component.changeAnswer('venue', 'hearing/request/venue');
+    component.changeAnswer(mockMouseEvent, 'venue', 'hearing/request/venue');
     const hearingCondition: HearingConditions = {
       fragmentId: 'venue',
       mode: Mode.CREATE_EDIT,

@@ -11,8 +11,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const filtersToIgnore = {
         'Priority': 'Is out of scope and will be removed as part of https://tools.hmcts.net/jira/browse/EUI-4809',
-        'Task type':'Is to be includes only in 2.1 till the it will be ignored in test' ,
-        'Person':'Change in component, test needs update to validate new component'
+        'Task type':'Is to be includes only in 2.1 till the it will be ignored in test' 
     }
 
     Then('I see filter {string} is displayed in all work page', async function(filterItem){

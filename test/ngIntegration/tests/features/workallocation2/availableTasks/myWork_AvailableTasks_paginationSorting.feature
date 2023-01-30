@@ -1,4 +1,4 @@
-@ng
+@ng  
 Feature: WA Release 2: My work to  Available tasks to pagination sorting
 
     Background: Mock and browser setup
@@ -19,10 +19,9 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
     Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
-
+            | jurisdiction | baseLocation | roleType     |
+            | IA           | 20001           | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -60,27 +59,24 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
         Then I validate task list page results text displayed as "Showing 51 to 75 of 140 results"
 
         When I click work allocation table "tasks" column header "Case name"
+        Then I see work allocation table "tasks" column "Case name" is sorted in "asc"
+        Then I see work allocation table "tasks" reset sort button state isDisplayed is "true"
+        When I click work allocation table "tasks" reset sort button
+        Then I see work allocation table "tasks" reset sort button state isDisplayed is "false"
+        Then I see work allocation table "tasks" column "Case name" is sorted in "none"
+        Then I see work allocation table "tasks" default column sorted by "asc" for user type "<UserType>"
+            | Caseworker | Due date     |
+            | Judge      | Task created |
 
-# disbaled for known regression  issue EUI-7653
-
-        # Then I see work allocation table "tasks" column "Case name" is sorted in "asc"
-        # Then I see work allocation table "tasks" reset sort button state isDisplayed is "true"
-        # When I click work allocation table "tasks" reset sort button
-        # Then I see work allocation table "tasks" reset sort button state isDisplayed is "false"
-        # Then I see work allocation table "tasks" column "Case name" is sorted in "none"
-        # Then I see work allocation table "tasks" default column sorted by "asc" for user type "<UserType>"
-        #     | Caseworker | Due date     |
-        #     | Judge      | Task created |
-
-        # Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation/task/" on page 3 for user type "<UserType>"
-        #     | ColumnHeader  | Caseworker | Judge | FieldId      |
-        #     | Case name     | Yes        | Yes   | caseName     |
-        #     | Case category | Yes        | Yes   | caseCategory |
-        #     | Location      | Yes        | Yes   | locationName |
-        #     | Task          | Yes        | Yes   | taskTitle    |
-        #     | Task created  | No         | Yes   | created_date |
-        #     | Due date      | Yes        | No    | dueDate      |
-        #     | Priority      | Yes        | No    | dueDate      |
+        Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation/task/" on page 3 for user type "<UserType>"
+            | ColumnHeader  | Caseworker | Judge | FieldId      |
+            | Case name     | Yes        | Yes   | caseName     |
+            | Case category | Yes        | Yes   | caseCategory |
+            | Location      | Yes        | Yes   | locationName |
+            | Task          | Yes        | Yes   | taskTitle    |
+            | Task created  | No         | Yes   | created_date |
+            | Due date      | Yes        | No    | dueDate      |
+            | Priority      | Yes        | No    | dueDate      |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
@@ -91,10 +87,9 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
     Scenario Outline: Available Tasks pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
-
+            | jurisdiction | baseLocation | roleType     |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10   |
@@ -119,10 +114,9 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
     Scenario Outline: Available Tasks pagnation control display 0 items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
-
+            | jurisdiction | baseLocation | roleType     |
+            | IA | 20001 | ORGANISATION |
+            | SSCS         |            | ORGANISATION |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 0     |

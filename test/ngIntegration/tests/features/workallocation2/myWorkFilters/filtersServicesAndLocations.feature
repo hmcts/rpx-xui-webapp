@@ -30,7 +30,10 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<nonBookableServices>"
             | bookable    | false |
             | substantive | Y     |
-
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType | baseLocation | bookable | contractType |
+            | <bookableServices> | Y | ORGANISATION | 20001 | true | Fee-paid |
+            | <nonBookableServices> | Y | ORGANISATION | 20001 |false||
 
         Given I start MockApp
         Given I navigate to home page
@@ -104,19 +107,14 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
         Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,fee-paid-judge,judiciary,hmcts-judiciary" with reference "userDetails"
 
         Given I set Mock user with ref "userDetails", reset role assignments
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceA>"
-            | bookable        | false       |
-            | substantive     | Y           |
-            | baseLocation | <locationA> |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceB>"
-            | bookable        | false       |
-            | substantive     | Y           |
-            | baseLocation | <locationB> |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceC>"
-            | bookable        | false       |
-            | substantive     | Y           |
-            | baseLocation | <locationC> |
+      
 
+
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation | bookable | contractType |
+            | <serviceA>   | Y           | ORGANISATION | <locationA>  | false     |     |
+            | <serviceB>   | Y           | ORGANISATION | <locationB>  | false    |              |
+            | <serviceC>   | Y           | ORGANISATION | <locationC>  | false    |              |
 
         Given I start MockApp
         Given I navigate to home page
@@ -199,19 +197,13 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
         Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,fee-paid-judge,judiciary,hmcts-judiciary" with reference "userDetails"
 
         Given I set Mock user with ref "userDetails", reset role assignments
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceA>"
-            | bookable        | true        |
-            | substantive     | Y           |
-            | baseLocation | <locationA> |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceB>"
-            | bookable        | true        |
-            | substantive     | Y           |
-            | baseLocation | <locationB> |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceC>"
-            | bookable        | true        |
-            | substantive     | Y           |
-            | baseLocation | <locationC> |
+       
 
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation | bookable | contractType |
+            | <serviceA>   | Y           | ORGANISATION | <locationA>  | true    |              |
+            | <serviceB>   | Y           | ORGANISATION | <locationB>  | true    |              |
+            | <serviceC>   | Y           | ORGANISATION | <locationC>  | true    |              |
 
         Given I start MockApp
         Given I navigate to home page
@@ -300,19 +292,12 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
         Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,fee-paid-judge,judiciary,hmcts-judiciary" with reference "userDetails"
 
         Given I set Mock user with ref "userDetails", reset role assignments
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceA>"
-            | bookable        | false       |
-            | substantive     | Y           |
-            | baseLocation | <locationA> |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceB>"
-            | bookable        | false       |
-            | substantive     | Y           |
-            | baseLocation | <locationB> |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<serviceC>"
-            | bookable        | true        |
-            | substantive     | Y           |
-            | baseLocation | <locationC> |
-
+     
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation | bookable | contractType |
+            | <serviceA>   | Y           | ORGANISATION | <locationA>  | false    |              |
+            | <serviceB>   | Y           | ORGANISATION | <locationB>  | false    |              |
+            | <serviceC>   | Y           | ORGANISATION | <locationC>  | true    |              |
 
         Given I start MockApp
         Given I navigate to home page

@@ -1,15 +1,15 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormArray, FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of, throwError} from 'rxjs';
-import {initialState} from '../../hearing.test.data';
-import {LovRefDataModel} from '../../models/lovRefData.model';
-import {HearingsService} from '../../services/hearings.service';
-import {CancelHearingComponent} from './cancel-hearing.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of, throwError } from 'rxjs';
+import { initialState } from '../../hearing.test.data';
+import { LovRefDataModel } from '../../models/lovRefData.model';
+import { HearingsService } from '../../services/hearings.service';
+import { CancelHearingComponent } from './cancel-hearing.component';
 
 describe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
@@ -63,12 +63,14 @@ describe('CancelHearingComponent', () => {
   let mockHearingService: any;
   let mockStore: any;
 
-  beforeEach(async(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
+        { path: 'cases/case-details/1111222233334444/hearings', redirectTo: '' }
+      ]), HttpClientTestingModule],
       declarations: [CancelHearingComponent],
       providers: [
-        {provide: HearingsService, useValue: hearingsService},
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -77,23 +79,21 @@ describe('CancelHearingComponent', () => {
                 hearingCancelOptions: reasons,
               },
             },
-            params: Observable.of({hearingId: HEARING_ID}),
+            params: of({ hearingId: HEARING_ID }),
           },
         },
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
       .compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CancelHearingComponent);
     component = fixture.componentInstance;
     component.hearingCancelOptions = reasons;
-    mockHearingService = TestBed.get(HearingsService);
+    mockHearingService = TestBed.inject(HearingsService);
     spyOn(component, 'initForm').and.callThrough();
     spyOn(component, 'getChosenReasons').and.callThrough();
     spyOn(mockHearingService, 'cancelHearingRequest').and.returnValue(of({}));
@@ -149,7 +149,7 @@ describe('CancelHearingComponent', () => {
   });
   it('should have a validation error message mapped when cancel hearing DELETE request failed', () => {
     (component.hearingCancelForm.controls.reasons as FormArray).controls
-    .forEach(reason => reason.value.selected = true);
+      .forEach(reason => reason.value.selected = true);
     hearingsService.cancelHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
     component.executeContinue();
     expect(component.validationErrors).not.toBeNull();

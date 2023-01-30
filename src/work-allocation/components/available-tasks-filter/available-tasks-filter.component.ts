@@ -1,12 +1,11 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
-
 import { SessionStorageService } from '../../../app/services';
+import { FilterConstants } from '../../components/constants';
 import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { FilterConstants } from '../../components/constants';
 
 @Component({
   selector: 'exui-available-tasks-filter',
@@ -16,9 +15,9 @@ import { FilterConstants } from '../../components/constants';
 export class AvailableTasksFilterComponent implements OnInit {
 
   // Getting CheckboxListComponent from DOM ensures it will be defined
-  @ViewChild('locationFilter') public locationFilter: CheckboxListComponent<Location>;
-  @ViewChild('filterDetails')
-  public readonly filterDetails: ElementRef<HTMLDetailsElement>;
+  @ViewChild('locationFilter', {static: false}) public locationFilter: CheckboxListComponent<Location>;
+  @ViewChild('filterDetails', {static: false})
+  public filterDetails: ElementRef<HTMLDetailsElement>;
 
   public get detailsElement(): HTMLDetailsElement {
     return this.filterDetails ? this.filterDetails.nativeElement : undefined;
@@ -29,6 +28,7 @@ export class AvailableTasksFilterComponent implements OnInit {
     return this.pSelection;
   }
   public set selection(value: Location[]) {
+    /* istanbul ignore else*/
     if (this.pSelection !== value) {
       this.pSelection = value;
     }

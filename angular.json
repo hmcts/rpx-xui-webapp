@@ -13,11 +13,15 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/rpx-exui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "hammerjs"
+            ],
             "stylePreprocessorOptions": {
               "includePaths": [
                 "node_modules/govuk_frontend_toolkit/stylesheets",
@@ -38,7 +42,7 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "es5BrowserSupport": true
+            "preserveSymlinks": true
           },
           "configurations": {
             "production": {
@@ -51,7 +55,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -62,6 +65,10 @@
                   "type": "initial",
                   "maximumWarning": "6mb",
                   "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -71,7 +78,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "rpx-exui:build",
-             "proxyConfig": "./proxy.config.json"
+            "proxyConfig": "./proxy.config.json"
           },
           "configurations": {
             "production": {
@@ -102,11 +109,11 @@
           "options": {
             "codeCoverage": true,
             "codeCoverageExclude": [
-                "**/*.spec.ts",
-                "**/*.spec.js",
-                "test/**",
-                "config/**",
-                "src/environments/**"
+              "**/*.spec.ts",
+              "**/*.spec.js",
+              "test/**",
+              "config/**",
+              "src/environments/**"
             ],
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
@@ -175,7 +182,10 @@
   "defaultProject": "rpx-exui",
   "schematics": {
     "@schematics/angular:component": {
-      "styleext": "scss"
+      "style": "scss"
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

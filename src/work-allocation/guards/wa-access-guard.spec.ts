@@ -7,19 +7,19 @@ describe('WorkAllocationAccessGuard', () => {
     let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
     let guard: WorkAllocationAccessGuard;
     let routerMock: jasmine.SpyObj<Router>;
-    beforeEach(() => {
+    beforeEach(async () => {
         featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('FeatureToggleService', ['isEnabled', 'getValueOnce']);
         routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
         guard = new WorkAllocationAccessGuard(featureToggleMock, routerMock);
     });
 
-    it('canActivate to be true', () => {
+    it('can activate with feature toggle on', () => {
         featureToggleMock.getValueOnce.and.returnValue(of(true));
         const canActivate = guard.canActivate();
         canActivate.subscribe(activate => expect(activate).toBeTruthy());
     });
 
-    it('canActivate to be false', () => {
+    it('cannot activate with feature toggle off', () => {
         featureToggleMock.getValueOnce.and.returnValue(of(false));
         const canActivate = guard.canActivate();
         canActivate.subscribe(activate => expect(activate).toBeFalsy());

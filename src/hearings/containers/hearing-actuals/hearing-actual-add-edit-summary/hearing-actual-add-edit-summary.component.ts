@@ -62,7 +62,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
-    this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partyChannels];
+    this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
     this.actualPartHeardReasonCodes = this.route.snapshot.data.actualPartHeardReasonCodes;
     this.actualCancellationReasonCodes = this.route.snapshot.data.cancelHearingActualReasons;
   }

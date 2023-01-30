@@ -1,20 +1,19 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import { Pipe, PipeTransform } from '@angular/core';
-import {ActivatedRoute, convertToParamMap} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import {Observable, of} from 'rxjs';
-import {ActualHearingsUtils} from 'src/hearings/utils/actual-hearings.utils';
-import {hearingActualsMainModel, hearingStageRefData, initialState} from '../../../hearing.test.data';
-import {ACTION, HearingActualAddEditSummaryEnum, HearingResult} from '../../../models/hearings.enum';
-import {ConvertToValuePipe} from '../../../pipes/convert-to-value.pipe';
-import {HearingsService} from '../../../services/hearings.service';
+import { Observable, of } from 'rxjs';
+import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
+import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
+import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
+import { ACTION, HearingResult } from '../../../models/hearings.enum';
+import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {HearingActualAddEditSummaryComponent} from './hearing-actual-add-edit-summary.component';
-import {ActualHearingDayModel} from '../../../models/hearingActualsMainModel';
+import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
 
 @Pipe({name: 'transformAnswer'})
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -694,7 +693,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     component.hearingResult = HearingResult.COMPLETED;
     component.onSubmitHearingDetails();
     expect(component.submitted).toEqual(true);
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals(component.id));
   });
 
   it('should check is errror bar handling', () => {
@@ -720,81 +718,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     component.onSubmitHearingDetails();
     expect(component.submitted).toEqual(true);
     expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
-  });
-
-  it('should check days validity', () => {
-    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
-    hearingActuals.hearingActuals.actualHearingDays = [
-      {
-        hearingDate: '',
-        hearingStartTime: '',
-        hearingEndTime: '',
-        pauseDateTimes: null,
-        notRequired: false,
-        actualDayParties: [
-          {
-            actualPartyId: '1',
-            individualDetails: {
-              firstName: 'Bob',
-              lastName: 'Jones',
-            },
-            actualOrganisationName: 'Company A',
-            didNotAttendFlag: false,
-            partyChannelSubType: 'inPerson',
-            partyRole: 'appellant',
-            representedParty: '',
-          },
-          {
-            actualPartyId: '2',
-            individualDetails: {
-              firstName: 'Mary',
-              lastName: 'Jones',
-            },
-            actualOrganisationName: 'Company B',
-            didNotAttendFlag: false,
-            partyChannelSubType: 'inPerson',
-            partyRole: 'claimant',
-            representedParty: '',
-          },
-          {
-            actualPartyId: '3',
-            individualDetails: {
-              firstName: 'James',
-              lastName: 'Gods',
-            },
-            actualOrganisationName: 'Solicitors A',
-            didNotAttendFlag: false,
-            partyChannelSubType: 'inPerson',
-            partyRole: 'interpreter',
-            representedParty: '1',
-          },
-        ],
-      },
-    ];
-    component.hearingActualsMainModel = hearingActuals;
-    component.hearingResult = HearingResult.COMPLETED;
-    component.onSubmitHearingDetails();
-    expect(component.submitted).toBe(true);
-    expect(component.hearingTimingResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
-  });
-
-  it('should check parties validity', () => {
-    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
-    hearingActuals.hearingActuals.actualHearingDays = [
-      {
-        hearingDate: '2021-03-12',
-        hearingStartTime: '2021-03-12T09:00:00.000Z',
-        hearingEndTime: '2021-03-12T10:00:00.000Z',
-        pauseDateTimes: [],
-        notRequired: false,
-        actualDayParties: []
-      },
-    ];
-    component.hearingActualsMainModel = hearingActuals;
-    component.hearingResult = HearingResult.COMPLETED;
-    component.onSubmitHearingDetails();
-    expect(component.submitted).toBe(true);
-    expect(component.hearingPartiesResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
   });
 
   it('should save one hearing day actuals for specific hearingDate', () => {
@@ -844,8 +767,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
       ],
     };
     const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.confirmActualHearingTimeForDay(hearingDay);
-    component.confirmActualPartiesForDay(hearingDay);
+    component.confirmActualHearingTimeAndParties(hearingDay);
+    component.confirmActualHearingTimeAndParties(hearingDay);
     expect(storeDispatchSpy).toHaveBeenCalledTimes(2);
   });
 

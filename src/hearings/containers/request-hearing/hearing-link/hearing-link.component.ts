@@ -1,19 +1,23 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
-import {ACTION, HearingLinkMessages} from '../../../models/hearings.enum';
-import {ServiceLinkedCasesModel} from '../../../models/linkHearings.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
+import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
+import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import { LovRefDataByServiceModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-link',
   templateUrl: './hearing-link.component.html'
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  private caseLinkingReasons: LovRefDataByServiceModel;
   public caseId: string;
   public linkedCases: ServiceLinkedCasesModel[];
   public hearingLinkForm: FormGroup;
@@ -25,8 +29,9 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected readonly route: ActivatedRoute,
+              private readonly router: Router,
               private readonly formBuilder: FormBuilder) {
-    super(hearingStore, hearingsService);
+    super(hearingStore, hearingsService, route);
     this.caseId = this.hearingListMainModel.caseRef || '';
     this.caseName = this.serviceHearingValuesModel.publicCaseName || '';
   }
@@ -40,14 +45,33 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
       caseReference: this.caseId,
       hearingId: ''
     }));
-    this.hearingLinksSub = this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe(
-      hearingLinks => {
+    this.generateLinkedCasesWithReasonDescription();
+  }
+
+  public generateLinkedCasesWithReasonDescription(): void {
+    this.hearingLinksSub = this.hearingsService.loadCaseLinkingReasonCodes().pipe(
+      switchMap(reasons => {
+        this.caseLinkingReasons = reasons;
+        return this.hearingStore.pipe(select(fromHearingStore.getHearingLinks))
+      })
+    ).subscribe({
+      next: (hearingLinks: HearingLinksStateData) => {
         if (hearingLinks.serviceLinkedCases) {
-          this.linkedCases = hearingLinks.serviceLinkedCases;
-          this.showSpinner = false;
+          this.linkedCases = [];
+          hearingLinks.serviceLinkedCases.forEach(linkedCase => {
+            const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter(reason => linkedCase.reasonsForLink.some(reasonCode => reason.key === reasonCode));
+            const caseLinkingReasonsValues = caseLinkingReasons.map(x => x.value_en);
+            if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
+              this.linkedCases.push({caseName: linkedCase.caseName, caseReference: linkedCase.caseReference, reasonsForLink: caseLinkingReasonsValues});
+            } else {
+              this.linkedCases.push(linkedCase);
+            }
+          });
         }
-      }
-    );
+        this.showSpinner = false;
+      },
+      error: () => this.router.navigate(['/hearings/error'])
+    });
   }
 
   public initialiseFromHearingValues(): void {

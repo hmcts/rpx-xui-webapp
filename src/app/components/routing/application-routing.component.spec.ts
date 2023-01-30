@@ -31,7 +31,7 @@ describe('ApplicationRoutingComponent', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
     component.navigateBasedOnUserRole();
-    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
+    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   });
 
   it('should navigateBasedOnUserRole caseworker-ia-iacjudge', fakeAsync(async () => {
@@ -40,6 +40,13 @@ describe('ApplicationRoutingComponent', () => {
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   }));
+
+  it('should navigateBasedOnUserRole caseworker-civil', () => {
+    featureToggleMock.getValueOnce.and.returnValue(of(true));
+    mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-civil']}}));
+    component.navigateBasedOnUserRole();
+    expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
+  });
 
   it('should navigateBasedOnUserRole caseworker-ia-caseofficer', fakeAsync(async ()  => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));

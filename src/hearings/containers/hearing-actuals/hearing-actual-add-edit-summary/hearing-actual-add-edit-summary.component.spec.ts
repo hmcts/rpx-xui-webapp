@@ -6,13 +6,13 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
-import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
 
 @Pipe({name: 'transformAnswer'})

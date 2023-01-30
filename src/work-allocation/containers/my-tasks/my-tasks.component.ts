@@ -33,7 +33,7 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
     this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
       fields = this.isCurrentUserJudicial() ?
       (isRelease4 ? ConfigConstants.MyWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForJudicial) :
-      ConfigConstants.MyWorkTasksForLegalOps
+      (isRelease4 ? ConfigConstants.MyWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.MyWorkTasksForLegalOps)
     });
     return fields;
     // return this.isCurrentUserJudicial() ? ConfigConstants.MyWorkTasksForJudicial : ConfigConstants.MyWorkTasksForLegalOps;

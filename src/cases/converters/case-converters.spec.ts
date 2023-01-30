@@ -4,7 +4,7 @@ import * as converts from '../../cases/converters/case-converter';
 
 describe('case converters', () => {
 
-  it('should convert to share case', () => {
+  it('should convert to share case', async () => {
     const selectedCases = [{
       case_id: '1',
       case_fields: {
@@ -24,13 +24,13 @@ describe('case converters', () => {
         appRespondentLName: 'Godard'
       }
     }];
-    const expectedShareCases = [{caseId: '1', caseTitle: 'James Priest Vs Charlotte Godard', caseTypeId: 'FinancialRemedyContested'},
-      {caseId: '2', caseTitle: 'Kenneth Priest Vs Kathy Godard', caseTypeId: 'FinancialRemedyContested'}];
+    const expectedShareCases = [{ caseId: '1', caseTitle: 'James Priest Vs Charlotte Godard', caseTypeId: 'FinancialRemedyContested' },
+    { caseId: '2', caseTitle: 'Kenneth Priest Vs Kathy Godard', caseTypeId: 'FinancialRemedyContested' }];
     const shareCases: SharedCase[] = converts.toShareCaseConverter(selectedCases);
     expect(shareCases).toEqual(expectedShareCases);
   });
 
-  it('should convert case title', () => {
+  it('should convert case title', async () => {
     const selectedCases = [{
       case_id: '1',
       case_fields: {
@@ -50,14 +50,14 @@ describe('case converters', () => {
         D8RespondentLastName: 'Godard'
       }
     }];
-    const expectedShareCases = [{caseId: '1', caseTitle: 'James Priest Vs Charlotte Godard', caseTypeId: 'DIVORCE'},
-      {caseId: '2', caseTitle: 'Kenneth Priest Vs Kathy Godard', caseTypeId: 'DIVORCE'}];
+    const expectedShareCases = [{ caseId: '1', caseTitle: 'James Priest Vs Charlotte Godard', caseTypeId: 'DIVORCE' },
+    { caseId: '2', caseTitle: 'Kenneth Priest Vs Kathy Godard', caseTypeId: 'DIVORCE' }];
     const shareCases: SharedCase[] = converts.toShareCaseConverter(selectedCases);
     expect(shareCases).toEqual(expectedShareCases);
   });
 
-  it('should convert to search result view item', () => {
-    const sharedCases = [{caseId: '1', caseTitle: '', caseTypeId: 'FinancialRemedyContested'}, {caseId: '2', caseTitle: '', caseTypeId: 'FinancialRemedyContested'}];
+  it('should convert to search result view item', async () => {
+    const sharedCases = [{ caseId: '1', caseTitle: '', caseTypeId: 'FinancialRemedyContested' }, { caseId: '2', caseTitle: '', caseTypeId: 'FinancialRemedyContested' }];
     const expectedSearchResultViewItem = [{
       case_id: '1',
       case_fields: {

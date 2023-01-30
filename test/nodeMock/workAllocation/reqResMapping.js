@@ -312,13 +312,6 @@ module.exports = {
         },
         '/api/role-access/roles/manageLabellingRoleAssignment/:caseId': (req, res) => {
             res.status(204).send();
-        },
-        '/workallocation/case/task/:caseid': (req, res) => {
-
-            res.send(workAllocationMockData.getCaseTasksForCaseId(req.params.caseid));
-        },
-        '/workallocation/region-location': (req,res) => {
-            res.send([])
         }
     }
 

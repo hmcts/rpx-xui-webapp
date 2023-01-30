@@ -94,6 +94,21 @@ describe('AppComponent', () => {
     expect(spyModal).toHaveBeenCalledWith('100 seconds', true);
   });
 
+  it('initTimeoutNotificationService', () => {
+    appComponent.initTimeoutNotificationService(10, 100);
+    expect(timeoutNotificationService.initialise).toHaveBeenCalledWith({
+      idleModalDisplayTime: (10 * 60) * 1000,
+      totalIdleTime: (100 * 60) * 1000,
+      idleServiceName: 'idleSession',
+    });
+  });
+
+  it('staySignedInHandler', () => {
+    const spyModal = spyOn(appComponent, 'updateTimeoutModal');
+    appComponent.staySignedInHandler();
+    expect(spyModal).toHaveBeenCalledWith(undefined, false);
+  });
+
   it('updateTimeoutModal', () => {
     appComponent.updateTimeoutModal('100 seconds', false);
     expect(appComponent.timeoutModalConfig).toEqual({
@@ -106,6 +121,14 @@ describe('AppComponent', () => {
     const spyModal = spyOn(appComponent, 'updateTimeoutModal');
     appComponent.timeoutNotificationEventHandler({eventType: 'keep-alive'});
     expect(spyModal).toHaveBeenCalled();
+  });
+
+  it('addIdleServiceListener', () => {
+    const spy = spyOn(appComponent, 'timeoutNotificationEventHandler');
+    timeoutNotificationService.notificationOnChange.and.returnValue(of({}));
+    appComponent.addTimeoutNotificationServiceListener();
+    expect(timeoutNotificationService.notificationOnChange).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith({});
   });
 
   it('should call initializeFeature', () => {
@@ -174,6 +197,14 @@ describe('AppComponent', () => {
     };
     store.pipe.and.returnValue(of(userDetails));
     expect(store.pipe).toHaveBeenCalled();
+  });
+
+  it('addIdleServiceListener', () => {
+      const spy = spyOn(appComponent, 'timeoutNotificationEventHandler');
+      timeoutNotificationService.notificationOnChange.and.returnValue(of({}));
+      appComponent.addTimeoutNotificationServiceListener();
+      expect(timeoutNotificationService.notificationOnChange).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith({});
   });
 
   describe('cookie actions', () => {

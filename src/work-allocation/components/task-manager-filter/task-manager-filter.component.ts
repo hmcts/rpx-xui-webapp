@@ -165,7 +165,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
-  private static findPersonFilter(waSupportedJurisdictions: string[]): FilterFieldConfig {
+  private static findPersonFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'person',
       options: [],
@@ -177,7 +177,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person',
       radioSelectionChange: 'selectPerson=Specific person',
-      services: waSupportedJurisdictions
+      services: jurisdictions
     };
   }
 
@@ -242,7 +242,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initLocationFilter(),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
-      TaskManagerFilterComponent.findPersonFilter(this.waSupportedJurisdictions),
+      TaskManagerFilterComponent.findPersonFilter(this.jurisdictions),
       TaskManagerFilterComponent.initTaskTypeFilter()
     ];
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)

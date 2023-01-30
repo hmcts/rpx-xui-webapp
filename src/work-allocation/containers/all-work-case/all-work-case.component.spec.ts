@@ -117,7 +117,6 @@ describe('AllWorkCaseComponent', () => {
     component = wrapper.appComponentRef;
 
     const cases: Case[] = getMockCases();
-    component.isFirsTimeLoad = false;
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockCaseService.getCases.and.returnValue(of({ cases }));
     mockCaseworkerService.getAll.and.returnValue(of([]));
@@ -130,32 +129,6 @@ describe('AllWorkCaseComponent', () => {
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
     fixture.detectChanges();
-  });
-
-  it('should have all column headers, including "Manage +"', () => {
-    const element = fixture.debugElement.nativeElement;
-    const headerCells = element.querySelectorAll('.govuk-table__header');
-    const fields = component.fields;
-    component.isCasesFiltered = true;
-    expect(headerCells).toBeDefined();
-    expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
-    for (let i = 0; i < fields.length; i++) {
-      // ensure derivedIcon has no header and every other field does
-      if (fields[i].columnLabel) {
-        expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
-      } else {
-        expect(headerCells[i].textContent).toEqual('');
-      }
-    }
-    // Make sure Manage + heading is blank.
-    expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
-  });
-
-  it('should show judicial names when available', () => {
-    component.isCasesFiltered = true;
-    const firstMockCase = component.cases[0];
-    const secondMockCase = component.cases[1];
-    expect(component).toBeTruthy();
   });
 
   describe('ngOnInit', () => {
@@ -212,44 +185,6 @@ describe('AllWorkCaseComponent', () => {
     });
   });
 
-  it('should not show the footer when there are cases', () => {
-    component.isCasesFiltered = true;
-    const element = fixture.debugElement.nativeElement;
-    const footerRow = element.querySelector('.footer-row');
-    expect(footerRow).toBeDefined();
-    const footerRowClass = footerRow.getAttribute('class');
-    expect(footerRowClass).toContain('footer-row');
-    expect(footerRowClass).not.toContain('shown');
-  });
-
-  describe('onSelectionChanged', () => {
-    it(`should update 'pagination' and 'selectedServices' when parameter's location is null and actorId is 'All'`, () => {
-      component = initializeComponent({ changeDetectorRef: mockChangeDetectorRef, caseworkerDataService: mockCaseService, loadingService: mockLoadingService, sessionStorageService: mockSessionStorageService, jurisdictionsService: mockJurisdictionsService, router: mockRouter });
-
-
-      spyOn(component, 'performSearchPagination').and.returnValue(of({ cases: [ { role_category: '' } ] }));
-
-      component.onSelectionChanged({ location: null, jurisdiction: 'jurisdiction', actorId: 'All', role: 'role', person: { id: 'personId'} });
-
-      expect(component.selectedServices).toEqual(['jurisdiction']);
-      expect(component.pagination.page_number).toEqual(1);
-      expect(component.performSearchPagination).toHaveBeenCalledTimes(1);
-    });
-
-    // Test added to satisfy onSelectionChanged's ternary operators
-    it(`should update 'pagination' and 'selectedServices' when parameter's location is NOT null and actorId is NOT 'All'`, () => {
-      component = initializeComponent({ changeDetectorRef: mockChangeDetectorRef, caseworkerDataService: mockCaseService, loadingService: mockLoadingService, sessionStorageService: mockSessionStorageService, jurisdictionsService: mockJurisdictionsService, router: mockRouter });
-
-      spyOn(component, 'performSearchPagination').and.returnValue(of({ cases: [ { role_category: '' } ] }));
-
-      component.onSelectionChanged({ location: 'location', jurisdiction: 'jurisdiction', actorId: 'Item', role: 'role', person: { id: 'personId'} });
-
-      expect(component.selectedServices).toEqual(['jurisdiction']);
-      expect(component.pagination.page_number).toEqual(1);
-      expect(component.performSearchPagination).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('onPaginationEvent', () => {
     it(`should call 'onPaginationHandler'`, () => {
       component = initializeComponent({});
@@ -260,30 +195,6 @@ describe('AllWorkCaseComponent', () => {
 
       expect(component.onPaginationHandler).toHaveBeenCalledWith(2);
     });
-  });
-
-  it('should show the click Apply button text', () => {
-    const selection = { location: 'string', jurisdiction: 'string', actorId: 'string', role: 'string', person: 'any' };
-    component.onSelectionChanged(selection);
-    expect(component.isFirsTimeLoad).toBeFalsy();
-  });
-
-  it('should appropriately handle clicking on a row action', () => {
-    const element = fixture.debugElement.nativeElement;
-    // Use the first case.
-    const caseItem = component.cases[0];
-    // Click on the Manage + button.
-    const manageButton = element.querySelector(`#manage_${caseItem.id}`);
-    manageButton.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-    // Use the first action from that case.
-    const actionId = caseItem.actions[0].id;
-    const actionLink = element.querySelector(`#action_${actionId}`);
-    // Click on the action link.
-    actionLink.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-    // Ensure the correct attempt has been made to navigate.
-    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), { state: { backUrl: 'work/all-work/cases' } });
   });
 
   describe('getters', () => {

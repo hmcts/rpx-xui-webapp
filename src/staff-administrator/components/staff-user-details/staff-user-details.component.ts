@@ -44,4 +44,9 @@ export class StaffUserDetailsComponent {
         );
     }
   }
+
+  public copy(): void {
+    const url = '/staff/add-user';
+    this.router.navigate([url], { state: { user: this.userDetails } });
+  }
 }

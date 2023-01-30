@@ -5,7 +5,7 @@ import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HmctsBannerComponent } from '@hmcts/rpx-xui-common-lib';
-import { of, throwError } from 'rxjs';
+import {  of, throwError } from 'rxjs';
 import { staffUserDetailsTestData } from 'src/staff-administrator/test-data/staff-user-details.test.data';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffStatusComponent } from '../staff-status/staff-status.component';
@@ -54,8 +54,8 @@ describe('StaffUserDetailsComponent', () => {
     fixture = TestBed.createComponent(StaffUserDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    route = TestBed.get(ActivatedRoute);
-    location = TestBed.get(Location);
+    route = TestBed.inject(ActivatedRoute);
+    location = TestBed.inject(Location);
   });
 
   it('should create', () => {

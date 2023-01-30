@@ -1,21 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { AnswersComponent } from '../../../components';
 import {
-  Actions,
-  AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateRoleStateData,
-  AllocateTo,
-  DurationOfRole,
-  RoleCategory,
+    Actions,
+    AllocateRoleNavigationEvent,
+    AllocateRoleState,
+    AllocateRoleStateData,
+    AllocateTo,
+    DurationOfRole,
+    RoleCategory
 } from '../../../models';
 import { AnswerLabelText } from '../../../models/enums';
 import { ConfirmAllocation } from '../../../store/actions';
 import { AllocateRoleCheckAnswersComponent } from './allocate-role-check-answers.component';
-import * as fromFeature from '../../../store';
+
 
 describe('AllocateRoleCheckAnswersComponent', () => {
   let component: AllocateRoleCheckAnswersComponent;

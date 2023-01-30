@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { CaseworkerDataService } from './caseworker-data.service';
 
 describe('WorkAllocation service', () => {
@@ -12,7 +12,7 @@ describe('WorkAllocation service', () => {
 
     it('getAll should make correct api call', () => {
       const service = new CaseworkerDataService(mockHttpService, mockSessionStorageService);
-      mockHttpService.get.and.returnValue(Observable.of([]));
+      mockHttpService.get.and.returnValue(of([]));
       service.getAll();
       expect(mockHttpService.get).toHaveBeenCalledWith(CaseworkerDataService.caseWorkerUrl);
     });

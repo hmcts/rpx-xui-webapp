@@ -158,7 +158,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
     this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.filter(v => !!v).subscribe(value => {
+    this.isUpdatedTaskPermissions$.pipe(filter(v => !!v)).subscribe(value => {
       this.updatedTaskPermission = value;
     });
 
@@ -197,9 +197,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions =>
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap(jurisdictions =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
-    );
+    ));
     // similar to case list wrapper changes
     caseworkersByService$.subscribe(caseworkers => {
       this.caseworkers = caseworkers;
@@ -357,7 +357,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
     }
-    this.showSpinner$ = this.loadingService.isLoading;
+    this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     const tasksSearch$ = this.performSearchPreviousTaskPermissions();
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {

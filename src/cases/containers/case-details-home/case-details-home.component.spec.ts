@@ -1,20 +1,19 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
-  CaseUIToolkitModule,
-  ErrorNotifierService
+  ErrorNotifierService,
+  SessionStorageService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
-
 import { CaseDetailsHomeComponent } from '..';
 import { reducers } from '../../../app/store';
 import { InfoMessage } from '../../../work-allocation/enums';
 import * as fromFeature from '../../store';
+
 
 describe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;
@@ -23,16 +22,15 @@ describe('CaseDetailsHomeComponent', () => {
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
   const mockActivatedRoute = { data: of({case: {case_id: '1234', case_type: {id: 'caseTypeId', jurisdiction: {id: 'IA'}}}})};
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter;
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         RouterTestingModule,
-        CaseUIToolkitModule,
         StoreModule.forRoot({...reducers, cases: combineReducers(fromFeature.reducers)}),
       ],
       declarations: [CaseDetailsHomeComponent],
@@ -49,7 +47,7 @@ describe('CaseDetailsHomeComponent', () => {
   describe('entering page normally', () => {
 
     beforeEach(() => {
-      store = TestBed.get(Store);
+      store = TestBed.inject(Store);
       storeDispatchMock = spyOn(store, 'dispatch');
       fixture = TestBed.createComponent(CaseDetailsHomeComponent);
       component = fixture.componentInstance;
@@ -74,9 +72,9 @@ describe('CaseDetailsHomeComponent', () => {
   describe('redirected from available-tasks assignment', () => {
 
     beforeEach(() => {
-      mockRouter = TestBed.get(Router);
-      spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({extras: { state: { showMessage: true, messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}}});
-      store = TestBed.get(Store);
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({extras: { state: { showMessage: true, messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}}} as unknown as Navigation);
+      store = TestBed.inject(Store);
       storeDispatchMock = spyOn(store, 'dispatch');
       fixture = TestBed.createComponent(CaseDetailsHomeComponent);
       component = fixture.componentInstance;

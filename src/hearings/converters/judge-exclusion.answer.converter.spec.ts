@@ -6,7 +6,7 @@ import { RequirementType } from 'api/hearings/models/hearings.enum';
 import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState, judgeRefData, judicailUsersRefData } from '../hearing.test.data';
+import { initialState, judgeRefData, judicialUsersRefData } from '../hearing.test.data';
 import { MemberType } from '../models/hearings.enum';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
@@ -32,7 +32,7 @@ describe('JudgeExclusionAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                judicialUsers: judicailUsersRefData,
+                judicialUsers: judicialUsersRefData,
               },
             },
           },

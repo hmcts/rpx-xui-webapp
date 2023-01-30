@@ -33,6 +33,10 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
   }
 
+  /**
+   * TODO: Navigate to check your answers page if not cancelled and valid
+   * Determines whether submit hearing details on
+   */
   public onSubmitHearingDetails(): void {
     this.submitted = true;
 

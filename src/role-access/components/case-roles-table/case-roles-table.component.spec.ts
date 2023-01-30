@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
@@ -8,6 +8,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseRole, RoleCategory } from '../../models';
 import { CaseRolesTableComponent } from './case-roles-table.component';
+
 
 describe('CaseRolesTableComponent', () => {
   let component: CaseRolesTableComponent;
@@ -106,7 +107,7 @@ describe('CaseRolesTableComponent', () => {
       },
     ]
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
       declarations: [CaseRolesTableComponent]

@@ -18,7 +18,7 @@
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="affirmation" name="affirmation" type="checkbox"
                  [checked]="affirmationAgreed"
-                 (change)="onChangeAffirmation(this.$event)">
+                 (change)="onChangeAffirmation($event)">
           <label class="govuk-label govuk-checkboxes__label" for="affirmation">
             I confirm all these details are accurate and match what is written on the case.
           </label>
@@ -33,7 +33,7 @@
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="notifyEveryParty" name="notifyEveryParty" type="checkbox"
                  [checked]="notifyEveryParty"
-                 (change)="onNotifyEveryParty(this.$event)">
+                 (change)="onNotifyEveryParty($event)">
           <label class="govuk-label govuk-checkboxes__label" for="notifyEveryParty">
             I have served notice of this change on every party to the case, including the former legal representative (if there was one).
           </label>

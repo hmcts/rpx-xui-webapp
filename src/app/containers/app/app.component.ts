@@ -32,6 +32,9 @@ export class AppComponent implements OnInit, OnDestroy {
   private cookieBannerEnabledSubscription: Subscription;
   private cookieBannerEnabled: boolean = false;
 
+  private idleModalDisplayTimeInMilliseconds: number;
+  private totalIdleTimeInMilliseconds: number;
+
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly googleTagManagerService: GoogleTagManagerService,
@@ -138,7 +141,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public initializeFeature(userInfo: UserInfo, ldClientId: string) {
     if (userInfo) {
-
       const featureUser: FeatureUser = {
         key: userInfo.id || userInfo.uid,
         custom: {
@@ -262,6 +264,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public staySignedInHandler() {
 
     this.updateTimeoutModal(undefined, false);
+    this.setupTimeoutNotificationService();
   }
 
   public signOutHandler() {
@@ -298,13 +301,17 @@ export class AppComponent implements OnInit, OnDestroy {
   public initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime) {
 
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
-    const idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
 
-    const totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
+    this.idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
+    this.totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
 
+    this.setupTimeoutNotificationService();
+  }
+
+  private setupTimeoutNotificationService(): void {
     const timeoutNotificationConfig: any = {
-      idleModalDisplayTime: idleModalDisplayTimeInMilliseconds,
-      totalIdleTime: totalIdleTimeInMilliseconds,
+      idleModalDisplayTime: this.idleModalDisplayTimeInMilliseconds,
+      totalIdleTime: this.totalIdleTimeInMilliseconds,
       idleServiceName: 'idleSession'
     };
 

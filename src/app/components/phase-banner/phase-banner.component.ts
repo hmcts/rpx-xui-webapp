@@ -5,11 +5,11 @@ import { Component, Input, OnInit } from '@angular/core';
   templateUrl: './phase-banner.component.html'
 })
 export class PhaseBannerComponent implements OnInit {
-  @Input() type: string;
+  @Input() public type: string;
 
   constructor() { }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 
 }

@@ -42,7 +42,7 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     HealthCheckService,
     WindowService,
     McLaunchDarklyService,
-    TaskSupervisorGuard
+    TaskSupervisorGuard,
   ],
 })
 export class SharedModule { }

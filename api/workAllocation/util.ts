@@ -506,7 +506,7 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   }
   const data: CaseDataType = getCaseDataFromRoleAssignments(roleAssignmentList);
 
-  const casePromises: Array<Promise<CaseList>> = getCaseListPromises(data, req);
+  const casePromises: Promise<CaseList>[] = getCaseListPromises(data, req);
 
   const response = await Promise.all(casePromises.map(reflect));
   const caseResults = response.filter(x => x.status === 'fulfilled' && x.value ).map( x => x.value );

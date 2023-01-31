@@ -249,18 +249,6 @@ export class AppUtils {
     }
   }
 
-  public static getUserRole(userRoles: string[]): UserRole {
-    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => userRole.includes(role)))) {
-      return UserRole.Judicial;
-    } else if (userRoles.some(userRole => ADMIN_ROLE_LIST.some(role => userRole.includes(role)))) {
-      return UserRole.Admin;
-    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => userRole.includes(role)))) {
-      return UserRole.LegalOps;
-    // TODO: Use actual admin and cts roles within respective role lists
-    }
-    return null;
-  }
-
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
     return userInfo.roleCategory === RoleCategory.JUDICIAL

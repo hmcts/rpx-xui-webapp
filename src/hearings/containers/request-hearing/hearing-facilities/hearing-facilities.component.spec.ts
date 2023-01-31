@@ -1,13 +1,13 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {caseFlagsRefData, initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingFacilitiesComponent} from './hearing-facilities.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingFacilitiesComponent } from './hearing-facilities.component';
 
 describe('HearingFacilitiesComponent', () => {
   let component: HearingFacilitiesComponent;
@@ -15,7 +15,6 @@ describe('HearingFacilitiesComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-
   const ADDITIONAL_FACILITIES_OPTIONS = [
     {
       key: 'immigrationDetentionCentre',
@@ -161,12 +160,15 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should filter selection from previous values', () => {
     component.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag = true;
+
+    const swapValue = component.hearingRequestMainModel.hearingDetails.facilitiesRequired ;
     component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['secureDock', 'witnessScreen'];
     component = fixture.componentInstance;
     component.ngOnInit();
     fixture.detectChanges();
 
     expect(component.hearingFactilitiesForm.controls['addition-security-required'].value).toEqual('Yes');
+    component.hearingRequestMainModel.hearingDetails.facilitiesRequired = swapValue;
   });
 
   afterEach(() => {

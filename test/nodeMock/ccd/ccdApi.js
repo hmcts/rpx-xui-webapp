@@ -16,7 +16,6 @@ const fplTribunalConfig = require('./solicitorCreate/fplTribunalCreateConfig');
 const fplCareSupervisionConfig = require('./solicitorCreate/fplCareSupervision');
 
 const exuiTestCaseType = require('./solicitorCreate/exuiTestCaseType');
-const { isArray } = require("core-js/fn/array");
 const CCDCaseConfig = require('./ccdCaseConfig/caseCreateConfigGenerator');
 const CCDWorkBasketInputGenerator = require('./ccdCaseConfig/workBasketInputGenerator');
 const CCDSearchInputGenerator = require('./ccdCaseConfig/searchInputGenerator');
@@ -31,7 +30,7 @@ class CCDApi{
 
     setDefaultData(){
         this.caseDetailsResponse = JSON.parse(JSON.stringify(caseDetailsData));
-        this.caseList = this.getWorkbasketCases(); 
+        this.caseList = this.getWorkbasketCases();
     }
 
     getCaseDetailsWithID(caseId){
@@ -40,14 +39,14 @@ class CCDApi{
         for (const metaDatField of this.caseDetailsResponse.metadataFields){
             if (metaDatField.id === '[CASE_REFERENCE]'){
                 metaDatField.value = caseId;
-                break; 
+                break;
             }
         }
-        return this.caseDetailsResponse 
+        return this.caseDetailsResponse
     }
 
     getJurisdictions(){
-        return caseworkerJurisdictions; 
+        return caseworkerJurisdictions;
     }
 
     getWorkbasketInputs(jurisdiction){
@@ -90,10 +89,10 @@ class CCDApi{
 
     getSolicitorCreateCaseConfig(caseType,event){
         if (caseType === 'DIVORCE'){
-            return divorceCreateCaseConfig; 
-       } 
+            return divorceCreateCaseConfig;
+       }
         if (caseType === 'FinancialRemedyMVP2' && event === 'FR_solicitorCreate'){
-            return frConsentedCreaCaseConfig; 
+            return frConsentedCreaCaseConfig;
        }
         if (caseType === 'FinancialRemedyContested' && event === 'FR_solicitorCreate') {
             return frContestedCreaCaseConfig;
@@ -235,8 +234,8 @@ class CCDApi{
                     .addCaseField({ id: "people", type: "Collection", label: "People", collection_field_type: { id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields } })
                         .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
                 .getCase();
-        
- 
+
+
     }
 
 
@@ -527,6 +526,6 @@ const mockEvents = {
 
 
 
- 
+
 
 

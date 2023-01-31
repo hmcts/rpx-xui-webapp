@@ -38,7 +38,7 @@ class AllWork extends TaskList {
             'Person input': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
             'Task type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select'),
             'Priority': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select'),
-            'Role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Role type")]/..//select')
+            'Select a role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Role type")]/..//select')
             
         } 
 

@@ -15,7 +15,7 @@ import { NocHomeComponent } from './noc-home.component';
 describe('NocHomeComponent', () => {
   let fixture: ComponentFixture<NocHomeComponent>;
   let component: NocHomeComponent;
-  let store: MockStore<fromNocStore.State>;
+  let store;
   let storePipeMock: any;
   let storeDispatchMock: any;
 
@@ -45,7 +45,7 @@ describe('NocHomeComponent', () => {
       ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');

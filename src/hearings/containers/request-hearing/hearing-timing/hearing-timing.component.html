@@ -4,7 +4,7 @@
   <div class="govuk-grid-column-two-thirds">
     <exui-hearing-parties-title></exui-hearing-parties-title>
     <h1 class="govuk-heading-l">
-      Select length, date and priority level of hearing
+      Length, date and priority level of hearing
     </h1>
 
     <form class="form" [formGroup]="priorityForm">
@@ -18,6 +18,13 @@
               <span class="govuk-visually-hidden">Error:</span> {{hearingLengthErrorValue}}
             </span>
             <div class="govuk-date-input" formGroupName="durationLength">
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="durationdays">Days</label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="durationdays"
+                    name="durationdays" type="text" inputmode="numeric" value="" formControlName="days">
+                </div>
+              </div>
               <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                   <label class="govuk-label govuk-date-input__label" for="durationhours">Hours</label>

@@ -1,6 +1,6 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -12,24 +12,27 @@ import {HearingsService} from '../../../services/hearings.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
 import {HearingActualsTimingComponent} from './hearing-actuals-timing.component';
 
+import * as _ from 'lodash';
+
 @Component({selector: 'exui-app-blank', template: ''})
 class BlankComponent {}
+
+const mockActivatedRoute = {
+  paramMap: of(convertToParamMap({
+    id: '1',
+    hearingDate: '2021-03-12'
+  })),
+  snapshot: {
+    data: {},
+  },
+  navigate: (): boolean => true
+};
 
 describe('HearingActualsTimingComponent', () => {
   const hearingsService = jasmine.createSpyObj('HearingsService', ['updateHearingActuals']);
   let store: Store<any>;
   let component: HearingActualsTimingComponent;
   let fixture: ComponentFixture<HearingActualsTimingComponent>;
-  const mockActivatedRoute = {
-    paramMap: of(convertToParamMap({
-      id: '1',
-      hearingDate: '2021-03-12'
-    })),
-    snapshot: {
-      data: {},
-    },
-    navigate: (): boolean => true
-  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -60,7 +63,7 @@ describe('HearingActualsTimingComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create form ', () => {
+  it('should create form', () => {
     expect(component.formGroup.value.hearingStartTime).toBe('09:00');
     expect(component.formGroup.value.hearingEndTime).toBe('10:00');
   });
@@ -80,7 +83,7 @@ describe('HearingActualsTimingComponent', () => {
     spyOn(store, 'dispatch');
     component.formGroup.patchValue({
       hearingStartTime: '09:00',
-      hearingEndTime: '',
+      hearingEndTime: null,
       recordTimes: 'no'
     });
     component.onSubmit(component.formGroup.value, component.formGroup.valid);
@@ -90,8 +93,8 @@ describe('HearingActualsTimingComponent', () => {
   it('should submit form when hearingStartTime and hearingEndTime are not present with recordTimes being no', () => {
     spyOn(store, 'dispatch');
     component.formGroup.patchValue({
-      hearingStartTime: '',
-      hearingEndTime: '',
+      hearingStartTime: null,
+      hearingEndTime: null,
       recordTimes: 'no'
     });
     component.onSubmit(component.formGroup.value, component.formGroup.valid);
@@ -101,7 +104,7 @@ describe('HearingActualsTimingComponent', () => {
   it('should NOT submit form when only hearingEndTime is present with recordTimes being no', () => {
     spyOn(store, 'dispatch');
     component.formGroup.patchValue({
-      hearingStartTime: '',
+      hearingStartTime: null,
       hearingEndTime: '10:00',
       recordTimes: 'no'
     });
@@ -160,4 +163,60 @@ describe('HearingActualsTimingComponent', () => {
     expect(component.formGroup.hasError('invalidPauseStartTimeRange')).toBeTruthy();
     expect(component.formGroup.hasError('invalidPauseEndTimeRange')).toBeTruthy();
   });
+});
+
+
+
+describe('HearingActualsTimingComponent', () => {
+  const hearingsService = jasmine.createSpyObj('HearingsService', ['updateHearingActuals']);
+  let store: Store<any>;
+  let component: HearingActualsTimingComponent;
+  let fixture: ComponentFixture<HearingActualsTimingComponent>;
+
+  const updatedInitialState = {
+    ..._.cloneDeep(initialState)
+  };
+
+  updatedInitialState.hearings.hearingActuals.hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingStartTime = null;
+  updatedInitialState.hearings.hearingActuals.hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingEndTime = null;
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary',  component: BlankComponent}]), HttpClientTestingModule],
+      providers: [
+        provideMockStore({initialState: updatedInitialState}),
+        {provide: HearingsService, useValue: hearingsService},
+        {
+          provide: ActivatedRoute,
+          useValue: mockActivatedRoute,
+        },
+        ValidatorsUtils
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [HearingActualsTimingComponent, BlankComponent]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HearingActualsTimingComponent);
+    store = TestBed.inject(Store);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  describe('ngOnInit', () => {
+    it('should create form and hearingStartTime and hearingEndTime set to null', () => {
+      console.log(component.formGroup.value);
+      expect(component.formGroup.value.hearingStartTime).toBeNull();
+      expect(component.formGroup.value.hearingEndTime).toBeNull();
+    });
+
+
+  });
+
 });

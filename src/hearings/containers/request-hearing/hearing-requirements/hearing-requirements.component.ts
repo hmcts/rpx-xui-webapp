@@ -56,7 +56,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
-    this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
+    if (this.serviceHearingValuesModel?.caseFlags?.flags) {
+      this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
+    }
   }
 
   public ngOnInit(): void {
@@ -96,7 +98,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         leadJudgeContractType: this.serviceHearingValuesModel.leadJudgeContractType,
         amendReasonCodes: null,
         hearingChannels: this.serviceHearingValuesModel.hearingChannels,
-        hearingLevelParticipantAttendance: this.serviceHearingValuesModel.hearingLevelParticipantAttendance,
         listingAutoChangeReasonCode: null
       },
       caseDetails: {

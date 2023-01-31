@@ -72,7 +72,7 @@ export const hearingStageRefData = [
   },
 ];
 
-export const judicailUsersRefData: JudicialUserModel[] = [{
+export const judicialUsersRefData: JudicialUserModel[] = [{
   emailId: 'jacky.collins@judicial.com',
   fullName: 'Jacky Collins',
   idamId: '1102839232',
@@ -190,6 +190,165 @@ export const partyChannelsRefData = [
     hintTextCY: '',
     order: 5,
     parentKey: null
+  }
+];
+
+export const partySubChannelsRefData = [
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDSKYPE',
+    value_en: 'Video - Skype',
+    value_cy: 'Drwy Fideo - Skype',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'TELOTHER',
+    value_en: 'Telephone - Other',
+    value_cy: 'Dros y Ffôn - Arall',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'TEL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDTEAMS',
+    value_en: 'Video - Teams',
+    value_cy: 'Drwy Fideo - Teams',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDCVP',
+    value_en: 'Video - CVP',
+    value_cy: 'Drwy Fideo - CVP',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDOTHER',
+    value_en: 'Video - Other',
+    value_cy: 'Drwy Fideo - Arall',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'TELCVP',
+    value_en: 'Telephone - CVP',
+    value_cy: 'Dros y Ffôn - CVP',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'TEL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'NA',
+    value_en: 'Not in Attendance',
+    value_cy: 'Ddim yn Bresennol',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'NA',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'INTER',
+    value_en: 'In Person',
+    value_cy: 'Yn Bersonol',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'INTER',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'TELBTM',
+    value_en: 'Telephone - BTMeetme',
+    value_cy: 'Dros y Ffôn - BTMeetme',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'TEL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDPVL',
+    value_en: 'Prison Video',
+    value_cy: 'Cyswllt Fideo â Charchar',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'TELSKYP',
+    value_en: 'Telephone - Skype',
+    value_cy: 'Dros y Ffôn - Skype',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'TEL',
+    active_flag: 'Y',
+    child_nodes: null
+  },
+  {
+    category_key: 'HearingSubChannel',
+    key: 'VIDVHS',
+    value_en: 'Video - Video Hearing Service',
+    value_cy: 'Drwy Fideo - Gwasanaeth Gwrandawiadau Fideo',
+    hint_text_en: '',
+    hint_text_cy: '',
+    lov_order: null,
+    parent_category: 'HearingChannel',
+    parent_key: 'VID',
+    active_flag: 'Y',
+    child_nodes: null
   }
 ];
 
@@ -1388,7 +1547,6 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   autoListFlag: false,
   hearingType: 'Final',
   hearingChannels: [],
-  hearingLevelParticipantAttendance: [],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
@@ -1731,7 +1889,6 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     duration: 45,
     hearingType: 'final',
     hearingChannels: [],
-    hearingLevelParticipantAttendance: [],
     hearingLocations: [
       {
         locationId: '196538',
@@ -2113,7 +2270,6 @@ export const initialState = {
           duration: 60,
           hearingType: 'final',
           hearingChannels: [],
-          hearingLevelParticipantAttendance: [],
           hearingLocations: [
             {
               locationId: '196538',
@@ -2297,8 +2453,7 @@ export const initialState = {
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
-          hearingChannels: [],
-          hearingLevelParticipantAttendance: ['byPhone'],
+          hearingChannels: ['byPhone'],
           hearingLocations: [
             {
               locationId: '196538',
@@ -2768,7 +2923,6 @@ export const initialStateImmutable = {
           duration: 60,
           hearingType: 'final',
           hearingChannels: [],
-          hearingLevelParticipantAttendance: [],
           hearingLocations: [
             {
               locationId: '196538',
@@ -2953,7 +3107,6 @@ export const initialStateImmutable = {
           duration: 60,
           hearingType: 'final',
           hearingChannels: [],
-          hearingLevelParticipantAttendance: [],
           hearingLocations: [
             {
               locationId: '196538',

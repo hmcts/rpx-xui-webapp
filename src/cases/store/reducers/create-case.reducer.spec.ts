@@ -1,5 +1,5 @@
-import * as fromCases from './create-case.reducer';
 import * as fromActions from '../actions/create-case.action';
+import * as fromCases from './create-case.reducer';
 
 describe('CasesReducer', () => {
   describe('undefined action', () => {
@@ -15,12 +15,12 @@ describe('CasesReducer', () => {
   describe('CREATE_CASE_APPLY action', () => {
     it('should set correct object', () => {
       const { initialState } = fromCases;
-      const action = new fromActions.ApplyChange({status: null, caseId: 1234});
+      const action = new fromActions.ApplyChange({status: null, caseId: '1234'});
       const state = fromCases.reducerCreateCase(initialState, action);
 
       expect(state.loading).toEqual(false);
       expect(state.loaded).toEqual(true);
-      expect(state.createdCase).toEqual({status: null, caseId: 1234});
+      expect(state.createdCase).toEqual({status: null, caseId: '1234'});
     });
   });
 

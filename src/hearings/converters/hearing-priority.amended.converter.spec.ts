@@ -1,8 +1,8 @@
-import {cold} from 'jasmine-marbles';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
 import { HearingPriorityAmendedConverter } from './hearing-priority.amended.converter';
 
 describe('HearingPriorityAmendedConverter', () => {

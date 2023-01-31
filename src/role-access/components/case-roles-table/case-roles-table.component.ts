@@ -17,7 +17,8 @@ export class CaseRolesTableComponent implements OnInit {
   public items: Item[] = [];
   @Input() public caseDetails: CaseView;
   @Input() public showAllocateRoleLink: boolean;
-  @Input() public roleCategory: RoleCategory = RoleCategory.LEGAL_OPERATIONS;
+  @Input() public roleCategory: RoleCategory;
+  public roleCategoryTitle: string;
 
   constructor(private readonly router: Router) {
   }
@@ -30,12 +31,15 @@ export class CaseRolesTableComponent implements OnInit {
 
   @Input()
   public set roles(value: CaseRole[]) {
-    this.items = value.map((role) => ({ ...role, open: false }));
-    this._roles = value;
+    if (value) {
+      this.items = value.map((role) => ({ ...role, open: false }));
+      this._roles = value;
+    }
   }
 
   public ngOnInit(): void {
     this.backUrl = this.router.url;
+    this.roleCategoryTitle = this.roleCategory === RoleCategory.JUDICIAL ? 'judicial' : (this.roleCategory === RoleCategory.ADMIN ? 'admin' : 'legal Ops');
   }
 
   public queryParams(caseRole: CaseRole): any {

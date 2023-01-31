@@ -5,13 +5,15 @@ import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { CourtVenue } from '../workAllocation2/interfaces/location';
-import { handleLocationGet } from '../workAllocation2/locationService';
-import { prepareGetLocationsUrl } from '../workAllocation2/util';
+import { CourtVenue } from '../workAllocation/interfaces/location';
+import { handleLocationGet } from '../workAllocation/locationService';
+import { prepareGetSpecificLocationUrl } from '../workAllocation/util';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
 
+// const url: string = getConfigValue(SERVICES_PRD_API_URL);
+// TODO: CAM_BOOKING - check this
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
 
 /**
@@ -22,27 +24,57 @@ const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
  * @example searchTerm = any search term for postcode | site name | venue name |court name | court address etc.
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const searchTerm = req.query.searchTerm;
-  const serviceIds = req.query.serviceIds;
-  const locationType = req.query.locationType;
-  const serviceIdArray = serviceIds.split(',');
-  const courtTypeIds = getCourtTypeIdsByService(serviceIdArray);
+  const searchTerm = req.body.searchTerm;
+  let serviceIds = req.body.serviceIds;
+  const locationType = req.body.locationType;
+  const userLocations = req.body.userLocations ? req.body.userLocations : [];
+  const bookingLocations = req.body.bookingLocations ? req.body.bookingLocations : [];
+  // stops locations from being gathered if they are base locations passed in without relevant services
+  if ((!serviceIds || serviceIds.length === 0) && userLocations) {
+    res.status(200).send([]);
+  }
+  if (typeof serviceIds === 'string') {
+    serviceIds = serviceIds.split(',');
+  }
+  const courtTypeIds = getCourtTypeIdsByService(serviceIds);
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
-  // const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}`;
+
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
-    let result: LocationModel[] = response.data;
+    let results: LocationModel[] = response.data;
     if (locationType === LocationTypeEnum.HEARING) {
-      result = result.filter(location => location.is_hearing_location === 'Y');
+      results = results.filter(location => location.is_hearing_location === 'Y');
     } else if (locationType === LocationTypeEnum.CASE_MANAGEMENT) {
-      result = result.filter(location => location.is_case_management_location === 'Y');
+      results = results.filter(location => location.is_case_management_location === 'Y');
     }
-    res.status(response.status).send(result);
+    // add in check to make sure user only able to select base locations if specified
+    userLocations.forEach(userLocation => {
+      const courtTypes = getCourtTypeIdsByService([userLocation.service]);
+      const locationIds = getLocationIdsFromLocationList(userLocation.locations);
+      // when we are trying to filter out locations when booking location is present - my work
+      if (userLocation.bookable && bookingLocations.length) {
+        results = filterOutResults(results, bookingLocations, courtTypes);
+      } else {
+        results = filterOutResults(results, locationIds, courtTypes);
+      }
+    });
+    response.data.results = results.filter((locationInfo, index, self) =>
+      index === self.findIndex(location => (
+        location.epimms_id === locationInfo.epimms_id
+      ))
+    );
+    res.status(response.status).send(response.data.results);
   } catch (error) {
     next(error);
   }
+
+}
+
+export function filterOutResults(locations: LocationModel[], locationIds: string[], courtTypes: string[]): LocationModel[] {
+  return locations.filter(location => !(courtTypes.includes(location.court_type_id))
+    || (locationIds.includes(location.epimms_id) || (!locationIds || locationIds.length === 0)));
 }
 
 /**
@@ -50,32 +82,51 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
  *
  */
 export async function getLocationsById(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const id = req.query.ids;
+  const locations = req.body.locations;
   try {
-    const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
-    const path: string = prepareGetLocationsUrl(basePath);
-    const response = await handleLocationGet(path, req);
-    const filteredResults = response.data.court_venues.filter(courtVenue =>
-      courtVenue.epimms_id === id
-    );
-    const mappedLocationModel = mapCourtVenuesToLocationModels(filteredResults);
-    res.send(mappedLocationModel).status(response.status);
+    const locationModels = [];
+    let responseStatus;
+    for (const location of locations) {
+      const id = location.locationId;
+      const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
+      const path: string = prepareGetSpecificLocationUrl(basePath, id);
+      // no longer LocationResponse but CourtVenue
+      const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);
+      const filteredResults = response.data.filter(courtVenue =>
+        courtVenue.epimms_id === id.toString()
+      );
+      const mappedLocationModel = mapCourtVenuesToLocationModels(filteredResults);
+      locationModels.push(mappedLocationModel);
+      responseStatus = response.status;
+    }
+    res.send(locationModels).status(responseStatus);
   } catch (error) {
     next(error);
   }
 }
 
-function getCourtTypeIdsByService(serviceIdArray: string[]): string {
-  const courtTypeIdsArray = serviceIdArray.map(serviceId => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
-    .reduce(concatCourtTypeWithoutDuplicates);
-  if (courtTypeIdsArray) {
-    return courtTypeIdsArray.join(',');
+function getLocationIdsFromLocationList(locations: any): string[] {
+  const locationIds: string[] = [];
+  if (!locations) {
+    return [];
   }
-  return '';
+  locations.forEach(location => {
+    locationIds.push(location.id.toString());
+  });
+  return locationIds;
+}
+
+function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
+  const courtTypeIdsArray = serviceIdArray.map(serviceId => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
+    .reduce(concatCourtTypeWithoutDuplicates, []);
+  if (courtTypeIdsArray) {
+    return courtTypeIdsArray;
+  }
+  return [''];
 }
 
 function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
-  return array1.concat(array2.filter(item => array1.indexOf(item) < 0));
+  return array2 ? array1.concat(array2.filter(item => array1.indexOf(item) < 0)) : array1;
 }
 
 function mapCourtVenuesToLocationModels(courtVenues: CourtVenue[]): CourtVenue {

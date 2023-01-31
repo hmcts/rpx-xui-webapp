@@ -1,8 +1,8 @@
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {CaseNumberAnswerConverter} from './case-number.answer.converter';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { CaseNumberAnswerConverter } from './case-number.answer.converter';
 
 describe('CaseNumberAnswerConverter', () => {
 

@@ -1,11 +1,11 @@
-import * as applicationinsights from 'applicationinsights'
-import * as express from 'express'
-import {getConfigValue, showFeature} from '../configuration'
+import * as applicationinsights from 'applicationinsights';
+import * as express from 'express';
+import {getConfigValue, showFeature} from '../configuration/';
 import {
     APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED,
-} from '../configuration/references'
+} from '../configuration/references';
 
-export let client
+export let client;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     applicationinsights
@@ -18,18 +18,18 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
         .setAutoCollectConsole(true)
         .setUseDiskRetryCaching(true)
         .setSendLiveMetrics(true)
-        .start()
+        .start();
 
-    client = applicationinsights.defaultClient
-    client.trackTrace({ message: 'App Insight Activated' })
+    client = applicationinsights.defaultClient;
+    client.trackTrace({ message: 'App Insight Activated' });
 } else {
-    client = null
+    client = null;
 }
 
 export function appInsights(req: express.Request, res: express.Response, next) {
     if (client) {
-        client.trackNodeHttpRequest({ request: req, response: res })
+        client.trackNodeHttpRequest({ request: req, response: res });
     }
 
-    next()
+    next();
 }

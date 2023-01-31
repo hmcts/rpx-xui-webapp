@@ -1,12 +1,11 @@
 import { expect } from 'chai';
-import { PactTestSetup } from '../settings/provider.mock';
-import { markTaskAs } from "../../pactUtil";
-
-import * as sinon from 'sinon'
-import * as config from 'config'
+import * as config from 'config';
+import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { PactTestSetup } from '../settings/provider.mock';
 import { getSearchTaskOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
@@ -17,7 +16,7 @@ describe("Task management api, Complete a task", () => {
     let sandbox: sinon.SinonSandbox;
     let next;
     const RESPONSE_BODY = {
-       
+
     }
     const taskId = "f782bde3-8d51-11eb-a9a4-06d032acc76d"
     describe("post /task/taskId/complete/", () => {
@@ -29,7 +28,7 @@ describe("Task management api, Complete a task", () => {
         });
 
         before(async () => {
-           
+
             await pactSetUp.provider.setup()
             const interaction = {
                 state: "complete a task using taskId",
@@ -42,7 +41,7 @@ describe("Task management api, Complete a task", () => {
                         'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
                         'content-type': 'application/json',
                     }
-                    
+
                 },
                 willRespondWith: {
                     status: 204,
@@ -65,8 +64,8 @@ describe("Task management api, Complete a task", () => {
             sandbox.stub(config, 'get').callsFake((prop) => {
                 return configValues[prop];
             });
-            
-            const { postTaskAction } = requireReloaded('../../../../workAllocation2/index');
+
+            const { postTaskAction } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

@@ -123,7 +123,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseRolesAndAccessPage.isAllocateRoleLinkPresentForCategory(roleCategory)).to.be.false;
         });
-
     });
 
     When('I click Add link for exclusions in roles and access page', async function (roleType){

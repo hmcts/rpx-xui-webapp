@@ -1,5 +1,6 @@
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { RoleCategory } from '../../role-access/models';
+import { LocationsByRegion } from '../models/dtos';
 import { TaskPermission } from '../models/tasks';
 import {
   getCurrentUserRoleCategory,
@@ -11,7 +12,8 @@ import {
   handleTasksFatalErrors,
   REDIRECTS,
   treatAsFatal,
-  WILDCARD_SERVICE_DOWN
+  WILDCARD_SERVICE_DOWN,
+  locationWithinRegion
 } from './work-allocation-utils';
 
 describe('WorkAllocationUtils', () => {
@@ -257,5 +259,14 @@ describe('WorkAllocationUtils', () => {
     const url = '/work/case-id-1234/reassign/confirm';
     const destinationUrl = getDestinationUrl(url);
     expect(destinationUrl).toEqual('/work/case-id-1234/person-not-authorised');
+  });
+
+  it('should verify that a location is within a region', () => {
+    const regionLocations: LocationsByRegion[] = [{regionId: '1', locations: ['123']}, {regionId: '2', locations: ['234']}]
+    expect(locationWithinRegion(regionLocations, '1', '123')).toEqual(true);
+    expect(locationWithinRegion(regionLocations, '2', '234')).toEqual(true);
+    expect(locationWithinRegion(regionLocations, '1', '234')).toEqual(false);
+    expect(locationWithinRegion(regionLocations, null, '234')).toEqual(false);
+    expect(locationWithinRegion([], '1', '123')).toEqual(false);
   });
 });

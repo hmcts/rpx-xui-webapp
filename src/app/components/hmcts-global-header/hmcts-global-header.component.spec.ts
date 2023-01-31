@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -15,7 +15,7 @@ import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 describe('HmctsGlobalHeaderComponent', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter;
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch', 'pipe'
@@ -33,7 +33,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     enabledFlag: true,
     disabledFlag: false
   };
-  let origTimeout: number;
 
   const userDetails = {
     sessionTimeout: {
@@ -51,8 +50,9 @@ describe('HmctsGlobalHeaderComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
-    origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+  const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+
+  beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
       declarations: [ HmctsGlobalHeaderComponent ],
@@ -88,11 +88,11 @@ describe('HmctsGlobalHeaderComponent', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    mockRouter = TestBed.get(Router);
+    mockRouter = TestBed.inject(Router);
     spyOnProperty(mockRouter, 'url').and.returnValues('/cases', '/tasks/list', '/tasks/task-manager');
     fixture = TestBed.createComponent(HmctsGlobalHeaderComponent);
     component = fixture.componentInstance;
@@ -122,7 +122,7 @@ describe('HmctsGlobalHeaderComponent', () => {
   });
 
   it('should onEmitSubMenu', () => {
-    const menuItem = {href: '/noc', text: null};
+    const menuItem = { href: '/noc', text: null };
     component.onEmitSubMenu(menuItem);
     expect(storeMock.dispatch).toHaveBeenCalled();
   });
@@ -133,7 +133,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(component.navigate.emit).toHaveBeenCalled();
   });
 
-  it('should display find case right aligned', (done: DoneFn) => {
+  it('should display find case right aligned', () => {
     component.showItems = true;
     component.items = [{
       align: 'right',
@@ -156,11 +156,10 @@ describe('HmctsGlobalHeaderComponent', () => {
     fixture.detectChanges();
     component.isUserCaseManager$.subscribe(result => {
       expect(result).toBe(true);
-      done();
     });
   });
 
-  it('should not display find case right aligned', (done: DoneFn) => {
+  it('should not display find case right aligned', () => {
     component.showItems = true;
     component.items = [{
       text: 'Find case',
@@ -183,11 +182,10 @@ describe('HmctsGlobalHeaderComponent', () => {
     fixture.detectChanges();
     component.isUserCaseManager$.subscribe(result => {
       expect(result).toBe(false);
-      done();
     });
   });
 
-  it('splitNavItems', (done: DoneFn) => {
+  it('splitNavItems', () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -234,11 +232,10 @@ describe('HmctsGlobalHeaderComponent', () => {
         href: '',
         active: false
       }]);
-      done();
     });
   });
 
-  it('filters out menu items for which the user does not hold the correct role', (done) => {
+  it('filters out menu items for which the user does not hold the correct role', () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -270,7 +267,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       })
     ).subscribe(items => {
       expect(items).toEqual([component.items[0]]);
-      done();
+
     });
   });
 
@@ -304,6 +301,46 @@ describe('HmctsGlobalHeaderComponent', () => {
     leftItems.pipe(
       switchMap(items => {
         expect(items).toEqual([component.items[1]]);
+        return rightItems;
+      })
+    ).subscribe(items => {
+      expect(items).toEqual([component.items[0]]);
+      done();
+    });
+  });
+
+  it('filters out menu items for which not all features are enabled correctly with non-left-right observable', (done) => {
+    component.items = [{
+      align: 'right',
+      text: '1',
+      href: '',
+      active: false,
+      flags: ['enabledFlag'],
+      roles: ['roleA']
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false,
+      // important to verify this
+      flags: ['enabledFlag2'],
+      roles: ['roleB']
+    },
+    {
+      align: 'right',
+      text: '3',
+      href: '',
+      active: false,
+      flags: ['enabledFlag'],
+      roles: ['roleC']
+    }];
+    component.ngOnChanges(changesMock);
+    const leftItems = component.leftItems;
+    const rightItems = component.rightItems;
+    leftItems.pipe(
+      switchMap(items => {
+        expect(items).toEqual([]);
         return rightItems;
       })
     ).subscribe(items => {

@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -72,10 +72,12 @@ describe('LinkedHearingsWithCaseComponent', () => {
     }
   ];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsWithCaseComponent],
-      imports: [ReactiveFormsModule, RouterTestingModule,
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
+        { path: 'hearings/link/4652724902696211/h000001/group-selection', redirectTo: '' }
+      ]),
         HearingsPipesModule,
         RouterModule,
         RouterTestingModule.withRoutes([])],
@@ -105,8 +107,8 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LinkedHearingsWithCaseComponent);
-    mockHearingService = TestBed.get(HearingsService);
-    store = TestBed.get(Store);
+    mockHearingService = TestBed.inject(HearingsService);
+    store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -139,6 +141,11 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.isManageLink = true;
     component.onBack();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g000101', 'h1000002']);
+  });
+
+  it('should navigate to hearings tab', () => {
+    component.onCancel();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '8254902572336147', 'hearings']);
   });
 
   it('should check on submit for manage link', () => {

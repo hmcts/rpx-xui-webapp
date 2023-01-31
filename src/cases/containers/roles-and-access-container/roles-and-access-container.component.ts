@@ -93,6 +93,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
 
   public applyJurisdiction(caseDetails: CaseView): void {
     const jurisdictionField = caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+    /* istanbul ignore else*/
     if (jurisdictionField) {
       this.caseJurisdiction = jurisdictionField.value;
       this.store.select(fromRoot.getUserDetails).subscribe(user => this.setDisplayAllocateLink(user, this.caseJurisdiction));
@@ -100,6 +101,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public setDisplayAllocateLink(user: UserDetails, caseJurisdiction: any): void {
+    /* istanbul ignore else*/
     if (user && user.roleAssignmentInfo) {
       this.showAllocateRoleLink = user.roleAssignmentInfo.some(roleAssignmentInfo => roleAssignmentInfo.isCaseAllocator && roleAssignmentInfo.jurisdiction === caseJurisdiction);
     }

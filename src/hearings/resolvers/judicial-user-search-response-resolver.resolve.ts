@@ -35,7 +35,8 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
         const hearingJudgeIds: string[] = [];
         if (hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse
           && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
-          && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length === 1) {
+          && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.length === 1
+          && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId.trim().length > 0) {
           hearingJudgeIds.push(hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingJudgeId);
         }
         return hearingJudgeIds;

@@ -29,6 +29,7 @@ import {HearingVenueComponent} from './containers/request-hearing/hearing-venue/
 import {HearingViewEditSummaryComponent} from './containers/request-hearing/hearing-view-edit-summary/hearing-view-edit-summary.component';
 import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
+import {HearingAdjournedSummaryComponent} from './containers/view-hearing/hearing-adjourned-summary/hearing-adjourned-summary.component';
 import {HearingCancellationSummaryComponent} from './containers/view-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
 import {HearingCancelledSummaryComponent} from './containers/view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import {HearingCompletedSummaryComponent} from './containers/view-hearing/hearing-completed-summary/hearing-completed-summary.component';
@@ -191,7 +192,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-timing',
+        path: 'hearing-timing/:hearingDate',
         component: HearingActualsTimingComponent,
         data: {
           title: 'HMCTS Hearings | Hearing Actuals | Hearing Timing'
@@ -218,7 +219,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'actuals-parties',
+        path: 'actuals-parties/:hearingDate',
         component: HearingActualsViewEditPartiesComponent,
         data: {
           title: 'HMCTS Manage cases | Hearing Actuals | Update Participants'
@@ -470,9 +471,6 @@ export const ROUTES: Routes = [
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
           partyChannels: PartyChannelsResolverService,
           judgeTypes: JudgeTypesResolverService,
-          judicialUsers: JudicialUserSearchResolver,
-          judicialResponseUsers: JudicialUserSearchResponseResolver,
-          panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
         },
@@ -510,7 +508,7 @@ export const ROUTES: Routes = [
           hearingRoles: HearingActualRoleResolverService,
           adjournReasons: AdjournHearingActualReasonResolver,
         },
-        component: HearingCompletedSummaryComponent,
+        component: HearingAdjournedSummaryComponent,
         data: {
           title: 'HMCTS Hearings | Hearing Actuals | Adjourned',
           isChildRequired: [HearingCategory.HearingChannel]
@@ -525,6 +523,7 @@ export const ROUTES: Routes = [
           panelMemberResponseUsers: PanelMemberSearchResponseResolver,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
+          hearingRoles: HearingActualRoleResolverService,
         },
         component: HearingViewActualSummaryComponent,
         data: {
@@ -558,4 +557,4 @@ export const ROUTES: Routes = [
   }
 ];
 
-export const hearingsRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const hearingsRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

@@ -6,7 +6,7 @@ import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
-
+import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 
 describe('StaffUserCheckAnswersComponent', () => {
   let component: StaffUserCheckAnswersComponent;
@@ -19,6 +19,8 @@ describe('StaffUserCheckAnswersComponent', () => {
     mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser']);
 
+    let mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
+
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       declarations: [StaffUserCheckAnswersComponent],
@@ -27,6 +29,7 @@ describe('StaffUserCheckAnswersComponent', () => {
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: FilterService, useValue: mockFilterService },
         { provide: Router, useValue: mockRouter},
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -139,6 +142,7 @@ describe('StaffUserCheckAnswersComponent', () => {
         },
       ],
     }).compileComponents();
+ 
 
     mockFilterService.getStream.and.returnValue(of({
       id: '123',
@@ -293,7 +297,16 @@ describe('StaffUserCheckAnswersComponent', () => {
     component.addNewUser();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down')
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down');
+  });
+
+  it('should display a banner once an user has been added successfully', () => {
+    component.addNewUser();
+    expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalled();
+  });
+
+  it('after a banner, it should redirect to the staff page', () => {
+    component.addNewUser();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/staff');
   });
 });
-

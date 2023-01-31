@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import * as actions from '../../store/actions/hearing-actuals.action';
+import * as hearingActualsActions from '../../store/actions/hearing-actuals.action';
+import * as hearingRequestActions from '../../store/actions/hearing-request.action';
 
 @Component({
   selector: 'exui-hearing-actuals',
@@ -10,15 +11,15 @@ import * as actions from '../../store/actions/hearing-actuals.action';
   styleUrls: ['./hearing-actuals.component.scss']
 })
 export class HearingActualsComponent implements OnInit, OnDestroy {
-
   private sub: Subscription;
 
-  public constructor(private store: Store<any>, private readonly route: ActivatedRoute) {
+  public constructor(private readonly store: Store<any>, private readonly route: ActivatedRoute) {
   }
 
   public ngOnInit(): void {
     this.sub = this.route.params.subscribe(params => {
-      this.store.dispatch(new actions.GetHearingActuals(params.id));
+      this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '' }));
+      this.store.dispatch(new hearingActualsActions.GetHearingActuals(params.id));
     });
   }
 
@@ -26,6 +27,7 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
-    this.store.dispatch(new actions.ResetHearingActuals());
+    this.store.dispatch(new hearingActualsActions.ResetHearingActuals());
+    this.store.dispatch(new hearingRequestActions.ResetHearingRequest());
   }
 }

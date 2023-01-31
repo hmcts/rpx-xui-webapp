@@ -1,16 +1,19 @@
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { RoleCategory } from '../../role-access/models';
+import { LocationsByRegion } from '../models/dtos';
+import { TaskPermission } from '../models/tasks';
 import {
+  getCurrentUserRoleCategory,
+  getDestinationUrl,
   getLabel,
   getOptions,
-  getDestinationUrl,
-  getCurrentUserRoleCategory,
   getRoleCategoryToBeSelectedByDefault,
   handleFatalErrors,
   handleTasksFatalErrors,
   REDIRECTS,
   treatAsFatal,
-  WILDCARD_SERVICE_DOWN
+  WILDCARD_SERVICE_DOWN,
+  locationWithinRegion
 } from './work-allocation-utils';
 
 describe('WorkAllocationUtils', () => {
@@ -18,35 +21,35 @@ describe('WorkAllocationUtils', () => {
   let sessionStorageService: any;
 
   const taskRoles = [{
-      role_category: 'ADMIN',
+      role_category: RoleCategory.ADMIN,
       role_name: '',
-      permissions: ['OWN'],
+      permissions: [TaskPermission.OWN],
       authorisations: []
     },
     {
-      role_category: 'LEGAL_OPERATIONS',
+      role_category: RoleCategory.LEGAL_OPERATIONS,
       role_name: '',
-      permissions: ['EXECUTE'],
+      permissions: [TaskPermission.EXECUTE],
       authorisations: []
     },
     {
-      role_category: 'JUDICIAL',
+      role_category: RoleCategory.JUDICIAL,
       role_name: '',
-      permissions: ['OWN'],
+      permissions: [TaskPermission.OWN],
       authorisations: []
     }
   ];
 
   const taskRolesWithOneOwnPermission = [{
-    role_category: 'LEGAL_OPERATIONS',
+    role_category: RoleCategory.LEGAL_OPERATIONS,
     role_name: '',
-    permissions: ['EXECUTE'],
+    permissions: [TaskPermission.EXECUTE],
     authorisations: []
   },
   {
-    role_category: 'JUDICIAL',
+    role_category: RoleCategory.JUDICIAL,
     role_name: '',
-    permissions: ['OWN'],
+    permissions: [TaskPermission.OWN],
     authorisations: []
   }];
 
@@ -57,7 +60,7 @@ describe('WorkAllocationUtils', () => {
     surname: 'User',
     email: 'testuser@test.com',
     roles: null,
-    roleCategory: 'LEGAL_OPERATIONS'
+    roleCategory: RoleCategory.LEGAL_OPERATIONS
   };
 
   beforeEach(() => {
@@ -213,7 +216,7 @@ describe('WorkAllocationUtils', () => {
     try {
       getLabel('some' as RoleCategory);
     } catch (error) {
-      expect(error.message).toContain('Invalid roleCategory')
+      expect(error.message).toContain('Invalid roleCategory');
     }
   });
 
@@ -256,5 +259,14 @@ describe('WorkAllocationUtils', () => {
     const url = '/work/case-id-1234/reassign/confirm';
     const destinationUrl = getDestinationUrl(url);
     expect(destinationUrl).toEqual('/work/case-id-1234/person-not-authorised');
+  });
+
+  it('should verify that a location is within a region', () => {
+    const regionLocations: LocationsByRegion[] = [{regionId: '1', locations: ['123']}, {regionId: '2', locations: ['234']}]
+    expect(locationWithinRegion(regionLocations, '1', '123')).toEqual(true);
+    expect(locationWithinRegion(regionLocations, '2', '234')).toEqual(true);
+    expect(locationWithinRegion(regionLocations, '1', '234')).toEqual(false);
+    expect(locationWithinRegion(regionLocations, null, '234')).toEqual(false);
+    expect(locationWithinRegion([], '1', '123')).toEqual(false);
   });
 });

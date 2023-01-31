@@ -17,7 +17,7 @@ import { AllWorkHomeComponent } from './all-work-home.component';
     <exui-all-work-home></exui-all-work-home>`
 })
 class WrapperComponent {
-  @ViewChild(AllWorkHomeComponent) public appComponentRef: AllWorkHomeComponent;
+  @ViewChild(AllWorkHomeComponent, {static: true}) public appComponentRef: AllWorkHomeComponent;
 }
 
 describe('AllWorkHomeComponent', () => {
@@ -58,7 +58,7 @@ describe('AllWorkHomeComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
     fixture.detectChanges();
   });

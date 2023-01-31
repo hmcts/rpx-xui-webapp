@@ -13,7 +13,7 @@ import { StaffFilterOption } from '../../../models/staff-filter-option.model';
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
 export class StaffAddEditUserFormComponent implements OnInit {
-  @Input() public formGroup: FormGroup;
+  // @Input() public formGroup!: FormGroup;
   public formId: string = 'staff-add-edit-user';
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
@@ -55,6 +55,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
   }
 
   public ngOnInit() {
+
     this.initFormConfig();
     this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {

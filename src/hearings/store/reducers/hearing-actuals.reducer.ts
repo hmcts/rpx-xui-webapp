@@ -64,7 +64,7 @@ export function hearingActualsReducer(
       return {
         ...currentState,
         lastError: null
-      }
+      };
     }
     default: {
       return {

@@ -92,7 +92,7 @@ const config = {
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
+        format: ['node_modules/cucumber-pretty', 'json:functional-output/tests/functional/json/results.json'],
         tags: getBDDTags(),
         require: [
             '../support/timeout.js',
@@ -111,8 +111,8 @@ const config = {
                 removeExistingJsonReportFile: true,
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
-                jsonDir: 'reports/tests/functional',
-                reportPath: 'reports/tests/functional',
+                jsonDir: 'functional-output/tests/functional',
+                reportPath: 'functional-output/tests/functional',
                 displayDuration: true,
                 durationInMS: false
             }

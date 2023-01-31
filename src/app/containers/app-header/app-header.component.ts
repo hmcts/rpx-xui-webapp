@@ -156,7 +156,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   public setAppHeaderTheme(applicationTheme: ApplicationTheme): void {
     this.appHeaderTitle = applicationTheme.appTitle;
-    this.userNav = this.userRoles.length > 0 ? {
+    this.userNav = this.userRoles && this.userRoles.length > 0 ? {
       label: 'Account navigation',
       items: [{
         text: 'Sign out',

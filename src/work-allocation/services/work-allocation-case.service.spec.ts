@@ -1,5 +1,5 @@
 import { ListConstants } from '../components/constants';
-import { SearchCaseRequest, CaseSearchParameters } from '../models/dtos';
+import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
 import { ACTION, WorkAllocationCaseService } from './work-allocation-case.service';
 
 describe('WorkAllocation', () => {
@@ -25,7 +25,7 @@ describe('WorkAllocation', () => {
 
     it('assignCase should make correct api call', () => {
       const service = new WorkAllocationCaseService(mockHttpService);
-      const user = {id: 'id1'};
+      const user = { id: 'id1' };
       service.assignCase('123456', user);
       expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/case/123456/assign', user);
     });

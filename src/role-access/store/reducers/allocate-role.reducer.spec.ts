@@ -71,9 +71,9 @@ describe('Allocate Role Reducer', () => {
     describe('ChooseRoleAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.ChooseRoleAndGo({ typeOfRole: {id: 'lead-judge', name: 'Lead judge'}, allocateRoleState: AllocateRoleState.CHOOSE_ROLE });
+        const action = new fromActions.ChooseRoleAndGo({ typeOfRole: { id: 'lead-judge', name: 'Lead judge' }, allocateRoleState: AllocateRoleState.CHOOSE_ROLE });
         const state = fromReducer.allocateRoleReducer(initialState, action);
-        expect(state.typeOfRole).toEqual({id: 'lead-judge', name: 'Lead judge'});
+        expect(state.typeOfRole).toEqual({ id: 'lead-judge', name: 'Lead judge' });
       });
     });
 
@@ -90,19 +90,19 @@ describe('Allocate Role Reducer', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
         const action = new fromActions.ChoosePersonAndGo({
-          person: {id: '111111', name: 'test', domain: 'test'},
+          person: { id: '111111', name: 'test', domain: 'test' },
           allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
           allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
         });
         const state = fromReducer.allocateRoleReducer(initialState, action);
-        expect(state.person).toEqual({id: '111111', name: 'test', domain: 'test'});
+        expect(state.person).toEqual({ id: '111111', name: 'test', domain: 'test' });
       });
     });
 
     describe('ChooseDurationAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.ChooseDurationAndGo({ durationOfRole: DurationOfRole.SEVEN_DAYS, period: {startDate: new Date('2021-12-17T03:24:00')}, allocateRoleState: AllocateRoleState.CHECK_ANSWERS });
+        const action = new fromActions.ChooseDurationAndGo({ durationOfRole: DurationOfRole.SEVEN_DAYS, period: { startDate: new Date('2021-12-17T03:24:00') }, allocateRoleState: AllocateRoleState.CHECK_ANSWERS });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.durationOfRole).toEqual(DurationOfRole.SEVEN_DAYS);
       });

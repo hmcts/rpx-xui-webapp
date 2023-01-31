@@ -42,11 +42,7 @@ export class StaffDataAccessService {
   public addNewUser(addNewUserBody): Observable<StaffUser> {
     return this.http.post<StaffUser>(`${this.API_PATH}/addNewUser`, addNewUserBody);
   }
-
-  public updateUserStatus(userId: string, suspended: boolean) {
-    return this.http.post<{ suspended: boolean }>(`${this.API_PATH}/updateUserStatus/${userId}`, { suspended });
-  }
-
+ 
   public updateUserStatus(user) {
     return this.http.put<StaffUser>(`${this.API_PATH}/updateUserStatus`, user);
   }

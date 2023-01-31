@@ -191,7 +191,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate {string} tasks columns sorting with taskRequest url {string} on page {int} for user type {string}', async function (waPage,taskRequesturl,onPage ,userType,datatable) {
         const softAssert = new SoftAssert();
         const datatableHashes = datatable.hashes();
-        const pageUndertest = waPage.toLowerCase() === "my work" ? myWorkPage : null;
+        let pageUndertest = null;
+
+        switch (waPage.toLowerCase()){
+            case "my work":
+                pageUndertest = myWorkPage;
+                break;
+            case "my work cases":
+                pageUndertest = myWorkPage;
+                pageUndertest.clickSubNavigationTab("My cases"); 
+                break; 
+        }
 
         let sortColumnInRequestParam = null;
         MockApp.addIntercept(taskRequesturl, (req, res, next) => {
@@ -278,6 +288,55 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 taskDetails.task[key] = inputTaskDetails[key];
             } 
         })
+
+    });
+
+    Then('I validate work filter get location request body {string}, booking locations', async function (requestBodyref, datatable) {
+        const body = global.scenarioData[requestBodyref];
+        CucumberReporter.AddJson(body)
+
+        const bookingLocationsActual = body.bookingLocations;
+
+        const datatabalehashes = datatable.hashes();
+        let bookingLocationsExpected = [];
+        for (const hash of datatabalehashes){
+            const locations = hash.locations.split(",")
+            bookingLocationsExpected.push(...locations)
+        }
+        bookingLocationsExpected = bookingLocationsExpected.filter(loc => loc !== "")
+        expect(bookingLocationsActual.length).to.equal(bookingLocationsExpected.length) 
+        for (const loc of bookingLocationsExpected) {
+            expect(bookingLocationsActual, `booking location is not present in request body`).to.includes(loc);
+        }
+
+    });
+
+    Then('I validate work filter get location request body {string}, user locations for service', async function(requestBodyref, datatable){
+        const body = global.scenarioData[requestBodyref];
+        CucumberReporter.AddJson(body)
+        const userLocationsActual = body.userLocations;
+        
+        const userLocationsExpected = datatable.hashes();
+        
+        for (const expectedLocationsForService of userLocationsExpected){
+            const actualServiceLocations = userLocationsActual.find(actulaLocationsForService => actulaLocationsForService.service === expectedLocationsForService.service) 
+            
+            if (expectedLocationsForService.locations === ""){
+                expect( actualServiceLocations === undefined, `Locations for service object ${expectedLocationsForService.service}   sent`).to.be.true
+            }else{
+                expect(actualServiceLocations !== undefined, `Locations for service ${expectedLocationsForService.service}  not sent`).to.be.true
+                
+                const expectedLocations = expectedLocationsForService.locations.split(",");
+                expect(actualServiceLocations.locations.length).to.equal(expectedLocations.length)
+                const actualLocationIds = actualServiceLocations.locations.map(location => location.locationId) 
+
+                for (const loc of expectedLocations) {
+                    expect(actualLocationIds, `user ${expectedLocationsForService.service} service location is not present in request body`).to.includes(loc);
+                }
+            }
+            
+            
+        }
 
     });
 

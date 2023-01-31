@@ -1,4 +1,3 @@
-
 import { AppTitleModel, NavItemsModel, UserNavModel } from '.';
 
 export interface Theme {
@@ -6,6 +5,7 @@ export interface Theme {
     appTitle: AppTitleModel;
     navigationItems: NavItemsModel[];
     accountNavigationItems: UserNavModel;
+    showFindCase: boolean;
     backgroundColor: string;
     logoIsUsed: boolean;
     logo: string;

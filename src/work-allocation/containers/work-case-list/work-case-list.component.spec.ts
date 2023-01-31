@@ -25,7 +25,7 @@ import { WorkCaseListComponent } from './work-case-list.component';
       [pagination]="pagination"></exui-work-case-list>`
 })
 class WrapperComponent {
-  @ViewChild(WorkCaseListComponent) public appComponentRef: WorkCaseListComponent;
+  @ViewChild(WorkCaseListComponent, { static: true }) public appComponentRef: WorkCaseListComponent;
   @Input() public fields: FieldConfig[];
   @Input() public cases: Case[];
   @Input() public casesTotal: number;
@@ -347,7 +347,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     let action = firstAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: firstCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ invokedCase: firstCase, action });
 
     // check the emitter had been called and that it gets called with the second invoked case action
     const secondAnchor = element.querySelector(`#action_${secondActionId}`);
@@ -355,7 +355,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: firstCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ invokedCase: firstCase, action });
 
     // click the second button in order to show the last action anchor
     secondButton.dispatchEvent(new Event('click'));
@@ -367,7 +367,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: secondCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ invokedCase: secondCase, action });
   });
 
   // required no sorting on EUI-4476 so exclude the test
@@ -409,7 +409,7 @@ describe('CaseListComponent', () => {
 
     it('should select appropriate case from location hash', () => {
       const caseItem = { id } as Case;
-      wrapper.cases = [ caseItem ];
+      wrapper.cases = [caseItem];
       fixture.detectChanges();
       component.setSelectedCase(caseItem);
       expect(component.getSelectedCase()).toEqual(caseItem);
@@ -418,7 +418,7 @@ describe('CaseListComponent', () => {
 
     it('should handle a location hash for a case that does not exist', () => {
       const caseItem = { id: '99999999' } as Case;
-      wrapper.cases = [ caseItem ];
+      wrapper.cases = [caseItem];
       fixture.detectChanges();
       component.setSelectedCase(caseItem);
       expect(component.getSelectedCase()).toEqual(caseItem);

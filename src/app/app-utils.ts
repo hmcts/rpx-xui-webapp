@@ -23,6 +23,8 @@ export class AppUtils {
           return AppConstants.ENVIRONMENT_NAMES.ithc;
         case AppConstants.ENVIRONMENT_NAMES.perftest:
           return AppConstants.ENVIRONMENT_NAMES.perftest;
+        default:
+          break;
       }
     }
     return AppConstants.ENVIRONMENT_NAMES.prod;
@@ -156,6 +158,16 @@ export class AppUtils {
     // check that userRoles do not have pui-case-manager
   }
 
+  public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
+    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.Judicial;
+    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.LegalOps;
+    }
+    // TODO: When we know roles for Admin we can put this in this method
+    return null;
+  }
+
   public static getUserRole(userRoles: string[]): UserRole {
     if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => userRole.includes(role)))) {
       return UserRole.Judicial;
@@ -167,16 +179,6 @@ export class AppUtils {
     } else if (userRoles.some(userRole => CTSC_ROLE_LIST.some(role => userRole.includes(role)))) {
       return UserRole.Ctsc;
     }
-    return null;
-  }
-
-  public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
-    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
-      return UserRole.Judicial;
-    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
-      return UserRole.LegalOps;
-    }
-    // TODO: When we know roles for Admin we can put this in this method
     return null;
   }
 
@@ -194,6 +196,8 @@ export class AppUtils {
         userRole = 'Admin';
         break;
       }
+      default:
+        break;
     }
     return userRole;
   }
@@ -229,6 +233,8 @@ export class AppUtils {
         theme.appTitle.name = 'Manage cases';
         theme.backgroundColor = '#202020';
         theme.logo = 'myhmcts';
+        break;
+      default:
         break;
     }
   }

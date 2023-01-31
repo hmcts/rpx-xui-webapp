@@ -117,12 +117,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       map(hearingListStateData => {
           if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
             let caseHearingModels: HearingListModel[] = [];
-            if (Object.values(EXUISectionStatusEnum).includes(status)) {
+            if (Object.values(EXUISectionStatusEnum).includes(status as EXUISectionStatusEnum)) {
               caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
                 hearing.exuiSectionStatus === status
               );
             }
-            if (Object.values(EXUIDisplayStatusEnum).includes(status)) {
+            if (Object.values(EXUIDisplayStatusEnum).includes(status as EXUIDisplayStatusEnum)) {
               caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
                 hearing.exuiDisplayStatus === status
               );
@@ -141,12 +141,13 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     const viewModels: HearingListViewModel[] = [];
     hearings.forEach((hearing) => {
       const viewModel = {} as HearingListViewModel;
+      viewModel.earliestHearingStartDateTime = null;
       Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
-        const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime));
-        viewModel.earliestHearingStartDateTime = moment.min(moments).toString();
-      } else {
-        viewModel.earliestHearingStartDateTime = null;
+        const moments = hearing.hearingDaySchedule.map(d => d.hearingStartDateTime !== null && moment(d.hearingStartDateTime));
+        if (moments.length > 1 || (moments.length === 1 && moments[0])) {
+          viewModel.earliestHearingStartDateTime = moment.min(moments).toString();
+        }
       }
       viewModels.push(viewModel);
     });

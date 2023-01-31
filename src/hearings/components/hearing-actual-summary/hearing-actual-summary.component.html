@@ -1,9 +1,15 @@
 <div id="hearingDetails">
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
-      <dt class="govuk-summary-list__key">Hearing date</dt>
+      <dt class="govuk-summary-list__key">Hearing date(s)</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
+        <ng-container *ngIf="isMultiDayHearing; else singleDayHearingDate">
+          {{ hearingDays[0]?.actualHearingDay?.hearingStartTime | date:"dd MMMM yyyy" }} - {{ hearingDays[hearingDays.length - 1]?.actualHearingDay?.hearingStartTime | date:"dd MMMM yyyy" }}
+        </ng-container>
+        <ng-template #singleDayHearingDate>
+          {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultDate | date:"dd MMMM yyyy"}}
+        </ng-template>
+      </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
   </dl>
@@ -14,98 +20,60 @@
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">Hearing stage</dt>
-      <dd class="govuk-summary-list__value">{{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingType | convertToValue : hearingStageOptions}}</dd>
+      <dd class="govuk-summary-list__value">{{hearingActualsMainModel?.hmcStatus}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">Hearing result</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResult}}</dd>
+        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResult}}</dd>
+    </div>
+
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isCompleted">
+      <dt class="govuk-summary-list__key">Decision type</dt>
+      <dd class="govuk-summary-list__value">
+        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultReasonType}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
       <dt class="govuk-summary-list__key">Adjournment reason</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultReasonType | convertToValue : adjournReasons}}</dd>
+        {{adjournReasonTypeValue}}</dd>
     </div>
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
       <dt class="govuk-summary-list__key">Adjournment date</dt>
       <dd class="govuk-summary-list__value">
-        {{hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
+        {{hearingActualsMainModel?.hearingActuals.hearingOutcome.hearingResultDate | date:"dd MMMM yyyy"}}</dd>
+    </div>
+
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+      <dt class="govuk-summary-list__key">Was this a paper hearing</dt>
+      <dd class="govuk-summary-list__value"
+          [innerHtml]="answerSource.IS_PAPER_HEARING | transformAnswer:hearingState$ | async">
+      </dd>
     </div>
   </dl>
   <br />
 
-  <h1 class="govuk-heading-m" style="display: inline-block;">Hearing timings</h1>
 
-  <dl class="govuk-summary-list">
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Start time</dt>
-      <dd class="govuk-summary-list__value">{{actualHearingDays?.hearingStartTime | date: dateFormat.DisplayTime}}
-      </dd>
+  <h1 class="govuk-heading-m" style="display: inline-block;">Hearing date(s)</h1>
+
+  <ng-container *ngFor="let actualHearingDay of hearingActualsMainModel.hearingActuals.actualHearingDays">
+    <div>
+      <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details govuk-grid-row" [open]="!isMultiDayHearing">
+        <summary class="govuk-grid-column-one-quarter govuk-!-margin-bottom-4">
+        <span class="govuk-details__summary-text govuk-!-padding-left-2">
+          {{ actualHearingDay.hearingDate | date: 'd MMMM' }}
+        </span>
+        </summary>
+        <div class="govuk-grid-column-three-quarters summary-single-day">
+          <exui-hearing-actual-summary-single-day
+            [hearingActualsMainModel]="hearingActualsMainModel" [hearingDate]="actualHearingDay.hearingDate"
+            [isPaperHearing]="isPaperHearing$ | async">
+          </exui-hearing-actual-summary-single-day>
+        </div>
+      </details>
     </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Finish time</dt>
-      <dd class="govuk-summary-list__value">{{actualHearingDays?.hearingEndTime| date:dateFormat.DisplayTime}}
-      </dd>
-    </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Pause time</dt>
-      <dd class="govuk-summary-list__value">{{actualPauseTime?.pauseStartTime|
-        date:dateFormat.DisplayTime}}</dd>
-    </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-      <dt class="govuk-summary-list__key">Resume time</dt>
-      <dd class="govuk-summary-list__value">{{actualPauseTime?.pauseEndTime|
-        date:dateFormat.DisplayTime}}</dd>
-    </div>
-  </dl>
-  <br />
-  <h1 class="govuk-heading-m" style="display: inline-block;">Participants</h1>
-  <div *ngFor="let party of participants">
-    <h2 class="govuk-heading-s">{{party.individualDetails.firstName}}
-      {{party.individualDetails.lastName}}</h2>
-    <dl class="govuk-summary-list">
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-        <dt class="govuk-summary-list__key">Role</dt>
-        <dd class="govuk-summary-list__value">{{party.partyRole}}</dd>
-      </div>
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-        <dt class="govuk-summary-list__key">Attendance type</dt>
-        <dd class="govuk-summary-list__value">{{party.partyChannelSubType}}</dd>
-      </div>
-    </dl>
-  </div>
-  <br />
-  <div *ngFor="let party of attendees; let i = index">
-    <h2 class="govuk-heading-s">Attendee {{i+1}}</h2>
-    <dl class="govuk-summary-list">
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-        <dt class="govuk-summary-list__key">Role</dt>
-        <dd class="govuk-summary-list__value">{{party.partyRole}}</dd>
-      </div>
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-        <dt class="govuk-summary-list__key">First name</dt>
-        <dd class="govuk-summary-list__value">{{party.individualDetails.firstName}}</dd>
-      </div>
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-        <dt class="govuk-summary-list__key">Last name</dt>
-        <dd class="govuk-summary-list__value">{{party.individualDetails.lastName}}</dd>
-      </div>
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-        <dt class="govuk-summary-list__key">Attendance type</dt>
-        <dd class="govuk-summary-list__value">{{party.partyChannelSubType}}</dd>
-      </div>
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-        <dt class="govuk-summary-list__key">Organisation</dt>
-        <dd class="govuk-summary-list__value">{{party.actualOrganisationName}}</dd>
-      </div>
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-        <dt class="govuk-summary-list__key">Attendee representing</dt>
-        <dd class="govuk-summary-list__value">{{party.representedParty}}</dd>
-      </div>
-    </dl>
-  </div>
-  <br />
+  </ng-container>
 </div>

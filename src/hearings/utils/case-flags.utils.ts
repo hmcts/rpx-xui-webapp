@@ -6,7 +6,7 @@ import {PartyDetailsModel} from '../models/partyDetails.model';
 import {PartyFlagsDisplayModel, PartyFlagsModel} from '../models/partyFlags.model';
 
 export class CaseFlagsUtils {
-  public static ACTIVE = 'ACTIVE';
+  public static ACTIVE = 'active';
   public static LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
   public static PARTY_NAME = 'partyName';
 
@@ -52,7 +52,7 @@ export class CaseFlagsUtils {
         };
       }
     });
-    return displayCaseFlags.filter(flag => flag.displayPath ? flag.flagStatus === CaseFlagsUtils.ACTIVE : false);
+    return displayCaseFlags.filter(flag => flag.displayPath ? flag.flagStatus.toLowerCase() === CaseFlagsUtils.ACTIVE : false);
   }
 
   private static getAllRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {

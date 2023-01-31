@@ -213,9 +213,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public changeWasThisHearingDayRequired(hearingDay: ActualHearingDayModel) {
     this.validationErrors = [];
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-      (this.hearingActualsMainModel, hearingDay.hearingDate, { notRequired: !hearingDay.notRequired } as ActualHearingDayModel);
-
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActualsMainModel, hearingDay.hearingDate, { notRequired: !hearingDay.notRequired } as ActualHearingDayModel);
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
       hearingActuals: patchedHearingActuals,

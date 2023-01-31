@@ -99,7 +99,22 @@
     "secure": false,
     "logLevel": "debug"
   },
+  "/categoriesAndDocuments/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/documentData/caseref/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
   "/refdata/commondata/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/getLinkedCases/*": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"

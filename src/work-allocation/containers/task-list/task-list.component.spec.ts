@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -102,7 +102,7 @@ describe('TaskListComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
+    component = fixture.componentInstance.appComponentRef;
 
     wrapper.tasks = getTasks();
     wrapper.fields = getFields();
@@ -114,20 +114,21 @@ describe('TaskListComponent', () => {
     };
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
+
     fixture.detectChanges();
   }));
 
   it('should return the fields as an array with a \'manage\' entry, so that we can ' +
     'display the manage column in the table.', () => {
+      component = fixture.componentInstance.appComponentRef;
+      const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
+      const fieldsWithManage = [...fields, 'manage'];
 
-    const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
-    const fieldsWithManage = [...fields, 'manage'];
-
-    expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
-  });
+      expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
+    });
 
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
-
+    component = fixture.componentInstance.appComponentRef;
     // create mock getDisplayedColumn variables
     const fieldConfig = getFields();
     const fields = fieldConfig.map(field => field.name);
@@ -139,7 +140,7 @@ describe('TaskListComponent', () => {
   });
 
   it('should take in the field name and trigger a new Request to the API to get a sorted result set.', async () => {
-
+    component = fixture.componentInstance.appComponentRef;
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
@@ -153,11 +154,12 @@ describe('TaskListComponent', () => {
   });
 
   it('reset sort button is hidden by default', async () => {
+    component = fixture.componentInstance.appComponentRef;
     expect(component.showResetSortButton).toBeFalsy();
   });
 
-  it('show reset sort button after clicking column header', async () => {
-
+  it('show reset sort button after clicking column header', fakeAsync(async () => {
+    component = fixture.componentInstance.appComponentRef;
     /// mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
@@ -171,9 +173,10 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
 
     expect(component.showResetSortButton).toBeTruthy();
-  });
+  }));
 
-  it('should reset sorting', async () => {
+  it('should reset sorting', fakeAsync(async () => {
+    component = fixture.componentInstance.appComponentRef;
     component.taskServiceConfig.defaultSortFieldName = 'dueDate';
     component.defaultSortElement = document.createElement('button');
     component.pageSessionKey = 'pageSessionKey';
@@ -187,10 +190,10 @@ describe('TaskListComponent', () => {
     expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('pageSessionKey', '1');
     expect(component.defaultSortElement.click).toHaveBeenCalled;
 
-  });
+  }));
 
-  it('should allow sorting for different columns.', async () => {
-
+  it('should allow sorting for different columns.', fakeAsync(async () => {
+    component = fixture.componentInstance.appComponentRef;
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     let element = fixture.debugElement.nativeElement;
@@ -221,9 +224,10 @@ describe('TaskListComponent', () => {
     // check the emitter had been called and that it gets called with the new field defined which is caseCategory
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseCategory');
-  });
+  }));
 
-  it('should open and close the selected row.', async () => {
+  it('should open and close the selected row.', fakeAsync(async () => {
+    component = fixture.componentInstance.appComponentRef;
     const firstTaskId: string = getTasks()[0].id;
     const secondTaskId: string = getTasks()[1].id;
 
@@ -261,9 +265,10 @@ describe('TaskListComponent', () => {
     const secondRow = component.getSelectedTask();
     expect(component.getSelectedTask()).not.toBe(null);
     expect(secondRow.id).toEqual(secondTaskId);
-  });
+  }));
 
-  it('should allow setting the selected row.', async () => {
+  it('should allow setting the selected row.', fakeAsync(async () => {
+    component = fixture.componentInstance.appComponentRef;
     const firstTaskId: string = getTasks()[0].id;
     const secondTaskId: string = getTasks()[1].id;
 
@@ -316,9 +321,10 @@ describe('TaskListComponent', () => {
     component.setSelectedTask(secondRow);
     fixture.detectChanges();
     expect(component.getSelectedTask()).toBe(null);
-  });
+  }));
 
-  it('should allow checking the selected row.', async () => {
+  it('should allow checking the selected row.', fakeAsync(async () => {
+    component = fixture.componentInstance.appComponentRef;
     const firstTaskId: string = getTasks()[0].id;
     const secondTaskId: string = getTasks()[1].id;
 
@@ -357,9 +363,10 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
     expect(component.isTaskSelected(firstRow)).toBeFalsy();
     expect(component.isTaskSelected(secondRow)).toBeFalsy();
-  });
+  }));
 
-  it('should trigger an event to the parent when the User clicks on an action.', async () => {
+  it('should trigger an event to the parent when the User clicks on an action.', fakeAsync(async () => {
+    component = fixture.componentInstance.appComponentRef;
     // set relevant variables
     const firstTask: Task = getTasks()[0];
     const secondTask: Task = getTasks()[1];
@@ -386,7 +393,7 @@ describe('TaskListComponent', () => {
     expect(component.actionEvent.emit).toHaveBeenCalled();
     let task = firstTask;
     let action = firstAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({task, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ task, action });
 
     // check the emitter had been called and that it gets called with the second invoked task action
     const secondAnchor = element.querySelector(`#action_${secondActionId}`);
@@ -395,7 +402,7 @@ describe('TaskListComponent', () => {
     expect(component.actionEvent.emit).toHaveBeenCalled();
     task = firstTask;
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({task, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ task, action });
 
     // click the second button in order to show the last action anchor
     secondButton.dispatchEvent(new Event('click'));
@@ -408,10 +415,11 @@ describe('TaskListComponent', () => {
     expect(component.actionEvent.emit).toHaveBeenCalled();
     task = secondTask;
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({task, action});
-  });
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({ task, action });
+  }));
 
-  it('should allow a check to verify whether column sorted.', async () => {
+  it('should allow a check to verify whether column sorted.', fakeAsync(async () => {
+    component = fixture.componentInstance.appComponentRef;
     // mock the emitter and dispatch the connected event (with example case field buttons selected)
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
@@ -442,12 +450,13 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('created_date');
-  });
+  }));
 
   describe('act upon deep linking', () => {
     const id = '12345678';
 
-    it('should select appropriate task from location hash', () => {
+    it('should select appropriate task from location hash', fakeAsync(async ()=> {
+      component = fixture.componentInstance.appComponentRef;
       const task = { id } as Task;
       wrapper.tasks = [ task ];
       component.addActionsColumn = true;
@@ -455,25 +464,28 @@ describe('TaskListComponent', () => {
       component.setSelectedTask(task);
       expect(component.getSelectedTask()).toEqual(task);
       expect(component.newUrl).toEqual(`bob#manage_${task.id}`);
-    });
+    }));
 
-    it('should handle a location hash for a task that does not exist', () => {
+    it('should handle a location hash for a task that does not exist', fakeAsync(async () => {
+      component = fixture.componentInstance.appComponentRef;
       const task = { id: '99999999' } as Task;
       wrapper.tasks = [ task ];
       component.addActionsColumn = true;
       fixture.detectChanges();
       expect(component.getSelectedTask()).toBeNull();
       expect(component.newUrl).toEqual('bob');
-    });
+    }));
   });
 
   describe('pagination display state', () => {
-    it('should display pagination', async () => {
+    it('should display pagination', fakeAsync(async () => {
+      component = fixture.componentInstance.appComponentRef;
       component.tasks = getTasks();
       expect(component.isPaginationEnabled()).toEqual(true);
-    });
+    }));
 
     it('should not display pagination', async () => {
+      component = fixture.componentInstance.appComponentRef;
       component.tasks = [];
       expect(component.isPaginationEnabled()).toEqual(false);
     });

@@ -1,4 +1,4 @@
-import {DefaultAnswerConverter} from './default.answer.converter';
+import { DefaultAnswerConverter } from './default.answer.converter';
 
 describe('DefaultAnswerConverter', () => {
 

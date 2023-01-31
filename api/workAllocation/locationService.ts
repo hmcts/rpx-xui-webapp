@@ -16,7 +16,9 @@ export async function handleLocationGet(fullPath: string, req: EnhancedRequest):
 export async function commonGetFullLocation(req) {
   let serviceCodes = [];
   let courtVenues = [];
-  const services = req.query.serviceCodes.split(',');
+
+  const serviceCodeQueryString = req.query.serviceCodes as string;
+  const services = serviceCodeQueryString.split(',');
   const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
   const serviceRefDataMapping = getServiceRefDataMappingList();
 
@@ -56,4 +58,35 @@ export async function getFullLocationsForServices(req: EnhancedRequest) {
     courtVenues = [...courtVenues, ...response.data.court_venues];
   }
   return courtVenues;
+}
+
+// Similar to above function but used to get only small portion of full data
+// Used to get region -> location information for location filter functionality
+export async function getRegionLocationsForServices(req: EnhancedRequest) {
+  const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
+  const serviceRefDataMapping = getServiceRefDataMappingList();
+  const services = req.body.serviceIds;
+  let serviceCodes = [];
+  // Note: will need to update mapping when more services are onboarded
+  serviceRefDataMapping.forEach(serviceRef => {
+    if (services.includes(serviceRef.service)) {
+      serviceCodes = [...serviceCodes, ...serviceRef.serviceCodes];
+    }
+  });
+  const regionLocations = [];
+  const regions = [];
+  for (const serviceCode of serviceCodes) {
+    const path: string = prepareGetLocationsUrl(basePath, serviceCode);
+    const response = await handleLocationGet(path, req);
+    response.data.court_venues.forEach(courtVenue => {
+      if (!regions.includes(courtVenue.region_id)) {
+        regions.push(courtVenue.region_id);
+        regionLocations.push({regionId: courtVenue.region_id, locations: [courtVenue.epimms_id]})
+      } else {
+        regionLocations.find(locationList =>
+           locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
+      }
+    })
+  }
+  return regionLocations;
 }

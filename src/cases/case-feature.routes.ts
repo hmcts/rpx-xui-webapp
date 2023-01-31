@@ -2,6 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
+import { HearingStageResolver } from '../hearings/resolvers/hearing-stage.resolver';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
@@ -136,5 +137,5 @@ export const ROUTES: Routes = [
 
 ];
 
-export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const casesRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);
 

@@ -8,6 +8,7 @@ import CaseServiceConfig from '../../models/cases/case-service-config.model';
 import { FieldConfig, SortField } from '../../models/common';
 import { Location, PaginationParameter } from '../../models/dtos';
 
+
 @Component({
   selector: 'exui-work-case-list',
   templateUrl: './work-case-list.component.html',

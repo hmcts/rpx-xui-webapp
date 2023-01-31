@@ -1,23 +1,23 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-
 import { UserRole } from '../../../../app/models';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
 import {
-  Actions,
-  AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateRoleStateData,
-  RoleCategory,
+    Actions,
+    AllocateRoleNavigationEvent,
+    AllocateRoleState,
+    AllocateRoleStateData,
+    RoleCategory
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseRoleComponent } from './choose-role.component';
+
 
 const firstRoleOptions = [{optionId: 'lead-judge', optionValue: 'Lead judge'},
   {optionId: 'hearing-judge', optionValue: 'Hearing judge'}];

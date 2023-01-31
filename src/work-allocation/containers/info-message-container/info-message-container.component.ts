@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
-
 import { InformationMessage } from '../../models/comms';
+
 
 @Component({
   selector: 'exui-info-message-container',

@@ -48,7 +48,6 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     } else if (locationType === LocationTypeEnum.CASE_MANAGEMENT) {
       results = results.filter(location => location.is_case_management_location === 'Y');
     }
-
     // if service not present all locations available for service
     // else check locations/regions, if there are none, provide no locations for service
     userLocations.forEach(userLocation => {

@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-import { InfoMessage } from '../../../app/shared/enums/info-message';
-import { InfoMessageType } from '../../..//app/shared/enums/info-message-type';
-import { InformationMessage } from '../../../app/shared/models';
-
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { filter } from 'rxjs/operators';
+
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -90,7 +88,7 @@ export class TaskActionContainerComponent implements OnInit {
     }
 
     this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.filter(v => !!v).subscribe(value => {
+    this.isUpdatedTaskPermissions$.pipe(filter(v => !!v)).subscribe(value => {
       this.updatedTaskPermission = value;
     });
   }
@@ -136,14 +134,26 @@ export class TaskActionContainerComponent implements OnInit {
     // add hasNoAssigneeOnComplete - only false if complete action and assignee not present
     const hasNoAssigneeOnComplete = action === Actions.Complete.toString() ? this.isTaskUnAssignedOrReAssigned(this.tasks[0]) : false;
     if (action) {
-      this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
-        this.reportSuccessAndReturn();
-      }, error => {
-        const handledStatus = handleFatalErrors(error.status, this.router);
-        if (handledStatus > 0) {
-          this.reportUnavailableErrorAndReturn();
-        }
-      });
+      if (action === ACTION.UNASSIGN) {
+        this.taskService.assignTask(this.tasks[0].id, { userId: null }).subscribe({
+          next: () => this.reportSuccessAndReturn(),
+          error: (error: any) => {
+            const handledStatus = handleFatalErrors(error.status, this.router);
+            if (handledStatus > 0) {
+              this.reportUnavailableErrorAndReturn();
+            }
+          }
+        });
+      } else {
+        this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
+          this.reportSuccessAndReturn();
+        }, error => {
+          const handledStatus = handleFatalErrors(error.status, this.router);
+          if (handledStatus > 0) {
+            this.reportUnavailableErrorAndReturn();
+          }
+        });
+      }
     }
   }
 

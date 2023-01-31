@@ -7,21 +7,27 @@
           Listing information summary
         </span>
       </summary>
-      <div class="govuk-details__text listing-info">
+      <div class="govuk-details__text listing-info" *ngIf="hearingDaySchedule.length === 1">
         <ng-container *ngTemplateOutlet="listingContent"></ng-container>
+      </div>
+      <div class="govuk-details__text listing-info" *ngIf="hearingDaySchedule.length > 1">
+        <ng-container *ngTemplateOutlet="listingContentMultiDay"></ng-container>
       </div>
     </details>
   </div>
   <div *ngSwitchCase="isCaseStatusListed()">
     <h2 class="govuk-heading-m">Listing information summary</h2>
-    <div class="listing-info">
+    <div class="listing-info" *ngIf="hearingDaySchedule.length === 1">
       <ng-container *ngTemplateOutlet="listingContent"></ng-container>
+    </div>
+    <div class="listing-info" *ngIf="hearingDaySchedule.length > 1">
+      <ng-container *ngTemplateOutlet="listingContentMultiDay"></ng-container>
     </div>
   </div>
 </ng-container>
 
 <ng-template #listingContent>
-  <dl class="govuk-summary-list">
+  <dl class="govuk-summary-list govuk-!-margin-bottom-0 govuk-!-padding-right-2">
     <div class="govuk-summary-list__row" *ngIf="!isCaseStatusListed()">
       <dt class="govuk-summary-list__key">Status</dt>
       <dd class="govuk-summary-list__value" [innerHtml]="answerSource.HEARING_RESPONSE_STATUS | transformAnswer:hearingState$ | async">
@@ -43,6 +49,12 @@
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Hearing stage</dt>
       <dd class="govuk-summary-list__value" [innerHtml]="answerSource.STAGE | transformAnswer:hearingState$ | async">
+      </dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Paper hearing</dt>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.IS_PAPER_HEARING | transformAnswer:hearingState$ | async">
       </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
@@ -82,7 +94,7 @@
         [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__row" *ngIf="displayPanelMembersSection">
       <dt class="govuk-summary-list__key">Panel members</dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.PANEL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
@@ -90,11 +102,105 @@
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">
-        {{isCaseStatusListed() ? 'How participants will attend' : 'Participant attendence'}}
+        Participant attendance
       </dt>
       <dd class="govuk-summary-list__value"
         [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
+    </div>
+  </dl>
+</ng-template>
+
+<ng-template #listingContentMultiDay>
+  <dl class="govuk-summary-list govuk-!-margin-bottom-0 govuk-!-padding-right-2">
+    <div class="govuk-summary-list__row" *ngIf="!isCaseStatusListed()">
+      <dt class="govuk-summary-list__key">Status</dt>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.HEARING_RESPONSE_STATUS | transformAnswer:hearingState$ | async">
+      </dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Case name</dt>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.CASE_NAME | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Case number</dt>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.CASE_NUMBER | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Hearing stage</dt>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.STAGE | transformAnswer:hearingState$ | async">
+      </dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Paper hearing</dt>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.IS_PAPER_HEARING | transformAnswer:hearingState$ | async">
+      </dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Hearing dates</dt>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED_MULTI_DAY | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
+  </dl>
+  <dl class="govuk-summary-list govuk-!-padding-top-3 govuk-!-padding-left-2 govuk-!-margin-bottom-0"
+    *ngFor="let schedule of hearingDaySchedule; let i = index">
+    <div class="govuk-summary-list__row">
+      <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text"
+            [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED | transformAnswer:hearingState$:i | async"></span>
+        </summary>
+        <div class="govuk-details__text listing-info">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Time</dt>
+              <dd class="govuk-summary-list__value"
+                [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED_TIME | transformAnswer:hearingState$:i | async"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Total duration</dt>
+              <dd class="govuk-summary-list__value"
+                [innerHtml]="answerSource.HEARING_RESPONSE_LENGTH | transformAnswer:hearingState$:i | async"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Venue</dt>
+              <dd class="govuk-summary-list__value"
+                [innerHtml]="answerSource.COURT_LOCATION | transformAnswer:hearingState$:i | async"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Room</dt>
+              <dd class="govuk-summary-list__value"
+                [innerHtml]="answerSource.ROOM_ID | transformAnswer:hearingState$:i | async"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Judge</dt>
+              <dd class="govuk-summary-list__value"
+                [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$:i | async"></dd>
+            </div>
+            <div class="govuk-summary-list__row" *ngIf="displayPanelMembersSection">
+              <dt class="govuk-summary-list__key">Panel members</dt>
+              <dd class="govuk-summary-list__value"
+                [innerHtml]="answerSource.PANEL_MEMBERS | transformAnswer:hearingState$:i | async"></dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
+              <dt class="govuk-summary-list__key">
+                How participants will attend
+              </dt>
+              <dd class="govuk-summary-list__value"
+                [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer:hearingState$:i | async"></dd>
+            </div>
+          </dl>
+        </div>
+      </details>
     </div>
   </dl>
 </ng-template>

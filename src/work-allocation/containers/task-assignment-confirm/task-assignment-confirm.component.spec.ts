@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, throwError } from 'rxjs';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
@@ -26,7 +26,7 @@ import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.compon
     <exui-task-assignment-confirm></exui-task-assignment-confirm>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentConfirmComponent) public appComponentRef: TaskAssignmentConfirmComponent;
+  @ViewChild(TaskAssignmentConfirmComponent, {static: true}) public appComponentRef: TaskAssignmentConfirmComponent;
 }
 
 describe('TaskAssignmentConfirmComponent', () => {
@@ -73,7 +73,7 @@ describe('TaskAssignmentConfirmComponent', () => {
           selectedPerson: SELECTED_PERSON
         }
       }
-    }
+    };
     mockRouter.getCurrentNavigation.and.returnValue(navigation);
     mockRouter.url = 'localhost/test',
     TestBed.configureTestingModule({
@@ -101,8 +101,8 @@ describe('TaskAssignmentConfirmComponent', () => {
                 taskId: 'task1111111'
               }
             },
-            params: Observable.of({ task: mockTasks[0] }),
-            paramMap: Observable.of({ selectedPerson: SELECTED_PERSON })
+            params: of({ task: mockTasks[0] }),
+            paramMap: of({ selectedPerson: SELECTED_PERSON })
           }
         },
         {
@@ -116,7 +116,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     component.verb = TaskActionType.Reassign;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     window.history.pushState({ selectedPerson: SELECTED_PERSON }, '', '');
     fixture.detectChanges();
   });
@@ -304,7 +304,7 @@ describe('TaskAssignmentConfirmComponent', () => {
           selectedPerson: SELECTED_PERSON
         }
       }
-    }
+    };
     mockRouter.getCurrentNavigation.and.returnValue(navigation);
 
     let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
@@ -334,8 +334,8 @@ describe('TaskAssignmentConfirmComponent', () => {
                   taskId: 'task1111111'
                 }
               },
-              params: Observable.of({ task: mockTasks[0] }),
-              paramMap: Observable.of({ selectedPerson: SELECTED_PERSON })
+              params: of({ task: mockTasks[0] }),
+              paramMap: of({ selectedPerson: SELECTED_PERSON })
             }
           },
           {
@@ -349,7 +349,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
       component.verb = TaskActionType.Reassign;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
       window.history.pushState({ selectedPerson: SELECTED_PERSON }, '', '');
       fixture.detectChanges();
     });

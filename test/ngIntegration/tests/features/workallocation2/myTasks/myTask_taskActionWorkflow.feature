@@ -37,9 +37,9 @@ Feature: WA Release 2: My work - My tasks - Task actions
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | baseLocation | roleType     |
-            | IA | 20001 | ORGANISATION |
-            | SSCS         |            | ORGANISATION |
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -79,9 +79,9 @@ Feature: WA Release 2: My work - My tasks - Task actions
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>" cancel workflow
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | baseLocation | roleType     |
-            | IA | 20001 | ORGANISATION |
-            | SSCS         |            | ORGANISATION |
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |

@@ -1,12 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-import { StoreModule } from '@ngrx/store';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AcceptTermsService } from '../../../../src/app/services/acceptTerms/acceptTerms.service';
-import * as fromTcEffects from './acceptTC.effects';
+import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { of } from 'rxjs';
-import * as acceptTandCActions from '../actions';
+import { StoreModule } from '@ngrx/store';
 import { hot } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { AcceptTermsService } from '../../../../src/app/services/acceptTerms/acceptTerms.service';
+import * as acceptTandCActions from '../actions';
+import * as fromTcEffects from './acceptTC.effects';
 
 describe('acceptTC Effects', () => {
     let actions$;
@@ -31,7 +31,7 @@ describe('acceptTC Effects', () => {
             ]
         });
 
-        effects = TestBed.get(fromTcEffects.AcceptTcEffects);
+        effects = TestBed.inject(fromTcEffects.AcceptTcEffects);
 
     });
 

@@ -87,7 +87,7 @@ describe('HearingTimingComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -193,19 +193,34 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should check Hearing Length', () => {
-    component.priorityForm.controls.durationLength.get('hours').setValue('10');
+    const durationLengthControls = component.priorityForm.controls.durationLength;
+    durationLengthControls.get('days').setValue('day');
     component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
-    component.priorityForm.controls.durationLength.markAsDirty();
-    component.priorityForm.controls.durationLength.get('hours').setValue('1');
-    component.priorityForm.controls.durationLength.get('minutes').setValue('qer');
+    durationLengthControls.markAsDirty();
+    durationLengthControls.get('days').setValue('-10');
     component.showHearingLengthError();
-    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthMinutesError);
-    component.priorityForm.controls.durationLength.markAsTouched();
-    component.priorityForm.controls.durationLength.get('hours').setValue('1');
-    component.priorityForm.controls.durationLength.get('minutes').setValue('3000');
+    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
+    durationLengthControls.get('hours').setValue('hour');
     component.showHearingLengthError();
-    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.TotalLengthError);
+    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
+    durationLengthControls.markAsDirty();
+    durationLengthControls.get('days').setValue('1');
+    durationLengthControls.get('hours').setValue('10');
+    component.showHearingLengthError();
+    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthHoursError);
+    durationLengthControls.markAsDirty();
+    durationLengthControls.get('days').setValue('1');
+    durationLengthControls.get('hours').setValue('1');
+    durationLengthControls.get('minutes').setValue('qer');
+    component.showHearingLengthError();
+    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
+    durationLengthControls.markAsTouched();
+    durationLengthControls.get('days').setValue('1');
+    durationLengthControls.get('hours').setValue('1');
+    durationLengthControls.get('minutes').setValue('3000');
+    component.showHearingLengthError();
+    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
   });
 
   it('should check date selection invalid', () => {
@@ -288,6 +303,7 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should set prepareHearingRequestData', () => {
+    component.priorityForm.controls.durationLength.get('days').setValue('1');
     component.priorityForm.controls.durationLength.get('hours').setValue('1');
     component.priorityForm.controls.durationLength.get('minutes').setValue('5');
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('10');
@@ -297,17 +313,23 @@ describe('HearingTimingComponent', () => {
     hearingAvailability.setValue(RadioOptions.YES);
     component.showDateAvailability();
     component.prepareHearingRequestData();
-    expect(component.hearingRequestMainModel.hearingDetails.duration).toBe(65);
+    expect(component.hearingRequestMainModel.hearingDetails.duration).toBe(425);
     expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart).toBe(undefined);
     hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
     component.showDateAvailability();
     component.prepareHearingRequestData();
-    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2022-12-12T00:00:00.000Z');
+    fixture.detectChanges();
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2021-01-01T00:00:00.000Z');
   });
 
-  it('should check date selection format', () => {
+  it('should check date selection format for form data', () => {
+    component.priorityForm.controls.durationLength.get('days').setValue('1');
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('15');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2022');
+    component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
     component.checkFormData();
-    expect(component.priorityForm.valid).toBeTruthy();
+    expect(component.priorityForm.valid).toBe(true);
   });
 
   it('should check if form is valid', () => {

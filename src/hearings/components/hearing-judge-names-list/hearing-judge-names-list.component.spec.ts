@@ -1,8 +1,8 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {ReactiveFormsModule} from '@angular/forms';
-import {JudicialUserModel} from '../../models/judicialUser.model';
-import {HearingJudgeNamesListComponent} from './hearing-judge-names-list.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { JudicialUserModel } from '../../models/judicialUser.model';
+import { HearingJudgeNamesListComponent } from './hearing-judge-names-list.component';
 
 describe('HearingJudgeNamesListComponent', () => {
   let component: HearingJudgeNamesListComponent;
@@ -21,7 +21,7 @@ describe('HearingJudgeNamesListComponent', () => {
     title: '',
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [HearingJudgeNamesListComponent],

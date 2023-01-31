@@ -1,5 +1,5 @@
 export interface StaffUser {
-  id?: number;
+  id?: string;
   firstName: string;
   lastName: string;
   userCategory: string;

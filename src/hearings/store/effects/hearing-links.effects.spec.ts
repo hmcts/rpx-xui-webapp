@@ -4,7 +4,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
@@ -35,7 +35,7 @@ describe('Hearing Links Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: Router,
           useValue: mockRouter,
@@ -48,8 +48,8 @@ describe('Hearing Links Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(HearingLinksEffects);
-    store = TestBed.get(Store) as Store<fromHearingStore.State>;
+    effects = TestBed.inject(HearingLinksEffects);
+    store = TestBed.inject(Store) as Store<fromHearingStore.State>;
   });
 
   describe('loadServiceLinkedCases$', () => {
@@ -155,7 +155,7 @@ describe('Hearing Links Effects', () => {
       };
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
-      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(Observable.throwError(error));
+      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(throwError(error));
       const action = new hearingLinksActions.SubmitLinkedHearingGroup({ linkedHearingGroup, caseId, hearingGroupRequestId, hearingId, isManageLink: true });
       actions$ = cold('-a', { a: action });
       const expected = cold('-b', { b: error });
@@ -182,7 +182,7 @@ describe('Hearing Links Effects', () => {
         hearingId: 'string'
       };
       const dispatchSpy = spyOn(store, 'dispatch');
-      hearingsServiceMock.deleteLinkedHearingGroup.and.returnValue(Observable.throwError(error));
+      hearingsServiceMock.deleteLinkedHearingGroup.and.returnValue(throwError(error));
       const action = new hearingLinksActions.ManageLinkedHearingGroup(payload);
       actions$ = cold('-a', { a: action });
       const expected = cold('-b', { b: error });

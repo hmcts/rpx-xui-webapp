@@ -7,7 +7,7 @@ import {ACTION, HearingChangeReasonMessages, HearingSummaryEnum} from '../../../
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-change-reasons',

@@ -139,10 +139,11 @@
     "redisEnabled": false,
     "oidcEnabled": false,
     "workAllocationEnabled": false,
+    "updatedTaskPermissionsEnabled": true,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
-    "accessManagementEnabled": false
+    "accessManagementEnabled": true
   },
   "helmet": {
     "contentSecurityPolicy": {

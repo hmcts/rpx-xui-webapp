@@ -1,13 +1,13 @@
-import {APP_BASE_HREF} from '@angular/common';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {inject, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {JudicialUserModel} from '../models/judicialUser.model';
-import {JudicialRefDataService} from '../services/judicial-ref-data.service';
-import {JudicialUserSearchResolver} from './judicial-user-search-resolver.resolve';
+import { APP_BASE_HREF } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { initialStateImmutable } from '../hearing.test.data';
+import { JudicialUserModel } from '../models/judicialUser.model';
+import { JudicialRefDataService } from '../services/judicial-ref-data.service';
+import { JudicialUserSearchResolver } from './judicial-user-search-resolver.resolve';
 
 describe('Ref Data Resolver', () => {
   let judicialRefDataService: JudicialRefDataService;
@@ -20,18 +20,22 @@ describe('Ref Data Resolver', () => {
           HttpClientTestingModule,
         ],
         providers: [
-          provideMockStore({initialState}),
+          provideMockStore({initialState:initialStateImmutable}),
           JudicialUserSearchResolver,
           JudicialRefDataService,
           {provide: APP_BASE_HREF, useValue: '/'}
         ]
       }
     );
-    judicialRefDataService = TestBed.get(JudicialRefDataService) as JudicialRefDataService;
+    judicialRefDataService = TestBed.inject(JudicialRefDataService) as JudicialRefDataService;
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 
   it('should be created', () => {
-    const service: JudicialUserSearchResolver = TestBed.get(JudicialUserSearchResolver);
+    const service: JudicialUserSearchResolver = TestBed.inject(JudicialUserSearchResolver);
     expect(service).toBeTruthy();
   });
 

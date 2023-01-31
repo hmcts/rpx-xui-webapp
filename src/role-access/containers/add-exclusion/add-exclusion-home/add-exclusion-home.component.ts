@@ -13,10 +13,10 @@ import { ExcludeOption, ExclusionNavigationEvent, ExclusionState, ExclusionState
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 import { AddExclusionCheckAnswersComponent } from '../add-exclusion-check-answers/add-exclusion-check-answers.component';
+import { AddExclusionSearchPersonComponent } from '../add-exclusion-search-person/add-exclusion-search-person.component';
 import { ChooseExclusionComponent } from '../choose-exclusion/choose-exclusion.component';
 import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-role.component';
 import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclusion.component';
-import { AddExclusionSearchPersonComponent } from '../add-exclusion-search-person/add-exclusion-search-person.component';
 
 @Component({
   selector: 'exui-add-exclusion-home',
@@ -24,24 +24,24 @@ import { AddExclusionSearchPersonComponent } from '../add-exclusion-search-perso
   styleUrls: ['./add-exclusion-home.component.scss']
 })
 export class AddExclusionHomeComponent implements OnInit, OnDestroy {
-  @ViewChild('chooseExclusion', {read: ChooseExclusionComponent})
+  @ViewChild('chooseExclusion', {static: false, read: ChooseExclusionComponent})
   public chooseExclusionComponent: ChooseExclusionComponent;
 
-  @ViewChild('choosePersonRole', {read: ChoosePersonRoleComponent})
+  @ViewChild('choosePersonRole', {static: false, read: ChoosePersonRoleComponent})
   public choosePersonRoleComponent: ChoosePersonRoleComponent;
 
-  @ViewChild('findPerson', {read: AddExclusionSearchPersonComponent})
+  @ViewChild('findPerson', {static: false, read: AddExclusionSearchPersonComponent})
   public findPersonComponent: AddExclusionSearchPersonComponent;
 
-  @ViewChild('describeExclusion', {read: DescribeExclusionComponent})
+  @ViewChild('describeExclusion', {static: false, read: DescribeExclusionComponent})
   public describeExclusionComponent: DescribeExclusionComponent;
 
-  @ViewChild('checkAnswers', {read: AddExclusionCheckAnswersComponent})
+  @ViewChild('checkAnswers', {static: false, read: AddExclusionCheckAnswersComponent})
   public checkAnswersComponent: AddExclusionCheckAnswersComponent;
 
   private exclusionStateDataSub: Subscription;
 
-  private exclusionStateData: ExclusionStateData;
+  private readonly exclusionStateData: ExclusionStateData;
   public navigationCurrentState: ExclusionState;
   public exclusionOption: ExcludeOption;
   public caseId: string;

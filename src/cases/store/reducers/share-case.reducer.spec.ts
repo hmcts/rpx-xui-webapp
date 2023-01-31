@@ -7,10 +7,10 @@ describe('Share case reducer', () => {
     let initialState;
 
     beforeEach(() => {
-      initialState = fromReducer.initialSharedCasesState;
+      initialState = {...fromReducer.initialSharedCasesState};
     });
 
-    it('should set correct object', () => {
+    it('should set correct object', async () => {
       const payload = {
         sharedCases: []
       };
@@ -19,40 +19,40 @@ describe('Share case reducer', () => {
       expect(state).toBeDefined();
     });
 
-    it('should load state when navigate to share case', () => {
-      const selectedCases =  [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+    it('should load state when navigate to share case', async () => {
+      const selectedCases = [{ caseId: '1', caseTitle: 'James123' }, { caseId: '2', caseTitle: 'Steve321' }];
       const action = new fromActions.NavigateToShareCase(selectedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(state.shareCases.length).toEqual(2);
     });
 
-    it('should load share case', () => {
-      const selectedCases =  [];
+    it('should load share case', async () => {
+      const selectedCases = [];
       const action = new fromActions.LoadShareCase(selectedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(state.shareCases.length).toEqual(0);
       expect(state.loading).toBeTruthy();
     });
 
-    it('should load share case', () => {
+    it('should load share case', async () => {
       const payload = {
         path: [],
         sharedCases: [
-          {caseId: '1', caseTitle: 'James123', caseTypeId: 'type1'},
-          {caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2'}]
+          { caseId: '1', caseTitle: 'James123', caseTypeId: 'type1' },
+          { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' }]
       };
       const action = new fromActions.AddShareCaseGo(payload);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(state.shareCases.length).toEqual(2);
     });
 
-    it('should load share case with case type', () => {
+    it('should load share case with case type', async () => {
       initialState = {
         shareCases: [
-          {caseId: '1', caseTitle: 'James123', caseTypeId: 'type1'},
-          {caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2'}]
+          { caseId: '1', caseTitle: 'James123', caseTypeId: 'type1' },
+          { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' }]
       };
-      const caseFromNode = [{caseId: '1', caseTitle: ''}, {caseId: '2', caseTitle: ''}];
+      const caseFromNode = [{ caseId: '1', caseTitle: '' }, { caseId: '2', caseTitle: '' }];
       const action = new fromActions.LoadShareCaseSuccess(caseFromNode);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(state.shareCases.length).toEqual(2);
@@ -60,21 +60,21 @@ describe('Share case reducer', () => {
       expect(state.shareCases[0].caseTitle).toEqual('James123');
     });
 
-    it('should save selected share cases into store', () => {
+    it('should save selected share cases into store', async () => {
       const selectedCases = {
-        sharedCases: [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}]
+        sharedCases: [{ caseId: '1', caseTitle: 'James123' }, { caseId: '2', caseTitle: 'Steve321' }]
       };
       const action = new fromActions.AddShareCases(selectedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(state.shareCases.length).toEqual(2);
     });
 
-    it('should save selected share cases without duplication', () => {
+    it('should save selected share cases without duplication', async () => {
       const selectedCases = {
-        sharedCases: [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}]
+        sharedCases: [{ caseId: '1', caseTitle: 'James123' }, { caseId: '2', caseTitle: 'Steve321' }]
       };
       const addedSelectedCases = {
-        sharedCases: [{caseId: '2', caseTitle: 'Steve321'}, {caseId: '3', caseTitle: 'Kenny456'}]
+        sharedCases: [{ caseId: '2', caseTitle: 'Steve321' }, { caseId: '3', caseTitle: 'Kenny456' }]
       };
       const oldAction = new fromActions.AddShareCases(selectedCases);
       const oldState = fromReducer.shareCasesReducer(initialState, oldAction);
@@ -83,9 +83,9 @@ describe('Share case reducer', () => {
       expect(newState.shareCases.length).toEqual(3);
     });
 
-    it('should delete a case from store', () => {
+    it('should delete a case from store', async () => {
       const selectedCases = {
-        sharedCases: [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}]
+        sharedCases: [{ caseId: '1', caseTitle: 'James123' }, { caseId: '2', caseTitle: 'Steve321' }]
       };
       const oldAction = new fromActions.AddShareCases(selectedCases);
       const oldState = fromReducer.shareCasesReducer(initialState, oldAction);
@@ -97,43 +97,43 @@ describe('Share case reducer', () => {
       expect(newState.shareCases.length).toEqual(1);
     });
 
-    it('should get state properties', () => {
+    it('should get state properties', async () => {
       const selectedCases = {
-        sharedCases: [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}]
+        sharedCases: [{ caseId: '1', caseTitle: 'James123' }, { caseId: '2', caseTitle: 'Steve321' }]
       };
       const action = new fromActions.AddShareCases(selectedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(fromReducer.getShareCases(state).length).toEqual(2);
     });
 
-    it('should load user from org for case success', () => {
-      const sharedCases = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+    it('should load user from org for case success', async () => {
+      const sharedCases = [{ caseId: '1', caseTitle: 'James123' }, { caseId: '2', caseTitle: 'Steve321' }];
       const action = new fromActions.LoadShareCaseSuccess(sharedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(fromReducer.getOrganisationUsers(state)).toBeTruthy();
     });
 
-    it('should synchronize state to store', () => {
-      const sharedCases = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+    it('should synchronize state to store', async () => {
+      const sharedCases = [{ caseId: '1', caseTitle: 'James123' }, { caseId: '2', caseTitle: 'Steve321' }];
       const action = new fromActions.SynchronizeStateToStore(sharedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(fromReducer.getShareCases(state).length).toEqual(2);
     });
 
-    it('should assign user to case success', () => {
-      const sharedCases = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+    it('should assign user to case success', async () => {
+      const sharedCases = [{ caseId: '1', caseTitle: 'James123' }, { caseId: '2', caseTitle: 'Steve321' }];
       const action = new fromActions.AssignUsersToCaseSuccess(sharedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(fromReducer.getShareCases(state).length).toEqual(2);
     });
 
-    it('should reset state if share case completed', () => {
+    it('should reset state if share case completed', async () => {
       const action = new fromActions.ResetCaseSelection();
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(fromReducer.getShareCases(state).length).toEqual(0);
     });
 
-    it('should sort users', () => {
+    it('should sort users', async () => {
       const sharedCases = [{
         caseId: '9417373995765131',
         caseTitle: 'Neha Vs Sanjet',
@@ -152,24 +152,24 @@ describe('Share case reducer', () => {
           }
         ]
       },
-        {
-          caseId: '9417373995765133',
-          caseTitle: 'Sam Green Vs Williams Lee',
-          sharedWith: [
-            {
-              idamId: 'u666666',
-              firstName: 'Kate',
-              lastName: 'Grant',
-              email: 'kate.grant@lambbrooks.com'
-            },
-            {
-              idamId: 'u888888',
-              firstName: 'Joel',
-              lastName: 'Molloy',
-              email: 'joel.molloy@lambbrooks.com'
-            }
-          ]
-        }];
+      {
+        caseId: '9417373995765133',
+        caseTitle: 'Sam Green Vs Williams Lee',
+        sharedWith: [
+          {
+            idamId: 'u666666',
+            firstName: 'Kate',
+            lastName: 'Grant',
+            email: 'kate.grant@lambbrooks.com'
+          },
+          {
+            idamId: 'u888888',
+            firstName: 'Joel',
+            lastName: 'Molloy',
+            email: 'joel.molloy@lambbrooks.com'
+          }
+        ]
+      }];
       const sortedCases: SharedCase[] = fromReducer.sortedUserInCases(sharedCases);
       expect(sortedCases[0].caseId).toEqual('9417373995765131');
       expect(sortedCases[0].sharedWith[0].firstName).toEqual('James');

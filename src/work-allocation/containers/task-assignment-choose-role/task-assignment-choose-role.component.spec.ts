@@ -1,13 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { TASK_ROLES } from '../../../../api/workAllocation/constants/task-roles.mock.data';
 import { ChooseRadioOptionComponent } from '../../../role-access/components';
-
 import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role.component';
+
 
 describe('TaskAssignmentChooseRoleComponent', () => {
   let component: TaskAssignmentChooseRoleComponent;
@@ -24,9 +25,9 @@ describe('TaskAssignmentChooseRoleComponent', () => {
     '"caseworker-ia-caseofficer","cwd-user","hmcts-legal-operations",' +
     '"task-supervisor","tribunal-caseworker"],"roleCategory":"LEGAL_OPERATIONS"}');
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([])],
+      imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([]), HttpClientTestingModule],
       declarations: [TaskAssignmentChooseRoleComponent, ChooseRadioOptionComponent],
       providers: [
         {provide: SessionStorageService, useValue: mockSessionStorageService},
@@ -53,6 +54,11 @@ describe('TaskAssignmentChooseRoleComponent', () => {
     fixture = TestBed.createComponent(TaskAssignmentChooseRoleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {

@@ -557,8 +557,8 @@ export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, 
   }
 }
 
-export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): Array<Promise<CaseList>> {
-  const casePromises: Array<Promise<CaseList>> = [];
+export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): Promise<CaseList>[] {
+  const casePromises: Promise<CaseList>[] = [];
   for (const jurisdiction in data) {
     if (data.hasOwnProperty(jurisdiction)) {
       for (const caseType in data[jurisdiction]) {

@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { BookingCheckType, FeatureToggleService, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
@@ -40,10 +40,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     cancelSetting: {
       id: TaskManagerFilterComponent.FILTER_NAME,
       fields: [
-        {
-          name: 'service',
-          value: ['IA']
-        },
         {
           name: 'selectLocation',
           value: ['location_all']
@@ -156,6 +152,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         {
           key: PersonRole.ADMIN,
           label: PersonRole.ADMIN
+        },
+        {
+          key: PersonRole.CTSC,
+          label: PersonRole.CTSC
         }
       ],
       minSelected: 1,
@@ -204,6 +204,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         {
           key: 'ADMIN',
           label: 'Admin'
+        },
+        {
+          key: 'CTSC',
+          label: 'CTSC'
         }
       ],
       minSelected: 1,
@@ -245,6 +249,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           name: 'role',
           value: [this.roleType]
         },
+        {
+          name: 'service',
+          value: [this.jurisdictions[0]]
+        }
         );
       }
     );

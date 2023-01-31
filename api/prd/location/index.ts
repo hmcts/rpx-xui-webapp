@@ -18,9 +18,9 @@ const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
   // @ts-ignore
-  const searchTerm = req.query.searchTerm;
-  const serviceIds = req.query.serviceIds;
-  const locationType = req.query.locationType;
+  const searchTerm = req.query.searchTerm as string;
+  const serviceIds = req.query.serviceIds as string;
+  const locationType = req.query.locationType as string;
   const serviceIdArray = serviceIds.split(',');
   const courtTypeIdsArray: string[] = getCourtTypeIdsByServices(serviceIdArray);
   const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';

@@ -135,10 +135,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public onSubmit(): void {
     const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
       groupDetails: {
-        groupComments: 'TBU',
         groupLinkType: this.selectedOption,
-        groupName: 'TBU',
-        groupReason: '1' // This is the only value accepted LA
       }, hearingsInGroup: []
     };
     if (this.isFormValid()) {
@@ -146,10 +143,16 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         const hearing = this.selectedLinkedCases.find(linked => linked.caseRef === formValue.caseReference);
         const selectedHearing = hearing && hearing.caseHearings.find(selected => selected.isSelected);
         if (selectedHearing) {
-          linkedHearingGroupMainModel.hearingsInGroup.push({
-            hearingId: selectedHearing.hearingID,
-            hearingOrder: Number(formValue.position),
-          });
+          if (this.form.value.hearingGroup === GroupLinkType.SAME_SLOT) {
+            linkedHearingGroupMainModel.hearingsInGroup.push({
+              hearingId: selectedHearing.hearingID
+            });
+          } else {
+            linkedHearingGroupMainModel.hearingsInGroup.push({
+              hearingId: selectedHearing.hearingID,
+              hearingOrder: Number(formValue.position)
+            });
+          }
         }
       });
       this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesGroupDetail(linkedHearingGroupMainModel));
@@ -216,6 +219,10 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
     }
+  }
+
+  public onCancel(): void {
+    this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
   }
 
   public ngOnDestroy(): void {

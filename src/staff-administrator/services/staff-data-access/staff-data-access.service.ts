@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
 import { StaffUser } from '../../models/staff-user.model';
 
@@ -38,8 +39,8 @@ export class StaffDataAccessService {
     return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getServices`);
   }
 
-  public addNewUser(addNewUserBody) {
-    return this.http.post<StaffUser[]>(`${this.API_PATH}/addNewUser`, addNewUserBody);
+  public addNewUser(addNewUserBody): Observable<StaffUser> {
+    return this.http.post<StaffUser>(`${this.API_PATH}/addNewUser`, addNewUserBody);
   }
 
   public updateUserStatus(user) {

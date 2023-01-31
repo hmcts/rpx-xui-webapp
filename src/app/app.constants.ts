@@ -10,7 +10,8 @@ const featureNames = {
   userTypeRoles: 'mc-user-type-roles',
   booking: 'mc-booking-active',
   mcHearingsFeature: 'mc-hearings-jurisdictions',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs'
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
+  updatedTaskPermissionsFeature: 'updated-task-permission'
 };
 
 const footerDataNavigation = {
@@ -143,5 +144,6 @@ export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
 export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil', 'caseworker-privatelaw'];
 export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge'];
 export const ADMIN_ROLE_LIST: string[] = ['admin'];
+export const CTSC_ROLE_LIST: string[] = ['ctsc'];
 export const SERVICE_OPTIONS_LIST = [{key: 'IA', label: 'Immigration and Asylum'}, {key: 'SSCS', label: 'Social security and child support'}];
 export const PUI_CASE_MANAGER = 'pui-case-manager';

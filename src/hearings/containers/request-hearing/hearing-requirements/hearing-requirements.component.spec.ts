@@ -139,8 +139,12 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
+<<<<<<< HEAD
           reasonableAdjustments: ['RA0005'],
           interpreterLanguage: 'POR'
+=======
+          interpreterLanguage: 'POR',
+>>>>>>> 61dd02ea6 (bug/EUI-7674 interpreterLanguage set to service (#2735))
         },
         unavailabilityRanges: [
           {
@@ -617,6 +621,14 @@ describe('HearingRequirementsComponent', () => {
                 title: 'Miss',
                 firstName: 'Jane',
                 lastName: 'Smith',
+                reasonableAdjustments: [
+                  'RA0042',
+                  'RA0053',
+                  'RA0013',
+                  'RA0016',
+                  'RA0042',
+                  'RA0009',
+                ],
                 interpreterLanguage: 'POR',
                 preferredHearingChannel: 'byVideo',
                 reasonableAdjustments: ['RA0005']
@@ -797,8 +809,14 @@ describe('HearingRequirementsComponent', () => {
                 firstName: 'Jane',
                 lastName: 'Smith',
                 preferredHearingChannel: 'inPerson',
-                reasonableAdjustments: ['RA0005'],
-                interpreterLanguage: 'POR'
+                reasonableAdjustments: [
+                  'RA0042',
+                  'RA0053',
+                  'RA0013',
+                  'RA0016',
+                  'RA0042',
+                ],
+                interpreterLanguage: 'POR',
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -2342,9 +2360,14 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0005'],
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042'],
           interpreterLanguage: 'POR'
-        }
+        },
       }, {
         partyID: 'P2',
         partyType: PartyType.ORG,

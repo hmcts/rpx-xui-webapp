@@ -1,21 +1,21 @@
 
 const prToTestInDemo = [
-   
+
 ];
 
 const mathingPreviewToDemo = prToTestInDemo.filter(conf => process.env.TEST_URL && process.env.TEST_URL.includes(conf.previewUrl));
 if (mathingPreviewToDemo.length === 1){
     process.env.TEST_ENV='demo';
-    process.env.TEST_URL = mathingPreviewToDemo[0].demoUrl; 
-} 
+    process.env.TEST_URL = mathingPreviewToDemo[0].demoUrl;
+}
 
 function getTestENVFromEnvironment(){
     return process.env.TEST_ENV !== undefined && (process.env.TEST_ENV.includes('aat') || process.env.TEST_ENV.includes('demo')) ? process.env.TEST_ENV : 'aat'
 }
 
 const data = {
-    getTestEnvFromEnviornment: getTestENVFromEnvironment, 
-    testEnv: getTestENVFromEnvironment(),  
+    getTestEnvFromEnviornment: getTestENVFromEnvironment,
+    testEnv: getTestENVFromEnvironment(),
     users: {
         aat: [
             {
@@ -205,7 +205,7 @@ const data = {
             }
 
 
-        ] 
+        ]
     },
     appFeatures: {
         primaryTabs: {

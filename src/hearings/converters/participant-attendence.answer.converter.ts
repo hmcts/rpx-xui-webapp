@@ -24,7 +24,7 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
   }
 
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
-    const partyChannels = this.route.snapshot.data.partyChannels;
+    const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
 
     return hearingState$.pipe(
       map(state => {

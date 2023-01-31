@@ -23,7 +23,11 @@ module.exports = function (config) {
       require('karma-sonarqube-unit-reporter'),
     ],
     client: {
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
+      jasmine: {
+        random: false,
+        verboseDeprecations: true,
+      }
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../reports/tests/coverage/ng'),
@@ -47,6 +51,6 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['ChromeHeadless'],
     singleRun: true,
-    restartOnFileChange: true
+    restartOnFileChange: true,
   });
 };

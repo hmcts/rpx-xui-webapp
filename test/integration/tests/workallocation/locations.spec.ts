@@ -1,11 +1,10 @@
 import { expect } from 'chai';
-import { v4 as uuid } from 'uuid';
 // import mocha from 'mocha';
 import { config } from '../config/config';
-import { getUserId, getXSRFToken } from '../utils/authUtil';
+import { getXSRFToken } from '../utils/authUtil';
 import { setTestContext } from '../utils/helper';
-
 import Request from '../utils/request';
+
 
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 

@@ -1,10 +1,10 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {facilitiesListRefData, initialState} from '../hearing.test.data';
-import {State} from '../store/reducers';
-import {AdditionalFacilitiesAnswerConverter} from './additional-facilities.answer.converter';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { facilitiesListRefData, initialState } from '../hearing.test.data';
+import { State } from '../store/reducers';
+import { AdditionalFacilitiesAnswerConverter } from './additional-facilities.answer.converter';
 
 describe('AdditionalFacilitiesAnswerConverter', () => {
 
@@ -26,7 +26,7 @@ describe('AdditionalFacilitiesAnswerConverter', () => {
         }
       ]
     });
-    router = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(ActivatedRoute);
     converter = new AdditionalFacilitiesAnswerConverter(router);
   });
 

@@ -1,6 +1,7 @@
 import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import {
   BookingCheckType,
   FilterConfig,
@@ -20,7 +21,7 @@ import { Location, LocationByEPIMMSModel } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
-import { servicesMap } from '../../utils';
+import { locationWithinRegion, servicesMap } from '../../utils';
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -82,6 +83,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     private readonly taskService: WorkAllocationTaskService,
     private readonly service: WASupportedJurisdictionsService,
     private readonly taskTypesService: TaskTypesService,
+    private readonly sessionStorageService: SessionStorageService,
     private readonly appStore: Store<fromAppStore.State>) {
     if (this.router.getCurrentNavigation() &&
       this.router.getCurrentNavigation().extras.state &&
@@ -229,6 +231,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const filterService = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
     const availableLocations = filterService && filterService.fields && filterService.fields.find(field => field.name === 'locations');
     const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
+    const regionLocations = JSON.parse(this.sessionStorageService.getItem('regionLocations'));
     // get booking locations
     if (this.bookingLocations && this.bookingLocations.length > 0) {
       this.defaultLocations = this.bookingLocations;
@@ -249,8 +252,11 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
             const roleJurisdiction = roleAssignment.jurisdiction;
             if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION'
               && roleAssignment.baseLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
-              baseLocations.push(roleAssignment.baseLocation);
-              this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
+              // EUI-7339 - Added to ensure default locations are actually selectable
+              if (!roleAssignment.region || locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)) {
+                baseLocations.push(roleAssignment.baseLocation);
+                this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
+              }
             }
           });
           this.baseLocationServices = Array.from(new Set(this.baseLocationServices));

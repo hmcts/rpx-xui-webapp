@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
@@ -15,13 +15,11 @@ describe('StaffUserCheckAnswersComponent', () => {
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
 
-  let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
-
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser']);
 
-    mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
+    let mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
 
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
@@ -144,29 +142,10 @@ describe('StaffUserCheckAnswersComponent', () => {
         },
       ],
     }).compileComponents();
-
-    mockStaffDataAccessService.addNewUser.and.returnValue(of({
-      id: 2,
-      firstName: 'Victoria',
-      lastName: 'Patton',
-      userCategory: '',
-      userType: 'Officer2',
-      jobTitle: 'Solicitor',
-      locations: [
-        'Locatin Y',
-      ],
-      region: 'London',
-      services: [
-        'Mock Service 2',
-      ],
-      suspended: true,
-      email: 'victoria@hmcts.com',
-      primaryLocation: 'London',
-      roles: 'Case allocator',
-      skills: ['SCSS'],
-    }));
+ 
 
     mockFilterService.getStream.and.returnValue(of({
+      id: '123',
       fields: [
       {
         value: [
@@ -263,13 +242,33 @@ describe('StaffUserCheckAnswersComponent', () => {
   });
 
   it('should call addNewUser and be successful', () => {
+    mockStaffDataAccessService.addNewUser.and.returnValue(of({
+      id: '2',
+      firstName: 'Victoria',
+      lastName: 'Patton',
+      userCategory: '',
+      userType: 'Officer2',
+      jobTitle: 'Solicitor',
+      locations: [
+        'Locatin Y',
+      ],
+      region: 'London',
+      services: [
+        'Mock Service 2',
+      ],
+      suspended: true,
+      email: 'victoria@hmcts.com',
+      primaryLocation: 'London',
+      roles: 'Case allocator',
+      skills: ['SCSS'],
+    }));
     component.addNewUser();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
   });
 
   it('should call addNewUser and be successful', (done) => {
     mockStaffDataAccessService.addNewUser.and.returnValue(of({
-      id: 2,
+      id: '2',
       firstName: 'Victoria',
       lastName: 'Patton',
       userCategory: '',

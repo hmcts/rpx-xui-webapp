@@ -2,8 +2,8 @@ import { RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 import { TASK_ROLES } from '../../../api/workAllocation/constants/task-roles.mock.data';
 import { TaskRole } from '../models/tasks';
-
 import { TaskRoleResolverService } from './task-role-resolver.service';
+
 
 describe('TaskRoleResolverService', () => {
   it('resolves on success', () => {

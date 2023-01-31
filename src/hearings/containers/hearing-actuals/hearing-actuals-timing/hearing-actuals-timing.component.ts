@@ -1,16 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
-import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
-import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
+import { ActualHearingDayModel, HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingActualsTimingErrorMessages } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
@@ -18,7 +18,6 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   templateUrl: './hearing-actuals-timing.component.html'
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
-
   public formGroup: FormGroup;
   public caseTitle: string;
   public submitted: boolean = false;
@@ -26,44 +25,62 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private hearingActuals: HearingActualsMainModel;
   private sub: Subscription;
   private id: string;
+  private hearingDate: string;
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly hearingStore: Store<fromHearingStore.State>,
                      private readonly router: Router,
                      private readonly route: ActivatedRoute,
-                     private readonly hearingsService: HearingsService,
+                     private readonly ngZone: NgZone,
                      private readonly validatorsUtils: ValidatorsUtils,
   ) {
   }
 
-  private static getStartTime(hearingActuals: HearingActualsMainModel): string {
-    const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime;
-    const actualTime = hearingActuals && hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length > 0
-      && hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime;
-    return actualTime ? HearingActualsTimingComponent.getTime(actualTime) : HearingActualsTimingComponent.getTime(plannedTime);
+  private static getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
+    const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime;
+    let actualStartTime: string;
+    if (actualIndex >= 0) {
+      actualStartTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime;
+    }
+
+    return actualStartTime ? HearingActualsTimingComponent.getTime(actualStartTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
-  private static getPauseStartTime(hearingActuals: HearingActualsMainModel): string {
-    const actualTime = hearingActuals && hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
-      && hearingActuals.hearingActuals.actualHearingDays[0] && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes
-      && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes.length
-      && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0];
-    return actualTime && actualTime.pauseStartTime ? HearingActualsTimingComponent.getTime(actualTime.pauseStartTime) : null;
+  private static getEndTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
+    const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedEndTime;
+    let actualEndTime: string;
+    if (actualIndex >= 0) {
+      actualEndTime = hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime;
+    }
+
+    return actualEndTime ? HearingActualsTimingComponent.getTime(actualEndTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
-  private static getPauseEndTime(hearingActuals: HearingActualsMainModel): string {
-    const actualTime = hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
-      && hearingActuals.hearingActuals.actualHearingDays[0] && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes
-      && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes.length
-      && hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0];
-    return actualTime && actualTime.pauseEndTime ? HearingActualsTimingComponent.getTime(actualTime.pauseEndTime) : null;
+  private static getPauseStartTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
+    let actualPauseStartTime: string;
+    if (actualIndex >= 0) {
+      actualPauseStartTime = (hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays
+        && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes
+        && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
+        && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0])
+        && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseStartTime;
+    }
+
+    return actualPauseStartTime ? HearingActualsTimingComponent.getTime(actualPauseStartTime) : null;
   }
 
-  private static getEndTime(hearingActuals: HearingActualsMainModel): string {
-    const actualTime = hearingActuals && hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays && hearingActuals.hearingActuals.actualHearingDays.length
-      && hearingActuals.hearingActuals.actualHearingDays[0].hearingEndTime;
-    const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime;
-    return actualTime ? HearingActualsTimingComponent.getTime(actualTime) : HearingActualsTimingComponent.getTime(plannedTime);
+  private static getPauseEndTime(hearingActuals: HearingActualsMainModel, actualIndex: number | undefined): string | null {
+    let actualPauseEndTime: string;
+
+    if (actualIndex >= 0) {
+      actualPauseEndTime = (hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays
+        && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes
+        && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
+        && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0])
+        && hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseEndTime;
+    }
+
+    return actualPauseEndTime ? HearingActualsTimingComponent.getTime(actualPauseEndTime) : null;
   }
 
   private static replaceTime(dateTime: string, time: moment.Moment): string {
@@ -77,10 +94,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     return time ? moment(time).format('HH:mm') : null;
   }
 
-  private static getDate(dateTime: string): string {
-    return dateTime ? moment(dateTime).format('YYYY-MM-DD') : null;
-  }
-
   public ngOnInit() {
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
@@ -89,6 +102,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       )
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');
+        this.hearingDate = params.get('hearingDate');
         this.hearingActuals = state.hearingActualsMainModel;
         this.caseTitle = this.hearingActuals.caseDetails.hmctsInternalCaseName;
         this.formGroup = this.createFormGroup(this.hearingActuals);
@@ -109,23 +123,17 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       return;
     }
     this.submitted = false;
-    const hearingStartTime = (this.hearingActuals.hearingActuals && this.hearingActuals.hearingActuals.actualHearingDays
-        && this.hearingActuals.hearingActuals.actualHearingDays.length > 0 && this.hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime)
-      || (this.hearingActuals.hearingPlanned && this.hearingActuals.hearingPlanned.plannedHearingDays
-        && this.hearingActuals.hearingPlanned.plannedHearingDays.length > 0 && this.hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime);
-    const hearingEndTime = (this.hearingActuals.hearingActuals && this.hearingActuals.hearingActuals.actualHearingDays
-        && this.hearingActuals.hearingActuals.actualHearingDays.length > 0 && this.hearingActuals.hearingActuals.actualHearingDays[0].hearingEndTime)
-      || (this.hearingActuals.hearingPlanned && this.hearingActuals.hearingPlanned.plannedHearingDays
-        && this.hearingActuals.hearingPlanned.plannedHearingDays.length > 0 && this.hearingActuals.hearingPlanned.plannedHearingDays[0].plannedEndTime);
-    const pauseStartTime = this.hearingActuals.hearingActuals && this.hearingActuals.hearingActuals.actualHearingDays
-      && this.hearingActuals.hearingActuals.actualHearingDays.length && this.hearingActuals.hearingActuals.actualHearingDays[0]
-      && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes.length
-      && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0].pauseStartTime;
-    const pauseEndTime = this.hearingActuals.hearingActuals && this.hearingActuals.hearingActuals.actualHearingDays
-      && this.hearingActuals.hearingActuals.actualHearingDays.length && this.hearingActuals.hearingActuals.actualHearingDays[0]
-      && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes.length
-      && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0].pauseEndTime;
-    const hearingDate = HearingActualsTimingComponent.getDate(hearingStartTime);
+    const plannedIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(this.hearingActuals, this.hearingDate);
+    const actualIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(this.hearingActuals, this.hearingDate);
+    const hearingStartTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingStartTime)
+      || (plannedIndex && this.hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedStartTime);
+    const hearingEndTime = (actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingEndTime)
+      || (plannedIndex && this.hearingActuals.hearingPlanned.plannedHearingDays[plannedIndex].plannedEndTime);
+    const pauseStartTime = actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
+      && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseStartTime;
+    const pauseEndTime =  actualIndex >= 0 && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes.length
+      && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0].pauseEndTime;
+
     const isPauseStartTimeValid = moment(pauseStartTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
     let changedPauseStartTime;
     let changedPauseEndTime;
@@ -134,15 +142,16 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     if (isPauseStartTimeValid) {
       changedPauseStartTime = HearingActualsTimingComponent.replaceTime(pauseStartTime, moPauseStartTime);
     } else {
-      changedPauseStartTime = HearingActualsTimingComponent.replaceTime(hearingDate, moPauseStartTime);
+      changedPauseStartTime = HearingActualsTimingComponent.replaceTime(this.hearingDate, moPauseStartTime);
     }
     const isPauseEndTimeValid = moment(pauseEndTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
     if (isPauseEndTimeValid) {
       changedPauseEndTime = HearingActualsTimingComponent.replaceTime(pauseEndTime, moPauseEndTime);
     } else {
-      changedPauseEndTime = HearingActualsTimingComponent.replaceTime(hearingDate, moPauseEndTime);
+      changedPauseEndTime = HearingActualsTimingComponent.replaceTime(this.hearingDate, moPauseEndTime);
     }
-    let pauseDateTimes = null;
+
+    let pauseDateTimes = [];
     if (value.pauseStartTime && value.pauseEndTime) {
       pauseDateTimes = [
         {
@@ -151,27 +160,25 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         }
       ];
     }
-    const actualInDay1 = this.hearingActuals.hearingActuals && this.hearingActuals.hearingActuals.actualHearingDays
-      && this.hearingActuals.hearingActuals.actualHearingDays[0];
-    const hearingActuals = {
-      ...this.hearingActuals.hearingActuals,
-      actualHearingDays: [
-        {
-          ...actualInDay1,
-          hearingDate,
-          hearingStartTime: HearingActualsTimingComponent.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')),
-          hearingEndTime: HearingActualsTimingComponent.replaceTime(hearingEndTime, moment(value.hearingEndTime, 'HH:mm')),
-          pauseDateTimes
-        }
-      ]
-    };
 
-    ActualHearingsUtils.isHearingDaysUpdated = true;
+    const updatedTimings = {
+      hearingStartTime: HearingActualsTimingComponent.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')),
+      hearingEndTime: HearingActualsTimingComponent.replaceTime(hearingEndTime, moment(value.hearingEndTime, 'HH:mm')),
+      pauseDateTimes
+    };
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
+    (this.hearingActuals, this.hearingDate, {...updatedTimings} as ActualHearingDayModel);
+
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals,
+      hearingActuals: patchedHearingActuals,
     }));
-    this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+
+    if (this.id) {
+      this.ngZone.run(() => {
+        this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+      });
+    }
   }
 
   public updateControl(event: any, control: AbstractControl): void {
@@ -180,26 +187,30 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   private createFormGroup(hearingActuals: HearingActualsMainModel): FormGroup {
+    const plannedIndex = ActualHearingsUtils.getPlannedDayIndexFromHearingDate(hearingActuals, this.hearingDate);
+    const actualIndex = ActualHearingsUtils.getActualDayIndexFromHearingDate(hearingActuals, this.hearingDate);
+
     return this.fb.group({
-      hearingStartTime: [HearingActualsTimingComponent.getStartTime(hearingActuals), [
+      hearingStartTime: [HearingActualsTimingComponent.getStartTime(hearingActuals, plannedIndex, actualIndex), [
         Validators.required,
         this.validatorsUtils.mandatory('Enter hearing start time'),
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
       ]
       ],
-      hearingEndTime: [HearingActualsTimingComponent.getEndTime(hearingActuals), [
+      hearingEndTime: [HearingActualsTimingComponent.getEndTime(hearingActuals, plannedIndex, actualIndex), [
         this.validatorsUtils.mandatory('Enter hearing finish time'),
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
       ]
       ],
       recordTimes: [
-        !HearingActualsTimingComponent.getPauseStartTime(hearingActuals) && !HearingActualsTimingComponent.getPauseEndTime(hearingActuals)
+        !HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex)
+        && !HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex)
           ? null : 'yes',
         [this.validatorsUtils.mandatory('Select if you need to record times the hearing was paused')]
       ],
-      pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals), [
+      pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
-      pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals), [
+      pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals, actualIndex), [
         this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
     }, {
       updateOn: 'blur',

@@ -1,17 +1,18 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { WorkAllocationComponentsModule } from '../../../work-allocation/components/work-allocation.components.module';
 import { InfoMessageContainerComponent } from './info-message-container.component';
+
 
 @Component({
   template: `<exui-info-message-container></exui-info-message-container>`
 })
 class WrapperComponent {
-  @ViewChild(InfoMessageContainerComponent) public appComponentRef: InfoMessageContainerComponent;
+  @ViewChild(InfoMessageContainerComponent, {static: true}) public appComponentRef: InfoMessageContainerComponent;
 }
 
 describe('WorkAllocation', () => {
@@ -24,7 +25,7 @@ describe('WorkAllocation', () => {
 
     const mockMessageService = jasmine.createSpyObj('messageService', ['infoMessageChangeEmitted$']);
 
-    beforeEach(async(() => {
+    beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [
@@ -32,9 +33,7 @@ describe('WorkAllocation', () => {
         providers: [ { provide: InfoMessageCommService, useValue: mockMessageService } ]
       })
       .compileComponents();
-    }));
 
-    beforeEach(() => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;

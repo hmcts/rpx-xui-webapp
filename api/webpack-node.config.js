@@ -12,11 +12,13 @@ module.exports = {
         minimize: true,
         minimizer: [
             new TerserPlugin({
-                sourceMap: true,
+                terserOptions: {
+                    sourceMap: true
+                }
             }),
         ],
     },
-    entry: './server.ts',
+    entry: ['./server.ts'],
     mode: NODE_ENV,
     target: 'node',
     devtool: 'source-map',

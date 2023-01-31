@@ -24,7 +24,7 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<fromHearingStore.State>): Observable<string> {
     return hearingState$.pipe(
       map(state => {
-        const partyChannels = this.route.snapshot.data.partyChannels;
+        const partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
         const partiesFromRequest = state.hearingRequest.hearingRequestMainModel.partyDetails;
         const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties;
         let strReturn = '<ul>';

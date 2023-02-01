@@ -3,8 +3,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
@@ -19,8 +19,8 @@ import {
   Actions,
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
-  HearingListingStatusEnum,
-  HMCStatus
+  HMCStatus,
+  HearingListingStatusEnum
 } from '../../../hearings/models/hearings.enum';
 import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
@@ -512,7 +512,11 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
+<<<<<<< HEAD
         roles: ['caseworker-sscs']
+=======
+        roles: ['caseworker-sscs'],
+>>>>>>> bd4c521df (updated OGD role)
       }
     };
 

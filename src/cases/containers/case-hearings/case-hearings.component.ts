@@ -125,7 +125,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         }
       }
     );
-    this.isOgdRole$ = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(map(userRole => userRole === UserRole.Ogd));
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {

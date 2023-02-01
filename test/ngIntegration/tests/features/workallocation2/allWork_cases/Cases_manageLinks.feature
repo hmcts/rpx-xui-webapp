@@ -1,4 +1,4 @@
-@ng @wa2 @wa
+@ng @wa2 @wa 
 Feature: WA Release 2: All work > cases - Manage links
 
     Background: Mock and browser setup
@@ -18,7 +18,8 @@ Feature: WA Release 2: All work > cases - Manage links
 
         When I click on primary navigation header tab "All work", I see selected tab page displayed
         When I navigate to All work sub navigation tab "Cases"
-
+        Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
+        When I click Apply filter button in all work page
         Then I validate work allocation cases count in page 25
 
         Then I validate manage link actions for cases

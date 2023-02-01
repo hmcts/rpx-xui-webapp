@@ -512,11 +512,7 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
-<<<<<<< HEAD
         roles: ['caseworker-sscs']
-=======
-        roles: ['caseworker-sscs'],
->>>>>>> bd4c521df (updated OGD role)
       }
     };
 

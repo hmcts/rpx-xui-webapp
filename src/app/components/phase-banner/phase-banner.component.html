@@ -1,6 +1,9 @@
 <div class="hmcts-header__container">
   <div class="govuk-phase-banner">
-    <a href="javascript:void(0)" (click)="toggleLanguage(currentLang == 'cy' ? 'en' : currentLang == 'en' ? 'cy' : 'en')" class="language">{{currentLang == 'cy' ? 'English' : currentLang == 'en' ? 'Cymraeg' : 'English' }}</a>
+    <ng-container *xuilibFeatureToggle="'welsh-language'">
+      <a href="javascript:void(0)" (click)="toggleLanguage(currentLang == 'cy' ? 'en' : currentLang == 'en' ? 'cy' : 'en')" class="language">{{currentLang == 'cy' ? 'English' : currentLang == 'en' ? 'Cymraeg' : 'English' }}</a>
+    </ng-container>
+
     <p class="govuk-phase-banner__content"><strong class="govuk-tag govuk-phase-banner__content__tag ">
               {{type}}
           </strong>
@@ -24,6 +27,6 @@
     <div class="govuk-notification-banner__content">
       Nid yw rhai sgriniau yn y gwasanaeth hwn wedi’u cyfieithu i’r Gymraeg eto ac maent ar hyn o bryd yn cynnwys testun Saesneg.
     </div>
-  </div>  
+  </div>
 
 </div>

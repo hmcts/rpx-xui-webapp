@@ -114,6 +114,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         this.hearingsActions = [Actions.READ];
         if (userRole === UserRole.LegalOps) {
           this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
+        } else if (userRole === UserRole.Ogd) {
+          this.isOgdRole = true;
         }
         if (this.hearingsActions.includes(Actions.CREATE)) {
           this.hasRequestAction = true;
@@ -123,7 +125,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         }
       }
     );
-    this.isOgdRole$ = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(map(userRole => userRole === UserRole.Ogd));
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {

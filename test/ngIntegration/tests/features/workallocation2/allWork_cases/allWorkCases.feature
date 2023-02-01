@@ -1,4 +1,4 @@
-@ng  @wa2 @wa 
+@ng  @wa2 @wa @test 
 Feature: WA Release 2: All work > Cases
 
     Background: Mock and browser setup
@@ -10,7 +10,8 @@ Feature: WA Release 2: All work > Cases
         Given I navigate to home page
         When I click on primary navigation header tab "All work", I see selected tab page displayed
         When I navigate to All work sub navigation tab "Cases"
-
+        Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
+        When I click Apply filter button in all work page
         Then I validate work allocation cases table columns displayed
             | ColumnHeader  |
             | Case name     |
@@ -43,6 +44,8 @@ Feature: WA Release 2: All work > Cases
         Given I navigate to home page
         When I click on primary navigation header tab "All work", I see selected tab page displayed
         When I navigate to All work sub navigation tab "Cases"
+        Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
+        When I click Apply filter button in all work page
 
         Then I validate work allocation cases count in page 20
         Then I validate work allocation cases table pagination controls, is displayed state is "false"

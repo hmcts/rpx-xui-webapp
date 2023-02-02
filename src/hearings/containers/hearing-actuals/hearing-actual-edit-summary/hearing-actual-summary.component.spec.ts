@@ -13,7 +13,7 @@ import {ACTION, HearingActualAddEditSummaryEnum, HearingResult} from '../../../m
 import {ConvertToValuePipe} from '../../../pipes/convert-to-value.pipe';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {HearingActualEditSummaryComponent} from './hearing-actual-edit-summary.component';
+import {HearingActualSummaryComponent} from './hearing-actual-summary.component';
 
 @Pipe({name: 'transformAnswer'})
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -22,9 +22,9 @@ export class MockHearingAnswersPipe implements PipeTransform {
     }
 }
 
-describe('HearingActualEditSummaryComponent', () => {
-  let component: HearingActualEditSummaryComponent;
-  let fixture: ComponentFixture<HearingActualEditSummaryComponent>;
+describe('HearingActualSummaryComponent', () => {
+  let component: HearingActualSummaryComponent;
+  let fixture: ComponentFixture<HearingActualSummaryComponent>;
   let store: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
@@ -595,7 +595,7 @@ describe('HearingActualEditSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
+      declarations: [HearingActualSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
       imports: [RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
@@ -623,7 +623,7 @@ describe('HearingActualEditSummaryComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HearingActualEditSummaryComponent);
+    fixture = TestBed.createComponent(HearingActualSummaryComponent);
     store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();

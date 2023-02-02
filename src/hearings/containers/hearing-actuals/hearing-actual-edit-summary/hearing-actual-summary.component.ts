@@ -23,11 +23,11 @@ import * as fromHearingStore from '../../../store';
 import {ActualHearingsUtils} from '../../../utils/actual-hearings.utils';
 
 @Component({
-  selector: 'exui-hearing-actual-edit-summary',
-  templateUrl: './hearing-actual-edit-summary.component.html',
-  styleUrls: ['./hearing-actual-edit-summary.component.scss']
+  selector: 'exui-hearing-actual-summary',
+  templateUrl: './hearing-actual-summary.component.html',
+  styleUrls: ['./hearing-actual-summary.component.scss']
 })
-export class HearingActualEditSummaryComponent implements OnInit, OnDestroy {
+export class HearingActualSummaryComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
   public isPaperHearing: boolean;
   public hearingActualsMainModel: HearingActualsMainModel;
@@ -89,12 +89,9 @@ export class HearingActualEditSummaryComponent implements OnInit, OnDestroy {
         this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
         this.hearingRequestID = state.hearingRequest.hearingRequestMainModel.requestDetails.hearingRequestID;
-
         this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
         this.actualHearingDays = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel);
         this.hearingDateRange = this.calculateEarliestHearingDate(this.actualHearingDays);
-
-      console.log({state: state.hearingRequest.hearingRequestMainModel.caseDetails.caseCategories});
 
         this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.forEach(
           plannedDay => {

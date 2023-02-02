@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './components';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
 import { HearingActualAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
-import { HearingActualEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-edit-summary/hearing-actual-edit-summary.component';
+import { HearingActualSummaryComponent } from './containers/hearing-actuals/hearing-actual-edit-summary/hearing-actual-summary.component';
 import { HearingActualsFinalConfirmationComponent } from './containers/hearing-actuals/hearing-actuals-final-confirmation/hearing-actuals-final-confirmation.component';
 import { HearingActualsTimingComponent } from './containers/hearing-actuals/hearing-actuals-timing/hearing-actuals-timing.component';
 import { HearingActualsViewEditPartiesComponent } from './containers/hearing-actuals/hearing-actuals-view-edit-parties/hearing-actuals-view-edit-parties.component';
@@ -198,14 +198,14 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-actual-edit-summary',
+        path: 'hearing-actual-summary',
         resolve: {
-          caseType: CaseTypesResolver,
           hearingTypes: RefDataResolver,
+          caseType: CaseTypesResolver,
           actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
           cancelHearingActualReasons: CancelHearingActualReasonResolver
         },
-        component: HearingActualEditSummaryComponent,
+        component: HearingActualSummaryComponent,
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check your answers'

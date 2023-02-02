@@ -25,7 +25,7 @@ import {ValidatorsUtils} from '../../../utils/validators.utils';
 })
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {
 
-  public partyChannel: LovRefDataModel[];
+  public partyChannels: LovRefDataModel[];
   public hearingRoles: LovRefDataModel[] = [];
   public immutablePartyRoles: LovRefDataModel[] = [];
   public mutablePartyRoles: LovRefDataModel[] = [];
@@ -111,7 +111,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public ngOnInit(): void {
-    const partyChannels: LovRefDataModel[] = this.route.snapshot.data.partyChannel.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
+    const partyChannels: LovRefDataModel[] = this.route.snapshot.data.partyChannels.filter((channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR);
     // Get unique values to display in the dropdown
     // If a parent does not contain any child nodes then consider the parent
     const uniquePartyChannels: LovRefDataModel[] = [];
@@ -126,7 +126,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         uniquePartyChannels.push(channel);
       }
     });
-    this.partyChannel = uniquePartyChannels;
+    this.partyChannels = uniquePartyChannels;
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(

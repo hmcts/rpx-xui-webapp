@@ -1,12 +1,12 @@
 import { NavigationExtras } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { UserInfo } from '../../app/models';
+import { UserInfo, UserRole } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { ServiceRefData } from '../models/common';
 import { Service, ServiceCode } from '../models/common/service.enum';
-import { Caseworker, CaseworkersByService, LocationsByService } from '../models/dtos';
+import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';
 
 interface Navigator {
@@ -190,6 +190,8 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
       return PersonRole.JUDICIAL;
     case RoleCategory.LEGAL_OPERATIONS:
       return PersonRole.CASEWORKER;
+    case RoleCategory.CTSC:
+      return PersonRole.CTSC;
     default:
       throw new Error('Invalid roleCategory ' + roleCategory);
   }
@@ -202,6 +204,21 @@ export function getRoleCategory(role: string): RoleCategory {
     return RoleCategory.LEGAL_OPERATIONS;
   } else if (role === PersonRole.ADMIN) {
     return RoleCategory.ADMIN;
+  } else if (role === PersonRole.CTSC) {
+    return RoleCategory.CTSC;
+  }
+  return null;
+}
+
+export function getRoleCategoryFromUserRole(role: string): RoleCategory {
+  if (role === UserRole.Judicial) {
+    return RoleCategory.JUDICIAL;
+  } else if (role === UserRole.LegalOps) {
+    return RoleCategory.LEGAL_OPERATIONS;
+  } else if (role === UserRole.Admin) {
+    return RoleCategory.ADMIN;
+  } else if (role === UserRole.Ctsc) {
+    return RoleCategory.CTSC;
   }
   return null;
 }
@@ -239,22 +256,15 @@ export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorag
   return null;
 }
 
-export function addLocationToLocationsByServiceCode(locationsByServices: LocationsByService[], location: any, service_code: string): LocationsByService[] {
-  let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.serviceCode === service_code);
-  if (!locationsByService) {
-    locationsByServices.push({serviceCode: service_code, locations: [location]});
-  } else {
-    const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.serviceCode !== service_code);
-    locationsByService = {serviceCode: service_code, locations: locationsByService.locations.concat([location])}
-    locationsByServices = finalDataWithoutService.concat([locationsByService]);
+export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[], bookable = false): LocationsByService[] {
+  if (allLocationServices.includes(service)) {
+    // if we know that all location services includes the current service we need to ensure this is present
+    return locationsByServices;
   }
-  return locationsByServices;
-}
-
-export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, bookable = false): LocationsByService[] {
   let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.service === service);
   if (!locationsByService) {
-    locationsByServices.push({service, locations: [location], bookable});
+    // check to ensure that if service present with null location (i.e. a base location not within region), we register this
+    !location.id && !location.regionId ? locationsByServices.push({service, locations: [], bookable}) : locationsByServices.push({service, locations: [location], bookable});
   } else {
     const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
@@ -267,4 +277,17 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
 export function getServiceFromServiceCode(serviceCode: string, serviceRefData: ServiceRefData[]): string {
   const desiredServiceData = serviceRefData.find(serviceData => serviceData.serviceCodes.includes(serviceCode));
   return desiredServiceData.service;
+}
+
+export function locationWithinRegion(regionLocations: LocationsByRegion[], region: string, location: string): boolean {
+  let withinRegion = false;
+  regionLocations.forEach(regionLocation => {
+    if (regionLocation.regionId === region) {
+      if (regionLocation.locations.includes(location)) {
+        withinRegion = true;
+        return withinRegion;
+      }
+    }
+  })
+  return withinRegion;
 }

@@ -521,7 +521,7 @@ export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment
 export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
   : Promise<RoleCaseData[]> {
 
-  const newRoleAssignment = getAccessGrantedRoleAssignments(roleAssignmentList);
+  const newRoleAssignment = getAccessGrantedRoleAssignments(roleAssignmentList);  
 
   const specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignmentList);
 
@@ -747,7 +747,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     startDate: getStartDate(roleAssignment),
     access: getGrantType(roleAssignment),
     dateSubmitted: roleAssignment.created,
-    isNew: newRoleAssignmentList.length > 0 ? checkIsNew(roleAssignment, newRoleAssignmentList) : roleAssignment.attributes.isNew,
+    isNew: checkIsNew(roleAssignment, newRoleAssignmentList),
     hasAccess: getAccessStatus(roleAssignment),
     infoRequired: roleAssignment.attributes.infoRequired,
     infoRequiredComment: roleAssignment.attributes.infoRequiredComment,

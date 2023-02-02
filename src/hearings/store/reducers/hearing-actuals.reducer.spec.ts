@@ -1,6 +1,6 @@
-import { HearingActualsStateData } from 'src/hearings/models/hearingActualsStateData.model';
 import { HttpError } from '../../../models/httpError.model';
 import { hearingActualsMainModel } from '../../hearing.test.data';
+import { HearingActualsStateData } from '../../models/hearingActualsStateData.model';
 import * as fromHearingActualsActions from '../actions/hearing-actuals.action';
 import * as fromHearingActualsReducer from './hearing-actuals.reducer';
 

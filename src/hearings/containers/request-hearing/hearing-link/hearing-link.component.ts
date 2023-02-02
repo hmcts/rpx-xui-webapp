@@ -33,7 +33,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
               private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService, route);
     this.caseId = this.hearingListMainModel.caseRef || '';
-    this.caseName = this.serviceHearingValuesModel.publicCaseName || '';
+    this.caseName = this.serviceHearingValuesModel.hmctsInternalCaseName || '';
   }
 
   public ngOnInit(): void {

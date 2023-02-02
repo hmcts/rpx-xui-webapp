@@ -78,6 +78,10 @@ export class CaseHearingsListComponent implements OnInit {
     this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
   }
 
+  public cya(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-edit-summary']);
+  }
+
   public cancelHearing(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
   }

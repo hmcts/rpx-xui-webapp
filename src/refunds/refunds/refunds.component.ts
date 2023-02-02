@@ -14,6 +14,7 @@ export class RefundsComponent implements OnInit {
   public userEmail = '';
   public userRoles = [];
   public userDataLoaded = false;
+  public apiRoot = '/payments';
 
   constructor(private readonly userService: UserService) { }
 

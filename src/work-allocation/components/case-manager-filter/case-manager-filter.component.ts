@@ -144,7 +144,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       title: 'Person',
       subTitle: 'Search for a person',
       lineBreakBefore: true,
-      services: jurisdictions,
+      servicesField: 'jurisdiction',
       placeholderContent: 'You must specify a person...'
     };
   }

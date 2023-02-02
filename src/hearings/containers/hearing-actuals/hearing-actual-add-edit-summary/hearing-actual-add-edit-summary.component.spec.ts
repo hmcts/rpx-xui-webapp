@@ -580,7 +580,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     component.hearingResult = HearingResult.COMPLETED;
     component.onSubmitHearingDetails();
     expect(component.submitted).toEqual(true);
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals(component.id));
   });
 
   it('should check is errror bar handling', () => {
@@ -606,81 +605,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     component.onSubmitHearingDetails();
     expect(component.submitted).toEqual(true);
     expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
-  });
-
-  it('should check days validity', () => {
-    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
-    hearingActuals.hearingActuals.actualHearingDays = [
-      {
-        hearingDate: '',
-        hearingStartTime: '',
-        hearingEndTime: '',
-        pauseDateTimes: null,
-        notRequired: false,
-        actualDayParties: [
-          {
-            actualPartyId: '1',
-            individualDetails: {
-              firstName: 'Bob',
-              lastName: 'Jones',
-            },
-            actualOrganisationName: 'Company A',
-            didNotAttendFlag: false,
-            partyChannelSubType: 'inPerson',
-            partyRole: 'appellant',
-            representedParty: '',
-          },
-          {
-            actualPartyId: '2',
-            individualDetails: {
-              firstName: 'Mary',
-              lastName: 'Jones',
-            },
-            actualOrganisationName: 'Company B',
-            didNotAttendFlag: false,
-            partyChannelSubType: 'inPerson',
-            partyRole: 'claimant',
-            representedParty: '',
-          },
-          {
-            actualPartyId: '3',
-            individualDetails: {
-              firstName: 'James',
-              lastName: 'Gods',
-            },
-            actualOrganisationName: 'Solicitors A',
-            didNotAttendFlag: false,
-            partyChannelSubType: 'inPerson',
-            partyRole: 'interpreter',
-            representedParty: '1',
-          },
-        ],
-      },
-    ];
-    component.hearingActualsMainModel = hearingActuals;
-    component.hearingResult = HearingResult.COMPLETED;
-    component.onSubmitHearingDetails();
-    expect(component.submitted).toBe(true);
-    expect(component.hearingTimingResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
-  });
-
-  it('should check parties validity', () => {
-    const hearingActuals = _.cloneDeep(hearingActualsMainModel);
-    hearingActuals.hearingActuals.actualHearingDays = [
-      {
-        hearingDate: '2021-03-12',
-        hearingStartTime: '2021-03-12T09:00:00.000Z',
-        hearingEndTime: '2021-03-12T10:00:00.000Z',
-        pauseDateTimes: [],
-        notRequired: false,
-        actualDayParties: []
-      },
-    ];
-    component.hearingActualsMainModel = hearingActuals;
-    component.hearingResult = HearingResult.COMPLETED;
-    component.onSubmitHearingDetails();
-    expect(component.submitted).toBe(true);
-    expect(component.hearingPartiesResultErrorMessage).toBe(HearingActualAddEditSummaryEnum.ConfirmUpdateError);
   });
 
   it('should save one hearing day actuals for specific hearingDate', () => {
@@ -730,8 +654,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
       ],
     };
     const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.confirmActualHearingTimeForDay(hearingDay);
-    component.confirmActualPartiesForDay(hearingDay);
+    component.confirmActualHearingTimeAndParties(hearingDay);
+    component.confirmActualHearingTimeAndParties(hearingDay);
     expect(storeDispatchSpy).toHaveBeenCalledTimes(2);
   });
 

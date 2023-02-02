@@ -352,6 +352,14 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         When I click on primary navigation header tab "All work", I see selected tab page displayed
         When I navigate to All work sub navigation tab "Cases"
         Then I see all work cases not loaded and message displayed as "Please select filters and click Apply"
+        Then I see filter "Person" is displayed in all work page
+        When I enter find person search input "user1" in work flow
+
+        Then I see find person search results in work flow
+            | Person                       |
+            | user1 j (judge_user1@gov.uk) |
+
+        When I select find person result "user1 j (judge_user1@gov.uk)" in work flow
         When I click Apply filter button in all work page
         Then I validate work allocation cases count in page 25
 

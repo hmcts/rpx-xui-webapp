@@ -109,6 +109,9 @@ export function toDenySARoleAssignmentBody(
     case RoleCategory.ADMIN:
       requestedrole = 'specific-access-admin';
       break;
+    case RoleCategory.CTSC:
+      requestedrole = 'specific-access-ctsc';
+      break;
     default:
         break;
   }

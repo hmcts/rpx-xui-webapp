@@ -1,21 +1,26 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute, convertToParamMap} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import {Observable, of} from 'rxjs';
-import {ActualHearingsUtils} from 'src/hearings/utils/actual-hearings.utils';
-import {hearingActualsMainModel, hearingStageRefData, initialState} from '../../../hearing.test.data';
-import {ACTION, HearingActualAddEditSummaryEnum, HearingResult} from '../../../models/hearings.enum';
-import {ConvertToValuePipe} from '../../../pipes/convert-to-value.pipe';
-import {HearingsService} from '../../../services/hearings.service';
+import { Observable, of } from 'rxjs';
+import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
+import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
+import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
+import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {HearingActualAddEditSummaryComponent} from './hearing-actual-add-edit-summary.component';
-import {ActualHearingDayModel} from '../../../models/hearingActualsMainModel';
+import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
+import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
+
+@Pipe({name: 'transformAnswer'})
+export class MockHearingAnswersPipe implements PipeTransform {
+    public transform(answerSource, hearingState$, index?: number): string {
+        return '';
+    }
+}
 
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
@@ -432,120 +437,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
       child_nodes: null
     }
   ];
-  const partyChannel = [
-    {
-      key: 'inPerson',
-      value_en: 'In person',
-      value_cy: '',
-      hintText_EN: 'in person',
-      hintTextCY: 'Wyneb yn wyneb',
-      order: 1,
-      parentKey: null,
-    },
-    {
-      key: 'byPhone',
-      value_en: 'By phone',
-      value_cy: '',
-      hintText_EN: 'By Phone',
-      hintTextCY: 'Ffôn',
-      order: 2,
-      parentKey: null,
-      child_nodes: [
-        {
-          key: 'telephone-btMeetMe',
-          value_en: 'Telephone - BTMeetme',
-          value_cy: '',
-          hintText_EN: 'By Phone bTMeetme',
-          hintTextCY: '',
-          order: 1,
-          parentKey: null,
-        },
-        {
-          key: 'telephone-CVP',
-          value_en: 'Telephone - CVP',
-          value_cy: '',
-          hintText_EN: 'By Phone CVP',
-          hintTextCY: '',
-          order: 2,
-          parentKey: null,
-        },
-        {
-          key: 'telephone-other',
-          value_en: 'Telephone - Other',
-          value_cy: '',
-          hintText_EN: 'By Phone Other',
-          hintTextCY: '',
-          order: 3,
-          parentKey: null,
-        },
-        {
-          key: 'telephone-skype',
-          value_en: 'Telephone - Skype',
-          value_cy: '',
-          hintText_EN: 'By Phone Skype',
-          hintTextCY: '',
-          order: 4,
-          parentKey: null,
-        },
-      ],
-    },
-    {
-      key: 'byVideo',
-      value_en: 'By video',
-      value_cy: 'Fideo',
-      hintText_EN: 'By video',
-      hintTextCY: '',
-      order: 4,
-      parentKey: null,
-      child_nodes: [
-        {
-          key: 'video-conference',
-          value_en: 'Video Conference',
-          value_cy: '',
-          hintText_EN: 'By video conference',
-          hintTextCY: '',
-          order: 4,
-          parentKey: null,
-        },
-        {
-          key: 'video-other',
-          value_en: 'Video - Other',
-          value_cy: '',
-          hintText_EN: 'By video other',
-          hintTextCY: '',
-          order: 4,
-          parentKey: null,
-        },
-        {
-          key: 'video-skype',
-          value_en: 'Video - Skype',
-          value_cy: '',
-          hintText_EN: 'By video skype',
-          hintTextCY: '',
-          order: 4,
-          parentKey: null,
-        },
-        {
-          key: 'video-teams',
-          value_en: 'Video - Teams',
-          value_cy: '',
-          hintText_EN: 'By video teams',
-          hintTextCY: '',
-          order: 4,
-          parentKey: null,
-        },
-      ],
-    },
-    {
-      key: 'notAttending',
-      value_en: 'Not attending',
-      value_cy: '',
-      hintText_EN: 'not attending',
-      hintTextCY: '',
-      order: 5,
-      parentKey: null,
-    },
-  ];
   const hearingRole = [
     {
       category_key: 'EntityRoleCode',
@@ -590,7 +481,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe],
+      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
       imports: [RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
@@ -606,7 +497,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
                 id: '1',
               },
               data: {
-                partyChannel,
+                partyChannels: partyChannelsRefData,
+                partySubChannels: partySubChannelsRefData,
                 hearingRole
               },
             },

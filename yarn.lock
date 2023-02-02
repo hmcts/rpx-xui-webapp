@@ -137,12 +137,12 @@
     ora "5.3.0"
     rxjs "6.6.3"
 
-"@angular-material-components/datetime-picker@2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@angular-material-components/datetime-picker/-/datetime-picker-2.0.4.tgz#3a298eb29fc4a8adbbb70fe09bab0ae916d0c186"
-  integrity sha512-3nXGFz7GXbFYeBI2/72rcmPFTWtcC1ERlgdkaY+65dFHXPIc8hKGv6o+JbtCoYPg7xmVCCy4xhmOgfd/CFGyOw==
+"@angular-material-components/datetime-picker@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/datetime-picker/-/datetime-picker-5.1.1.tgz#c47b8ccbe11a0f5533340939fc8ee5fb65fe1b0c"
+  integrity sha512-hiVDhdyBDFGWTFclOiLTLjxOWIu1gVhn2cx1bJfk/a02zRVXs0Zsd0tSBxtsf6iUx1NuPJiPIZNW/BluUOSBJQ==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 "@angular-material-components/moment-adapter@^5.0.0":
   version "5.0.0"
@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.6-r3.5-from-master":
-  version "6.10.6-r3.5-from-master"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.6-r3.5-from-master.tgz#714f08cbc4e4dfb11467ccb1660a5538bda83c9f"
-  integrity sha512-0/Z3ZdGb9Jsp05F7uwH4tR5XnmvRYvQgVVm7ELR355ypau9HPHAnxDKahIibCqbx6wFMjyRw6WWEIYAGbT/GPQ==
+"@hmcts/ccd-case-ui-toolkit@5.0.50-EUI-7538-datetime-picker-upgrade-uc2":
+  version "5.0.50-EUI-7538-datetime-picker-upgrade-uc2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.50-EUI-7538-datetime-picker-upgrade-uc2.tgz#5f1c40018147cc4c820765504d9492be0cc5d8ab"
+  integrity sha512-Vx1nJh+reoQXfV2FXcwVXGudKN3N6eNimWWmfyNP+Gw9iDM76+UJn168Xl22LcW4DoeBPeFDe5rMSQRTOh8iNQ==
   dependencies:
     tslib "^2.0.0"
 
@@ -10161,6 +10161,11 @@ matcher@^3.0.0:
   integrity sha512-OkeDaAZ/bQCxeFAozM55PKcKU0yJMPGifLwV4Qgjitu+5MoAfSQN4lsLJeXZ1b8w0x+/Emda6MZgXS1jvsapng==
   dependencies:
     escape-string-regexp "^4.0.0"
+
+material-design-icons@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/material-design-icons/-/material-design-icons-3.0.1.tgz#9a71c48747218ebca51e51a66da682038cdcb7bf"
+  integrity sha512-t19Z+QZBwSZulxptEu05kIm+UyfIdJY1JDwI+nx02j269m6W414whiQz9qfvQIiLrdx71RQv+T48nHhuQXOCIQ==
 
 md5.js@^1.3.4:
   version "1.3.5"

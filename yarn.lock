@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.0.2-migration-dynamic-list":
-  version "6.0.2-migration-dynamic-list"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.0.2-migration-dynamic-list.tgz#215d515dfebd88aa5a9d9b22ceb430151361a3a1"
-  integrity sha512-CCKpJgf+rbITbgdV/OxyIP9UVCCiyVMGxfi/5yjYXE/SymoEZvJKETL+Q9X9cj9QP6LX4Hmiyj5RbiVKPI26Cg==
+"@hmcts/ccd-case-ui-toolkit@6.0.2-migration-dynamic-list-rc1":
+  version "6.0.2-migration-dynamic-list-rc1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.0.2-migration-dynamic-list-rc1.tgz#cfde4f08885ae72a364d0baf9f274bf5ebde64f7"
+  integrity sha512-mifNxvF8YfwPTbDOM/dAL5jVZCsmDVK5b23+oQ8CGFOoCFO3cJb/ySaxNSYufbX91SF7xmy7K9PVvXffif86qQ==
   dependencies:
     tslib "^2.0.0"
 

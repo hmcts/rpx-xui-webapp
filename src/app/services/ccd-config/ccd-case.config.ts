@@ -47,7 +47,7 @@ export class AppConfig extends AbstractAppConfig {
           caseTypes: [
             'Asylum'
           ],
-          releaseVersion: '3',
+          releaseVersion: '3.5',
           serviceName: 'IA'
         }
       ]

@@ -22,7 +22,7 @@ Feature: Navigation header tabs
             | mc-menu-theme |
         Then I validate header displayed for user type "<roleType>"
         Then I see primary navigation tabs "<mainHeaders>" in main header
-       
+
         Then I do not see primary navigation tabs does not exist excluding "<mainHeaders>"
             | Tabs             |
             | Case list        |

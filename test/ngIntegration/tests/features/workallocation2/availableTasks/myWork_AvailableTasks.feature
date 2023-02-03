@@ -30,14 +30,11 @@ Feature: WA Release 2: My work -  Available tasks
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
         
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation | 20001 |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation | 10001 |
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         
     
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
@@ -109,14 +106,11 @@ Feature: WA Release 2: My work -  Available tasks
 
     Scenario: Available Tasks sort column persist in session with Caseworker user
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation | 20001 |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation | 10001 |
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -152,14 +146,11 @@ Feature: WA Release 2: My work -  Available tasks
 
     Scenario Outline:  Available Tasks, columns width "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation | 20001 |
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "SSCS"
-            | bookable        | false |
-            | substantive     | Y     |
-            | baseLocation | 10001 |
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

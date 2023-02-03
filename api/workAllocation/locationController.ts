@@ -3,7 +3,7 @@ import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import { CourtVenue, Location } from './interfaces/location';
-import { commonGetFullLocation, handleLocationGet } from './locationService';
+import { commonGetFullLocation, getRegionLocationsForServices, handleLocationGet } from './locationService';
 import { prepareGetLocationByIdUrl, prepareGetLocationsUrl } from './util';
 
 export const baseUrl: string = 'http://localhost:8080';
@@ -54,6 +54,20 @@ export async function getFullLocations(req: EnhancedRequest, res: Response, next
 
   try {
     const response = await commonGetFullLocation(req);
+    res.send(response).status(200);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Get locations by region
+ *
+ */
+export async function getLocationsByRegion(req: EnhancedRequest, res: Response, next: NextFunction) {
+
+  try {
+    const response = await getRegionLocationsForServices(req);
     res.send(response).status(200);
   } catch (error) {
     next(error);

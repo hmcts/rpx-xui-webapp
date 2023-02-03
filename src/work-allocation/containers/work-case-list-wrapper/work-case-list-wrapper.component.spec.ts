@@ -108,7 +108,7 @@ describe('WorkCaseListWrapperComponent', () => {
     component = fixture.componentInstance;
     const cases: Case[] = getMockCases();
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     mockWorkAllocationService.searchCase.and.returnValue(of({ cases }));
     mockWorkAllocationService.getMyCases.and.returnValue(of({ cases }));
     mockWorkAllocationService.getMyAccess.and.returnValue(of({ cases }));

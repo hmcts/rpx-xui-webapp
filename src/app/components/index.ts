@@ -14,6 +14,7 @@ import { ApplicationRoutingComponent } from './routing/application-routing.compo
 import { ServiceDownComponent } from './service-down/service-down.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
 
+
 export const components: any[] = [
   HmctsGlobalFooterComponent,
   HeaderComponent,

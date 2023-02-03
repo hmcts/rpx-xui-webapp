@@ -2,18 +2,16 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-<<<<<<< HEAD
 import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-=======
-import { AlertService, CaseField, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
->>>>>>> 5d20462e7 (CR comments fix)
 import { of } from 'rxjs';
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
 import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
+
+
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
@@ -130,20 +128,11 @@ describe('TasksContainerComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
-<<<<<<< HEAD
         { provide: AlertService, useValue: mockAlertService },
         { provide: WorkAllocationCaseService, useValue: mockWACaseService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-=======
-        LoadingService,
-        {provide: AlertService, useValue: mockAlertService},
-        {provide: WorkAllocationCaseService, useValue: mockWACaseService},
-        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
-        {provide: AllocateRoleService, useValue: mockRoleService},
-        {provide: FeatureToggleService, useValue: mockFeatureToggleService},
->>>>>>> 5d20462e7 (CR comments fix)
         {
           provide: ActivatedRoute,
           useValue: {

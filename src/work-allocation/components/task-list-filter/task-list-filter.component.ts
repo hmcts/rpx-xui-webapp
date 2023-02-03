@@ -11,8 +11,8 @@ import {
   FilterService,
   FilterSetting
 } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Subscription, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';

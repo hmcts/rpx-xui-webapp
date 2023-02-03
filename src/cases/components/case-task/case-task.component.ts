@@ -9,7 +9,7 @@ import { InfoMessage } from '../../../work-allocation/enums';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
-import { handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation/utils';
+import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/utils';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({

@@ -12,7 +12,7 @@ describe('ShowHidePipe', () => {
     site_name: 'Cardiff Civil and Family Justice Centre',
     court_name: 'CARDIFF CIVIL AND FAMILY JUSTICE CENTRE',
     open_for_public: 'YES',
-    region_id: '8',
+    region_id: '7',
     region: 'Wales',
     cluster_id: null,
     cluster_name: null,

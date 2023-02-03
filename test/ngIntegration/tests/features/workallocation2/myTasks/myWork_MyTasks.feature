@@ -21,9 +21,10 @@ Feature: WA Release 2: My work - My Tasks
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | baseLocation | roleType     |
-            | IA | 20001 | ORGANISATION |
-            | SSCS         |            | ORGANISATION |
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -105,9 +106,10 @@ Feature: WA Release 2: My work - My Tasks
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | baseLocation | roleType     |
-            | IA | 20001 | ORGANISATION |
-            | SSCS         |            | ORGANISATION |
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -141,9 +143,10 @@ Feature: WA Release 2: My work - My Tasks
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | baseLocation | roleType     |
-            | IA | 20001 | ORGANISATION |
-            | SSCS         |            | ORGANISATION |
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |

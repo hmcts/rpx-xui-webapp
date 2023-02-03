@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.50-fee-pay-props-rc1":
-  version "5.0.50-fee-pay-props-rc1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.50-fee-pay-props-rc1.tgz#8ffdc1fd275785960af338dbd4ec6edd1028b1a9"
-  integrity sha512-9HWc1QW7u4KCwBk8NYHUYKvDlsS0APKYT/83jb5cbTL/Grq2/XTCgLkT+rU1hol5XLelIbKlYf0ZQxOhwIN0tQ==
+"@hmcts/ccd-case-ui-toolkit@5.0.50-fee-pay-props-rc2":
+  version "5.0.50-fee-pay-props-rc2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.50-fee-pay-props-rc2.tgz#cf790a6ca9b2f69040680dea067214be20099f82"
+  integrity sha512-/r7NeBbhv5ADgZ5TEsiWjaBeNwsCXydpRB4ljqxoyiCaEdqlCG1L98T2fLca733UgN/A6hxipw10R4po2xUc2A==
   dependencies:
     tslib "^2.0.0"
 

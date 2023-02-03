@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.50-EUI-7538-datetime-picker-upgrade-uc2":
-  version "5.0.50-EUI-7538-datetime-picker-upgrade-uc2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.50-EUI-7538-datetime-picker-upgrade-uc2.tgz#5f1c40018147cc4c820765504d9492be0cc5d8ab"
-  integrity sha512-Vx1nJh+reoQXfV2FXcwVXGudKN3N6eNimWWmfyNP+Gw9iDM76+UJn168Xl22LcW4DoeBPeFDe5rMSQRTOh8iNQ==
+"@hmcts/ccd-case-ui-toolkit@6.13.0-rc1":
+  version "6.13.0-rc1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.0-rc1.tgz#c84684cea5b7c94dcd592e6d77eb887ec93b8206"
+  integrity sha512-2vIceu35Wm629Z4mEUZltHo2O5HQxsH2RJpnMZYT3lmOP2EWOVYmxiDPS44cTDwT1f65gMbdbpORZbGmvBBMLA==
   dependencies:
     tslib "^2.0.0"
 

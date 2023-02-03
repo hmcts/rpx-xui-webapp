@@ -16,9 +16,9 @@ describe('Hearing Conditions Reducer', () => {
     describe('Save action', () => {
       it('should save hearing conditions', () => {
         const initialState = fromHearingConditionsReducer.initialHearingConditionsState;
-        const action = new fromHearingConditionsActions.SaveHearingConditions({region: 'Wales'});
+        const action = new fromHearingConditionsActions.SaveHearingConditions({regionId: '7'});
         const hearingsState = fromHearingConditionsReducer.hearingConditionsReducer(initialState, action);
-        expect(hearingsState.hasOwnProperty('region')).toBeTruthy();
+        expect(hearingsState.hasOwnProperty('regionId')).toBeTruthy();
       });
     });
   });

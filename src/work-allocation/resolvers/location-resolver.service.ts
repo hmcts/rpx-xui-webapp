@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import * as moment from 'moment';
 import { EMPTY } from 'rxjs';
-import { of } from 'rxjs/internal/observable/of';
 import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/internal/observable/of';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import { LocationModel } from '../../../api/locations/models/location.model';
 import { AppUtils } from '../../app/app-utils';
@@ -17,7 +17,7 @@ import { Booking } from '../../booking/models';
 import { BookingService } from '../../booking/services';
 import { Location, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { LocationDataService } from '../services';
-import { addLocationToLocationsByService, handleFatalErrors, locationWithinRegion, WILDCARD_SERVICE_DOWN } from '../utils';
+import { WILDCARD_SERVICE_DOWN, addLocationToLocationsByService, handleFatalErrors, locationWithinRegion } from '../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -119,6 +119,12 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       location.services.map((service) => {
         userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices, true) : addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices);
       });
+    });
+    this.bookableServices.forEach(bookableService => {
+      if (!this.locationServices.has(bookableService)) {
+        const newBookableService: LocationsByService = { service: bookableService, locations: [], bookable: true };
+        userLocationsByService.push(newBookableService);
+      }
     });
     this.sessionStorageService.setItem('userLocations', JSON.stringify(userLocationsByService));
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));

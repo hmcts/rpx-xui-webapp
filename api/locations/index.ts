@@ -54,7 +54,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
       const regionIds = getRegionIdsFromLocationList(userLocation.locations);
       // when we are trying to filter out locations when booking location is present - my work
-      if (userLocation.bookable && bookingLocations) {
+      if (userLocation.bookable && bookingLocations.length) {
         results = filterOutResults(results, bookingLocations, [], courtTypes);
       } else {
         results = filterOutResults(results, locationIds, regionIds, courtTypes);

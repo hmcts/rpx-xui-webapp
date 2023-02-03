@@ -100,9 +100,9 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
       } else if (roleCategories.includes(userRoleCategory)) {
         return userRoleCategory;
       // else return simply the first role with an own permission
+      } else {
+        return roleCategories[0];
       }
-
-      return roleCategories[0];
     }
   }
 

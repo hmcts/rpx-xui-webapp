@@ -26,7 +26,7 @@ export class HearingActualSummarySingleDayComponent {
   public ActualHearingsUtils = ActualHearingsUtils;
 
   constructor(private readonly route: ActivatedRoute) {
-    this.partyChannels = this.route.snapshot.data.partyChannels;
+    this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
     this.hearingRoles = this.route.snapshot.data.hearingRoles;
   }
 }

@@ -57,7 +57,12 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public answerSource = AnswerSource;
   public hearingRequestID: string;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService, private readonly route: ActivatedRoute, private readonly router: Router) {
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly hearingsService: HearingsService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
+  ) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
@@ -151,15 +156,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       });
     }
     return isAllDaysCovered;
-  }
-
-  private isAllHearingActualsTimingAvailable(hearingActualsMainModel: HearingActualsMainModel) {
-    const hasAllActualDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
-
-    return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-      actualDay => this.isAcutalTimingAvailable(actualDay)
-    );
   }
 
   public isAcutalTimingAvailable(actualDay: ActualHearingDayModel): boolean {

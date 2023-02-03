@@ -49,9 +49,17 @@ export class AppConfig extends AbstractAppConfig {
           ],
           releaseVersion: '3.5',
           serviceName: 'IA'
+        },
+        {
+          caseTypes:[
+            'CIVIL',
+            'GENERALAPPLICATION'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'CIVIL'
         }
       ]
-    }
+    };
 
     this.featureToggleService.getValue('wa-service-config', defaultConfig).subscribe({
       next: (val) => this.config = {

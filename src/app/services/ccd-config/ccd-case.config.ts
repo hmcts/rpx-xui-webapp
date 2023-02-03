@@ -39,8 +39,8 @@ export class AppConfig extends AbstractAppConfig {
       }
     });
 
-    //Default value is passed to resolve EUI-7670. 
-    //ToDo: Remove default value and get the latest not null value
+    // Default value is passed to resolve EUI-7670.
+    // ToDo: Remove default value and get the latest not null value
     const defaultConfig = {
       configurations: [
         {

@@ -56,7 +56,11 @@ describe('ShowHidePipe', () => {
               }
             })
           }
+<<<<<<< HEAD
         }
+=======
+        },
+>>>>>>> a0a6b7f82 (story/EUI-7516 fix (#2749))
       ]
     });
     showHidePipe = new ShowHidePipe(locationsDataService, storeMock);

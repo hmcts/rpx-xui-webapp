@@ -380,7 +380,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
               .map(service => {
                 return {
                   key: service,
-                  label: servicesMap[service]? this.titleCase(servicesMap[service]) : this.titleCase(service)
+                  label: servicesMap[service]? servicesMap[service] : service
                 };
               })
           ],
@@ -434,13 +434,5 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
       }, 0);
     }
-  }
-
-  private titleCase(string){
-    const arr = string.split(' ');
-    for (let i = 0; i < arr.length; i++) {
-      arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1).toLowerCase();
-    }
-    return arr.join(' ');
   }
 }

@@ -78,7 +78,7 @@ describe('AllocateRoleCheckAnswersComponent', () => {
 
   it('should set caption for case manager', () => {
     component.setAnswersFromAllocateRoleStateStore(ALLOCATE_ROLE_STATE_DATA);
-    expect(component.caption).toBe('Allocate a lead judge');
+    expect(component.caption).toBe('Allocate a Lead judge');
   });
 
   it('should set caption for lead judge', () => {
@@ -87,7 +87,7 @@ describe('AllocateRoleCheckAnswersComponent', () => {
       typeOfRole: {id: 'lead-judge', name: 'Lead judge'}
     };
     component.setAnswersFromAllocateRoleStateStore(allocateRoleStateData);
-    expect(component.caption).toBe('Allocate a lead judge');
+    expect(component.caption).toBe('Allocate a Lead judge');
   });
 
   it('should set caption for lead judge', () => {

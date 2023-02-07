@@ -7,7 +7,6 @@ import { of, throwError } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
-import { doesNotReject } from 'assert';
 
 describe('StaffUserCheckAnswersComponent', () => {
   let component: StaffUserCheckAnswersComponent;

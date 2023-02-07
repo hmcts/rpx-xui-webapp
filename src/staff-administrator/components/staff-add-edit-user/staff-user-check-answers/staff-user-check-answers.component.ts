@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
+import { filter } from 'rxjs/operators';
 import { InfoMessage } from '../../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../../app/shared/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
@@ -65,7 +66,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
 
   public ngOnInit() {
     this.filterService.getStream(this.formId)
-    .filter(responseFormValue => responseFormValue !== null)
+    .pipe(filter(responseFormValue => responseFormValue !== null))
     .subscribe(responseFormValue => {
       this.addUserData = responseFormValue.fields;
       if (this.addUserData) {

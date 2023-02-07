@@ -19,6 +19,9 @@ import { Task, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getAssigneeName, handleFatalErrors } from '../../utils';
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InfoMessageType } from '../../../role-access/models/enums';
 
 
 @Component({

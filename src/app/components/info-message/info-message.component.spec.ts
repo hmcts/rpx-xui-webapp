@@ -1,6 +1,7 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { InfoMessage, InfoMessageType } from './../../enums';
+import { InfoMessage } from './../../shared/enums/info-message';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { InfoMessageComponent } from './info-message.component';
 
 
@@ -11,9 +12,6 @@ class WrapperComponent {
   @ViewChild(InfoMessageComponent, {static: true}) public appComponentRef: InfoMessageComponent;
   @Input() public type: InfoMessageType;
   @Input() public message: InfoMessage;
-
-  @ViewChild(InfoMessageComponent)
-  public appComponentRef: InfoMessageComponent;
 }
 
 describe('SharedModule', () => {

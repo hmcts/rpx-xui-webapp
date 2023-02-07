@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { HmctsBannerInfo } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/components/hmcts-banner/hmcts-banner-info.interface';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { StaffDataFilterService } from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
 @Component({
@@ -9,7 +8,6 @@ import { StaffDataFilterService } from '../../components/staff-users/services/st
 })
 export class StaffUsersComponent  {
   public advancedSearchEnabled = false;
-  public bannerData: HmctsBannerInfo;
 
   constructor(
     public staffDataFilterService: StaffDataFilterService,

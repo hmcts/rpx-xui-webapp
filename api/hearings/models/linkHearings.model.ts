@@ -6,6 +6,11 @@ export interface ServiceLinkedCasesModel {
   caseName: string;
   reasonsForLink: string[];
 }
+export interface OtherLinkedCasesModel {
+  caseRef: string;
+  caseName: string;
+  reasonsForLink: string[];
+}
 
 export interface ServiceLinkedCasesWithHearingsModel {
   caseRef: string;

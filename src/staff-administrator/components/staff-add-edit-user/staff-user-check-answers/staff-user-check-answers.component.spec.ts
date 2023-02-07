@@ -19,7 +19,7 @@ describe('StaffUserCheckAnswersComponent', () => {
     mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser']);
 
-    let mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
+    const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
 
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
@@ -142,7 +142,6 @@ describe('StaffUserCheckAnswersComponent', () => {
         },
       ],
     }).compileComponents();
- 
 
     mockFilterService.getStream.and.returnValue(of({
       id: '123',

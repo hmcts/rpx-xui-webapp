@@ -6,11 +6,11 @@ import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { initialState, partyChannelsRefData, partySubChannelsRefData } from '../hearing.test.data';
 import { State } from '../store';
-import { ParticipantAttendenceAnswerConverter } from './participant-attendence.answer.converter';
+import { ParticipantChannelAttendenceAnswerConverter } from './participant-channel-attendance.converter';
 
-describe('ParticipantAttendenceAnswerConverter', () => {
+describe('ParticipantChannelAttendance', () => {
 
-  let converter: ParticipantAttendenceAnswerConverter;
+  let converter: ParticipantChannelAttendenceAnswerConverter;
   let store: Store<any>;
   let router: any;
 
@@ -33,14 +33,15 @@ describe('ParticipantAttendenceAnswerConverter', () => {
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
-    converter = new ParticipantAttendenceAnswerConverter(router);
+    converter = new ParticipantChannelAttendenceAnswerConverter(router);
   });
 
-  it('should transform hearing stage', () => {
+  it('should transform hearing attendance', () => {
     const STATE: State = initialState.hearings;
-    const result$ = converter.transformAnswer(of(STATE), 0);
-    const room = 'Jane Smith - In person<br>DWP - By video';
+    const result$ = converter.transformAnswer(of(STATE));
+    const room = '<ul><li>By phone</li></ul>';
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);
   });
+
 });

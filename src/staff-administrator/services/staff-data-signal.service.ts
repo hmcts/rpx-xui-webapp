@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BannerDataModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { BehaviorSubject } from 'rxjs';
+import { BannerDataModel } from '../models/banner-data-model';
 
 @Injectable({
   providedIn: 'root'

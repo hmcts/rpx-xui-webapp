@@ -39,7 +39,29 @@ export class AppConfig extends AbstractAppConfig {
       }
     });
 
-    this.featureToggleService.getValue('wa-service-config', null).subscribe({
+    // Default value is passed to resolve EUI-7670.
+    // ToDo: Remove default value and get the latest not null value
+    const defaultConfig = {
+      configurations: [
+        {
+          caseTypes: [
+            'Asylum'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'IA'
+        },
+        {
+          caseTypes:[
+            'CIVIL',
+            'GENERALAPPLICATION'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'CIVIL'
+        }
+      ]
+    };
+
+    this.featureToggleService.getValue('wa-service-config', defaultConfig).subscribe({
       next: (val) => this.config = {
         ...this.config,
         wa_service_config: val

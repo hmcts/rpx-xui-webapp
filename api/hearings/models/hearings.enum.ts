@@ -76,7 +76,7 @@ export enum HearingChannelEnum {
 export enum HMCLocationType {
   COURT = 'court',
   CLUSTER = 'cluster',
-  REGION = 'region',
+  REGION = 'regionId',
 }
 
 export enum UnavailabilityType {

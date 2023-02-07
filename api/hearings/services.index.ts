@@ -10,9 +10,11 @@ import {HearingListMainModel} from './models/hearingListMain.model';
 import {EXUIDisplayStatusEnum} from './models/hearings.enum';
 import {hearingStatusMappings} from './models/hearingStatusMappings';
 import {
+  OtherLinkedCasesModel,
   ServiceLinkedCasesModel
 } from './models/linkHearings.model';
 import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
+import { SERVICE_LINKED_CASES } from './data/linkHearings.mock.data';
 
 const logger: JUILogger = log4jui.getLogger('hearing-service-api');
 
@@ -90,26 +92,41 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
       caseName: reqBody.caseName,
       reasonsForLink: [],
     };
-    const linkedCaseIds = data.map(linkedCase => linkedCase.caseReference);
+    // TODO: Remove mock data when we have cases with cross jurisdiction
+    const mockLinkedCases = SERVICE_LINKED_CASES
+    const linkedCaseIds = [...data, ...mockLinkedCases].map(linkedCase => linkedCase.caseReference);
 
     if (linkedCaseIds && linkedCaseIds.length) {
       const promises = [];
       const allCaseId = [currentCase.caseReference, ...linkedCaseIds];
-      const allData = [currentCase, ...data];
+      const allData = [currentCase, ...data, ...mockLinkedCases];
       allCaseId.forEach(caseId => {
         const promise = getHearings(caseId, req);
         promises.push(promise);
       });
       // @ts-ignore
       const allResults = await Promise.allSettled(promises);
-      const result = aggregateAllResults(allData, allResults);
-      res.status(status).send(result);
+      const linkedCases = aggregateAllResults(allData, allResults);
+      const otherCases = getOtherCases(linkedCases, allData)
+
+      res.status(status).send({linkedCases, otherCases});
     } else {
       res.status(status).send([]);
     }
   } catch (error) {
     next(error);
   }
+}
+
+function getOtherCases(linkedCases, allData: ServiceLinkedCasesModel[]): OtherLinkedCasesModel[] {
+  const linkedCaseIds = linkedCases.map(({caseRef}) => caseRef);
+  return allData
+    .filter(({caseReference}) => !linkedCaseIds.includes(caseReference))
+    .map(({caseName, caseReference, reasonsForLink}) => ({
+        caseName,
+        reasonsForLink,
+        caseRef: caseReference,
+      }))
 }
 
 function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): any {

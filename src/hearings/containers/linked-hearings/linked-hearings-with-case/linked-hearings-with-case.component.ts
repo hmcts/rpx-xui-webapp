@@ -10,8 +10,9 @@ import {
 } from '../../../models/hearings.enum';
 import {
   HearingDetailModel,
+  LinkedCasesModel,
   LinkedHearingGroupMainModel,
-  ServiceLinkedCasesWithHearingsModel
+  OtherCasesModel,
 } from '../../../models/linkHearings.model';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
@@ -32,7 +33,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public caseName: string;
   public linkedHearingSelectionError: string;
   public errors: { id: string, message: string }[] = [];
-  public linkedCases: ServiceLinkedCasesWithHearingsModel[] = [];
+  public linkedCases: LinkedCasesModel[] = [];
+  public otherCases: OtherCasesModel[] = [];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public sub: Subscription;
   public linkHearingForm: FormGroup;
@@ -63,8 +65,9 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
         if (state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings) {
-          this.isHearingsSelected(state.hearingLinks.serviceLinkedCasesWithHearings);
-          this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings;
+          this.isHearingsSelected(state.hearingLinks.serviceLinkedCasesWithHearings.linkedCases);
+          this.otherCases = state.hearingLinks.serviceLinkedCasesWithHearings.otherCases;
+          this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings.linkedCases;
           this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
           if (state.hearingLinks.lastError) {
             this.errors.push({id: 'httpError', message: HearingSummaryEnum.BackendError});
@@ -89,7 +92,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     return this.getCasesFormValue.controls[position].get('caseHearings') as FormArray;
   }
 
-  public isHearingsSelected(linkedCases: ServiceLinkedCasesWithHearingsModel[]) {
+  public isHearingsSelected(linkedCases: LinkedCasesModel[]) {
     linkedCases.forEach((caseInfo) => {
       if (caseInfo.caseHearings && caseInfo.caseHearings.find((hearingInfo) => hearingInfo.isSelected === true)) {
         this.isHearingsPreSelected = true;
@@ -99,7 +102,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public get getCasesFormArray(): FormArray {
     if (this.linkedCases && this.linkedCases.length) {
-      return this.fb.array(this.linkedCases.map((caseInfo: ServiceLinkedCasesWithHearingsModel) => this.fb.group({
+      return this.fb.array(this.linkedCases.map((caseInfo: LinkedCasesModel) => this.fb.group({
         caseRef: caseInfo.caseRef,
         caseName: caseInfo.caseName,
         reasonsForLink: this.fb.array(caseInfo.reasonsForLink),

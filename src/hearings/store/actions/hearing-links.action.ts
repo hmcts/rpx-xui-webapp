@@ -53,7 +53,7 @@ export class LoadServiceLinkedCasesWithHearings implements Action {
 
 export class LoadServiceLinkedCasesWithHearingsSuccess implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS_SUCCESS;
-  constructor(public payload: ServiceLinkedCasesWithHearingsModel[]) {
+  constructor(public payload: ServiceLinkedCasesWithHearingsModel) {
   }
 }
 

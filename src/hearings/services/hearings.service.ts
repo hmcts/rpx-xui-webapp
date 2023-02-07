@@ -45,8 +45,8 @@ export class HearingsService {
     });
   }
 
-  public loadLinkedCasesWithHearings(jurisdictionId: string, caseReference: string, caseName: string, hearingId?: string): Observable<ServiceLinkedCasesWithHearingsModel[]> {
-    return this.http.post<ServiceLinkedCasesWithHearingsModel[]>(`api/hearings/loadLinkedCasesWithHearings?jurisdictionId=${jurisdictionId}`, {
+  public loadLinkedCasesWithHearings(jurisdictionId: string, caseReference: string, caseName: string, hearingId?: string): Observable<ServiceLinkedCasesWithHearingsModel> {
+    return this.http.post<ServiceLinkedCasesWithHearingsModel>(`api/hearings/loadLinkedCasesWithHearings?jurisdictionId=${jurisdictionId}`, {
       caseReference,
       caseName,
       hearingId // could be null, empty string or missing

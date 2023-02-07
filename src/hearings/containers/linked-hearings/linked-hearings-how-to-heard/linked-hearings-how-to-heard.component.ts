@@ -8,6 +8,7 @@ import {GroupLinkType, Mode} from '../../../models/hearings.enum';
 import {
   GroupDetailsModel,
   HearingDetailModel,
+  LinkedCasesModel,
   LinkedHearingGroupMainModel,
   LinkedHearingsDetailModel,
   ServiceLinkedCasesWithHearingsModel
@@ -27,8 +28,8 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public hearingGroupRequestId: string;
   public hearingId: string;
   public caseName: string;
-  public receivedCases: ServiceLinkedCasesWithHearingsModel[];
-  public selectedLinkedCases: ServiceLinkedCasesWithHearingsModel[];
+  public receivedCases: LinkedCasesModel[];
+  public selectedLinkedCases: LinkedCasesModel[];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public validationErrors: { id: string; message: string }[] = [];
   public positionDropdownValues = [];
@@ -58,7 +59,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     });
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
-        this.receivedCases = state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings;
+        this.receivedCases = state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings.linkedCases;
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
         this.hearingsInGroup = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup;
         this.groupDetails = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.groupDetails;
@@ -80,7 +81,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     return this.form.get('hearingOrder') as FormArray;
   }
 
-  private addRow(linkCase: ServiceLinkedCasesWithHearingsModel): void {
+  private addRow(linkCase: LinkedCasesModel): void {
     if (!linkCase || !linkCase.caseHearings) {
       return;
     }
@@ -116,7 +117,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     }
   }
 
-  private mapLinkedCase(linkedCase: ServiceLinkedCasesWithHearingsModel): void {
+  private mapLinkedCase(linkedCase: LinkedCasesModel): void {
     const selectedHearings = linkedCase.caseHearings && linkedCase.caseHearings.filter(hearing => hearing.isSelected);
     if (selectedHearings && selectedHearings.length) {
       this.selectedLinkedCases.push({

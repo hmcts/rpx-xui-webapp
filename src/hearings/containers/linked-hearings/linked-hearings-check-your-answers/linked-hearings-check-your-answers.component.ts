@@ -9,6 +9,7 @@ import {GroupLinkType, Mode} from '../../../models/hearings.enum';
 import {
   HearingDetailModel,
   LinkedCaseHearingsResult,
+  LinkedCasesModel,
   LinkedHearingGroupMainModel,
   LinkedHearingsDetailModel,
   ServiceLinkedCasesWithHearingsModel
@@ -67,7 +68,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
       next: (state: fromHearingStore.State) => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
         this.hearingLinks = state.hearingLinks;
-        if (this.hearingLinks.serviceLinkedCasesWithHearings && this.hearingLinks.serviceLinkedCasesWithHearings.length) {
+        if (this.hearingLinks.serviceLinkedCasesWithHearings && this.hearingLinks.serviceLinkedCasesWithHearings.linkedCases.length) {
           if (this.isManageLink) {
             this.presetHearingLinkedGroup(this.hearingLinks);
           } else {
@@ -87,7 +88,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
       this.linkedHearingGroup = hearingLinksStateData.linkedHearingGroup;
       this.hearingsInGroup = hearingLinksStateData.linkedHearingGroup.hearingsInGroup;
       this.showPositionColumn = this.canDisplayPositionColumn();
-      hearingLinksStateData.serviceLinkedCasesWithHearings.forEach(linkedCaseWithHearings => {
+      hearingLinksStateData.serviceLinkedCasesWithHearings.linkedCases.forEach(linkedCaseWithHearings => {
         const selectedHearings = linkedCaseWithHearings.caseHearings && linkedCaseWithHearings.caseHearings.filter(hearing => hearing.isSelected);
         this.setDisplayRow(linkedCaseWithHearings, selectedHearings);
       });
@@ -105,7 +106,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
       const allHearings: HearingDetailModel[] = hearingLinksStateData.serviceLinkedCasesWithHearings.flatMap(x => x.caseHearings);
       this.hearingsInGroup.forEach(hearing => {
         const foundHearing = allHearings.find(aHearing => aHearing.hearingID === hearing.hearingId);
-        const foundCase = hearingLinksStateData.serviceLinkedCasesWithHearings.find(linkedCase => linkedCase.caseHearings.some(aHaring => aHaring.hearingID === hearing.hearingId));
+        const foundCase = hearingLinksStateData.serviceLinkedCasesWithHearings.linkedCases.find(linkedCase => linkedCase.caseHearings.some(aHaring => aHaring.hearingID === hearing.hearingId));
         let linkedCaseHearingsResult: LinkedCaseHearingsResult = null;
         if (foundCase && foundHearing) {
           linkedCaseHearingsResult = {
@@ -133,7 +134,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
     }
   }
 
-  public setDisplayRow(linkedCase: ServiceLinkedCasesWithHearingsModel, selectedHearings: HearingDetailModel[]): void {
+  public setDisplayRow(linkedCase: LinkedCasesModel, selectedHearings: HearingDetailModel[]): void {
     if (selectedHearings && selectedHearings.length > 0) {
       selectedHearings.forEach(hearingDetailModel => {
         if (!this.linkedCaseHearingsResults.some(result => result.hearingID === hearingDetailModel.hearingID)) {

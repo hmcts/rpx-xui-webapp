@@ -8,6 +8,13 @@ export interface ServiceLinkedCasesModel {
 }
 
 export interface ServiceLinkedCasesWithHearingsModel {
+  linkedCases: LinkedCasesModel[];
+  otherCases: OtherCasesModel[];
+}
+
+export type OtherCasesModel = Omit<LinkedCasesModel, 'caseHearings'>;
+
+export interface LinkedCasesModel {
   caseRef: string;
   caseName: string;
   reasonsForLink: string[];

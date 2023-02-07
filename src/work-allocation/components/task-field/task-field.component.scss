@@ -23,7 +23,7 @@
   max-width: 200px !important;
 }
 
-th {
-  border-bottom: none !important;
-  border-style: none !important;
-}
+// th[id^='case-viewer-field-read'], th[id*='case-viewer-field-read'] {
+//   border-bottom: none !important;
+//   border-style: none !important;
+// }

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
@@ -143,7 +143,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return {
       service: TaskService.IAC,
       defaultSortDirection: SortOrder.ASC,
-      defaultSortFieldName: 'priority',
+      defaultSortFieldName: this.fields.some(f => f.name === 'priority') ? 'priority' : 'created_date',
       fields: this.fields
     };
   }

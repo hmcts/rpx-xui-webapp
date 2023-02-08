@@ -1541,7 +1541,7 @@
   resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.9-eui-6408-callback-copy-user.tgz#c468b80d4ea4ca692f6a6b3311e7401adc63fa42"
   integrity sha512-iv9ZePngYTuw5v/LmmxRlJfGSZrKRJZraj7MoBoYPVVpUBncvcxChj+Vw0tiN9DFwwEAsS1zXOaAMxU+IaTjNw==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 "@hmcts/rpx-xui-node-lib@2.25.12":
   version "2.25.12"

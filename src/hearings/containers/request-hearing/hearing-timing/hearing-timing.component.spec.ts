@@ -236,7 +236,7 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue(Number(moment().format('YYYY')) + 1);
     component.showChosenDateError();
-    expect(component.firstDateOfHearingError).toBe(null);
+    expect(component.firstDateOfHearingError).toEqual(null);
   });
 
   it('should check date selection weekend', () => {

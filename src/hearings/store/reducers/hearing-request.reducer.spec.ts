@@ -80,68 +80,89 @@ describe('Hearing Request Reducer', () => {
     });
 
     describe('Update hearing request action', () => {
-      it('should update hearing request action and reset hearingInWelshFlag if no Wales location', () => {
-        const initialHearingRequestState: HearingRequestStateData = {
-          hearingRequestMainModel: {
-            requestDetails: {
-              timeStamp: null,
-              versionNumber: 1,
-            },
-            hearingDetails: {
-              duration: null,
-              hearingType: null,
-              hearingChannels: [],
-              hearingLocations: [{
-                locationId: '196538',
-                locationType: HMCLocationType.COURT,
-              },
-              {
-                locationId: '219164',
-                locationType: HMCLocationType.COURT,
-              },
-              ],
-              hearingIsLinkedFlag: false,
-              hearingWindow: null,
-              privateHearingRequiredFlag: false,
-              panelRequirements: null,
-              autolistFlag: false,
-              nonStandardHearingDurationReasons: [],
-              hearingPriorityType: null,
-              numberOfPhysicalAttendees: null,
-              hearingInWelshFlag: true,
-              facilitiesRequired: [],
-              listingComments: null,
-              hearingRequester: null,
-              leadJudgeContractType: null,
-              amendReasonCodes: null,
-              listingAutoChangeReasonCode: null
-            },
-            caseDetails: {
-              hmctsServiceCode: 'BBA3',
-              caseRef: '111122223333444',
-              requestTimeStamp: null,
-              hearingID: 'h111111',
-              externalCaseReference: null,
-              caseDeepLink: null,
-              hmctsInternalCaseName: null,
-              publicCaseName: null,
-              caseAdditionalSecurityFlag: null,
-              caseInterpreterRequiredFlag: false,
-              caseCategories: [],
-              caseManagementLocationCode: null,
-              caserestrictedFlag: false,
-              caseSLAStartDate: null,
-            },
-            partyDetails: [],
+      const initialHearingRequestState: HearingRequestStateData = {
+        hearingRequestMainModel: {
+          requestDetails: {
+            timeStamp: null,
+            versionNumber: 1,
           },
-          lastError: null,
-        };
+          hearingDetails: {
+            duration: null,
+            hearingType: null,
+            hearingChannels: [],
+            hearingLocations: [{
+              locationId: '196538',
+              locationType: HMCLocationType.COURT,
+            },
+            {
+              locationId: '219164',
+              locationType: HMCLocationType.COURT,
+            },
+            ],
+            hearingIsLinkedFlag: false,
+            hearingWindow: null,
+            privateHearingRequiredFlag: false,
+            panelRequirements: null,
+            autolistFlag: false,
+            nonStandardHearingDurationReasons: [],
+            hearingPriorityType: null,
+            numberOfPhysicalAttendees: null,
+            hearingInWelshFlag: true,
+            facilitiesRequired: [],
+            listingComments: null,
+            hearingRequester: null,
+            leadJudgeContractType: null,
+            amendReasonCodes: null,
+            listingAutoChangeReasonCode: null
+          },
+          caseDetails: {
+            hmctsServiceCode: 'BBA3',
+            caseRef: '111122223333444',
+            requestTimeStamp: null,
+            hearingID: 'h111111',
+            externalCaseReference: null,
+            caseDeepLink: null,
+            hmctsInternalCaseName: null,
+            publicCaseName: null,
+            caseAdditionalSecurityFlag: null,
+            caseInterpreterRequiredFlag: false,
+            caseCategories: [],
+            caseManagementLocationCode: null,
+            caserestrictedFlag: false,
+            caseSLAStartDate: null,
+          },
+          partyDetails: [],
+        },
+        lastError: null,
+      };
+
+      it('should update hearing request action and reset hearingInWelshFlag if no Wales location', () => {
         const action = new fromHearingRequestActions.UpdateHearingRequest(initialHearingRequestState.hearingRequestMainModel, {
           isInit: false,
           region: 'North West'
         });
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState.hearingRequestMainModel.hearingDetails.hearingInWelshFlag).toBeFalsy();
+      });
+
+      it('should NOT reset hearingInWelshFlag as Wales regionId is present', () => {
+        const action = new fromHearingRequestActions.UpdateHearingRequest(initialHearingRequestState.hearingRequestMainModel, {
+          isInit: false,
+          region: 'North West',
+          regionId: '7',
+        });
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
+        expect(hearingsState.hearingRequestMainModel.hearingDetails.hearingInWelshFlag).toEqual(true);
+      });
+
+      it('should update hearing request action with hearingRequestMainModel as hearingCondition mode is view-edit', () => {
+        const action = new fromHearingRequestActions.UpdateHearingRequest(initialHearingRequestState.hearingRequestMainModel, {
+          isInit: false,
+          region: 'North West',
+          mode: 'view-edit'
+        });
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
+        expect(hearingsState.hearingRequestMainModel.hearingDetails.hearingInWelshFlag).toEqual(true);
       });
     });
 

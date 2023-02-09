@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Router, RoutesRecognized } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -35,6 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private idleModalDisplayTimeInMilliseconds: number;
   private totalIdleTimeInMilliseconds: number;
+  private userNavigatedBack: boolean;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -48,17 +50,20 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly environmentService: EnvironmentService
   ) {
 
-    this.router.events.subscribe((data) => {
-      if (data instanceof RoutesRecognized) {
-        let child = data.state.root;
+    this.router.events
+    .pipe(filter((event) => event instanceof RoutesRecognized || event instanceof NavigationEnd  || event instanceof NavigationStart))
+    .subscribe((event) => {
+      if (event instanceof RoutesRecognized) {
+        let child = event.state.root;
         do {
           child = child.firstChild;
         } while (child.firstChild);
-        const d = child.data;
-        if (d.title) {
-          this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
+        const data = child.data;
+        if (data.title) {
+          this.titleService.setTitle(`${data.title} - HM Courts & Tribunals Service - GOV.UK`);
         }
       }
+      this.handleTopOfPageFocus(event);
     });
   }
 
@@ -82,6 +87,33 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.cookieBannerEnabledSubscription) {
       this.cookieBannerEnabledSubscription.unsubscribe();
     }
+  }
+
+  private handleTopOfPageFocus(event: any): void {
+    const userNavigatedBack = (event as NavigationStart).restoredState;
+    const urlContainHash = event.url.includes('#');
+    const contentId = '#content';
+    const urlContainContentHash = event.url.includes(contentId);
+
+    if (event as NavigationStart) {
+      this.userNavigatedBack = !!userNavigatedBack;
+    }
+
+    if (event instanceof NavigationEnd && !urlContainHash && !this.userNavigatedBack) {
+      setTimeout(() => {
+        const headerElement: HTMLElement = document.querySelector('exui-header');
+        headerElement?.focus();
+      });
+    }
+
+    if (event instanceof NavigationEnd && urlContainContentHash) {
+      setTimeout(() => {
+        const contentElement: HTMLElement = document.querySelector(contentId);
+        contentElement?.setAttribute('tabindex', '0');
+        contentElement?.focus();
+      });
+    }
+
   }
 
   public handleCookieBannerFeatureToggle(): void {

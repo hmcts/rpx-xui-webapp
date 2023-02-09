@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { StaffUser } from '../../models/staff-user.model';
@@ -9,7 +9,7 @@ import { StaffDataAccessService } from '../../services/staff-data-access/staff-d
   templateUrl: './staff-user-details.component.html',
   styleUrls: ['./staff-user-details.component.scss']
 })
-export class StaffUserDetailsComponent {
+export class StaffUserDetailsComponent implements OnInit {
   public userDetails: StaffUser;
   public showAction: boolean = false;
   public loading = false;
@@ -18,15 +18,19 @@ export class StaffUserDetailsComponent {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private staffDataAccessService: StaffDataAccessService) {
+  }
+
+  ngOnInit() {
+    console.log("this.route.snapshot.data");
+    console.log(this.route.snapshot.data);
+
     this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails.results[0];
   }
 
-  public updateUserStatus(userId: string, isSuspended: boolean) {
+  public updateUserStatus(): void {
     if (!this.loading) {
-      const updatedStatus = !isSuspended;
-
       this.loading = true;
-      this.staffDataAccessService.updateUserStatus(userId, updatedStatus).pipe(
+      this.staffDataAccessService.updateUserStatus(this.userDetails).pipe(
         finalize(() => this.loading = false),
       )
         .subscribe(
@@ -45,5 +49,10 @@ export class StaffUserDetailsComponent {
           }
         );
     }
+  }
+
+  public copy(): void {
+    const url = '/staff/add-user';
+    this.router.navigate([url], { state: { user: this.userDetails } });
   }
 }

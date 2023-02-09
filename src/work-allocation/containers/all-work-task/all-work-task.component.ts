@@ -2,16 +2,16 @@ import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
+import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { SortOrder } from '../../enums';
+import { SortOrder, TaskContext } from '../../enums';
 import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
-import * as fromActions from '../../../app/store';
-import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -24,6 +24,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private static readonly AVAILABLE_TASKS = 'None / Available tasks';
   public locations: Location[];
   public waSupportedJurisdictions$: Observable<string[]>;
+  public supportedJurisdictions: string[];
   public sortedBy: SortField = {
     fieldName: '',
     order: SortOrder.NONE
@@ -71,6 +72,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       [userRoles$,
         waJurisdictions$]
     ).pipe(map(jurisdictions => {
+      this.supportedJurisdictions = jurisdictions[1];
       return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
     }));
   }
@@ -79,7 +81,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [
         {key: 'jurisdiction', operator: 'IN', values: this.selectedServices},
         this.getStateParameter()
@@ -95,13 +97,17 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       }
       if (taskTypeParameter) {
         searchParameters.push(taskTypeParameter);
-      }
-      return {
+      };
+      const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
-        sorting_parameters: [this.getSortParameter()],
+        sorting_parameters: [...this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
+      if (this.updatedTaskPermission) {
+        searchTaskParameter.request_context = TaskContext.ALL_WORK;
+      }
+      return searchTaskParameter;
     }
   }
 

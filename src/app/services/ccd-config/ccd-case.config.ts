@@ -38,7 +38,7 @@ export class AppConfig extends AbstractAppConfig {
         access_management_mode: val
       }
     });
- 
+
     this.featureToggleService.getValue('wa-service-config', this.config.wa_service_config).subscribe({
       next: (val) => this.config = {
         ...this.config,

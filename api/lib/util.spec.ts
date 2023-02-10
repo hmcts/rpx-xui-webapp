@@ -1,12 +1,10 @@
 import * as chai from 'chai'
-import {expect} from 'chai'
+import { expect } from 'chai'
 import 'mocha'
-import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
-import * as log4jui from './log4jui'
+import { dotNotation, exists, fieldNameMapper, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull } from './util'
 chai.use(sinonChai)
 
-import {dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull, fieldNameMapper} from './util'
 
 describe('util', () => {
     describe('isUserTandCPostSuccessful', () => {

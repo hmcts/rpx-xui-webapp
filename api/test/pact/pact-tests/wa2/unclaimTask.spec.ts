@@ -1,12 +1,11 @@
 import { expect } from 'chai';
-import { PactTestSetup } from '../settings/provider.mock';
-import { markTaskAs } from "../../pactUtil";
-
-import * as sinon from 'sinon'
-import * as config from 'config'
+import * as config from 'config';
+import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { PactTestSetup } from '../settings/provider.mock';
 import { getSearchTaskOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
@@ -29,7 +28,7 @@ describe("Task management api, Unclaim a task", () => {
         });
 
         before(async () => {
-            
+
             await pactSetUp.provider.setup()
             const interaction = {
                 state: "unclaim a task using taskId",
@@ -64,7 +63,7 @@ describe("Task management api, Unclaim a task", () => {
             sandbox.stub(config, 'get').callsFake((prop) => {
                 return configValues[prop];
             });
-            const { postTaskAction } = requireReloaded('../../../../workAllocation2/index');
+            const { postTaskAction } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

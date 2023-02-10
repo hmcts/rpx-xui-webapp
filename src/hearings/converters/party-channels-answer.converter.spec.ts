@@ -5,7 +5,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState, partyChannelsRefData } from '../hearing.test.data';
+import { initialState, partyChannelsRefData, partySubChannelsRefData } from '../hearing.test.data';
 import { PartyType } from '../models/hearings.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { State } from '../store';
@@ -53,14 +53,15 @@ describe('PartyChannelsAnswerConverter', () => {
             snapshot: {
               data: {
                 partyChannels: partyChannelsRefData,
+                partySubChannels: partySubChannelsRefData
               },
             },
           },
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new PartyChannelsAnswerConverter(router);
   });
 
@@ -79,7 +80,7 @@ describe('PartyChannelsAnswerConverter', () => {
     };
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG
-    }
+    };
     expect(converter.getPartyName(party, foundPartyFromService)).toEqual('P002');
   });
 
@@ -89,7 +90,7 @@ describe('PartyChannelsAnswerConverter', () => {
     };
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG, partyName: 'Jack'
-    }
+    };
     expect(converter.getPartyName(party, foundPartyFromService)).toEqual('Smith');
   });
 
@@ -99,7 +100,7 @@ describe('PartyChannelsAnswerConverter', () => {
     };
     const foundPartyFromService: PartyDetailsModel = {
       partyID: 'P002', partyRole: 'appellant', partyType: PartyType.ORG, partyName: 'Jack'
-    }
+    };
     expect(converter.getPartyName(party, foundPartyFromService)).toEqual('Jack');
   });
 });

@@ -1,12 +1,14 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
+
+import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
+import { CaseRole, RoleCategory } from '../../models';
 import { CaseRolesTableComponent } from './case-roles-table.component';
+
 
 describe('CaseRolesTableComponent', () => {
   let component: CaseRolesTableComponent;
@@ -105,7 +107,7 @@ describe('CaseRolesTableComponent', () => {
       },
     ]
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
       declarations: [CaseRolesTableComponent]
@@ -122,7 +124,7 @@ describe('CaseRolesTableComponent', () => {
   });
 
   it('should display a list of roles', () => {
-    component.roles = CASEROLES;
+    component.roles = CASEROLES as CaseRole[];
     fixture.detectChanges();
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
@@ -136,11 +138,18 @@ describe('CaseRolesTableComponent', () => {
   it('should display no roles for this case', () => {
     const summaryList: DebugElement = fixture.debugElement.query(By.css('.govuk-summary-list__value'));
     const element: HTMLElement = summaryList.nativeElement as HTMLElement;
-    expect(element.textContent).toBe(' There are no legal ops roles for this case. ');
+    expect(element.textContent).toBe(' There are no legal Ops roles for this case. ');
+  });
+
+  it('should getRoleCategoryTitle', () => {
+    expect(component.getRoleCategoryTitle(RoleCategory.LEGAL_OPERATIONS)).toBe('legal Ops');
+    expect(component.getRoleCategoryTitle(RoleCategory.CTSC)).toBe('CTSC');
+    expect(component.getRoleCategoryTitle(RoleCategory.JUDICIAL)).toBe('judicial');
+    expect(component.getRoleCategoryTitle(RoleCategory.ADMIN)).toBe('admin');
   });
 
   it('should show the reallocate and remove allocation link', () => {
-    component.roles = CASEROLES;
+    component.roles = CASEROLES as CaseRole[];
     fixture.detectChanges();
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;

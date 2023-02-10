@@ -1,5 +1,5 @@
-import { WorkAllocationFeatureToggleGuard } from './work-allocation-feature-toggle.guard';
+import { WorkAllocationAccessGuard } from './wa-access-guard';
 
 export {
-  WorkAllocationFeatureToggleGuard
+  WorkAllocationAccessGuard
 };

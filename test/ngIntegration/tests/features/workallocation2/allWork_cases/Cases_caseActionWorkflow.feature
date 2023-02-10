@@ -11,7 +11,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | case-allocator | 10    |
             | case-allocator | 90    |
 
-        Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findPersonRequest"
+        Given I set MOCK request "/workallocation/findPerson" intercept with reference "findPersonRequest"
 
     Scenario:  Judge reaallocate case from all work cases
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"

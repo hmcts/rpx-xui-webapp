@@ -11,8 +11,16 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
-if (!process.env['TEST_ENV_URL']){
-    process.env['TEST_ENV_URL'] = process.env['TEST_URL']; 
+const appTestConfig = require('../../e2e/config/appTestConfig');
+const {LOG_LEVELS} = require("../../e2e/support/constants");
+
+appTestConfig.testEnv = 'aat';
+
+process.env['LOG_LEVEL'] = LOG_LEVELS.Info
+
+console.log(process.env['TEST_ENV_URL'])
+if (!process.env['TEST_ENV_URL'] || process.env['TEST_ENV_URL'] === undefined){
+    process.env['TEST_ENV_URL'] = process.env['TEST_URL'];
 
 }
 process.env['TEST_URL'] = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
@@ -23,8 +31,12 @@ const isParallelExecution = argv.parallel ? argv.parallel === "true" : !getBDDTa
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
 
 
- 
-const nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
+let  nodeMockPort = require('../../nodeMock/availablePortFinder').getAvailablePort();
+
+if (argv.debug){
+    nodeMockPort = 3001;
+}
 
 const perfLoggingPrefs = {
     'enableNetwork': true,
@@ -93,7 +105,7 @@ const config = {
             MockApp.setServerPort(nodeMockPort);
             MockApp.init(parseInt(nodeMockPort) + 1);
             MockApp.startServer();
-        }    
+        }
     },
 
     onPrepare() {
@@ -106,19 +118,19 @@ const config = {
             browserInstance: browser
         });
 
-       
+
         if (isParallelExecution){
             MockApp.getNextAvailableClientPort().then(res => {
                 MockApp.setServerPort(res.data.port);
                 MockApp.init();
                 //MockApp.startServer();
-                
+
             });
         }else{
             MockApp.setServerPort(nodeMockPort);
             //await MockApp.startServer();
-        }    
-       
+        }
+
 
         //Set default explict timeout default value to 10sec
         const customWaits = require('../../e2e/support/customWaits');
@@ -128,10 +140,10 @@ const config = {
 
     },
     cucumberOpts: {
-        'fail-fast': true,
+        'fail-fast': argv.failFast ? argv.failFast.includes("true") : false,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
+        format: ['node_modules/cucumber-pretty', 'json:functional-output/tests/ngIntegrationtests/json/results.json'],
         tags: getBDDTags() ,
         require: [
             '../../e2e/support/timeout.js',
@@ -155,8 +167,8 @@ const config = {
                 removeExistingJsonReportFile: true,
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
-                jsonDir: 'reports/tests/ngIntegration',
-                reportPath: 'reports/tests/ngIntegration',
+                jsonDir: 'functional-output/tests/ngIntegration',
+                reportPath: 'functional-output/tests/ngIntegration',
                 displayDuration : true,
                 durationInMS : false
             }
@@ -168,17 +180,18 @@ const config = {
 
 function getBDDTags() {
     let tags = [];
-    console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_ENV_URL']}`);
+    console.log(`*********************** process.env['TEST_URL'] : ${process.env['TEST_URL']}`);
     console.log(`*********************** process.env['TEST_ENV_URL'] : ${process.env['TEST_ENV_URL']}`);
     if (process.env['TEST_ENV_URL'].includes("pr-") ||
-        process.env['TEST_ENV_URL'].includes("localhost")) { 
+        process.env['TEST_ENV_URL'].includes("localhost")
+        ) {
         if (argv.tags){
             tags = argv.tags.split(',');
         }else{
             tags = ["@ng", "~@ignore"];
         }
     }else{
-        tags.push("@none"); 
+        tags.push("@none");
     }
 
     console.log(`BDD tags ${JSON.stringify(tags)}`);

@@ -1,14 +1,14 @@
-import {TestBed} from '@angular/core/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
+import { TestBed } from '@angular/core/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
-import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
-import {MemberType, RadioOptions, RequirementType} from '../models/hearings.enum';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
-import {NeedJudgeAnswerConverter} from './need-judge.answer.converter';
+import { of } from 'rxjs';
+import { initialState } from '../hearing.test.data';
+import { MemberType, RadioOptions, RequirementType } from '../models/hearings.enum';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
+import { NeedJudgeAnswerConverter } from './need-judge.answer.converter';
 
 describe('NeedJudgeAnswerConverter', () => {
 
@@ -26,7 +26,7 @@ describe('NeedJudgeAnswerConverter', () => {
         provideMockStore({initialState}),
       ]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     converter = new NeedJudgeAnswerConverter();
   });
 

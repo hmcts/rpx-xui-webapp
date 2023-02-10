@@ -5,3 +5,25 @@
     height: 100%;
   }
 }
+.xui-case-name-field
+{
+  word-break: break-word !important;
+  white-space: break-spaces !important;
+  max-width: 180px !important;
+  width: 100%;
+}
+
+.cdk-column-task_title {
+  display: -webkit-inline-box;
+  max-width: 280px !important;
+}
+
+.cdk-column-case_name {
+  display: -webkit-inline-box;
+  max-width: 200px !important;
+}
+
+th {
+  border-bottom: none !important;
+  border-style: none !important;
+}

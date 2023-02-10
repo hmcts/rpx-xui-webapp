@@ -1,11 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
-import {HearingConditions} from '../../../hearings/models/hearingConditions';
-import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
-import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode} from '../../../hearings/models/hearings.enum';
-import {LovRefDataModel} from '../../../hearings/models/lovRefData.model';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { HearingConditions } from '../../../hearings/models/hearingConditions';
+import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
+import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
+import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
@@ -19,21 +19,23 @@ export class CaseHearingsListComponent implements OnInit {
   public status: EXUISectionStatusEnum;
 
   @Input()
+  public hearingStageOptions: LovRefDataModel[];
+
+  @Input()
   public hearingList$: Observable<HearingListViewModel[]>;
 
   @Input()
   public actions: Actions[];
+
   public caseId: string;
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
-  public hearingStageOptions: LovRefDataModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
-    this.hearingStageOptions = this.activatedRoute.snapshot.data.hearingStageOptions;
   }
 
   public ngOnInit(): void {

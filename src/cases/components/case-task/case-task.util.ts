@@ -1,4 +1,4 @@
-import { Task } from '../../../work-allocation-2/models/tasks';
+import { Task } from '../../../work-allocation/models/tasks';
 
 export const appendTaskIdAsQueryStringToTaskDescription = (task: Task): string => {
   // The url format will be like the following markdown:
@@ -29,4 +29,4 @@ export const appendTaskIdAsQueryStringToTaskDescription = (task: Task): string =
   }
 
   return '';
-}
+};

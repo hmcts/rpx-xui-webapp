@@ -1,9 +1,9 @@
-@ng 
+@ng  
 Feature: WA Release 2: Exclusions
     Background: Setup
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
-        Given I set MOCK request "/workallocation2/findPerson" response log to report
+        Given I set MOCK request "/workallocation/findPerson" response log to report
         Given I set MOCK find person response for jurisdictions
             | domain   | id   | email                   | name           | knownAs       |
             | Judicial | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |
@@ -72,7 +72,10 @@ Feature: WA Release 2: Exclusions
 
     Scenario Outline: Exclusion with option "Exclude me" - "<Useridentifier>"
         Given I set MOCK with user "<Useridentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
@@ -107,7 +110,10 @@ Feature: WA Release 2: Exclusions
 
     Scenario Outline: Delete exclusion
         Given I set MOCK with user "<Useridentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed

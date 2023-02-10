@@ -1,9 +1,10 @@
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { initialMockState } from '../role-access/testing/app-initial-state.mock';
 import { AppUtils } from './app-utils';
 import { AppConstants, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
-import { UserRole } from './models/user-details.model';
+import { UserDetails, UserRole } from './models/user-details.model';
 
 describe('getEnvironment', () => {
 
@@ -188,36 +189,36 @@ describe('getFeatureToggledUrl', () => {
   });
 });
 
-describe('isLegalOpsOrJudicial', () => {
+describe('getUserRole', () => {
 
   it('should return legal ops role if user has any legal ops role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-caseofficer']);
-    expect(isLegalOpsOrJudicial).toBe(UserRole.LegalOps);
+    const roleCategory = AppUtils.getUserRole(['caseworker-ia-caseofficer']);
+    expect(roleCategory).toBe(UserRole.LegalOps);
   });
 
   it('should return judicial role if user has any judicial role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-iacjudge']);
-    expect(isLegalOpsOrJudicial).toBe(UserRole.Judicial);
+    const roleCategory = AppUtils.getUserRole(['caseworker-ia-iacjudge']);
+    expect(roleCategory).toBe(UserRole.Judicial);
   });
 
   it('should return null if user has no judicial or legal ops role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker']);
-    expect(isLegalOpsOrJudicial).toBeNull();
+    const roleCategory = AppUtils.getUserRole(['caseworker']);
+    expect(roleCategory).toBeNull();
   });
 
   it('should return legal ops role if user is an task supervisor', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['task-supervisor']);
-    expect(isLegalOpsOrJudicial).toBe('legalops');
+    const roleCategory = AppUtils.getUserRole(['task-supervisor']);
+    expect(roleCategory).toBe('legalops');
   });
 
   it('should return legal ops role if user is an caseworker-ia', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
-    expect(isLegalOpsOrJudicial).toBe('legalops');
+    const roleCategory = AppUtils.getUserRole(['caseworker-ia']);
+    expect(roleCategory).toBe('legalops');
   });
 
   it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-admofficer']);
-    expect(isLegalOpsOrJudicial).toBe('legalops');
+    const roleCategory = AppUtils.getUserRole(['caseworker-ia-admofficer']);
+    expect(roleCategory).toBe('legalops');
   });
 
   it('should return the judicial domain from the user list', () => {
@@ -294,5 +295,45 @@ describe('getFilterPersistenceByRoleType', () => {
     userDetails.userInfo.roles = LEGAL_OPS_ROLE_LIST;
     const persistence = AppUtils.getFilterPersistenceByRoleType(userDetails);
     expect(persistence).toEqual('session');
+  });
+
+  describe('isBookableAndJudicialRole', () => {
+
+    it('should set true/false base on the user details', () => {
+      const USER_2: UserDetails = {
+        canShareCases: true,
+        roleAssignmentInfo: [{
+          bookable: true,
+          baseLocation: 'Glasgow',
+          jurisdiction: 'IA',
+          isCaseAllocator: true
+      }],
+        sessionTimeout: {
+          idleModalDisplayTime: 10,
+          totalIdleTime: 50
+        },
+        userInfo: {
+          id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+          forename: 'Luke',
+          surname: 'Wilson',
+          email: 'lukesuperuserxui@mailnesia.com',
+          roleCategory: RoleCategory.JUDICIAL,
+          active: true,
+          roles: [
+            'caseworker',
+            'caseworker-sscs-judge',
+            'fee-paid-judge'
+          ],
+        }
+      };
+
+      expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);
+      USER_2.roleAssignmentInfo[0].bookable = 'true';
+      expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);
+      USER_2.roleAssignmentInfo[0].bookable = false;
+      expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
+      USER_2.userInfo.roleCategory = RoleCategory.CASEWORKER;
+      expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
+    });
   });
 });

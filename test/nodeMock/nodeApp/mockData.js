@@ -1,5 +1,9 @@
 const nodeAppDataModel = require('../../dataModels/nodeApp');
 
+
+const testData = require('../../e2e/config/appTestConfig');
+const userUtil = require('../../ngIntegration/util/userRole');
+
 class NodeAppMockData {
 
     constructor(){
@@ -9,6 +13,22 @@ class NodeAppMockData {
     init(){
         const roles = ['task-supervisor', 'case-allocator', 'caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer', 'task-supervisor', 'case-allocator'];
         this.userDetails = this.getUserDetailsWithRoles(roles); 
+    }
+
+    getMockLoginUserWithidentifierAndRoles(useridentifier, roles){
+        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === useridentifier)[0];
+        if (!testUserIdamId) {
+            throw new Error("Provided user identifer is not configured in test data. " + releaseUer);
+        }
+
+        const userIdamID = testUserIdamId.idamId;
+
+        roles = roles.split(",");
+        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
+            // workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+        }
+        const userDetails = this.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
+        return userDetails;
     }
 
     getConfigurationValue(configurationKey) {
@@ -52,6 +72,7 @@ class NodeAppMockData {
 
     getUIConfiguration() {
         return {
+            "accessManagementEnabled":true,
             "googleAnalyticsKey": "UA-124734893-4",
             "idamWeb": "https://idam-web-public.aat.platform.hmcts.net",
             "launchDarklyClientId": "5de6610b23ce5408280f2268",

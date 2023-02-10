@@ -1,18 +1,52 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
-import { Location } from '../models/dtos';
+import { SessionStorageService } from '../../app/services';
+import { Location, LocationByEPIMMSModel, LocationsByRegion } from '../models/dtos';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LocationDataService {
   public static locationUrl: string = '/workallocation/location';
-  public constructor(private readonly http: HttpClient) {}
+  public static fullLocationUrl: string = '/workallocation/full-location';
+  public static regionLocationUrl: string = '/workallocation/region-location';
+  public static allLocationsKey: string = 'allLocations';
+  public static regionLocationsKey: string = 'regionLocations';
+  public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) { }
 
-  public getLocation(locationId: string): Observable<Location> {
-    return this.http.get<Location>(`${LocationDataService.locationUrl}/${locationId}`);
-  }
   public getLocations(): Observable<Location[]> {
-    return this.http.get<Location[]>(LocationDataService.locationUrl);
+    if (this.sessionStorageService.getItem(LocationDataService.allLocationsKey)) {
+      const locations = JSON.parse(this.sessionStorageService.getItem(LocationDataService.allLocationsKey));
+      return of(locations as Location[]);
+    }
+    return this.http.get<Location[]>(`${LocationDataService.locationUrl}`).pipe(
+      tap(allLocations => this.sessionStorageService.setItem(LocationDataService.allLocationsKey, JSON.stringify(allLocations)))
+    );
+  }
+
+  public getLocationsByRegion(serviceIds?: string[]): Observable<LocationsByRegion[]> {
+    if (this.sessionStorageService.getItem(LocationDataService.regionLocationsKey)) {
+      const locationRegions = JSON.parse(this.sessionStorageService.getItem(LocationDataService.regionLocationsKey));
+      return of(locationRegions as LocationsByRegion[]);
+    }
+    return this.http.post<LocationsByRegion[]>(`${LocationDataService.regionLocationUrl}`, {serviceIds}).pipe(
+      tap(regionLocations => this.sessionStorageService.setItem(LocationDataService.regionLocationsKey, JSON.stringify(regionLocations)))
+    )
+  }
+
+  public getSpecificLocations(locationIds: string[], locationServices: string[]): Observable<LocationByEPIMMSModel[]> {
+    if (!locationIds || locationIds.length === 0) {
+      return of([]);
+    }
+    const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices')) || [];
+    const serviceCodes: string[] = bookableServices.length ? bookableServices : locationServices;
+    const options = {
+      params: new HttpParams()
+        .set('serviceCodes', serviceCodes.join())
+    };
+    // note: may be better way of searching by epimms_id in future - previously getting location by epimms id was mocked
+    return this.http.get<LocationByEPIMMSModel[]>(`${LocationDataService.fullLocationUrl}`, options).pipe(map(
+      allLocations => allLocations.filter(location => locationIds.includes(location.epimms_id))));
   }
 }

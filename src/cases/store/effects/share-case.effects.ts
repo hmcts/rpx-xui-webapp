@@ -15,10 +15,10 @@ export class ShareCaseEffects {
   public payload: any;
 
   constructor(
-    private actions$: Actions,
-    private caseShareService: CaseShareService,
-    private router: Router,
-    private store: Store<shareCases.ShareCasesState>
+    private readonly actions$: Actions,
+    private readonly caseShareService: CaseShareService,
+    private readonly router: Router,
+    private readonly store: Store<shareCases.ShareCasesState>
   ) {
   }
 

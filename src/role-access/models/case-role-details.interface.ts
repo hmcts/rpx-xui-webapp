@@ -11,4 +11,5 @@ export interface CaseRoleDetails {
 export interface JudicialAppointment {
   epimms_id: string;
   location: string;
+  service_code: string;
 }

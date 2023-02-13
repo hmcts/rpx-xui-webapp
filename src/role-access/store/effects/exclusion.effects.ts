@@ -4,7 +4,7 @@ import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as routeAction from '../../../app/store/index';
-import { InfoMessageType } from '../../../work-allocation-2/enums';
+import { InfoMessageType } from '../../../work-allocation/enums';
 import { ExcludeOption, RoleAccessHttpError } from '../../models';
 import { ExclusionMessageText } from '../../models/enums';
 import { REDIRECTS } from '../../models/enums/redirect-urls';
@@ -13,11 +13,11 @@ import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
 
 @Injectable()
 export class ExclusionEffects {
-  private payload: any;
+  private readonly payload: any;
 
   constructor(
-    private actions$: Actions,
-    private roleExclusionsService: RoleExclusionsService
+    private readonly actions$: Actions,
+    private readonly roleExclusionsService: RoleExclusionsService
   ) {
   }
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
+const { SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 
 var BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../support/reportLogger');
@@ -28,7 +28,7 @@ function loginLogoutObjects() {
   }
 
   this.givenIAmUnauthenticatedUser = async function () {
-    await this.enterUrEmail("test@gmail.com");
+    await this.enterUrEmail("test_nonexisting_or_invalid@gmail.com");
     await this.enterPassword("123");
     await this.clickSignIn();
 
@@ -69,7 +69,7 @@ function loginLogoutObjects() {
 
   this.loginWithCredentials = async function (username, password) {
     await BrowserWaits.waitForElement(this.emailAddress);
-    CucumberReportLogger.AddMessage("IDAM URL :" + await browser.getCurrentUrl());
+    CucumberReportLogger.AddMessage("IDAM URL :" + await browser.getCurrentUrl(), LOG_LEVELS.Debug);
     await this.enterUrEmail(username);
     await this.enterPassword(password);
     await this.clickSignIn();

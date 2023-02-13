@@ -174,8 +174,9 @@ const PRIORITY: FieldConfig = {
   type: FieldType.PRIORITY,
   columnLabel: 'Priority',
   sortName: 'priority',
-  views: TaskView.ALL_VIEWS,
-  disableSort: true
+  views: TaskView.ALL_VIEWS
+  // unsure whether this is needed
+  // disableSort: true
 };
 const START_DATE: FieldConfig = {
   name: 'startDate',

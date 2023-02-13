@@ -1,7 +1,7 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { InfoMessage, InfoMessageType } from './../../enums';
-import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
+import { InfoMessage } from './../../shared/enums/info-message';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { InfoMessageComponent } from './info-message.component';
 
 
@@ -14,7 +14,7 @@ class WrapperComponent {
   @Input() public message: InfoMessage;
 }
 
-describe('WorkAllocation', () => {
+describe('SharedModule', () => {
 
   describe('InfoMessageComponent', () => {
     let component: InfoMessageComponent;
@@ -23,8 +23,10 @@ describe('WorkAllocation', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        declarations: [ WrapperComponent, InfoMessageComponent ],
+        schemas: [
+          CUSTOM_ELEMENTS_SCHEMA,
+        ]
       })
       .compileComponents();
 

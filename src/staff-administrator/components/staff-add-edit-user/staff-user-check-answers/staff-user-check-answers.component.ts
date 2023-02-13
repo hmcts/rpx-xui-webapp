@@ -4,7 +4,12 @@ import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
-import { Roles } from 'src/staff-administrator/models/roles.enum';
+import { filter } from 'rxjs/operators';
+import { InfoMessage } from '../../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../../app/shared/models';
+import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
+import { InfoMessageType } from '../../../../role-access/models/enums';
+import { Roles } from '../../../../staff-administrator/models/roles.enum';
 import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffJobTitles } from '../../../models/staff-job-titles';
@@ -48,7 +53,8 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private filterService: FilterService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private staffDataAccessService: StaffDataAccessService
+    private staffDataAccessService: StaffDataAccessService,
+    private readonly messageService: InfoMessageCommService,
   ) {
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
@@ -59,8 +65,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.filterService.getStream(this.formId).subscribe(data => {
-      this.addUserData = data.fields;
+    this.filterService.getStream(this.formId)
+    .pipe(filter(responseFormValue => responseFormValue !== null))
+    .subscribe(responseFormValue => {
+      this.addUserData = responseFormValue.fields;
       if (this.addUserData) {
         this.firstName = this.addUserData[0].value[0];
         this.lastName = this.addUserData[1].value[0];
@@ -203,7 +211,12 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     };
 
     this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {
-      // success banner
+      this.messageService.nextMessage({
+        message: InfoMessage.ADD_NEW_USER,
+        type: InfoMessageType.SUCCESS
+      } as InformationMessage);
+      this.filterService.clearSessionAndLocalPersistance(this.formId);
+      this.router.navigateByUrl('/staff');
     }, error => {
       this.router.navigateByUrl('/service-down');
     });

@@ -232,6 +232,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const availableLocations = filterService && filterService.fields && filterService.fields.find(field => field.name === 'locations');
     const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
     const regionLocations = JSON.parse(this.sessionStorageService.getItem('regionLocations'));
+    const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices'));
     // get booking locations
     if (this.bookingLocations && this.bookingLocations.length > 0) {
       this.defaultLocations = this.bookingLocations;
@@ -250,7 +251,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           const baseLocations: string[] = [];
           userDetails.roleAssignmentInfo.forEach(roleAssignment => {
             const roleJurisdiction = roleAssignment.jurisdiction;
-            if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION'
+            if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION' && !bookableServices.includes(roleAssignment.jurisdiction)
               && roleAssignment.baseLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
               // EUI-7339 - Added to ensure default locations are actually selectable
               if (!roleAssignment.region || locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)) {

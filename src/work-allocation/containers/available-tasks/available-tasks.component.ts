@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
-import { InfoMessage, InfoMessageType, TaskActionIds, TaskContext } from '../../enums';
+import { TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
 import { handleTasksFatalErrors, REDIRECTS } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import { InfoMessageType } from '../../../role-access/models/enums';
 
 @Component({
   selector: 'exui-available-tasks',

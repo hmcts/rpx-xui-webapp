@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
+import { EnvironmentConfig } from 'api/interfaces/environment.config';
 import { of } from 'rxjs';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
 import { AppConfigService } from '../config/configuration.services';
@@ -27,7 +28,11 @@ class MockConfigService {
 }
 
 const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
-const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get']);
+let mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get']);
+mockEnvironmentService = {
+  config$: of({} as EnvironmentConfig),
+  get: 'someUrl'
+};
 
 describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -45,7 +50,7 @@ describe('AppConfiguration', () => {
         { provide: EnvironmentService, useValue: mockEnvironmentService}
       ]
     });
-    mockEnvironmentService.get.and.returnValue('someUrl');
+    spyOn(mockEnvironmentService, 'get').and.returnValue('someUrl');
     mockFeatureToggleService.getValue.and.returnValue(of(true));
   });
 

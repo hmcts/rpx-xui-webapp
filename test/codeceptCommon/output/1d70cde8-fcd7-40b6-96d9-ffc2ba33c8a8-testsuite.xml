@@ -1,0 +1,67 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1675957693658' stop='1675957714093'>
+    <name>Check media viewer @fullfunctional</name>
+    <title>Check media viewer @fullfunctional</title>
+    <test-cases>
+        <test-case start='1675957695003' status='failed' stop='1675957713662'>
+            <name>Start create case for Hearing Recordings and check document</name>
+            <title>Start create case for Hearing Recordings and check document</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1675957695033' status='failed' stop='1675957713661'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675957695033' status='passed' stop='1675957704070'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675957704070' status='passed' stop='1675957712592'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675957712592' status='failed' stop='1675957713656'>
+                            <name>I see element {"css":"input.button"}</name>
+                            <title>I see element {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments>
+                <attachment title='Last Seen Screenshot' source='03de9f33-151f-4c11-8542-8ed35c1eb60a-attachment.png' type='image/png' size='78437'/>
+            </attachments>
+            <failure>
+                <message>Execution context was destroyed, most likely because of a navigation.</message>
+                <stack-trace>Error: Execution context was destroyed, most likely because of a navigation.
+                    at rewriteError (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/ExecutionContext.js:167:15)
+                    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                    at ExecutionContext._evaluateInternal (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/ExecutionContext.js:120:56)
+                    at ElementHandle.evaluateHandle (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:64:12)
+                    at ElementHandle.$$ (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:453:25)
+                    at Puppeteer.seeElement (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:970:15)
+                    at Element.isDisplayed (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/codeceptCommon/elements.js:60:13)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/loginLogout.steps.js:108:14
+                    at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:165:32)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/loginLogout.steps.js:102:5
+                    at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9)
+                  -- ASYNC --
+                    at ExecutionContext.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:111:15)
+                    at ElementHandle.evaluateHandle (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:64:42)
+                    at ElementHandle.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at ElementHandle.$$ (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:453:36)
+                    at ElementHandle.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at findElements (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:2299:42)
+                    at Puppeteer._locate (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:824:12)
+                    at Puppeteer.seeElement (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:970:15)</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

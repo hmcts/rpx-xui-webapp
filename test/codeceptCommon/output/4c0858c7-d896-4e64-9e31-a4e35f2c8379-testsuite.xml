@@ -1,0 +1,444 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1675961380543' stop='1675961469320'>
+    <name>Check media viewer @fullfunctional</name>
+    <title>Check media viewer @fullfunctional</title>
+    <test-cases>
+        <test-case start='1675961381311' status='failed' stop='1675961469116'>
+            <name>Start create case for Hearing Recordings and check document</name>
+            <title>Start create case for Hearing Recordings and check document</title>
+            <labels>
+                <label name='tag' value='@fullfunctional'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1675961382071' status='passed' stop='1675961399842'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675961382071' status='passed' stop='1675961399800'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961399801' status='passed' stop='1675961399813'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961399814' status='passed' stop='1675961399825'>
+                            <name>I see element {"css":"input.button"}</name>
+                            <title>I see element {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1675961399842' status='passed' stop='1675961428348'>
+                    <name>Given I am logged into Expert UI with hrs testes user details </name>
+                    <title>Given I am logged into Expert UI with hrs testes user details </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675961399842' status='passed' stop='1675961399848'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961399848' status='passed' stop='1675961399853'>
+                            <name>I wait for element {"css":"[id='username']"}, 30</name>
+                            <title>I wait for element {"css":"[id='username']"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961399853' status='passed' stop='1675961399855'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961399857' status='passed' stop='1675961399861'>
+                            <name>I wait for element {"css":"[id='username']"}, 30</name>
+                            <title>I wait for element {"css":"[id='username']"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961399862' status='passed' stop='1675961400386'>
+                            <name>I clear field {"css":"[id='username']"}</name>
+                            <title>I clear field {"css":"[id='username']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961400387' status='passed' stop='1675961401231'>
+                            <name>I fill field {"css":"[id='username']"}, "xui.hrs.tester@hmcts.net"</name>
+                            <title>I fill field {"css":"[id='username']"}, "xui.hrs.tester@hmcts.net"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961401231' status='passed' stop='1675961401245'>
+                            <name>I wait for element {"css":"[id='password']"}, 30</name>
+                            <title>I wait for element {"css":"[id='password']"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961401245' status='passed' stop='1675961401813'>
+                            <name>I clear field {"css":"[id='password']"}</name>
+                            <title>I clear field {"css":"[id='password']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961401814' status='passed' stop='1675961402442'>
+                            <name>I fill field {"css":"[id='password']"}, "Monday01"</name>
+                            <title>I fill field {"css":"[id='password']"}, "Monday01"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961402443' status='passed' stop='1675961404176'>
+                            <name>I click {"css":"input.button"}</name>
+                            <title>I click {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961404677' status='passed' stop='1675961404689'>
+                            <name>I grab number of visible elements {"css":"[id='username']"}</name>
+                            <title>I grab number of visible elements {"css":"[id='username']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961404690' status='passed' stop='1675961404692'>
+                            <name>I grab number of visible elements {"xpath":"//h2[@id = \"validation-error-summary-heading\"][contains(text(),\"Incorrect email or password\")]"}</name>
+                            <title>I grab number of visible elements {"xpath":"//h2[@id = \"validation-error-summary-heading\"][contains(text(),\"Incorrect email or password\")]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961404692' status='passed' stop='1675961404695'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961404709' status='passed' stop='1675961428343'>
+                            <name>I wait for element "exui-app-header", 30</name>
+                            <title>I wait for element "exui-app-header", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961428343' status='passed' stop='1675961428348'>
+                            <name>I wait for element "exui-app-header", 30</name>
+                            <title>I wait for element "exui-app-header", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1675961428348' status='passed' stop='1675961428865'>
+                    <name>Then I should be redirected to EUI dashboard page </name>
+                    <title>Then I should be redirected to EUI dashboard page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675961428348' status='passed' stop='1675961428354'>
+                            <name>I wait for element "exui-header .hmcts-primary-navigation__item", 30</name>
+                            <title>I wait for element "exui-header .hmcts-primary-navigation__item", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961428354' status='passed' stop='1675961428360'>
+                            <name>I see element {"css":".govuk-heading-xl"}</name>
+                            <title>I see element {"css":".govuk-heading-xl"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1675961428865' status='passed' stop='1675961430566'>
+                    <name>When I click on create case button </name>
+                    <title>When I click on create case button </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675961428865' status='passed' stop='1675961428869'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961429370' status='passed' stop='1675961429389'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961429871' status='passed' stop='1675961429876'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961429876' status='passed' stop='1675961429881'>
+                            <name>I wait for element {"xpath":"//li/a[contains(text(),'Create case')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//li/a[contains(text(),'Create case')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961429881' status='passed' stop='1675961430466'>
+                            <name>I click {"xpath":"//li/a[contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//li/a[contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961430467' status='passed' stop='1675961430472'>
+                            <name>I execute script function(){
+                                            return JSON.stringify(window.performance.getEntriesByType('resource')) 
+                                        }</name>
+                            <title>I execute script function(){
+                                            return JSON.stringify(window.performance.getEntriesByType('resource')) 
+                                        }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961430560' status='passed' stop='1675961430566'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 30</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1675961430566' status='passed' stop='1675961431078'>
+                    <name>Then Create case page should be displayed </name>
+                    <title>Then Create case page should be displayed </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675961430566' status='passed' stop='1675961430571'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 30</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1675961431078' status='passed' stop='1675961433705'>
+                    <name>When I start case with jurisdiction "Hearing Recordings" case type "Recorded Hearings v.1.0|Recorded Hearings v.03|Recorded Hearings" and event "Create a case" </name>
+                    <title>When I start case with jurisdiction "Hearing Recordings" case type "Recorded Hearings v.1.0|Recorded Hearings v.03|Recorded Hearings" and event "Create a case" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675961431078' status='passed' stop='1675961431082'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961431083' status='passed' stop='1675961431603'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-jurisdiction']"}, "Hearing Recordings"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-jurisdiction']"}, "Hearing Recordings"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961431604' status='passed' stop='1675961432123'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-case-type']"}, "Recorded Hearings v.1.0|Recorded Hearings v.03|Recorded Hearings"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-case-type']"}, "Recorded Hearings v.1.0|Recorded Hearings v.03|Recorded Hearings"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961432124' status='passed' stop='1675961432641'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-event']"}, "Create a case"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-event']"}, "Create a case"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961432641' status='passed' stop='1675961432643'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961433146' status='passed' stop='1675961433148'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961433149' status='passed' stop='1675961433154'>
+                            <name>I wait for element "#content button", 30</name>
+                            <title>I wait for element "#content button", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961433154' status='passed' stop='1675961433696'>
+                            <name>I click "#content button"</name>
+                            <title>I click "#content button"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961433697' status='passed' stop='1675961433699'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961433700' status='passed' stop='1675961433701'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1675961433705' status='passed' stop='1675961434515'>
+                    <name>Then I am on case form page </name>
+                    <title>Then I am on case form page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675961433705' status='passed' stop='1675961434507'>
+                            <name>I wait for element "ccd-case-edit", 30</name>
+                            <title>I wait for element "ccd-case-edit", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961434507' status='passed' stop='1675961434513'>
+                            <name>I grab number of visible elements "ccd-case-edit"</name>
+                            <title>I grab number of visible elements "ccd-case-edit"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1675961434515' status='passed' stop='1675961439106'>
+                    <name>When I create Hearing Recordings case </name>
+                    <title>When I create Hearing Recordings case </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675961434515' status='passed' stop='1675961435050'>
+                            <name>I scroll to {"xpath":"//button[contains(text(),'Add new')]"}</name>
+                            <title>I scroll to {"xpath":"//button[contains(text(),'Add new')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961435051' status='passed' stop='1675961435608'>
+                            <name>I click {"xpath":"//button[contains(text(),'Add new')]"}</name>
+                            <title>I click {"xpath":"//button[contains(text(),'Add new')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961435609' status='passed' stop='1675961435615'>
+                            <name>I wait for element {"xpath":"//input[@class='form-control bottom-30']"}, 30</name>
+                            <title>I wait for element {"xpath":"//input[@class='form-control bottom-30']"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961435616' status='passed' stop='1675961437158'>
+                            <name>I fill field {"xpath":"//input[@class='form-control bottom-30']"}, "/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/documents/dummy.pdf"</name>
+                            <title>I fill field {"xpath":"//input[@class='form-control bottom-30']"}, "/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/documents/dummy.pdf"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961437158' status='passed' stop='1675961437161'>
+                            <name>I grab number of visible elements {"xpath":"//ccd-write-document-field//span[contains(text(),\"Uploading\")]"}</name>
+                            <title>I grab number of visible elements {"xpath":"//ccd-write-document-field//span[contains(text(),\"Uploading\")]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961437162' status='passed' stop='1675961437164'>
+                            <name>I grab number of visible elements {"xpath":"//ccd-write-document-field//span[contains(text(),\"Uploading\")]"}</name>
+                            <title>I grab number of visible elements {"xpath":"//ccd-write-document-field//span[contains(text(),\"Uploading\")]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961437165' status='passed' stop='1675961437167'>
+                            <name>I grab number of visible elements {"xpath":"//ccd-write-document-field//span[contains(text(),\"Uploading\")]"}</name>
+                            <title>I grab number of visible elements {"xpath":"//ccd-write-document-field//span[contains(text(),\"Uploading\")]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961437167' status='passed' stop='1675961437698'>
+                            <name>I scroll to {"xpath":"//button[contains(text(),'Continue')]"}</name>
+                            <title>I scroll to {"xpath":"//button[contains(text(),'Continue')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961437698' status='passed' stop='1675961438250'>
+                            <name>I click {"xpath":"//button[contains(text(),'Continue')]"}</name>
+                            <title>I click {"xpath":"//button[contains(text(),'Continue')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961438250' status='passed' stop='1675961438264'>
+                            <name>I wait for element {"xpath":"//button[contains(text(),'Submit')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//button[contains(text(),'Submit')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961438264' status='passed' stop='1675961438807'>
+                            <name>I click {"xpath":"//button[contains(text(),'Submit')]"}</name>
+                            <title>I click {"xpath":"//button[contains(text(),'Submit')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675961438813' status='passed' stop='1675961439106'>
+                            <name>I wait for element "exui-case-details-home", 30</name>
+                            <title>I wait for element "exui-case-details-home", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1675961439106' status='failed' stop='1675961469116'>
+                    <name>When I click on Case Hearing Files tab </name>
+                    <title>When I click on Case Hearing Files tab </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675961439106' status='failed' stop='1675961469112'>
+                            <name>I wait for element {"xpath":"//div[contains(text(),'Case Hearing Files')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//div[contains(text(),'Case Hearing Files')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments>
+                <attachment title='Last Seen Screenshot' source='fc4a6829-8b79-4be6-b8ba-ff3dfa623302-attachment.png' type='image/png' size='99561'/>
+            </attachments>
+            <failure>
+                <message>element ({xpath: //div[contains(text(),'Case Hearing Files')]}) still not present on page after 30 sec
+                page.waitForSelector: Timeout 30000ms exceeded.
+                =========================== logs ===========================
+                waiting for locator('xpath=//div[contains(text(),\'Case Hearing Files\')]')
+                ============================================================</message>
+                <stack-trace>Error: element ({xpath: //div[contains(text(),'Case Hearing Files')]}) still not present on page after 30 sec
+                page.waitForSelector: Timeout 30000ms exceeded.
+                =========================== logs ===========================
+                waiting for locator('xpath=//div[contains(text(),\'Case Hearing Files\')]')
+                ============================================================
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Playwright.js:2229:13
+                    at Element.click (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/codeceptCommon/elements.js:46:9)
+                    at HearingRecordingsCase.hearingFilesTab (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/hearingRecordingsCase.js:44:7)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/hearingRecordingsCase.steps.js:16:9
+                    at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:165:32)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/hearingRecordingsCase.steps.js:14:5
+                    at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9)</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

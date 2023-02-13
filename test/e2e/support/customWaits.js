@@ -26,7 +26,11 @@ class BrowserWaits {
     }
 
     async waitForSeconds(waitInSec) {
-        // await browser.sleep(waitInSec * 1000);
+        return new Promise((resolve,reject) => {
+            setTimeout(() => {
+                resolve();
+            }, waitInSec*1000)
+        })
     }
 
     async waitForElementTime(element, waitTime) {
@@ -43,7 +47,7 @@ class BrowserWaits {
     }
 
     async waitForPresenceOfElement(element) {
-        await browser.wait(EC.presenceOf(element), this.waitTime, "Error waitForPresenceOfElement : " + element.locator().toString());
+        await this.waitForElement(element);
     }
 
     async waitForElementClickable(element, waitInSec) {

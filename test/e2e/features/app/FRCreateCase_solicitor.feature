@@ -1,3 +1,4 @@
+@codecept
 Feature: FR create case workflow
 
   Background:

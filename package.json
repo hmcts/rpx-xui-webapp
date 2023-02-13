@@ -58,7 +58,7 @@
     "test:ngIntegration": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:ngIntegrationDebug": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js --debug",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
-    "test:codecept": "npx codeceptjs run --config=./test/codeceptCommon/codecept.conf.js --steps  --features"
+    "test:codecept": "npx codeceptjs run --config=./test/codeceptCommon/codecept.conf.js --steps  --features --grep @codecept"
   },
   "private": true,
   "dependencies": {
@@ -131,6 +131,7 @@
     "ngx-pagination": "^3.2.1",
     "node-http-proxy-json": "^0.1.9",
     "p-iteration": "^1.1.7",
+    "playwright": "^1.18",
     "portfinder": "^1.0.28",
     "protractor-screenshot-utils": "^1.0.5",
     "rxjs": "^6.0.0",
@@ -154,6 +155,7 @@
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "^7.2.13",
     "@angular/language-service": "~7.2.0",
+    "@codeceptjs/helper": "^2.0.1",
     "@ngrx/schematics": "^7.4.0",
     "@pact-foundation/pact": "^9.11.1",
     "@pact-foundation/pact-node": "^10.9.7",
@@ -223,8 +225,7 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
-    "webpack-source-map-support": "^2.0.1",
-    "@codeceptjs/helper": "^2.0.1"
+    "webpack-source-map-support": "^2.0.1"
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",

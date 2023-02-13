@@ -55,9 +55,14 @@ const appTestData = require('../../config/appTestConfig')
         await browserWaits.retryWithActionCallback(async () => {
             try{
                 await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-                expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+                await browserWaits.retryWithActionCallback(async () => {
+                    await browserWaits.waitForSeconds(5)
+                    expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+                })
             }catch(err){
-                await headerPage.refreshBrowser();
+                await headerPage.clickAppLogoLink();
+                await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+                // await headerPage.refreshBrowser();
                 throw new Error(err);
             }
             

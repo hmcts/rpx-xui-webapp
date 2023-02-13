@@ -47,7 +47,8 @@ class Browser{
     }
 
     async scrollToElement(elementObj){
-        return await getActor().scrollIntoView(elementObj.selector)
+        const actor = getActor();
+        return await actor.scrollTo(elementObj.selector)
     }
 
     async getSessionStorage(key) {
@@ -60,6 +61,14 @@ class Browser{
         return await getActor().executeScript(() => {
             return window.localStorage[key]
         });
+    }
+
+    async getCurrentWindowHandle(){
+        return await getActor().grabCurrentWindowHandle();
+    }
+
+    async getAllWindowHandles() {
+        return await getActor().grabAllWindowHandles();
     }
 }
 

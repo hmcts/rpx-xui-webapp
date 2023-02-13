@@ -15,22 +15,22 @@ exports.config = {
   },
   output: `${functional_output_dir}/output`,
   helpers: {
-    Puppeteer: {
-      url: 'https://manage-case.aat.platform.hmcts.net/',
-      browser: 'chrome',
-      show: true,
-      restart:true,
-      // chrome: {
-      //   args: ['--no-sandbox', '--headless1', '--window-size=1920,1080', '--disable-web-security'],
-      //   ignoreHTTPSErrors: true,
-      // },
-    },
-    // WebDriver:{
+    // Puppeteer: {
     //   url: 'https://manage-case.aat.platform.hmcts.net/',
     //   browser: 'chrome',
     //   show: true,
+    //   restart:true,
+    //   // chrome: {
+    //   //   args: ['--no-sandbox', '--headless1', '--window-size=1920,1080', '--disable-web-security'],
+    //   //   ignoreHTTPSErrors: true,
+    //   // },
+    // },
+    WebDriver:{
+      url: 'https://manage-case.aat.platform.hmcts.net/',
+      browser: 'chrome',
+      show: true,
 
-    // }
+    }
   },
   "mocha": {
     "codeceptjs-cli-reporter": {
@@ -67,9 +67,9 @@ exports.config = {
   include: {
   },
   bootstrap: null,
-  teardown: () => {
-    console.log("Run complete...")
+  // teardown: () => {
+  //   console.log("Run complete...")
     
-    return true
-  }
+  //   return true
+  // }
 }

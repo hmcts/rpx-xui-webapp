@@ -14,6 +14,7 @@ const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
 const allWorkPage = require("../../features/pageObjects/workAllocation/allWorkPage");
 const globalSearchPage = require('./globalSearchCases');
 const CucumberReporter = require('../../support/reportLogger');
+const { ExceptionData } = require('applicationinsights/out/Declarations/Contracts');
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
@@ -349,8 +350,12 @@ function HeaderPage() {
         break;
       case 'Create case':
         const isOnpage = await createCaseStartPage.amOnPage();
-        const juridictiosnLoaded = await createCaseStartPage.getLoadedJurisdictionsCount();
-        retValue = isOnpage && juridictiosnLoaded > 0;
+        retValue =  await BrowserWaits.retryWithActionCallback(async () => {
+          const juridictiosnLoaded = await createCaseStartPage.getLoadedJurisdictionsCount();
+          const val =  juridictiosnLoaded > 1;
+          return val
+        });
+       
         break;
       case 'Find case':
         retValue = await searchCasePage.amOnPage();

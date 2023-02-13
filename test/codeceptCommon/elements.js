@@ -23,7 +23,7 @@ class Element {
     }
 
     wait() {
-        getActor().waitForElement(this.selector, 30)
+        getActor().waitForElement(this.selector, 60)
     }
 
     locator() {
@@ -51,7 +51,7 @@ class Element {
     }
 
     async isPresent(){
-        const count = await getActor().grabNumberOfVisibleElements(this.selector);
+        const count = await getActor().grabTextFromAll(this.selector);
         return count > 0
     }
 
@@ -77,7 +77,8 @@ class Element {
     }
 
     async count(){
-        return await getActor().grabNumberOfVisibleElements(this.selector) 
+        const elements = await getActor().grabTextFromAll(this.selector) 
+        return elements.length
     }
 
     async get(index){

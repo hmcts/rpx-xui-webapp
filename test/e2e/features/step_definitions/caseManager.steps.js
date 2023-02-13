@@ -31,23 +31,23 @@ const creatCaseStepTimeout = 600*1000;
         await caseManager.startCaseCreation(jurisidiction, casetype, event);
     });
 
-    When('I create FR case', { timeout: creatCaseStepTimeout }, async function () {
+    When('I create FR case',  async function () {
         await frCase.createCase(false);
     });
 
-    When('I create Divorce case', { timeout: creatCaseStepTimeout }, async function () {
+    When('I create Divorce case',  async function () {
         await divorceCase.createCase(false);
     });
 
-    When('I create Probate case', { timeout: creatCaseStepTimeout }, async function () {
+    When('I create Probate case',  async function () {
         await probateCase.createCase(false);
     })
 
-    When('I create IAC case', { timeout: creatCaseStepTimeout }, async function () {
+    When('I create IAC case', async function () {
         await iacCase.createCase(false);
     })
 
-    When('I create Hearing Recordings case', { timeout: creatCaseStepTimeout }, async function () { 
+    When('I create Hearing Recordings case', async function () { 
         await hearingRecordingsCase.createCase();
     })
 

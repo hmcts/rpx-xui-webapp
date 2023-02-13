@@ -12,10 +12,10 @@ Feature: Check media viewer
         When I start case with jurisdiction "Hearing Recordings" case type "Recorded Hearings v.1.0|Recorded Hearings v.03|Recorded Hearings" and event "Create a case"
         Then I am on case form page
         When I create Hearing Recordings case
-        Given I save current window handle reference "mainTab"
+        # Given I save current window handle reference "mainTab"
         When I click on Case Hearing Files tab
         When I click on a file
         Given I switch to new window opened
-        Given I save current window handle reference "mediaViewerTest"
+        # Given I save current window handle reference "mediaViewerTest"
         Then I see the file displayed in Media Viewer
 

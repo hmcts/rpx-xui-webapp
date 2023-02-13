@@ -1,7 +1,7 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng @wa2 @wa @ignore
+@ng @wa2 @wa @ignore 
 Feature: WA Release 2: My cases - Manage links - Action work flow
 
     Background: Mock and browser setup
@@ -13,7 +13,11 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-      
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I start MockApp
         Given I navigate to home page
 

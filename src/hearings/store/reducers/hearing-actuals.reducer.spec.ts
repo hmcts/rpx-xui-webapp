@@ -1,14 +1,15 @@
-import { HearingActualsStateData } from 'src/hearings/models/hearingActualsStateData.model';
 import { HttpError } from '../../../models/httpError.model';
 import { hearingActualsMainModel } from '../../hearing.test.data';
+import { HearingActualsStateData } from '../../models/hearingActualsStateData.model';
 import * as fromHearingActualsActions from '../actions/hearing-actuals.action';
 import * as fromHearingActualsReducer from './hearing-actuals.reducer';
 
 describe('Hearing Actuals Reducer', () => {
   describe('Actions', () => {
+    // Check testing
     describe('Reset action', () => {
       it('should set correct object', () => {
-        const initialState = fromHearingActualsReducer.initialHearingActualsState;
+        const initialState = {...fromHearingActualsReducer.initialHearingActualsState};
         const action = new fromHearingActualsActions.ResetHearingActuals();
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);

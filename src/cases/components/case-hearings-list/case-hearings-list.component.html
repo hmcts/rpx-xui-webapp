@@ -1,4 +1,4 @@
-<table class="govuk-table">
+<table class="govuk-table" *ngIf="hearingStageOptions">
   <thead class="govuk-table__head">
   <tr class="govuk-table__row">
     <th class="govuk-table__header govuk-body-lead">{{ status }}</th>
@@ -14,12 +14,13 @@
     </td>
   </tr>
   <tr class="govuk-table__row" *ngFor="let hearing of hearingList$ | async">
-    <td class="govuk-table__header govuk-table-width-30-percent gds-font">{{ hearing.hearingType | convertToValue: hearingStageOptions}}
+    <td class="govuk-table__header govuk-table-width-30-percent gds-font">{{ hearing.hearingType | convertToValue: hearingStageOptions }}
       <img *ngIf="hasUpdateAction && isManageLinksEnabled(hearing.hearingGroupRequestId)" src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle" alt="Linked">
     </td>
     <td
       class="govuk-table__cell govuk-table-width-15-percent gds-font">
       {{ hearing.earliestHearingStartDateTime ? (hearing.earliestHearingStartDateTime | date:'d MMMM yyyy') : '' }}
+      <img *ngIf="hearing.hearingDaySchedule && hearing.hearingDaySchedule.length > 1" src="../../../../assets/img/calendar-logo.svg" width="20px;" class="align-middle status-icon" alt="Linked">
     </td>
     <td class="govuk-table__cell govuk-table-width-25-percent gds-font">
       <strong [ngClass]="hearing.exuiDisplayStatus | hearingsBadge">{{ hearing.exuiDisplayStatus }}

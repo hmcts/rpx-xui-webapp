@@ -2,6 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
+import { HearingStageResolver } from '../hearings/resolvers/hearing-stage.resolver';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
@@ -14,13 +15,14 @@ import {
   CaseShareComponent,
   CaseShareConfirmComponent
 } from './containers';
+import { CaseLoaderComponent } from './containers/case-loader/case-loader.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
 import { CaseViewerContainerComponent } from './containers/case-viewer-container/case-viewer-container.component';
-import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
+import { RolesAndAccessContainerComponent
+} from './containers/roles-and-access-container/roles-and-access-container.component';
 import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
-import { HearingStageResolver } from '../hearings/resolvers/hearing-stage.resolver';
 
 export const ROUTES: Routes = [
   {
@@ -36,6 +38,10 @@ export const ROUTES: Routes = [
         data: {
           title: 'Case list'
         }
+      },
+      {
+        path: 'case-loader',
+        component: CaseLoaderComponent
       },
       {
         path: 'case-share',
@@ -117,7 +123,6 @@ export const ROUTES: Routes = [
               },
               {
                 path: 'hearings',
-                resolve: {hearingStageOptions: HearingStageResolver},
                 component: CaseHearingsComponent,
               }
             ]
@@ -132,5 +137,5 @@ export const ROUTES: Routes = [
 
 ];
 
-export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const casesRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);
 

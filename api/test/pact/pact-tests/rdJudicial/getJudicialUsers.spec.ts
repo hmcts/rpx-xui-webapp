@@ -1,16 +1,16 @@
 import { expect } from 'chai';
-import { PactTestSetup } from '../settings/provider.mock';
-
-import * as sinon from 'sinon'
-
-import * as config from 'config'
+import * as config from 'config';
+import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
+import { PactTestSetup } from '../settings/provider.mock';
 import { getJudicialRefDataAPIOverrides } from '../utils/configOverride';
+import { DateTimeMatcher2 } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 
+
+
+
 const { Matchers } = require('@pact-foundation/pact');
-import { DateTimeMatcher2 } from '../utils/matchers';
 const { somethingLike,eachLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_judicial', port: 8000 });
 
@@ -91,7 +91,10 @@ describe("Judicial ref data api, get all judge users", () => {
            
             const configValues = getJudicialRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl)
             configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
-            configValues['serviceRefDataMapping'] = [{ "IA": "BFA1" }];
+
+            configValues['serviceRefDataMapping'] = [
+                { "service": "IA", "serviceCodes": ["BFA1"] }, { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] }
+            ];
 
             sandbox.stub(config, 'get').callsFake((prop) => {
                 return configValues[prop];

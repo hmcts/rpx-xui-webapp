@@ -26,9 +26,9 @@ class AllWork extends TaskList {
 
         //Cases container elements
         this.casesContainer = $('exui-all-work-cases exui-work-case-list');
-
+        this.allworkCasesMessage = $('exui-all-work-cases .hmcts-filter-layout__content p')
         this.FILTER_ITEMS = {
-            'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/..//select'),
+            'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/../..//select'),
             'Location':  $('.all-work-filter #selectLocation'),
             'Location radios': new GovUKRadios('css', '.all-work-filter #selectLocation .govuk-radios'),
             'Location search': $('.all-work-filter  #location xuilib-find-location .search-location exui-search-location input') ,
@@ -38,11 +38,12 @@ class AllWork extends TaskList {
             'Person input': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
             'Task type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select'),
             'Priority': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select'),
-            'Select a role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Role type")]/..//select')
-            
+            'Select a role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Select a role type")]/..//select'),
+            'Person': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
+
         } 
 
-        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Tasks by role type', 'Task type', 'Priority', 'Person','Tasks', 'Role type','Location radios'];
+        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Tasks by role type', 'Task type', 'Priority', 'Person', 'Tasks', 'Select a role type','Location radios'];
 
         this.filterApplyBtn = $('exui-all-work-home xuilib-generic-filter #applyFilter');
         this.filterResetBtn = $('exui-all-work-home xuilib-generic-filter #cancelFilter');

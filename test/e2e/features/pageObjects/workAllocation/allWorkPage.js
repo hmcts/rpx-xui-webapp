@@ -28,7 +28,7 @@ class AllWork extends TaskList {
         this.casesContainer = $('exui-all-work-cases exui-work-case-list');
         this.allworkCasesMessage = $('exui-all-work-cases .hmcts-filter-layout__content p')
         this.FILTER_ITEMS = {
-            'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/..//select'),
+            'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/../..//select'),
             'Location':  $('.all-work-filter #selectLocation'),
             'Location radios': new GovUKRadios('css', '.all-work-filter #selectLocation .govuk-radios'),
             'Location search': $('.all-work-filter  #location xuilib-find-location .search-location exui-search-location input') ,

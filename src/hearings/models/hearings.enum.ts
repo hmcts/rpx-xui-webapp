@@ -126,6 +126,7 @@ export enum DOWUnavailabilityType {
 export enum HearingCategory {
   HearingPriority = 'HearingPriority',
   HearingChannel = 'HearingChannel',
+  HearingSubChannel = 'HearingSubChannel',
   HearingType = 'HearingType',
   CaseType = 'caseType',
   Facilities = 'Facilities',
@@ -321,6 +322,7 @@ export enum IsHiddenSource {
   JUDGE_TYPES,
   JUDGE_NAME,
   LISTED,
+  LISTED_HEARING_VIEWER,
   NOT_LISTED
 }
 

@@ -80,3 +80,6 @@ stryker.log
 yalc.lock
 
 ignore/
+
+/functional-output
+/test/codecept/Common/output/*

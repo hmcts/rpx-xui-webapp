@@ -1,0 +1,49 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1675953641094' stop='1675953701143'>
+    <name>Check media viewer @fullfunctional</name>
+    <title>Check media viewer @fullfunctional</title>
+    <test-cases>
+        <test-case start='1675953642655' status='failed' stop='1675953684563'>
+            <name>Start create case for Hearing Recordings and check document</name>
+            <title>Start create case for Hearing Recordings and check document</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1675953642699' status='failed' stop='1675953684554'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1675953642699' status='passed' stop='1675953654537'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1675953654538' status='failed' stop='1675953684545'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments>
+                <attachment title='Last Seen Screenshot' source='01899b9e-e1d0-4b4e-a6da-5242cffb765f-attachment.png' type='image/png' size='35734'/>
+            </attachments>
+            <failure>
+                <message>element ({xpath: //*[@id="authorizeCommand"]/h1}) still not present on page after 30 sec
+                waiting for XPath "//*[@id="authorizeCommand"]/h1" failed: timeout 30000ms exceeded</message>
+                <stack-trace>Error: element ({xpath: //*[@id="authorizeCommand"]/h1}) still not present on page after 30 sec
+                waiting for XPath "//*[@id="authorizeCommand"]/h1" failed: timeout 30000ms exceeded
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:1987:13
+                    at Element.isDisplayed (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/codeceptCommon/elements.js:60:13)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/loginLogout.steps.js:108:14
+                    at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:165:32)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/loginLogout.steps.js:102:5
+                    at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9)</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

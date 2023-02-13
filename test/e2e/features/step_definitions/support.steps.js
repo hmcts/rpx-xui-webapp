@@ -3,7 +3,6 @@
 const BrowserWaits = require("../../support/customWaits");
 const ArrayUtil = require("../../utils/ArrayUtil");
 var { defineSupportCode } = require('cucumber');
-const { browser } = require("protractor");
 const BrowserLogs = require('../../support/browserLogs');
 
 const cucumberReporter = require('../../support/reportLogger');
@@ -52,7 +51,7 @@ const cucumberReporter = require('../../support/reportLogger');
         const scenarioDataKeys = Object.keys(global.scenarioData);
         const windowReferences = await ArrayUtil.filter(scenarioDataKeys,async (scrDataKey) => scrDataKey.includes('window.') );
         const knownWindowHandles = await ArrayUtil.map(windowReferences, async (windowRef) => { return global.scenarioData[windowRef]}); 
-        const allWindowHandles = await browser.driver.getAllWindowHandles();
+        const allWindowHandles = await browser.getAllWindowHandles();
         const unKnownWindowHandles = await ArrayUtil.filter(allWindowHandles, async (handle) => !knownWindowHandles.includes(handle));
         return unKnownWindowHandles;
     }

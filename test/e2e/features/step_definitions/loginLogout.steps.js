@@ -353,6 +353,7 @@ async function waitForElement(el) {
     loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.hrsTesterUser, config.config.params.hrsTesterPassword, this);
 
+    await BrowserWaits.waitForElement($("exui-app-header"))
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });

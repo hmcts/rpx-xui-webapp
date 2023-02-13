@@ -1,0 +1,409 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1676025712197' stop='1676025786293'>
+    <name>FR create case workflow @codecept</name>
+    <title>FR create case workflow @codecept</title>
+    <test-cases>
+        <test-case start='1676025712732' status='failed' stop='1676025786077'>
+            <name>Start FR Case creation {"Jurisdiction":"Family Divorce","CaseType":"Financial Remedy Consented","Event":"Consent Order Application"}</name>
+            <title>Start FR Case creation {"Jurisdiction":"Family Divorce","CaseType":"Financial Remedy Consented","Event":"Consent Order Application"}</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1676025713565' status='passed' stop='1676025742149'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676025713565' status='passed' stop='1676025742090'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025742092' status='passed' stop='1676025742108'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025742110' status='passed' stop='1676025742129'>
+                            <name>I see element {"css":"input.button"}</name>
+                            <title>I see element {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676025742149' status='passed' stop='1676025766285'>
+                    <name>Given I am logged into Expert UI with valid user details </name>
+                    <title>Given I am logged into Expert UI with valid user details </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676025742149' status='passed' stop='1676025742163'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025742165' status='passed' stop='1676025742181'>
+                            <name>I wait for element {"css":"[id='username']"}, 30</name>
+                            <title>I wait for element {"css":"[id='username']"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025742182' status='passed' stop='1676025742188'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025742193' status='passed' stop='1676025742206'>
+                            <name>I wait for element {"css":"[id='username']"}, 30</name>
+                            <title>I wait for element {"css":"[id='username']"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025742207' status='passed' stop='1676025742757'>
+                            <name>I clear field {"css":"[id='username']"}</name>
+                            <title>I clear field {"css":"[id='username']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025742758' status='passed' stop='1676025743717'>
+                            <name>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</name>
+                            <title>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025743717' status='passed' stop='1676025743733'>
+                            <name>I wait for element {"css":"[id='password']"}, 30</name>
+                            <title>I wait for element {"css":"[id='password']"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025743734' status='passed' stop='1676025744270'>
+                            <name>I clear field {"css":"[id='password']"}</name>
+                            <title>I clear field {"css":"[id='password']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025744271' status='passed' stop='1676025744917'>
+                            <name>I fill field {"css":"[id='password']"}, "Monday01"</name>
+                            <title>I fill field {"css":"[id='password']"}, "Monday01"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025744918' status='passed' stop='1676025747261'>
+                            <name>I click {"css":"input.button"}</name>
+                            <title>I click {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025747279' status='passed' stop='1676025766284'>
+                            <name>I wait for element "exui-app-header", 30</name>
+                            <title>I wait for element "exui-app-header", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676025766285' status='passed' stop='1676025766826'>
+                    <name>Then I should be redirected to EUI dashboard page </name>
+                    <title>Then I should be redirected to EUI dashboard page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676025766285' status='passed' stop='1676025766298'>
+                            <name>I wait for element "exui-header .hmcts-primary-navigation__item", 30</name>
+                            <title>I wait for element "exui-header .hmcts-primary-navigation__item", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025766299' status='passed' stop='1676025766315'>
+                            <name>I see element {"css":".govuk-heading-xl"}</name>
+                            <title>I see element {"css":".govuk-heading-xl"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676025766826' status='failed' stop='1676025786077'>
+                    <name>When I click on primary navigation header tab "Create case", I see selected tab page displayed </name>
+                    <title>When I click on primary navigation header tab "Create case", I see selected tab page displayed </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676025766826' status='passed' stop='1676025766834'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025766837' status='passed' stop='1676025766852'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025766853' status='passed' stop='1676025767457'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025767460' status='passed' stop='1676025767475'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 30</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025767476' status='passed' stop='1676025767493'>
+                            <name>I grab number of visible elements "#cc-jurisdiction option"</name>
+                            <title>I grab number of visible elements "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025771298' status='passed' stop='1676025771892'>
+                            <name>I click ".hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link"</name>
+                            <title>I click ".hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025772396' status='passed' stop='1676025772404'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025772406' status='passed' stop='1676025772418'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025772419' status='passed' stop='1676025772986'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025772991' status='passed' stop='1676025772995'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025773498' status='passed' stop='1676025773504'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025773506' status='passed' stop='1676025773518'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025773520' status='passed' stop='1676025774075'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025774078' status='passed' stop='1676025774090'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 30</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025774092' status='passed' stop='1676025774107'>
+                            <name>I grab number of visible elements "#cc-jurisdiction option"</name>
+                            <title>I grab number of visible elements "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025776116' status='passed' stop='1676025776709'>
+                            <name>I click ".hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link"</name>
+                            <title>I click ".hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025777211' status='passed' stop='1676025777217'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025777218' status='passed' stop='1676025777230'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025777231' status='passed' stop='1676025777784'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025777786' status='passed' stop='1676025777790'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025778293' status='passed' stop='1676025778299'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025778301' status='passed' stop='1676025778313'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025778314' status='passed' stop='1676025778864'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025778867' status='passed' stop='1676025778880'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 30</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025778881' status='passed' stop='1676025778946'>
+                            <name>I grab number of visible elements "#cc-jurisdiction option"</name>
+                            <title>I grab number of visible elements "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025780058' status='passed' stop='1676025780619'>
+                            <name>I click ".hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link"</name>
+                            <title>I click ".hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025781122' status='passed' stop='1676025781129'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025781131' status='passed' stop='1676025781144'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025781145' status='passed' stop='1676025781699'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025781701' status='passed' stop='1676025781705'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025782208' status='passed' stop='1676025782214'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025782216' status='passed' stop='1676025782225'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025782226' status='passed' stop='1676025782777'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025782779' status='passed' stop='1676025782795'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 30</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025782796' status='passed' stop='1676025782869'>
+                            <name>I grab number of visible elements "#cc-jurisdiction option"</name>
+                            <title>I grab number of visible elements "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025784424' status='passed' stop='1676025784980'>
+                            <name>I click ".hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link"</name>
+                            <title>I click ".hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025785483' status='passed' stop='1676025785489'>
+                            <name>I grab number of visible elements "div.spinner-container"</name>
+                            <title>I grab number of visible elements "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025785492' status='passed' stop='1676025785504'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 30</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025785505' status='passed' stop='1676025786069'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676025786071' status='passed' stop='1676025786074'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+            </steps>
+            <attachments>
+                <attachment title='Last Seen Screenshot' source='f453c6e5-8da6-4131-8540-5727bc3d5978-attachment.png' type='image/png' size='68539'/>
+            </attachments>
+            <failure>
+                <message>Action failed to meet success condition after 3 retry attempts.</message>
+                <stack-trace>Error: Action failed to meet success condition after 3 retry attempts.
+                    at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:188:19)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:55:9
+                    at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9)</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

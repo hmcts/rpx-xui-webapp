@@ -20,6 +20,7 @@ import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -86,7 +87,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly jurisdictionsService: JurisdictionsService,
     protected readonly rolesService: AllocateRoleService,
     protected readonly httpClient: HttpClient,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected checkReleaseVersionService: CheckReleaseVersionService
   ) {
   }
 
@@ -115,6 +117,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   public get fields(): CaseFieldConfig[] {
+
     return [];
   }
 

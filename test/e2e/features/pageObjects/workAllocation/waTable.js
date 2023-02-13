@@ -364,7 +364,9 @@ class WAListTable {
         const isClickableElementPresent = await headerElementClickable.isPresent();
         const isNonClickableElementPresent = await headerElementNonClickable.isPresent();
 
-        return isClickableElementPresent && !isNonClickableElementPresent
+        const isDisplayed = await headerElementClickable.isDisplayed()
+
+        return isClickableElementPresent && isDisplayed;
     }
 
 

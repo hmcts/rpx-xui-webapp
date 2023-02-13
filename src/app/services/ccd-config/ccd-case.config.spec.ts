@@ -2,9 +2,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
-import { EnvironmentConfig } from 'api/interfaces/environment.config';
 import { of } from 'rxjs';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
+import { EnvironmentConfig } from '../../../models/environmentConfig.model';
 import { AppConfigService } from '../config/configuration.services';
 import { AppConfig } from './ccd-case.config';
 

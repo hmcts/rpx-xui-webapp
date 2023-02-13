@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.53-prevent-clear-page-from-cya":
-  version "5.0.53-prevent-clear-page-from-cya"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.53-prevent-clear-page-from-cya.tgz#b79ba5a139a39aadc52c0604eb848dbd361759bf"
-  integrity sha512-pZSvYf5Nz518x3S0mVnmNeJMJ6c9M2kf22HfGoUbyEZhICwhN72mpF1T4g+A3Gbg9MbAbO6sbxRkW9wLW756Cg==
+"@hmcts/ccd-case-ui-toolkit@6.10.8-prevent-clear-page-from-cya":
+  version "6.10.8-prevent-clear-page-from-cya"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.8-prevent-clear-page-from-cya.tgz#a0e39039c90678ce1d4ffd4885168ba196d3d7b5"
+  integrity sha512-OGw5MQEjU7sq7li/1hwKoU4B/bmACjK7YUDYMFtD9ardT5tzm76gIQqANMjlftpf5AfNKWBjiYxiC7HuabOfkw==
   dependencies:
     tslib "^2.0.0"
 

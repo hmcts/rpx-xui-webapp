@@ -59,7 +59,7 @@ const hearingRole = [
     parentKey: null,
   },
 ];
-const partyChannel = [
+const partyChannels = [
   {
     key: 'inPerson',
     value_en: 'In person',
@@ -200,7 +200,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
             })),
             snapshot: {
               data: {
-                partyChannel,
+                partyChannels,
                 hearingRole,
               },
             },
@@ -368,7 +368,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
             })),
             snapshot: {
               data: {
-                partyChannel,
+                partyChannels,
                 hearingRole,
               },
             },

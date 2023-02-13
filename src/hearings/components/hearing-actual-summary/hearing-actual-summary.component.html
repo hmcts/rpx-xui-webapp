@@ -53,6 +53,12 @@
           [innerHtml]="answerSource.IS_PAPER_HEARING | transformAnswer:hearingState$ | async">
       </dd>
     </div>
+
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="(isPaperHearing$ | async) === false">
+      <dt class="govuk-summary-list__key">Hearing methods</dt>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer:hearingState$ | async">
+      </dd>
+    </div>
   </dl>
   <br />
 

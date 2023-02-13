@@ -1,4 +1,4 @@
-@ng @known_bug @EUI-4804 @test
+@ng @known_bug @EUI-4804
 Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
 
     Background: Mock and browser setup
@@ -57,13 +57,15 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
         Then I validate task list page results text displayed as "Showing 51 to 75 of 140 results"
 
         When I click work allocation table "tasks" column header "Case name"
+
+
         Then I see work allocation table "tasks" column "Case name" is sorted in "asc"
         Then I see work allocation table "tasks" reset sort button state isDisplayed is "true"
         When I click work allocation table "tasks" reset sort button
         Then I see work allocation table "tasks" reset sort button state isDisplayed is "false"
         Then I see work allocation table "tasks" column "Case name" is sorted in "none"
         Then I see work allocation table "tasks" default column sorted by "asc" for user type "<UserType>"
-            | Caseworker | Due date     |
+            | Caseworker | Priority |
             | Judge      | Task created |
 
         Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation/task/" on page 3 for user type "<UserType>"

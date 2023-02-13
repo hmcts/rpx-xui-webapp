@@ -23,6 +23,7 @@ import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
 import * as fromActions from '../../../app/store';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 
 const USER_DETAILS = {
   canShareCases: true,
@@ -71,6 +72,13 @@ describe('WorkCaseListWrapperComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
+  const mockCheckReleaseVersionService = {
+    isRelease4: () => {
+      return {
+        subscribe: () => true
+      };
+    }
+  };
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   let store: Store<fromActions.State>;
   beforeEach((() => {
@@ -102,6 +110,7 @@ describe('WorkCaseListWrapperComponent', () => {
         { provide: AllocateRoleService, useValue: mockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
         { provide: Store, useValue: storeMock },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WorkCaseListWrapperComponent);

@@ -8,6 +8,7 @@ import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Store } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
@@ -61,6 +62,13 @@ describe('AvailableTasksComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  const mockCheckReleaseVersionService = {
+    isRelease4: () => {
+      return {
+        subscribe: () => true
+      };
+    }
+  };
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   let store: Store<fromActions.State>;
 
@@ -89,6 +97,7 @@ describe('AvailableTasksComponent', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: Store, useValue: storeMock },
+        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

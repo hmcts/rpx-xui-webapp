@@ -521,12 +521,11 @@ export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment
 export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
   : Promise<RoleCaseData[]> {
 
-  const newRoleAssignment = getAccessGrantedRoleAssignments(roleAssignmentList);  
+  const newRoleAssignment = getAccessGrantedRoleAssignments(roleAssignmentList);
 
   const specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignmentList);
 
   const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
-
   return mapCasesFromData(cases, specificRoleAssignments, newRoleAssignment);
 }
 
@@ -726,6 +725,7 @@ export function mapCasesFromData(
 
 export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case,
                                 newRoleAssignmentList: RoleAssignment[]): RoleCaseData {
+
   return {
     assignee: roleAssignment.actorId,
     // hmctsCaseCategory will be available only if an event has been triggered
@@ -762,10 +762,12 @@ export function checkIsNew(roleAssignment: RoleAssignment, newRoleAssignmentList
   if (getStartDate(roleAssignment) === 'Pending') {
     // EUI-7018 Pending returns true
     return true;
+  } else if(roleAssignment.roleName === 'specific-access-denied') {
+    return roleAssignment.attributes.isNew;
   } else {
     // Check if specific-access-granted matchs to role assignment
     return newRoleAssignmentList.some(r => r.attributes.caseId === roleAssignment.attributes.caseId
-      && r.attributes.requestedRole === roleAssignment.roleName)
+      && r.attributes.requestedRole === roleAssignment.roleName);
   }
 }
 

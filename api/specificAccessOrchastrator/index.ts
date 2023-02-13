@@ -194,13 +194,12 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
       attributes: {
         caseId: [caseId],
       },
-    }, { headers });
+    }, {headers});
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse
-            .find(r => r.roleName === 'specific-access-granted');
-
+      .find(r => r.roleName === 'specific-access-granted');
     if (singleRoleAssignment) {
-      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, { headers });
+      await http.delete(`${updatePath}/${singleRoleAssignment.id}`, {headers});
     }
 
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
@@ -210,3 +209,42 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
     next(error);
   }
 }
+
+  export async function specificAccessRequestUpdateAttributesForDeleted(req: EnhancedRequest, resp, next) {
+    const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+    const queryPath = `${basePath}/am/role-assignments/query`;
+    const createPath = `${basePath}/am/role-assignments`;
+    const headers = setHeaders(req);
+
+    try {
+      const userInfo = req.session.passport.user.userinfo;
+      const actorId = userInfo.id ? userInfo.id : userInfo.uid;
+      const caseId = req.body.caseId;
+      console.log(caseId, actorId);
+      const roleAssignmentQueryResponse = await http.post(queryPath, {
+        actorId: [actorId],
+        attributes: {
+          caseId: [caseId],
+        },
+      }, {headers});
+      console.log(roleAssignmentQueryResponse.data);
+
+      const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
+      const roleAssignmentUpdate = {
+        roleRequest: {
+          assignerId: actorId,
+          process: 'specific-access',
+          reference: `${caseId}/${singleRoleAssignment.attributes.requestedRole}/${actorId}`,
+          replaceExisting: true,
+        },
+        requestedRoles: [singleRoleAssignment],
+      };
+      // const deleteResponse = await http.delete(`${createPath}/${singleRoleAssignment.id}`, {headers});
+      const response = await http.post(createPath, {...roleAssignmentUpdate}, {headers});
+
+      return resp.status(response.status).send(response.data);
+    }
+    catch (error) {
+      next(error);
+    }
+  }

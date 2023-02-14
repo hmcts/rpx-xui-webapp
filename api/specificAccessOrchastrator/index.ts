@@ -197,39 +197,23 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
     }, {headers});
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse
-      .find(r => r.roleName === 'specific-access-granted');
-    if (singleRoleAssignment) {
+      .find(r => r.roleName === 'specific-access-granted' ||  'specific-access-denied');
+
+    //Delete secondary role assignment
+    if (singleRoleAssignment === 'specific-access-granted') {
       await http.delete(`${updatePath}/${singleRoleAssignment.id}`, {headers});
     }
 
-    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+    //Create new role assignment
+    if (singleRoleAssignment.roleName === 'specific-access-denied') {
+      singleRoleAssignment.notes = [{
+        userId: actorId,
+        time: new Date(),
+        comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason),
+      }];
 
-    return resp.status(200).send([]);
-  } catch (error) {
-    next(error);
-  }
-}
+      singleRoleAssignment.attributes.isNew = req.body.attributesToUpdate.isNew;
 
-  export async function specificAccessRequestUpdateAttributesForDeleted(req: EnhancedRequest, resp, next) {
-    const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-    const queryPath = `${basePath}/am/role-assignments/query`;
-    const createPath = `${basePath}/am/role-assignments`;
-    const headers = setHeaders(req);
-
-    try {
-      const userInfo = req.session.passport.user.userinfo;
-      const actorId = userInfo.id ? userInfo.id : userInfo.uid;
-      const caseId = req.body.caseId;
-      console.log(caseId, actorId);
-      const roleAssignmentQueryResponse = await http.post(queryPath, {
-        actorId: [actorId],
-        attributes: {
-          caseId: [caseId],
-        },
-      }, {headers});
-      console.log(roleAssignmentQueryResponse.data);
-
-      const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
       const roleAssignmentUpdate = {
         roleRequest: {
           assignerId: actorId,
@@ -239,12 +223,16 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
         },
         requestedRoles: [singleRoleAssignment],
       };
-      // const deleteResponse = await http.delete(`${createPath}/${singleRoleAssignment.id}`, {headers});
-      const response = await http.post(createPath, {...roleAssignmentUpdate}, {headers});
 
-      return resp.status(response.status).send(response.data);
+      delete roleAssignmentUpdate.requestedRoles[0].id;
+
+      await http.post(updatePath, {...roleAssignmentUpdate}, {headers});
     }
-    catch (error) {
-      next(error);
-    }
+
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+
+    return resp.status(200).send([]);
+  } catch (error) {
+    next(error);
   }
+}

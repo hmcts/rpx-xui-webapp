@@ -108,14 +108,6 @@
         ],
         "releaseVersion": "3.5",
         "serviceName": "IA"
-      },
-      {
-        "caseTypes": [
-          "PRIVATELAW",
-          "PRLAPPS"
-        ],
-        "releaseVersion": "3.5",
-        "serviceName": "PRIVATELAW"
       }
     ]
   }, 

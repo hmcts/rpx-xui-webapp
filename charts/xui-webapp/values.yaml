@@ -110,7 +110,7 @@ nodejs:
     # OpenId ISS
     SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}2.internal:8443/openam/oauth2/hmcts
     # Card Payment Return Url (for Ways To Pay)
-    SERVICES_PAYMENT_RETURN_URL: https://paymentoutcome-web.{{ .Values.global.environment }}.platform.hmcts.net/
+    SERVICES_PAYMENT_RETURN_URL: https://paymentoutcome-web.{{ .Values.global.environment }}.platform.hmcts.net
     # Judicial Booking Url
     SERVICES_JUDICIAL_BOOKING_API_PATH: http://am-judicial-booking-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
 

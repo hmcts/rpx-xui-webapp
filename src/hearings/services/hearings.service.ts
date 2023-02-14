@@ -1,19 +1,19 @@
-import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
-import {HearingActualsMainModel, HearingActualsModel} from '../models/hearingActualsMainModel';
-import {HearingListMainModel} from '../models/hearingListMain.model';
-import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
-import {ACTION} from '../models/hearings.enum';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
+import { HearingListMainModel } from '../models/hearingListMain.model';
+import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
+import { ACTION } from '../models/hearings.enum';
 import {
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel,
   ServiceLinkedCasesModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../models/linkHearings.model';
-import {LovRefDataModel} from '../models/lovRefData.model';
-import {ResponseDetailsModel} from '../models/requestDetails.model';
-import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
+import { LovRefDataByServiceModel, LovRefDataModel } from '../models/lovRefData.model';
+import { ResponseDetailsModel } from '../models/requestDetails.model';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 @Injectable()
 export class HearingsService {
@@ -51,6 +51,10 @@ export class HearingsService {
       caseName,
       hearingId // could be null, empty string or missing
     });
+  }
+
+  public loadCaseLinkingReasonCodes(): Observable<LovRefDataByServiceModel> {
+    return this.http.get<LovRefDataByServiceModel>('/refdata/commondata/lov/categories/CaseLinkingReasonCode');
   }
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {

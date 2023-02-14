@@ -1,7 +1,7 @@
-import {HttpRequest} from '@angular/common/http';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {inject, TestBed} from '@angular/core/testing';
-import {StoreModule} from '@ngrx/store';
+import { HttpRequest } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
+import { StoreModule } from '@ngrx/store';
 import * as _ from 'lodash';
 import {initialState} from '../hearing.test.data';
 import {HearingRequestMainModel} from '../models/hearingRequestMain.model';

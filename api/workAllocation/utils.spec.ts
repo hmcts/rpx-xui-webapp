@@ -320,6 +320,7 @@ const availableTasks = [
   },
 ];
 
+
 describe('workAllocation.utils', () => {
 
   describe('prepareGetTaskUrl', () => {
@@ -1884,6 +1885,5 @@ describe('workAllocation.utils', () => {
       const filteredRoleAssignments = filterMyAccessRoleAssignments(roleAssignments);
       expect(filteredRoleAssignments.length).to.equal(2);
     });
-
   });
 });

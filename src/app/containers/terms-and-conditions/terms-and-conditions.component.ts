@@ -12,7 +12,7 @@ import * as fromRoot from '../../store';
 export class TermsAndConditionsComponent implements OnInit, OnDestroy {
 
     public document: TCDocument = null;
-    private readonly subscriptions: Subscription[] = [];
+    private readonly subscriptions = new Subscription();
 
     public isTandCEnabled: boolean = false;
 
@@ -21,7 +21,7 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-      const tnc = this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe(enabled => {
+      this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe(enabled => {
         if (enabled) {
           this.isTandCEnabled = true;
           const s = this.store.pipe(
@@ -33,15 +33,13 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
                 this.store.dispatch(new fromRoot.LoadTermsConditions());
             }
           });
-          this.subscriptions.push(s);
+
+          this.subscriptions.add(s);
         }
-        this.subscriptions.push(tnc);
       });
     }
 
-    public ngOnDestroy() {
-      this.subscriptions.forEach(s => {
-        if (s) { s.unsubscribe(); }
-      });
+    public ngOnDestroy(): void {
+      this.subscriptions.unsubscribe();
     }
 }

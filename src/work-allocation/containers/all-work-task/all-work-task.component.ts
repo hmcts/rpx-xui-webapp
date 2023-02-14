@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { SortOrder, TaskContext } from '../../enums';
 import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+
 
 @Component({
   selector: 'exui-all-work-tasks',
@@ -18,10 +21,11 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   styleUrls: ['all-work-task.component.scss']
 })
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
-  private static ALL_TASKS = 'All';
-  private static AVAILABLE_TASKS = 'None / Available tasks';
+  private static readonly ALL_TASKS = 'All';
+  private static readonly AVAILABLE_TASKS = 'None / Available tasks';
   public locations: Location[];
   public waSupportedJurisdictions$: Observable<string[]>;
+  public supportedJurisdictions: string[];
   public sortedBy: SortField = {
     fieldName: '',
     order: SortOrder.NONE
@@ -30,7 +34,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     page_number: 1,
     page_size: 25
   };
-  private selectedLocation: Location = {
+  private readonly selectedLocation: Location = {
     id: '**ALL LOCATIONS**',
     locationName: '',
     services: [],
@@ -57,20 +61,28 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public get fields(): FieldConfig[] {
-    return this.isCurrentUserJudicial() ? ConfigConstants.AllWorkTasksForJudicial : ConfigConstants.AllWorkTasksForLegalOps;
+    let fields = [];
+    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+        fields = this.isCurrentUserJudicial() ?
+        (isRelease4 ? ConfigConstants.AllWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForJudicial) :
+        (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
+    });
+    return fields;
   }
 
   public loadCaseWorkersAndLocations(): void {
-    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).map(userDetails =>
+    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map(userDetails =>
       userDetails.roleAssignmentInfo.filter(role => role.roleName && role.roleName === 'task-supervisor').map(role => role.jurisdiction || null)
-    );
+    ));
+
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.waSupportedJurisdictions$ = Observable.combineLatest(
+    this.waSupportedJurisdictions$ = combineLatest(
       [userRoles$,
         waJurisdictions$]
-    ).map(jurisdictions => {
+    ).pipe(map(jurisdictions => {
+      this.supportedJurisdictions = jurisdictions[1];
       return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
-    });
+    }));
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
@@ -91,7 +103,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       }
       if (locationParameter) {
         searchParameters.push(locationParameter);
-      };
+      }
       if (taskTypeParameter) {
         searchParameters.push(taskTypeParameter);
       };

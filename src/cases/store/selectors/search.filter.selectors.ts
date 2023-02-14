@@ -1,6 +1,6 @@
-import { createSelector, createFeatureSelector } from '@ngrx/store';
-
+import { createSelector } from '@ngrx/store';
 import * as fromFeature from '../../store/reducers';
+
 
 export const getSearchState = createSelector(
  fromFeature.getCaseFeatureState,

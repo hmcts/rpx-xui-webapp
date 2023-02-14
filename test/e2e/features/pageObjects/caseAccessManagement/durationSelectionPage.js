@@ -130,7 +130,7 @@ class SpecificAccessDuration {
     }
 
     getFieldFromDatInput(forFieldWithLabel, fieldLabel) {
-        return element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//label[contains(text() ,'${fieldLabel}')]/../../input`));
+        return element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//span[contains(text() ,'${fieldLabel}')]/../../../input`));
     }
 
     getDateInputFieldWithLabel(label) {

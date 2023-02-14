@@ -28,7 +28,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
-  const bookingLocations = req.body.bookingLocations ? req.body.bookingLocations : [];
+  const bookingLocations = req.body.bookingLocations;
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
     res.status(200).send([]);
@@ -39,7 +39,6 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const courtTypeIds = getCourtTypeIdsByService(serviceIds);
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
-
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
@@ -49,17 +48,22 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     } else if (locationType === LocationTypeEnum.CASE_MANAGEMENT) {
       results = results.filter(location => location.is_case_management_location === 'Y');
     }
-    // add in check to make sure user only able to select base locations if specified
+    // if service not present all locations available for service
+    // else check locations/regions, if there are none, provide no locations for service
     userLocations.forEach(userLocation => {
       const courtTypes = getCourtTypeIdsByService([userLocation.service]);
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
+      const regionIds = getRegionIdsFromLocationList(userLocation.locations);
       // when we are trying to filter out locations when booking location is present - my work
-      if (userLocation.bookable && bookingLocations.length) {
-        results = filterOutResults(results, bookingLocations, courtTypes);
+      if (userLocation.bookable && bookingLocations) {
+        results = filterOutResults(results, bookingLocations, [], courtTypes);
       } else {
-        results = filterOutResults(results, locationIds, courtTypes);
+        results = filterOutResults(results, locationIds, regionIds, courtTypes);
       }
     });
+    // added line below to ensure any locations from non-used services are removes
+    // (API occasionally sending irrelevant location previously)
+    results = results.filter(location => courtTypeIds.includes(location.court_type_id));
     response.data.results = results.filter((locationInfo, index, self) =>
       index === self.findIndex(location => (
         location.epimms_id === locationInfo.epimms_id
@@ -72,9 +76,10 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 
 }
 
-export function filterOutResults(locations: LocationModel[], locationIds: string[], courtTypes: string[]): LocationModel[] {
-  return locations.filter(location => !(courtTypes.includes(location.court_type_id))
-    || (locationIds.includes(location.epimms_id) || (!locationIds || locationIds.length === 0)));
+export function filterOutResults(locations: LocationModel[], locationIds: string[],
+                                 regions: string[], courtTypes: string[]): LocationModel[] {
+return locations.filter(location => !(courtTypes.includes(location.court_type_id))
+|| (locationIds.includes(location.epimms_id) || regions.includes(location.region_id)));
 }
 
 /**
@@ -111,9 +116,24 @@ function getLocationIdsFromLocationList(locations: any): string[] {
     return [];
   }
   locations.forEach(location => {
-    locationIds.push(location.id.toString());
+    if (location.id) {
+      locationIds.push(location.id.toString());
+    }
   });
   return locationIds;
+}
+
+function getRegionIdsFromLocationList(locations: any): string[] {
+  const regionIds: string[] = [];
+  if (!locations) {
+    return [];
+  }
+  locations.forEach(region => {
+    if (region.regionId) {
+      regionIds.push(region.regionId.toString());
+    }
+  });
+  return regionIds;
 }
 
 function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {

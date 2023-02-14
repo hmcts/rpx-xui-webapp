@@ -14,7 +14,7 @@ import {
   AllocateRoleState,
   AllocateTo,
   DurationOfRole,
-  RoleCategory,
+  RoleCategory
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromStore from '../../../store';
@@ -115,7 +115,7 @@ describe('AllocateRoleHomeComponent', () => {
       ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');

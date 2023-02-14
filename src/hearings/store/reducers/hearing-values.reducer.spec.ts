@@ -1,11 +1,12 @@
-import {CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType} from '../../models/hearings.enum';
+import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
 import { HearingValuesStateData } from '../../models/hearingValuesStateData';
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
 import * as fromHearingValuesReducer from './hearing-values.reducer';
 
 describe('Hearing Values Reducer', () => {
   describe('Actions', () => {
+    // Check testing
     describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingValuesReducer.initialHearingValuesState;

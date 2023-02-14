@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material';
-import { AlertService, CaseUIToolkitModule, PipesModule } from '@hmcts/ccd-case-ui-toolkit';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AlertService, LoadingService, PaginationModule, PipesModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { SharedModule } from '../app/shared/shared.module';
 import { BookingService } from '../booking/services';
@@ -14,13 +15,12 @@ import { PriorityFieldComponentModule } from './components/priority-field/priori
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { WorkAllocationAccessGuard } from './guards';
-import { CaseworkerDataService, ServiceRefDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from './services';
+import { CaseworkerDataService, LocationDataService, ServiceRefDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from './services';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
 @NgModule({
   imports: [
-    CaseUIToolkitModule,
     CommonModule,
     HttpClientModule,
     SharedModule,
@@ -32,7 +32,9 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     ExuiCommonLibModule,
     PriorityFieldComponentModule,
     ReactiveFormsModule,
-    RoleAccessModule
+    RoleAccessModule,
+    PaginationModule,
+    NgxPaginationModule
   ],
   declarations: [...fromContainers.containers],
   providers: [
@@ -41,9 +43,12 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     AlertService,
     BookingService,
     CaseworkerDataService,
+    LocationDataService,
     WorkAllocationFeatureService,
     WASupportedJurisdictionsService,
-    ServiceRefDataService
+    ServiceRefDataService,
+    LoadingService,
+    SessionStorageService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

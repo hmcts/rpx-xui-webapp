@@ -3,8 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   ActualHearingDayModel,
-  HearingActualsMainModel
+  HearingActualsMainModel,
 } from '../../../models/hearingActualsMainModel';
+import {
+  HearingActualAddEditSummaryEnum,
+  HearingResult
+} from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
@@ -41,7 +45,10 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
 
   public onSubmitHearingDetails(): void {
     this.submitted = true;
-    this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
+
+    if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
+      this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
+    }
   }
 
   private isAllHearingActualsTimingAvailable(hearingActualsMainModel: HearingActualsMainModel) {
@@ -89,5 +96,49 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
       hearingId: this.id,
       hearingActuals: patchedHearingActuals
     }));
+  }
+
+  private isValid(): boolean {
+    let isValid: boolean = true;
+    this.validationErrors = [];
+    this.hearingStageResultErrorMessage = '';
+    this.hearingTimingResultErrorMessage = '';
+    this.hearingPartiesResultErrorMessage = '';
+    if (!this.isAllHearingActualsTimingAvailable(this.hearingActualsMainModel)) {
+      this.hearingTimingResultErrorMessage = HearingActualAddEditSummaryEnum.ConfirmUpdateError;
+      isValid = false;
+    }
+    if (!this.isAllHearingActualsPartiesAvailable(this.hearingActualsMainModel)) {
+      this.hearingPartiesResultErrorMessage = HearingActualAddEditSummaryEnum.ConfirmUpdateError;
+      isValid = false;
+    }
+    if (!this.isAllHearingActualsTimingAvailable(this.hearingActualsMainModel) || !this.isAllHearingActualsPartiesAvailable(this.hearingActualsMainModel)) {
+      this.validationErrors.push({
+        id: 'hearing-timing-result-confirm-link',
+        message: HearingActualAddEditSummaryEnum.ConfirmUpdateError
+      });
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    }
+    if (!this.isHearingAllRequiredDaysCovered()) {
+      this.validationErrors.push({
+        id: 'actual-hearing-dates',
+        message: HearingActualAddEditSummaryEnum.AllDaysCoveredError
+      });
+      this.hearingDaysRequiredErrorMessage = HearingActualAddEditSummaryEnum.AllDaysCoveredError;
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+      isValid = false;
+    }
+
+    if (!this.hearingResult || this.hearingResult === '') {
+      this.validationErrors.push({
+        id: 'hearing-stage-result-update-link',
+        message: HearingActualAddEditSummaryEnum.HearingResultError
+      });
+      this.hearingStageResultErrorMessage = HearingActualAddEditSummaryEnum.HearingResultError;
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+      isValid = false;
+    }
+
+    return isValid;
   }
 }

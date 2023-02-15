@@ -20,7 +20,6 @@ export class ServiceDownStubComponent {}
 describe('StaffUserDetailsComponent', () => {
   let component: StaffUserDetailsComponent;
   let fixture: ComponentFixture<StaffUserDetailsComponent>;
-  let route: ActivatedRoute;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let location: Location;
 
@@ -39,9 +38,8 @@ describe('StaffUserDetailsComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                staffUserDetails: 
+                staffUserDetails:
                   staffUserDetailsTestData
-                
               }
             },
           }

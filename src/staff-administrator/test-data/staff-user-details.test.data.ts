@@ -1,5 +1,5 @@
 export const staffUserDetailsTestData = {
-    userDetails: 
+    userDetails:
         [{
             id: 1,
             first_name: 'Kevin',

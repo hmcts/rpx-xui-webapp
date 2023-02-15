@@ -17,6 +17,7 @@ export interface RoleAssignmentInfo {
   substantive?: string;
   isCaseAllocator: boolean;
   bookable?: boolean | string;
+  region?: string;
   roleType?: string;
   roleName?: string;
 }
@@ -35,5 +36,7 @@ export enum UserRole {
   Admin = 'admin',
   LegalOps = 'legalops',
   Judicial = 'judicial',
+  Ctsc = 'ctsc',
   Ogd = 'ogd',
+  CTSC = 'ctsc',
 }

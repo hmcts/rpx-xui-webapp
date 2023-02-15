@@ -137,10 +137,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         ...partyDetail,
         individualDetails: {
           ...partyDetail.individualDetails,
-          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
-            .filter(flagId => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID),
-          interpreterLanguage: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
-            .includes(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID) ? CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID : null,
         },
         ...organisationDetails && ({ organisationDetails }),
       };

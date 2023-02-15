@@ -1045,7 +1045,7 @@ describe('workAllocation.utils', () => {
       case_category: 'Asylum',
       case_type: 'Asylum',
       case_role: 'example-role',
-      isNew: true,
+      isNew: false,
       jurisdiction: 'IA',
       jurisdictionId: 'IA',
       location_id: '001',
@@ -1071,7 +1071,7 @@ describe('workAllocation.utils', () => {
         case_category: 'Test',
         case_type: 'Test',
         case_role: 'example-role-2',
-        isNew: true,
+        isNew: false,
         jurisdiction: 'IA',
         jurisdictionId: 'IA',
         location_id: '001',
@@ -1947,14 +1947,19 @@ describe('workAllocation.utils', () => {
       });
       
       describe('checkIsNew', () => {
-        it('should true if the request is still pending', () => {
+        it('should return true if the request is still pending', () => {
           const isNew = checkIsNew(specificRoleAssignments[0], newRoleAssignment);
           expect(isNew).to.equal(true);
         });
 
-        it('should true if the request is not pending and it is viewed', () => {
+        it('should return true if the request is not pending and it is viewed', () => {
+          const isNew = checkIsNew(specificRoleAssignments[0], newRoleAssignment);
+          expect(isNew).to.equal(true);
+        });
+
+        it('should true if the request is denied and it returns isNew', () => {
           const isNew = checkIsNew(specificRoleAssignments[1], newRoleAssignment);
-          expect(isNew).to.equal(false);
+          expect(isNew).to.equal(specificRoleAssignments[1].attributes.isNew);
         });
 
         it('should true if the request is not pending and it is not yet viewed', () => {

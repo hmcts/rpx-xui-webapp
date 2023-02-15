@@ -200,7 +200,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
       .find(r => r.roleName === 'specific-access-granted' ||  'specific-access-denied');
 
     //Delete secondary role assignment
-    if (singleRoleAssignment === 'specific-access-granted') {
+    if (singleRoleAssignment.roleName === 'specific-access-granted') {
       await http.delete(`${updatePath}/${singleRoleAssignment.id}`, {headers});
     }
 

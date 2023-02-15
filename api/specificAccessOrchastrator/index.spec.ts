@@ -165,7 +165,7 @@ describe('specificAccessRequestUpdateAttributes', () => {
     expect(spyDelete).to.be.calledWith(`${basePath}/am/role-assignments/37cb4517-20b7-4709-adea-472986e78088`);
   });
 
-  it('should call not call delete', async () => {
+  it('should not call delete', async () => {
     await specificAccessRequestUpdateAttributes(req, res, next);
     expect(spyDelete).not.to.be.calledWith(`${basePath}/am/role-assignments/37cb4517-20b7-4709-adea-472986e78089`);
   });

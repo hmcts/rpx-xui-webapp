@@ -1,18 +1,21 @@
 export const staffUserDetailsTestData = {
-    userDetails: {
-        results: [{
+    userDetails: 
+        [{
             id: 1,
-            firstName: 'Kevin',
-            lastName: 'Silver',
+            first_name: 'Kevin',
+            last_name: 'Silver',
             userCategory: '',
-            userType: 'Officer1',
+            user_type: 'Officer1',
             jobTitle: 'Case worker',
             locations: ['562808'],
             region: 'North East',
             services: ['Mock Service'],
             suspended: false,
-            email: 'kevin@hmcts.com',
-            primaryLocation: 'Leeds'
+            email_id: 'kevin@hmcts.com',
+            primary_location: 'Leeds',
+            work_area: [{
+                service_code: 'AAA1',
+                area_of_work: 'Test office'
+            }]
         }]
-    }
 }

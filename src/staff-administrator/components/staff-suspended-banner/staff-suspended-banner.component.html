@@ -6,6 +6,13 @@
       [messageBoldText]="true">
     </xuilib-hmcts-banner>
   </ng-container>
+  <ng-container *ngSwitchCase="'restored'">
+    <xuilib-hmcts-banner
+      [type]="'success'" [title]="'User restored'"
+      [message]="'To make this user inactive again, select \'Suspend\'.'"
+      [messageBoldText]="true">
+    </xuilib-hmcts-banner>
+  </ng-container>
   <ng-container *ngSwitchCase="'error'">
     <xuilib-hmcts-banner
       [type]="'warning'"

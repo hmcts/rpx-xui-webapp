@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-view-edit-add-welsh-translation-flag-v4":
-  version "6.10.7-view-edit-add-welsh-translation-flag-v4"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-view-edit-add-welsh-translation-flag-v4.tgz#994a0d40549f61ea3e385993ec2ff54b7784901e"
-  integrity sha512-Jik4rHNiOYIVJ/Q/QFaNaXYj/XNvESXYOJvVX8P5hGL+LUB1hToXkboOjVtgLtac7uTzMQf8rtbf5YWL/Vmajg==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-view-edit-add-welsh-translation-flag-v5":
+  version "6.10.7-view-edit-add-welsh-translation-flag-v5"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-view-edit-add-welsh-translation-flag-v5.tgz#fd6f1490dd3dcfe1b3029b624f6c56a897143754"
+  integrity sha512-LVEeqaRpVx/qeBgGu//k5rIx95LLGQKxe54rQ0Z/vsmxp7y3loqBca86gWg4Wh5pqTgat70Y/3GiCBzeB9gTwA==
   dependencies:
     tslib "^2.0.0"
 

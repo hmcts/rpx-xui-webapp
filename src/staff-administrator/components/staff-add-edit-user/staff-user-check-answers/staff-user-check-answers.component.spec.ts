@@ -235,10 +235,10 @@ describe('StaffUserCheckAnswersComponent', () => {
     component = fixture.componentInstance;
     mockStaffDataAccessService.addNewUser.and.returnValue(of({
       id: '2',
-      firstName: 'Victoria',
-      lastName: 'Patton',
+      first_name: 'Victoria',
+      last_name: 'Patton',
       userCategory: '',
-      userType: 'Officer2',
+      user_type: 'Officer2',
       jobTitle: 'Solicitor',
       locations: [
         'Locatin Y',
@@ -248,8 +248,8 @@ describe('StaffUserCheckAnswersComponent', () => {
         'Mock Service 2',
       ],
       suspended: true,
-      email: 'victoria@hmcts.com',
-      primaryLocation: 'London',
+      email_id: 'victoria@hmcts.com',
+      primary_location: 'London',
       roles: 'Case allocator',
       skills: ['SCSS'],
     }));

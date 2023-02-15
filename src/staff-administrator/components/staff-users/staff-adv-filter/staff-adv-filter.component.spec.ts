@@ -93,10 +93,10 @@ xdescribe('StaffAdvFilterComponent', () => {
 
     mockStaffDataFilterService.filterByAdvancedSearch.and.returnValue(of([{
       id: '2',
-      firstName: 'Victoria',
-      lastName: 'Patton',
+      first_name: 'Victoria',
+      last_name: 'Patton',
       userCategory: '',
-      userType: 'Officer2',
+      user_type: 'Officer2',
       jobTitle: 'Solicitor',
       locations: [
         'Locatin Y',
@@ -106,8 +106,8 @@ xdescribe('StaffAdvFilterComponent', () => {
         'Mock Service 2',
       ],
       suspended: true,
-      email: 'victoria@hmcts.com',
-      primaryLocation: 'London',
+      email_id: 'victoria@hmcts.com',
+      primary_location: 'London',
       roles: 'Case allocator',
       skills: ['SCSS'],
     }]));

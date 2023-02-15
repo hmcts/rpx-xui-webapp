@@ -119,10 +119,15 @@ export async function getStaffRefUserDetails(req, res, next: NextFunction) {
 
 export async function updateUserStatus(req, res, next: NextFunction) {
   const reqBody = req.body
-  const apiPath: string = `/refdata/case-worker/profile`
+  const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile`
   try {
-    const { status, data }: { status: number; data: StaffDataUser } = await handlePut(apiPath, reqBody, req, next);
-    res.status(status).send(data);
+    // not done with {status, data} above because put not always sending error back when there is a problem
+    const response = await handlePut(apiPath, reqBody, req, next);
+    if (!response) {
+      res.status(400);
+    } else {
+      res.status(response.status).send(response.data);
+    }
   } catch (error) {
       next(error)
   }

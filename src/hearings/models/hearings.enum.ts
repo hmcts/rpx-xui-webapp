@@ -327,6 +327,7 @@ export enum IsHiddenSource {
   JUDGE_TYPES,
   JUDGE_NAME,
   LISTED,
+  LISTED_HEARING_VIEWER,
   NOT_LISTED
 }
 

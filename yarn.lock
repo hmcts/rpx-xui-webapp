@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.6-r3.5-from-master":
-  version "6.10.6-r3.5-from-master"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.6-r3.5-from-master.tgz#714f08cbc4e4dfb11467ccb1660a5538bda83c9f"
-  integrity sha512-0/Z3ZdGb9Jsp05F7uwH4tR5XnmvRYvQgVVm7ELR355ypau9HPHAnxDKahIibCqbx6wFMjyRw6WWEIYAGbT/GPQ==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-rollback-case-link":
+  version "6.10.7-rollback-case-link"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-rollback-case-link.tgz#dead034ae21ee78379804ce689cf66f1e346e003"
+  integrity sha512-BQcMRjk/aQsePLrJFb6cnWDtHHt2EF1yHRxuUJS3G5VplY4h62r9DEGeHJwmrd8LUZRs/O37Dnqmy2UCcHYpAw==
   dependencies:
     tslib "^2.0.0"
 
@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.7-booking-region-filter-final":
-  version "1.8.7-booking-region-filter-final"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.7-booking-region-filter-final.tgz#0c61e9c92f14e5f6261d1cb087b544469b647342"
-  integrity sha512-R8SHX+vWaHDDUKdVxpCkdu41tiQEbVffVwUbt0FqFOswFqiJdZ6LUk4TXKD+eMVf2u3wcAU88qs2Xs3duxIOZg==
+"@hmcts/rpx-xui-common-lib@1.8.7-find-persn-by-service":
+  version "1.8.7-find-persn-by-service"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.7-find-persn-by-service.tgz#e37935312117384f32f6be44419fcc3d23628fa7"
+  integrity sha512-UcpX3qn0jaqEELLcXqPMUdbrFVAfUWmdDfhbf9AdfOXZ7+UDq5zeOxZNlgWwK9zMknjLfRA8TeihwQYaWkhUvQ==
   dependencies:
     tslib "^2.0.0"
 

@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-rollback-case-link":
-  version "6.10.7-rollback-case-link"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-rollback-case-link.tgz#dead034ae21ee78379804ce689cf66f1e346e003"
-  integrity sha512-BQcMRjk/aQsePLrJFb6cnWDtHHt2EF1yHRxuUJS3G5VplY4h62r9DEGeHJwmrd8LUZRs/O37Dnqmy2UCcHYpAw==
+"@hmcts/ccd-case-ui-toolkit@6.10.8-summary-screen-fields-fix":
+  version "6.10.8-summary-screen-fields-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.8-summary-screen-fields-fix.tgz#8e532c4f1b39c561cc19c3acf8585d443b4f60c8"
+  integrity sha512-/ACDP86HalJaPG5OyI8Fiwp8YFEwt6d7dvH/LttC3GZI3olUN8uk8ZRi24kf1rj7LaMcOMsFmA3DuPbfWGBcJA==
   dependencies:
     tslib "^2.0.0"
 

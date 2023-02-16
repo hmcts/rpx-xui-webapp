@@ -50,7 +50,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
             map((regionLocations) => this.getJudicialWorkersOrCaseWorkers(regionLocations, userDetails))
           )
         ),
-        mergeMap((locations: Location[]) => this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([])
+        mergeMap((locations: Location[]) => (this.userRole.toLocaleLowerCase() === UserRole.Judicial && this.bookableServices.length > 0 ? this.bookingService.getBookings(this.userId, this.bookableServices) : of([]))
           .pipe(
             map((bookings: Booking[]) => this.addBookingLocations(locations, bookings)),
           )
@@ -72,7 +72,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     const possibleServices = [];
     // simple loop as idea is just to get list of possible services to check
     userDetails.roleAssignmentInfo.forEach(roleAssignment => {
-      if (!possibleServices.includes(roleAssignment.jurisdiction)) {
+      if (roleAssignment.jurisdiction && !possibleServices.includes(roleAssignment.jurisdiction)) {
         possibleServices.push(roleAssignment.jurisdiction);
       }
     })
@@ -84,7 +84,6 @@ export class LocationResolver implements Resolve<LocationModel[]> {
     this.userRole = AppUtils.isBookableAndJudicialRole(userDetails) ? UserRole.Judicial : AppUtils.getUserRole(userDetails.userInfo.roles);
     let userLocationsByService: LocationsByService[] = [];
     const allLocationServices: string[] = [];
-    // TODO: Take bookable role assignments into consideration
     userDetails.roleAssignmentInfo.forEach(roleAssignment => {
       const roleJurisdiction = roleAssignment.jurisdiction;
       if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
@@ -123,24 +122,20 @@ export class LocationResolver implements Resolve<LocationModel[]> {
         userLocationsByService = this.bookableServices.includes(service) ? addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices, true) : addLocationToLocationsByService(userLocationsByService, location, service, allLocationServices);
       });
     });
-    this.bookableServices.forEach(bookableService => {
-      if (!this.locationServices.has(bookableService)) {
-        const newBookableService: LocationsByService = { service: bookableService, locations: [], bookable: true };
-        userLocationsByService.push(newBookableService);
-      }
-    });
     this.sessionStorageService.setItem('userLocations', JSON.stringify(userLocationsByService));
     this.sessionStorageService.setItem('bookableServices', JSON.stringify(this.bookableServices));
     return this.locations;
   }
 
-  private addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
+  public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
     // TODO: Check if user still has valid bookable role assignment for service
     const bookingLocations: string[] = [];
-    bookings.filter(booking => {
+    bookings.forEach(booking => {
       // if this is an active booking
       if (moment(new Date()).isSameOrAfter(booking.beginTime) && moment(new Date()).isSameOrBefore(booking.endTime)) {
         bookingLocations.push(booking.locationId);
+      } else {
+        locations = locations.filter(location => location.id !== booking.locationId);
       }
     });
     this.saveBookingLocation(bookingLocations);

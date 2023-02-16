@@ -129,12 +129,12 @@
                       </div>
                       <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Pause time</dt>
-                        <dd class="govuk-summary-list__value">{{getPauseStartDateTime(actualHearingDay)}}</dd>
+                        <dd class="govuk-summary-list__value">{{getPauseDateTime(actualHearingDay, 'start')}</dd>
                         <dd class="govuk-summary-list__actions"></dd>
                       </div>
                       <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Resume time</dt>
-                        <dd class="govuk-summary-list__value">{{getPauseEndDateTime(actualHearingDay)}}</dd>
+                        <dd class="govuk-summary-list__value">{{getPauseDateTime(actualHearingDay, 'end')}}</dd>
                         <dd class="govuk-summary-list__actions"></dd>
                       </div>
                     </div>

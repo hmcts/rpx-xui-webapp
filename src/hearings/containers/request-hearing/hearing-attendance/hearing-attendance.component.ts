@@ -214,7 +214,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       vulnerabilityDetails: [individualDetails.vulnerabilityDetails],
       hearingChannelEmail: [individualDetails.hearingChannelEmail],
       hearingChannelPhone: [individualDetails.hearingChannelPhone],
-      custodyStatus: [individualDetails.custodyStatus]
+      custodyStatus: [individualDetails.custodyStatus],
+      otherReasonableAdjustmentDetails: [individualDetails.otherReasonableAdjustmentDetails]
     });
   }
 }

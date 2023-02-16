@@ -21,9 +21,6 @@ export class StaffUserDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("this.route.snapshot.data");
-    console.log(this.route.snapshot.data);
-
     this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails.results[0];
   }
 

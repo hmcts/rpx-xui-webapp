@@ -7,3 +7,7 @@ export interface ServiceConfig {
 export interface WAFeatureConfig {
     configurations?: ServiceConfig[];
 }
+
+export interface WALandingPageRoles {
+    roles: string[];
+}

@@ -204,9 +204,11 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       reasonableAdjustments: [individualDetails.reasonableAdjustments],
       relatedParties: [individualDetails.relatedParties],
       title: [individualDetails.title],
+      vulnerableFlag: [individualDetails.vulnerableFlag],
       vulnerabilityDetails: [individualDetails.vulnerabilityDetails],
       hearingChannelEmail: [individualDetails.hearingChannelEmail],
-      hearingChannelPhone: [individualDetails.hearingChannelPhone]
+      hearingChannelPhone: [individualDetails.hearingChannelPhone],
+      custodyStatus: [individualDetails.custodyStatus]
     });
   }
 }

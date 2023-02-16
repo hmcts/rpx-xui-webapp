@@ -15,12 +15,12 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
 
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
     const preferredHearingChannelRefData = refData.find(ref => ref.key === party.hearingSubChannel);
-    return preferredHearingChannelRefData && preferredHearingChannelRefData.value_en ? preferredHearingChannelRefData.value_en : party.hearingSubChannel;
+    return preferredHearingChannelRefData?.value_en ? preferredHearingChannelRefData.value_en : `Error: ${party.hearingSubChannel}`;
   }
 
   private static getPartyName(partiesFromServiceValue: PartyDetailsModel[], partyInfo: PartyDetailsModel): string {
     const partyDetails = partiesFromServiceValue.find(pty => pty.partyID === partyInfo.partyID);
-    return (partyDetails && partyDetails.partyName) || partyInfo.partyID;
+    return (partyDetails && partyDetails.partyName) || `Error: ${partyInfo.partyID}`;
   }
 
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {

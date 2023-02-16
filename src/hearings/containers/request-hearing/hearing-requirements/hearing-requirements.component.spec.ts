@@ -2326,7 +2326,8 @@ describe('HearingRequirementsComponent', () => {
         ],
         caseManagementLocationCode: '196538',
         caserestrictedFlag: false,
-        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+        externalCaseReference: ''
       },
       partyDetails: [{
         partyID: 'P1',

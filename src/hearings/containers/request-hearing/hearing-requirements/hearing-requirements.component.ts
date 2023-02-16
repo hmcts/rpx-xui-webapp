@@ -114,6 +114,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         caseManagementLocationCode: this.serviceHearingValuesModel.caseManagementLocationCode,
         caserestrictedFlag: this.serviceHearingValuesModel.caserestrictedFlag,
         caseSLAStartDate: this.serviceHearingValuesModel.caseSLAStartDate,
+        externalCaseReference: this.serviceHearingValuesModel.externalCaseReference
       },
       partyDetails: combinedParties
     };

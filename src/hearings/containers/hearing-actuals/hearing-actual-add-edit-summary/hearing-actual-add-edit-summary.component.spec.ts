@@ -617,6 +617,60 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
   });
 
+  it('should dispatach and update Hearing Actuals', () => {
+    const hearingDay = {
+      hearingDate: '2021-03-12',
+      hearingStartTime: '2021-03-12T09:00:00.000Z',
+      hearingEndTime: '2021-03-13T10:00:00.000Z',
+      notRequired: false,
+      pauseDateTimes: [],
+      actualDayParties: [
+        {
+          actualPartyId: '1',
+          individualDetails: {
+            firstName: 'Bob',
+            lastName: 'Jones',
+          },
+          actualOrganisationName: 'Company A',
+          didNotAttendFlag: false,
+          partyChannelSubType: 'inPerson',
+          partyRole: 'appellant',
+          representedParty: '',
+        },
+        {
+          actualPartyId: '2',
+          individualDetails: {
+            firstName: 'Mary',
+            lastName: 'Jones',
+          },
+          actualOrganisationName: 'Company B',
+          didNotAttendFlag: false,
+          partyChannelSubType: 'inPerson',
+          partyRole: 'claimant',
+          representedParty: '',
+        },
+        {
+          actualPartyId: '3',
+          individualDetails: {
+            firstName: 'James',
+            lastName: 'Gods',
+          },
+          actualOrganisationName: 'Solicitors A',
+          didNotAttendFlag: false,
+          partyChannelSubType: 'inPerson',
+          partyRole: 'interpreter',
+          representedParty: '1',
+        },
+      ],
+    };
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    spyOn(ActualHearingsUtils, 'mergeSingleHearingPartActuals');
+
+    component.changeWasThisHearingDayRequired(hearingDay);
+    expect(storeDispatchSpy).toHaveBeenCalledTimes(1);
+    expect(ActualHearingsUtils.mergeSingleHearingPartActuals).toHaveBeenCalledTimes(1);
+  });
+
   it('should save one hearing day actuals for specific hearingDate', () => {
     const hearingDay = {
       hearingDate: '2021-03-12',
@@ -714,6 +768,53 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
       (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
+  });
+
+  describe('getPauseDateTime', () => {
+    it('should return start time', () => {
+      const actualHearingDays = {
+          hearingDate: '2021-03-12',
+          hearingStartTime: '2021-03-12T09:00:00.000Z',
+          hearingEndTime: '2021-03-12T10:00:00.000Z',
+          pauseDateTimes: [{
+            pauseStartTime: '2021-03-12T10:10:00.000Z',
+            pauseEndTime: '2021-03-12T11:15:00.000Z',
+          }],
+          notRequired: false,
+          actualDayParties: []
+        };
+      const actual = component.getPauseDateTime(actualHearingDays, 'start');
+      expect(actual).toEqual('10:10');
+    });
+
+    it('should return end time', () => {
+      const actualHearingDays = {
+          hearingDate: '2021-03-12',
+          hearingStartTime: '2021-03-12T09:00:00.000Z',
+          hearingEndTime: '2021-03-12T10:00:00.000Z',
+          pauseDateTimes: [{
+            pauseStartTime: '2021-03-12T10:10:00.000Z',
+            pauseEndTime: '2021-03-12T11:15:00.000Z',
+          }],
+          notRequired: false,
+          actualDayParties: []
+        };
+      const actual = component.getPauseDateTime(actualHearingDays, 'end');
+      expect(actual).toEqual('11:15');
+    });
+
+    it('should return null as no pause times are present', () => {
+      const actualHearingDays = {
+          hearingDate: '2021-03-12',
+          hearingStartTime: '2021-03-12T09:00:00.000Z',
+          hearingEndTime: '2021-03-12T10:00:00.000Z',
+          pauseDateTimes: [],
+          notRequired: false,
+          actualDayParties: []
+        };
+      const actual = component.getPauseDateTime(actualHearingDays, 'start');
+      expect(actual).toEqual(null);
+    });
   });
 
   afterEach(() => {

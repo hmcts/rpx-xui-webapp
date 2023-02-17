@@ -20,12 +20,10 @@ export class StaffUserDetailsComponent implements OnInit {
 
    public ngOnInit(): void {
     this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails[0];
-    console.log(this.userDetails, 'omg');
    }
 
    public updateUserStatus(): void {
     const user = this.userDetails;
-    console.log(user.work_area);
     user.services = this.getServiceList(user.work_area);
     user.roles = user.role;
     user.base_locations = user.base_location;

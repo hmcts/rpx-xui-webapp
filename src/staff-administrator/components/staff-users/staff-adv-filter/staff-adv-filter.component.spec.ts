@@ -108,7 +108,7 @@ xdescribe('StaffAdvFilterComponent', () => {
       suspended: true,
       email: 'victoria@hmcts.com',
       primaryLocation: 'London',
-      roles: 'Case allocator',
+      roles: ['Case allocator'],
       skills: ['SCSS'],
     }]));
 

@@ -12,7 +12,8 @@ export const staffUserDetailsTestData = {
             services: ['Mock Service'],
             suspended: false,
             email: 'kevin@hmcts.com',
-            primaryLocation: 'Leeds'
+            primaryLocation: 'Leeds',
+            roles: ['CTSC Admin', 'Test job']
         }]
     }
 }

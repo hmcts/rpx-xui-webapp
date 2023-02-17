@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 import * as querystring from 'querystring';
-import { handleGet } from '../common/crudService';
+import { handleGet, handlePut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
 import { StaffDataUser } from './models/staff-data-user.model';
@@ -104,4 +104,20 @@ export async function getUsersByPartialName(req, res: Response, next: NextFuncti
 
 export function sortArray(array: StaffFilterOption[]) {
   return array.sort((a, b) => a.label.localeCompare(b.label));
+}
+
+export async function updateUserStatus(req, res, next: NextFunction) {
+  const reqBody = req.body
+  const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile`
+  try {
+    // not done with {status, data} above because put not always sending error back when there is a problem
+    const response = await handlePut(apiPath, reqBody, req, next);
+    if (!response) {
+      res.status(400);
+    } else {
+      res.status(response.status).send(response.data);
+    }
+  } catch (error) {
+      next(error)
+  }
 }

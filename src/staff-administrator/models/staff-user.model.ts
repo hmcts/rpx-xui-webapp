@@ -11,6 +11,6 @@ export interface StaffUser {
   suspended: boolean;
   email: string;
   primaryLocation: string;
-  roles: string;
+  roles: string[];
   skills?: string[];
 }

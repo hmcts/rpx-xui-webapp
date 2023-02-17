@@ -44,6 +44,6 @@ export class StaffDataAccessService {
   }
 
   public updateUserStatus(user) {
-    return this.http.put<StaffUser>(`${this.API_PATH}/updateUserStatus`, user);
+    return this.http.put<any>(`${this.API_PATH}/updateUserStatus`, user);
   }
 }

@@ -13,13 +13,13 @@ describe('StaffUserCheckAnswersComponent', () => {
   let fixture: ComponentFixture<StaffUserCheckAnswersComponent>;
   let mockFilterService: jasmine.SpyObj<FilterService>;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
+  let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
 
   beforeEach(waitForAsync(() => {
     mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser']);
-
-    let mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
+    mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
 
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
@@ -142,7 +142,6 @@ describe('StaffUserCheckAnswersComponent', () => {
         },
       ],
     }).compileComponents();
- 
 
     mockFilterService.getStream.and.returnValue(of({
       id: '123',
@@ -234,7 +233,28 @@ describe('StaffUserCheckAnswersComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffUserCheckAnswersComponent);
     component = fixture.componentInstance;
+    mockStaffDataAccessService.addNewUser.and.returnValue(of({
+      id: '2',
+      firstName: 'Victoria',
+      lastName: 'Patton',
+      userCategory: '',
+      userType: 'Officer2',
+      jobTitle: 'Solicitor',
+      locations: [
+        'Locatin Y',
+      ],
+      region: 'London',
+      services: [
+        'Mock Service 2',
+      ],
+      suspended: true,
+      email: 'victoria@hmcts.com',
+      primaryLocation: 'London',
+      roles: 'Case allocator',
+      skills: ['SCSS'],
+    }));
     fixture.detectChanges();
+
   });
 
   it('should create', () => {
@@ -242,54 +262,26 @@ describe('StaffUserCheckAnswersComponent', () => {
   });
 
   it('should call addNewUser and be successful', () => {
-    mockStaffDataAccessService.addNewUser.and.returnValue(of({
-      id: '2',
-      firstName: 'Victoria',
-      lastName: 'Patton',
-      userCategory: '',
-      userType: 'Officer2',
-      jobTitle: 'Solicitor',
-      locations: [
-        'Locatin Y',
-      ],
-      region: 'London',
-      services: [
-        'Mock Service 2',
-      ],
-      suspended: true,
-      email: 'victoria@hmcts.com',
-      primaryLocation: 'London',
-      roles: 'Case allocator',
-      skills: ['SCSS'],
-    }));
     component.addNewUser();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
   });
 
   it('should call addNewUser and be successful', (done) => {
-    mockStaffDataAccessService.addNewUser.and.returnValue(of({
-      id: '2',
-      firstName: 'Victoria',
-      lastName: 'Patton',
-      userCategory: '',
-      userType: 'Officer2',
-      jobTitle: 'Solicitor',
-      locations: [
-        'Locatin Y',
-      ],
-      region: 'London',
-      services: [
-        'Mock Service 2',
-      ],
-      suspended: true,
-      email: 'victoria@hmcts.com',
-      primaryLocation: 'London',
-      roles: 'Case allocator',
-      skills: ['SCSS'],
-    }));
     component.addNewUser();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
+  });
+
+  it('after a banner, it should redirect to the staff page', (done) => {
+    component.addNewUser();
+    done();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/staff');
+  });
+
+  it('should display a banner once an user has been added successfully', (done) => {
+    component.addNewUser();
+    done();
+    expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalled();
   });
 
   it('should call addNewUser and throw error', (done) => {
@@ -298,15 +290,5 @@ describe('StaffUserCheckAnswersComponent', () => {
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down');
-  });
-
-  it('should display a banner once an user has been added successfully', () => {
-    component.addNewUser();
-    expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalled();
-  });
-
-  it('after a banner, it should redirect to the staff page', () => {
-    component.addNewUser();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/staff');
   });
 });

@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.6-angular-upgrade-r4":
-  version "6.10.6-angular-upgrade-r4"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.6-angular-upgrade-r4.tgz#1ff43d66f227995df4614e458740c99472ebcfaa"
-  integrity sha512-6s48vhidGOofbI0YRaCWwqCD67eqmGmRSk3vD79coxZf3Vhv6ysLTkH6sYwOxpgZqLsrofK+Y8UuqVSQNQnpkw==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-toolkit-civil-to-wa4":
+  version "6.10.7-toolkit-civil-to-wa4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-toolkit-civil-to-wa4.tgz#68d7da0620db4b35bb9144649db56a93ed7ce1f0"
+  integrity sha512-PDbkbXYhseDwPoTkg/50iiOvmw0INy4Br29YxMKxPbpWdo48AOY5CtCyLm46UokD57FFAMxyMLyb+OlkMgZEeg==
   dependencies:
     tslib "^2.0.0"
 
@@ -1527,12 +1527,12 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.8-angular-upgrade-r4":
-  version "1.8.8-angular-upgrade-r4"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.8-angular-upgrade-r4.tgz#d6b0c23751938cb6fb7721c8173fdbe75a126fa4"
-  integrity sha512-ySYmGBqYbahCRTR/h4wTNk0VkJir4xc94940LC5E4sSx1pX518aCi7Yv+aMogh+I/+JKotN23nWR5BbgSwz9GQ==
+"@hmcts/rpx-xui-common-lib@1.8.9-civil-to-wa4-2":
+  version "1.8.9-civil-to-wa4-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.9-civil-to-wa4-2.tgz#195eb9ba6482e944a94265c351513ccdec79c028"
+  integrity sha512-PlYeO9WcNf7ihr+QIoZ4RCpAlcA/+r+CGVA3T/GfJwK5Vjbj/RmLpmCqXoTdpvErDdrciuLgcD5HQBbU8/rLNA==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 "@hmcts/rpx-xui-node-lib@2.25.12":
   version "2.25.12"

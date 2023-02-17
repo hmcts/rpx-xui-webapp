@@ -19,11 +19,16 @@
 
 <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">
   <div class="govuk-grid-column-two-thirds">
+    <exui-hearing-case-name></exui-hearing-case-name>
     <h1 class="govuk-heading-m">Hearing details</h1>
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">{{ getHearingDateText() }}</dt>
         <dd class="govuk-summary-list__value">{{hearingDateRange}}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Paper hearing</dt>
+        <dd class="govuk-summary-list__value">{{isPaperHearing ? 'Yes' : 'No'}}</dd>
       </div>
     </dl>
     <br>
@@ -45,6 +50,11 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Hearing result</dt>
           <dd class="govuk-summary-list__value">{{hearingResult}}</dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="!isPaperHearing">
+          <dt class="govuk-summary-list__key">Hearing methods</dt>
+          <dd class="govuk-summary-list__value" [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer:hearingState$ | async">
+          </dd>
         </div>
       </dl>
     </div>

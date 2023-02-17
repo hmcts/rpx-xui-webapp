@@ -12,7 +12,8 @@ import {
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
   SERVICES_JUDICIAL_BOOKING_API_PATH,
   SERVICES_PAYMENT_RETURN_URL,
-  SERVICES_WA_WORKFLOW_API_URL
+  SERVICES_WA_WORKFLOW_API_URL,
+  WA_SUPPORTED_SERVICE_CASETYPES
 } from './references'
 
 export const router = express.Router({mergeParams: true})
@@ -41,6 +42,7 @@ async function uiConfigurationRouter(req, res) {
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
+    waSupportedServices: getConfigValue(WA_SUPPORTED_SERVICE_CASETYPES),
   })
 }
 

@@ -2,33 +2,52 @@
 const global = require('./globals')
 
 
-const functional_output_dir = '../../../functional_output'
+const functional_output_dir = '../../functional_output'
 
 exports.config = {
   timeout: 120,
   "gherkin": {
     "features": "../e2e/features/app/**/*.feature",
-    "steps": "../e2e/features/step_definitions/**/*.steps.js"
+    "steps": "../e2e/features/step_definitions/**/*.steps.js",
   },
-  output: './output',
+  output: "./functional_output",
   helpers: {
-    // Puppeteer: {
-    //   url: 'https://manage-case.aat.platform.hmcts.net/',
-    //   browser: 'chrome',
-    //   show: true,
-    //   restart:false,
-    //   // chrome: {
-    //   //   args: ['--no-sandbox', '--headless1', '--window-size=1920,1080', '--disable-web-security'],
-    //   //   ignoreHTTPSErrors: true,
-    //   // },
-    // },
-    Playwright: {
-      url: "https://manage-case.aat.platform.hmcts.net",
-      restart: false,
-      show:true,
-      waitForNavigation: "domcontentloaded",
-      waitForAction: 500
-    }
+    CustomHelper:{
+      require:"./customHelper.js"
+    },
+    "Mochawesome": {
+      "uniqueScreenshotNames": "true"
+    },
+    Puppeteer: {
+      url: 'https://manage-case.aat.platform.hmcts.net/',
+      show: true,
+      waitForNavigation: ['domcontentloaded'],
+      restart: true,
+      keepCookies: false,
+      keepBrowserState: false,
+      smartWait: 50000,
+      waitForTimeout: 90000,
+      chrome: {
+        ignoreHTTPSErrors: true,
+        args: [
+          '--headless1',
+          '--smartwait',
+          '--disable-gpu',
+          '--no-sandbox',
+          '--allow-running-insecure-content',
+          '--ignore-certificate-errors',
+          '--window-size=1440,1400'
+        ]
+      }
+      
+    },
+    // Playwright: {
+    //   url: "https://manage-case.aat.platform.hmcts.net",
+    //   restart: false,
+    //   show:true,
+    //   waitForNavigation: "domcontentloaded",
+    //   waitForAction: 500
+    // }
     // WebDriver:{
     //   url: 'https://manage-case.aat.platform.hmcts.net/',
     //   browser: 'chrome',
@@ -37,40 +56,53 @@ exports.config = {
     // }
   },
   "mocha": {
-    "codeceptjs-cli-reporter": {
-      "stdout": "-",
-      "options": {
-        "verbose": true,
-        "steps": true,
-      }
-    },
-    "mochawesome": {
-      "stdout": `${functional_output_dir}/`,
-      "options": {
-        "reportDir": "./output",
-        "reportFilename": "report"
-      }
-    },
-    "mocha-junit-reporter": {
-      "stdout": "./output/console.log",
-      "options": {
-        "mochaFile": "./output/result.xml",
-        "attachments": true //add screenshot for a failed test
-      }
+    "reporterOptions": {
+      "reportDir": "functional_output",
+      reportName:'XUI_MC',
+      inlineAssets: true
     }
+    // "reporterOptions":{
+    //   "codeceptjs-cli-reporter": {
+    //     "stdout": "-",
+    //     "options": {
+    //       "verbose": true,
+    //       "steps": true,
+    //     }
+    //   },
+    //   "mochawesome": {
+    //     "stdout": `${functional_output_dir}/`,
+    //     "options": {
+    //       "reportDir": `${functional_output_dir}/output`,
+    //       "reportFilename": `${functional_output_dir}/output/report`
+    //     }
+    //   },
+    //   "mocha-junit-reporter": {
+    //     "stdout": "./output/console.log",
+    //     "options": {
+    //       "mochaFile": "./output/result.xml",
+    //       "attachments": true //add screenshot for a failed test
+    //     }
+    //   }
+    // }
+   
   },
   plugins:{
     "allure": {
       "enabled": true
     },
+    screenshotOnFail: {
+      enabled: true,
+      fullPageScreenshots: 'true'
+    },
+   
     "myPlugin": {
-      "require": "./hooks.js",
+      "require": "./hooks",
       "enabled": true
     }
   },
+  bootstrap: false,
   include: {
   },
-  bootstrap: null,
   // teardown: () => {
   //   console.log("Run complete...")
     

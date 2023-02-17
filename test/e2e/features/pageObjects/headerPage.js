@@ -13,7 +13,7 @@ const taskManagerPage = require('./workAllocation/taskManagerPage');
 const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
 const allWorkPage = require("../../features/pageObjects/workAllocation/allWorkPage");
 const globalSearchPage = require('./globalSearchCases');
-const CucumberReporter = require('../../support/reportLogger');
+const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const { ExceptionData } = require('applicationinsights/out/Declarations/Contracts');
 
 const createCaseStartPage = new CreateCaseStartPage();

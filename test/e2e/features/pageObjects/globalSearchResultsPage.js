@@ -1,4 +1,4 @@
-const cucumberReporter = require('../../support/reportLogger');
+const cucumberReporter = require('../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../support/customWaits');
 class GlobalSearchResultsPage{
     constructor(){

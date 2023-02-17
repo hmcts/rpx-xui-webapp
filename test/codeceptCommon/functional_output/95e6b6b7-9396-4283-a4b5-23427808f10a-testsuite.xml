@@ -1,0 +1,60 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1676633910505' stop='1676633912542'>
+    <name>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</name>
+    <title>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</title>
+    <test-cases>
+        <test-case start='1676633910512' status='failed' stop='1676633912518'>
+            <name>Start create case page form fields validating against API response</name>
+            <title>Start create case page form fields validating against API response</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1676633912481' status='passed' stop='1676633912484'>
+                    <name>I add mochawesome context "[11:38:32]BDD: When   I navigate to Expert UI Url"</name>
+                    <title>I add mochawesome context "[11:38:32]BDD: When   I navigate to Expert UI Url"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676633912487' status='failed' stop='1676633912518'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676633912487' status='passed' stop='1676633912490'>
+                            <name>I add mochawesome context "[11:38:32]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[11:38:32]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676633912503' status='passed' stop='1676633912504'>
+                            <name>I add mochawesome context "[11:38:32]App base url : https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I add mochawesome context "[11:38:32]App base url : https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676633912506' status='failed' stop='1676633912507'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676633912530' status='passed' stop='1676633912531'>
+                    <name>I add mochawesome context "[11:38:32]************ Test failed"</name>
+                    <title>I add mochawesome context "[11:38:32]************ Test failed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>Cannot read property 'goto' of undefined</message>
+                <stack-trace>TypeError: Cannot read property 'goto' of undefined
+                    at Puppeteer.amOnPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:644:21)
+                    at Step.run (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/step.js:122:47)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/actor.js:134:23</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

@@ -2,7 +2,7 @@ Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 var BrowserWaits = require("../../support/customWaits");
 const RuntimeTestData = require('../../support/runtimeTestData');
-const CucumberReportLogger = require("../../support/reportLogger");
+const CucumberReportLogger = require("../../../codeceptCommon/reportLogger");
 const headerPage = require('./headerPage');
 class SearchPage {
 

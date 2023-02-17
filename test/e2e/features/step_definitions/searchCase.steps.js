@@ -7,7 +7,7 @@ Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
-const CucumberReporter = require("../../support/reportLogger");
+const CucumberReporter = require("../../../codeceptCommon/reportLogger");
 const BrowserWaits = require('../../support/customWaits');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
  

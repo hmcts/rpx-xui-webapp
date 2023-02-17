@@ -3,7 +3,7 @@
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 
 var BrowserWaits = require('../../support/customWaits');
-const CucumberReportLogger = require('../../support/reportLogger');
+const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 function loginLogoutObjects() {
 

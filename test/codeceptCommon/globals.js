@@ -18,7 +18,7 @@ global.$$ = () => {
     }
 }
 
-global.$ = (locator) => new Element(locator)
+global.$ = (locator) => new Element({'css':locator})
 
 
 global.$$ = (locator) => new Element(locator)

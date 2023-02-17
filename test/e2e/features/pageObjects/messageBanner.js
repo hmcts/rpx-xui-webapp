@@ -1,7 +1,7 @@
 
 const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
-var cucumberReporter = require('../../support/reportLogger');
+var cucumberReporter = require('../../../codeceptCommon/reportLogger');
 const ArrayUtil = require('../../utils/ArrayUtil');
 
 class MessageBanner{

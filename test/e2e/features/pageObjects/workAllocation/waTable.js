@@ -6,8 +6,8 @@ const BrowserWaits = require('../../../support/customWaits');
 const ArrayUtil = require('../../../utils/ArrayUtil');
 const Spinner = require('../../pageObjects/common/spinner');
 
-var cucumberReporter = require('../../../support/reportLogger');
-const reportLogger = require('../../../support/reportLogger');
+var cucumberReporter = require('../../../../codeceptCommon/reportLogger');
+const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const { LOG_LEVELS } = require('../../../support/constants');
 
 

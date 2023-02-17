@@ -1,5 +1,5 @@
 var { defineSupportCode } = require('cucumber');
-const reportLogger = require('../../../support/reportLogger');
+const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const caseDetailsTaskTabPage = require('../../pageObjects/workAllocation/caseDetailsTaskTab'); 

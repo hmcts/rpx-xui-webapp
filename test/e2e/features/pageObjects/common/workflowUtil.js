@@ -2,7 +2,7 @@
 const reassignTaskWorkFlow = require('../workAllocation/reassignTaskWorkflow');
 const reallocateWorkflowPage = require('../workAllocation/workFlow');
 const BrowserWaits = require('../../../support/customWaits');
-const reportLogger = require('../../../support/reportLogger');
+const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
 
 class workFlowUtil{

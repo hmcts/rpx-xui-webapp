@@ -1,7 +1,7 @@
 
 
 const BrowserWaits = require('../../../support/customWaits');
-const cucumberReporter = require('../../../support/reportLogger');
+const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const locators = {
     existingBooking: {
         location:'',

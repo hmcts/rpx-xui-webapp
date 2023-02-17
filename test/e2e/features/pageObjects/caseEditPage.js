@@ -1,6 +1,6 @@
 var CcdApi = require('../../utils/ccdApi');
 var BrowserWaits = require('../../support/customWaits');
-const CucumberReportLogger = require('../../support/reportLogger');
+const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 Button = require('./webdriver-components/button.js');
 const RuntimeTestData = require("../../support/runtimeTestData");
 const CaseListPage = require("../pageObjects/CaseListPage");

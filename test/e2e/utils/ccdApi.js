@@ -1,6 +1,6 @@
 var Request = require('../utils/request');
 var BrowserWaits = require('../support/customWaits');
-const CucumberReportLogger = require('../support/reportLogger');
+const CucumberReportLogger = require('../../codeceptCommon/reportLogger');
 Button = require('../features/pageObjects/webdriver-components/button.js');
 
 class CcdApi {

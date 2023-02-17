@@ -4,7 +4,7 @@ const BrowserWaits = require('../../support/customWaits');
 
 const ShareCaseData = require('../../utils/shareCaseData');
 
-const CucumberReportLog = require("../../support/reportLogger");
+const CucumberReportLog = require("../../../codeceptCommon/reportLogger");
 const { LOG_LEVELS } = require('../../support/constants');
 class ShareCasePage {
 

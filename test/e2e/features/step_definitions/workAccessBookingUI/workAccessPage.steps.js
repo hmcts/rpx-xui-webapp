@@ -1,5 +1,5 @@
 
-const CucumberReportLogger = require('../../../support/reportLogger');
+const CucumberReportLogger = require('../../../../codeceptCommon/reportLogger');
 
 const moment = require('moment-timezone')
 

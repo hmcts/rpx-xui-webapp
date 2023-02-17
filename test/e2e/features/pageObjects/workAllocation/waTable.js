@@ -28,7 +28,7 @@ class WAListTable {
         this.displayedActionRow = $('tr.actions-row[aria-hidden=false]');
 
         this.paginationContainer = $('ccd-pagination');
-        this.paginationResultText = $(`${this.baseCssLocator} .pagination-top span`);
+        this.paginationResultText = $(`${this.baseCssLocator} .task-list-header div, ${this.baseCssLocator} .pagination-top`);
         this.pagePreviousLink = $(`${this.baseCssLocator} pagination-template .pagination-previous a`);
         this.pageNextLink = $(`${this.baseCssLocator} pagination-template .pagination-next a`);
 

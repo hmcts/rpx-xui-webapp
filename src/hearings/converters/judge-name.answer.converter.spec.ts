@@ -5,7 +5,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState, judgeRefData, judicailUsersRefData } from '../hearing.test.data';
+import { initialState, judgeRefData, judicialUsersRefData } from '../hearing.test.data';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
@@ -31,7 +31,7 @@ describe('JudgeNameAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                judicialUsers: judicailUsersRefData,
+                judicialUsers: judicialUsersRefData,
               },
             },
           },

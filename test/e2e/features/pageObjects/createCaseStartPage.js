@@ -3,7 +3,7 @@ Button = require('./webdriver-components/button.js')
 
 const { LOG_LEVELS } = require('../../support/constants.js');
 var BrowserWaits = require('../../support/customWaits');
-const CucumberRepprter = require('../../support/reportLogger');
+const CucumberRepprter = require('../../../codeceptCommon/reportLogger');
 
 class CreateCaseStartPage {
 

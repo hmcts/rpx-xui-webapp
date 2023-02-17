@@ -1,6 +1,6 @@
 
 const BrowserWaits = require("../../../support/customWaits"); 
-const reportLogger = require("../../../support/reportLogger");
+const reportLogger = require("../../../../codeceptCommon/reportLogger");
 const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 const { LOG_LEVELS } = require("../../../support/constants");
 class CaseRolesTable{

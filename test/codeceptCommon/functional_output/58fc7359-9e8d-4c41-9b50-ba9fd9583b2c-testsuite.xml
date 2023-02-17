@@ -1,0 +1,1572 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1676630125851' stop='1676630184764'>
+    <name>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</name>
+    <title>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</title>
+    <test-cases>
+        <test-case start='1676630125853' status='failed' stop='1676630160193'>
+            <name>Start create case page form fields validating against API response</name>
+            <title>Start create case page form fields validating against API response</title>
+            <labels>
+                <label name='tag' value='@fullfunctional_fixneeded'/>
+                <label name='tag' value='@test'/>
+                <label name='tag' value='@codecept'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1676630126928' status='passed' stop='1676630126929'>
+                    <name>I add mochawesome context "[10:35:26]BDD: When   I navigate to Expert UI Url"</name>
+                    <title>I add mochawesome context "[10:35:26]BDD: When   I navigate to Expert UI Url"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630126929' status='passed' stop='1676630129799'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630126930' status='passed' stop='1676630126930'>
+                            <name>I add mochawesome context "[10:35:26]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:26]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630126932' status='passed' stop='1676630126932'>
+                            <name>I add mochawesome context "[10:35:26]App base url : https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I add mochawesome context "[10:35:26]App base url : https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630126932' status='passed' stop='1676630128797'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630128797' status='passed' stop='1676630128797'>
+                            <name>I add mochawesome context "[10:35:26]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:35:26]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630128797' status='passed' stop='1676630129622'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129622' status='passed' stop='1676630129622'>
+                            <name>I add mochawesome context "[10:35:26]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:35:26]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129622' status='passed' stop='1676630129783'>
+                            <name>I see element {"css":"input.button"}</name>
+                            <title>I see element {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630129799' status='passed' stop='1676630129799'>
+                    <name>I add mochawesome context "[10:35:29]BDD: Given   I am logged into Expert UI with valid user details"</name>
+                    <title>I add mochawesome context "[10:35:29]BDD: Given   I am logged into Expert UI with valid user details"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630129799' status='passed' stop='1676630133479'>
+                    <name>Given I am logged into Expert UI with valid user details </name>
+                    <title>Given I am logged into Expert UI with valid user details </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630129799' status='passed' stop='1676630129799'>
+                            <name>I add mochawesome context "[10:35:29]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:35:29]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129800' status='passed' stop='1676630129803'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129804' status='passed' stop='1676630129804'>
+                            <name>I add mochawesome context "[10:35:29]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:35:29]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129804' status='passed' stop='1676630129804'>
+                            <name>I add mochawesome context "[10:35:29]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:35:29]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129804' status='passed' stop='1676630129809'>
+                            <name>I wait for element {"css":"[id='username']"}, 60</name>
+                            <title>I wait for element {"css":"[id='username']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129809' status='passed' stop='1676630129809'>
+                            <name>I add mochawesome context "[10:35:29]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:35:29]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129809' status='passed' stop='1676630129810'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129815' status='passed' stop='1676630129815'>
+                            <name>I add mochawesome context "[10:35:29]IDAM URL :https://idam-web-public.aat.platform.hmcts.net/login?client_id=xuiwebapp&amp;redirect_uri=https://manage-case.aat.platform.hmcts.net/oauth2/callback&amp;state=y9ajhsYlw_lNZIo6GKSqXzmRRfLM93Wu91u8mty93vk&amp;nonce=zVAn4LUEmDRtZlT8qEZx3WtMe83yI0lGLwVoqZ_zSdo&amp;response_type=code&amp;scope=profile%20openid%20roles%20manage-user%20create-user%20search-user&amp;prompt="</name>
+                            <title>I add mochawesome context "[10:35:29]IDAM URL :https://idam-web-public.aat.platform.hmcts.net/login?client_id=xuiwebapp&amp;redirect_uri=https://manage-case.aat.platform.hmcts.net/oauth2/callback&amp;state=y9ajhsYlw_lNZIo6GKSqXzmRRfLM93Wu91u8mty93vk&amp;nonce=zVAn4LUEmDRtZlT8qEZx3WtMe83yI0lGLwVoqZ_zSdo&amp;response_type=code&amp;scope=profile%20openid%20roles%20manage-user%20create-user%20search-user&amp;prompt="</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129815' status='passed' stop='1676630129815'>
+                            <name>I add mochawesome context "[10:35:29]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:35:29]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129815' status='passed' stop='1676630129820'>
+                            <name>I wait for element {"css":"[id='username']"}, 60</name>
+                            <title>I wait for element {"css":"[id='username']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129820' status='passed' stop='1676630129820'>
+                            <name>I add mochawesome context "[10:35:29]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:35:29]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129820' status='passed' stop='1676630129942'>
+                            <name>I clear field {"css":"[id='username']"}</name>
+                            <title>I clear field {"css":"[id='username']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630129942' status='passed' stop='1676630130788'>
+                            <name>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</name>
+                            <title>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630130788' status='passed' stop='1676630130788'>
+                            <name>I add mochawesome context "[10:35:29]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:35:29]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630130788' status='passed' stop='1676630130798'>
+                            <name>I wait for element {"css":"[id='password']"}, 60</name>
+                            <title>I wait for element {"css":"[id='password']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630130798' status='passed' stop='1676630130798'>
+                            <name>I add mochawesome context "[10:35:29]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:35:29]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630130798' status='passed' stop='1676630130911'>
+                            <name>I clear field {"css":"[id='password']"}</name>
+                            <title>I clear field {"css":"[id='password']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630130911' status='passed' stop='1676630131207'>
+                            <name>I fill field {"css":"[id='password']"}, "Monday01"</name>
+                            <title>I fill field {"css":"[id='password']"}, "Monday01"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630131207' status='passed' stop='1676630131320'>
+                            <name>I click {"css":"input.button"}</name>
+                            <title>I click {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630131327' status='passed' stop='1676630133479'>
+                            <name>I wait for element "exui-app-header", 60</name>
+                            <title>I wait for element "exui-app-header", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630133479' status='passed' stop='1676630133479'>
+                    <name>I add mochawesome context "[10:35:31]BDD: Then   I should be redirected to EUI dashboard page"</name>
+                    <title>I add mochawesome context "[10:35:31]BDD: Then   I should be redirected to EUI dashboard page"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630133479' status='passed' stop='1676630133495'>
+                    <name>Then I should be redirected to EUI dashboard page </name>
+                    <title>Then I should be redirected to EUI dashboard page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630133479' status='passed' stop='1676630133479'>
+                            <name>I add mochawesome context "[10:35:31]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:31]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630133480' status='passed' stop='1676630133480'>
+                            <name>I add mochawesome context "[10:35:31]starting wait for element max in sec 45 : exui-header .hmcts-primary-navigation__item"</name>
+                            <title>I add mochawesome context "[10:35:31]starting wait for element max in sec 45 : exui-header .hmcts-primary-navigation__item"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630133480' status='passed' stop='1676630133484'>
+                            <name>I wait for element "exui-header .hmcts-primary-navigation__item", 60</name>
+                            <title>I wait for element "exui-header .hmcts-primary-navigation__item", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630133484' status='passed' stop='1676630133484'>
+                            <name>I add mochawesome context "[10:35:31]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:35:31]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630133484' status='passed' stop='1676630133487'>
+                            <name>I see element {"css":".govuk-heading-xl"}</name>
+                            <title>I see element {"css":".govuk-heading-xl"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630133495' status='passed' stop='1676630133495'>
+                    <name>I add mochawesome context "[10:35:33]BDD: When   I click on primary navigation header tab "Create case", I see selected tab page displayed"</name>
+                    <title>I add mochawesome context "[10:35:33]BDD: When   I click on primary navigation header tab "Create case", I see selected tab page displayed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630133495' status='passed' stop='1676630146218'>
+                    <name>When I click on primary navigation header tab "Create case", I see selected tab page displayed </name>
+                    <title>When I click on primary navigation header tab "Create case", I see selected tab page displayed </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630133495' status='passed' stop='1676630133495'>
+                            <name>I add mochawesome context "[10:35:33]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:33]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630133496' status='passed' stop='1676630133496'>
+                            <name>I add mochawesome context "[10:35:33]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:33]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630133997' status='passed' stop='1676630134000'>
+                            <name>I grab text from all "div.spinner-container"</name>
+                            <title>I grab text from all "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134002' status='passed' stop='1676630134002'>
+                            <name>I add mochawesome context "[10:35:34]Waiting for spinner to dissappear."</name>
+                            <title>I add mochawesome context "[10:35:34]Waiting for spinner to dissappear."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134002' status='passed' stop='1676630134002'>
+                            <name>I add mochawesome context "[10:35:34]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:35:34]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134002' status='passed' stop='1676630134006'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 60</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134007' status='passed' stop='1676630134007'>
+                            <name>I add mochawesome context "[10:35:34]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:35:34]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134007' status='passed' stop='1676630134007'>
+                            <name>I add mochawesome context "[10:35:34]starting wait for element clickable max in sec 45000 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:35:34]starting wait for element clickable max in sec 45000 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134007' status='passed' stop='1676630134007'>
+                            <name>I add mochawesome context "[10:35:34]Wait for element clikable failed [object Object], not throwing exception to let test fail in next step if required state not met"</name>
+                            <title>I add mochawesome context "[10:35:34]Wait for element clikable failed [object Object], not throwing exception to let test fail in next step if required state not met"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134007' status='passed' stop='1676630134007'>
+                            <name>I add mochawesome context "[10:35:34]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:35:34]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134008' status='passed' stop='1676630134142'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134143' status='passed' stop='1676630134143'>
+                            <name>I add mochawesome context "[10:35:34]Primary nav tab clicked successfully. "Create case""</name>
+                            <title>I add mochawesome context "[10:35:34]Primary nav tab clicked successfully. "Create case""</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630134143' status='passed' stop='1676630134143'>
+                            <name>I add mochawesome context "[10:35:34]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:34]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630139146' status='passed' stop='1676630139146'>
+                            <name>I add mochawesome context "[10:35:39]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</name>
+                            <title>I add mochawesome context "[10:35:39]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630139147' status='passed' stop='1676630139152'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 60</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630139152' status='passed' stop='1676630139152'>
+                            <name>I add mochawesome context "[10:35:39]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:35:39]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630139152' status='passed' stop='1676630139152'>
+                            <name>I add mochawesome context "[10:35:39]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:39]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630139152' status='passed' stop='1676630139159'>
+                            <name>I grab text from all "#cc-jurisdiction option"</name>
+                            <title>I grab text from all "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630139163' status='passed' stop='1676630139163'>
+                            <name>I add mochawesome context "[10:35:39]Actions success Condition  failed expected false to be true AssertionError: expected false to be true
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:60:93
+                                at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:32)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:58:17
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:32)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:55:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</name>
+                            <title>I add mochawesome context "[10:35:39]Actions success Condition  failed expected false to be true AssertionError: expected false to be true
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:60:93
+                                at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:32)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:58:17
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:32)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:55:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630139163' status='passed' stop='1676630139164'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630139165' status='passed' stop='1676630139165'>
+                            <name>I add mochawesome context "[10:35:39]************** [ Retrying attempt 1. ] **************"</name>
+                            <title>I add mochawesome context "[10:35:39]************** [ Retrying attempt 1. ] **************"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630139165' status='passed' stop='1676630139165'>
+                            <name>I add mochawesome context "[10:35:39]Sleeping for 2sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:39]Sleeping for 2sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146170' status='passed' stop='1676630146170'>
+                            <name>I add mochawesome context "[10:35:46]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</name>
+                            <title>I add mochawesome context "[10:35:46]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146170' status='passed' stop='1676630146176'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 60</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146176' status='passed' stop='1676630146176'>
+                            <name>I add mochawesome context "[10:35:46]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:35:46]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146177' status='passed' stop='1676630146177'>
+                            <name>I add mochawesome context "[10:35:46]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:46]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146177' status='passed' stop='1676630146196'>
+                            <name>I grab text from all "#cc-jurisdiction option"</name>
+                            <title>I grab text from all "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630146218' status='passed' stop='1676630146218'>
+                    <name>I add mochawesome context "[10:35:46]BDD: Then   Create case page should be displayed"</name>
+                    <title>I add mochawesome context "[10:35:46]BDD: Then   Create case page should be displayed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630146218' status='passed' stop='1676630146223'>
+                    <name>Then Create case page should be displayed </name>
+                    <title>Then Create case page should be displayed </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630146218' status='passed' stop='1676630146218'>
+                            <name>I add mochawesome context "[10:35:46]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</name>
+                            <title>I add mochawesome context "[10:35:46]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146219' status='passed' stop='1676630146223'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 60</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146223' status='passed' stop='1676630146223'>
+                            <name>I add mochawesome context "[10:35:46]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:35:46]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630146223' status='passed' stop='1676630146223'>
+                    <name>I add mochawesome context "[10:35:46]BDD: When   I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case""</name>
+                    <title>I add mochawesome context "[10:35:46]BDD: When   I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case""</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630146224' status='passed' stop='1676630147719'>
+                    <name>When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case" </name>
+                    <title>When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630146224' status='passed' stop='1676630146224'>
+                            <name>I add mochawesome context "[10:35:46]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:46]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146224' status='passed' stop='1676630146224'>
+                            <name>I add mochawesome context "[10:35:46]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:46]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146722' status='passed' stop='1676630146725'>
+                            <name>I grab text from all "div.spinner-container"</name>
+                            <title>I grab text from all "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146727' status='passed' stop='1676630146727'>
+                            <name>I add mochawesome context "[10:35:46]Waiting for spinner to dissappear."</name>
+                            <title>I add mochawesome context "[10:35:46]Waiting for spinner to dissappear."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146727' status='passed' stop='1676630146843'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-jurisdiction']"}, "Family Divorce"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-jurisdiction']"}, "Family Divorce"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146844' status='passed' stop='1676630146959'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-case-type']"}, "XUI Test Case type"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-case-type']"}, "XUI Test Case type"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630146960' status='passed' stop='1676630147072'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-event']"}, "Create a case"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-event']"}, "Create a case"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147073' status='passed' stop='1676630147075'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147075' status='passed' stop='1676630147076'>
+                            <name>I add mochawesome context "[10:35:47]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:47]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147578' status='passed' stop='1676630147582'>
+                            <name>I grab text from all "div.spinner-container"</name>
+                            <title>I grab text from all "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147583' status='passed' stop='1676630147583'>
+                            <name>I add mochawesome context "[10:35:47]Waiting for spinner to dissappear."</name>
+                            <title>I add mochawesome context "[10:35:47]Waiting for spinner to dissappear."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147583' status='passed' stop='1676630147588'>
+                            <name>I wait for element "#content button", 60</name>
+                            <title>I wait for element "#content button", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147588' status='passed' stop='1676630147708'>
+                            <name>I click "#content button"</name>
+                            <title>I click "#content button"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147709' status='passed' stop='1676630147709'>
+                            <name>I add mochawesome context "[10:35:47]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:47]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147711' status='passed' stop='1676630147713'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147713' status='passed' stop='1676630147714'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630147719' status='passed' stop='1676630147720'>
+                    <name>I add mochawesome context "[10:35:47]BDD: Then   I am on case form page"</name>
+                    <title>I add mochawesome context "[10:35:47]BDD: Then   I am on case form page"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630147720' status='passed' stop='1676630149173'>
+                    <name>Then I am on case form page </name>
+                    <title>Then I am on case form page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630147720' status='passed' stop='1676630147720'>
+                            <name>I add mochawesome context "[10:35:47]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:47]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147721' status='passed' stop='1676630147722'>
+                            <name>I add mochawesome context "[10:35:47]starting wait for element max in sec 45 : ccd-case-edit"</name>
+                            <title>I add mochawesome context "[10:35:47]starting wait for element max in sec 45 : ccd-case-edit"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630147722' status='passed' stop='1676630149157'>
+                            <name>I wait for element "ccd-case-edit", 60</name>
+                            <title>I wait for element "ccd-case-edit", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630149158' status='passed' stop='1676630149158'>
+                            <name>I add mochawesome context "[10:35:47]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:35:47]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630149158' status='passed' stop='1676630149161'>
+                            <name>I grab text from all "ccd-case-edit"</name>
+                            <title>I grab text from all "ccd-case-edit"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630149173' status='passed' stop='1676630149173'>
+                    <name>I add mochawesome context "[10:35:49]BDD: Then   Validate create case form pages fields against the api response"</name>
+                    <title>I add mochawesome context "[10:35:49]BDD: Then   Validate create case form pages fields against the api response"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630149173' status='failed' stop='1676630160193'>
+                    <name>Then Validate create case form pages fields against the api response </name>
+                    <title>Then Validate create case form pages fields against the api response </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630149173' status='passed' stop='1676630149174'>
+                            <name>I add mochawesome context "[10:35:49]starting wait for element max in sec 45 : ccd-case-edit-page"</name>
+                            <title>I add mochawesome context "[10:35:49]starting wait for element max in sec 45 : ccd-case-edit-page"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630149174' status='passed' stop='1676630149179'>
+                            <name>I wait for element "ccd-case-edit-page", 60</name>
+                            <title>I wait for element "ccd-case-edit-page", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630149179' status='passed' stop='1676630149179'>
+                            <name>I add mochawesome context "[10:35:49]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:35:49]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630149180' status='passed' stop='1676630149180'>
+                            <name>I add mochawesome context "[10:35:49]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:49]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630149180' status='passed' stop='1676630149180'>
+                            <name>I add mochawesome context "[10:35:49]Actions success Condition  failed browser.manage is not a function TypeError: browser.manage is not a function
+                                at Request.getCookieString (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:31:23)
+                                at Request.withSession (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:27:40)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:15:31
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:38)
+                                at CcdApi.getCaseCreationpagesApiRes (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:13:20)
+                                at caseEditPage.wizardPageFormFieldValidations (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/caseEditPage.js:201:26)
+                                at CaseManager._formFillPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:212:13)
+                                at CaseManager.createCase (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:131:13)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/testCaseType.steps.js:75:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</name>
+                            <title>I add mochawesome context "[10:35:49]Actions success Condition  failed browser.manage is not a function TypeError: browser.manage is not a function
+                                at Request.getCookieString (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:31:23)
+                                at Request.withSession (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:27:40)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:15:31
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:38)
+                                at CcdApi.getCaseCreationpagesApiRes (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:13:20)
+                                at caseEditPage.wizardPageFormFieldValidations (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/caseEditPage.js:201:26)
+                                at CaseManager._formFillPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:212:13)
+                                at CaseManager.createCase (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:131:13)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/testCaseType.steps.js:75:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630149180' status='passed' stop='1676630149180'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630149181' status='passed' stop='1676630149181'>
+                            <name>I add mochawesome context "[10:35:49]************** [ Retrying attempt 1. ] **************"</name>
+                            <title>I add mochawesome context "[10:35:49]************** [ Retrying attempt 1. ] **************"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630149181' status='passed' stop='1676630149181'>
+                            <name>I add mochawesome context "[10:35:49]Sleeping for 2sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:49]Sleeping for 2sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630151184' status='passed' stop='1676630151184'>
+                            <name>I add mochawesome context "[10:35:51]Actions success Condition  failed browser.manage is not a function TypeError: browser.manage is not a function
+                                at Request.getCookieString (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:31:23)
+                                at Request.withSession (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:27:40)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:15:31
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:38)
+                                at CcdApi.getCaseCreationpagesApiRes (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:13:20)
+                                at caseEditPage.wizardPageFormFieldValidations (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/caseEditPage.js:201:26)
+                                at CaseManager._formFillPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:212:13)
+                                at CaseManager.createCase (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:131:13)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/testCaseType.steps.js:75:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</name>
+                            <title>I add mochawesome context "[10:35:51]Actions success Condition  failed browser.manage is not a function TypeError: browser.manage is not a function
+                                at Request.getCookieString (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:31:23)
+                                at Request.withSession (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:27:40)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:15:31
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:38)
+                                at CcdApi.getCaseCreationpagesApiRes (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:13:20)
+                                at caseEditPage.wizardPageFormFieldValidations (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/caseEditPage.js:201:26)
+                                at CaseManager._formFillPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:212:13)
+                                at CaseManager.createCase (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:131:13)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/testCaseType.steps.js:75:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630151184' status='passed' stop='1676630151185'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630151186' status='passed' stop='1676630151186'>
+                            <name>I add mochawesome context "[10:35:51]************** [ Retrying attempt 2. ] **************"</name>
+                            <title>I add mochawesome context "[10:35:51]************** [ Retrying attempt 2. ] **************"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630151186' status='passed' stop='1676630151187'>
+                            <name>I add mochawesome context "[10:35:51]Sleeping for 4sec before performing action."</name>
+                            <title>I add mochawesome context "[10:35:51]Sleeping for 4sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630155189' status='passed' stop='1676630155189'>
+                            <name>I add mochawesome context "[10:35:55]Actions success Condition  failed browser.manage is not a function TypeError: browser.manage is not a function
+                                at Request.getCookieString (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:31:23)
+                                at Request.withSession (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:27:40)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:15:31
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:38)
+                                at CcdApi.getCaseCreationpagesApiRes (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:13:20)
+                                at caseEditPage.wizardPageFormFieldValidations (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/caseEditPage.js:201:26)
+                                at CaseManager._formFillPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:212:13)
+                                at CaseManager.createCase (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:131:13)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/testCaseType.steps.js:75:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</name>
+                            <title>I add mochawesome context "[10:35:55]Actions success Condition  failed browser.manage is not a function TypeError: browser.manage is not a function
+                                at Request.getCookieString (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:31:23)
+                                at Request.withSession (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/request.js:27:40)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:15:31
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:38)
+                                at CcdApi.getCaseCreationpagesApiRes (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/utils/ccdApi.js:13:20)
+                                at caseEditPage.wizardPageFormFieldValidations (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/caseEditPage.js:201:26)
+                                at CaseManager._formFillPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:212:13)
+                                at CaseManager.createCase (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:131:13)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/testCaseType.steps.js:75:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630155189' status='failed' stop='1676630155191'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630160196' status='passed' stop='1676630160196'>
+                    <name>I add mochawesome context "[10:36:00]************ Test failed"</name>
+                    <title>I add mochawesome context "[10:36:00]************ Test failed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>Protocol error (Runtime.callFunctionOn): Session closed. Most likely the page has been closed.</message>
+                <stack-trace>Error: Protocol error (Runtime.callFunctionOn): Session closed. Most likely the page has been closed.
+                    at CDPSession.send (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Connection.js:180:29)
+                    at ExecutionContext._evaluateInternal (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/ExecutionContext.js:107:44)
+                    at ExecutionContext.evaluate (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/ExecutionContext.js:48:23)
+                    at ExecutionContext.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at DOMWorld.evaluate (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/DOMWorld.js:112:20)
+                  -- ASYNC --
+                    at Frame.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:111:15)
+                    at Page.evaluate (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Page.js:833:43)
+                    at Page.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at Puppeteer.executeScript (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:1569:29)
+                    at Step.run (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/step.js:122:47)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/actor.js:134:23</stack-trace>
+            </failure>
+        </test-case>
+        <test-case start='1676630160201' status='failed' stop='1676630183168'>
+            <name>Validate check your answers summary page</name>
+            <title>Validate check your answers summary page</title>
+            <labels>
+                <label name='tag' value='@fullfunctional_fixneeded'/>
+                <label name='tag' value='@test'/>
+                <label name='tag' value='@codecept'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1676630161215' status='passed' stop='1676630161215'>
+                    <name>I add mochawesome context "[10:36:01]BDD: When   I navigate to Expert UI Url"</name>
+                    <title>I add mochawesome context "[10:36:01]BDD: When   I navigate to Expert UI Url"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630161215' status='passed' stop='1676630164082'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630161215' status='passed' stop='1676630161215'>
+                            <name>I add mochawesome context "[10:36:01]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:01]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630161217' status='passed' stop='1676630161217'>
+                            <name>I add mochawesome context "[10:36:01]App base url : https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I add mochawesome context "[10:36:01]App base url : https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630161217' status='passed' stop='1676630163166'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630163166' status='passed' stop='1676630163166'>
+                            <name>I add mochawesome context "[10:36:01]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:36:01]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630163166' status='passed' stop='1676630163919'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630163919' status='passed' stop='1676630163919'>
+                            <name>I add mochawesome context "[10:36:01]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:36:01]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630163919' status='passed' stop='1676630164076'>
+                            <name>I see element {"css":"input.button"}</name>
+                            <title>I see element {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630164082' status='passed' stop='1676630164082'>
+                    <name>I add mochawesome context "[10:36:04]BDD: Given   I am logged into Expert UI with valid user details"</name>
+                    <title>I add mochawesome context "[10:36:04]BDD: Given   I am logged into Expert UI with valid user details"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630164083' status='passed' stop='1676630167801'>
+                    <name>Given I am logged into Expert UI with valid user details </name>
+                    <title>Given I am logged into Expert UI with valid user details </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630164083' status='passed' stop='1676630164083'>
+                            <name>I add mochawesome context "[10:36:04]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:36:04]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164083' status='passed' stop='1676630164086'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164086' status='passed' stop='1676630164086'>
+                            <name>I add mochawesome context "[10:36:04]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:36:04]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164086' status='passed' stop='1676630164087'>
+                            <name>I add mochawesome context "[10:36:04]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:36:04]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164087' status='passed' stop='1676630164090'>
+                            <name>I wait for element {"css":"[id='username']"}, 60</name>
+                            <title>I wait for element {"css":"[id='username']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164090' status='passed' stop='1676630164090'>
+                            <name>I add mochawesome context "[10:36:04]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:36:04]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164091' status='passed' stop='1676630164092'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164094' status='passed' stop='1676630164094'>
+                            <name>I add mochawesome context "[10:36:04]IDAM URL :https://idam-web-public.aat.platform.hmcts.net/login?client_id=xuiwebapp&amp;redirect_uri=https://manage-case.aat.platform.hmcts.net/oauth2/callback&amp;state=3hNB6HlG1oHdYV9c5REtkpuJUP98LnQMSfI4UCCkfbM&amp;nonce=d1zPh23baPumoP6RUtWigxXjG8CJZpPOZe_TDMsHGi4&amp;response_type=code&amp;scope=profile%20openid%20roles%20manage-user%20create-user%20search-user&amp;prompt="</name>
+                            <title>I add mochawesome context "[10:36:04]IDAM URL :https://idam-web-public.aat.platform.hmcts.net/login?client_id=xuiwebapp&amp;redirect_uri=https://manage-case.aat.platform.hmcts.net/oauth2/callback&amp;state=3hNB6HlG1oHdYV9c5REtkpuJUP98LnQMSfI4UCCkfbM&amp;nonce=d1zPh23baPumoP6RUtWigxXjG8CJZpPOZe_TDMsHGi4&amp;response_type=code&amp;scope=profile%20openid%20roles%20manage-user%20create-user%20search-user&amp;prompt="</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164094' status='passed' stop='1676630164094'>
+                            <name>I add mochawesome context "[10:36:04]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:36:04]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164094' status='passed' stop='1676630164098'>
+                            <name>I wait for element {"css":"[id='username']"}, 60</name>
+                            <title>I wait for element {"css":"[id='username']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164098' status='passed' stop='1676630164098'>
+                            <name>I add mochawesome context "[10:36:04]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:36:04]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164098' status='passed' stop='1676630164218'>
+                            <name>I clear field {"css":"[id='username']"}</name>
+                            <title>I clear field {"css":"[id='username']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630164219' status='passed' stop='1676630165058'>
+                            <name>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</name>
+                            <title>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630165059' status='passed' stop='1676630165059'>
+                            <name>I add mochawesome context "[10:36:04]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:36:04]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630165059' status='passed' stop='1676630165062'>
+                            <name>I wait for element {"css":"[id='password']"}, 60</name>
+                            <title>I wait for element {"css":"[id='password']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630165062' status='passed' stop='1676630165062'>
+                            <name>I add mochawesome context "[10:36:04]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:36:04]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630165062' status='passed' stop='1676630165170'>
+                            <name>I clear field {"css":"[id='password']"}</name>
+                            <title>I clear field {"css":"[id='password']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630165170' status='passed' stop='1676630165472'>
+                            <name>I fill field {"css":"[id='password']"}, "Monday01"</name>
+                            <title>I fill field {"css":"[id='password']"}, "Monday01"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630165472' status='passed' stop='1676630165587'>
+                            <name>I click {"css":"input.button"}</name>
+                            <title>I click {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630165593' status='passed' stop='1676630167801'>
+                            <name>I wait for element "exui-app-header", 60</name>
+                            <title>I wait for element "exui-app-header", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630167801' status='passed' stop='1676630167801'>
+                    <name>I add mochawesome context "[10:36:05]BDD: Then   I should be redirected to EUI dashboard page"</name>
+                    <title>I add mochawesome context "[10:36:05]BDD: Then   I should be redirected to EUI dashboard page"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630167801' status='passed' stop='1676630167814'>
+                    <name>Then I should be redirected to EUI dashboard page </name>
+                    <title>Then I should be redirected to EUI dashboard page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630167801' status='passed' stop='1676630167801'>
+                            <name>I add mochawesome context "[10:36:05]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:05]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630167801' status='passed' stop='1676630167801'>
+                            <name>I add mochawesome context "[10:36:05]starting wait for element max in sec 45 : exui-header .hmcts-primary-navigation__item"</name>
+                            <title>I add mochawesome context "[10:36:05]starting wait for element max in sec 45 : exui-header .hmcts-primary-navigation__item"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630167801' status='passed' stop='1676630167805'>
+                            <name>I wait for element "exui-header .hmcts-primary-navigation__item", 60</name>
+                            <title>I wait for element "exui-header .hmcts-primary-navigation__item", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630167805' status='passed' stop='1676630167805'>
+                            <name>I add mochawesome context "[10:36:05]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:36:05]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630167805' status='passed' stop='1676630167808'>
+                            <name>I see element {"css":".govuk-heading-xl"}</name>
+                            <title>I see element {"css":".govuk-heading-xl"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630167814' status='passed' stop='1676630167814'>
+                    <name>I add mochawesome context "[10:36:07]BDD: When   I click on primary navigation header tab "Create case", I see selected tab page displayed"</name>
+                    <title>I add mochawesome context "[10:36:07]BDD: When   I click on primary navigation header tab "Create case", I see selected tab page displayed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630167814' status='passed' stop='1676630180522'>
+                    <name>When I click on primary navigation header tab "Create case", I see selected tab page displayed </name>
+                    <title>When I click on primary navigation header tab "Create case", I see selected tab page displayed </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630167814' status='passed' stop='1676630167814'>
+                            <name>I add mochawesome context "[10:36:07]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:07]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630167816' status='passed' stop='1676630167816'>
+                            <name>I add mochawesome context "[10:36:07]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:07]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168319' status='passed' stop='1676630168322'>
+                            <name>I grab text from all "div.spinner-container"</name>
+                            <title>I grab text from all "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168325' status='passed' stop='1676630168325'>
+                            <name>I add mochawesome context "[10:36:08]Waiting for spinner to dissappear."</name>
+                            <title>I add mochawesome context "[10:36:08]Waiting for spinner to dissappear."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168325' status='passed' stop='1676630168325'>
+                            <name>I add mochawesome context "[10:36:08]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:36:08]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168325' status='passed' stop='1676630168330'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 60</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168330' status='passed' stop='1676630168330'>
+                            <name>I add mochawesome context "[10:36:08]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:36:08]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168330' status='passed' stop='1676630168330'>
+                            <name>I add mochawesome context "[10:36:08]starting wait for element clickable max in sec 45000 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:36:08]starting wait for element clickable max in sec 45000 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168330' status='passed' stop='1676630168330'>
+                            <name>I add mochawesome context "[10:36:08]Wait for element clikable failed [object Object], not throwing exception to let test fail in next step if required state not met"</name>
+                            <title>I add mochawesome context "[10:36:08]Wait for element clikable failed [object Object], not throwing exception to let test fail in next step if required state not met"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168330' status='passed' stop='1676630168331'>
+                            <name>I add mochawesome context "[10:36:08]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:36:08]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168331' status='passed' stop='1676630168467'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168468' status='passed' stop='1676630168468'>
+                            <name>I add mochawesome context "[10:36:08]Primary nav tab clicked successfully. "Create case""</name>
+                            <title>I add mochawesome context "[10:36:08]Primary nav tab clicked successfully. "Create case""</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630168468' status='passed' stop='1676630168468'>
+                            <name>I add mochawesome context "[10:36:08]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:08]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630173472' status='passed' stop='1676630173472'>
+                            <name>I add mochawesome context "[10:36:13]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</name>
+                            <title>I add mochawesome context "[10:36:13]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630173472' status='passed' stop='1676630173477'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 60</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630173478' status='passed' stop='1676630173478'>
+                            <name>I add mochawesome context "[10:36:13]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:36:13]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630173478' status='passed' stop='1676630173478'>
+                            <name>I add mochawesome context "[10:36:13]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:13]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630173478' status='passed' stop='1676630173482'>
+                            <name>I grab text from all "#cc-jurisdiction option"</name>
+                            <title>I grab text from all "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630173484' status='passed' stop='1676630173484'>
+                            <name>I add mochawesome context "[10:36:13]Actions success Condition  failed expected false to be true AssertionError: expected false to be true
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:60:93
+                                at runMicrotasks (&lt;anonymous>)
+                                at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:32)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:58:17
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:32)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:55:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</name>
+                            <title>I add mochawesome context "[10:36:13]Actions success Condition  failed expected false to be true AssertionError: expected false to be true
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:60:93
+                                at runMicrotasks (&lt;anonymous>)
+                                at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:32)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:58:17
+                                at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:32)
+                                at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/navigationHeader.steps.js:55:9
+                                at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9). "</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630173484' status='passed' stop='1676630173485'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630173486' status='passed' stop='1676630173486'>
+                            <name>I add mochawesome context "[10:36:13]************** [ Retrying attempt 1. ] **************"</name>
+                            <title>I add mochawesome context "[10:36:13]************** [ Retrying attempt 1. ] **************"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630173486' status='passed' stop='1676630173486'>
+                            <name>I add mochawesome context "[10:36:13]Sleeping for 2sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:13]Sleeping for 2sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630180489' status='passed' stop='1676630180489'>
+                            <name>I add mochawesome context "[10:36:20]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</name>
+                            <title>I add mochawesome context "[10:36:20]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630180490' status='passed' stop='1676630180495'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 60</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630180495' status='passed' stop='1676630180495'>
+                            <name>I add mochawesome context "[10:36:20]wait done in sec 0.002"</name>
+                            <title>I add mochawesome context "[10:36:20]wait done in sec 0.002"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630180495' status='passed' stop='1676630180496'>
+                            <name>I add mochawesome context "[10:36:20]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:20]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630180496' status='passed' stop='1676630180514'>
+                            <name>I grab text from all "#cc-jurisdiction option"</name>
+                            <title>I grab text from all "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630180522' status='passed' stop='1676630180522'>
+                    <name>I add mochawesome context "[10:36:20]BDD: Then   Create case page should be displayed"</name>
+                    <title>I add mochawesome context "[10:36:20]BDD: Then   Create case page should be displayed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630180522' status='passed' stop='1676630180527'>
+                    <name>Then Create case page should be displayed </name>
+                    <title>Then Create case page should be displayed </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630180522' status='passed' stop='1676630180522'>
+                            <name>I add mochawesome context "[10:36:20]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</name>
+                            <title>I add mochawesome context "[10:36:20]starting wait for element max in sec 45 : exui-filter-case ccd-create-case-filters"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630180522' status='passed' stop='1676630180527'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 60</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630180527' status='passed' stop='1676630180527'>
+                            <name>I add mochawesome context "[10:36:20]wait done in sec 0"</name>
+                            <title>I add mochawesome context "[10:36:20]wait done in sec 0"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630180527' status='passed' stop='1676630180527'>
+                    <name>I add mochawesome context "[10:36:20]BDD: When   I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case""</name>
+                    <title>I add mochawesome context "[10:36:20]BDD: When   I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case""</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630180527' status='passed' stop='1676630182015'>
+                    <name>When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case" </name>
+                    <title>When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630180527' status='passed' stop='1676630180527'>
+                            <name>I add mochawesome context "[10:36:20]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:20]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630180528' status='passed' stop='1676630180528'>
+                            <name>I add mochawesome context "[10:36:20]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:20]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181025' status='passed' stop='1676630181028'>
+                            <name>I grab text from all "div.spinner-container"</name>
+                            <title>I grab text from all "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181029' status='passed' stop='1676630181029'>
+                            <name>I add mochawesome context "[10:36:21]Waiting for spinner to dissappear."</name>
+                            <title>I add mochawesome context "[10:36:21]Waiting for spinner to dissappear."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181029' status='passed' stop='1676630181142'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-jurisdiction']"}, "Family Divorce"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-jurisdiction']"}, "Family Divorce"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181143' status='passed' stop='1676630181257'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-case-type']"}, "XUI Test Case type"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-case-type']"}, "XUI Test Case type"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181257' status='passed' stop='1676630181371'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-event']"}, "Create a case"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-event']"}, "Create a case"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181371' status='passed' stop='1676630181373'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181373' status='passed' stop='1676630181373'>
+                            <name>I add mochawesome context "[10:36:21]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:21]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181875' status='passed' stop='1676630181878'>
+                            <name>I grab text from all "div.spinner-container"</name>
+                            <title>I grab text from all "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181880' status='passed' stop='1676630181880'>
+                            <name>I add mochawesome context "[10:36:21]Waiting for spinner to dissappear."</name>
+                            <title>I add mochawesome context "[10:36:21]Waiting for spinner to dissappear."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181880' status='passed' stop='1676630181885'>
+                            <name>I wait for element "#content button", 60</name>
+                            <title>I wait for element "#content button", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630181885' status='passed' stop='1676630182006'>
+                            <name>I click "#content button"</name>
+                            <title>I click "#content button"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630182007' status='passed' stop='1676630182007'>
+                            <name>I add mochawesome context "[10:36:22]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:22]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630182007' status='passed' stop='1676630182009'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630182009' status='passed' stop='1676630182011'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630182015' status='passed' stop='1676630182015'>
+                    <name>I add mochawesome context "[10:36:22]BDD: Then   I am on case form page"</name>
+                    <title>I add mochawesome context "[10:36:22]BDD: Then   I am on case form page"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630182015' status='passed' stop='1676630183162'>
+                    <name>Then I am on case form page </name>
+                    <title>Then I am on case form page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630182015' status='passed' stop='1676630182015'>
+                            <name>I add mochawesome context "[10:36:22]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:22]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630182016' status='passed' stop='1676630182016'>
+                            <name>I add mochawesome context "[10:36:22]starting wait for element max in sec 45 : ccd-case-edit"</name>
+                            <title>I add mochawesome context "[10:36:22]starting wait for element max in sec 45 : ccd-case-edit"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630182017' status='passed' stop='1676630183141'>
+                            <name>I wait for element "ccd-case-edit", 60</name>
+                            <title>I wait for element "ccd-case-edit", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630183142' status='passed' stop='1676630183142'>
+                            <name>I add mochawesome context "[10:36:22]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:36:22]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630183142' status='passed' stop='1676630183147'>
+                            <name>I grab text from all "ccd-case-edit"</name>
+                            <title>I grab text from all "ccd-case-edit"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630183162' status='passed' stop='1676630183163'>
+                    <name>I add mochawesome context "[10:36:23]BDD: Then   I should be able to fill the form pages"</name>
+                    <title>I add mochawesome context "[10:36:23]BDD: Then   I should be able to fill the form pages"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630183163' status='failed' stop='1676630183168'>
+                    <name>Then I should be able to fill the form pages </name>
+                    <title>Then I should be able to fill the form pages </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630183163' status='passed' stop='1676630183163'>
+                            <name>I add mochawesome context "[10:36:23]starting wait for element max in sec 45 : ccd-case-edit-page"</name>
+                            <title>I add mochawesome context "[10:36:23]starting wait for element max in sec 45 : ccd-case-edit-page"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630183163' status='passed' stop='1676630183168'>
+                            <name>I wait for element "ccd-case-edit-page", 60</name>
+                            <title>I wait for element "ccd-case-edit-page", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630183168' status='passed' stop='1676630183168'>
+                            <name>I add mochawesome context "[10:36:23]wait done in sec 0.001"</name>
+                            <title>I add mochawesome context "[10:36:23]wait done in sec 0.001"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630183962' status='passed' stop='1676630183962'>
+                    <name>I add mochawesome context "[10:36:23]************ Test failed"</name>
+                    <title>I add mochawesome context "[10:36:23]************ Test failed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>fields.count is not a function</message>
+                <stack-trace>TypeError: fields.count is not a function
+                    at CaseManager._formFillPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:215:50)
+                    at runMicrotasks (&lt;anonymous>)
+                    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                    at CaseManager.createCase (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:131:13)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/testCaseType.steps.js:83:9
+                    at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9)</stack-trace>
+            </failure>
+        </test-case>
+        <test-case start='1676630184085' status='failed' stop='1676630184760'>
+            <name>Validate mandatory fields condition check in page</name>
+            <title>Validate mandatory fields condition check in page</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1676630184755' status='passed' stop='1676630184755'>
+                    <name>I add mochawesome context "[10:36:24]BDD: When   I navigate to Expert UI Url"</name>
+                    <title>I add mochawesome context "[10:36:24]BDD: When   I navigate to Expert UI Url"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630184755' status='failed' stop='1676630184760'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630184755' status='passed' stop='1676630184756'>
+                            <name>I add mochawesome context "[10:36:24]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:36:24]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630184757' status='passed' stop='1676630184757'>
+                            <name>I add mochawesome context "[10:36:24]App base url : https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I add mochawesome context "[10:36:24]App base url : https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630184757' status='failed' stop='1676630184758'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630184761' status='passed' stop='1676630184761'>
+                    <name>I add mochawesome context "[10:36:24]************ Test failed"</name>
+                    <title>I add mochawesome context "[10:36:24]************ Test failed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>Cannot read property 'goto' of null</message>
+                <stack-trace>TypeError: Cannot read property 'goto' of null
+                    at Puppeteer.amOnPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:644:21)
+                    at Step.run (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/step.js:122:47)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/actor.js:134:23</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

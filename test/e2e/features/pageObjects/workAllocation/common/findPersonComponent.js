@@ -1,6 +1,6 @@
 const { LOG_LEVELS } = require("../../../../support/constants");
 const BrowserWaits = require("../../../../support/customWaits"); 
-const CucumberReporter = require("../../../../support/reportLogger");
+const CucumberReporter = require("../../../../../codeceptCommon/reportLogger");
 const exuiErrorMessage = require("../../common/exuiErrorMessage");
 
 

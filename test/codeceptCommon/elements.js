@@ -14,6 +14,20 @@ class ElementCollection {
     first() {
 
     }
+
+    async get(index){
+        if(typeof this.selector === 'string'){
+            return new Element()
+        }else{
+
+        }
+       
+    }
+
+    async count(){
+        const elements = await getActor().grabTextFromAll(this.selector)
+        return elements.length
+    }
 }
 
 class Element {
@@ -52,7 +66,7 @@ class Element {
 
     async isPresent(){
         const count = await getActor().grabTextFromAll(this.selector);
-        return count > 0
+        return count.length > 0
     }
 
     async isDisplayed(){

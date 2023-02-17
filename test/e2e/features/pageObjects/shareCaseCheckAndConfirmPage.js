@@ -3,7 +3,7 @@
 
 const BrowserWaits = require('../../support/customWaits');
  
-const CucumberReportLog = require("../../support/reportLogger");
+const CucumberReportLog = require("../../../codeceptCommon/reportLogger");
 
 
 const ShareCaseData = require('../../utils/shareCaseData');

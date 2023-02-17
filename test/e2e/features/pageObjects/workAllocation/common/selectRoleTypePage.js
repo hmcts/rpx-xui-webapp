@@ -1,7 +1,7 @@
 
 const { LOG_LEVELS } = require("../../../../support/constants");
 const BrowserWaits = require("../../../../support/customWaits");
-const CucucmberReporter = require("../../../../support/reportLogger");
+const CucucmberReporter = require("../../../../../codeceptCommon/reportLogger");
 class SelectRoleTypePage{
     constructor(){
         this.container = $("exui-task-assignment-choose-role");

@@ -1,6 +1,6 @@
 var CaseManager = require('../pageObjects/common/CaseManager');
 const BrowserWaits = require("../../support/customWaits");
-const CucumberReportLogger = require('../../support/reportLogger');
+const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 var CaseEditPage = require('../pageObjects/caseEditPage');
 
 

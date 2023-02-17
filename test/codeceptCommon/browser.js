@@ -1,4 +1,7 @@
 
+const helper = require('codeceptjs').helper;
+
+
 function getActor(){
     return actor()
 }
@@ -7,13 +10,27 @@ class DriverManager{
     deleteAllCookies(){
 
     }
+
+    async getCookies(){
+        return await getActor().getCookies();
+    }
 }
+
+const driverManager = new DriverManager();
 
 class Browser{
     constructor(){
         this.driver = {
             manage: () =>  new DriverManager()
         }
+    }
+
+    manage(){
+        return driverManager;
+    }
+
+    get_I(){
+        return getActor()
     }
 
     async sleep(seconds){
@@ -42,7 +59,7 @@ class Browser{
         return getActor().executeScript(fn);  
     }
 
-    async browserLogs(){
+    async getBrowserLogs(){
         return await getActor().grabBrowserLogs();  
     }
 

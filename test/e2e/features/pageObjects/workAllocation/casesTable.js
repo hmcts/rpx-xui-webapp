@@ -6,7 +6,7 @@ const BrowserWaits = require('../../../support/customWaits');
 const ArrayUtil = require('../../../utils/ArrayUtil');
 const Spinner = require('../../pageObjects/common/spinner');
 
-var cucumberReporter = require('../../../support/reportLogger');
+var cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const WATable = require("./waTable");
 
 class WACaseListTable extends WATable {

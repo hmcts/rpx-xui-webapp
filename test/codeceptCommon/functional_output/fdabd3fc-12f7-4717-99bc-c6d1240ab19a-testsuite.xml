@@ -1,0 +1,572 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1676624327062' stop='1676624371842'>
+    <name>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</name>
+    <title>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</title>
+    <test-cases>
+        <test-case start='1676624327064' status='failed' stop='1676624366846'>
+            <name>Start create case page form fields validating against API response</name>
+            <title>Start create case page form fields validating against API response</title>
+            <labels>
+                <label name='tag' value='@fullfunctional_fixneeded'/>
+                <label name='tag' value='@test'/>
+                <label name='tag' value='@codecept'/>
+            </labels>
+            <parameters/>
+            <steps>
+                <step start='1676624328071' status='passed' stop='1676624328072'>
+                    <name>I add mochawesome context "08:58:48 GMT+0000 (Greenwich Mean Time) : STEP: When   I navigate to Expert UI Url"</name>
+                    <title>I add mochawesome context "08:58:48 GMT+0000 (Greenwich Mean Time) : STEP: When   I navigate to Expert UI Url"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676624328075' status='passed' stop='1676624334649'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676624328075' status='passed' stop='1676624328076'>
+                            <name>I add mochawesome context "08:58:48 GMT+0000 (Greenwich Mean Time) : App base url : https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I add mochawesome context "08:58:48 GMT+0000 (Greenwich Mean Time) : App base url : https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624328076' status='passed' stop='1676624333233'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624333234' status='passed' stop='1676624334426'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624334426' status='passed' stop='1676624334637'>
+                            <name>I see element {"css":"input.button"}</name>
+                            <title>I see element {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676624334649' status='passed' stop='1676624334649'>
+                    <name>I add mochawesome context "08:58:54 GMT+0000 (Greenwich Mean Time) : STEP: Given   I am logged into Expert UI with valid user details"</name>
+                    <title>I add mochawesome context "08:58:54 GMT+0000 (Greenwich Mean Time) : STEP: Given   I am logged into Expert UI with valid user details"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676624334649' status='passed' stop='1676624338708'>
+                    <name>Given I am logged into Expert UI with valid user details </name>
+                    <title>Given I am logged into Expert UI with valid user details </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676624334649' status='passed' stop='1676624334654'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624334654' status='passed' stop='1676624334658'>
+                            <name>I wait for element {"css":"[id='username']"}, 60</name>
+                            <title>I wait for element {"css":"[id='username']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624334658' status='passed' stop='1676624334659'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624334661' status='passed' stop='1676624334661'>
+                            <name>I add mochawesome context "08:58:54 GMT+0000 (Greenwich Mean Time) : IDAM URL :https://idam-web-public.aat.platform.hmcts.net/login?client_id=xuiwebapp&amp;redirect_uri=https://manage-case.aat.platform.hmcts.net/oauth2/callback&amp;state=InSJ4sKfhqV-SpdDSWyuPMsfYq4osyso_QKBREil0MA&amp;nonce=E9EFum1h0bn2cJvVgKk8hVFmBgixM2TlRtL4kPnrGW8&amp;response_type=code&amp;scope=profile%20openid%20roles%20manage-user%20create-user%20search-user&amp;prompt="</name>
+                            <title>I add mochawesome context "08:58:54 GMT+0000 (Greenwich Mean Time) : IDAM URL :https://idam-web-public.aat.platform.hmcts.net/login?client_id=xuiwebapp&amp;redirect_uri=https://manage-case.aat.platform.hmcts.net/oauth2/callback&amp;state=InSJ4sKfhqV-SpdDSWyuPMsfYq4osyso_QKBREil0MA&amp;nonce=E9EFum1h0bn2cJvVgKk8hVFmBgixM2TlRtL4kPnrGW8&amp;response_type=code&amp;scope=profile%20openid%20roles%20manage-user%20create-user%20search-user&amp;prompt="</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624334661' status='passed' stop='1676624334664'>
+                            <name>I wait for element {"css":"[id='username']"}, 60</name>
+                            <title>I wait for element {"css":"[id='username']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624334665' status='passed' stop='1676624334785'>
+                            <name>I clear field {"css":"[id='username']"}</name>
+                            <title>I clear field {"css":"[id='username']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624334785' status='passed' stop='1676624335657'>
+                            <name>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</name>
+                            <title>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624335658' status='passed' stop='1676624335663'>
+                            <name>I wait for element {"css":"[id='password']"}, 60</name>
+                            <title>I wait for element {"css":"[id='password']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624335663' status='passed' stop='1676624335773'>
+                            <name>I clear field {"css":"[id='password']"}</name>
+                            <title>I clear field {"css":"[id='password']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624335773' status='passed' stop='1676624336088'>
+                            <name>I fill field {"css":"[id='password']"}, "Monday01"</name>
+                            <title>I fill field {"css":"[id='password']"}, "Monday01"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624336088' status='passed' stop='1676624336205'>
+                            <name>I click {"css":"input.button"}</name>
+                            <title>I click {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624336212' status='passed' stop='1676624338708'>
+                            <name>I wait for element "exui-app-header", 60</name>
+                            <title>I wait for element "exui-app-header", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676624338708' status='passed' stop='1676624338709'>
+                    <name>I add mochawesome context "08:58:56 GMT+0000 (Greenwich Mean Time) : STEP: Then   I should be redirected to EUI dashboard page"</name>
+                    <title>I add mochawesome context "08:58:56 GMT+0000 (Greenwich Mean Time) : STEP: Then   I should be redirected to EUI dashboard page"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676624338709' status='passed' stop='1676624338722'>
+                    <name>Then I should be redirected to EUI dashboard page </name>
+                    <title>Then I should be redirected to EUI dashboard page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676624338709' status='passed' stop='1676624338713'>
+                            <name>I wait for element "exui-header .hmcts-primary-navigation__item", 60</name>
+                            <title>I wait for element "exui-header .hmcts-primary-navigation__item", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624338713' status='passed' stop='1676624338715'>
+                            <name>I see element {"css":".govuk-heading-xl"}</name>
+                            <title>I see element {"css":".govuk-heading-xl"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676624338722' status='passed' stop='1676624338722'>
+                    <name>I add mochawesome context "08:58:58 GMT+0000 (Greenwich Mean Time) : STEP: When   I click on primary navigation header tab "Create case", I see selected tab page displayed"</name>
+                    <title>I add mochawesome context "08:58:58 GMT+0000 (Greenwich Mean Time) : STEP: When   I click on primary navigation header tab "Create case", I see selected tab page displayed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676624339224' status='passed' stop='1676624351458'>
+                    <name>When I click on primary navigation header tab "Create case", I see selected tab page displayed </name>
+                    <title>When I click on primary navigation header tab "Create case", I see selected tab page displayed </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676624339224' status='passed' stop='1676624339228'>
+                            <name>I grab text from all "div.spinner-container"</name>
+                            <title>I grab text from all "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624339229' status='passed' stop='1676624339233'>
+                            <name>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 60</name>
+                            <title>I wait for element {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624339234' status='passed' stop='1676624339387'>
+                            <name>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</name>
+                            <title>I click {"xpath":"//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'Create case')]"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624339388' status='passed' stop='1676624339388'>
+                            <name>I add mochawesome context "08:58:59 GMT+0000 (Greenwich Mean Time) : Primary nav tab clicked successfully. "Create case""</name>
+                            <title>I add mochawesome context "08:58:59 GMT+0000 (Greenwich Mean Time) : Primary nav tab clicked successfully. "Create case""</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624344392' status='passed' stop='1676624344398'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 60</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624344399' status='passed' stop='1676624344404'>
+                            <name>I grab text from all "#cc-jurisdiction option"</name>
+                            <title>I grab text from all "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624344409' status='passed' stop='1676624344410'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624351413' status='passed' stop='1676624351419'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 60</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624351419' status='passed' stop='1676624351437'>
+                            <name>I grab text from all "#cc-jurisdiction option"</name>
+                            <title>I grab text from all "#cc-jurisdiction option"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676624351458' status='passed' stop='1676624351458'>
+                    <name>I add mochawesome context "08:59:11 GMT+0000 (Greenwich Mean Time) : STEP: Then   Create case page should be displayed"</name>
+                    <title>I add mochawesome context "08:59:11 GMT+0000 (Greenwich Mean Time) : STEP: Then   Create case page should be displayed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676624351458' status='passed' stop='1676624351463'>
+                    <name>Then Create case page should be displayed </name>
+                    <title>Then Create case page should be displayed </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676624351458' status='passed' stop='1676624351462'>
+                            <name>I wait for element "exui-filter-case ccd-create-case-filters", 60</name>
+                            <title>I wait for element "exui-filter-case ccd-create-case-filters", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676624351463' status='passed' stop='1676624351463'>
+                    <name>I add mochawesome context "08:59:11 GMT+0000 (Greenwich Mean Time) : STEP: When   I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case""</name>
+                    <title>I add mochawesome context "08:59:11 GMT+0000 (Greenwich Mean Time) : STEP: When   I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case""</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676624351962' status='passed' stop='1676624352953'>
+                    <name>When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case" </name>
+                    <title>When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case" </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676624351962' status='passed' stop='1676624351966'>
+                            <name>I grab text from all "div.spinner-container"</name>
+                            <title>I grab text from all "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624351966' status='passed' stop='1676624352081'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-jurisdiction']"}, "Family Divorce"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-jurisdiction']"}, "Family Divorce"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624352082' status='passed' stop='1676624352195'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-case-type']"}, "XUI Test Case type"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-case-type']"}, "XUI Test Case type"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624352196' status='passed' stop='1676624352306'>
+                            <name>I select option {"xpath":"//*[@id = 'cc-event']"}, "Create a case"</name>
+                            <title>I select option {"xpath":"//*[@id = 'cc-event']"}, "Create a case"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624352307' status='passed' stop='1676624352308'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624352812' status='passed' stop='1676624352816'>
+                            <name>I grab text from all "div.spinner-container"</name>
+                            <title>I grab text from all "div.spinner-container"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624352816' status='passed' stop='1676624352821'>
+                            <name>I wait for element "#content button", 60</name>
+                            <title>I wait for element "#content button", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624352822' status='passed' stop='1676624352942'>
+                            <name>I click "#content button"</name>
+                            <title>I click "#content button"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624352944' status='passed' stop='1676624352946'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624352947' status='passed' stop='1676624352948'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676624352953' status='passed' stop='1676624352953'>
+                    <name>I add mochawesome context "08:59:12 GMT+0000 (Greenwich Mean Time) : STEP: Then   I am on case form page"</name>
+                    <title>I add mochawesome context "08:59:12 GMT+0000 (Greenwich Mean Time) : STEP: Then   I am on case form page"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676624352954' status='failed' stop='1676624366845'>
+                    <name>Then I am on case form page </name>
+                    <title>Then I am on case form page </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676624352954' status='passed' stop='1676624354342'>
+                            <name>I wait for element "ccd-case-edit", 60</name>
+                            <title>I wait for element "ccd-case-edit", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624354342' status='passed' stop='1676624354346'>
+                            <name>I grab text from all "ccd-case-edit"</name>
+                            <title>I grab text from all "ccd-case-edit"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624354347' status='passed' stop='1676624354349'>
+                            <name>I wait for element "#content button", 60</name>
+                            <title>I wait for element "#content button", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624354350' status='passed' stop='1676624354460'>
+                            <name>I click "#content button"</name>
+                            <title>I click "#content button"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624354461' status='passed' stop='1676624354466'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624356469' status='passed' stop='1676624356474'>
+                            <name>I wait for element "ccd-case-edit", 60</name>
+                            <title>I wait for element "ccd-case-edit", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624356475' status='passed' stop='1676624356479'>
+                            <name>I grab text from all "ccd-case-edit"</name>
+                            <title>I grab text from all "ccd-case-edit"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624356480' status='passed' stop='1676624356483'>
+                            <name>I wait for element "#content button", 60</name>
+                            <title>I wait for element "#content button", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624356483' status='passed' stop='1676624356588'>
+                            <name>I click "#content button"</name>
+                            <title>I click "#content button"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624356590' status='passed' stop='1676624356591'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624360593' status='passed' stop='1676624360599'>
+                            <name>I wait for element "ccd-case-edit", 60</name>
+                            <title>I wait for element "ccd-case-edit", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624360599' status='passed' stop='1676624360604'>
+                            <name>I grab text from all "ccd-case-edit"</name>
+                            <title>I grab text from all "ccd-case-edit"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624360605' status='passed' stop='1676624360608'>
+                            <name>I wait for element "#content button", 60</name>
+                            <title>I wait for element "#content button", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624360609' status='passed' stop='1676624360714'>
+                            <name>I click "#content button"</name>
+                            <title>I click "#content button"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624360715' status='passed' stop='1676624360717'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624366719' status='passed' stop='1676624366726'>
+                            <name>I wait for element "ccd-case-edit", 60</name>
+                            <title>I wait for element "ccd-case-edit", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624366726' status='passed' stop='1676624366731'>
+                            <name>I grab text from all "ccd-case-edit"</name>
+                            <title>I grab text from all "ccd-case-edit"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624366732' status='passed' stop='1676624366736'>
+                            <name>I wait for element "#content button", 60</name>
+                            <title>I wait for element "#content button", 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624366736' status='passed' stop='1676624366842'>
+                            <name>I click "#content button"</name>
+                            <title>I click "#content button"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624366843' status='passed' stop='1676624366845'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676624367464' status='passed' stop='1676624367464'>
+                    <name>I add mochawesome context "08:59:26 GMT+0000 (Greenwich Mean Time) : ************ Test failed"</name>
+                    <title>I add mochawesome context "08:59:26 GMT+0000 (Greenwich Mean Time) : ************ Test failed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>Action failed to meet success condition after 3 retry attempts.</message>
+                <stack-trace>Error: Action failed to meet success condition after 3 retry attempts.
+                    at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:192:19)
+                    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                    at CaseManager.AmOnCCDCaseEditPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/common/CaseManager.js:188:9)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/caseManager.steps.js:87:9
+                    at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9)</stack-trace>
+            </failure>
+        </test-case>
+        <test-case start='1676624367619' status='failed' stop='1676624371783'>
+            <name>Validate check your answers summary page</name>
+            <title>Validate check your answers summary page</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1676624368625' status='passed' stop='1676624368625'>
+                    <name>I add mochawesome context "08:59:28 GMT+0000 (Greenwich Mean Time) : STEP: When   I navigate to Expert UI Url"</name>
+                    <title>I add mochawesome context "08:59:28 GMT+0000 (Greenwich Mean Time) : STEP: When   I navigate to Expert UI Url"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676624368628' status='failed' stop='1676624371783'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676624368628' status='passed' stop='1676624368628'>
+                            <name>I add mochawesome context "08:59:28 GMT+0000 (Greenwich Mean Time) : App base url : https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I add mochawesome context "08:59:28 GMT+0000 (Greenwich Mean Time) : App base url : https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676624368628' status='failed' stop='1676624371782'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676624371787' status='passed' stop='1676624371787'>
+                    <name>I add mochawesome context "08:59:31 GMT+0000 (Greenwich Mean Time) : ************ Test failed"</name>
+                    <title>I add mochawesome context "08:59:31 GMT+0000 (Greenwich Mean Time) : ************ Test failed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>Navigation failed because browser has disconnected!</message>
+                <stack-trace>Error: Navigation failed because browser has disconnected!
+                    at CDPSession.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/LifecycleWatcher.js:46:107)
+                    at CDPSession.emit (events.js:315:20)
+                    at CDPSession._onClosed (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Connection.js:215:10)
+                    at Connection._onClose (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Connection.js:138:15)
+                    at WebSocket.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/WebSocketTransport.js:48:22)
+                    at WebSocket.onClose (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/ws/lib/event-target.js:124:16)
+                    at WebSocket.emit (events.js:315:20)
+                    at WebSocket.emitClose (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/ws/lib/websocket.js:191:10)
+                    at Socket.socketOnClose (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/ws/lib/websocket.js:850:15)
+                    at Socket.emit (events.js:315:20)
+                    at TCP.&lt;anonymous> (net.js:673:12)
+                  -- ASYNC --
+                    at Frame.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:111:15)
+                    at Page.goto (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Page.js:674:49)
+                    at Page.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at Puppeteer.amOnPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:644:21)
+                    at Step.run (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/step.js:122:47)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/actor.js:134:23</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

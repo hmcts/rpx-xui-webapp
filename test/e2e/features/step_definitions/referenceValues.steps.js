@@ -1,6 +1,6 @@
 
 var CaseListPage = require("../pageObjects/CaseListPage");
-const CucumberReportLogger = require('../../support/reportLogger');
+const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 
 var { defineSupportCode } = require('cucumber');

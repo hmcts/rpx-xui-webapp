@@ -1,7 +1,7 @@
 const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
 
-const reportLogger = require('../../support/reportLogger');
+const reportLogger = require('../../../codeceptCommon/reportLogger');
 
 class ErrorPage{
 

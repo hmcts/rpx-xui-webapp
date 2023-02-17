@@ -1,6 +1,6 @@
 const headerPage = require('../pageObjects/headerPage');
 const browserWaits = require('../../support/customWaits');
-const cucumberReporter = require('../../support/reportLogger');
+const cucumberReporter = require('../../../codeceptCommon/reportLogger');
 var { defineSupportCode } = require('cucumber');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const constants = require('../../support/constants');
@@ -8,7 +8,7 @@ const featureToggleUtil = require('../../../ngIntegration/util/featureToggleUtil
 const browserUtil = require("../../../ngIntegration/util/browserUtil");
 const headerpage = require('../pageObjects/headerPage');
 const config = require('../../config/conf.js');
-const reportLogger = require('../../support/reportLogger');
+const reportLogger = require('../../../codeceptCommon/reportLogger');
 const { LOG_LEVELS } = require('../../support/constants');
 
 const appTestData = require('../../config/appTestConfig')

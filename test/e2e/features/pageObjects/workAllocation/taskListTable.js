@@ -7,9 +7,9 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 const Spinner = require('../../pageObjects/common/spinner');
 const Application = require('../../pageObjects/common/application');
 
-var cucumberReporter = require('../../../support/reportLogger');
+var cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 
-var cucumberReporter = require('../../../support/reportLogger');
+var cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const WATable = require("./waTable");
 
 class TaskListTable extends WATable{

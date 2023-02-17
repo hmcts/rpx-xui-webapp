@@ -1,7 +1,7 @@
 
 
 const BrowserWaits = require('../../../support/customWaits');
-const CucumberReporter = require('../../../support/reportLogger');
+const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 
 class ErrorPage{
     constructor() {

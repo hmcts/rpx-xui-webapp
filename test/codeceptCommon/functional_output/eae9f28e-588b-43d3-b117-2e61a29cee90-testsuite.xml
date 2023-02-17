@@ -1,0 +1,238 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1676634573881' stop='1676634582046'>
+    <name>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</name>
+    <title>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</title>
+    <test-cases>
+        <test-case start='1676634573889' status='failed' stop='1676634581801'>
+            <name>Start create case page form fields validating against API response</name>
+            <title>Start create case page form fields validating against API response</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1676634575701' status='passed' stop='1676634575703'>
+                    <name>I add mochawesome context "[11:49:35]BDD: When   I navigate to Expert UI Url"</name>
+                    <title>I add mochawesome context "[11:49:35]BDD: When   I navigate to Expert UI Url"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676634575706' status='passed' stop='1676634579792'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676634575706' status='passed' stop='1676634575707'>
+                            <name>I add mochawesome context "[11:49:35]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[11:49:35]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634575721' status='passed' stop='1676634575723'>
+                            <name>I add mochawesome context "[11:49:35]App base url : https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I add mochawesome context "[11:49:35]App base url : https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634575724' status='passed' stop='1676634578261'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634578263' status='passed' stop='1676634578264'>
+                            <name>I add mochawesome context "[11:49:35]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[11:49:35]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634578266' status='passed' stop='1676634579552'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579555' status='passed' stop='1676634579557'>
+                            <name>I add mochawesome context "[11:49:35]wait done in sec 0.004"</name>
+                            <title>I add mochawesome context "[11:49:35]wait done in sec 0.004"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579561' status='passed' stop='1676634579742'>
+                            <name>I see element {"css":"input.button"}</name>
+                            <title>I see element {"css":"input.button"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676634579792' status='passed' stop='1676634579794'>
+                    <name>I add mochawesome context "[11:49:39]BDD: Given   I am logged into Expert UI with valid user details"</name>
+                    <title>I add mochawesome context "[11:49:39]BDD: Given   I am logged into Expert UI with valid user details"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676634579797' status='failed' stop='1676634581800'>
+                    <name>Given I am logged into Expert UI with valid user details </name>
+                    <title>Given I am logged into Expert UI with valid user details </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676634579797' status='passed' stop='1676634579800'>
+                            <name>I add mochawesome context "[11:49:39]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[11:49:39]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579803' status='passed' stop='1676634579817'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579820' status='passed' stop='1676634579822'>
+                            <name>I add mochawesome context "[11:49:39]wait done in sec 0.005"</name>
+                            <title>I add mochawesome context "[11:49:39]wait done in sec 0.005"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579824' status='passed' stop='1676634579826'>
+                            <name>I add mochawesome context "[11:49:39]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[11:49:39]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579829' status='passed' stop='1676634579844'>
+                            <name>I wait for element {"css":"[id='username']"}, 60</name>
+                            <title>I wait for element {"css":"[id='username']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579847' status='passed' stop='1676634579849'>
+                            <name>I add mochawesome context "[11:49:39]wait done in sec 0.005"</name>
+                            <title>I add mochawesome context "[11:49:39]wait done in sec 0.005"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579852' status='passed' stop='1676634579857'>
+                            <name>I execute script () => {
+                                        return window.document.location.href 
+                                    }</name>
+                            <title>I execute script () => {
+                                        return window.document.location.href 
+                                    }</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579885' status='passed' stop='1676634579887'>
+                            <name>I add mochawesome context "[11:49:39]IDAM URL :https://idam-web-public.aat.platform.hmcts.net/login?client_id=xuiwebapp&amp;redirect_uri=https://manage-case.aat.platform.hmcts.net/oauth2/callback&amp;state=lltTTd0Hi8HsXhhBKtmTgkrkeqD-fLxL6rMgsQkU8KU&amp;nonce=KZwjBi87qmDxEtWafhd21wUjKoEU8P7oZp3Ye49z-_0&amp;response_type=code&amp;scope=profile%20openid%20roles%20manage-user%20create-user%20search-user&amp;prompt="</name>
+                            <title>I add mochawesome context "[11:49:39]IDAM URL :https://idam-web-public.aat.platform.hmcts.net/login?client_id=xuiwebapp&amp;redirect_uri=https://manage-case.aat.platform.hmcts.net/oauth2/callback&amp;state=lltTTd0Hi8HsXhhBKtmTgkrkeqD-fLxL6rMgsQkU8KU&amp;nonce=KZwjBi87qmDxEtWafhd21wUjKoEU8P7oZp3Ye49z-_0&amp;response_type=code&amp;scope=profile%20openid%20roles%20manage-user%20create-user%20search-user&amp;prompt="</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579890' status='passed' stop='1676634579891'>
+                            <name>I add mochawesome context "[11:49:39]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[11:49:39]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579894' status='passed' stop='1676634579909'>
+                            <name>I wait for element {"css":"[id='username']"}, 60</name>
+                            <title>I wait for element {"css":"[id='username']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579911' status='passed' stop='1676634579914'>
+                            <name>I add mochawesome context "[11:49:39]wait done in sec 0.005"</name>
+                            <title>I add mochawesome context "[11:49:39]wait done in sec 0.005"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634579917' status='passed' stop='1676634580069'>
+                            <name>I clear field {"css":"[id='username']"}</name>
+                            <title>I clear field {"css":"[id='username']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634580071' status='passed' stop='1676634581048'>
+                            <name>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</name>
+                            <title>I fill field {"css":"[id='username']"}, "lukesuperuserxui@mailnesia.com"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634581050' status='passed' stop='1676634581051'>
+                            <name>I add mochawesome context "[11:49:39]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[11:49:39]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634581053' status='passed' stop='1676634581069'>
+                            <name>I wait for element {"css":"[id='password']"}, 60</name>
+                            <title>I wait for element {"css":"[id='password']"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634581072' status='passed' stop='1676634581074'>
+                            <name>I add mochawesome context "[11:49:39]wait done in sec 0.004"</name>
+                            <title>I add mochawesome context "[11:49:39]wait done in sec 0.004"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634581078' status='passed' stop='1676634581209'>
+                            <name>I clear field {"css":"[id='password']"}</name>
+                            <title>I clear field {"css":"[id='password']"}</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676634581211' status='failed' stop='1676634581798'>
+                            <name>I fill field {"css":"[id='password']"}, "Monday01"</name>
+                            <title>I fill field {"css":"[id='password']"}, "Monday01"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676634581828' status='passed' stop='1676634581830'>
+                    <name>I add mochawesome context "[11:49:41]************ Test failed"</name>
+                    <title>I add mochawesome context "[11:49:41]************ Test failed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>Protocol error (Runtime.callFunctionOn): Target closed.</message>
+                <stack-trace>Error: Protocol error (Runtime.callFunctionOn): Target closed.
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Connection.js:183:56
+                    at new Promise (&lt;anonymous>)
+                    at CDPSession.send (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Connection.js:182:12)
+                    at ExecutionContext._evaluateInternal (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/ExecutionContext.js:107:44)
+                    at ExecutionContext.evaluate (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/ExecutionContext.js:48:23)
+                    at ExecutionContext.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at ElementHandle.evaluate (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:55:42)
+                    at ElementHandle.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at ElementHandle.focus (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:327:16)
+                    at ElementHandle.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at ElementHandle.type (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:335:16)
+                    at ElementHandle.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at Puppeteer.fillField (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:1289:14)
+                    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                    at Element.click (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/codeceptCommon/elements.js:46:9)
+                    at loginLogoutObjects.clickSignIn (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/loginLogoutObjects.js:52:5)
+                  -- ASYNC --
+                    at ExecutionContext.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:111:15)
+                    at ElementHandle.evaluate (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:55:42)
+                    at ElementHandle.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at ElementHandle.focus (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:327:16)
+                    at ElementHandle.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at ElementHandle.type (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/JSHandle.js:335:16)
+                    at ElementHandle.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at Puppeteer.fillField (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:1289:14)
+                    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+                    at Element.click (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/codeceptCommon/elements.js:46:9)
+                    at loginLogoutObjects.clickSignIn (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/loginLogoutObjects.js:52:5)
+                    at loginLogoutObjects.loginWithCredentials (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/loginLogoutObjects.js:75:5)
+                    at loginLogoutObjects.givenIAmLoggedIn (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/pageObjects/loginLogoutObjects.js:22:5)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/loginLogout.steps.js:209:5
+                    at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9)</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

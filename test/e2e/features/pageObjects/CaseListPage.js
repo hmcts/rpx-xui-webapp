@@ -2,7 +2,7 @@
 const BrowserWaits = require('../../support/customWaits');
 const TaskMessageBanner = require("./messageBanner");
 const RuntimeTestData = require('../../support/runtimeTestData');
-const CucumberReportLogger = require('../../support/reportLogger');
+const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 const { LOG_LEVELS } = require('../../support/constants');
 class CaseListPage{
 

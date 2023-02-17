@@ -1,0 +1,77 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1676630760464' stop='1676630764707'>
+    <name>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</name>
+    <title>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</title>
+    <test-cases>
+        <test-case start='1676630760467' status='failed' stop='1676630764636'>
+            <name>Start create case page form fields validating against API response</name>
+            <title>Start create case page form fields validating against API response</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1676630762045' status='passed' stop='1676630762046'>
+                    <name>I add mochawesome context "[10:46:02]BDD: When   I navigate to Expert UI Url"</name>
+                    <title>I add mochawesome context "[10:46:02]BDD: When   I navigate to Expert UI Url"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676630762047' status='failed' stop='1676630764636'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676630762048' status='passed' stop='1676630762048'>
+                            <name>I add mochawesome context "[10:46:02]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[10:46:02]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630762055' status='passed' stop='1676630762056'>
+                            <name>I add mochawesome context "[10:46:02]App base url : https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I add mochawesome context "[10:46:02]App base url : https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630762057' status='passed' stop='1676630763939'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630763940' status='passed' stop='1676630763941'>
+                            <name>I add mochawesome context "[10:46:02]starting wait for element max in sec 45 : [object Object]"</name>
+                            <title>I add mochawesome context "[10:46:02]starting wait for element max in sec 45 : [object Object]"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676630763942' status='failed' stop='1676630764629'>
+                            <name>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</name>
+                            <title>I wait for element {"xpath":"//*[@id=\"authorizeCommand\"]/h1"}, 60</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676630764643' status='passed' stop='1676630764643'>
+                    <name>I add mochawesome context "[10:46:04]************ Test failed"</name>
+                    <title>I add mochawesome context "[10:46:04]************ Test failed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>element ({xpath: //*[@id="authorizeCommand"]/h1}) still not present on page after 60 sec
+                Protocol error (Runtime.callFunctionOn): Target closed.</message>
+                <stack-trace>Error: element ({xpath: //*[@id="authorizeCommand"]/h1}) still not present on page after 60 sec
+                Protocol error (Runtime.callFunctionOn): Target closed.
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:1987:13
+                    at Element.isDisplayed (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/codeceptCommon/elements.js:60:13)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/loginLogout.steps.js:108:14
+                    at BrowserWaits.retryWithActionCallback (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/support/customWaits.js:169:32)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/test/e2e/features/step_definitions/loginLogout.steps.js:102:5
+                    at runSteps (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/interfaces/gherkin.js:62:9)</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

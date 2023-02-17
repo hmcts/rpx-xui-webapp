@@ -1,0 +1,76 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1676636324364' stop='1676636326520'>
+    <name>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</name>
+    <title>Test case type case creation and case details validations @fullfunctional_fixneeded @test @codecept</title>
+    <test-cases>
+        <test-case start='1676636324368' status='failed' stop='1676636326457'>
+            <name>Start create case page form fields validating against API response</name>
+            <title>Start create case page form fields validating against API response</title>
+            <labels/>
+            <parameters/>
+            <steps>
+                <step start='1676636325436' status='passed' stop='1676636325437'>
+                    <name>I add mochawesome context "[12:18:45]BDD: When   I navigate to Expert UI Url"</name>
+                    <title>I add mochawesome context "[12:18:45]BDD: When   I navigate to Expert UI Url"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1676636325439' status='failed' stop='1676636326457'>
+                    <name>When I navigate to Expert UI Url </name>
+                    <title>When I navigate to Expert UI Url </title>
+                    <attachments/>
+                    <steps>
+                        <step start='1676636325439' status='passed' stop='1676636325439'>
+                            <name>I add mochawesome context "[12:18:45]Sleeping for 0sec before performing action."</name>
+                            <title>I add mochawesome context "[12:18:45]Sleeping for 0sec before performing action."</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676636325446' status='passed' stop='1676636325446'>
+                            <name>I add mochawesome context "[12:18:45]App base url : https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I add mochawesome context "[12:18:45]App base url : https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                        <step start='1676636325447' status='failed' stop='1676636326449'>
+                            <name>I am on page "https://manage-case.aat.platform.hmcts.net/"</name>
+                            <title>I am on page "https://manage-case.aat.platform.hmcts.net/"</title>
+                            <attachments/>
+                            <steps/>
+                        </step>
+                    </steps>
+                </step>
+                <step start='1676636326464' status='passed' stop='1676636326465'>
+                    <name>I add mochawesome context "[12:18:46]************ Test failed"</name>
+                    <title>I add mochawesome context "[12:18:46]************ Test failed"</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>Navigation failed because browser has disconnected!</message>
+                <stack-trace>Error: Navigation failed because browser has disconnected!
+                    at CDPSession.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/LifecycleWatcher.js:46:107)
+                    at CDPSession.emit (events.js:315:20)
+                    at CDPSession._onClosed (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Connection.js:215:10)
+                    at Connection._onClose (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Connection.js:138:15)
+                    at WebSocket.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/WebSocketTransport.js:48:22)
+                    at WebSocket.onClose (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/ws/lib/event-target.js:124:16)
+                    at WebSocket.emit (events.js:315:20)
+                    at WebSocket.emitClose (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/ws/lib/websocket.js:191:10)
+                    at Socket.socketOnClose (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/ws/lib/websocket.js:850:15)
+                    at Socket.emit (events.js:315:20)
+                    at TCP.&lt;anonymous> (net.js:673:12)
+                    at TCP.callbackTrampoline (internal/async_hooks.js:129:14)
+                  -- ASYNC --
+                    at Frame.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:111:15)
+                    at Page.goto (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/Page.js:674:49)
+                    at Page.&lt;anonymous> (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/puppeteer/lib/helper.js:112:23)
+                    at Puppeteer.amOnPage (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/helper/Puppeteer.js:644:21)
+                    at Step.run (/Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/step.js:122:47)
+                    at /Users/sreekanth/work/moj/ex-ui/rpx-xui-webapp/node_modules/codeceptjs/lib/actor.js:134:23</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

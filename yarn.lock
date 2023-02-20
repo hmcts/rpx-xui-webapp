@@ -1475,17 +1475,17 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.13.0-rc9":
-  version "6.13.0-rc9"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.0-rc9.tgz#e37e0d8687bc846e5762ba0c0856d15e7079351f"
-  integrity sha512-Uc/BLVYDOoOPR5AYTu6iMiQpdSYuqCO8uFWnxI200U7kUgYHvV0erJfRLCODXKRLXDXRb161X1PsruB04eNifA==
+"@hmcts/ccd-case-ui-toolkit@6.13.0-rc10":
+  version "6.13.0-rc10"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.0-rc10.tgz#ac9bdf48573cf3176248afc7f680a81177d2aa8e"
+  integrity sha512-1PINjU22azQtCqW6sBV/SpHCh5mw/R8UrdYu7OAsOGKuAD3bg1l7IUyWxn1paN54JBWUQUzVaQ5AQW9yvYktug==
   dependencies:
     tslib "^2.0.0"
 
-"@hmcts/ccpay-web-component@5.0.10-beta26":
-  version "5.0.10-beta26"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.10-beta26.tgz#f27952bc2f96303b5a7d5a3a20ac32e7b6885a45"
-  integrity sha512-sjPLKLMKxb1JDSO/Y+ZXgCSsmw/3WnD2fdAmtYXKbYdxSEVu11jD+7R7FX3os63am1GQ9V8iwjdCZpeYtzyh3Q==
+"@hmcts/ccpay-web-component@5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.2.0.tgz#1254ad1ad5381271d3c8d43cb14d89d9d4ae546b"
+  integrity sha512-IQBXdlboICKe+MLjbzlRnMZ/MXQOkod8ML0uhQWys0HCC93o5w3USyK4fJsUX903nCKtTM0w15edHUnoIJ8A3g==
   dependencies:
     tslib "^2.0.0"
 

@@ -5,6 +5,7 @@
     "node": ">=12.13.0"
   },
   "scripts": {
+    "cve": "yarn audit --groups dependencies --json | grep auditAdvisory > yarn-audit-known-issues",
     "clean": "rimraf node_modules",
     "nuke": "rm -rf dist",
     "build": "yarn build:prod && yarn build:node",
@@ -75,7 +76,7 @@
     "@angular/router": "^11.2.14",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccd-case-ui-toolkit": "6.13.0-rc6",
-    "@hmcts/ccpay-web-component": "5.0.10-beta14",
+    "@hmcts/ccpay-web-component": "5.0.10-beta26",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.18-RC.3",
     "@hmcts/nodejs-healthcheck": "1.7.0",

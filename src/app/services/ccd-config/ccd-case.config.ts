@@ -39,11 +39,13 @@ export class AppConfig extends AbstractAppConfig {
       }
     });
 
-    this.featureToggleService.getValue('wa-service-config', null).subscribe({
-      next: (val) => this.config = {
-        ...this.config,
-        wa_service_config: val
-      }
+    this.environmentService.config$.subscribe(config => {
+      this.featureToggleService.getValue('wa-service-config', config.waSupportedServices).subscribe({
+        next: (val) => this.config = {
+          ...this.config,
+          wa_service_config: val
+        }
+      });
     });
 
     this.featureToggleService.getValue('access-management-basic-view-mock', {}).subscribe({
@@ -203,6 +205,20 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getPaymentReturnUrl(): string {
-      return this.environmentService.get('paymentReturnUrl');
+    return this.environmentService.get('paymentReturnUrl');
+  }
+
+  public getCategoriesAndDocumentsUrl(): string {
+    return this.config.categories_and_documents_url;
+  }
+
+  public getDocumentDataUrl(): string {
+    return this.config.document_data_url;
+  }
+  public  getRDCommonDataApiUrl(): string {
+    return this.config.rd_common_data_api_url;
+  }
+  public  getCaseDataStoreApiUrl(): string {
+    return this.config.case_data_store_api_url;
   }
 }

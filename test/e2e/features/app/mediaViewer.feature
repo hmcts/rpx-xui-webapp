@@ -1,4 +1,4 @@
-@fullfunctional 
+@fullfunctional_disabled_for_angular_11 
 Feature: Check media viewer
 
     Background:

@@ -4,11 +4,11 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { getTaskType, orchestrationSpecificAccessRequest, postCreateTask, specificAccessRequestUpdateAttributes } from '.';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
+import { getTaskType, orchestrationSpecificAccessRequest, postCreateTask, specificAccessRequestUpdateAttributes } from './index';
 
 chai.use(sinonChai);
 describe('postCreateTask', () => {

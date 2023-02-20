@@ -530,7 +530,7 @@ export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignme
 }
 
 export function getAccessGrantedRoleAssignments(roleAssignmentList: RoleAssignment[]): RoleAssignment[] {
-  return roleAssignmentList.filter(r => r.roleName === 'specific-access-granted')
+  return roleAssignmentList.filter(role => role.roleName === 'specific-access-granted')
 }
 
 export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery[] {

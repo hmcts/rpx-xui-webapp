@@ -197,7 +197,7 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
     }, {headers});
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse
-      .find(r => r.roleName === 'specific-access-granted' ||  r.roleName === 'specific-access-denied');
+      .find(role => role.roleName === 'specific-access-granted' ||  role.roleName === 'specific-access-denied');
 
     //Delete secondary role assignment
     if (singleRoleAssignment.roleName === 'specific-access-granted') {

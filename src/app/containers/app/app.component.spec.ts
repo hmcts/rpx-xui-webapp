@@ -1,5 +1,5 @@
 import { NavigationStart, RoutesRecognized } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -15,7 +15,6 @@ describe('AppComponent', () => {
   let title: any;
   let testRoute: RoutesRecognized;
   let sessionStorageService;
-  const eventsSub = new BehaviorSubject<any>(null);
 
   beforeEach(() => {
       store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
@@ -62,8 +61,7 @@ describe('AppComponent', () => {
               queryParamMap: null
           }
       });
-      eventsSub.next(testRoute);
-      router = { events: of(eventsSub) };
+      router = { events: of(testRoute) };
       title = jasmine.createSpyObj('Title', ['setTitle']);
       appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, sessionStorageService);
   });
@@ -277,10 +275,8 @@ describe('AppComponent', () => {
   let cookieService: any;
   let router: any;
   let title: any;
-  let testRoute: RoutesRecognized;
   let sessionStorageService;
   let startNav;
-  const eventsSub = new BehaviorSubject<any>(null);
 
   beforeEach(() => {
       store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
@@ -292,44 +288,7 @@ describe('AppComponent', () => {
       environmentService = jasmine.createSpyObj('environmentService', ['config$']);
       sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
       startNav = new NavigationStart(123,'/');
-      testRoute = new RoutesRecognized(1, 'test', 'test', {
-          url: 'test',
-          root: {
-              firstChild: {
-                  data: { title: 'Test' },
-                  url: [],
-                  params: {},
-                  queryParams: {},
-                  fragment: '',
-                  outlet: '',
-                  component: '',
-                  routeConfig: {},
-                  root: null,
-                  parent: null,
-                  firstChild: null,
-                  children: [],
-                  pathFromRoot: [],
-                  paramMap: null,
-                  queryParamMap: null
-              },
-              data: { title: 'Test' },
-              url: [],
-              params: {},
-              queryParams: {},
-              fragment: '',
-              outlet: '',
-              component: '',
-              routeConfig: {},
-              root: null,
-              parent: null,
-              children: [],
-              pathFromRoot: [],
-              paramMap: null,
-              queryParamMap: null
-          }
-      });
-      eventsSub.next(startNav);
-      router = { events: of(eventsSub) };
+      router = { events: startNav };
       title = jasmine.createSpyObj('Title', ['setTitle']);
       appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, sessionStorageService);
   });

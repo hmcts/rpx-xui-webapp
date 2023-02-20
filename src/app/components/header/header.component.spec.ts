@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 
 import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
-import { HmctsGlobalHeaderComponent } from '..';
+import { HmctsGlobalHeaderComponent } from '../hmcts-global-header/hmcts-global-header.component';
 import { HeaderComponent } from './header.component';
 
 describe('Header Component', () => {

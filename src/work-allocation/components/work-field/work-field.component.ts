@@ -3,9 +3,9 @@ import { FieldConfig } from '../../models/common';
 import { Case } from '.././../models/cases';
 import { Task } from '.././../models/tasks';
 
-import { FieldType } from '../../enums';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { FieldType } from '../../enums';
 
 @Component({
   selector: 'exui-work-field',
@@ -49,4 +49,9 @@ export class WorkFieldComponent {
     return null;
   }
 
+  public onClick() {
+    if (this.workField.role !== 'specific-access-denied') {
+      this.clickSubject.next(this.workField);
+    }
+  }
 }

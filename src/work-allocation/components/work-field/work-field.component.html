@@ -40,7 +40,7 @@
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.CASE_NAME">
     <exui-case-name-field [caseName]="workField[config.name]" [caseId]="workField.case_id" [hasAccess]="workField.hasAccess"
-      (click)="clickSubject.next(workField)">
+      (click)="onClick()">
     </exui-case-name-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.TASK_NAME">

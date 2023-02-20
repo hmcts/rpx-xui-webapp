@@ -4,6 +4,7 @@ import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
   waServiceConfig: 'wa-service-config',
+  waLandingPageRoles: 'wa-landing-page-roles',
   waAccess: 'wa-access',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',

@@ -101,6 +101,33 @@
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [{"service": "IA", "serviceCodes": ["BFA1"]}, {"service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"]}, {"service": "PRIVATELAW", "serviceCodes": ["ABA5"]}],
+  "waSupportedServiceandCaseTypes": {
+    "configurations": [
+      {
+        "caseTypes": [
+          "Asylum"
+        ],
+        "releaseVersion": "3.5",
+        "serviceName": "IA"
+      },
+      {
+        "caseTypes": [
+          "PRIVATELAW",
+          "PRLAPPS"
+        ],
+        "releaseVersion": "3.5",
+        "serviceName": "PRIVATELAW"
+      },
+      {
+        "caseTypes": [
+          "CIVIL",
+          "GENERALAPPLICATION"
+        ],
+        "releaseVersion": "3.5",
+        "serviceName": "CIVIL"
+      }
+    ]
+  }, 
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

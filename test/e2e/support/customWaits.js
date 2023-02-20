@@ -3,9 +3,9 @@
 
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
-class BrowserWaits {
-    constructor() {
-        this.waitTime = 45000;
+class BrowserWaits{
+    constructor(){
+        this.waitTime = 45000; 
         this.pageErrors = $$(".error-summary");
         this.retriesCount = 3;
 

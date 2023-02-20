@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { ChangeDetectorRef } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -108,7 +108,7 @@ describe('WorkCaseListWrapperComponent', () => {
     component = fixture.componentInstance;
     const cases: Case[] = getMockCases();
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     mockWorkAllocationService.searchCase.and.returnValue(of({ cases }));
     mockWorkAllocationService.getMyCases.and.returnValue(of({ cases }));
     mockWorkAllocationService.getMyAccess.and.returnValue(of({ cases }));
@@ -123,6 +123,7 @@ describe('WorkCaseListWrapperComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -135,17 +136,17 @@ describe('WorkCaseListWrapperComponent', () => {
     const secondAction = exampleCase.actions[1];
     const firstCaseAction = { invokedCase: exampleCase, action: firstAction };
     const secondCaseAction = { invokedCase: exampleCase, action: secondAction };
-    it('should handle a reallocate action', () => {
+    it('should handle a reallocate action', fakeAsync(async () => {
 
       // need to check that navigate has been called
       component.onActionHandler(firstCaseAction);
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), { state: { backUrl: null } });
-    });
+    }));
 
-    it('should handle a remove action', () => {
+    it('should handle a remove action', fakeAsync(async () => {
       // need to spy on the router and set up the task action
       component.onActionHandler(secondCaseAction);
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('remove'), { state: { backUrl: null } });
-    });
+    }));
   });
 });

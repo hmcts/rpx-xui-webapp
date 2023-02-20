@@ -135,7 +135,7 @@ describe('AppConfiguration', () => {
     expect(service.getAnnotationApiUrl()).toBeUndefined();
   }));
 
-  it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {
+  it('should have getNotificationUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getNotificationUrl()).toBeUndefined();
   }));
 

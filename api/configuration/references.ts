@@ -72,6 +72,7 @@ export const SERVICES_PRD_JUDICIAL_API = 'services.prd.judicialApi';
 export const SERVICES_PRD_COMMONDATA_API = 'services.prd.commondataApi';
 
 export const SERVICES_REFUNDS_API_URL = 'services.refunds';
+export const SERVICES_NOTIFICATIONS_API_URL = 'services.notifications';
 export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 
 export const PROTOCOL = 'protocol';

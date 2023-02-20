@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public isCookieBannerVisible: boolean = false;
   private cookieBannerEnabledSubscription: Subscription;
   private cookieBannerEnabled: boolean = false;
-  private subscription: Subscription;
+  public subscription: Subscription;
   private pageReloading: boolean = false;
   private timeoutNotificationServiceInitialised: boolean = false;
   private idleModalDisplayTimeInMilliseconds: number;

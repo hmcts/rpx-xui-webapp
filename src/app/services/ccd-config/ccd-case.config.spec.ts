@@ -135,6 +135,10 @@ describe('AppConfiguration', () => {
     expect(service.getAnnotationApiUrl()).toBeUndefined();
   }));
 
+  it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getNotificationUrl()).toBeUndefined();
+  }));
+
   it('should have getDocumentManagementUrlV2', inject([AppConfig], (service: AppConfig) => {
     expect(service.getDocumentManagementUrlV2).toBeDefined();
   }));

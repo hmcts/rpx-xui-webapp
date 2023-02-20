@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Router, RoutesRecognized } from '@angular/router';
+import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
-
+import { SessionStorageService } from 'src/app/services';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import { UserDetails, UserInfo } from '../../models/user-details.model';
@@ -31,8 +31,9 @@ export class AppComponent implements OnInit, OnDestroy {
   public isCookieBannerVisible: boolean = false;
   private cookieBannerEnabledSubscription: Subscription;
   private cookieBannerEnabled: boolean = false;
+  private subscription: Subscription;
+  private pageReloading: boolean = false;
   private timeoutNotificationServiceInitialised: boolean = false;
-
   private idleModalDisplayTimeInMilliseconds: number;
   private totalIdleTimeInMilliseconds: number;
 
@@ -45,7 +46,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly featureService: FeatureToggleService,
     private readonly loggerService: LoggerService,
     private readonly cookieService: CookieService,
-    private readonly environmentService: EnvironmentService
+    private readonly environmentService: EnvironmentService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
 
     this.router.events.subscribe((data) => {
@@ -58,6 +60,13 @@ export class AppComponent implements OnInit, OnDestroy {
         if (d.title) {
           this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
         }
+      }
+    });
+
+    this.subscription = router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.pageReloading = !router.navigated;
+        this.sessionStorageService.setItem('isPageRefreshed', this.pageReloading.toString());
       }
     });
   }
@@ -81,6 +90,10 @@ export class AppComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     if (this.cookieBannerEnabledSubscription) {
       this.cookieBannerEnabledSubscription.unsubscribe();
+    }
+
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 

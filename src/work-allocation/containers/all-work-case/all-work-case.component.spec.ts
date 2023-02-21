@@ -58,6 +58,8 @@ const USER_DETAILS = {
 
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
+  let wrapper: WrapperComponent;
+  let fixture: ComponentFixture<WrapperComponent>;
 
   const routerMock = jasmine.createSpyObj('Router', [ 'navigateByUrl' ]);
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases', 'getMyAccess']);

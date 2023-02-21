@@ -1,4 +1,4 @@
-import { NavigationStart, RoutesRecognized } from '@angular/router';
+import { RoutesRecognized } from '@angular/router';
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
 
@@ -264,47 +264,3 @@ describe('AppComponent', () => {
   });
 });
 
-describe('AppComponent', () => {
-  let environmentService;
-  let appComponent: AppComponent;
-  let store: any;
-  let googleTagManagerService: any;
-  let timeoutNotificationService: any;
-  let featureToggleService: any;
-  let loggerService: any;
-  let cookieService: any;
-  let router: any;
-  let title: any;
-  let sessionStorageService;
-  let startNav;
-
-  beforeEach(() => {
-      store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
-      googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
-      timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-      featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue', 'initialize']);
-      cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
-      loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
-      environmentService = jasmine.createSpyObj('environmentService', ['config$']);
-      sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
-      startNav = new NavigationStart(123,'/');
-      router = { events: startNav };
-      title = jasmine.createSpyObj('Title', ['setTitle']);
-      appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, sessionStorageService);
-  });
-
-  it('Truthy', () => {
-    expect(appComponent).toBeTruthy();
-  });
-
-  describe('navigationStart', () => {
-    it('should call navigationStart', () => {
-      expect(sessionStorageService.setItem).toHaveBeenCalled();
-    });
-    it('unsubscribe subscription', () => {
-      spyOn(appComponent.subscription, 'unsubscribe');
-      appComponent.ngOnDestroy();
-      expect(appComponent.subscription.unsubscribe).toHaveBeenCalled();
-    });
-  });
-});

@@ -40,7 +40,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
   it('should transform hearing stage', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE), 0);
-    const room = 'Jane Smith - In person<br>DWP - By video';
+    const room = 'Jane Smith - In person';
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);
   });
@@ -189,7 +189,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
       hearingLinks: null
     };
     const result$ = converter.transformAnswer(of(STATE), 0);
-    const room = 'Error: P1 - Error: invalidChannel<br>DWP - By video';
+    const room = 'Error: P1 - Error: invalidChannel';
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);
   });

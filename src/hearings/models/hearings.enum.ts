@@ -71,7 +71,7 @@ export enum EXUIDisplayStatusEnum {
 export enum HMCLocationType {
   COURT = 'court',
   CLUSTER = 'cluster',
-  REGION = 'region',
+  REGION = 'regionId',
 }
 
 export enum UnavailabilityType {
@@ -126,6 +126,7 @@ export enum DOWUnavailabilityType {
 export enum HearingCategory {
   HearingPriority = 'HearingPriority',
   HearingChannel = 'HearingChannel',
+  HearingSubChannel = 'HearingSubChannel',
   HearingType = 'HearingType',
   CaseType = 'caseType',
   Facilities = 'Facilities',
@@ -151,6 +152,7 @@ export enum HearingDateEnum {
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY',
   RequestFailedDateAndTime = 'DD MMMM YYYY HH:MM:SS',
+  DateAndTimeInZoneZ = 'YYYY-MM-DDTHH:mm:ssZ',
   InvalidDate = 'Invalid date'
 }
 
@@ -187,9 +189,10 @@ export enum HearingLinkedSelectionEnum {
 }
 
 export enum HearingDatePriorityEnum {
-  LengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours',
+  LengthError = 'Enter a valid hearing length',
+  LengthHoursError = 'The hours entered must be between 0 of 6',
   LengthMinutesError = 'The minutes entered must be a multiple of 5',
-  TotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours',
+  TotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours each day',
   PriorityError = 'Select the priority level of the hearing',
   PriorityDateError = 'Select if the hearing needs to take place on a specific date',
   DateRangeError = 'Enter a valid date range for the hearing to take place on',
@@ -198,7 +201,8 @@ export enum HearingDatePriorityEnum {
   InValidHearingDateError = 'Enter a valid hearing date',
   DatePastError = 'The hearing dates cannot be in the past',
   WeekDayError = 'Date range must include a weekday',
-  EarliestHearingDateError = 'The earliest hearing date must be before the latest hearing date',
+  EarliestHearingDateError = 'The earliest start date must be before the latest end date',
+  NotEnoughDaysInDateRangeError = 'There are not enough days in the date range for the hearing'
 }
 
 export enum HearingStageResultEnum {
@@ -212,6 +216,7 @@ export enum HearingErrorMessage {
 }
 
 export enum HearingDatePriorityConstEnum {
+  MinDays = 0,
   MinHours = 0,
   MaxHours = 6,
   TotalMinMinutes = 5,
@@ -270,6 +275,7 @@ export enum AnswerSource {
   DATE_REQUEST_SUBMITTED,
   DATE_RESPONSE_SUBMITTED_TIME,
   DATE_RESPONSE_SUBMITTED,
+  DATE_RESPONSE_SUBMITTED_MULTI_DAY,
   DATE_RESPONSE_RECEIVED,
   CASE_FLAGS,
   ROOM_ID,
@@ -278,6 +284,8 @@ export enum AnswerSource {
   STAGE,
   HEARING_RESPONSE_STATUS,
   HOW_ATTENDANT,
+  HOW_PARTICIPANTS_ATTEND,
+  IS_PAPER_HEARING,
   PARTICIPANT_ATTENDENCE,
   ATTENDANT_PERSON_AMOUNT,
   VENUE,
@@ -308,7 +316,9 @@ export enum IsHiddenSource {
   JUDGE_EXCLUSION,
   PANEL_INCLUSION,
   PANEL_EXCLUSION,
+  PANEL_DETAILS_EXCLUSION,
   PANEL_ROLES,
+  PAPER_HEARING,
   JUDGE_TYPES,
   JUDGE_NAME,
   LISTED,
@@ -340,7 +350,8 @@ export enum HearingResult {
 
 export enum HearingActualAddEditSummaryEnum {
   HearingResultError = 'Enter a hearing result',
-  ConfirmUpdateError  = 'Confirm or update before continue'
+  ConfirmUpdateError = 'Confirm or update before continue',
+  AllDaysCoveredError = 'Hearing details cannot be submitted until all required hearing days have taken place'
 }
 
 export enum HearingTemplate {

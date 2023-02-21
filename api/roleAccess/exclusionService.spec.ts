@@ -4,7 +4,6 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import {
@@ -17,9 +16,8 @@ import {
   getUserName,
   mapResponseToExclusions
 } from './exclusionService';
-import { getLegalAndJudicialRequestPayload } from './index';
+import { getRoleCategoryRequestPayload } from './index';
 import { RoleCategory } from './models/allocate-role.enum';
-import { assert } from 'sinon';
 
 chai.use(sinonChai);
 describe('exclusions.exclusionService', () => {
@@ -206,12 +204,12 @@ describe('exclusions.exclusionService', () => {
             caseType: ['Asylum'],
             jurisdiction: ['IA'],
           },
-          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL'],
+          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'],
         },
       ],
     } as unknown as EnhancedRequest;
     it('should get the correct payload', async () => {
-      expect(getLegalAndJudicialRequestPayload('123', 'IA', 'Asylum')).to.deep.equal(caseRoleRequestPayload);
+      expect(getRoleCategoryRequestPayload('123', 'IA', 'Asylum')).to.deep.equal(caseRoleRequestPayload);
     });
 
   });

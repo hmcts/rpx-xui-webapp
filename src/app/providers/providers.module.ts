@@ -1,8 +1,8 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { AppConfigService } from '../services/config/configuration.services';
-import { AppConfig } from '../services/ccd-config/ccd-case.config';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
-
+import { AppConfig } from '../services/ccd-config/ccd-case.config';
+import { AppConfigService } from '../services/config/configuration.services';
 
 /**
  * This Provider Module shares the instances of providers across the app (i.e. services)
@@ -14,7 +14,7 @@ import { AuthService } from '../services/auth/auth.service';
   providers: []
 })
 export class ProvidersModule {
-  static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: ProvidersModule,
       providers: [

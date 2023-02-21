@@ -1,5 +1,5 @@
-<xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
-<a class="govuk-back-link" [routerLink]="['../hearing-actual-add-edit-summary']">Back</a>
+  <xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
+  <a class="govuk-back-link" [routerLink]="['../../hearing-actual-add-edit-summary']">Back</a>
   <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
     <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
          *ngIf="errors && errors.length"
@@ -59,7 +59,7 @@
                   <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type"
                           [ngClass]="{'govuk-select--error': highlightRowError(i, 'attendanceType')}">
                     <option [ngValue]="null">Please select</option>
-                    <ng-container *ngFor="let reason of partyChannel">
+                    <ng-container *ngFor="let reason of partyChannels">
                       <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
                       <ng-container *ngIf="reason.child_nodes">
                         <option *ngFor="let reason_child of reason.child_nodes"
@@ -95,7 +95,7 @@
                   <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type"
                           [ngClass]="{'govuk-select--error': highlightRowError(i, 'attendanceType')}">
                     <option [ngValue]="null">Please select</option>
-                    <ng-container *ngFor="let reason of partyChannel">
+                    <ng-container *ngFor="let reason of partyChannels">
                       <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
                       <ng-container *ngIf="reason.child_nodes">
                         <option *ngFor="let reason_child of reason.child_nodes"

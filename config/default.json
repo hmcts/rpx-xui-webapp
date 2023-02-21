@@ -105,7 +105,16 @@
     "IA": {
         "caseTypes": "Asylum",
         "releaseVersion": "3.5"
+      },
+    "CIVIL": {
+        "caseTypes": "CIVIL,GENERALAPPLICATION",
+        "releaseVersion": "3.5"
+      },
+    "PRIVATELAW": {
+        "caseTypes": "PRIVATELAW,PRLAPPS",
+        "releaseVersion": "3.5"
       }
+      
   }, 
   "wildcardSearchFields": {
     "Benefit": [

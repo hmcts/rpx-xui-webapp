@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
 
@@ -39,7 +39,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public appStoreSub: Subscription;
   public subscription: Subscription;
   public roleType: SpecificRole;
-  public services: string[];
+  public services: string;
 
   constructor(private readonly store: Store<fromFeature.State>) {}
 
@@ -63,7 +63,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     this.userIncluded = !(allocateRoleStateData.action === Actions.Allocate);
     this.assignedUser = allocateRoleStateData.personToBeRemoved ? allocateRoleStateData.personToBeRemoved.id : null;
     this.roleType = allocateRoleStateData.typeOfRole;
-    this.services = [allocateRoleStateData.jurisdiction];
+    this.services = allocateRoleStateData.jurisdiction;
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {

@@ -96,6 +96,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
     });
 
- 
+
+    Then('I see all work cases not loaded and message displayed as {string}', async (message) => {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await allWorkPage.isCasesContainerDisplayed()).to.be.false
+            expect(await allWorkPage.allworkCasesMessage.getText()).to.contains(message)
+        });
+        
+    })
 
 });

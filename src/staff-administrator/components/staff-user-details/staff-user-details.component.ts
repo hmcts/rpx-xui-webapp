@@ -18,7 +18,7 @@ export class StaffUserDetailsComponent {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private staffDataAccessService: StaffDataAccessService) {
-    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails.results[0];
+    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails[0];
   }
 
   public updateUserStatus(): void {

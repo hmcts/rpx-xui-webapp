@@ -32,7 +32,10 @@ export class StaffDataAccessService {
   }
 
   public getStaffRefUserDetails(id: number) {
-    return this.http.get<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails/${id}`);
+    const reqbody = {userIds: [
+      id
+   ]};
+    return this.http.post<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails`, reqbody);
   }
 
   public getServices() {

@@ -1,9 +1,9 @@
 import { NextFunction, Response } from 'express';
 import * as querystring from 'querystring';
-import { handleGet, handlePut } from '../common/crudService';
+import { handleGet, handlePost, handlePut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
-import { StaffDataUser } from './models/staff-data-user.model';
+import { StaffDataAPI, StaffDataUser, WorkArea } from './models/staff-data-user.model';
 import { GropuOption, StaffFilterOption } from './models/staff-filter-option.model';
 
 const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -106,6 +106,19 @@ export function sortArray(array: StaffFilterOption[]) {
   return array.sort((a, b) => a.label.localeCompare(b.label));
 }
 
+export async function getStaffRefUserDetails(req, res, next: NextFunction) {
+  const reqbody = req.body;
+  const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
+
+ try {
+     const { status, data }: { status: number; data: StaffDataAPI[] } = await handlePost(apiPath, reqbody, req, next);
+     const thisUser = getUserInfoFromDetails(data);
+     res.status(status).send(thisUser);
+ } catch (error) {
+     next(error);
+ }
+}
+
 export async function updateUserStatus(req, res, next: NextFunction) {
   const reqBody = req.body
   const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile`
@@ -120,4 +133,57 @@ export async function updateUserStatus(req, res, next: NextFunction) {
   } catch (error) {
       next(error)
   }
+}
+
+function getUserInfoFromDetails(userInfo: StaffDataAPI[]): StaffDataUser[] {
+  const finalUserInfo = [];
+  userInfo.forEach(userDetails => {
+    let newUserInfo;
+    newUserInfo = setRoleInfo(userDetails);
+    newUserInfo = setLocationInfo(newUserInfo);
+    newUserInfo.services = getServiceLabels(newUserInfo.work_area);
+    newUserInfo.firstName = newUserInfo.first_name;
+    newUserInfo.lastName = newUserInfo.last_name;
+    newUserInfo.email = newUserInfo.email_id;
+    newUserInfo.userType = newUserInfo.user_type;
+    finalUserInfo.push(newUserInfo);
+  })
+  return finalUserInfo;
+}
+
+function setRoleInfo(userInfo: StaffDataUser): StaffDataUser {
+  let primaryRole;
+  const roleList = [];
+  userInfo.role.forEach(role => {
+    roleList.push(role.role);
+    if (role.is_primary) {
+      primaryRole = role;
+    }
+  })
+  userInfo.primaryRole = primaryRole ? primaryRole : userInfo.role[0];
+  userInfo.roles = roleList;
+  return userInfo;
+}
+
+function setLocationInfo(userInfo: StaffDataAPI): StaffDataUser {
+  let primaryLocation;
+  const locationList = [];
+  userInfo.base_location.forEach(location => {
+    if (location.is_primary) {
+      primaryLocation = location;
+    } else {
+      locationList.push(location.location);
+    }
+  })
+  userInfo.primaryLocation = primaryLocation ? primaryLocation : userInfo.base_location[0];
+  userInfo.additionalLocations = locationList;
+  return userInfo;
+}
+
+function getServiceLabels(workarea: WorkArea[]): string[] {
+  const services = [];
+  workarea.forEach(workArea => {
+    services.push(workArea.area_of_work);
+  })
+  return services;
 }

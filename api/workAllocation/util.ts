@@ -107,6 +107,14 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
   return postPath;
 }
 
+function getLoweredStringList(values: string[]): string[] {
+  if (values && values.length > 0) {
+    const newValues = values.map(value  => value.toLocaleLowerCase())
+    return newValues
+  }
+  return []
+}
+
 /**
  * The below sets up actions on the tasks, though it's expected this will change
  * in the future - it should do fine for the MVP, though.
@@ -118,6 +126,12 @@ export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser
   const allWorkView = ViewType.ALL_WORK;
   const activeTasksView = ViewType.ACTIVE_TASKS;
   const tasksWithActions: any[] = [];
+  tasks.forEach(task => {
+    if (task && task.permissions && task.permissions.values) {
+      task.permissions.values = getLoweredStringList(task.permissions.values)
+    }
+  })
+
   if (tasks) {
     for (const task of tasks) {
       task.dueDate = task.due_date;

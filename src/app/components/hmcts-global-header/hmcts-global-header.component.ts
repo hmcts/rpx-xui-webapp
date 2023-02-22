@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
-import { map, shareReplay, skipWhile, switchMap, tap } from 'rxjs/operators';
+import { map, skipWhile, switchMap, tap } from 'rxjs/operators';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
@@ -38,7 +38,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   public userDetails$: Observable<UserDetails>;
   public isUserCaseManager$: Observable<boolean>;
   public isGlobalSearchEnabled$: Observable<boolean>;
-  public getUserDetails$: Observable<UserDetails>;
   public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
   }
@@ -61,7 +60,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   ) {}
 
   public ngOnInit(): void {
-    this.getUserDetails$ = this.userService.getUserDetails().pipe(shareReplay(1));
     this.appStore.dispatch(new fromAppStore.LoadUserDetails());
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     this.isUserCaseManager$ = this.userDetails$.pipe(

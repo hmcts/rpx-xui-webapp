@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-align-page-titles":
-  version "6.10.7-case-flags-align-page-titles"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-align-page-titles.tgz#408a341039ccce691da544f137b4fc14d5c36409"
-  integrity sha512-dqGyr0OS7B9jIfFInzBs6ub0qXKeFhWmux0CVqiz768gDsbNDSazxjyPTruImYVj1F4SHfwq+2+0hOdOUsINzw==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-align-page-titles-v2":
+  version "6.10.7-case-flags-align-page-titles-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-align-page-titles-v2.tgz#09a39586e2dfd679ec926ec9c45ef9a5504e04f8"
+  integrity sha512-0d1iO/J5YTyhIpKugV/7+mf6zojel8JmJkjqX/aD5BzxGDrRKMbNdcLYuZoqinzJkGrePg+/c6Z7q8j3Aat+5A==
   dependencies:
     tslib "^2.0.0"
 

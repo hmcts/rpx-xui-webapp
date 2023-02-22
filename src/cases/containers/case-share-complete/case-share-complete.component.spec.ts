@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import * as fromCasesFeature from '../../store';
@@ -33,6 +34,7 @@ describe('CaseShareCompleteComponent', () => {
       declarations: [CaseShareCompleteComponent],
       imports: [RouterTestingModule],
       providers: [
+        LoadingService,
         {
           provide: Store,
           useValue: mockStore

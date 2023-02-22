@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../../../hearing.test.data';
 import { HearingCompletedSummaryComponent } from './hearing-completed-summary.component';
@@ -20,7 +21,11 @@ describe('HearingCompletedSummaryComponent', () => {
       imports: [RouterTestingModule],
       declarations: [HearingCompletedSummaryComponent],
       providers: [
+<<<<<<< HEAD
         provideMockStore({ initialState })
+=======
+        provideMockStore({ initialState }), LoadingService
+>>>>>>> 5d20462e7 (CR comments fix)
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

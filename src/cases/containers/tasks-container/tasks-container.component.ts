@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, of } from 'rxjs';
 import { first, mergeMap, switchMap } from 'rxjs/operators';
 
@@ -24,6 +25,10 @@ export class TasksContainerComponent implements OnInit {
   public tasksRefreshed: boolean = false;
   public caseworkers: Caseworker[] = [];
   public warningIncluded: boolean;
+<<<<<<< HEAD
+=======
+  public showSpinner$ : Observable<boolean>;
+>>>>>>> 5d20462e7 (CR comments fix)
   public isUpdatedTaskPermissions$: Observable<boolean>;
   public showSpinner: boolean = true;
 
@@ -31,11 +36,20 @@ export class TasksContainerComponent implements OnInit {
               private readonly route: ActivatedRoute,
               private readonly caseworkerService: CaseworkerDataService,
               private readonly rolesService: AllocateRoleService,
+<<<<<<< HEAD
               private readonly featureToggleService: FeatureToggleService) {
     this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
+=======
+              private readonly featureToggleService: FeatureToggleService,
+              private readonly loadingService: LoadingService) {
+                this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
+               }
+>>>>>>> 5d20462e7 (CR comments fix)
 
   public ngOnInit(): void {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     // note: internal logic used to be stored in resolver - resolver removed for smoother navigation purposes
     // i.e. navigating before loading
     const caseId = this.route.snapshot.paramMap.get('cid');
@@ -49,6 +63,7 @@ export class TasksContainerComponent implements OnInit {
           if (tasks && tasks.length > 0) {
             return this.caseworkerService.getCaseworkersForServices([tasks[0].jurisdiction]);
           }
+<<<<<<< HEAD
           return of([]);
         })).pipe(mergeMap((caseworkers) => {
         this.caseworkers = caseworkers;
@@ -56,6 +71,17 @@ export class TasksContainerComponent implements OnInit {
       })).subscribe((tasks) => {
         this.tasks = tasks;
       });
+=======
+        })).pipe(mergeMap(caseworkers => {
+          this.caseworkers = caseworkers;
+          return this.tasks && this.tasks.length > 0 ? this.getAssignedNamesForTasks() : of(this.tasks);
+        })).subscribe(tasks => {
+          this.tasks = tasks;
+          this.loadingService.unregister(loadingToken);
+        }, error => {
+          this.loadingService.unregister(loadingToken);
+        });
+>>>>>>> 5d20462e7 (CR comments fix)
     this.caseDetails = this.route.snapshot.data.case as CaseView;
   }
 

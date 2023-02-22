@@ -65,8 +65,6 @@ export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
 
 export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices'
 
-export const WA_SUPPORTED_SERVICE_CASETYPES = 'waSupportedServiceandCaseTypes.services';
-
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 export const SERVICES_PRD_LOCATION_API = 'services.prd.locationApi';
 export const SERVICES_PRD_JUDICIAL_API = 'services.prd.judicialApi';

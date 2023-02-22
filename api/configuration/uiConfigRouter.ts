@@ -13,7 +13,7 @@ import {
   SERVICES_JUDICIAL_BOOKING_API_PATH,
   SERVICES_PAYMENT_RETURN_URL,
   SERVICES_WA_WORKFLOW_API_URL,
-  WA_SUPPORTED_SERVICE_CASETYPES
+  WA_SUPPORTED_JURISDICTIONS
 } from './references'
 import { getFormattedSupportedServicesCaseTypes } from './waSupportedServicesCaseTypesHelper'
 
@@ -43,7 +43,7 @@ async function uiConfigurationRouter(req, res) {
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
-    waSupportedServices: getFormattedSupportedServicesCaseTypes(getConfigValue(WA_SUPPORTED_SERVICE_CASETYPES)),
+    waSupportedServices: getFormattedSupportedServicesCaseTypes(getConfigValue(WA_SUPPORTED_JURISDICTIONS)),
   })
 }
 

@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-support-tab-changes-v2":
-  version "6.10.7-case-flags-support-tab-changes-v2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-support-tab-changes-v2.tgz#2de2b5f87c4b1f7d379c2f6a597178262cf9dd1b"
-  integrity sha512-EKsNfT/cBihtkEhKZfu4VOGXY+E8QgTynMoIW6g2UzgQDoyRB3C7M3v1oitQsUhKRGnkOWQQCbQtWjoGOWH5xQ==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-support-tab-changes-v3":
+  version "6.10.7-case-flags-support-tab-changes-v3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-support-tab-changes-v3.tgz#e036ffc422ea962372730a53a9dbc4761093d670"
+  integrity sha512-jhs4A4HQOnIVdzIgFVpon2zo5eQzWXsn64aMrx+DFZbsBKlovuff5XpRC0TwZTFnzJkK+vruOJ30sMuXDBGhAg==
   dependencies:
     tslib "^2.0.0"
 

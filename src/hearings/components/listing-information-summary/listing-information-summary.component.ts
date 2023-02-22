@@ -1,11 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-<<<<<<< HEAD
-import { Store, select } from '@ngrx/store';
-=======
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { select, Store } from '@ngrx/store';
->>>>>>> 5d20462e7 (CR comments fix)
+import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { AnswerSource, EXUIDisplayStatusEnum, HearingChannelEnum, LaCaseStatus } from '../../models/hearings.enum';
@@ -27,10 +23,7 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public caseStatusName: string;
   public serviceValueSub: Subscription;
   public exuiDisplayStatus = EXUIDisplayStatusEnum;
-<<<<<<< HEAD
-=======
   public showSpinner$: Observable<boolean>;
->>>>>>> 5d20462e7 (CR comments fix)
   public isPaperHearing: boolean;
   public displayPanelMembersSection: boolean;
   public showSpinner: boolean = true;
@@ -56,16 +49,10 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
         && HearingsUtils.sortHearingDaySchedule(state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule);
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
       const screenFlow = state.hearingValues && state.hearingValues.serviceHearingValuesModel && state.hearingValues.serviceHearingValuesModel.screenFlow;
-<<<<<<< HEAD
-      this.displayPanelMembersSection = screenFlow && screenFlow.findIndex((screen) => screen.screenName === ListingInformationSummaryComponent.HEARING_PANEL_SCREEN_NAME) !== -1;
-
-      this.showSpinner = false;
-=======
       this.displayPanelMembersSection = screenFlow && screenFlow.findIndex(screen => screen.screenName === ListingInformationSummaryComponent.HEARING_PANEL_SCREEN_NAME) !== -1;
       this.loadingService.unregister(loadingToken);
     }, error => {
       this.loadingService.unregister(loadingToken);
->>>>>>> 5d20462e7 (CR comments fix)
     });
   }
 

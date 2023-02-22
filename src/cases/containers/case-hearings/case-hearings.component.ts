@@ -1,15 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-<<<<<<< HEAD
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import * as moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
-=======
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { select, Store } from '@ngrx/store';
-import * as moment from 'moment';
-import { combineLatest, Observable, of, Subscription } from 'rxjs';
->>>>>>> 5d20462e7 (CR comments fix)
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
@@ -54,16 +48,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hasRequestAction: boolean = false;
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
-<<<<<<< HEAD
   public isOgdRole: boolean;
-=======
   public isOgdRole$: Observable<boolean>;
   public showSpinner$ : Observable<boolean>;
->>>>>>> 5d20462e7 (CR comments fix)
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
-  public isOgdRole$: Observable<boolean>;
   public showSpinner: boolean = true;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,

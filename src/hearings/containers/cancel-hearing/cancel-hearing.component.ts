@@ -1,11 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {HearingListModel} from '../../models/hearingList.model';
-import {CancelHearingMessages} from '../../models/hearings.enum';
-import {LovRefDataModel} from '../../models/lovRefData.model';
-import {HearingsService} from '../../services/hearings.service';
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { HearingListModel } from '../../models/hearingList.model';
+import { CancelHearingMessages } from '../../models/hearings.enum';
+import { LovRefDataModel } from '../../models/lovRefData.model';
+import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 
 @Component({
@@ -21,14 +23,15 @@ export class CancelHearingComponent implements OnInit {
   public hearingId: string;
   public caseId: string;
   public caseHearing: HearingListModel;
-  public showSpinner: boolean = true;
+  public showSpinner$: Observable<boolean>;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly formBuilder: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService) {
+    protected readonly hearingsService: HearingsService,
+    private readonly loadingService: LoadingService) {
     this.route.params.subscribe(params => {
       this.hearingId = params.hearingId;
     });
@@ -39,6 +42,8 @@ export class CancelHearingComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       hearingList => {
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
@@ -46,7 +51,9 @@ export class CancelHearingComponent implements OnInit {
           const caseHearings = hearingList.hearingListMainModel.caseHearings.filter(caseHearing => caseHearing.hearingID === this.hearingId);
           this.caseHearing = caseHearings.length ? caseHearings[0] : undefined;
         }
-        this.showSpinner = false;
+        this.loadingService.unregister(loadingToken);
+      }, error => {
+        this.loadingService.unregister(loadingToken);
       });
     this.hearingCancelOptions = this.route.snapshot.data.hearingCancelOptions;
     this.initForm();
@@ -93,7 +100,7 @@ export class CancelHearingComponent implements OnInit {
           return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
         },
         err => {
-            this.validationErrors = [{id: 'cancel-request-error', message: cancellationErrorMessage}];
+          this.validationErrors = [{ id: 'cancel-request-error', message: cancellationErrorMessage }];
         }
       );
     }

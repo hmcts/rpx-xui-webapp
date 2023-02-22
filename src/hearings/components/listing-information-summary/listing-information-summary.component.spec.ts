@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 import { caseFlagsRefData, initialState } from '../../hearing.test.data';
 import { EXUIDisplayStatusEnum } from '../../models/hearings.enum';
@@ -19,6 +20,7 @@ describe('ListingInformationSummaryComponent', () => {
       declarations: [ListingInformationSummaryComponent],
       imports: [RouterTestingModule, HearingsPipesModule, HttpClientTestingModule],
       providers: [
+        LoadingService,
         provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,

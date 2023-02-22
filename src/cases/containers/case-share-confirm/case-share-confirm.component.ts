@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -14,16 +15,21 @@ export class CaseShareConfirmComponent implements OnInit {
 
   public shareCases$: Observable<SharedCase[]>;
   public shareCases: SharedCase[];
-  public showSpinner: boolean = true;
+  public showSpinner$ : Observable<boolean>;
 
-  constructor(public store: Store<fromCaseList.State>) {
+  constructor(public store: Store<fromCaseList.State>,
+    private readonly loadingService: LoadingService) {
   }
 
   public ngOnInit() {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => {
       this.shareCases = shareCases;
-      this.showSpinner = false;
+      this.loadingService.unregister(loadingToken);
+    }, error => {
+      this.loadingService.unregister(loadingToken);
     });
   }
 

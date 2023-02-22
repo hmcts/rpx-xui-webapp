@@ -38,7 +38,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   public userDetails$: Observable<UserDetails>;
   public isUserCaseManager$: Observable<boolean>;
   public isGlobalSearchEnabled$: Observable<boolean>;
-  public getUserDetails$: Observable<UserDetails>;
   public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
   }
@@ -60,7 +59,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   ) { }
 
   public ngOnInit(): void {
-    this.getUserDetails$ = this.userService.getUserDetails().pipe(shareReplay(1));
     this.appStore.dispatch(new fromAppStore.LoadUserDetails());
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     this.isUserCaseManager$ = this.userDetails$.pipe(
@@ -118,7 +116,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    return this.getUserDetails$.pipe(
+    return this.userDetails$.pipe(
       map(details => details.userInfo.roles),
       map(roles => {
         const i = items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true));

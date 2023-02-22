@@ -1,8 +1,17 @@
 import { Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+<<<<<<< HEAD
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription, combineLatest } from 'rxjs';
+=======
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ValidationErrors } from '@angular/forms';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { Store } from '@ngrx/store';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+>>>>>>> 5d20462e7 (CR comments fix)
 import { filter, first } from 'rxjs/operators';
 import {
   ActualDayPartyModel,
@@ -49,16 +58,21 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   private sub: Subscription;
   private formSub: Subscription;
   public window: any = window;
+<<<<<<< HEAD
+=======
+  public showSpinner$: Observable<boolean>;
+>>>>>>> 5d20462e7 (CR comments fix)
   private plannedDayIndex: number;
   public showSpinner: boolean = true;
 
   public constructor(private readonly fb: FormBuilder,
-                     private readonly validators: ValidatorsUtils,
-                     private readonly hearingStore: Store<fromHearingStore.State>,
-                     private readonly route: ActivatedRoute,
-                     private readonly renderer: Renderer2,
-                     private readonly router: Router,
-                     private readonly ngZone: NgZone
+    private readonly validators: ValidatorsUtils,
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly route: ActivatedRoute,
+    private readonly renderer: Renderer2,
+    private readonly router: Router,
+    private readonly ngZone: NgZone,
+    private readonly loadingService: LoadingService
   ) {
     this.form = this.fb.group({
       parties: this.fb.array([], [Validators.maxLength(50)])
@@ -127,6 +141,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     });
     this.partyChannels = uniquePartyChannels;
     this.hearingRoles = this.route.snapshot.data.hearingRole;
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
         filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
@@ -143,7 +159,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         this.setUpRoleLists();
         this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
-        this.showSpinner = false;
+        this.loadingService.unregister(loadingToken);
+      }, error => {
+        this.loadingService.unregister(loadingToken);
       });
   }
 

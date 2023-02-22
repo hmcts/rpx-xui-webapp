@@ -3,6 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
@@ -189,6 +190,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
         ReactiveFormsModule
       ],
       providers: [
+        LoadingService,
         provideMockStore({ initialState }),
         { provide: LovRefDataService, useValue: lovRefDataService },
         {
@@ -358,6 +360,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
         HttpClientTestingModule
       ],
       providers: [
+        LoadingService,
         provideMockStore({ initialState: newState }),
         {
           provide: ActivatedRoute,

@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { initialState } from '../../../hearing.test.data';
 import { HearingActualsFinalConfirmationComponent } from './hearing-actuals-final-confirmation.component';
 
@@ -14,7 +15,7 @@ describe('HearingActualsFinalConfirmationComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsFinalConfirmationComponent],
       providers: [
-        provideMockStore({initialState})
+        provideMockStore({ initialState }), LoadingService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

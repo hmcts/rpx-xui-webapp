@@ -3,8 +3,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { AbstractAppConfig, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  ExuiCommonLibModule
+} from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
@@ -48,6 +50,7 @@ import { PageFlow } from './utils/page-flow';
     HearingsService,
     HearingsEditGuard,
     HearingsViewGuard,
+    LoadingService
   ]
 })
 /**
@@ -61,7 +64,7 @@ export class HearingsModule {
   public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: HearingsModule,
-      providers: []
+      providers: [LoadingService]
     };
   }
 }

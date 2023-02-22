@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -13,18 +14,23 @@ export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestr
   public subheading: string;
   public caseId: string;
   public sub: Subscription;
-  public showSpinner: boolean = true;
+  public showSpinner$: Observable<boolean>;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly loadingService: LoadingService) {
   }
 
   public ngOnInit(): void {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       hearingList => {
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
         this.heading = 'You have successfully submitted the hearing details.';
         this.subheading = 'What happens next';
-        this.showSpinner = false;
+        this.loadingService.unregister(loadingToken);
+      }, error => {
+        this.loadingService.unregister(loadingToken);
       });
   }
 

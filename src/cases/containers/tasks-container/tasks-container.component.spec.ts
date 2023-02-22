@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, CaseField, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
@@ -129,6 +129,7 @@ describe('TasksContainerComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
+        LoadingService,
         {provide: AlertService, useValue: mockAlertService},
         {provide: WorkAllocationCaseService, useValue: mockWACaseService},
         {provide: CaseworkerDataService, useValue: mockCaseworkerService},

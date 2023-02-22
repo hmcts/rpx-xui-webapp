@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { HearingConditions } from '../../models/hearingConditions';
@@ -21,15 +22,18 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   public hearingState$: Observable<fromHearingStore.State>;
   public validationErrors: { id: string, message: string }[] = [];
   public sub: Subscription;
-  public showSpinner: boolean = true;
+  public showSpinner$ : Observable<boolean>;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly router: Router,
-              protected readonly route: ActivatedRoute) {
+              protected readonly route: ActivatedRoute,
+              private readonly loadingService: LoadingService) {
       this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
+    this.showSpinner$ = this.loadingService.isLoading as any;
+    const loadingToken = this.loadingService.register();
     this.sub = this.hearingState$.subscribe(state => {
       if (state.hearingRequest.lastError) {
         this.validationErrors = [];
@@ -38,7 +42,9 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
         });
         window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       }
-      this.showSpinner = false;
+      this.loadingService.unregister(loadingToken);
+    }, error => {
+      this.loadingService.unregister(loadingToken);
     });
   }
 

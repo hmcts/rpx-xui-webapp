@@ -266,7 +266,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(),
       TaskManagerFilterComponent.initTaskTypeFilter(),
-
     ];
     if (this.isRelease4) {
       this.fieldsConfig.fields.push(TaskManagerFilterComponent.initTaskNameFilter());

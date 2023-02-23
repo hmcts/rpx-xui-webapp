@@ -63,7 +63,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (release === "wa_release_1") {
             apiUrl = apiUrl + "workallocation";
         } else if (release === "wa_release_2") {
-            apiUrl = apiUrl + "workallocation2";
+            apiUrl = apiUrl + "workallocation";
         }
 
         MockApp.onGet(apiUrl+"/location", (req, res) => {
@@ -81,7 +81,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (release === "wa_release_1"){
             apiUrl = apiUrl+"workallocation";
         } else if (release === "wa_release_2") {
-            apiUrl = apiUrl + "workallocation2";
+            apiUrl = apiUrl + "workallocation";
         }
 
         if (userType === "caseworker"){

@@ -1,16 +1,15 @@
-import { AppConstants } from '../../../app/app.constants';
-import { AppUtils } from '../../../app/app-utils';
-import { Component, OnInit } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { map } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { WALandingPageRoles } from '../../../work-allocation/models/common/service-config.model';
 import * as fromActions from '../../store';
-
+import { AppUtils } from '../../app-utils';
+import { AppConstants } from '../../app.constants';
 @Component({ templateUrl: './application-routing.component.html' })
-export class ApplicationRoutingComponent implements OnInit {
+export class ApplicationRoutingComponent implements OnInit, OnDestroy {
   constructor(
     private readonly router: Router,
     private readonly store: Store<fromActions.State>,
@@ -19,6 +18,7 @@ export class ApplicationRoutingComponent implements OnInit {
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
   public static bookingUrl: string = '../booking';
+  private routingSubscription: Subscription;
   public waLandingPageRoles$: Observable<WALandingPageRoles>;
   public ngOnInit(): void {
     // EUI-6768 - release 1 blocks on this removed to progress onto release 2/3
@@ -52,7 +52,11 @@ export class ApplicationRoutingComponent implements OnInit {
         this.router.navigate([ApplicationRoutingComponent.defaultPage]);
       }
     })).subscribe();
-
   }
 
+  public ngOnDestroy() {
+    if (this.routingSubscription) {
+      this.routingSubscription.unsubscribe();
+    }
+  }
 }

@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-rollback-case-link":
-  version "6.10.7-rollback-case-link"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-rollback-case-link.tgz#dead034ae21ee78379804ce689cf66f1e346e003"
-  integrity sha512-BQcMRjk/aQsePLrJFb6cnWDtHHt2EF1yHRxuUJS3G5VplY4h62r9DEGeHJwmrd8LUZRs/O37Dnqmy2UCcHYpAw==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-toolkit-civil-to-wa4":
+  version "6.10.7-toolkit-civil-to-wa4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-toolkit-civil-to-wa4.tgz#68d7da0620db4b35bb9144649db56a93ed7ce1f0"
+  integrity sha512-PDbkbXYhseDwPoTkg/50iiOvmw0INy4Br29YxMKxPbpWdo48AOY5CtCyLm46UokD57FFAMxyMLyb+OlkMgZEeg==
   dependencies:
     tslib "^2.0.0"
 
@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.7-find-persn-by-service":
-  version "1.8.7-find-persn-by-service"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.7-find-persn-by-service.tgz#e37935312117384f32f6be44419fcc3d23628fa7"
-  integrity sha512-UcpX3qn0jaqEELLcXqPMUdbrFVAfUWmdDfhbf9AdfOXZ7+UDq5zeOxZNlgWwK9zMknjLfRA8TeihwQYaWkhUvQ==
+"@hmcts/rpx-xui-common-lib@1.8.9-civil-to-wa4-2":
+  version "1.8.9-civil-to-wa4-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.9-civil-to-wa4-2.tgz#195eb9ba6482e944a94265c351513ccdec79c028"
+  integrity sha512-PlYeO9WcNf7ihr+QIoZ4RCpAlcA/+r+CGVA3T/GfJwK5Vjbj/RmLpmCqXoTdpvErDdrciuLgcD5HQBbU8/rLNA==
   dependencies:
     tslib "^2.0.0"
 

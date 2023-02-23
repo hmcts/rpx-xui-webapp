@@ -1,4 +1,4 @@
-import { FieldType } from './../../enums';
+import { FieldType } from '../../enums';
 
 export default interface FieldConfig {
   disableSort?: boolean; // optional, disable sorting only when set as true

@@ -12,14 +12,16 @@ import { InfoMessageCommService } from '../../../app/shared/services/info-messag
 import { Actions } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionType, TaskService } from '../../enums';
+import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { RouteData } from '../../models/common/route-data';
-import { InformationMessage } from '../../models/comms';
 import { Task, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getAssigneeName, handleFatalErrors } from '../../utils';
+import { InformationMessage } from './../../../app/shared/models';
+import { InfoMessageType } from './../../../role-access/models/enums';
+import { InfoMessage } from './../../../app/shared/enums/info-message';
 
 
 @Component({

@@ -5,6 +5,7 @@ import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-x
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
+
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -14,19 +15,22 @@ import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskListFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
+import { SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
 import { TaskResponse } from '../../models/tasks/task.model';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import {
   CaseworkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors } from '../../utils';
+import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -70,7 +74,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected checkReleaseVersionService: CheckReleaseVersionService
   ) {
     this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }

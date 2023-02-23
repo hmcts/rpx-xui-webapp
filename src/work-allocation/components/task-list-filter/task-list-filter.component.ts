@@ -23,8 +23,6 @@ import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTas
 import { TaskTypesService } from '../../services/task-types.service';
 import { locationWithinRegion, servicesMap } from '../../utils';
 
-
-
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
   description: 'At least one location is required',
@@ -311,6 +309,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.locations) {
       baseLocation = this.route.snapshot.data.locations;
     }
+
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: 'locations',
       value: baseLocation ? baseLocation : locations

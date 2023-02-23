@@ -1,7 +1,7 @@
-import { ApplicationRoutingComponent } from './application-routing.component';
+import { TestBed, fakeAsync } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { fakeAsync, TestBed } from '@angular/core/testing';
+import { ApplicationRoutingComponent } from './application-routing.component';
 
 describe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;

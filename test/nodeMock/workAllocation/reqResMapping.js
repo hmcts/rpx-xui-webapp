@@ -39,7 +39,7 @@ module.exports = {
         '/workallocation/judicialworker' : (req,res) => {
             res.send(workAllocationMockData.judgeUsers);
         },
-      
+
         '/workallocation/task/:taskId/roles' : (req,res) => {
             res.send(workAllocationMockData.getTaskRoles());
         },

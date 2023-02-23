@@ -68,7 +68,7 @@
       <br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Status</dt>
-        <dd class="govuk-summary-list__value"><exui-staff-status [status]="userDetails.suspended" ></exui-staff-status></dd>
+        <dd class="govuk-summary-list__value"><exui-staff-status [status]="userDetails?.suspended" ></exui-staff-status></dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
       </div>
     </dl>
@@ -78,10 +78,10 @@
         Update
       </button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
-              (click)="updateUserStatus(userDetails.id, userDetails.suspended)">
+              (click)="updateUserStatus()">
         {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
       </button>
-      <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="copy()">
         Copy
       </button>
     </div>

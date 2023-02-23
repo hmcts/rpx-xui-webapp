@@ -2,7 +2,7 @@
 const global = require('./globals')
 const path = require('path')
 
-const functional_output_dir = path.resolve(`${__dirname}/../../functional_output/e2e`)
+const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-e2e`)
 
 exports.config = {
   timeout: 120,

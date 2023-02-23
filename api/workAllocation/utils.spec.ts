@@ -18,10 +18,12 @@ import { Case } from './interfaces/case';
 import {
   applySearchFilter,
   assignActionsToTasks,
+  checkIsNew,
   constructElasticSearchQuery,
   constructRoleAssignmentCaseAllocatorQuery,
   constructRoleAssignmentQuery,
   filterByLocationId, filterMyAccessRoleAssignments,
+  getAccessGrantedRoleAssignments,
   getActionsByPermissions,
   getActionsByRefinedPermissions,
   getActionsFromMatrix,
@@ -1041,9 +1043,9 @@ describe('workAllocation.utils', () => {
       case_id: '123',
       case_name: '123',
       case_category: 'Asylum',
-      case_type: "Asylum",
+      case_type: 'Asylum',
       case_role: 'example-role',
-      isNew: true,
+      isNew: false,
       jurisdiction: 'IA',
       jurisdictionId: 'IA',
       location_id: '001',
@@ -1069,7 +1071,7 @@ describe('workAllocation.utils', () => {
         case_category: 'Test',
         case_type: 'Test',
         case_role: 'example-role-2',
-        isNew: true,
+        isNew: false,
         jurisdiction: 'IA',
         jurisdictionId: 'IA',
         location_id: '001',
@@ -1309,23 +1311,23 @@ describe('workAllocation.utils', () => {
             },
           },
           {
-            "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
-            "actorIdType": "IDAM",
-            "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-            "roleType": "CASE",
-            "roleName": "case-allocator",
-            "classification": "PUBLIC",
-            "grantType": "SPECIFIC",
-            "roleCategory": "LEGAL_OPERATIONS",
-            "readOnly": false,
-            "beginTime": "2021-10-13T23:00:00Z",
-            "created": "2021-10-14T15:55:58.586597Z",
-            "attributes": {
-              "substantive": "Y",
-              "caseId": "1547476018728634",
-              "baseLocation": "229786",
-              "jurisdiction": "IA",
-              "caseType": "Asylum",
+            'id': '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
+            'actorIdType': 'IDAM',
+            'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+            'roleType': 'CASE',
+            'roleName': 'case-allocator',
+            'classification': 'PUBLIC',
+            'grantType': 'SPECIFIC',
+            'roleCategory': 'LEGAL_OPERATIONS',
+            'readOnly': false,
+            'beginTime': '2021-10-13T23:00:00Z',
+            'created': '2021-10-14T15:55:58.586597Z',
+            'attributes': {
+              'substantive': 'Y',
+              'caseId': '1547476018728634',
+              'baseLocation': '229786',
+              'jurisdiction': 'IA',
+              'caseType': 'Asylum',
             },
           },
         ];
@@ -1880,10 +1882,152 @@ describe('workAllocation.utils', () => {
             'caseType': 'Asylum',
           },
         },
+        {
+          'id': '04cb7d4e-92d2-4a9e-a447-136fcf6c18a0',
+          'actorIdType': 'IDAM',
+          'actorId': '7cfc118d-c753-4d6e-b89f-d56d4f8482f5',
+          'roleType': 'CASE',
+          'roleName': 'specific-access-granted',
+          'classification': 'PRIVATE',
+          'grantType': 'BASIC',
+          'roleCategory': 'CTSC',
+          'readOnly': true,
+          'beginTime': new Date('2023-01-17T00:00:00Z'),
+          'endTime': new Date('2023-01-24T23:59:59.999Z'),
+          'created': new Date('2023-01-17T12:13:59.640631Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1670440530113195',
+            'jurisdiction': 'IA',
+            'requestedRole': 'specific-access-ctsc',
+            'caseType': 'Asylum'
+          }
+        },
+        {
+          'id': 'b72c971a-9b41-4b74-a92c-65c2fca1a2ef',
+          'actorIdType': 'IDAM',
+          'actorId': '7cfc118d-c753-4d6e-b89f-d56d4f8482f5',
+          'roleType': 'CASE',
+          'roleName': 'specific-access-ctsc',
+          'classification': 'RESTRICTED',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'CTSC',
+          'readOnly': true,
+          'beginTime': new Date('2023-01-17T00:00:00Z'),
+          'endTime': new Date('2023-01-24T23:59:59.999Z'),
+          'created': new Date('2023-01-17T12:13:59.640595Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1670440530113195',
+            'jurisdiction': 'IA',
+            'requestedRole': 'specific-access-ctsc',
+            'isNew': true,
+            'caseType': 'Asylum'
+          },
+          'authorisations': [
+            '373'
+          ]
+        },
+        {
+          'id': 'b72c971a-9b41-4b74-a92c-65c2fca1a2ef',
+          'actorIdType': 'IDAM',
+          'actorId': '7cfc118d-c753-4d6e-b89f-d56d4f8482f5',
+          'roleType': 'CASE',
+          'roleName': 'specific-access-denied',
+          'classification': 'RESTRICTED',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'CTSC',
+          'readOnly': true,
+          'beginTime': new Date('2023-01-17T00:00:00Z'),
+          'endTime': new Date('2023-01-24T23:59:59.999Z'),
+          'created': new Date('2023-01-17T12:13:59.640595Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1670440530113195',
+            'jurisdiction': 'IA',
+            'requestedRole': 'specific-access-ctsc',
+            'isNew': true,
+            'caseType': 'Asylum'
+          },
+          'authorisations': [
+            '373'
+          ]
+        },
+        {
+          'id': 'b72c971a-9b41-4b74-a92c-65c2fca1a2ef',
+          'actorIdType': 'IDAM',
+          'actorId': '7cfc118d-c753-4d6e-b89f-d56d4f8482f5',
+          'roleType': 'CASE',
+          'roleName': 'specific-access-denied',
+          'classification': 'RESTRICTED',
+          'grantType': 'SPECIFIC',
+          'roleCategory': 'CTSC',
+          'readOnly': true,
+          'beginTime': new Date('2023-01-17T00:00:00Z'),
+          'endTime': new Date('2023-01-24T23:59:59.999Z'),
+          'created': new Date('2023-01-17T12:13:59.640595Z'),
+          'attributes': {
+            'substantive': 'N',
+            'caseId': '1670440530113195',
+            'jurisdiction': 'IA',
+            'requestedRole': 'specific-access-ctsc',
+            'isNew': false,
+            'caseType': 'Asylum'
+          },
+          'authorisations': [
+            '373'
+          ]
+        }
       ];
+      
+      let specificRoleAssignments: RoleAssignment[];   
+      let newRoleAssignment: RoleAssignment[];
+      describe('filterMyAccessRoleAssignments', () => {
+        it('should filter role assignments having specific assess', () => {
+          specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignments);
+          expect(specificRoleAssignments.length).to.equal(5);
+        });
+      });
 
-      const filteredRoleAssignments = filterMyAccessRoleAssignments(roleAssignments);
-      expect(filteredRoleAssignments.length).to.equal(2);
+      describe('getAccessGrantedRoleAssignments', () => {
+        it('should filter role assignments having specific assess granted', () => {
+          newRoleAssignment = getAccessGrantedRoleAssignments(roleAssignments);
+          expect(newRoleAssignment.length).to.equal(1);
+        });
+      });
+      
+      describe('checkIsNew', () => {
+        it('should return true if the request is still pending', () => {
+          const isNew = checkIsNew(specificRoleAssignments[0], newRoleAssignment);
+          expect(isNew).to.equal(true);
+        });
+
+        it('should return true if the request is not pending and it is viewed', () => {
+          const isNew = checkIsNew(specificRoleAssignments[0], newRoleAssignment);
+          expect(isNew).to.equal(true);
+        });
+
+        it('should return true if the request is denied and it returns isNew', () => {
+          const isNew = checkIsNew(specificRoleAssignments[1], newRoleAssignment);
+          expect(isNew).to.equal(specificRoleAssignments[1].attributes.isNew);
+        });
+
+        it('should return true if the request is not pending and it is not yet viewed', () => {
+          const isNew = checkIsNew(specificRoleAssignments[2], newRoleAssignment);
+          expect(isNew).to.equal(true);
+        });
+
+        it('should return true if the request is denied and isNew is true', () => {
+          const isNew = checkIsNew(specificRoleAssignments[3], newRoleAssignment);
+          expect(isNew).to.equal(true);
+        });
+
+        it('should return false if the request is denied and isNew is false', () => {
+          const isNew = checkIsNew(specificRoleAssignments[4], newRoleAssignment);
+          expect(isNew).to.equal(false);
+        });
+      });
+      
     });
   });
 });

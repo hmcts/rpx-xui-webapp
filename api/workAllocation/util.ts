@@ -223,7 +223,7 @@ export function assignActionsToCases(cases: any[], isAllocator: boolean): any[] 
 }
 
 export function getSessionCaseworkerInfo(serviceIds: string[], caseworkersByServices: CaseworkersByService[]):
- [string[], CaseworkersByService[]] {
+  [string[], CaseworkersByService[]] {
   const caseworkersInSession: CaseworkersByService[] = [];
   const servicesNotInSession: string[] = [];
   serviceIds.forEach(thisService => {
@@ -238,7 +238,7 @@ export function getSessionCaseworkerInfo(serviceIds: string[], caseworkersByServ
 }
 
 export function getCaseworkerDataForServices(caseWorkerData: CaseworkerApi[], roleAssignmentByService: ServiceCaseworkerData):
- CaseworkersByService {
+  CaseworkersByService {
   const roleAssignmentResponse = roleAssignmentByService.data.roleAssignmentResponse;
   const caseworkersByCurrentService: CaseworkersByService = {service: roleAssignmentByService.jurisdiction, caseworkers: []};
   if (roleAssignmentResponse && roleAssignmentResponse.length > 0) {
@@ -534,14 +534,20 @@ export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment
 
 export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignment[], req: EnhancedRequest)
   : Promise<RoleCaseData[]> {
+
+  const newRoleAssignment = getAccessGrantedRoleAssignments(roleAssignmentList);
+
   const specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignmentList);
 
   const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
-
-  return mapCasesFromData(cases, specificRoleAssignments);
+  return mapCasesFromData(cases, specificRoleAssignments, newRoleAssignment);
 }
 
-export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery [] {
+export function getAccessGrantedRoleAssignments(roleAssignmentList: RoleAssignment[]): RoleAssignment[] {
+  return roleAssignmentList.filter(role => role.roleName === 'specific-access-granted')
+}
+
+export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery[] {
   const elasticQueries = new Array<ElasticSearchQuery>();
   const chunkSize = 200;
   for (let i = 0; i < caseIds.length; i += chunkSize) {
@@ -710,7 +716,8 @@ export function filterByLocationId(cases: Case[], locations: string[]): Case[] {
 
 export function mapCasesFromData(
   caseDetails: Case[],
-  roleAssignmentList: RoleAssignment[]
+  roleAssignmentList: RoleAssignment[],
+  newRoleAssignmentList: RoleAssignment[] = []
 ): RoleCaseData[] {
   if (!caseDetails) {
     return [];
@@ -721,7 +728,7 @@ export function mapCasesFromData(
       role => role.attributes && caseDetail.id.toString() === role.attributes.caseId
     );
     rolesForCaseId.forEach(roleAssignment => {
-      const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
+      const roleCase = mapRoleCaseData(roleAssignment, caseDetail, newRoleAssignmentList);
       roleCaseList.push(roleCase);
     });
   });
@@ -730,7 +737,9 @@ export function mapCasesFromData(
   return roleCaseList;
 }
 
-export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
+export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case,
+                                newRoleAssignmentList: RoleAssignment[]): RoleCaseData {
+
   return {
     assignee: roleAssignment.actorId,
     // hmctsCaseCategory will be available only if an event has been triggered
@@ -746,13 +755,13 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     jurisdictionId: caseDetail.jurisdiction,
     role_category: roleAssignment.roleCategory,
     location_id: caseDetail.case_data &&
-    caseDetail.case_data.caseManagementLocation &&
-    caseDetail.case_data.caseManagementLocation.baseLocation ?
+      caseDetail.case_data.caseManagementLocation &&
+      caseDetail.case_data.caseManagementLocation.baseLocation ?
       caseDetail.case_data.caseManagementLocation.baseLocation : null,
     startDate: getStartDate(roleAssignment),
     access: getGrantType(roleAssignment),
     dateSubmitted: roleAssignment.created,
-    isNew: roleAssignment.attributes.isNew,
+    isNew: checkIsNew(roleAssignment, newRoleAssignmentList),
     hasAccess: getAccessStatus(roleAssignment),
     infoRequired: roleAssignment.attributes.infoRequired,
     infoRequiredComment: roleAssignment.attributes.infoRequiredComment,
@@ -762,13 +771,27 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     reviewerRoleCategory: roleAssignment.attributes.reviewerRoleCategory,
   };
 }
+
+export function checkIsNew(roleAssignment: RoleAssignment, newRoleAssignmentList: RoleAssignment[]): boolean {
+  if (getStartDate(roleAssignment) === 'Pending') {
+    // EUI-7018 Pending returns true
+    return true;
+  } else if(roleAssignment.roleName === 'specific-access-denied') {
+    return roleAssignment.attributes.isNew;
+  } else {
+    // Check if specific-access-granted matchs to role assignment
+    return newRoleAssignmentList.some(r => r.attributes.caseId === roleAssignment.attributes.caseId
+      && r.attributes.requestedRole === roleAssignment.roleName);
+  }
+}
+
 export function getGrantType(roleAssignment: RoleAssignment) {
   if (roleAssignment.grantType === 'SPECIFIC'
-      ||
-      roleAssignment.roleName === 'specific-access-requested'
-      ||
-      roleAssignment.roleName === 'specific-access-denied') {
-      return 'Specific';
+    ||
+    roleAssignment.roleName === 'specific-access-requested'
+    ||
+    roleAssignment.roleName === 'specific-access-denied') {
+    return 'Specific';
   } else if (roleAssignment.grantType) {
     return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
       return second.toUpperCase() + third.toLowerCase();
@@ -823,11 +846,11 @@ export function formatDate(date: Date) {
 
 export function getAccessType(roleAssignment: RoleAssignment) {
   return roleAssignment.grantType ?
-  roleAssignment.grantType.replace(/\w+/g, replacableString => {
-    return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
-  })
-  :
-  undefined;
+    roleAssignment.grantType.replace(/\w+/g, replacableString => {
+      return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
+    })
+    :
+    undefined;
 }
 
 export function getCaseName(caseDetail: Case): string {
@@ -846,9 +869,9 @@ export function getCaseDataFromRoleAssignments(roleAssignments: RoleAssignment[]
   const result: CaseDataType = {};
 
   const roleAssignmentsFiltered = roleAssignments.filter( roleAssignment =>
-      exists(roleAssignment, 'attributes.jurisdiction') &&
-      exists(roleAssignment, 'attributes.caseType') &&
-      exists(roleAssignment, 'attributes.caseId')
+    exists(roleAssignment, 'attributes.jurisdiction') &&
+    exists(roleAssignment, 'attributes.caseType') &&
+    exists(roleAssignment, 'attributes.caseId')
   );
 
   roleAssignmentsFiltered.forEach( roleAssignment => {

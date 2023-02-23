@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -9,7 +9,7 @@ import * as fromActions from '../../store';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
 @Component({ templateUrl: './application-routing.component.html' })
-export class ApplicationRoutingComponent implements OnInit, OnDestroy {
+export class ApplicationRoutingComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly store: Store<fromActions.State>,
@@ -18,7 +18,6 @@ export class ApplicationRoutingComponent implements OnInit, OnDestroy {
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
   public static bookingUrl: string = '../booking';
-  private routingSubscription: Subscription;
   public waLandingPageRoles$: Observable<WALandingPageRoles>;
   public ngOnInit(): void {
     // EUI-6768 - release 1 blocks on this removed to progress onto release 2/3
@@ -52,11 +51,5 @@ export class ApplicationRoutingComponent implements OnInit, OnDestroy {
         this.router.navigate([ApplicationRoutingComponent.defaultPage]);
       }
     })).subscribe();
-  }
-
-  public ngOnDestroy() {
-    if (this.routingSubscription) {
-      this.routingSubscription.unsubscribe();
-    }
   }
 }

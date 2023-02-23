@@ -144,7 +144,7 @@ class Dropdown {
   }
 
   async waitForElementToBeInvisible(){
-    const EC = protractor.ExpectedConditions;
+    // const EC = protractor.ExpectedConditions;
 
     try {
       await browser.wait(EC.invisibilityOf(await element(by.css(this._dropdownElement))), DEFAULT_TIMEOUT);
@@ -185,7 +185,7 @@ class Dropdown {
         failmessage = e;
         console.log(e);
         console.log(`Attempt ${i}/3 failed, Retry after wait`);
-        await browser.sleep(2000 * i)
+        await browser.sleep(2 * i)
       }
     }
 
@@ -209,7 +209,7 @@ class Dropdown {
         failmessage = e;
         console.log(e);
         console.log(`Attempt ${i}/3 failed, Retry after wait`);
-        await browser.sleep(2000 * i)
+        await browser.sleep(2 * i)
       }
     }
 

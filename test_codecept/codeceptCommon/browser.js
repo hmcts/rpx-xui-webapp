@@ -34,7 +34,7 @@ class Browser{
     }
 
     async sleep(seconds){
-        return new Promise(() => {
+        return new Promise((resolve,reject) => {
             setTimeout(() => {
                 resolve(true)
             }, seconds*1000)
@@ -53,6 +53,15 @@ class Browser{
    
     refresh(){
 
+    }
+
+    async handlePopups(){
+        try{
+            return getActor().cancelPopup();
+        }catch(err){
+
+        }
+        
     }
 
     async executeScript(fn){

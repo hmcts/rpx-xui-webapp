@@ -56,7 +56,6 @@ class Button{
   async click(){
       let button = await this._getElementFinder();
       await button.click();
-      browser.waitForAngular()
   }
 
   /**
@@ -65,14 +64,14 @@ class Button{
    * @param element to wait to be clickable
    */
   async waitForElementToBeClickable(){
-    const EC = protractor.ExpectedConditions;
+    // const EC = protractor.ExpectedConditions;
 
-    try {
-      await browser.wait(await EC.elementToBeClickable(await this._getElementFinder()), DEFAULT_TIMEOUT);
-    } catch (e) {
-      let message = `timed out after ${DEFAULT_TIMEOUT} waiting for element ${element} to be clickable`;
-      throw new CustomError(message, e)
-    }
+    // try {
+    //   await browser.wait(await EC.elementToBeClickable(await this._getElementFinder()), DEFAULT_TIMEOUT);
+    // } catch (e) {
+    //   let message = `timed out after ${DEFAULT_TIMEOUT} waiting for element ${element} to be clickable`;
+    //   throw new CustomError(message, e)
+    // }
   }
 
   /**

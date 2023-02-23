@@ -274,7 +274,7 @@ function HeaderPage() {
   this.clickSignOut = async function () {
     await BrowserWaits.waitForElement(this.signOut);
     this.signOut.click();
-    browser.sleep(SHORT_DELAY);
+    // browser.sleep(SHORT_DELAY);
   };
 
   this.isTabPresent = async function (tabDisplatText) {

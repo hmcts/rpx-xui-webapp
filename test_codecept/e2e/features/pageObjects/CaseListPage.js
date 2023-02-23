@@ -259,7 +259,7 @@ class CaseListPage{
 
     async sortTableByColAt(colNum){
         (await this.sortColumnsIconLinks.get(colNum-1)).click();
-        await browser.sleep(1000);
+        await browser.sleep(1);
     }
 
     async clickShareCaseButton(){

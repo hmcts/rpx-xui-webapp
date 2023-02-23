@@ -1,8 +1,8 @@
 
 const global = require('./globals')
+const path = require('path')
 
-
-const functional_output_dir = 'functional_output/e2e'
+const functional_output_dir = path.resolve(`${__dirname}/../../functional_output/e2e`)
 
 exports.config = {
   timeout: 120,
@@ -10,7 +10,7 @@ exports.config = {
     "features": "../e2e/features/app/**/*.feature",
     "steps": "../e2e/features/step_definitions/**/*.steps.js",
   },
-  output: `./${functional_output_dir}`,
+  output: functional_output_dir,
   helpers: {
     CustomHelper:{
       require:"./customHelper.js"
@@ -31,12 +31,15 @@ exports.config = {
         ignoreHTTPSErrors: true,
         args: [
           '--headless',
+          '—disable-notifications',
           '--smartwait',
           '--disable-gpu',
           '--no-sandbox',
           '--allow-running-insecure-content',
           '--ignore-certificate-errors',
-          '--window-size=1440,1400'
+          '--window-size=1440,1400',
+
+           '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'
         ]
       }
       
@@ -56,10 +59,11 @@ exports.config = {
     // }
   },
   "mocha": {
+    reporter: 'mochawesome',
     "reporterOptions": {
-      "reportDir": `${functional_output_dir}`,
+      "reportDir": functional_output_dir,
       reportName:'XUI_MC',
-      inlineAssets: true
+      // inlineAssets: true
     }
     // "reporterOptions":{
     //   "codeceptjs-cli-reporter": {

@@ -55,7 +55,7 @@ class BrowserWaits{
         const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
         CucumberReporter.AddMessage("starting wait for element clickable max in sec " + waitTimeInMilliSec + " : " + JSON.stringify(element.selector));
         try {
-            await I.waitForElement(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + JSON.stringify(element.selector));
+            // await I.waitForElement(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + JSON.stringify(element.selector));
         } catch (err) {
             CucumberReporter.AddMessage(`Wait for element clikable failed ${JSON.stringify(element.selector) }, not throwing exception to let test fail in next step if required state not met`);
         }
@@ -148,7 +148,7 @@ class BrowserWaits{
                 if (callback) {
                     callback(retryCounter + "");
                 }
-                console.log(element.locator().toString() + " .    Retry attempt for page load : " + retryCounter);
+                console.log(element.selector + " .    Retry attempt for page load : " + retryCounter);
 
                 await browser.refresh();
 

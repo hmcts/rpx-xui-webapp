@@ -4,7 +4,7 @@ class CustomHelper extends Helper {
 
     // before/after hooks
     _before() {
-        // remove if not used
+       
     }
 
     _after() {

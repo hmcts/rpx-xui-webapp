@@ -5,11 +5,12 @@ const browser = require('./browser')
 
 const codeceptMochawesomeLog = require('./reportLogger')
 
+
+
 module.exports = function () {
 
-    event.dispatcher.on(event.test.before, function (test) {
+    event.dispatcher.on(event.test.before, async function (test) {
         output.print(`Test started : ${test.title}`)
-        // codeceptMochawesomeLog.AddMessage("************ Test started")
     });
 
     // event.dispatcher.on(event.test.after, function (test) {
@@ -23,17 +24,19 @@ module.exports = function () {
 
     });
 
-    event.dispatcher.on(event.test.failed, function (test) {
+    event.dispatcher.on(event.test.failed, async function (test,err) {
         // output.print(`Test failed : ${test.title}`)
-        codeceptMochawesomeLog.AddMessage("************ Test failed")
-
+        const logs = await browser.getBrowserLogs();
+        codeceptMochawesomeLog.AddJson(logs)
+        codeceptMochawesomeLog.AddMessage(`************ Test failed : ${err}`)
+        
 
     });
 
     
     event.dispatcher.on(event.bddStep.before, function (bddStep) {
         // output.print(`STEP: ${bddStep.keyword} ${bddStep.text} `)
-        codeceptMochawesomeLog.AddMessage(`BDD: ${bddStep.keyword}${bddStep.keyword !== 'Given' ? ' ':''} ${bddStep.text}`)
+        codeceptMochawesomeLog.AddMessage(`=======> BDD: ${bddStep.keyword} ${bddStep.text}`)
 
     });
 

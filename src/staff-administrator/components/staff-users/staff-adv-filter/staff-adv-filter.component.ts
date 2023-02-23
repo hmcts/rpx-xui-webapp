@@ -32,24 +32,30 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       fields: [{
         name: 'user-services',
         title: 'Services',
-        subTitle: '',
+        subTitle: 'Search for a service by name',
         options: [...staffFilters.services],
-        minSelected: 0,
+        minSelected: 1,
         maxSelected: 0,
         type: 'find-service',
         enableAddButton: true,
+        displayMinSelectedError: true,
+        minSelectedError : 'Click the Add button to add the service to your search criteria',
+        defaultOption: {
+          key: 'All',
+          label: 'All'
+        }
       },
       {
         name: 'user-location',
         title: 'Search by location',
         subTitle: 'Enter a location name',
         options: [],
-        minSelected: 0,
+        minSelected: 1,
         maxSelected: 0,
         type: 'find-location',
         enableAddButton: true,
         displayMinSelectedError: true,
-        minSelectedError: 'Select a location'
+        minSelectedError: 'Click the Add button to add the location to your search criteria'
       },
       {
         name: 'user-type',
@@ -88,7 +94,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
         options: [
           { label: 'Case Allocator', key: 'case allocator' },
           { label: 'Task supervisor', key: 'task supervisor' },
-          { label: 'Staff administrator', key: 'staff administrator' }
+          { label: 'Staff administrator', key: 'staff-administrator' }
         ],
         minSelected: 0,
         maxSelected: 3,

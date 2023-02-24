@@ -3,7 +3,7 @@ export interface StaffFilterOption {
   label: string;
 }
 
-export interface GropuOption {
+export interface GroupOption {
   group: string;
   options: StaffFilterOption[];
 }

@@ -11,9 +11,11 @@ export interface StaffUser {
   // but ideally need to separate any string list usages to different field
   services?: any[];
   suspended: boolean;
-  email_id: string;
-  primary_location: string;
-  roles?: any;
+  email: string;
+  additionalLocations?: string[];
+  primaryLocation?: StaffLocation;
+  primaryRole?: any;
+  roles: string[];
   skills?: string[];
   case_allocator?: boolean;
   task_supervisor?: boolean;
@@ -22,4 +24,16 @@ export interface StaffUser {
   role?: any;
   base_locations?: any;
   base_location?: any;
+}
+
+export interface StaffLocation {
+  id: string;
+  is_primary: boolean;
+  location?: string;
+}
+
+export interface StaffRole {
+  id: string;
+  is_primary: boolean;
+  role: string;
 }

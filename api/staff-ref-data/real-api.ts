@@ -2,9 +2,9 @@ import { NextFunction, Response } from 'express';
 import * as querystring from 'querystring';
 import { handleGet, handlePost, handlePut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references';
-import { StaffDataUser } from './models/staff-data-user.model';
-import { GropuOption, StaffFilterOption } from './models/staff-filter-option.model';
+import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
+import { StaffDataAPI, StaffDataUser, WorkArea } from './models/staff-data-user.model';
+import { GroupOption, StaffFilterOption, Service } from './models/staff-filter-option.model';
 
 const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 
@@ -43,13 +43,19 @@ export async function getJobTitles(req, res: Response, next: NextFunction) {
 
 export async function getServices(req, res: Response, next: NextFunction) {
   const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/skill`;
-
   try {
     const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
 
     const options: StaffFilterOption[] = [];
+
+    const serviceRefData = getConfigValue(SERVICE_REF_DATA_MAPPING) as Service[];
     data.service_skill.forEach(element => {
-      options.push({ key: element.id, label: element.id });
+      serviceRefData.forEach(service => {
+        const selectedServiceCodes = service.serviceCodes.filter(s => s === element.id);
+        if (selectedServiceCodes.length > 0) {
+          options.push({ key: element.id, label: service.service });
+        }
+      });
     });
 
     res.status(status).send(options);
@@ -64,7 +70,7 @@ export async function getSkills(req, res: Response, next: NextFunction) {
   try {
     const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
 
-    const groupOptions: GropuOption[] = [];
+    const groupOptions: GroupOption[] = [];
     data.service_skill.forEach(services => {
       const options: StaffFilterOption[] = [];
       services.skills.forEach(skill => {
@@ -106,14 +112,15 @@ export function sortArray(array: StaffFilterOption[]) {
 }
 
 export async function getStaffRefUserDetails(req, res, next: NextFunction) {
-  const reqbody = req.body
-  const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`
+  const reqbody = req.body;
+  const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
 
  try {
-     const { status, data }: { status: number; data: StaffDataUser } = await handlePost(apiPath, reqbody, req, next);
-     res.status(status).send(data)
+     const { status, data }: { status: number; data: StaffDataAPI[] } = await handlePost(apiPath, reqbody, req, next);
+     const thisUser = getUserInfoFromDetails(data);
+     res.status(status).send(thisUser);
  } catch (error) {
-     next(error)
+     next(error);
  }
 }
 
@@ -131,4 +138,57 @@ export async function updateUserStatus(req, res, next: NextFunction) {
   } catch (error) {
       next(error)
   }
+}
+
+function getUserInfoFromDetails(userInfo: StaffDataAPI[]): StaffDataUser[] {
+  const finalUserInfo = [];
+  userInfo.forEach(userDetails => {
+    let newUserInfo;
+    newUserInfo = setRoleInfo(userDetails);
+    newUserInfo = setLocationInfo(newUserInfo);
+    newUserInfo.services = getServiceLabels(newUserInfo.work_area);
+    newUserInfo.firstName = newUserInfo.first_name;
+    newUserInfo.lastName = newUserInfo.last_name;
+    newUserInfo.email = newUserInfo.email_id;
+    newUserInfo.userType = newUserInfo.user_type;
+    finalUserInfo.push(newUserInfo);
+  })
+  return finalUserInfo;
+}
+
+function setRoleInfo(userInfo: StaffDataUser): StaffDataUser {
+  let primaryRole;
+  const roleList = [];
+  userInfo.role.forEach(role => {
+    roleList.push(role.role);
+    if (role.is_primary) {
+      primaryRole = role;
+    }
+  })
+  userInfo.primaryRole = primaryRole ? primaryRole : userInfo.role[0];
+  userInfo.roles = roleList;
+  return userInfo;
+}
+
+function setLocationInfo(userInfo: StaffDataAPI): StaffDataUser {
+  let primaryLocation;
+  const locationList = [];
+  userInfo.base_location.forEach(location => {
+    if (location.is_primary) {
+      primaryLocation = location;
+    } else {
+      locationList.push(location.location);
+    }
+  })
+  userInfo.primaryLocation = primaryLocation ? primaryLocation : userInfo.base_location[0];
+  userInfo.additionalLocations = locationList;
+  return userInfo;
+}
+
+function getServiceLabels(workarea: WorkArea[]): string[] {
+  const services = [];
+  workarea.forEach(workArea => {
+    services.push(workArea.area_of_work);
+  })
+  return services;
 }

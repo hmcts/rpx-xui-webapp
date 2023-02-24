@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.9-civil-to-wa4-2":
-  version "1.8.9-civil-to-wa4-2"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.9-civil-to-wa4-2.tgz#195eb9ba6482e944a94265c351513ccdec79c028"
-  integrity sha512-PlYeO9WcNf7ihr+QIoZ4RCpAlcA/+r+CGVA3T/GfJwK5Vjbj/RmLpmCqXoTdpvErDdrciuLgcD5HQBbU8/rLNA==
+"@hmcts/rpx-xui-common-lib@1.8.10-prs-consolidated":
+  version "1.8.10-prs-consolidated"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-prs-consolidated.tgz#c1fe0550809277aa66704556bfd1f7c44597e1b1"
+  integrity sha512-e88lDQvzFf1t3icYTVg0WrFQsNvg6v31Q+BmCdXmUOE7xulro1aVW/wigLpr1ftvUoXUccor++PpAXcrivJw2g==
   dependencies:
     tslib "^2.0.0"
 

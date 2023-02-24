@@ -64,14 +64,14 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should navigate to service-down if error is 500', fakeAsync(() => {
     mockStaffDataAccessService.updateUserStatus.and.returnValue(throwError({ status: 500 }));
-    component.updateUserStatus('123456789', true);
+    component.updateUserStatus();
     tick();
     expect(location.path()).toBe('/service-down');
   }));
 
   it('should navigate to service-down if error is 401', fakeAsync(() => {
     mockStaffDataAccessService.updateUserStatus.and.returnValue(throwError({ status: 401 }));
-    component.updateUserStatus('123456789', true);
+    component.updateUserStatus();
     tick();
     expect(location.path()).toBe('/service-down');
   }));
@@ -80,7 +80,7 @@ describe('StaffUserDetailsComponent', () => {
     'when calling updateUserStatus', () => {
     mockStaffDataAccessService.updateUserStatus.and.returnValue(throwError({ status: 403 }));
     const userSuspendedStatusBefore = component.userDetails.suspended;
-    component.updateUserStatus('123456789', true);
+    component.updateUserStatus();
     fixture.detectChanges();
 
     expect(mockStaffDataAccessService.updateUserStatus).toHaveBeenCalled();
@@ -90,7 +90,7 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
     mockStaffDataAccessService.updateUserStatus.and.returnValue(of({suspended: true}));
-    component.updateUserStatus('123456789', true);
+    component.updateUserStatus();
     fixture.detectChanges();
 
     expect(mockStaffDataAccessService.updateUserStatus).toHaveBeenCalled();
@@ -100,7 +100,7 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should set suspendedStatus to "restored" to show the banner when calling updateUserStatus with isSuspended false', () => {
     mockStaffDataAccessService.updateUserStatus.and.returnValue(of({suspended: false}));
-    component.updateUserStatus('123456789', false);
+    component.updateUserStatus();
     fixture.detectChanges();
 
     expect(mockStaffDataAccessService.updateUserStatus).toHaveBeenCalled();

@@ -4,13 +4,13 @@ export interface StaffDataUser {
   lastName: string;
   userCategory: string;
   userType: string;
-  jobTitle: string;
+  jobTitle: string[];
   locations: string[];
   region: string;
   services: string[];
   suspended: boolean;
   email: string;
   primaryLocation: string;
-  roles?: string
+  roles?: string[];
   skills?: string[];
 }

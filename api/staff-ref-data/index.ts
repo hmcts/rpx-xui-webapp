@@ -16,4 +16,3 @@ export async function addNewUser(req, res, next: NextFunction) {
         next(error)
     }
 }
-

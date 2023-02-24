@@ -39,9 +39,9 @@ export class StaffAddEditUserFormComponent implements OnInit {
     private filterService: FilterService,
     private router: Router
   ) {
-    const currentNavigation = this.router.getCurrentNavigation();
-    if (currentNavigation) {
-      const previousNavigation = currentNavigation.previousNavigation;
+    this.currentNavigation = this.router.getCurrentNavigation();
+    if (this.currentNavigation) {
+      const previousNavigation = this.currentNavigation.previousNavigation;
       if (previousNavigation) {
         this.previousUrl = previousNavigation.finalUrl.toString();
       }
@@ -269,21 +269,22 @@ export class StaffAddEditUserFormComponent implements OnInit {
     };
 
     if (this.currentNavigation.extras && this.currentNavigation.extras.state && this.currentNavigation.extras.state.user && this.previousUrl.indexOf('/staff/users/user-details') >= 0) {
+      const copyUser = this.currentNavigation.extras.state.user;
       this.filterConfig.copyFields = (frm: FormGroup): FormGroup => {
         frm.patchValue({
-          firstName: null,
-          lastName: null,
-          email: null,
-          region: this.currentNavigation.extras.state.user.region,
-          services: this.getSelected(this.staffFilterOptions.services, this.currentNavigation.extras.state.user.services),
-          jobTitle: this.getSelected(this.staffFilterOptions.jobTitles, this.currentNavigation.extras.state.user.jobTitle),
-          locations:  this.currentNavigation.extras.state.user.locations,
-          additionalLocations:  this.currentNavigation.extras.state.user.locations,
-          roles: this.getSelected(this.roles, this.currentNavigation.extras.state.user.roles),
-          skills: this.getSelectedSkills(this.staffFilterOptions.skills, this.currentNavigation.extras.state.user.skills),
-          userType: this.currentNavigation.extras.state.user.userType,
-          suspended: this.currentNavigation.extras.state.user.suspended,
-          userCategory: this.currentNavigation.extras.state.user.userCategory
+          firstName: copyUser.firstName,
+          lastName: copyUser.lastName,
+          email: copyUser.email,
+          region: copyUser.region,
+          services: this.getSelected(this.staffFilterOptions.services, copyUser.services),
+          jobTitle: this.getSelected(this.staffFilterOptions.jobTitles, copyUser.jobTitle),
+          locations:  copyUser.locations,
+          additionalLocations:  copyUser.locations,
+          roles: this.getSelected(this.roles, copyUser.roles),
+          skills: this.getSelectedSkills(this.staffFilterOptions.skills, copyUser.skills),
+          userType: copyUser.userType,
+          suspended: copyUser.suspended,
+          userCategory: copyUser.userCategory
         });
         return frm;
       };
@@ -292,6 +293,9 @@ export class StaffAddEditUserFormComponent implements OnInit {
 
   private getSelected(allOptions: StaffFilterOption[], selectedOptions: string[]): boolean[] {
     const selected: boolean[] = [] ;
+    if (!Array.isArray(selectedOptions)) {
+      selectedOptions = new Array(selectedOptions);
+    }
     allOptions.forEach((el: StaffFilterOption) => {
       if (selectedOptions.filter(s => s === el.key).length > 0 ) {
         selected.push(true);

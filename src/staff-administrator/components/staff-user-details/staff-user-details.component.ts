@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { StaffUser } from '../../models/staff-user.model';
@@ -43,5 +43,10 @@ export class StaffUserDetailsComponent {
           }
         );
     }
+  }
+
+  public copy(): void {
+    const url = '/staff/add-user';
+    this.router.navigate([url], { state: { user: this.userDetails } });
   }
 }

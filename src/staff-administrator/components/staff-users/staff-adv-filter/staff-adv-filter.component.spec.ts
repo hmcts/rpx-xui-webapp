@@ -5,12 +5,12 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-// import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
+import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from './staff-adv-filter.component';
 
-xdescribe('StaffAdvFilterComponent', () => {
+describe('StaffAdvFilterComponent', () => {
   let component: StaffAdvFilterComponent;
   let fixture: ComponentFixture<StaffAdvFilterComponent>;
 
@@ -72,7 +72,7 @@ xdescribe('StaffAdvFilterComponent', () => {
       providers: [
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
         { provide: FilterService, useValue: mockFilterService },
-        // StaffDataAccessService,
+        StaffDataAccessService,
         {
           provide: ActivatedRoute,
           useValue: {
@@ -112,6 +112,8 @@ xdescribe('StaffAdvFilterComponent', () => {
       skills: ['SCSS'],
     }]));
 
+  });
+
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffAdvFilterComponent);
     component = fixture.componentInstance;
@@ -141,5 +143,4 @@ xdescribe('StaffAdvFilterComponent', () => {
   it('should not make a call to advanced search', () => {
     expect(mockStaffDataFilterService.filterByAdvancedSearch).toHaveBeenCalled();
   });
-})
 })

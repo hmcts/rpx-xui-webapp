@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
 import { StaffUser } from '../../models/staff-user.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class StaffDataAccessService {
   private API_PATH = `/api/staff-ref-data`;
   constructor(private readonly http: HttpClient) {}
@@ -41,7 +43,7 @@ export class StaffDataAccessService {
     return this.http.post<StaffUser>(`${this.API_PATH}/addNewUser`, addNewUserBody);
   }
 
-  public updateUserStatus(userId: string, suspended: boolean) {
-    return this.http.post<{ suspended: boolean }>(`${this.API_PATH}/updateUserStatus/${userId}`, { suspended });
+  public updateUserStatus(user) {
+    return this.http.put<{suspended: boolean}>(`${this.API_PATH}/updateUserStatus`, user);
   }
 }

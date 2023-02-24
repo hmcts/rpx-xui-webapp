@@ -258,14 +258,6 @@ describe('StaffUserCheckAnswersComponent', () => {
     fixture = TestBed.createComponent(StaffUserCheckAnswersComponent);
     component = fixture.componentInstance;
     storeMock.pipe.and.returnValue(of(userDetails));
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should call addNewUser and be successful', () => {
     mockStaffDataAccessService.addNewUser.and.returnValue(of({
       id: '2',
       firstName: 'Victoria',
@@ -287,16 +279,10 @@ describe('StaffUserCheckAnswersComponent', () => {
       skills: ['SCSS'],
     }));
     fixture.detectChanges();
-
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should call addNewUser and be successful', () => {
-    component.addNewUser();
-    expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
   });
 
   it('should call addNewUser and be successful', (done) => {

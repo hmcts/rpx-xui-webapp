@@ -1,6 +1,7 @@
 import { NextFunction, Response } from 'express';
 // import { MockStaffRefDataAPI } from './mock-staff-ref-data-api';
 import { RealStaffRefDataAPI } from './real-staff-ref-data-api';
+/* tslint:disable */
 const StaffRefDataService = require('./staff-ref-data.service')
 
 // Use below line to mock staff ref API

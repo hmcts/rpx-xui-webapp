@@ -19,7 +19,6 @@ export const STAFF_REF_USERS_LIST: StaffDataUser[] = [
     ],
     suspended: false,
     email: "kevin@hmcts.com",
-    primaryLocation: "Leeds",
   },
   {
     id: 2,
@@ -38,7 +37,6 @@ export const STAFF_REF_USERS_LIST: StaffDataUser[] = [
     ],
     suspended: true,
     email: "victoria@hmcts.com",
-    primaryLocation: "location-y",
     roles: ["staff-administrator"],
     skills: ["adoption-underwriter", "adoption-caseworker"],
   },

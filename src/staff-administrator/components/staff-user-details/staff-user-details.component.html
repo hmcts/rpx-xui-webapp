@@ -32,13 +32,13 @@
       <br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Primary location</dt>
-        <dd class="govuk-summary-list__value">{{ userDetails.primaryLocation }}</dd>
+        <dd class="govuk-summary-list__value">{{ userDetails.primaryLocation.location }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
       </div>
       <br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Additional locations</dt>
-        <dd class="govuk-summary-list__value">{{ userDetails.locations }}</dd>
+        <dd class="govuk-summary-list__value">{{ userDetails.additionalLocations.join(',') }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
       </div>
       <br>
@@ -50,13 +50,13 @@
       <br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Roles</dt>
-        <dd class="govuk-summary-list__value">{{ userDetails.roles }}</dd>
+        <dd class="govuk-summary-list__value">{{ userDetails.primaryRole.role }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
       </div>
       <br>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Job title</dt>
-        <dd class="govuk-summary-list__value">{{ userDetails.jobTitle }}</dd>
+        <dd class="govuk-summary-list__value">{{ userDetails.roles.join(',') }}</dd>
         <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
       </div>
       <br>
@@ -81,7 +81,7 @@
               (click)="updateUserStatus()">
         {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
       </button>
-      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="copy()">
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
         Copy
       </button>
     </div>

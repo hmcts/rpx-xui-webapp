@@ -10,7 +10,21 @@ export interface StaffUser {
   services: string[];
   suspended: boolean;
   email: string;
-  primaryLocation: string;
-  roles: string;
+  additionalLocations?: string[];
+  primaryLocation?: StaffLocation;
+  primaryRole?: any;
+  roles: string[];
   skills?: string[];
+}
+
+export interface StaffLocation {
+  id: string;
+  is_primary: boolean;
+  location?: string;
+}
+
+export interface StaffRole {
+  id: string;
+  is_primary: boolean;
+  role: string;
 }

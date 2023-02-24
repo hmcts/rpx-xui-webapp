@@ -9,7 +9,7 @@ import { StaffDataAccessService } from '../../services/staff-data-access/staff-d
   templateUrl: './staff-user-details.component.html',
   styleUrls: ['./staff-user-details.component.scss']
 })
-export class StaffUserDetailsComponent implements OnInit {
+export class StaffUserDetailsComponent {
   public userDetails: StaffUser;
   public showAction: boolean = false;
   public loading = false;
@@ -18,10 +18,7 @@ export class StaffUserDetailsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private staffDataAccessService: StaffDataAccessService) {
-  }
-
-  ngOnInit() {
-    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails.results[0];
+    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails[0];
   }
 
   public updateUserStatus(): void {

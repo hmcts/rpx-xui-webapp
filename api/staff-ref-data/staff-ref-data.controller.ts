@@ -39,3 +39,7 @@ export async function addNewUser(req: any, res: Response, next: NextFunction) {
 export async function getStaffRefUserDetails(req: any, res: Response, next: NextFunction) {
   staffRefDataService.getStaffRefUserDetails(req, res, next);
 }
+
+export async function updateUserStatus(req: any, res: Response, next: NextFunction) {
+  staffRefDataService.updateUserStatus(req, res, next);
+}

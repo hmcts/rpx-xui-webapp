@@ -1,4 +1,5 @@
-import { InfoMessage, TaskActionType } from '../../enums';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { TaskActionType } from '../../enums';
 
 export interface RouteData {
   verb: TaskActionType;

@@ -1,6 +1,10 @@
 <ng-container *ngIf="(staffDataFilterService.tableData$ | async).results?.length">
   <div class="govuk-!-margin-bottom-4">
-    Displaying <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).results.length }}</span> of <span class="govuk-!-font-weight-bold">{{ (staffDataFilterService.tableData$ | async).results.length }}</span> users
+    <p class="hmcts-pagination__results">Showing <b>{{(this.currentPageNumber * pagination.itemsPerPage) - pagination.itemsPerPage + 1}}</b>
+      to <b>{{ (this.currentPageNumber * pagination.itemsPerPage) > (staffDataFilterService.tableData$ | async).results.length  ? (staffDataFilterService.tableData$ | async).results.length : this.currentPageNumber *
+        pagination.itemsPerPage}}</b> 
+        of <b>{{(staffDataFilterService.tableData$ | async).results.length }}</b> results
+      </p>
   </div>
 
   <div>
@@ -8,7 +12,7 @@
       <ng-container cdkColumnDef="name">
         <th cdk-header-cell *cdkHeaderCellDef>Name</th>
         <td cdk-cell *cdkCellDef="let element">
-          <a href="{{'/staff/users/user-details/' + element.id }}">{{element.first_name}} {{element.last_name}}</a>
+          <a href="{{'/staff/users/user-details/' + element.case_worker_id }}">{{element.first_name}} {{element.last_name}}</a>
         </td>
       </ng-container>
 

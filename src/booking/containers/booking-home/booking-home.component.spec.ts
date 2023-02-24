@@ -1,11 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-import { BookingProcess } from '../../models';
+
+import { BookingProcess, BookingResponseSuccess } from '../../models';
 import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
 import { BookingHomeComponent } from './booking-home.component';
@@ -32,6 +33,18 @@ const DUMMY_BOOKINGS: Booking[] = [{
   locationName: 'Glasgow Tribunals Centre'
 }];
 
+const bookableSuccessResponse: BookingResponseSuccess = {
+  bookingResponse: {
+    userId: '1',
+    locationId: '1',
+    regionId: '1',
+    beginTime: new Date(),
+    endTime: new Date(),
+    created: new Date(),
+    log: ''
+  }
+};
+
 describe('BookingHomeComponent', () => {
   let component: BookingHomeComponent;
   let fixture: ComponentFixture<BookingHomeComponent>;
@@ -50,7 +63,9 @@ describe('BookingHomeComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        RouterTestingModule
+        RouterTestingModule.withRoutes(
+          [{path: 'work/my-work/list', component: BookingHomeComponent}]
+        )
       ],
       declarations: [BookingHomeComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -74,7 +89,7 @@ describe('BookingHomeComponent', () => {
       .compileComponents();
 
     bookingService.getBookings.and.returnValue(of(DUMMY_BOOKINGS));
-    bookingService.refreshRoleAssignments.and.returnValue(of({}));
+    bookingService.refreshRoleAssignments.and.returnValue(of(bookableSuccessResponse));
 
     fixture = TestBed.createComponent(BookingHomeComponent);
     component = fixture.componentInstance;
@@ -135,11 +150,10 @@ describe('BookingHomeComponent', () => {
     const firstRadioButton = element.querySelector('#type-0');
     firstRadioButton.click();
     fixture.detectChanges();
-
     const totalItems = fixture.debugElement.nativeElement.querySelectorAll('div.govuk-grid-column-one-third').length;
-    const firstItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[2].querySelector('p .govuk-hint');
-    const firstItemLocationMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[2].querySelector('p').childNodes[0];
-    const secondItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[2].querySelector('p .govuk-hint');
+    const firstItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[0].querySelector('p .govuk-hint');
+    const firstItemLocationMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[0].querySelector('p').childNodes[0];
+    const secondItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[0].querySelector('p .govuk-hint');
     // const thirdItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[3].querySelector('p .govuk-hint');
     expect(totalItems).toEqual(DUMMY_BOOKINGS.length);
     expect(firstItemDateMessage.textContent).toContain('14 June 2022 to 19 June 2022');
@@ -198,11 +212,16 @@ describe('BookingHomeComponent', () => {
     });
   });
 
-  describe('onExistingBookingSelected()', () => {
+  describe('onExistingBookingSelected()',  () => {
 
-    it('should make a call to refreshRoleAssignments', () => {
+    it('should make a call to refreshRoleAssignments', fakeAsync( () => {
+
+      mockRouter = {
+        navigate: jasmine.createSpy('navigate')
+      };
+      fixture.detectChanges();
       component.onExistingBookingSelected(1);
       expect(bookingService.refreshRoleAssignments).toHaveBeenCalled();
-    });
+    }));
   });
 });

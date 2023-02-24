@@ -1,33 +1,34 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InformationMessage } from 'src/app/shared/models';
+import { InfoMessageType } from 'src/role-access/models/enums';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType } from '../../enums';
-import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskActionContainerComponent } from './task-action-container.component';
 
+
 @Component({
   template: `
     <exui-task-action-container></exui-task-action-container>`
 })
 class WrapperComponent {
-  @ViewChild(TaskActionContainerComponent) public appComponentRef: TaskActionContainerComponent;
+  @ViewChild(TaskActionContainerComponent, {static: true}) public appComponentRef: TaskActionContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -49,14 +50,16 @@ describe('WorkAllocation', () => {
     const mockTasks = getMockTasks();
 
     const mockWorkAllocationService = {
-      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(Observable.of({}))
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleService.getValue.and.returnValue(of(false));
-    beforeEach(() => {
+
+    beforeEach(waitForAsync (() => {
       TestBed.configureTestingModule({
         declarations: [
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
@@ -85,7 +88,7 @@ describe('WorkAllocation', () => {
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: Observable.of({task: mockTasks[0]})
+              params: of({task: mockTasks[0]})
             }
           },
           {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
@@ -94,12 +97,12 @@ describe('WorkAllocation', () => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
 
       wrapper.tasks = null;
       window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
       fixture.detectChanges();
-    });
+    }));
 
     afterEach(() => {
       fixture.destroy();
@@ -251,7 +254,8 @@ describe('WorkAllocation', () => {
     let router: Router;
 
     const mockWorkAllocationService = {
-      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(Observable.of({}))
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -295,7 +299,7 @@ describe('WorkAllocation', () => {
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: Observable.of({task: mockTask[0]})
+              params: of({task: mockTask[0]})
             }
           },
           {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
@@ -304,7 +308,7 @@ describe('WorkAllocation', () => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
 
       wrapper.tasks = null;
       window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
@@ -331,13 +335,16 @@ describe('WorkAllocation', () => {
     let router: Router;
 
     const mockWorkAllocationService = {
-      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(Observable.of({}))
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleService.getValue.and.returnValue(of(true));
+    const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
+    mockNotifierService.cachedCaseView = {};
     const userDetails = {
       id: 'id122',
       forename: 'John',
@@ -375,16 +382,17 @@ describe('WorkAllocation', () => {
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: Observable.of({task: mockTask[0]})
+              params: of({task: mockTask[0]})
             }
           },
-          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
+          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+          { provide: CaseNotifier, useValue: mockNotifierService }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
 
       wrapper.tasks = null;
       window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
@@ -395,10 +403,10 @@ describe('WorkAllocation', () => {
       fixture.destroy();
     });
 
-    it('should perform the unclaim action successfully', () => {
+    it('should perform the Un-assign action successfully', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
       submit.click();
-      expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTask[0].id, ACTION.UNASSIGN, false);
+      expect(mockWorkAllocationService.assignTask).toHaveBeenCalledWith(mockTask[0].id, { userId: null });
     });
   });
 

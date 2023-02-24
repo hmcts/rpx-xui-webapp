@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
+import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
-import { AppUtils } from '../../../app/app-utils';
+
 
 @Component({
   selector: 'exui-my-cases',
@@ -25,7 +27,13 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
   }
 
   public get fields(): FieldConfig[] {
-    return ConfigConstants.MyCases;
+    let fields = ConfigConstants.MyCases;
+    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+      if (!isRelease4) {
+        fields = CONFIG_CONSTANTS_NOT_RELEASE4.MyCases;
+      }
+    });
+    return fields;
   }
 
   public backUrl: string = 'work/my-work/my-cases';
@@ -43,7 +51,8 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       // set service and location filters using data from local storage
       let serviceFilters = [];
       let locationFilters = [];
-      if (locationsFromLS && locationsFromLS['fields']) {
+      /* istanbul ignore else */
+      if (locationsFromLS && locationsFromLS.fields) {
         const services = locationsFromLS.fields.find(field => field.name === 'services');
         const locations = locationsFromLS.fields.find(field => field.name === 'locations');
         if (services && services.hasOwnProperty('value')) {

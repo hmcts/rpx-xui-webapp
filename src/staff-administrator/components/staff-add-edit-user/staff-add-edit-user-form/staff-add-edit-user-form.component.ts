@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BookingCheckType, FilterConfig, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
+import { BookingCheckType, FilterConfig, FilterFieldOption, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
@@ -13,7 +13,7 @@ import { StaffFilterOption } from '../../../models/staff-filter-option.model';
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
 export class StaffAddEditUserFormComponent implements OnInit {
-  @Input() public formGroup: FormGroup;
+  // @Input() public formGroup!: FormGroup;
   public formId: string = 'staff-add-edit-user';
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
@@ -21,9 +21,16 @@ export class StaffAddEditUserFormComponent implements OnInit {
     skills: GroupOptions[],
     services: StaffFilterOption[]
   };
+  public roles: StaffFilterOption[] = [
+    { key: 'case-allocator', label: 'Case Allocator' },
+    { key: 'task-supervisor', label: 'Task Supervisor' },
+    { key: 'staff-administrator', label: 'Staff Administrator' },
+  ];
+  public locations: StaffFilterOption[] = [{key: 'location-x', label: 'Location X'}, {key: 'location-y', label: 'Location Y'}, {key: 'location-z', label: 'Location Z'}];
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
   private previousUrl: string;
+  private currentNavigation: Navigation;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
@@ -32,9 +39,9 @@ export class StaffAddEditUserFormComponent implements OnInit {
     private filterService: FilterService,
     private router: Router
   ) {
-    const currentNavigation = this.router.getCurrentNavigation();
-    if (currentNavigation) {
-      const previousNavigation = currentNavigation.previousNavigation;
+    this.currentNavigation = this.router.getCurrentNavigation();
+    if (this.currentNavigation) {
+      const previousNavigation = this.currentNavigation.previousNavigation;
       if (previousNavigation) {
         this.previousUrl = previousNavigation.finalUrl.toString();
       }
@@ -48,6 +55,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
   }
 
   public ngOnInit() {
+
     this.initFormConfig();
     this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
@@ -192,7 +200,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           titleHint: '(optional)',
           locationTitle: 'Enter a location name',
           enableAddButton: true,
-          options: [{key: 'location-1', label: 'Location 1'}, {key: 'location-2', label: 'Location 2'}],
+          options: [...this.locations],
           minSelected: 0,
           maxSelected: 0,
           maxWidth480px: true,
@@ -216,11 +224,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           title: 'Roles',
           titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [
-            { key: 'case-allocator', label: 'Case Allocator' },
-            { key: 'task-supervisor', label: 'Task Supervisor' },
-            { key: 'staff-administrator', label: 'Staff Administrator' },
-          ],
+          options: [...this.roles],
           minSelected: 0,
           maxSelected: 99,
           lineBreakBefore: true,
@@ -263,5 +267,58 @@ export class StaffAddEditUserFormComponent implements OnInit {
         this.router.navigateByUrl('/staff');
       }
     };
+
+    if (this.currentNavigation.extras && this.currentNavigation.extras.state && this.currentNavigation.extras.state.user && this.previousUrl.indexOf('/staff/users/user-details') >= 0) {
+      const copyUser = this.currentNavigation.extras.state.user;
+      this.filterConfig.copyFields = (frm: FormGroup): FormGroup => {
+        frm.patchValue({
+          firstName: copyUser.firstName,
+          lastName: copyUser.lastName,
+          email: copyUser.email,
+          region: copyUser.region,
+          services: this.getSelected(this.staffFilterOptions.services, copyUser.services),
+          jobTitle: this.getSelected(this.staffFilterOptions.jobTitles, copyUser.jobTitle),
+          locations:  copyUser.locations,
+          additionalLocations:  copyUser.locations,
+          roles: this.getSelected(this.roles, copyUser.roles),
+          skills: this.getSelectedSkills(this.staffFilterOptions.skills, copyUser.skills),
+          userType: copyUser.userType,
+          suspended: copyUser.suspended,
+          userCategory: copyUser.userCategory
+        });
+        return frm;
+      };
+    }
   }
+
+  private getSelected(allOptions: StaffFilterOption[], selectedOptions: string[]): boolean[] {
+    const selected: boolean[] = [] ;
+    if (!Array.isArray(selectedOptions)) {
+      selectedOptions = new Array(selectedOptions);
+    }
+    allOptions.forEach((el: StaffFilterOption) => {
+      if (selectedOptions.filter(s => s === el.key).length > 0 ) {
+        selected.push(true);
+      } else {
+        selected.push(false);
+      }
+    });
+    return selected;
+  }
+
+  private getSelectedSkills(allOptions: GroupOptions[], selectedOptions: string[]): boolean[] {
+    const selected: boolean[] = [] ;
+    allOptions.forEach((el: GroupOptions) => {
+      el.options.forEach((op: FilterFieldOption) => {
+        const selctedOption = selectedOptions.filter(s => s === op.key)
+        if (selctedOption.length > 0 ) {
+          selected.push(true);
+        } else {
+          selected.push(false);
+        }
+      });
+    });
+    return selected;
+  }
+
 }

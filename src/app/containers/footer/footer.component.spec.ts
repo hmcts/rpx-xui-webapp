@@ -1,8 +1,8 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, Input, ViewChild} from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, ViewChild } from '@angular/core';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
-import {FooterComponent} from './footer.component';
+import { FooterComponent } from './footer.component';
 
 describe('FooterComponent', () => {
     @Component({
@@ -10,7 +10,7 @@ describe('FooterComponent', () => {
         template: `<exui-app-footer></exui-app-footer>`
     })
     class TestDummyHostComponent {
-        @ViewChild(FooterComponent)
+        @ViewChild(FooterComponent, {static: false})
         public footerComponent: FooterComponent;
     }
 
@@ -24,7 +24,7 @@ describe('FooterComponent', () => {
     let fixture: ComponentFixture<FooterComponent>;
     let element: DebugElement;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         const storeMock = jasmine.createSpyObj('mockStore', ['unsubscribe', 'dispatch', 'pipe']);
         TestBed.configureTestingModule({
             imports: [

@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
-import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
+import { combineLatest, forkJoin, merge, Observable, of, Subscription } from 'rxjs';
+import { debounceTime, filter, flatMap, map, mergeMap, switchMap } from 'rxjs/operators';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InfoMessageType } from 'src/role-access/models/enums';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -13,11 +15,12 @@ import * as fromActions from '../../../app/store';
 import { Actions, Role, RoleCategory } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants } from '../../components/constants';
-import { CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
+import { CaseService, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -84,7 +87,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly jurisdictionsService: JurisdictionsService,
     protected readonly rolesService: AllocateRoleService,
     protected readonly httpClient: HttpClient,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected checkReleaseVersionService: CheckReleaseVersionService
   ) {
   }
 
@@ -113,6 +117,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   public get fields(): CaseFieldConfig[] {
+
     return [];
   }
 
@@ -163,16 +168,17 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public loadSupportedJurisdictions(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
-    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).map(userDetails =>
+    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map(userDetails =>
       userDetails.roleAssignmentInfo.filter(role => role.roleName && role.roleName === 'task-supervisor').map(role => role.jurisdiction || null)
-    );
+    ));
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.waSupportedJurisdictions$ = Observable.combineLatest(
+    this.waSupportedJurisdictions$ = combineLatest(
       [userRoles$,
         waJurisdictions$]
-    ).map(jurisdictions => {
+    ).pipe(
+      map(jurisdictions => {
       return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
-    });
+    }));
   }
 
   public ngOnDestroy(): void {
@@ -195,12 +201,12 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   public setupCaseWorkers(): void {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions =>
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap(jurisdictions =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
-    );
-    this.waSupportedJurisdictions$.switchMap(jurisdictions =>
+    ));
+    this.waSupportedJurisdictions$.pipe(switchMap(jurisdictions =>
       this.rolesService.getValidRoles(jurisdictions)
-    ).subscribe(roles => this.allRoles = roles);
+    )).subscribe(roles => this.allRoles = roles);
     // currently get caseworkers for all supported services
     // in future change, could get caseworkers by specific service from filter changes
     // however regrdless would likely need this initialisation
@@ -345,7 +351,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   // Do the actual load. This is separate as it's called from two methods.
   protected doLoad(): void {
-    this.showSpinner$ = this.loadingService.isLoading;
+    this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     const casesSearch$ = this.performSearchPagination();
     const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
@@ -374,7 +380,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
       }
     }));
 
-    Observable.forkJoin([mappedSearchResult$, this.jurisdictionsService.getJurisdictions()]).subscribe(results => {
+    forkJoin([mappedSearchResult$, this.jurisdictionsService.getJurisdictions()]).subscribe(results => {
       const result = results[0];
       this.allJurisdictions = results[1];
       this.loadingService.unregister(loadingToken);

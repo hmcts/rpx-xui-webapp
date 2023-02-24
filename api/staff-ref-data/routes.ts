@@ -8,7 +8,8 @@ import {
   getJobTitles,
   getServices,
   getUsersByPartialName,
-  getUserTypes
+  getUserTypes,
+  updateUserStatus
 } from './staff-ref-data.controller';
 
 const router = express.Router({ mergeParams: true });
@@ -22,5 +23,5 @@ router.get('/getJobTitles', getJobTitles);
 router.get('/getSkills', getSkills);
 router.get('/getServices', getServices);
 router.post('/addNewUser', addNewUser);
-
+router.put('/updateUserStatus', updateUserStatus);
 export default router;

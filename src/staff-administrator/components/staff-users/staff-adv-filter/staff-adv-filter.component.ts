@@ -27,23 +27,21 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       services: this.route.snapshot.data.services,
     };
     const defaultOption = { key: 'All', label: 'All' };
+    const staffServices = staffFilters.services;
+    staffServices.unshift(defaultOption)
     this.filterConfig = {
       id: this.FILTER_NAME,
       fields: [{
         name: 'user-services',
         title: 'Services',
         subTitle: 'Search for a service by name',
-        options: [...staffFilters.services],
+        options: staffServices,
         minSelected: 1,
         maxSelected: 0,
         type: 'find-service',
         enableAddButton: true,
         displayMinSelectedError: true,
         minSelectedError : 'Click the Add button to add the service to your search criteria',
-        defaultOption: {
-          key: 'All',
-          label: 'All'
-        }
       },
       {
         name: 'user-location',

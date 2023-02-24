@@ -39,7 +39,29 @@ export class AppConfig extends AbstractAppConfig {
       }
     });
 
-    this.featureToggleService.getValue('wa-service-config', null).subscribe({
+    // Default value is passed to resolve EUI-7670.
+    // ToDo: Remove default value and get the latest not null value
+    const defaultConfig = {
+      configurations: [
+        {
+          caseTypes: [
+            'Asylum'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'IA'
+        },
+        {
+          caseTypes:[
+            'CIVIL',
+            'GENERALAPPLICATION'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'CIVIL'
+        }
+      ]
+    };
+
+    this.featureToggleService.getValue('wa-service-config', defaultConfig).subscribe({
       next: (val) => this.config = {
         ...this.config,
         wa_service_config: val
@@ -203,6 +225,20 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getPaymentReturnUrl(): string {
-      return this.environmentService.get('paymentReturnUrl');
+    return this.environmentService.get('paymentReturnUrl');
+  }
+
+  public getCategoriesAndDocumentsUrl(): string {
+    return this.config.categories_and_documents_url;
+  }
+
+  public getDocumentDataUrl(): string {
+    return this.config.document_data_url;
+  }
+  public  getRDCommonDataApiUrl(): string {
+    return this.config.rd_common_data_api_url;
+  }
+  public  getCaseDataStoreApiUrl(): string {
+    return this.config.case_data_store_api_url;
   }
 }

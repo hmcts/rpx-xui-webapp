@@ -7,6 +7,11 @@ import {
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Roles } from '../../../models/roles.enum';
+import { filter } from 'rxjs/operators';
+import { InfoMessage } from '../../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../../app/shared/models';
+import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
+import { InfoMessageType } from '../../../../role-access/models/enums';
 import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffJobTitles } from '../../../models/staff-job-titles';
@@ -57,7 +62,8 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private filterService: FilterService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private staffDataAccessService: StaffDataAccessService
+    private staffDataAccessService: StaffDataAccessService,
+    private readonly messageService: InfoMessageCommService,
   ) {
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
@@ -238,7 +244,12 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     };
 
     this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {
-      // success banner
+      this.messageService.nextMessage({
+        message: InfoMessage.ADD_NEW_USER,
+        type: InfoMessageType.SUCCESS
+      } as InformationMessage);
+      this.filterService.clearSessionAndLocalPersistance(this.formId);
+      this.router.navigateByUrl('/staff');
     }, error => {
       this.router.navigateByUrl('/service-down');
     });

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { hearingPriorityRefData, initialState } from '../hearing.test.data';
+import { hearingPriorityRefData, initialStateImmutable } from '../hearing.test.data';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingPriorityAnswerConverter } from './hearing-priority.answer.converter';
@@ -18,7 +18,7 @@ describe('HearingPriorityAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({initialState: initialStateImmutable}),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -31,13 +31,13 @@ describe('HearingPriorityAnswerConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new HearingPriorityAnswerConverter(router);
   });
 
   it('should transform hearing stage', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = initialStateImmutable.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingPriorityType = 'Standard';
     const expected = cold('(b|)', {b: hearingPriorityType});

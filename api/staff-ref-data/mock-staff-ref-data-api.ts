@@ -102,4 +102,17 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
       next(error);
     }
   }
+
+  async updateUserStatus(req, res, next: NextFunction) {
+    const id = req.params.id;
+    const reqBody = req.body;
+    const apiPath: string = `/refdata/case-worker/user-status/${id}`;
+
+    try {
+      const {status, data}: { status: number, data: { suspended: boolean } } = await handlePost(apiPath, reqBody, req);
+      res.status(status).send(data);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

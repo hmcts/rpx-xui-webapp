@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
@@ -15,12 +15,13 @@ import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskListFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
+import { SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
 import { TaskResponse } from '../../models/tasks/task.model';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -28,6 +29,8 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -71,7 +74,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected checkReleaseVersionService: CheckReleaseVersionService
   ) {
     this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
@@ -141,7 +145,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return {
       service: TaskService.IAC,
       defaultSortDirection: SortOrder.ASC,
-      defaultSortFieldName: 'priority',
+      defaultSortFieldName: this.fields.some(f => f.name === 'priority') ? 'priority' : 'created_date',
       fields: this.fields
     };
   }
@@ -158,7 +162,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
     this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.filter(v => !!v).subscribe(value => {
+    this.isUpdatedTaskPermissions$.pipe(filter(v => !!v)).subscribe(value => {
       this.updatedTaskPermission = value;
     });
 
@@ -197,9 +201,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions =>
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap(jurisdictions =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
-    );
+    ));
     // similar to case list wrapper changes
     caseworkersByService$.subscribe(caseworkers => {
       this.caseworkers = caseworkers;
@@ -357,7 +361,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
     }
-    this.showSpinner$ = this.loadingService.isLoading;
+    this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     const tasksSearch$ = this.performSearchPreviousTaskPermissions();
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {

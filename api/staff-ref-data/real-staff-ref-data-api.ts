@@ -1,10 +1,10 @@
 import { StaffRefDataAPI } from './models/staff-ref-data.model';
 import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
 import { getConfigValue } from '../configuration';
-import { handleGet, handlePost, handlePut } from '../common/crudService';
+import { handleGet, handlePost } from '../common/crudService';
 import * as querystring from 'querystring';
 import { NextFunction, Response } from 'express';
-import { StaffDataUser } from './models/staff-data-user.model';
+import { StaffDataUser, StaffDataAPI, WorkArea } from './models/staff-data-user.model';
 import { GroupOption, StaffFilterOption, Service } from './models/staff-filter-option.model';
 
 export class RealStaffRefDataAPI implements StaffRefDataAPI {
@@ -89,7 +89,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
         const options: StaffFilterOption[] = [];
         services.skills.forEach(skill => {
           options.push({ key: skill.id, label: skill.description });
-        })
+        });
         groupOptions.push({ group: services.id, options });
       });
 
@@ -127,22 +127,72 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     }
   }
 
-  // Yet to integrate the real API
-  async getStaffRefUserDetails(req, res: Response, next: NextFunction) {
-    const reqBody = req.body;
-    const id = req.params.id;
-    const apiPath: string = `/refdata/case-worker/user-details/${id}`;
+  async getStaffRefUserDetails(req, res, next: NextFunction) {
+    const reqbody = req.body;
+    const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
 
     try {
-      const {status, data}: { status: number, data: StaffDataUser } =
-        await handlePut(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);
-      res.status(status).send(data);
+      const { status, data }: { status: number; data: StaffDataAPI[] } = await handlePost(apiPath, reqbody, req, next);
+      const thisUser = this.getUserInfoFromDetails(data);
+      res.status(status).send(thisUser);
     } catch (error) {
       next(error);
     }
   }
 
-  // Yet to integrate the real API
+  getUserInfoFromDetails(userInfo: StaffDataAPI[]): StaffDataUser[] {
+    const finalUserInfo = [];
+    userInfo.forEach(userDetails => {
+      let newUserInfo;
+      newUserInfo = this.setRoleInfo(userDetails);
+      newUserInfo = this.setLocationInfo(newUserInfo);
+      newUserInfo.services = this.getServiceLabels(newUserInfo.work_area);
+      newUserInfo.firstName = newUserInfo.first_name;
+      newUserInfo.lastName = newUserInfo.last_name;
+      newUserInfo.email = newUserInfo.email_id;
+      newUserInfo.userType = newUserInfo.user_type;
+      finalUserInfo.push(newUserInfo);
+    });
+    return finalUserInfo;
+  }
+
+  setRoleInfo(userInfo: StaffDataUser): StaffDataUser {
+    let primaryRole;
+    const roleList = [];
+    userInfo.role.forEach(role => {
+      roleList.push(role.role);
+      if (role.is_primary) {
+        primaryRole = role;
+      }
+    });
+    userInfo.primaryRole = primaryRole ? primaryRole : userInfo.role[0];
+    userInfo.roles = roleList;
+    return userInfo;
+  }
+
+  setLocationInfo(userInfo: StaffDataAPI): StaffDataUser {
+    let primaryLocation;
+    const locationList = [];
+    userInfo.base_location.forEach(location => {
+      if (location.is_primary) {
+        primaryLocation = location;
+      } else {
+        locationList.push(location.location);
+      }
+    });
+    userInfo.primaryLocation = primaryLocation ? primaryLocation : userInfo.base_location[0];
+    userInfo.additionalLocations = locationList;
+    return userInfo;
+  }
+
+  getServiceLabels(workarea: WorkArea[]): string[] {
+    const services = [];
+    workarea.forEach(workArea => {
+      services.push(workArea.area_of_work);
+    })
+    return services;
+  }
+
   async updateUserStatus(req, res, next: NextFunction) {
     const id = req.params.id;
     const reqBody = req.body;

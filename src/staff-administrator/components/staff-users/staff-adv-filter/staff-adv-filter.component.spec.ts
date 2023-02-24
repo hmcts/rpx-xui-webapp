@@ -107,8 +107,8 @@ describe('StaffAdvFilterComponent', () => {
       ],
       suspended: true,
       email: 'victoria@hmcts.com',
-      primaryLocation: 'London',
-      roles: 'Case allocator',
+      primaryLocation: {id: '123', is_primary: true, location: 'London'},
+      roles: ['Case allocator'],
       skills: ['SCSS'],
     }]));
 

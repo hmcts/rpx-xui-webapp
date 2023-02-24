@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-create-change-links-v2":
-  version "6.10.7-case-flags-create-change-links-v2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-create-change-links-v2.tgz#1f00ddb4d69e55ef8b40fc87f516a5f5712ec210"
-  integrity sha512-rck8E15N9Mhu1d9sXLaTE7xg4aogpzJ3K5qFKlzLU8XLx8nYdwsrQ+u3oVOhNQFMPSRWNJaNk6uy+BYBuvmRWg==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-check-your-answers-screen":
+  version "6.10.7-case-flags-check-your-answers-screen"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-check-your-answers-screen.tgz#1a88cba8817ee2c47c4f157b737763d96a1df6ce"
+  integrity sha512-FqkFH9L4kbyXrh++oxMB8XqblysIBzL99ZvQKxfkpyIpq16R/yNWSWkU7b9P4vCmu7vv9gNGh6lEBelsUdftLg==
   dependencies:
     tslib "^2.0.0"
 

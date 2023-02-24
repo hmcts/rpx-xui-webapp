@@ -32,7 +32,10 @@ export class StaffDataAccessService {
   }
 
   public getStaffRefUserDetails(id: number) {
-    return this.http.get<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails/${id}`);
+    const reqbody = {userIds: [
+      id
+   ]};
+    return this.http.post<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails`, reqbody);
   }
 
   public getServices() {
@@ -44,6 +47,6 @@ export class StaffDataAccessService {
   }
 
   public updateUserStatus(user) {
-    return this.http.put<{suspended: boolean}>(`${this.API_PATH}/updateUserStatus`, user);
+    return this.http.put<any>(`${this.API_PATH}/updateUserStatus`, user);
   }
 }

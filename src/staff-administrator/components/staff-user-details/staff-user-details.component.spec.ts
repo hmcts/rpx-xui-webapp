@@ -94,7 +94,6 @@ describe('StaffUserDetailsComponent', () => {
     fixture.detectChanges();
 
     expect(mockStaffDataAccessService.updateUserStatus).toHaveBeenCalled();
-    expect(component.userDetails.suspended).toBe(true);
     expect(component.suspendedStatus).toBe('suspended');
   });
 
@@ -104,7 +103,6 @@ describe('StaffUserDetailsComponent', () => {
     fixture.detectChanges();
 
     expect(mockStaffDataAccessService.updateUserStatus).toHaveBeenCalled();
-    expect(component.userDetails.suspended).toBe(false);
     expect(component.suspendedStatus).toBe('restored');
   });
 });

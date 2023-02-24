@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { StaffUser } from '../../../staff-administrator/models/staff-user.model';
-import { StaffDataAccessService } from '../../../staff-administrator/services/staff-data-access/staff-data-access.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { StaffUser } from '../../models/staff-user.model';
+import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
 @Component({
   selector: 'exui-staff-user-details',
@@ -15,6 +15,7 @@ export class StaffUserDetailsComponent implements OnInit {
   public suspendedStatus: 'suspended' | 'restored' | 'error';
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private staffDataAccessService: StaffDataAccessService) {
    }
 
@@ -58,4 +59,8 @@ export class StaffUserDetailsComponent implements OnInit {
     return services;
   }
 
+  public copy(): void {
+    const url = '/staff/add-user';
+    this.router.navigate([url], { state: { user: this.userDetails } });
+  }
 }

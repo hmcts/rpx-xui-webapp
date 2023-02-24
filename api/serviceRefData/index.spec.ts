@@ -35,7 +35,7 @@ describe('Service Ref Data', () => {
   it('should get only the list of service ref data mapping', async() => {
 
     const serviceRefDataList = serviceRefData.getServiceRefDataMappingList();
-    expect(serviceRefDataList).to.deep.equal([{service: 'IA', serviceCodes: ['BFA1']}, { service: 'CIVIL', serviceCodes: ["AAA6" , 'AAA7']}, {"service": "PRIVATELAW", "serviceCodes": ["ABA5"]}]);
+    expect(serviceRefDataList).to.deep.equal([{service: 'Immigration and Asylum Appeals', serviceCodes: ['BFA1']}, { service: 'CIVIL', serviceCodes: ["AAA6" , 'AAA7']}, {"service": "PRIVATELAW", "serviceCodes": ["ABA5"]}]);
   })
 
 })

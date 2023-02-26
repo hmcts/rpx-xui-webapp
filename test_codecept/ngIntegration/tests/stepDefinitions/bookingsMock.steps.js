@@ -15,11 +15,12 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 const workAllocationDateUtil = require("../../../e2e/features/pageObjects/workAllocation/common/workAllocationDateUtil");
 const { LOG_LEVELS } = require('../../../e2e/support/constants');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
     Given('I set mock for existing bookings', async function (bookingDatatAble) {
-        const bookingsTestData = bookingDatatAble.hashes();
+        const bookingsTestData = bookingdatatable.parse().hashes();
         const bookings = [];
         for (const booking of bookingsTestData){
             if(booking.locationId === ""){

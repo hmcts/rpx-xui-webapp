@@ -112,7 +112,7 @@ class PuppeteerNativeElement {
         await this.__checkAndGetNativeElement();
 
         const tagName = await this.nativeElement.getProperty('tagName');
-        return await tagName.jsonValue()
+        return (await tagName.jsonValue()).toLowerCase()
     }
 
     async isPresent(){
@@ -256,6 +256,10 @@ class ElementCollection {
         }
         return this.nativeElements.length
     }
+
+    async getText(){
+        
+    }
 }
 
 class Element {
@@ -265,14 +269,14 @@ class Element {
     }
 
     element(locator) {
-        return new Element(locator)
+        return new PuppeteerNativeElement(locator, new PuppeteerNativeElement(this.selector, null))
     }
 
     $(locator) {
-        return new Element(locator)
+        return new PuppeteerNativeElement({ css: locator }, new PuppeteerNativeElement(this.selector, null))
     }
     $$(locator) {
-        return new Element(locator)
+        return new ElementCollection({css: locator}, new PuppeteerNativeElement(this.selector, null))
     }
     wait() {
         getActor().waitForElement(this.selector, 60)
@@ -350,12 +354,12 @@ class Element {
     }
 
     async getTagName(){
-        const el = new PuppeteerNativeElement(this.locator, null)
-        return await el.getTagName()
+        const el = new PuppeteerNativeElement(this.selector, null)
+        return (await el.getTagName()).toLowerCase()
     }
 
     async uploadFile(file){
-        await getActor().attachFile(this.locator, file);
+        await getActor().attachFile(this.selector, file);
     }
 
     static all(locator) {
@@ -367,4 +371,4 @@ class Element {
 }
 
 
-module.exports = { Element, ElementCollection}
+module.exports = { Element, ElementCollection }

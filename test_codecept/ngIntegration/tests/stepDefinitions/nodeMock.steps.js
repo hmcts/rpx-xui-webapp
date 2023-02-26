@@ -10,6 +10,7 @@ const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAllocationDataModel = require("../../../dataModels/workAllocation");
 const reportLogger = require('../../../e2e/support/reportLogger');
 const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -145,7 +146,7 @@ const workAllocationMockData = require('../../../nodeMock/workAllocation/mockDat
 
 
     Given('I set MOCK find person response for jurisdictions', async function(datatable){
-        const personsConfigHashes = datatable.hashes();
+        const personsConfigHashes = datatable.parse().hashes();
 
         for (const person of personsConfigHashes) {
 

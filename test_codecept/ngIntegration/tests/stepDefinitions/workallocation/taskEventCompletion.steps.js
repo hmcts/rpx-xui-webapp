@@ -17,6 +17,7 @@ const waMockData = require('../../../../nodeMock/workAllocation/mockData');
 
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
+const { DataTableArgument } = require('codeceptjs');
 
     const waCasesTable = new WACasesTable();
 
@@ -26,7 +27,7 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
     });
 
     Given('I set MOCK tasks required for event', async function (tasksDatatable) {
-        waMockData.setTaskRequiredForEventTasks(tasksDatatable.hashes());
+        waMockData.setTaskRequiredForEventTasks(tasksdatatable.parse().hashes());
     });
 
     When('I complete and submit test event {string}', async function(eventId){

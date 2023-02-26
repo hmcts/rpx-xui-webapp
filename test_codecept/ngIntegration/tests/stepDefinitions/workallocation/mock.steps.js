@@ -17,6 +17,7 @@ const waMockData = require('../../../../nodeMock/workAllocation/mockData');
 
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
+const { DataTableArgument } = require('codeceptjs');
 
 
     const waCasesTable = new WACasesTable();
@@ -24,7 +25,7 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
     Given('I set Mock WA case {string} property values', async function (view,datatable) {
 
-        const datatableHashes = datatable.hashes();
+        const datatableHashes = datatable.parse().hashes();
   
         const cases = waMockData[view];
         for (const wacase of datatableHashes){

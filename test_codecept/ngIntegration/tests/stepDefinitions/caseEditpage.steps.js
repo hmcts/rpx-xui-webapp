@@ -15,8 +15,8 @@ const BrowserWaits = require('../../../e2e/support/customWaits');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
-const { Browser } = require('selenium-webdriver');
 
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -44,7 +44,7 @@ const { Browser } = require('selenium-webdriver');
     });
 
     Then('I see case event validation alert error summary messages', async function(datatable){
-        const messageHashes = datatable.hashes();
+        const messageHashes = datatable.parse().hashes();
         for(let i = 0; i< messageHashes.length;i++){
             expect(await caseEditPage.getValidationAlertMessageDisplayed(), 'Expected field error validation message not displayed in error summary').to.include(messageHashes[i].message);
         }
@@ -135,7 +135,7 @@ const { Browser } = require('selenium-webdriver');
     When('I input fields in case edit page from event {string} with values', async function (eventConfigRef, datatable){
         const caseConfigInstance = global.scenarioData[eventConfigRef];
         const caseConfig = caseConfigInstance.getCase(); 
-        const fieldValues = datatable.hashes();
+        const fieldValues = datatable.parse().hashes();
 
         for (const fieldValue of fieldValues){
             const fieldConfig = caseConfigInstance.getCaseFieldConfig(fieldValue.fieldId);
@@ -162,7 +162,7 @@ const { Browser } = require('selenium-webdriver');
         await BrowserWaits.waitForSeconds(1);
         const caseConfigInstance = global.scenarioData[eventConfigRef];
         const caseConfig = caseConfigInstance.getCase();
-        const fieldValues = datatable.hashes();
+        const fieldValues = datatable.parse().hashes();
         for (const fieldValue of fieldValues) {
             const fieldConfig = caseConfigInstance.getCaseFieldConfig(fieldValue.fieldId)
             const isExpectedToDisplay = fieldValue.isDisplayed.includes("true") ? true : false;

@@ -1,6 +1,6 @@
 const c = require('config');
 const { constants } = require('karma');
-const { browser } = require('protractor');
+
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 const ArrayUtil = require('../../../utils/ArrayUtil');

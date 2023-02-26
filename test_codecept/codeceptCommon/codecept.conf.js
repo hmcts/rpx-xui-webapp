@@ -11,6 +11,7 @@ exports.config = {
     "steps": "../e2e/features/step_definitions/**/*.steps.js",
   },
   output: functional_output_dir,
+ 
   helpers: {
     CustomHelper:{
       require:"./customHelper.js"
@@ -30,7 +31,7 @@ exports.config = {
       chrome: {
         ignoreHTTPSErrors: true,
         args: [
-          '--headless',
+          '--headless1',
           '—disable-notifications',
           '--smartwait',
           '--disable-gpu',

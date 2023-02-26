@@ -21,8 +21,9 @@ const driverManager = new DriverManager();
 class Browser{
     constructor(){
         this.driver = {
-            manage: () =>  new DriverManager()
+            manage: () => driverManager
         }
+        this.logs = [];
     }
 
     manage(){
@@ -55,6 +56,7 @@ class Browser{
 
     }
 
+
     async handlePopups(){
         try{
             return getActor().cancelPopup();
@@ -72,21 +74,25 @@ class Browser{
         return await getActor().grabBrowserLogs();  
     }
 
+    async captureBrowserLogs(){
+        this.logs = await this.getBrowserLogs();
+    }
+
     async scrollToElement(elementObj){
         const actor = getActor();
         return await actor.scrollTo(elementObj.selector)
     }
 
     async getSessionStorage(key) {
-        return await getActor().executeScript(() => {
+        return await getActor().executeScript((key) => {
             return window.sessionStorage[key]
-        }); 
+        },key); 
     }
 
     async getLocalStorage(key) {
-        return await getActor().executeScript(() => {
+        return await getActor().executeScript(function (key) {
             return window.localStorage[key]
-        });
+        }, key);
     }
 
     async getCurrentWindowHandle(){

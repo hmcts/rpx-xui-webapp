@@ -1,4 +1,4 @@
-@fullfunctional5
+@under_review
 Feature: Cookie banner functionality
 
     Background:

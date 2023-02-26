@@ -135,7 +135,7 @@ class caseEditPage {
         let tabsCount = await thLable.count();
         if (caseDetailsRes) {
             for (let i = 0; i < tabsCount; i++) {
-                let thText = thLable.get(i).$$(".mat-tab-label-content");
+                let thText = thLable.get(i).$(".mat-tab-label-content");
                 let tabText = await thText.getText();
                 let tab = await caseDetailsRes.tabs.find(tab => tab.label == tabText);
                 let tabStatus = tab.label == tabText;

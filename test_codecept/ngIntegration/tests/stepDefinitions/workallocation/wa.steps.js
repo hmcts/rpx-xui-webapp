@@ -31,6 +31,7 @@ const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocat
 const CreateCasePage = require('../../../../e2e/features/pageObjects/caseCreatedPage');
 
 
+const { DataTableArgument } = require('codeceptjs');
 
 
     const testErrorResponseCodes = [500, 400, 401, 403];
@@ -541,7 +542,7 @@ const CreateCasePage = require('../../../../e2e/features/pageObjects/caseCreated
     });
 
     Then('I validate Task actions from page {string}', async function(fromPage, datatable){
-        const scenarios = datatable.hashes();
+        const scenarios = datatable.parse().hashes();
 
         let validateOnPage = null;
         const softAssert = new SoftAssert(this);
@@ -623,7 +624,7 @@ const CreateCasePage = require('../../../../e2e/features/pageObjects/caseCreated
 
 
     Given('I set MOCK tasks attributes for {string} in release 1', async function (forView,attributesDatatable){
-        const tasksHashes = attributesDatatable.hashes();
+        const tasksHashes = attributesdatatable.parse().hashes();
         let tasksObj = {};
         let view = forView.toLowerCase();
         view = view.split(" ").join("");

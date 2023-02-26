@@ -7,15 +7,15 @@ const codeceptMochawesomeLog = require('./reportLogger')
 
 
 
-module.exports = function () {
+module.exports = async function () {
 
-    event.dispatcher.on(event.test.before, async function (test) {
+    event.dispatcher.on(event.test.before, function (test) {
         output.print(`Test started : ${test.title}`)
     });
 
-    // event.dispatcher.on(event.test.after, function (test) {
-    //     output.print(`Test completed : ${test.title}`)
-    // });
+    event.dispatcher.on(event.test.after, function (test) {
+        output.print(`Test completed : ${test.title}`)
+    });
 
 
     event.dispatcher.on(event.test.passed, function (test) {
@@ -24,14 +24,15 @@ module.exports = function () {
 
     });
 
-    event.dispatcher.on(event.test.failed, async function (test,err) {
-        // output.print(`Test failed : ${test.title}`)
-        const logs = await browser.getBrowserLogs();
-        codeceptMochawesomeLog.AddJson(logs)
-        codeceptMochawesomeLog.AddMessage(`************ Test failed : ${err}`)
+    // event.dispatcher.on(event.test.failed, async function (test,err) {
+    //     output.print(`Test failed : ${test.title}`)
+    //     const logs = await browser.getBrowserLogs();
+    //     await attachBrowserLogs();
+    //     codeceptMochawesomeLog.AddJson(logs)
+    //     codeceptMochawesomeLog.AddMessage(`************ Test failed : ${err}`)
         
 
-    });
+    // });
 
     
     event.dispatcher.on(event.bddStep.before, function (bddStep) {
@@ -56,11 +57,23 @@ module.exports = function () {
     //     output.print(`STEP: ${bddStep.keyword} ${bddStep.text} => ${bddStep.status.toUpperCase()}`)
     //     codeceptMochawesomeLog.AddMessage(`STEP: ${bddStep.keyword} ${bddStep.text} => ${bddStep.status.toUpperCase()}`)
 
-
+    //     if(!bddStep.status.includes('passed')){
+    //         return attachBrowserLogs();
+    //     }
     // });
 }
 
-function attachBrowserLogs(){
-    codeceptMochawesomeLog.AddJson(browser.getBrowserLogs())
+async function attachBrowserLogs(){
+    const logs = await browser.getBrowserLogs();
+    for(const log of logs){
+        if(log._type !== 'error'){
+            continue;
+        }
+        codeceptMochawesomeLog.AddMessage(`Error: ${log._text}`);
+        for(const stacktraceLocation of log._stackTraceLocations){
+            codeceptMochawesomeLog.AddMessage(`       ${stacktraceLocation.url}:${stacktraceLocation.lineNumber}`);
+        }
+    }
+    
 }
 

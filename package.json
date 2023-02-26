@@ -59,7 +59,7 @@
     "test:ngIntegration": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:ngIntegrationDebug": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js --debug",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
-    "test:codecept": "npx codeceptjs run --config=./test_codecept/codeceptCommon/codecept.conf.js --steps  --features --grep @fullfunctional --reporter mochawesome "
+    "test:codecept": "npx codeceptjs run --config=./test_codecept/codeceptCommon/codecept.conf.js --steps  --features --grep @codecept_enabled --reporter mochawesome "
   },
   "private": true,
   "dependencies": {

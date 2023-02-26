@@ -16,6 +16,7 @@ const workAlloctionMockData = require('../../../nodeMock/workAllocation/mockData
 const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -191,7 +192,7 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
     });
 
     Given('I set MOCK case roles', async function(caseRolesDatatable){
-        const dateTableHashes = caseRolesDatatable.hashes();
+        const dateTableHashes = caseRolesdatatable.parse().hashes();
         for (const hash of dateTableHashes){
             for(const key of Object.keys(hash)){
                 if ((key === 'start' || key === 'end') && hash[key] !== ''){
@@ -210,7 +211,7 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
     }); 
 
     Given('I set MOCK case role exclusions', async function (caseRoleExclusionsDatatable) {
-        const dateTableHashes = caseRoleExclusionsDatatable.hashes();
+        const dateTableHashes = caseRoleExclusionsdatatable.parse().hashes();
         for (const hash of dateTableHashes) {
             for (const key of Object.keys(hash)) {
                 if (key === 'added' ) {
@@ -226,14 +227,14 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
     Given('I set MOCK case tasks with userDetails from reference {string}', async function (userDetailsRef, caseTasksDatatable) {
         const userDetails = global.scenarioData[userDetailsRef];
 
-        const dateTableHashes = caseTasksDatatable.hashes();
+        const dateTableHashes = caseTasksdatatable.parse().hashes();
         workAlloctionMockData.caseTasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
         
     });
 
     Given('I set MOCK case list values', async function(caseListAttributesDatatable){
         const cases = ccdMockData.caseList.results;
-        const inputDatatableHashes = caseListAttributesDatatable.hashes();
+        const inputDatatableHashes = caseListAttributesdatatable.parse().hashes();
         
         for (let i = 0; i < inputDatatableHashes.length; i++){
             const caseItem = cases[i];

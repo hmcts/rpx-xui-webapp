@@ -7,6 +7,7 @@ var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../nodeMock/app');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
+const { DataTableArgument } = require('codeceptjs');
 
 
     Given('I setup caselist mock {string}', async function (caselistMockRef) {
@@ -17,7 +18,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
     Given('I add case field columns to caselist config {string}', async function (caselistMockRef, datatable){
         const caseListConfigGenerator = global.scenarioData[caselistMockRef];
-        const caseColumnRowHashes = datatable.hashes();
+        const caseColumnRowHashes = datatable.parse().hashes();
         
         for (let i = 0; i < caseColumnRowHashes.length; i++){
             caseListConfigGenerator.addCaseField(caseColumnRowHashes[i]);
@@ -27,7 +28,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
     Given('I add case field type props to caselist config {string}', async function (caselistMockRef ,datatable) {
         const caseListConfigGenerator = global.scenarioData[caselistMockRef];
-        const caseFiledTypeRowHashes = datatable.hashes();
+        const caseFiledTypeRowHashes = datatable.parse().hashes();
 
         for (let i = 0; i < caseFiledTypeRowHashes.length; i++) {
             const caseFieldId = caseFiledTypeRowHashes[i].case_field_id;
@@ -39,7 +40,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
     Given('I add case list data rows for config {string}', async function (caselistMockRef, datatable){
         const caseListConfigGenerator = global.scenarioData[caselistMockRef];
-        caseListConfigGenerator.addCaseData(datatable.hashes());
+        caseListConfigGenerator.addCaseData(datatable.parse().hashes());
     });
 
     Given('I set mock case list config {string}', async function (caselistMockRef){
@@ -51,7 +52,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
     Then('I validate case list column values', async function(datatable){
         const softAssert = new SoftAssert(this);
-        const dataRowsHash = datatable.hashes();
+        const dataRowsHash = datatable.parse().hashes();
         const columns = Object.keys(dataRowsHash[0]);
         const columnValueDisplayed = {};
         for (let i = 0; i < columns.length; i++){

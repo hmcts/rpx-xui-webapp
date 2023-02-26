@@ -35,6 +35,7 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
+const { DataTableArgument } = require('codeceptjs');
 
     const taskListTable = new TaskListTable();
     const waCaseListTable = new CaseListTable();
@@ -89,7 +90,7 @@ const workAllocationDataModel = require("../../../../dataModels/workAllocation")
 
     Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
         const reqBody = global.scenarioData[requestReference];
-        const datatableHash = datatable.hashes()[0];
+        const datatableHash = datatable.parse().hashes()[0];
         expect(reqBody.searchRequest.pagination_parameters.page_number).to.equal(parseInt(datatableHash.PageNumber));
         expect(reqBody.searchRequest.pagination_parameters.page_size).to.equal(parseInt(datatableHash.PageSize));
     });
@@ -98,7 +99,7 @@ const workAllocationDataModel = require("../../../../dataModels/workAllocation")
     Then('I validate task search request with reference {string} have search parameters', async function (requestReference, datatable) {
         const softAssert = new SoftAssert();
         const reqBody = global.scenarioData[requestReference];
-        const datatableHash = datatable.hashes();
+        const datatableHash = datatable.parse().hashes();
         CucumberReporter.AddMessage("Req body received:");
         CucumberReporter.AddJson(reqBody);
         const reqSearchParams = reqBody.searchRequest.search_parameters;
@@ -138,7 +139,7 @@ const workAllocationDataModel = require("../../../../dataModels/workAllocation")
     Then('I validate task search request with reference {string} does not have search parameters', async function (requestReference, datatable) {
         const softAssert = new SoftAssert();
         const reqBody = global.scenarioData[requestReference];
-        const datatableHash = datatable.hashes();
+        const datatableHash = datatable.parse().hashes();
 
         const reqSearchParams = reqBody.searchRequest.search_parameters;
         for (let i = 0; i < datatableHash.length; i++) {
@@ -202,7 +203,7 @@ const workAllocationDataModel = require("../../../../dataModels/workAllocation")
 
     // Given('I set MOCK case roles', async function(datatable){
     //     const caseRoles = [];
-    //     const tableRowHashes = datatable.hashes();
+    //     const tableRowHashes = datatable.parse().hashes();
     //     for (const row of tableRowHashes) {
     //         const mockCaseRole = rolesAccessMockData.dataModel.getCaseRole(); 
     //         caseRoles.push(mockCaseRole)
@@ -227,7 +228,7 @@ const workAllocationDataModel = require("../../../../dataModels/workAllocation")
     // });
 
     async function validateTaskTableValues(datatable){
-        const tableRowHashes = datatable.hashes();
+        const tableRowHashes = datatable.parse().hashes();
         const softAssert = new SoftAssert();
         for (let i = 0; i < tableRowHashes.length; i++) {
             const expectRowHash = tableRowHashes[i];
@@ -270,7 +271,7 @@ const workAllocationDataModel = require("../../../../dataModels/workAllocation")
     } 
 
     function getLocationsResponse(datatable){
-        const locationHashes = datatable.hashes();
+        const locationHashes = datatable.parse().hashes();
         const locations = [];
         for (let i = 0; i < locationHashes.length; i++) {
             const locationFromDatatable = locationHashes[i];
@@ -288,7 +289,7 @@ const workAllocationDataModel = require("../../../../dataModels/workAllocation")
     }
     
     function getPersonResponse(datatable){
-        const personHashes = datatable.hashes();
+        const personHashes = datatable.parse().hashes();
         const personsData = [];
         for (let i = 0; i < personHashes.length;i++){
             const personFromDatatable = personHashes[i];

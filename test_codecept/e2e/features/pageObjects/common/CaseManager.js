@@ -161,17 +161,18 @@ class CaseManager {
         await BrowserWaits.waitForElement(this.exuiCaseHomeComp);
         await BrowserWaits.waitForElement(this.caseNextStepSelect);
 
+
+        var nextStepSelect = element(by.xpath("//*[@id='next-step']"));
         var nextStepSelectoption = null;
         if (stepName){
-            nextStepSelectoption = element(by.xpath("//*[@id='next-step']//option[text() = '" + stepName + "']"));
-
+            nextStepSelect.select(stepName)
         }else{
             nextStepSelectoption = element(by.xpath("//*[@id='next-step']//option[2]"));
+            const someStepEventName = await nextStepSelectoption.getText();
+            nextStepSelect.select(someStepEventName)
+
         }
-        await BrowserWaits.waitForElement(nextStepSelectoption);
-
-        await nextStepSelectoption.click();
-
+      
         var thisPageUrl = await browser.getCurrentUrl();
 
         await this.nextStepGoButton.click();

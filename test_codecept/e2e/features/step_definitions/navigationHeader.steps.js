@@ -13,6 +13,7 @@ const { LOG_LEVELS } = require('../../support/constants');
 
 const appTestData = require('../../config/appTestConfig')
 
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -117,7 +118,7 @@ const appTestData = require('../../config/appTestConfig')
 
     Then('I do not see primary navigation tabs does not exist excluding {string}', async function (displayedTabs,allTabsDatatable) {
         await browserUtil.waitForLD();
-        const tableHashes = allTabsDatatable.hashes();
+        const tableHashes = allTabsDatatable.parse().hashes();
         const displayedTabArr = [];
         for (const dusplayedTab of displayedTabs.split(",")){
             displayedTabArr.push(dusplayedTab.trim());

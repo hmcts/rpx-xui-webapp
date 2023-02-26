@@ -17,6 +17,7 @@ const workallocationMockData = require('../../../../nodeMock/workAllocation/mock
 const userRolesConfig = require('../../../../e2e/config/userRolesConfig');
 
 const userUtil = require('../../../util/userRole');
+const { DataTableArgument } = require('codeceptjs');
 
 
     const taskListTable = new TaskListTable();
@@ -90,7 +91,7 @@ const userUtil = require('../../../util/userRole');
             apiUrl = apiUrl + "/judge";
         }
         const persons = waMockData.getPersonList(80);
-        const locationInputDetails = locationDetailsDataTable.hashes()[0];
+        const locationInputDetails = locationDetailsdatatable.parse().hashes()[0];
 
         persons[0].idamId = testUser.idamId;
         persons[0].location.id = locationInputDetails.id;
@@ -328,7 +329,7 @@ const userUtil = require('../../../util/userRole');
     })
 
     Given('I set MOCK locations with names in service {string}', async function(service, locationNamesDatatable){
-        const locationNamesHashes = locationNamesDatatable.hashes();
+        const locationNamesHashes = locationNamesdatatable.parse().hashes();
         const locationNames = [];
         for (const locationNameHash of locationNamesHashes){
             locationNames.push({ locationName: locationNameHash.locationName, id: locationNameHash.id}); 
@@ -346,7 +347,7 @@ const userUtil = require('../../../util/userRole');
         const rolesArr = roles.split(",");
         const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === userIdentifier)[0];
 
-        const datatablehashes = datatable.hashes();
+        const datatablehashes = datatable.parse().hashes();
         const locationId = datatablehashes[0].locationId 
         const locationName = datatablehashes[0].locationName 
 

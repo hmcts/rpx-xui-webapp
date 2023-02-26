@@ -75,8 +75,8 @@ class CodeceptMochawesomeLog{
         // if (!this._isLevelEnabled(logLevel)) return;
 
         // const decodedImage = await this.getScreenshot(onbrowser);
-        await browser.get_I().addMochawesomeContext(decodedImage, 'image/png');
-       
+        // await browser.get_I().addMochawesomeContext(decodedImage, 'image/png');
+        this.AddMessage(`!!! Add screenshot not implemented !!!`)
     }
 
     async getScreenshot(onbrowser){

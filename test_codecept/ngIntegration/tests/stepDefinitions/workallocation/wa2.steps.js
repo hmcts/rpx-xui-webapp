@@ -30,13 +30,14 @@ const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 
 const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/myWorkPage');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
     const caseListPage = new CaseListPage();
 
     Given('I set MOCK locations for WA release 2', async function(locationsDatatable){
-        const locationsHashes = locationsDatatable.hashes();
+        const locationsHashes = locationsdatatable.parse().hashes();
         const locationsResponseBody = [];
         for (let i = 0; i < locationsHashes.length;i++){
             let location = workAllocationDataModel.getLocation();
@@ -53,7 +54,7 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
     });
 
     Given('I set MOCK persons end point {string} for WA release 2', async function (endpoint, personsDatatable) {
-        const personshashes = personsDatatable.hashes();
+        const personshashes = personsdatatable.parse().hashes();
         const personsResponseBody = [];
         for (let i = 0; i < personshashes.length; i++) {
             let person = workAllocationDataModel.getCaseWorkerOrperson();
@@ -70,7 +71,7 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
     });
 
     Given('I set MOCK judicial users end point {string} for WA release 2', async function (endpoint, personsDatatable) {
-        const personshashes = personsDatatable.hashes();
+        const personshashes = personsdatatable.parse().hashes();
         const personsResponseBody = [];
         for (let i = 0; i < personshashes.length; i++) {
             let person = workAllocationDataModel.getRefDataJudge();
@@ -142,7 +143,7 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
 
 
     Given('I set MOCK tasks with attributes for view {string}', async function (forView, attributesDatatable) {
-        const tasksHashes = attributesDatatable.hashes();
+        const tasksHashes = attributesdatatable.parse().hashes();
         let tasksObj = {};
         let view = forView.toLowerCase();
         view = view.split(" ").join("");
@@ -190,7 +191,7 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
 
     Then('I validate {string} tasks columns sorting with taskRequest url {string} on page {int} for user type {string}', async function (waPage,taskRequesturl,onPage ,userType,datatable) {
         const softAssert = new SoftAssert();
-        const datatableHashes = datatable.hashes();
+        const datatableHashes = datatable.parse().hashes();
         let pageUndertest = null;
 
         switch (waPage.toLowerCase()){
@@ -276,7 +277,7 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
 
 
     Given('I set MOCK task details for WA release2', async function(taskDetailsDatatable){
-        const inputTaskDetails = taskDetailsDatatable.hashes();
+        const inputTaskDetails = taskDetailsdatatable.parse().hashes();
 
         const taskDetails = workAllocationMockData.taskDetails;
         const taskKeys = Object.keys(inputTaskDetails);
@@ -297,7 +298,7 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
 
         const bookingLocationsActual = body.bookingLocations;
 
-        const datatabalehashes = datatable.hashes();
+        const datatabalehashes = datatable.parse().hashes();
         let bookingLocationsExpected = [];
         for (const hash of datatabalehashes){
             const locations = hash.locations.split(",")
@@ -316,7 +317,7 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
         CucumberReporter.AddJson(body)
         const userLocationsActual = body.userLocations;
         
-        const userLocationsExpected = datatable.hashes();
+        const userLocationsExpected = datatable.parse().hashes();
         
         for (const expectedLocationsForService of userLocationsExpected){
             const actualServiceLocations = userLocationsActual.find(actulaLocationsForService => actulaLocationsForService.service === expectedLocationsForService.service) 

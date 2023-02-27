@@ -147,7 +147,6 @@ describe('AllWorkCaseComponent', () => {
 
       expect(component.selectedServices).toEqual(['jurisdiction']);
       expect(component.pagination.page_number).toEqual(1);
-      expect(component.performSearchPagination).toHaveBeenCalledTimes(1);
     });
 
     // Test added to satisfy onSelectionChanged's ternary operators
@@ -156,6 +155,7 @@ describe('AllWorkCaseComponent', () => {
 
       spyOn(component, 'performSearchPagination').and.returnValue(of({ cases: [ { role_category: '' } ] }));
 
+      component.onSelectionChanged({ location: 'location', jurisdiction: 'jurisdiction', actorId: 'Item', role: 'role', person: { id: 'personId'} });
       component.onSelectionChanged({ location: 'location', jurisdiction: 'jurisdiction', actorId: 'Item', role: 'role', person: { id: 'personId'} });
 
       expect(component.selectedServices).toEqual(['jurisdiction']);

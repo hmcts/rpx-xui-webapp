@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
-import { StaffUser } from '../../models/staff-user.model';
+import { ServiceInformation, StaffUser, WorkArea } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
 @Component({
@@ -9,7 +8,7 @@ import { StaffDataAccessService } from '../../services/staff-data-access/staff-d
   templateUrl: './staff-user-details.component.html',
   styleUrls: ['./staff-user-details.component.scss']
 })
-export class StaffUserDetailsComponent {
+export class StaffUserDetailsComponent implements OnInit {
   public userDetails: StaffUser;
   public showAction: boolean = false;
   public loading = false;
@@ -18,31 +17,38 @@ export class StaffUserDetailsComponent {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private staffDataAccessService: StaffDataAccessService) {
-    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails[0];
-  }
+   }
 
-  public updateUserStatus(): void {
-    if (!this.loading) {
-      this.loading = true;
-      this.staffDataAccessService.updateUserStatus(this.userDetails).pipe(
-        finalize(() => this.loading = false),
-      )
-        .subscribe(
-          (res) => {
-            this.userDetails.suspended = res.suspended;
-            window.scrollTo(0, 0);
-            this.suspendedStatus = res.suspended ? 'suspended' : 'restored';
-          },
-          (err) => {
-            if (err.status === 401 || err.status.toString().startsWith('5')) {
-              this.router.navigateByUrl('/service-down');
-            } else {
-              window.scrollTo(0, 0);
-              this.suspendedStatus = 'error';
-            }
-          }
-        );
-    }
+   public ngOnInit(): void {
+    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails[0];
+   }
+
+   public updateUserStatus(): void {
+    const user = this.userDetails;
+    const services = this.userDetails.services;
+    const roles = this.userDetails.roles;
+    user.services = this.getServiceList(user.work_area);
+    user.roles = user.role;
+    user.base_locations = user.base_location;
+    this.staffDataAccessService.updateUserStatus(user).subscribe((res) => {
+      this.userDetails.suspended = !this.userDetails.suspended;
+      this.suspendedStatus = this.userDetails.suspended ? 'suspended' : 'restored';
+    }, error => {
+      this.suspendedStatus = 'error';
+    });
+    // reset the services and roles to original pre-API ready values
+    this.userDetails.services = services;
+    this.userDetails.roles = roles;
+   }
+
+  private getServiceList(workAreaList: WorkArea[]): ServiceInformation[] {
+    const services = [];
+    workAreaList.forEach(area => {
+      const service_code = area.service_code;
+      const service = area.area_of_work;
+      services.push({service, service_code});
+    })
+    return services;
   }
 
   public copy(): void {

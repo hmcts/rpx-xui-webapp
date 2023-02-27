@@ -46,7 +46,7 @@ export class StaffDataAccessService {
     return this.http.post<StaffUser>(`${this.API_PATH}/addNewUser`, addNewUserBody);
   }
 
-  public updateUserStatus(user) {
-    return this.http.put<any>(`${this.API_PATH}/updateUserStatus`, user);
+  public updateUserStatus(user): Observable<any> {
+    return this.http.put<StaffUser>(`${this.API_PATH}/updateUserStatus`, user);
   }
 }

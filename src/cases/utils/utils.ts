@@ -58,8 +58,8 @@ export class Utils {
     });
   }
 
-  public static hasMatchedJurisdictionAndRole(featureVariation: FeatureVariation, jurisdictionID: string, userRoles: string[]): boolean {
-    if (featureVariation.jurisdiction === jurisdictionID) {
+  public static hasMatchedPermissions(featureVariation: FeatureVariation, jurisdictionID: string, caseType: string, userRoles: string[]): boolean {
+    if (featureVariation.jurisdiction === jurisdictionID && featureVariation.caseType === caseType) {
       if (userRoles) {
         return featureVariation.roles ? userRoles.some(userRole =>
           featureVariation.roles.some(role => role === userRole)) : false;

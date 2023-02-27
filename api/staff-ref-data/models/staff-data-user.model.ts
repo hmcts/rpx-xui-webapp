@@ -35,7 +35,10 @@ export interface StaffDataAPI {
   skills?: string[];
   work_area: WorkArea[];
   primaryLocation?: BaseLocation;
-  additionalLocations?: string[]
+  additionalLocations?: string[];
+  case_allocator: boolean;
+  task_supervisor: boolean;
+  staff_admin: boolean;
 }
 
 export interface WorkArea {

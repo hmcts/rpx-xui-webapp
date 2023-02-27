@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StaffUser } from '../../models/staff-user.model';
+import { ServiceInformation, StaffUser, WorkArea } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
 @Component({
@@ -25,33 +25,25 @@ export class StaffUserDetailsComponent implements OnInit {
 
    public updateUserStatus(): void {
     const user = this.userDetails;
+    const services = this.userDetails.services;
+    const roles = this.userDetails.roles;
     user.services = this.getServiceList(user.work_area);
     user.roles = user.role;
     user.base_locations = user.base_location;
-    // TODO: Currently forcing these values, should be boolean throughout application
-    // tech debt
-    user.case_allocator = this.convertToBoolValue(user.case_allocator);
-    user.task_supervisor = this.convertToBoolValue(user.task_supervisor);
-    user.staff_admin = this.convertToBoolValue(user.staff_admin);
     this.staffDataAccessService.updateUserStatus(user).subscribe((res) => {
       this.userDetails.suspended = !this.userDetails.suspended;
       this.suspendedStatus = this.userDetails.suspended ? 'suspended' : 'restored';
     }, error => {
       this.suspendedStatus = 'error';
     });
-
+    // reset the services and roles to original pre-API ready values
+    this.userDetails.services = services;
+    this.userDetails.roles = roles;
    }
 
-  private convertToBoolValue(value: any): boolean {
-    if (typeof value === 'string') {
-      return value === 'Y' ? true : false;
-    }
-    return value;
-  }
-
-  private getServiceList(workArea: any): any[] {
+  private getServiceList(workAreaList: WorkArea[]): ServiceInformation[] {
     const services = [];
-    workArea.forEach(area => {
+    workAreaList.forEach(area => {
       const service_code = area.service_code;
       const service = area.area_of_work;
       services.push({service, service_code});

@@ -42,7 +42,7 @@ describe('CaseViewerContainerComponent', () => {
     triggers: [],
     case_id: '1234567890123456',
     case_type: {
-      id: 'TestAddressBookCase',
+      id: 'Benefit',
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'SSCS',
@@ -138,7 +138,7 @@ describe('CaseViewerContainerComponent', () => {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
       if (_key === 'wa-service-config') {
         // @ts-ignore
-        return of({configurations: [{serviceName: 'SSCS', caseTypes: ['TestAddressBookCase'], releaseVersion: '3.0'}]});
+        return of({configurations: [{serviceName: 'SSCS', caseTypes: ['Benefit'], releaseVersion: '3.0'}]});
       }
       // @ts-ignore
       return of([]);
@@ -147,6 +147,7 @@ describe('CaseViewerContainerComponent', () => {
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
       return of([{
         jurisdiction: 'SSCS',
+        caseType: 'Benefit',
         roles: ['caseworker-sscs-judge', 'caseworker-sscs']
       }
       ] as unknown as R);

@@ -7,10 +7,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { FindPersonComponent, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { TaskListComponent } from '..';
@@ -76,7 +76,6 @@ describe('TaskAssignmentContainerComponent2', () => {
         TaskListComponent,
         ErrorMessageComponent,
         NothingComponent,
-        FindPersonComponent,
         RpxTranslateMockPipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

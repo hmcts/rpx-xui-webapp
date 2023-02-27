@@ -18,8 +18,10 @@ class CustomHelper extends Helper {
     }
 
     _beforeStep(){
-        if (!this.pageOnListener){
-            const page = this.getPuppeteerPage();
+        const page = this.getPuppeteerPage();
+
+        if (!this.pageOnListener && page){
+           
             page.on('console', (msg) => {
                 const type = msg.type();
                 if (type === 'error') {

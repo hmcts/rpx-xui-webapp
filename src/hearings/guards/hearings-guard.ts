@@ -25,7 +25,7 @@ export class HearingsGuard {
     );
   }
 
-  public hasMatchedJurisdictionAndRole(): Observable<boolean> {
+  public hasMatchedPermissions(): Observable<boolean> {
     return combineLatest([
       this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.userRoles$

@@ -58,15 +58,14 @@ export class Utils {
     });
   }
 
-  public static hasMatchedPermissions(featureVariation: FeatureVariation, jurisdictionID: string, caseType: string, userRoles: string[]): boolean {
-    if (featureVariation.jurisdiction === jurisdictionID && featureVariation.caseType === caseType) {
+  public static hasMatchedPermissions(featureVariation: FeatureVariation, jurisdictionId: string, caseType: string, userRoles: string[]): boolean {
+    if (featureVariation.jurisdiction === jurisdictionId && featureVariation.caseType === caseType) {
       if (userRoles) {
         return featureVariation.roles ? userRoles.some(userRole =>
           featureVariation.roles.some(role => role === userRole)) : false;
       }
-    } else {
-      return false;
     }
+    return false;
   }
 }
 

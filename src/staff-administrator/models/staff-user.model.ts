@@ -37,3 +37,13 @@ export interface StaffRole {
   is_primary: boolean;
   role: string;
 }
+
+export interface WorkArea {
+  service_code: string;
+  area_of_work: string;
+}
+
+export interface ServiceInformation {
+  service: string;
+  service_code: string;
+}

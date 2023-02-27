@@ -151,6 +151,10 @@ function getUserInfoFromDetails(userInfo: StaffDataAPI[]): StaffDataUser[] {
     newUserInfo.lastName = newUserInfo.last_name;
     newUserInfo.email = newUserInfo.email_id;
     newUserInfo.userType = newUserInfo.user_type;
+    // these are used as booleans elsewhere in application
+    newUserInfo.case_allocator = convertToBoolValue(newUserInfo.case_allocator);
+    newUserInfo.task_supervisor = convertToBoolValue(newUserInfo.task_supervisor);
+    newUserInfo.staff_admin = convertToBoolValue(newUserInfo.staff_admin);
     finalUserInfo.push(newUserInfo);
   })
   return finalUserInfo;
@@ -191,4 +195,11 @@ function getServiceLabels(workarea: WorkArea[]): string[] {
     services.push(workArea.area_of_work);
   })
   return services;
+}
+
+function convertToBoolValue(value: any): boolean {
+  if (typeof value === 'string') {
+    return value === 'Y' ? true : false;
+  }
+  return value;
 }

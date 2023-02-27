@@ -14,6 +14,7 @@ export const staffUserDetailsTestData = {
         primaryLocation: 'Leeds',
         roles: ['CTSC Admin', 'Test job'],
         primaryRole: {role: 'Test role'},
-        additionalLocations: ['London', 'Birmingham', 'Manchester']
+        additionalLocations: ['London', 'Birmingham', 'Manchester'],
+        work_area: []
     }]
 }

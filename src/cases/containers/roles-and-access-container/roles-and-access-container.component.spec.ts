@@ -1,23 +1,10 @@
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AbstractAppConfig, AlertService, AuthService, CaseField, CaseNotifier, CasesService, CaseView, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { provideMockStore } from '@ngrx/store/testing';
+import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
-import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
-import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
-import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
-import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
+import { RoleCategory } from '../../../role-access/models';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
-import { RoleExclusionsService } from '../../../role-access/services';
-import { RoleExclusionsMockService } from '../../../role-access/services/role-exclusions.mock.service';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
-import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '../../components';
-import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
-import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
 
 const metadataField = {} as CaseField;
@@ -142,7 +129,6 @@ describe('RolesContainerComponent', () => {
     mockNotifierService.cachedCaseView = {};
 
 
-  let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRoles', 'getCaseRolesUserDetails']);
   mockNotifierService.cachedCaseView = {};
   const data: CaseRoleDetails[] = [

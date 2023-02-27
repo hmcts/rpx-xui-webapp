@@ -41,7 +41,7 @@ describe('AllWorkTaskComponent', () => {
     alertService = {},
     caseworkerDataService = {},
     loadingService = {},
-    featureToggleService = {},
+    featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']),
     locationDataService = {},
     waSupportedJurisdictionsService = {},
     filterService = {},
@@ -243,7 +243,7 @@ describe('AllWorkTaskComponent', () => {
 
       const userInfo = { roles: [UserRole.Judicial] };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
-      spyOn(AppUtils, 'isLegalOpsOrJudicial').and.returnValue(UserRole.Judicial);
+      spyOn(AppUtils, 'getUserRole').and.returnValue(UserRole.Judicial);
 
       const actual = component.getSearchTaskRequestPagination();
 

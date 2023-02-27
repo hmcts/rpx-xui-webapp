@@ -223,19 +223,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       region_id: 1,
       roles: this.jobTitlesPayload,
       services: this.servicePayload,
-      // "services": [
-      //   {
-      //     "service": "Immigration and Asylum Appeals",
-      //     "service_code": "BFA1"
-      //   }
-      // // ],
-      // "skills": [
-      //   {
-      //     "skill_id": 9,
-      //     "description": "testskill1",
-      //     "skill_code": "testskill1"
-      //   }
-      // ],
       skills: this.skillsPayload,
       staff_admin: staff_admin_flag,
       suspended: false,

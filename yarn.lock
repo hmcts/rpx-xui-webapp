@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.44-angular11-welsh-release-part1-5":
-  version "5.0.44-angular11-welsh-release-part1-5"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.44-angular11-welsh-release-part1-5.tgz#3bddd3b68b68707a914355e820e11b27977df92d"
-  integrity sha512-L2DmjDjWlBUY1QZTGUlWjJJ17gOMQmyHqiLX8qdsEfLIlK2b80QWi4tkI/INs+9RWnp28uAMiiwiu87lIug9nw==
+"@hmcts/ccd-case-ui-toolkit@5.0.44-angular11-welsh-release-part1-7":
+  version "5.0.44-angular11-welsh-release-part1-7"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.44-angular11-welsh-release-part1-7.tgz#e4289aca30beb489161f8de49f5564bd351db4d7"
+  integrity sha512-VxyGECJ7iYY/gReWGQQ+E82cEP4Qw1exg2736BLB1hx6ERo0NFzovaAMRTqwq9KesH9ebdtGlhq/8yfTNMv/uQ==
   dependencies:
     tslib "^2.0.0"
 
@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@2.1.6-welsh-translation-v5":
-  version "2.1.6-welsh-translation-v5"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-welsh-translation-v5.tgz#990a41fb74cf4928136a2d36e9a4110deefa13d8"
-  integrity sha512-xvbmMk1uGntCqCrqjK+ug6t64oxQl9UXWGWJwF/CyhhZzp+HsiLkDVn9PS7ZyBio4h0zsaLZ0AfcoqtQtngJHw==
+"@hmcts/rpx-xui-common-lib@2.1.6-welsh-translation-v6":
+  version "2.1.6-welsh-translation-v6"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-2.1.6-welsh-translation-v6.tgz#457342b1a20c4c886b54436868660d2ff92efcc4"
+  integrity sha512-wuiwYafWzmNH1mrnhLx4pt+qzg9fT7t7o7w0KVXOHXVlQyOzDPvkLGELumWcQKRe70UPV8AEnWctbx/uuGZy7Q==
   dependencies:
     tslib "^2.0.0"
 
@@ -5757,9 +5757,9 @@ devtools-protocol@0.0.981744:
   integrity sha512-0cuGS8+jhR67Fy7qG3i3Pc7Aw494sb9yG9QgpG97SFVWwolgYjlhJg7n+UaHxOQT30d1TYu/EYe9k01ivLErIg==
 
 dexie@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.2.2.tgz#fa6f2a3c0d6ed0766f8d97a03720056f88fe0e01"
-  integrity sha512-q5dC3HPmir2DERlX+toCBbHQXW5MsyrFqPFcovkH9N2S/UW/H3H5AWAB6iEOExeraAu+j+zRDG+zg/D7YhH0qg==
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.2.3.tgz#f35c91ca797599df8e771b998e9ae9669c877f8c"
+  integrity sha512-iHayBd4UYryDCVUNa3PMsJMEnd8yjyh5p7a+RFeC8i8n476BC9wMhVvqiImq5zJZJf5Tuer+s4SSj+AA3x+ZbQ==
 
 di@^0.0.1:
   version "0.0.1"
@@ -10048,9 +10048,9 @@ lru-queue@^0.1.0:
     es5-ext "~0.10.2"
 
 luxon@^2.4.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.5.0.tgz#098090f67d690b247e83c090267a60b1aa8ea96c"
-  integrity sha512-IDkEPB80Rb6gCAU+FEib0t4FeJ4uVOuX1CQ9GsvU3O+JAGIgu0J7sf1OarXKaKDygTZIoJyU6YdZzTFRu+YR0A==
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.5.2.tgz#17ed497f0277e72d58a4756d6a9abee4681457b6"
+  integrity sha512-Yg7/RDp4nedqmLgyH0LwgGRvMEKVzKbUdkBYyCosbHgJ+kaOUx0qzSiSatVc3DFygnirTPYnMM2P5dg2uH1WvA==
 
 magic-string@0.25.7:
   version "0.25.7"

@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-select-option-for-sub-child":
-  version "6.10.7-case-flags-select-option-for-sub-child"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-select-option-for-sub-child.tgz#7afcfa0eeb182d6dd30ae981cf4a965ae7d8e7d2"
-  integrity sha512-lIzYzJmNhtqAvqhHOT06w0WjsyTnj+wR0/tKDicFVMsOEu0L4aIKFHjh+9onfd/IrvTFaD1exrVZTPoGYKLjIw==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-write-component-fixes-for-legal-rep-journey":
+  version "6.10.7-case-flags-write-component-fixes-for-legal-rep-journey"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-write-component-fixes-for-legal-rep-journey.tgz#dbd11df2edb5019b5989e8557559ad3e83a67c40"
+  integrity sha512-EB+GSUkMCbHVthpxGwOnIka9SJ8sfAiZNbRt608JbRH7n7XfSDWYG5VwLV6ypCvY3jUhsH5UydYhTt3UqAv/mQ==
   dependencies:
     tslib "^2.0.0"
 

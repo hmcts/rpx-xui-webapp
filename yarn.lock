@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-display-request-support-flag-location-title-v2":
-  version "6.10.7-case-flags-display-request-support-flag-location-title-v2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-display-request-support-flag-location-title-v2.tgz#dfddc59d578cbfa20a74da6078381c668249c177"
-  integrity sha512-MlCeqzTZjgfFNU8SxFuw6D/Y0S8fbI9lSat7o29wnZvBmwO9G0Huzeg8A7i0nBD6Bk96C69FWpdf5D9Jaadrcw==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-display-request-support-flag-location-title-v3":
+  version "6.10.7-case-flags-display-request-support-flag-location-title-v3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-display-request-support-flag-location-title-v3.tgz#631d6c70bf8cc73a4c9958991c0a378e7bee8c89"
+  integrity sha512-LzP6NZQAWQ0WYZVY6pstnncm8f3AXwhRAgfxgdyCmFnGGjnTylemI4a8XwcOi2a++wDwHPqwq1KJ9U3SHBZ+1Q==
   dependencies:
     tslib "^2.0.0"
 

@@ -1,15 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { combineLatest, Observable, iif, Subscription } from 'rxjs';
-import { mergeMap, tap } from 'rxjs/operators';
-import { of } from 'rxjs/internal/observable/of';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { WALandingPageRoles } from '../../../work-allocation/models/common/service-config.model';
 import * as fromActions from '../../store';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
 @Component({ templateUrl: './application-routing.component.html' })
-export class ApplicationRoutingComponent implements OnInit, OnDestroy {
+export class ApplicationRoutingComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly store: Store<fromActions.State>,
@@ -18,44 +18,38 @@ export class ApplicationRoutingComponent implements OnInit, OnDestroy {
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
   public static bookingUrl: string = '../booking';
-  private routingSubscription: Subscription;
-
-  public ngOnInit() {
+  public waLandingPageRoles$: Observable<WALandingPageRoles>;
+  public ngOnInit(): void {
+    // EUI-6768 - release 1 blocks on this removed to progress onto release 2/3
     this.navigateBasedOnUserRole();
   }
 
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     const bookingFeatureToggle$: Observable<boolean> = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.booking, false);
-
-    userDetails$
-      .pipe(
-        mergeMap(userDetails => iif(
-          () => !!userDetails.userInfo,
-
-          combineLatest([bookingFeatureToggle$]).pipe(
-            tap(([bookingFeatureToggle]) => {
-              if (bookingFeatureToggle && AppUtils.isBookableAndJudicialRole(userDetails)) {
-                return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
-              }
-              userDetails && userDetails.userInfo && userDetails.userInfo.roles
-              && !userDetails.userInfo.roles.includes('pui-case-manager')
-              && (userDetails.userInfo.roles.includes('caseworker-ia-iacjudge')
-                || userDetails.userInfo.roles.includes('caseworker-ia-caseofficer')
-                || userDetails.userInfo.roles.includes('caseworker-ia-admofficer')
-                || userDetails.userInfo.roles.includes('caseworker-civil'))
-                ? this.router.navigate([ApplicationRoutingComponent.defaultWAPage])
-                : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
-            })
-          ),
-          of(null).pipe(tap(() => this.router.navigate([ApplicationRoutingComponent.defaultPage])))
-        ))
-      ).subscribe();
-  }
-
-  public ngOnDestroy() {
-    if (this.routingSubscription) {
-      this.routingSubscription.unsubscribe();
-    }
+    const waLandingPageRoles$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waLandingPageRoles, null)
+    const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$, waLandingPageRoles$]);
+    userAccess$.pipe(map(([userDetails, bookingFeatureToggle, landingRoles]) => {
+      if (this.router.url !== '/') {
+        return;
+      }
+      if (bookingFeatureToggle && AppUtils.isBookableAndJudicialRole(userDetails)) {
+        return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
+      }
+      if (userDetails && userDetails.userInfo && userDetails.userInfo.roles
+        && !userDetails.userInfo.roles.includes('pui-case-manager')) {
+          const userRoles = userDetails.userInfo.roles;
+          let rolePresent = false;
+          for (let i = 0, len = landingRoles.roles.length; i < len; i++) {
+            if (userRoles.includes(landingRoles.roles[i])) {
+              rolePresent = true;
+              break;
+            }
+          }
+          rolePresent ? this.router.navigate([ApplicationRoutingComponent.defaultWAPage]) : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
+      } else {
+        this.router.navigate([ApplicationRoutingComponent.defaultPage]);
+      }
+    })).subscribe();
   }
 }

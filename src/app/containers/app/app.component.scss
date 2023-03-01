@@ -17,8 +17,6 @@ header, footer.govuk-footer{
 }
 
   body .govuk-width-container{
-    padding-right: 30px;
-    padding-left:  20px;
     max-width: 1860px;
     min-width: 900px;
     margin: auto;
@@ -68,6 +66,10 @@ a.hmcts-search-toggle__button {
     vertical-align: middle;
     width: 20px;
   }
+}
+
+table, td {
+  vertical-align: middle;
 }
 
 .hmcts-primary-navigation__search {

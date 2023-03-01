@@ -1,11 +1,8 @@
 import { expect } from 'chai';
-import { PactTestSetup } from '../settings/provider.mock';
-
-import * as sinon from 'sinon';
-
 import * as config from 'config';
+import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
+import { PactTestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
@@ -22,7 +19,7 @@ const roles = [
 
 describe("access management service, query role assignments", () => {
 
-   
+
     const REQUEST_BODY = {
         queryRequests: [
             {
@@ -92,7 +89,7 @@ describe("access management service, query role assignments", () => {
                 rolesResponseBody.push(dummyRole);
 
             }
-          
+
 
             const getRolesInteraction = {
                 state: "A list of role assignments for the search query",
@@ -111,7 +108,7 @@ describe("access management service, query role assignments", () => {
                     headers: {
                         "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
-                    body: rolesResponseBody, 
+                    body: rolesResponseBody,
                 },
             };
 
@@ -137,7 +134,7 @@ describe("access management service, query role assignments", () => {
 
             const { getRolesByCaseId } = requireReloaded('../../../../roleAccess/index');
 
-          
+
             const req = mockReq({
                 headers: {
                     'Authorization': 'Bearer someAuthorizationToken',

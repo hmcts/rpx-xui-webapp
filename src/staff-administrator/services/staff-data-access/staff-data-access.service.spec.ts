@@ -30,7 +30,7 @@ describe('StaffDataAccessService', () => {
   it('getStaffRefUserDetails should make a GET API call', () => {
     const service = new StaffDataAccessService(mockHttpService);
     service.getStaffRefUserDetails(1);
-    expect(mockHttpService.get).toHaveBeenCalledTimes(3);
+    expect(mockHttpService.post).toHaveBeenCalledTimes(1);
   });
 });
 

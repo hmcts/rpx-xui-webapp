@@ -1,3 +1,4 @@
+<exui-info-message-container></exui-info-message-container>
 <exui-page-wrapper [title]="'Users'">
   <ng-container *ngIf="(staffDataFilterService.errors$ | async).errors.length">
     <exui-error-message [error]="staffDataFilterService.errors$ | async"></exui-error-message>
@@ -24,7 +25,7 @@
       </div>
 
       <div>
-        <a href="javascript:void(0)" (click)="advancedSearchEnabled = !advancedSearchEnabled">
+        <a href="javascript:void(0)" (click)="advancedSearchClicked()">
           {{ !advancedSearchEnabled ? 'Advanced search' : 'Hide advanced search' }}
         </a>
       </div>

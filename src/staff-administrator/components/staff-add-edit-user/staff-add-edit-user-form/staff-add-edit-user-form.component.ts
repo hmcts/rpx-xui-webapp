@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Navigation,Router } from '@angular/router';
 import {
   BookingCheckType,
   FilterConfig,
-  FilterService,
+ FilterFieldOption, FilterService,
   FilterSetting,
   GenericFilterComponent,
   GroupOptions
@@ -23,15 +23,22 @@ import { StaffDataAccessService } from '../../../services/staff-data-access/staf
 })
 export class StaffAddEditUserFormComponent implements OnInit {
   @Input() public editMode = false;
-  public formId = '';
+  public formId: string = '';
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
     jobTitles: StaffFilterOption[],
     skills: GroupOptions[],
     services: StaffFilterOption[]
   };
+  public roles: StaffFilterOption[] = [
+    { key: 'case-allocator', label: 'Case Allocator' },
+    { key: 'task-supervisor', label: 'Task Supervisor' },
+    { key: 'staff-administrator', label: 'Staff Administrator' },
+  ];
+  public locations: StaffFilterOption[] = [{key: 'location-x', label: 'Location X'}, {key: 'location-y', label: 'Location Y'}, {key: 'location-z', label: 'Location Z'}];
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
+  private currentNavigation: Navigation;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
@@ -41,6 +48,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
     private router: Router,
     private readonly staffDataAccessService: StaffDataAccessService
   ) {
+    this.currentNavigation = this.router.getCurrentNavigation();
     this.formId = activatedRoute.snapshot.data.formId;
 
     this.staffFilterOptions = {
@@ -217,7 +225,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           titleHint: '(optional)',
           locationTitle: 'Enter a location name',
           enableAddButton: true,
-          options: [{key: 'location-1', label: 'Location 1'}, {key: 'location-2', label: 'Location 2'}],
+          options: [...this.locations],
           minSelected: 0,
           maxSelected: 0,
           maxWidth480px: true,
@@ -241,11 +249,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           title: 'Roles',
           titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [
-            { key: 'case-allocator', label: 'Case Allocator' },
-            { key: 'task-supervisor', label: 'Task Supervisor' },
-            { key: 'staff-administrator', label: 'Staff Administrator' },
-          ],
+          options: [...this.roles],
           minSelected: 0,
           maxSelected: 99,
           lineBreakBefore: true,
@@ -287,5 +291,58 @@ export class StaffAddEditUserFormComponent implements OnInit {
         this.router.navigateByUrl('/staff');
       }
     };
+
+    if (this.currentNavigation.extras && this.currentNavigation.extras.state && this.currentNavigation.extras.state.user && this.previousUrl.indexOf('/staff/users/user-details') >= 0) {
+      const copyUser = this.currentNavigation.extras.state.user;
+      this.filterConfig.copyFields = (frm: FormGroup): FormGroup => {
+        frm.patchValue({
+          firstName: copyUser.firstName,
+          lastName: copyUser.lastName,
+          email: copyUser.email,
+          region: copyUser.region,
+          services: this.getSelected(this.staffFilterOptions.services, copyUser.services),
+          jobTitle: this.getSelected(this.staffFilterOptions.jobTitles, copyUser.jobTitle),
+          locations:  copyUser.locations,
+          additionalLocations:  copyUser.locations,
+          roles: this.getSelected(this.roles, copyUser.roles),
+          skills: this.getSelectedSkills(this.staffFilterOptions.skills, copyUser.skills),
+          userType: copyUser.userType,
+          suspended: copyUser.suspended,
+          userCategory: copyUser.userCategory
+        });
+        return frm;
+      };
+    }
   }
+
+  private getSelected(allOptions: StaffFilterOption[], selectedOptions: string[]): boolean[] {
+    const selected: boolean[] = [] ;
+    if (!Array.isArray(selectedOptions)) {
+      selectedOptions = new Array(selectedOptions);
+    }
+    allOptions.forEach((el: StaffFilterOption) => {
+      if (selectedOptions.filter(s => s === el.key).length > 0 ) {
+        selected.push(true);
+      } else {
+        selected.push(false);
+      }
+    });
+    return selected;
+  }
+
+  private getSelectedSkills(allOptions: GroupOptions[], selectedOptions: string[]): boolean[] {
+    const selected: boolean[] = [] ;
+    allOptions.forEach((el: GroupOptions) => {
+      el.options.forEach((op: FilterFieldOption) => {
+        const selctedOption = selectedOptions.filter(s => s === op.key)
+        if (selctedOption.length > 0 ) {
+          selected.push(true);
+        } else {
+          selected.push(false);
+        }
+      });
+    });
+    return selected;
+  }
+
 }

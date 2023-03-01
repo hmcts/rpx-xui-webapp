@@ -9,6 +9,7 @@ export class StaffUser {
   public last_name: string;
   public suspended: boolean;
   public user_type: string;
+  public userCategory: string;
 
   public task_supervisor: boolean;
   public case_allocator: boolean;
@@ -139,4 +140,16 @@ export class StaffUser {
       return region ? region.label : '';
     })();
   }
+}
+
+export interface StaffLocation {
+  id: string;
+  is_primary: boolean;
+  location?: string;
+}
+
+export interface StaffRole {
+  id: string;
+  is_primary: boolean;
+  role: string;
 }

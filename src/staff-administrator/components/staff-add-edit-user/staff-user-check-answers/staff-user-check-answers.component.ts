@@ -7,6 +7,10 @@ import { take } from 'rxjs/operators';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffUser } from '../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
+import { InfoMessage } from '../../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../../app/shared/models';
+import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
+import { InfoMessageType } from '../../../../role-access/models/enums';
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -28,7 +32,8 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private filterService: FilterService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private staffDataAccessService: StaffDataAccessService
+    private staffDataAccessService: StaffDataAccessService,
+    private readonly messageService: InfoMessageCommService,
   ) {
     this.formId = activatedRoute.snapshot.data.formId;
 

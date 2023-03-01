@@ -73,4 +73,4 @@ export const ROUTES: Routes = [
     ]
   },
 ];
-export const staffAdministratorRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const staffAdministratorRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

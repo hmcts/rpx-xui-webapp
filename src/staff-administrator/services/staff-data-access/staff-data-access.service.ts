@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
 import { StaffUser } from '../../models/staff-user.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class StaffDataAccessService {
   private API_PATH = `/api/staff-ref-data`;
   constructor(private readonly http: HttpClient) {}
@@ -29,22 +32,25 @@ export class StaffDataAccessService {
   }
 
   public getStaffRefUserDetails(id: number) {
-    return this.http.get<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails/${id}`);
+    const reqbody = {userIds: [
+      id
+   ]};
+    return this.http.post<StaffUser>(`${this.API_PATH}/getStaffRefUserDetails`, reqbody);
   }
 
   public getServices() {
     return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getServices`);
   }
 
-  public addNewUser(staffUser: StaffUser) {
-    return this.http.post<[{ case_worker_id: string }]>(`${this.API_PATH}/addNewUser`, staffUser);
+  public addNewUser(addNewUserBody: StaffUser): Observable<StaffUser> {
+    return this.http.post<StaffUser>(`${this.API_PATH}/addNewUser`, addNewUserBody);
   }
 
-  public updateUser(staffUser: StaffUser) {
-    return this.http.post<[{ case_worker_id: string }]>(`${this.API_PATH}/updateUser`, staffUser);
+  public updateUserStatus(user) {
+    return this.http.put<{ suspended: boolean }>(`${this.API_PATH}/updateUserStatus`, user);
   }
 
-  public updateUserStatus(userId: string, suspended: boolean) {
+  public updateUserStatus2(userId: string, suspended: boolean) {
     return this.http.post<{ suspended: boolean }>(`${this.API_PATH}/updateUserStatus/${userId}`, { suspended });
   }
 }

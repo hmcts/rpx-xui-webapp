@@ -12,41 +12,48 @@
           <dt class="govuk-summary-list__key">Name</dt>
           <dd class="govuk-summary-list__value">{{userDetails.first_name}} {{userDetails.last_name}}</dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-        </div><br>
+        </div>
+        <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Email address</dt>
           <dd class="govuk-summary-list__value">{{ userDetails.email_id }}</dd>
           <dd class="govuk-summary-list__actions">
             <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
           </dd>
-        </div><br>
+        </div>
+        <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Services</dt>
           <dd class="govuk-summary-list__value">{{ userDetails.services | pluckAndJoin: 'service':', ' }}</dd>
           <dd class="govuk-summary-list__actions">
             <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
           </dd>
-        </div><br>
+        </div>
+        <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Region</dt>
           <dd class="govuk-summary-list__value">{{ userDetails.region }}</dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-        </div><br>
+        </div>
+        <br>
         <div class="govuk-summary-list__row" *ngFor="let location of userDetails.base_locations; let i = index;">
           <dt class="govuk-summary-list__key">{{ location.is_primary ? 'Primary location' : 'Additional locations' }}</dt>
           <dd class="govuk-summary-list__value">{{ location.location }}</dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-        </div><br>
+        </div>
+        <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">User type</dt>
           <dd class="govuk-summary-list__value">{{ userDetails.user_type }}</dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-        </div><br>
+        </div>
+        <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Roles</dt>
           <dd class="govuk-summary-list__value">{{ userDetails.roles | pluckAndJoin: 'role':', '  }}</dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-        </div><br>
+        </div>
+        <br>
 <!--        <div class="govuk-summary-list__row">-->
 <!--          <dt class="govuk-summary-list__key">Job title</dt>-->
 <!--          <dd class="govuk-summary-list__value">{{ userDetails.jobTitle }}</dd>-->

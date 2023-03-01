@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { SortOrder } from '../../enums';
 import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
@@ -18,6 +19,8 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     fieldName: '',
     order: SortOrder.NONE
   };
+  public isFirsTimeLoad = true;
+  public isCasesFiltered = false;
   public pagination: PaginationParameter = {
     page_number: 1,
     page_size: 25
@@ -25,7 +28,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   public jurisdictions: string[];
   private selectedPerson: string = '';
   private selectedRole: string = 'All';
-  private selectedLocation: Location = {
+  private readonly selectedLocation: Location = {
     id: '231596',
     locationName: 'Birmingham',
     services: [],
@@ -48,7 +51,13 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   }
 
   public get fields(): FieldConfig[] {
-    return ConfigConstants.AllWorkCases;
+    let fields = ConfigConstants.AllWorkCases;
+    this.checkReleaseVersionService.isRelease4().subscribe(isRelease4 => {
+     if (!isRelease4) {
+      fields = CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkCases;
+     }
+    });
+    return fields;
   }
 
   public backUrl: string = 'work/all-work/cases';
@@ -60,15 +69,16 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
 
   public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
+
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       return {
         search_parameters: [
-          {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0]},
-          {key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id},
-          {key: 'actorId', operator: 'EQUAL', values: this.selectedPerson},
-          {key: 'role', operator: 'EQUAL', values: this.selectedRole},
+          { key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0] },
+          { key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id },
+          { key: 'actorId', operator: 'EQUAL', values: this.selectedPerson },
+          { key: 'role', operator: 'EQUAL', values: this.selectedRole },
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole,
@@ -90,7 +100,12 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;
     this.selectedRole = selection.role;
     this.pagination.page_number = 1;
-    this.doLoad();
+    if (this.isFirsTimeLoad) {
+      this.isFirsTimeLoad = false;
+    } else {
+      this.doLoad();
+      this.isCasesFiltered = true;
+    }
   }
 
 }

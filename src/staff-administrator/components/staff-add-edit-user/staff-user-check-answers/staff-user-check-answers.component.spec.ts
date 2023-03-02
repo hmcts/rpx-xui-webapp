@@ -6,6 +6,8 @@ import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
+import { Store } from '@ngrx/store';
+
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 
 describe('StaffUserCheckAnswersComponent', () => {
@@ -15,6 +17,24 @@ describe('StaffUserCheckAnswersComponent', () => {
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
+  const storeMock = jasmine.createSpyObj('Store', [
+    'dispatch', 'pipe'
+  ]);
+  const userDetails = {
+    sessionTimeout: {
+      idleModalDisplayTime: 10,
+      totalIdleTime: 1,
+    },
+    canShareCases: true,
+    userInfo: {
+      id: 'someId',
+      forename: 'foreName',
+      surname: 'surName',
+      email: 'email@email.com',
+      active: true,
+      roles: ['pui-case-manager']
+    }
+  };
 
   beforeEach(waitForAsync(() => {
     mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
@@ -30,6 +50,10 @@ describe('StaffUserCheckAnswersComponent', () => {
         { provide: FilterService, useValue: mockFilterService },
         { provide: Router, useValue: mockRouter},
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        {
+          provide: Store,
+          useValue: storeMock
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -233,6 +257,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffUserCheckAnswersComponent);
     component = fixture.componentInstance;
+    storeMock.pipe.and.returnValue(of(userDetails));
     mockStaffDataAccessService.addNewUser.and.returnValue(of({
       id: '2',
       firstName: 'Victoria',
@@ -254,16 +279,10 @@ describe('StaffUserCheckAnswersComponent', () => {
       skills: ['SCSS'],
     }));
     fixture.detectChanges();
-
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should call addNewUser and be successful', () => {
-    component.addNewUser();
-    expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
   });
 
   it('should call addNewUser and be successful', (done) => {

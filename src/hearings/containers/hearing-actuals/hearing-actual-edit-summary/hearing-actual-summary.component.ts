@@ -26,6 +26,7 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
   public hearingTimingResultErrorMessage = '';
   public hearingPartiesResultErrorMessage = '';
   public hearingDaysRequiredErrorMessage = '';
+  public actualHearingUtils = ActualHearingsUtils;
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -34,7 +35,7 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
     public readonly router: Router
   ) {
     super(hearingStore, hearingsService, route, router);
-    this.partyChannels = this.route.snapshot.data.partyChannel;
+    this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
   }
 
   public hearingActualAddEditUrl(): string {

@@ -3,12 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   ActualHearingDayModel,
-  HearingActualsMainModel,
+  HearingActualsMainModel
 } from '../../../models/hearingActualsMainModel';
-import {
-  HearingActualAddEditSummaryEnum,
-  HearingResult
-} from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';

@@ -137,12 +137,12 @@
     ora "5.3.0"
     rxjs "6.6.3"
 
-"@angular-material-components/datetime-picker@2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@angular-material-components/datetime-picker/-/datetime-picker-2.0.4.tgz#3a298eb29fc4a8adbbb70fe09bab0ae916d0c186"
-  integrity sha512-3nXGFz7GXbFYeBI2/72rcmPFTWtcC1ERlgdkaY+65dFHXPIc8hKGv6o+JbtCoYPg7xmVCCy4xhmOgfd/CFGyOw==
+"@angular-material-components/datetime-picker@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/datetime-picker/-/datetime-picker-5.1.1.tgz#c47b8ccbe11a0f5533340939fc8ee5fb65fe1b0c"
+  integrity sha512-hiVDhdyBDFGWTFclOiLTLjxOWIu1gVhn2cx1bJfk/a02zRVXs0Zsd0tSBxtsf6iUx1NuPJiPIZNW/BluUOSBJQ==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 "@angular-material-components/moment-adapter@^5.0.0":
   version "5.0.0"
@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.10-show-banner1":
-  version "6.10.10-show-banner1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.10-show-banner1.tgz#ee16f72aadc5f35f322efdf3df39dd0dab695e9c"
-  integrity sha512-d/t0LQRrWOq+P9gKtRpUd0vfCxxoPBRsQOUaBce5tlJ75JWJft0U5rO7ycvbdJrDnZ6FQ95PBMCnIp8udQABVw==
+"@hmcts/ccd-case-ui-toolkit@6.10.10-show-banner2":
+  version "6.10.10-show-banner2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.10-show-banner2.tgz#54d095ff3f75b11661c230264f4b93dc712603e7"
+  integrity sha512-kk1Pf+a91vN+1deVBxMamkKAK+T7B9WjHcxapIftUf/sadSbDWF/vOYyWXUJMkvrP3kX3FqyDcMNLGW6xJMLOQ==
   dependencies:
     tslib "^2.0.0"
 
@@ -10162,6 +10162,11 @@ matcher@^3.0.0:
   dependencies:
     escape-string-regexp "^4.0.0"
 
+material-design-icons@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/material-design-icons/-/material-design-icons-3.0.1.tgz#9a71c48747218ebca51e51a66da682038cdcb7bf"
+  integrity sha512-t19Z+QZBwSZulxptEu05kIm+UyfIdJY1JDwI+nx02j269m6W414whiQz9qfvQIiLrdx71RQv+T48nHhuQXOCIQ==
+
 md5.js@^1.3.4:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/md5.js/-/md5.js-1.3.5.tgz#b5d07b8e3216e3e27cd728d72f70d1e6a342005f"
@@ -11857,6 +11862,11 @@ pdfjs-dist@2.5.207:
   version "2.5.207"
   resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.5.207.tgz#b5e8c19627be64269cd3fb6df3eaaf45ddffe7b6"
   integrity sha512-xGDUhnCYPfHy+unMXCLCJtlpZaaZ17Ew3WIL0tnSgKFUZXHAPD49GO9xScyszSsQMoutNDgRb+rfBXIaX/lJbw==
+
+pegjs@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/pegjs/-/pegjs-0.10.0.tgz#cf8bafae6eddff4b5a7efb185269eaaf4610ddbd"
+  integrity sha512-qI5+oFNEGi3L5HAxDwN2LA4Gg7irF70Zs25edhjld9QemOgp0CbvMtbFcMvFtEo1OityPrcCzkQFB8JP/hxgow==
 
 pend@~1.2.0:
   version "1.2.0"

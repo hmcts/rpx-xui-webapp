@@ -152,11 +152,7 @@ export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser
       }
       const permissions = task.permissions && task.permissions.values && Array.isArray(task.permissions.values)
         ? task.permissions.values : task.permissions;
-      let actions: Action[] = getActionsByRefinedPermissions(thisView, permissions);
-      // EUI-5549 - to do with cases
-      if (task.assignee && currentUser !== task.assignee && view === ViewType.ACTIVE_TASKS) {
-        actions = actions.filter(action => action.id !== 'claim');
-      }
+      const actions: Action[] = getActionsByRefinedPermissions(thisView, permissions);
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
     }

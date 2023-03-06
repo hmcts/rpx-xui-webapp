@@ -25,7 +25,6 @@ class MockRouteServices {
 describe('WorkAllocation', () => {
 
   describe('InfoMessageContainerComponent', () => {
-    let router: Router;
     let component: InfoMessageContainerComponent;
     let fixture: ComponentFixture<InfoMessageContainerComponent>;
     const mockMessageService = {

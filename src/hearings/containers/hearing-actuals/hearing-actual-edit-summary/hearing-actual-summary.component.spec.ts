@@ -9,7 +9,7 @@ import { Observable, of } from 'rxjs';
 import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
+import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -608,58 +608,6 @@ describe('HearingActualSummaryComponent', () => {
     ];
     expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
     expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
-  });
-
-  it('should save one hearing day actuals for specific hearingDate', () => {
-    const hearingDay = {
-      hearingDate: '2021-03-12',
-      hearingStartTime: '2021-03-12T09:00:00.000Z',
-      hearingEndTime: '2021-03-13T10:00:00.000Z',
-      notRequired: false,
-      pauseDateTimes: [],
-      actualDayParties: [
-        {
-          actualPartyId: '1',
-          individualDetails: {
-            firstName: 'Bob',
-            lastName: 'Jones',
-          },
-          actualOrganisationName: 'Company A',
-          didNotAttendFlag: false,
-          partyChannelSubType: 'inPerson',
-          partyRole: 'appellant',
-          representedParty: '',
-        },
-        {
-          actualPartyId: '2',
-          individualDetails: {
-            firstName: 'Mary',
-            lastName: 'Jones',
-          },
-          actualOrganisationName: 'Company B',
-          didNotAttendFlag: false,
-          partyChannelSubType: 'inPerson',
-          partyRole: 'claimant',
-          representedParty: '',
-        },
-        {
-          actualPartyId: '3',
-          individualDetails: {
-            firstName: 'James',
-            lastName: 'Gods',
-          },
-          actualOrganisationName: 'Solicitors A',
-          didNotAttendFlag: false,
-          partyChannelSubType: 'inPerson',
-          partyRole: 'interpreter',
-          representedParty: '1',
-        },
-      ],
-    };
-    const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.confirmActualHearingTimeForDay(hearingDay);
-    component.confirmActualPartiesForDay(hearingDay);
-    expect(storeDispatchSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should return only one date if only one hearing date', () => {

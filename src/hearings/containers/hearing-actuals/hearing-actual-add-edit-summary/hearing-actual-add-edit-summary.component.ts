@@ -19,7 +19,7 @@ import { HearingActualSummaryBaseComponent } from '../hearing-actual-summary-bas
   styleUrls: ['./hearing-actual-add-edit-summary.component.scss']
 })
 export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBaseComponent {
-  public actualHearingUtils = ActualHearingsUtils;
+  public successBanner = false;
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -49,6 +49,8 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
   }
 
   public confirmActualHearingTimeAndParties(hearingDay: ActualHearingDayModel) {
+    this.validationErrors = [];
+    this.hearingStageResultErrorMessage = '';
     // Organisation parties do not have partyChannelSubType and can be ignored
     // as they do not attend the actual hearing
     const individualPartyIds = this.individualParties.map(party => party.partyID);
@@ -67,6 +69,8 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
       hearingId: this.id,
       hearingActuals: patchedHearingActuals,
     }));
+    this.successBanner = true;
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
   }
 
   private isValid(): boolean {

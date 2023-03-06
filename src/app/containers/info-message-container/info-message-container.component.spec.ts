@@ -2,11 +2,13 @@ import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { WorkAllocationComponentsModule } from '../../../work-allocation/components/work-allocation.components.module';
 import { InfoMessageContainerComponent } from './info-message-container.component';
-
+import { of } from 'rxjs';
+import { InfoMessage } from '../../shared/enums/info-message';
+import { InfoMessageType } from '../../shared/enums/info-message-type';
+import { InformationMessage } from '../../shared/models';
 
 @Component({
   template: `<exui-info-message-container></exui-info-message-container>`
@@ -15,35 +17,40 @@ class WrapperComponent {
   @ViewChild(InfoMessageContainerComponent, {static: true}) public appComponentRef: InfoMessageContainerComponent;
 }
 
+class MockRouteServices {
+  // Router
+  public events = of( new NavigationEnd(0, 'http://localhost:4200/login', 'http://localhost:4200/login'));
+}
+
 describe('WorkAllocation', () => {
 
   describe('InfoMessageContainerComponent', () => {
     let router: Router;
     let component: InfoMessageContainerComponent;
-    let wrapper: WrapperComponent;
-    let fixture: ComponentFixture<WrapperComponent>;
-
-    const mockMessageService = jasmine.createSpyObj('messageService', ['infoMessageChangeEmitted$']);
-
+    let fixture: ComponentFixture<InfoMessageContainerComponent>;
+    const mockMessageService = {
+    infoMessageChangeEmitted$: of([{type: InfoMessageType.SUCCESS, message: InfoMessage.ASSIGNED_TASK}] as InformationMessage[]),
+    removeAllMessages: () => {}
+    }
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [ WrapperComponent ],
+        declarations: [ InfoMessageContainerComponent ],
         imports: [
-          RouterTestingModule, WorkAllocationComponentsModule ],
-        providers: [ { provide: InfoMessageCommService, useValue: mockMessageService } ]
+          RouterTestingModule ],
+        providers: [
+          { provide: InfoMessageCommService, useValue: mockMessageService },
+          { provide: Router, useClass: MockRouteServices },
+        ]
       })
       .compileComponents();
 
-      fixture = TestBed.createComponent(WrapperComponent);
-      wrapper = fixture.componentInstance;
-      component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      fixture = TestBed.createComponent(InfoMessageContainerComponent);
+      component = fixture.componentInstance;
       fixture.detectChanges();
     });
 
-    xit('should create', () => {
+    it('should create', () => {
       expect(component).toBeDefined();
     })
   });
-
 });

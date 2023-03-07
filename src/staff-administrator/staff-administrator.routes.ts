@@ -9,6 +9,7 @@ import { StaffMainContainerComponent } from './containers/staff-main-container/s
 import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
+import { StaffFilterOptionsLocationsResolver } from './resolvers/staff-filter-options-locations.resolver';
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
@@ -50,6 +51,7 @@ export const ROUTES: Routes = [
           services: StaffFilterOptionsServicesResolver,
           skills: StaffFilterOptionsSkillsResolver,
           userTypes: StaffFilterOptionsUserTypesResolver,
+          locations: StaffFilterOptionsLocationsResolver,
         },
         children: [
           { path: '', component: StaffAddUserComponent },

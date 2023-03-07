@@ -90,7 +90,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         this.additionalLocations = this.addUserData[6].value;
         this.userType = this.addUserData[7].value;
         this.roles = this.addUserData[8].value;
-        this.skills = this.addUserData[10].value;
+        this.skills = this.addUserData[10]?.value;
 
         this.prepareServicesPayload();
         this.prepareJobTitlesPayload();

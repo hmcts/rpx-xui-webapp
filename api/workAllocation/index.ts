@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { UserInfo } from '../auth/interfaces/UserInfo';
+import { handleGet } from '../common/crudService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
@@ -149,20 +150,12 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       }
     });
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
-    // TEMPORARY CODE: task_name search parameter is not yet enabled by Task API. to be removed
-    let taskName;
-    searchRequest.search_parameters.map((param, index) => {
-      if (param.key === 'task_name') {
-        taskName = param.values[0];
-        searchRequest.search_parameters.splice(index, 1);
-      }
-    });
-    // TEMPERORY CODE: end
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
+    console.log('starting check');
     let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
@@ -170,11 +163,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     let returnData;
 
     if (data) {
-      // TEMPORARY CODE: for task_name search parameter until it is enabled in Task API
-      if (taskName) {
-        data.tasks = data.tasks.filter(task => task.name === taskName);
-      }
-      // TEMPERORY CODE: end
       // TEMPORARY CODE: for next_hearing_date until it is enabled in Task API
       data.tasks.forEach(task => {
         task.hearing_date =
@@ -712,29 +700,8 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
 }
 
 export async function getTaskNames(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const taskNames = [{
-    taskName: 'Review Hearing bundle',
-    taskId: 1912,
-  },
-  {
-    taskName: 'Process Application',
-    taskId: 1890,
-  },
-  {
-    taskName: 'Review the appeal',
-    taskId: 12334,
-  },
-  {
-    taskName: 'Follow-up extended direction',
-    taskId: 1345,
-  },
-  {
-    taskName: 'Follow-up extended direction',
-    taskId: 1456,
-  },
-  {
-    taskName: 'Review Addendum Evidence',
-    taskID: 1678,
-  }];
-  return res.send(taskNames).status(200);
+  const service = req.body.service;
+  const response = await handleTaskGet(`${baseWorkAllocationTaskUrl}/task/task-types?jurisdiction=${service}`, req);
+  console.log(response, 'banananananaan', response.task_types)
+  return res.send(response.task_types).status(200);
 }

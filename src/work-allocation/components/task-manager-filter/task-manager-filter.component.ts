@@ -50,8 +50,12 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           name: 'taskName',
-          value: ['']
+          value: [{task_type_id: '', task_type_name: ''}]
         },
+        {
+          name: 'findTaskNameControl',
+          value: ['']
+        }
       ]
     }
   };
@@ -228,7 +232,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       options: [],
       minSelected: 0,
       maxSelected: 1,
-      findLocationField: 'service',
+      servicesField: 'service',
       minSelectedError: 'You must select a task name',
       maxSelectedError: null,
       enableAddTaskNameButton: false,
@@ -266,6 +270,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(),
       TaskManagerFilterComponent.initTaskTypeFilter(),
+      TaskManagerFilterComponent.initTaskNameFilter()
     ];
     if (this.isRelease4) {
       this.fieldsConfig.fields.push(TaskManagerFilterComponent.initTaskNameFilter());

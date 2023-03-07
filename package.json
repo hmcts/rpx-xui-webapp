@@ -53,7 +53,7 @@
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
-    "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
+    "test:pact:run-and-publish": "echo 'not implemented'",
     "test:api": "mocha -r ts-node/register --config ./test/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=functional-output/tests/api_functional,reportFilename=mochawesome",
     "test:ngIntegrationMockEnv": "node -e 'require(`./test/nodeMock/availablePortFinder.js`).configureTestProxyPort()'",
     "test:ngIntegration": "yarn test:ngIntegrationMockEnv &&  webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",

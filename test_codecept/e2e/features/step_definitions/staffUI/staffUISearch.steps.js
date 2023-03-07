@@ -1,0 +1,118 @@
+
+const reportLogger = require('../../../../codeceptCommon/reportLogger');
+
+const BrowserWaits = require("../../../support/customWaits");
+const staffSearchPage = require("../../pageObjects/staffUI/staffUISearchPage");
+const staffUserDetailsPage = require('../../pageObjects/staffUI/staffUIUserDetailsPage')
+const addNewUserPage = require('../../pageObjects/staffUI/adduserPage')
+const addUserCheckYourAnswersPage = require('../../pageObjects/staffUI/addUserCheckYourAnswersPage')
+
+When('I click Advanced search link in Staff UI', async function (tabLabel, boolString) {
+    await staffSearchPage.clickAdvancedSearchLink();
+});
+
+
+Then('I click Hide advanced search link in Staff UI', async function (tabLabel, boolString) {
+    await staffSearchPage.clickHideAdvancedSearchLink();
+});
+
+
+Then('I see basic search displayed in staff UI', async function (tabLabel, boolString) {
+    await staffSearchPage.validateBasicSearchPage();
+});
+
+
+
+
+Then('I validate basic search in Staff UI', async function (tabLabel, boolString) {
+    await staffSearchPage.performBasicSearch('xui');
+});
+
+
+
+
+Then('I validate advanced search in Staff UI', async function (tabLabel, boolString) {
+    const inputs = {
+        "Services":['CIVIL'],
+        "Locations":['Bir'],
+        "User type":'Legal',
+        "Job title": 'Legal',
+        "Skill":'',
+        "Roles":['Case Allocator']
+    }
+    await staffSearchPage.performAdvancedSearch(inputs);
+});
+
+
+Then('I validate staff UI search results displayed', async function (tabLabel, boolString) {
+    expect(await staffSearchPage.isStaffUserListContainerDisplayed()).to.be.true;
+    await staffSearchPage.validateListValuesNotEmpty();
+});
+
+
+Then('I validate staff user details display', async function(){
+    const username = await staffSearchPage.staffUsersList.clickUserNameAtRow(0);
+    reportLogger.AddMessage(`Selected user ${username}`)
+
+   expect (await staffUserDetailsPage.isDisplayed()).to.be.true;
+    const userDetails = await staffUserDetailsPage.getUserDetails();
+    expect(userDetails['Name']).to.equal(username);
+
+    const rows = Object.keys(userDetails);
+    [
+        'Email address',
+        'Region',
+        'Services',
+        'Primary location',
+        'Additional locations',
+        'User type',
+        'Roles',
+        'Job title',
+        'Skills',
+        'Status'
+    ].forEach(row => {
+        expect(rows, `missing ${row}`).to.includes(row)
+    })
+    
+    expect(userDetails['Email address'] !== '', `missing value for 'Email address'`).to.be.true;
+    expect(userDetails['User type'] !== '', `missing value for 'User type'`).to.be.true;
+    expect(userDetails['Status'] !== '', `missing value for 'Status'`).to.be.true;
+    expect(userDetails['Job title'] !== '', `missing value for 'Job title'`).to.be.true;
+
+
+
+});
+
+
+
+When('I add new staff user details', async function () {
+    await staffSearchPage.clickAddNewUser();
+
+    const details = {
+        'First name':'tes',
+        'Last name':'last name',
+        'Email':'test@justice.gov.uk',
+        'Region':'Region 1',
+        'Services':['CIVIL'],
+        'Primary location':'Bir',
+        'User type':'Legal office',
+        'Roles':['Case Allocator'],
+        'Job title': ['Legal Caseworker']
+    }
+    await addNewUserPage.enterDetails(details);
+    await addNewUserPage.clickContinue();
+
+    await addUserCheckYourAnswersPage.container.wait();
+    expect(await addUserCheckYourAnswersPage.isDisplayed()).to.be.true;
+
+    await addUserCheckYourAnswersPage.container.wait();
+    const checkAnswers = await addUserCheckYourAnswersPage.getUserDetails();
+
+    expect(checkAnswers['Name']).to.includes(`${details['First name']} ${details['Last name']}`)
+    expect(checkAnswers['Email address']).to.includes(`${details['Email']}`)
+    expect(checkAnswers['Services']).to.includes(`${details['Services']}`)
+
+
+})
+
+

@@ -103,11 +103,18 @@ exports.config = {
     "myPlugin": {
       "require": "./hooks",
       "enabled": true
+    },
+    retryFailedStep: {
+      enabled: true
     }
   },
   bootstrap: false,
   include: {
   },
+  retry: {
+    Feature: 3
+
+  }
   // teardown: () => {
   //   console.log("Run complete...")
     

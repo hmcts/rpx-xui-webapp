@@ -22,7 +22,7 @@ const errorMessageForResponseCode = require('../../../util/errorResonseMessage')
 const MockUtil = require('../../../util/mockUtil');
 const WAUtil = require('../../workAllocation/utils');
 const nodeAppMockData = require('../../../../nodeMock/nodeApp/mockData');
-const CucumberReporter = require('../../../../e2e/support/reportLogger');
+const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 
 const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');

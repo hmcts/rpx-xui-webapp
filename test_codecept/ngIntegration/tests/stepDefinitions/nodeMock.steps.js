@@ -4,11 +4,11 @@ const MockApp = require('../../../nodeMock/app');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const browserUtil = require('../../util/browserUtil');
 const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
-const CucumberReporter = require('../../../e2e/support/reportLogger');
+const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAllocationDataModel = require("../../../dataModels/workAllocation");
-const reportLogger = require('../../../e2e/support/reportLogger');
+const reportLogger = require('../../../codeceptCommon/reportLogger');
 const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
 const { DataTableArgument } = require('codeceptjs');
 

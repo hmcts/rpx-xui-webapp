@@ -11,6 +11,7 @@ const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 const testConfig = require('../../config/appTestConfig');
+const reportLogger = require('../../../codeceptCommon/reportLogger');
 
 async function waitForElement(el) {
   return element(`.${el}`).isDisplayed();
@@ -105,6 +106,8 @@ async function waitForElement(el) {
       CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl, LOG_LEVELS.Info);
       await browser.get(config.config.baseUrl);
       await BrowserWaits.waitForElement(loginPage.signinTitle);
+      await BrowserWaits.waitForElement(loginPage.signinBtn);
+
       expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
     }).catch(err => {
       throw err
@@ -193,7 +196,8 @@ async function waitForElement(el) {
         await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
         await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
         
-
+        const cookies = await browser.driver.manage().getCookies();
+        reportLogger.AddMessage(JSON.stringify(cookies, null, 2))
       }catch(err){
         await browser.get(config.config.baseUrl);
         throw new Error(err);
@@ -351,16 +355,16 @@ async function waitForElement(el) {
     CucumberReportLogger.AddMessage(`Login user ${testUserIdentifier} is ${userEmail}`)
     await loginPage.givenIAmLoggedIn(userEmail, key);
 
-    loginAttempts++;
-    await loginattemptCheckAndRelogin(userEmail, key, this);
-    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
-      world.attach("Login success page load load attempt : " + message)
-    });
+    // loginAttempts++;
+    // await loginattemptCheckAndRelogin(userEmail, key, this);
+    // await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+    //   world.attach("Login success page load load attempt : " + message)
+    // });
     
-    await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForSpinnerToDissappear();
-      await headerPage.clickAppLogoLink();
-    });
+    // await BrowserWaits.retryWithActionCallback(async () => {
+    //   await BrowserWaits.waitForSpinnerToDissappear();
+    //   await headerPage.clickAppLogoLink();
+    // });
    
   });
 

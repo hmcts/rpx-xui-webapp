@@ -10,7 +10,7 @@ const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
 
 const SoftAssert = require('../../../util/softAssert');
 ;
-const CucumberReporter = require('../../../../e2e/support/reportLogger');
+const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const browserUtil = require('../../../util/browserUtil');
 
 const waMockData = require('../../../../nodeMock/workAllocation/mockData');

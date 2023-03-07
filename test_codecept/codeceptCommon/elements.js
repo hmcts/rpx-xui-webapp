@@ -1,7 +1,11 @@
 
 
+
+
+
+
 function getActor() {
-    return actor();
+    return actor().retry({ retries: 3, minTimeout: 30 });
 }
 
 
@@ -122,6 +126,9 @@ class PuppeteerNativeElement {
 
     async isDisplayed(){
         await this.__checkAndGetNativeElement();
+        if (!this.nativeElement){
+            return false;
+        }
         const elementVisisbleBox = await this.nativeElement.boundingBox();
 
         return elementVisisbleBox !== null
@@ -129,6 +136,8 @@ class PuppeteerNativeElement {
 
     async sendKeys(keys){
         await this.__checkAndGetNativeElement();
+        await this.nativeElement.scrollIntoView();
+        await this.click();
         await this.nativeElement.type(keys.toString());
     }
 
@@ -140,7 +149,7 @@ class PuppeteerNativeElement {
 
     async click(){
         await this.__checkAndGetNativeElement();
-        // await this.page.evaluate((el) => el.click(), this.nativeElement)
+        // await this.nativeElement.scrollIntoView();
         await this.nativeElement.click();
     }
 
@@ -156,16 +165,16 @@ class PuppeteerNativeElement {
         await this.nativeElement.type(optionName)
     }
 
-    // async selectOptionWithName(name) {
-    //     const selectorList = this.getElementSelector();
-    //     await this.__checkAndGetNativeElement();
-    //     const optionName = await this.getText();
-    //     // await this.nativeElement.click();
-    //     const selectELement = await this.nativeElement.getProperty('parentNode')
-    //     await selectELement.select(optionName)
-        
-    //     // await this.nativeElement.click()
-    //     }
+    async selectOptionWithLabel(label) {
+        await this.__checkAndGetNativeElement();
+        const selectOptions = await this.nativeElement.$$('option')
+
+        await this.nativeElement.type(label)
+
+        // let optionName = await selectOptions[index].evaluate(el => el.textContent, selectOptions[index])
+
+       
+        }
 
     async getText(){
         await this.__checkAndGetNativeElement();
@@ -193,6 +202,12 @@ class PuppeteerNativeElement {
             }, 30000)
         });
        
+    }
+
+    async scrollIntoView(){
+        await this.__checkAndGetNativeElement();
+        await this.page.evaluate((el) => el.scrollIntoView(), this.nativeElement)
+
     }
 }
 
@@ -234,11 +249,44 @@ class ElementCollection {
 
     }
 
+    async wait(){
+       return new Promise((resolve,reject) => {
+            const interval = setInterval(async () => {
+                const count = await this.count();
+                if (count !== 0){
+                    clearInterval(interval)
+                    resolve(true)
+                }
+            },500);
+            setTimeout(() => {
+                clearInterval(interval);
+                reject(false);
+            })
+       });
+    }
+
+    async getItemWithText(text){
+        const count = await this.count();
+        let element = null;
+        for(let i = 0;i < count;i++ ){
+            const e = this.get(i);
+            const eText = await e.getText();
+            if(eText.includes(text)){
+                element = e;
+                break;
+            }
+        }
+        return element;
+
+    }
+
+
     async count(){
         // if(this.selector){
         //     const helperNativeElement = new PuppeteerNativeElement(null, null)
         //     this.nativeElements = await helperNativeElement.getNativeElements(this.selector);
         // }
+        
         let sourceElement = null;
         if (this.parent){
             sourceElement = await this.parent.__checkAndGetNativeElement();
@@ -256,6 +304,8 @@ class ElementCollection {
         }
         return this.nativeElements.length
     }
+
+
 
     async getText(){
         
@@ -291,6 +341,7 @@ class Element {
     }
 
     async sendKeys(keys){
+        await this.click();
         await getActor().fillField(this.selector, keys) 
     }
 
@@ -300,6 +351,11 @@ class Element {
 
     async click(){
         await getActor().click(this.selector)  
+    }
+
+    async selectOptionWithLabel(label){
+        const puppeteerNativeElement = new PuppeteerNativeElement(this.selector,null)
+        await puppeteerNativeElement.selectOptionWithLabel(label)
     }
 
     async select(option){
@@ -317,12 +373,9 @@ class Element {
     }
 
     async isDisplayed(){
-        try{
-            await getActor().seeElement(this.selector)
-            return true
-        }catch(err){
-            return false;
-        }
+        const ele = new PuppeteerNativeElement(this.selector,null)
+        return await ele.isDisplayed()
+      
         
     }
 
@@ -366,6 +419,13 @@ class Element {
         return new ElementCollection(locator)
     }
 
+    async wait(waitInSec){
+        await getActor().waitForElement(this.selector, waitInSec)
+    }
+
+    async scrollIntoView(){
+        await getActor().scrollTo(this.selector)
+    }
 
     
 }

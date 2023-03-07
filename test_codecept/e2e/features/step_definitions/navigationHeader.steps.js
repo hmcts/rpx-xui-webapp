@@ -1,7 +1,6 @@
 const headerPage = require('../pageObjects/headerPage');
 const browserWaits = require('../../support/customWaits');
 const cucumberReporter = require('../../../codeceptCommon/reportLogger');
-var { defineSupportCode } = require('cucumber');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const constants = require('../../support/constants');
 const featureToggleUtil = require('../../../ngIntegration/util/featureToggleUtil');
@@ -52,22 +51,24 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
+        await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+        expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
 
-        await browserWaits.retryWithActionCallback(async () => {
-            try{
-                await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-                await browserWaits.retryWithActionCallback(async () => {
-                    await browserWaits.waitForSeconds(5)
-                    expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
-                })
-            }catch(err){
-                await headerPage.clickAppLogoLink();
-                await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-                // await headerPage.refreshBrowser();
-                throw new Error(err);
-            }
+
+        // await browserWaits.retryWithActionCallback(async () => {
+        //     try{
+        //         await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+        //         await browserWaits.retryWithActionCallback(async () => {
+        //             expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+        //         })
+        //     }catch(err){
+        //         await headerPage.clickAppLogoLink();
+        //         await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+        //         // await headerPage.refreshBrowser();
+        //         throw new Error(err);
+        //     }
             
-        });
+        // });
     });
 
     Then('I see navigation header tab page {string}', async function(headerTab){

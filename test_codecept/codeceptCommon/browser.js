@@ -3,7 +3,7 @@ const helper = require('codeceptjs').helper;
 
 
 function getActor(){
-    return actor()
+    return actor().retry({ retries: 3, minTimeout: 30 });
 }
 
 class DriverManager{

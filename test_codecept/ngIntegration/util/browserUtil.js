@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const reportLogger = require('../../e2e/support/reportLogger');
+const reportLogger = require('../../codeceptCommon/reportLogger');
 // const addContext = require('mochawesome/addContext');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));

@@ -6,7 +6,7 @@ const caseEditPage = require('../pageObjects/ccdCaseEditPages');
 
 const browserUtil = require('../../util/browserUtil');
 const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
-const CucumberReporter = require('../../../e2e/support/reportLogger');
+const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const dummyCaseDetails = require('../../../nodeMock/ccd/caseDetails_data');
 const ccdMockData = require('../../../nodeMock/ccd/ccdApi');
 

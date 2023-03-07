@@ -41,7 +41,7 @@ class BrowserWaits{
     async waitForElement(element, message, waitForSeconds) {
         const startTime = Date.now();
         CucumberReporter.AddMessage("starting wait for element max in sec " + this.waitTime / 1000 + " : " + JSON.stringify(element.selector));
-        await element.wait()
+        await element.wait(this.waitTime / 1000)
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime) / 1000);
 
     }
@@ -194,11 +194,19 @@ class BrowserWaits{
     }
 
     async waitForSpinnerToDissappear() {
-        await this.waitForCondition(async () => {
-            const isSpinnerPresent = await $("div.spinner-container").isPresent();
-            CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
-            return !isSpinnerPresent;
-        }, 'Spinner is still displayed after waiting ');
+        let status = true
+        do{
+            status = await $("div.spinner-container").isPresent();
+        }
+        while (status)
+        
+        // const isSpinnerPresent = await $("div.spinner-container").isPresent();
+
+        // await this.waitForCondition(async () => {
+        //     const isSpinnerPresent = await $("div.spinner-container").isPresent();
+        //     CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
+        //     return !isSpinnerPresent;
+        // }, 'Spinner is still displayed after waiting ');
     }
 }
 

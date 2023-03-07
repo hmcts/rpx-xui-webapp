@@ -88,6 +88,8 @@ class CustomHelper extends Helper {
         return puppeteerPage.evaluate(...args);
     }
 
+   
+
 }
 
 module.exports = CustomHelper;

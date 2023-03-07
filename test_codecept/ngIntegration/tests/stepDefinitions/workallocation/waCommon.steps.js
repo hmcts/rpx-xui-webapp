@@ -6,7 +6,7 @@ const waMockData = require('../../../../nodeMock/workAllocation/mockData');
 ;
 const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
 const SoftAssert = require('../../../util/softAssert');
-const CucumberReporter = require('../../../../e2e/support/reportLogger');
+const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
 const BrowserUtil = require('../../../util/browserUtil');

@@ -114,6 +114,12 @@ const data = {
                 release: "bookingui-WA3", userIdentifier: "BOOKING_UI-FT-ON",
                 key: "Monday01"
             },
+            {
+                idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
+                email: "xui_caseofficer@justice.gov.uk",
+                release: "general", userIdentifier: "STAFF_ADMIN",
+                key: "Welcome01"
+            }
 
 
         ],
@@ -202,6 +208,12 @@ const data = {
                 email: "271205EMP-@ejudiciary.net",
                 release: "bookingui-WA3", userIdentifier: "BOOKING_UI-FT-ON",
                 key: "Hmcts1234"
+            },
+            {
+                idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
+                email: "xui_caseofficer@justice.gov.uk",
+                release: "general", userIdentifier: "STAFF_ADMIN",
+                key: "Welcome01"
             }
 
 

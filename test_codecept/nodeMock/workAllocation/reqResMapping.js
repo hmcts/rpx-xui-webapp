@@ -1,7 +1,7 @@
 const workAllocationMockData = require('./mockData');
 const bookingsMockData = require('./bookingsData');
 const rolesAccessMockData = require('./rolesAccess');
-const CucumberReporter = require('../../e2e/support/reportLogger');
+const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const MockApp = require('../app');
 
 module.exports = {

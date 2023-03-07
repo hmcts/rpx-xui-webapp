@@ -23,7 +23,7 @@ const REQUEST_BODY = {
     serviceCode: 'BFA1'
 };
 
-const user1 = getDumyJudgeUserDetails();
+const user1 = judicialUserDetailsResponse();
 user1.sidam_id = somethingLike(REQUEST_BODY.sidam_ids[0]);
 user1.known_as = somethingLike('Lead judge');
 user1.surname = somethingLike('cruz');
@@ -31,7 +31,7 @@ user1.full_name = somethingLike('Tom cruz');
 user1.email_id = somethingLike('tom.cruz@hmcts.net');
 
 
-const user2 = getDumyJudgeUserDetails();
+const user2 = judicialUserDetailsResponse();
 user2.sidam_id = somethingLike(REQUEST_BODY.sidam_ids[1]);
 user2.known_as = somethingLike('Hearing judge');
 user2.surname = somethingLike('hanks');
@@ -150,7 +150,7 @@ function assertResponses(dto: any) {
 
 
 
-function getDumyJudgeUserDetails(){
+export function judicialUserDetailsResponse(){
     return {
              "sidam_id": somethingLike("018a0310-f122-4377-9504-f635301f39ed-test2"),
             "object_id": somethingLike("018a0310-f122-4377-9504-f635301f39ed-test2"),

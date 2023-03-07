@@ -10,7 +10,7 @@ const BrowserUtil = require('./browserUtil');
 const config = require('../config/protractor-cucumber.conf');
 
 const headerPage = require('../../e2e/features/pageObjects/headerPage');
-const CucumberReportLog = require("../../e2e/support/reportLogger");
+const CucumberReportLog = require("../../codeceptCommon/reportLogger");
 
 const MockApp = require('../../nodeMock/app');
 const BrowserWaits = require('../../e2e/support/customWaits');

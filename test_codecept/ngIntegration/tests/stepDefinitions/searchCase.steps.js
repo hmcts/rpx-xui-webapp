@@ -7,7 +7,7 @@ const searchCasePage = require('../pageObjects/searchPage');
 
 const browserUtil = require('../../util/browserUtil');
 const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
-const CucumberReporter = require('../../../e2e/support/reportLogger');
+const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 

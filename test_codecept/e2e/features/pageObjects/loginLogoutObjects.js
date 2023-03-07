@@ -69,7 +69,7 @@ function loginLogoutObjects() {
 
   this.loginWithCredentials = async function (username, password) {
     await BrowserWaits.waitForElement(this.emailAddress);
-    CucumberReportLogger.AddMessage("IDAM URL :" + await browser.getCurrentUrl(), LOG_LEVELS.Debug);
+    // CucumberReportLogger.AddMessage("IDAM URL :" + await browser.getCurrentUrl(), LOG_LEVELS.Debug);
     await this.enterUrEmail(username);
     await this.enterPassword(password);
     await this.clickSignIn();

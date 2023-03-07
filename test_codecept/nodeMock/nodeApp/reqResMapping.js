@@ -1,5 +1,5 @@
 const nodeAppMockData = require('./mockData');
-const reportLogger = require('../../e2e/support/reportLogger');
+const reportLogger = require('../../codeceptCommon/reportLogger');
 module.exports = {
     mockServiceResetCallbacks: [() => nodeAppMockData.init()],
     get: {

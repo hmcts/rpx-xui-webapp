@@ -10,7 +10,10 @@ const http = axios.create({})
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 
 const taskApi = require('./services/task-management-api/routes')
+const locationRoutes = require('./services/rdLocation/routes')
 
+const idamOpenId = require('./services/idam/routes')
+const sessionRoutes = require('./services/session/routes')
 
 class MockApp {
 
@@ -49,8 +52,16 @@ class MockApp {
         app.use(cookieParser());
         app.use(express.json());
 
+        app.use((req,res,next) => {
+            console.log(`${req.method} : ${req.url}`);
+            next();
+        })
 
+        app.use('/session', sessionRoutes)
+
+        app.use('/', idamOpenId)
         app.use('/task', taskApi)
+        app.use('/refdata/location', locationRoutes)
 
 
         // await this.stopServer();

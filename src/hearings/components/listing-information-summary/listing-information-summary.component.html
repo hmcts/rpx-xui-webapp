@@ -58,6 +58,12 @@
       </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
+    <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
+      <dt class="govuk-summary-list__key">Hearing methods</dt>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer:hearingState$ | async">
+      </dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Hearing date</dt>
       <dd class="govuk-summary-list__value"
@@ -143,6 +149,12 @@
       </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
+    <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
+      <dt class="govuk-summary-list__key">Hearing methods</dt>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer:hearingState$ | async">
+      </dd>
+      <dd class="govuk-summary-list__actions"></dd>
+    </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Hearing dates</dt>
       <dd class="govuk-summary-list__value"
@@ -181,9 +193,15 @@
                 [innerHtml]="answerSource.ROOM_ID | transformAnswer:hearingState$:i | async"></dd>
             </div>
             <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">Judicial members</dt>
+              <dt class="govuk-summary-list__key">Judge</dt>
               <dd class="govuk-summary-list__value"
                 [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$:i | async"></dd>
+            </div>
+            <div class="govuk-summary-list__row" *ngIf="displayPanelMembersSection">
+              <dt class="govuk-summary-list__key">Panel members</dt>
+              <dd class="govuk-summary-list__value"
+                [innerHtml]="answerSource.PANEL_MEMBERS | transformAnswer:hearingState$:i | async"></dd>
+              <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
               <dt class="govuk-summary-list__key">

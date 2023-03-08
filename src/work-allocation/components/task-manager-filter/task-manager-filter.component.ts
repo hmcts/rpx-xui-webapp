@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { BookingCheckType, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
@@ -25,7 +25,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public appStoreSub: Subscription;
   public filterSub: Subscription;
   public roleType: string;
-  public isLegalOpsOrJudicialRole: UserRole;
+  public userRole: UserRole;
 
   public fieldsConfig: FilterConfig = {
     persistence: 'local',
@@ -38,10 +38,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     cancelSetting: {
       id: TaskManagerFilterComponent.FILTER_NAME,
       fields: [
-        {
-          name: 'service',
-          value: ['IA']
-        },
         {
           name: 'selectLocation',
           value: ['location_all']
@@ -150,6 +146,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         {
           key: PersonRole.ADMIN,
           label: PersonRole.ADMIN
+        },
+        {
+          key: PersonRole.CTSC,
+          label: PersonRole.CTSC
         }
       ],
       minSelected: 1,
@@ -175,7 +175,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       domainField: 'role',
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person',
-      radioSelectionChange: 'selectPerson=Specific person'
+      radioSelectionChange: 'selectPerson=Specific person',
+      servicesField: 'service',
     };
   }
 
@@ -198,6 +199,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         {
           key: 'ADMIN',
           label: 'Admin'
+        },
+        {
+          key: 'CTSC',
+          label: 'CTSC'
         }
       ],
       minSelected: 1,
@@ -213,8 +218,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
-        this.isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles) : null;
-        this.roleType = AppUtils.convertDomainToLabel(this.isLegalOpsOrJudicialRole);
+        this.userRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getUserRole(userDetails.userInfo.roles) : null;
+        this.roleType = AppUtils.convertDomainToLabel(this.userRole);
         this.fieldsConfig.cancelSetting.fields.push({
           name: 'taskType',
           value: [getRoleCategory(this.roleType)]
@@ -223,6 +228,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           name: 'role',
           value: [this.roleType]
         },
+        {
+          name: 'service',
+          value: [this.jurisdictions[0]]
+        }
         );
       }
     );

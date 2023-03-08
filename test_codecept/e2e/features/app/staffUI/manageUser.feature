@@ -13,7 +13,17 @@ Feature: Staff UI Manager user
         Then I validate staff UI search results displayed
         Then I validate staff user details display
 
-@codecept_test
+    @codecept_test
+    Scenario: Add new user work flow - back, cancel and change
+        When I navigate to Expert UI Url
+        Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
+
+        Then I click on primary navigation header tab "Staff", I see selected tab page displayed
+        Then I see basic search displayed in staff UI
+
+        Then I validate add new staff user work flow controls
+
+
     Scenario: Add new user
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
@@ -22,4 +32,5 @@ Feature: Staff UI Manager user
         Then I see basic search displayed in staff UI
         
         When I add new staff user details
+        Then I see basic search displayed in staff UI
 

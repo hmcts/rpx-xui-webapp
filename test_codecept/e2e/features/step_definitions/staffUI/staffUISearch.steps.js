@@ -18,6 +18,7 @@ Then('I click Hide advanced search link in Staff UI', async function (tabLabel, 
 
 
 Then('I see basic search displayed in staff UI', async function (tabLabel, boolString) {
+    await staffSearchPage.pageContainer.wait();
     await staffSearchPage.validateBasicSearchPage();
 });
 
@@ -105,13 +106,76 @@ When('I add new staff user details', async function () {
     await addUserCheckYourAnswersPage.container.wait();
     expect(await addUserCheckYourAnswersPage.isDisplayed()).to.be.true;
 
-    await addUserCheckYourAnswersPage.container.wait();
     const checkAnswers = await addUserCheckYourAnswersPage.getUserDetails();
 
     expect(checkAnswers['Name']).to.includes(`${details['First name']} ${details['Last name']}`)
     expect(checkAnswers['Email address']).to.includes(`${details['Email']}`)
     expect(checkAnswers['Services']).to.includes(`${details['Services']}`)
 
+    await addUserCheckYourAnswersPage.submitButton.click();
+
+
+})
+
+
+Then('I validate add new staff user work flow controls', async function(){
+    
+
+    const details = {
+        'First name': 'tes',
+        'Last name': 'last name',
+        'Email': 'test@justice.gov.uk',
+        'Region': 'Region 1',
+        'Services': ['CIVIL'],
+        'Primary location': 'Bir',
+        'User type': 'Legal office',
+        'Roles': ['Case Allocator'],
+        'Job title': ['Legal Caseworker']
+    }
+
+    reportLogger.AddMessage("*********** validation: Cancel on new user page")
+    await staffSearchPage.clickAddNewUser();
+    await addNewUserPage.clickCancel();
+    await staffSearchPage.pageContainer.wait();
+    await staffSearchPage.validateBasicSearchPage();
+
+    reportLogger.AddMessage("*********** validation: Cancel from check your answers")
+    await staffSearchPage.clickAddNewUser();
+    await addNewUserPage.enterDetails(details);
+    await addNewUserPage.clickContinue();
+    await addUserCheckYourAnswersPage.container.wait();
+    expect(await addUserCheckYourAnswersPage.isDisplayed()).to.be.true;
+    await addUserCheckYourAnswersPage.cancelButton.click();
+    await staffSearchPage.pageContainer.wait();
+    await staffSearchPage.validateBasicSearchPage();
+
+
+    reportLogger.AddMessage("*********** validation: back link from check your answers")
+    await staffSearchPage.clickAddNewUser();
+    await addNewUserPage.enterDetails(details);
+    await addNewUserPage.clickContinue();
+    await addUserCheckYourAnswersPage.container.wait();
+    expect(await addUserCheckYourAnswersPage.isDisplayed()).to.be.true;
+    await addUserCheckYourAnswersPage.backLink.click();
+    await addNewUserPage.container.wait();
+    expect(await addNewUserPage.isDisplayed()).to.be.true
+
+
+    await addNewUserPage.clickContinue();
+    await addUserCheckYourAnswersPage.container.wait();
+    expect(await addUserCheckYourAnswersPage.isDisplayed()).to.be.true;
+    
+    const checkYourAnswersFields = ['Name', 'Email address'];
+    for (const field of checkYourAnswersFields){
+        reportLogger.AddMessage(`*********** validation: change link for field ${field} from check your answers`)
+
+        await addUserCheckYourAnswersPage.clickChangeLinkFor(field)
+        await addNewUserPage.container.wait();
+        expect(await addNewUserPage.isDisplayed()).to.be.true
+        await addNewUserPage.clickContinue();
+
+    }
+   
 
 })
 

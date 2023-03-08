@@ -294,10 +294,9 @@ export class StaffAddEditUserFormComponent implements OnInit {
           'user-skills': this.getSelectedSkills(this.staffFilterOptions.skills, copyUser.skills),
           userType: this.getSelectedByName(this.staffFilterOptions.userTypes, copyUser.userType),
         });
-        console.log(copyUser);
 
         const additionalLocations = copyUser.additionalLocations;
-        const primaryLocation = copyUser.primaryLocation
+        const primaryLocation = copyUser.primaryLocation;
         if(additionalLocations.length > 0) {
           const addLoc = (frm.controls['additionalLocations'] as FormArray);
           addLoc.push(new FormControl(this.getSelectedLocation(this.staffFilterOptions.locations, copyUser.additionalLocations)));
@@ -306,7 +305,6 @@ export class StaffAddEditUserFormComponent implements OnInit {
           const primLoc = (frm.controls['primaryLocation'] as FormArray);
           primLoc.push(new FormControl(this.getSelectedLocation(this.staffFilterOptions.locations, [copyUser.primaryLocation])));
         }
-        console.log(frm);
 
         return frm;
       };
@@ -340,15 +338,10 @@ export class StaffAddEditUserFormComponent implements OnInit {
     let task_supervisor_flag = false;
     let case_allocator_flag = false;
     let staff_admin_flag = false;
-    if(selectedCaseAllocator === 'Y') {
-      case_allocator_flag = true;
-    }
-    if(selectedTaskSupervisor === 'Y') {
-      task_supervisor_flag = true;
-    }
-    if(selectedStaffAdmin === 'Y') {
-      staff_admin_flag = true;
-    }
+    case_allocator_flag = selectedCaseAllocator === 'Y'? true: false;
+    task_supervisor_flag = selectedTaskSupervisor === 'Y'? true: false;
+    staff_admin_flag = selectedStaffAdmin === 'Y'? true: false;
+
     return [case_allocator_flag, task_supervisor_flag, staff_admin_flag];
   }
 

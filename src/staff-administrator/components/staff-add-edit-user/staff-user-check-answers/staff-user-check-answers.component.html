@@ -1,7 +1,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
     <exui-page-wrapper [title]="'Check your answers before adding a new user'" [backLink]="'../'">
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="staffUser.first_name">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Name</dt>
             <dd class="govuk-summary-list__value">{{ staffUser.first_name }} {{ staffUser.last_name }}</dd>
@@ -13,7 +13,7 @@
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="staffUser.email_id">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Email address</div>
             <div class="govuk-summary-list__value">{{ staffUser.email_id }}</div>

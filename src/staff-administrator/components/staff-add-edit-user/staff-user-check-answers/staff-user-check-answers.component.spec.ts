@@ -5,9 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
-import { StaffUser } from '../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
-import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
 
 describe('StaffUserCheckAnswersComponent', () => {
@@ -75,14 +73,115 @@ describe('StaffUserCheckAnswersComponent', () => {
         { provide: Router, useValue: mockRouter},
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         {
+          provide: Store,
+          useValue: storeMock
+        },
+        {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                userTypes: staffFilterOptionsTestData.userTypes,
-                jobTitles: staffFilterOptionsTestData.jobTitles,
-                skills: staffFilterOptionsTestData.skills,
-                services: staffFilterOptionsTestData.services,
+                userTypes: [
+                  {
+                    key: 'userType',
+                    label: 'User Types'
+                  },
+                  {
+                    key: 'ctsc',
+                    label: 'CTSC'
+                  }
+                ],
+                  jobTitles: [
+                    {
+                      key: 'senior-legal-caseworker',
+                      label: 'Senior Legal Caseworker'
+                    },
+                    {
+                      key: 'legal-caseworker',
+                      label: 'Legal Caseworker'
+                    },
+                    {
+                      key: 'hearing-centre-team-leader',
+                      label: 'Hearing Centre Team Leader'
+                    },
+                    {
+                      key: 'hearing-centre-administrator',
+                      label: 'Hearing Centre Administrator'
+                    },
+                    {
+                      key: 'court-clerk',
+                      label: 'Court Clerk'
+                    }
+                  ],
+                  skills: [
+                    {
+                      group: 'adoption',
+                      options: [
+                        {
+                          key: 'adoption-underwriter',
+                          label: 'Underwriter',
+                          service: 'adoption',
+                          id: '1'
+                        },
+                        {
+                          key: 'adoption-caseworker',
+                          label: 'Caseworker',
+                          service: 'adoption',
+                          id: '2'
+                        }
+                      ]
+                    },
+                    {
+                      group: 'family-private-law',
+                      options: [
+                        {
+                          key: 'family-private-law-caseworker',
+                          label: 'Caseworker',
+                          service: 'family-private-law',
+                          id: '3'
+                        },
+                        {
+                          key: 'family-private-law-casemanager',
+                          label: 'Casemanager',
+                          service: 'family-private-law',
+                          id: '4'
+                        }
+                      ]
+                    },
+                    {
+                      group: 'family-public-law',
+                      options: [
+                        {
+                          key: 'family-public-law-underwriter',
+                          label: 'Underwriter',
+                          service: 'family-public-law',
+                          id: '5'
+                        }
+                      ]
+                    }
+                  ],
+                  services: [
+                    {
+                      key: 'family-public-law',
+                      label: 'Family Public Law'
+                    },
+                    {
+                      key: 'family-private-law',
+                      label: 'Family Private Law'
+                    },
+                    {
+                      key: 'adoption',
+                      label: 'Adoption'
+                    },
+                    {
+                      key: 'employment-tribunals',
+                      label: 'Employment Tribunals'
+                    },
+                    {
+                      key: 'financial-remedy',
+                      label: 'Financial Remedy'
+                    }
+                  ]
               }
             }
           }
@@ -180,6 +279,27 @@ describe('StaffUserCheckAnswersComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffUserCheckAnswersComponent);
     component = fixture.componentInstance;
+    storeMock.pipe.and.returnValue(of(userDetails));
+    mockStaffDataAccessService.addNewUser.and.returnValue(of({
+      id: '2',
+      firstName: 'Victoria',
+      lastName: 'Patton',
+      userCategory: '',
+      userType: 'Officer2',
+      jobTitle: 'Solicitor',
+      locations: [
+        'Locatin Y',
+      ],
+      region: 'London',
+      services: [
+        'Mock Service 2',
+      ],
+      suspended: true,
+      email: 'victoria@hmcts.com',
+      primaryLocation: {id: '123', is_primary: true, location: 'London'},
+      roles: ['Case allocator'],
+      skills: ['SCSS'],
+    }));
     fixture.detectChanges();
   });
 

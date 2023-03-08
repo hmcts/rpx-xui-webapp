@@ -1,16 +1,16 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import {
-  addNewUser,
   getFilteredUsers,
+  addNewUser,
+  getSkills,
   getJobTitles,
   getServices,
-  getSkills,
-  getStaffRefUsersById,
   getUsersByPartialName,
-  getUserTypes,
+  getStaffRefUsersById,
   updateUser,
-} from './real-api';
+  getUserTypes
+} from './staff-ref-data.controller';
 
 const router = express.Router({ mergeParams: true });
 

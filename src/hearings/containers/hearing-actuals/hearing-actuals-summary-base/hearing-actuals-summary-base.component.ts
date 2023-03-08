@@ -13,9 +13,7 @@ import {
   ACTION,
   AnswerSource,
   HearingChannelEnum,
-  HearingDateEnum,
-  HearingResult,
-  PartyType
+  HearingDateEnum, PartyType
 } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -132,39 +130,11 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     return isAllDaysCovered;
   }
 
-  // private isAcutalTimingAvailable(actualDay: ActualHearingDayModel): boolean {
-  //   return actualDay.notRequired || Boolean(actualDay.hearingDate && actualDay.hearingStartTime
-  //     && actualDay.hearingEndTime && actualDay.pauseDateTimes);
-  // }
-
   public getHearingTypeDescription(hearingType: string): string {
     const hearingTypeFromLookup = this.hearingTypes && this.hearingTypes.find(x => x.key.toLowerCase() === hearingType.toLowerCase());
 
     return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }
-
-  // public isHearingActualsDaysAvailable(hearingDate: string) {
-  //   const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
-  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-  //       .find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
-  //   return !!hearingInfo && this.isAcutalTimingAvailable(hearingInfo);
-  // }
-
-  // public isHearingActualsPartiesAvailable(hearingDate: string): boolean {
-  //   const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
-  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays.find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
-  //   return hearingInfo && (hearingInfo.notRequired || hearingInfo.actualDayParties.length > 0);
-  // }
-
-  // public isAllHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
-  //   const hasAllActualDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-  //     && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
-  //   return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-  //     actualDay => actualDay.notRequired || actualDay.actualDayParties.length > 0
-  //   );
-  // }
 
   public calculateEarliestHearingDate(hearingDays: ActualHearingDayModel[]): string {
     const moments: moment.Moment[] = hearingDays.map(d => moment(d.hearingDate));

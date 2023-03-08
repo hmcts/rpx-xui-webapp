@@ -14,7 +14,7 @@ export interface StaffUser {
   primaryLocation?: StaffLocation;
   primaryRole?: any;
   roles: string[];
-  role?: StaffRole[] ;
+  role?: StaffRole[];
   skills?: StaffSkill[];
   case_allocator: string;
   staff_admin: string;

@@ -14,7 +14,7 @@ export class StaffUserDetailsComponent implements OnInit {
   public showAction: boolean = false;
   public loading = false;
   public suspendedStatus: 'suspended' | 'restored' | 'error';
-  selectedRoles: string[] = [];
+  public selectedRoles: string[] = [];
 
   constructor(private route: ActivatedRoute,
               private router: Router,

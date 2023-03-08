@@ -7,6 +7,7 @@ import {
   HearingActualsModel,
   PlannedDayPartyModel
 } from '../models/hearingActualsMainModel';
+import { HearingDateEnum } from '../models/hearings.enum';
 
 export class ActualHearingsUtils {
   public static getDate(dateTime: string): string {
@@ -29,8 +30,8 @@ export class ActualHearingsUtils {
 
         return {
           hearingDate: (existingActualData && existingActualData.hearingDate) || this.getDate(plannedDay.plannedStartTime),
-          hearingStartTime: (existingActualData && existingActualData.hearingStartTime) || plannedDay.plannedStartTime,
-          hearingEndTime: (existingActualData && existingActualData.hearingEndTime) || plannedDay.plannedEndTime,
+          hearingStartTime: (existingActualData && existingActualData.hearingStartTime),
+          hearingEndTime: (existingActualData && existingActualData.hearingEndTime),
           pauseDateTimes: (existingActualData && existingActualData.pauseDateTimes) || [],
           notRequired: (existingActualData && existingActualData.notRequired) || false,
           actualDayParties: ((existingActualData && existingActualData.actualDayParties && existingActualData.actualDayParties.length > 0)
@@ -196,5 +197,11 @@ export class ActualHearingsUtils {
       actualOrganisationName: plannedDayPartyModel.organisationDetails && plannedDayPartyModel.organisationDetails.name,
       partyChannelSubType: plannedDayPartyModel.partyChannelSubType
     };
+  }
+
+  public static getPauseDateTime(day: ActualHearingDayModel, state: 'start' | 'end'): string {
+    const pauseTimeState = state === 'start' ? 'pauseStartTime' : 'pauseEndTime';
+    return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime
+      ? moment(day.pauseDateTimes[0][pauseTimeState]).format(HearingDateEnum.DisplayTime) : null;
   }
 }

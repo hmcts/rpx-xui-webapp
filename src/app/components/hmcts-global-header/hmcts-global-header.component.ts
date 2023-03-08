@@ -60,7 +60,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   ) {}
 
   public ngOnInit(): void {
-    this.appStore.dispatch(new fromAppStore.LoadUserDetails());
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     this.isUserCaseManager$ = this.userDetails$.pipe(
       skipWhile((details) => !('userInfo' in details)),

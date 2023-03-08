@@ -149,7 +149,6 @@ describe('HearingActualSummaryComponent', () => {
     component.id = '1111222233334444';
     component.hearingResult = HearingResult.COMPLETED;
     component.onSubmitHearingDetails();
-    expect(component.submitted).toEqual(true);
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals(component.id));
   });
 

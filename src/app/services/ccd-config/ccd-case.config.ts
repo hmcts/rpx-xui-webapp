@@ -39,11 +39,13 @@ export class AppConfig extends AbstractAppConfig {
       }
     });
 
-    this.featureToggleService.getValue('wa-service-config', null).subscribe({
-      next: (val) => this.config = {
-        ...this.config,
-        wa_service_config: val
-      }
+    this.environmentService.config$.subscribe(config => {
+      this.featureToggleService.getValue('wa-service-config', config.waSupportedServices).subscribe({
+        next: (val) => this.config = {
+          ...this.config,
+          wa_service_config: val
+        }
+      });
     });
 
     this.featureToggleService.getValue('access-management-basic-view-mock', {}).subscribe({

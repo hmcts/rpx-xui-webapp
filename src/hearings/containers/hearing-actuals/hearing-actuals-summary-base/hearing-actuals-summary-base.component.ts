@@ -5,17 +5,17 @@ import * as moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import {
-    ActualHearingDayModel,
-    HearingActualsMainModel,
-    HearingOutcomeModel
+  ActualHearingDayModel,
+  HearingActualsMainModel,
+  HearingOutcomeModel
 } from '../../../models/hearingActualsMainModel';
 import {
-    ACTION,
-    AnswerSource,
-    HearingChannelEnum,
-    HearingDateEnum,
-    HearingResult,
-    PartyType
+  ACTION,
+  AnswerSource,
+  HearingChannelEnum,
+  HearingDateEnum,
+  HearingResult,
+  PartyType
 } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -146,11 +146,6 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     }
     return isAllDaysCovered;
   }
-
-  // private isAcutalTimingAvailable(actualDay: ActualHearingDayModel): boolean {
-  //   return actualDay.notRequired || Boolean(actualDay.hearingDate && actualDay.hearingStartTime
-  //     && actualDay.hearingEndTime && actualDay.pauseDateTimes);
-  // }
 
   public getHearingTypeDescription(hearingType: string): string {
     const hearingTypeFromLookup = this.hearingTypes && this.hearingTypes.find((x) => x.key.toLowerCase() === hearingType.toLowerCase());

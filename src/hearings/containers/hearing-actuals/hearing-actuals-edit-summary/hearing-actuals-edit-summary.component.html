@@ -63,9 +63,9 @@
     <div>
 
       <div class="govuk-grid-column-two-thirds">
-        <div *ngIf="actualHearingDays">
+        <div *ngIf="actualHearingDaysCYA">
           <div id="actual-hearing-dates">
-            <details *ngFor="let actualHearingDay of actualHearingDays; let i = index" class="govuk-details"
+            <details *ngFor="let actualHearingDay of actualHearingDaysCYA; let i = index" class="govuk-details"
               data-module="govuk-details" [open]="hearingDatesAccordion[actualHearingDay.hearingDate]">
               <summary class="govuk-details__summary"
                 (click)="$event.preventDefault(); hearingDatesAccordion[actualHearingDay.hearingDate] = !hearingDatesAccordion[actualHearingDay.hearingDate]">
@@ -137,7 +137,7 @@
                       <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Names</dt>
                         <dd class="govuk-summary-list__value">
-                          <div *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
+                          <div *ngFor="let party of actualHearingUtils.getPartiesCYA(hearingActualsMainModel, actualHearingDay.hearingDate)">
                             <span *ngIf="party.individualDetails">
                               {{party.individualDetails.firstName}} {{party.individualDetails.lastName}}
                             </span>
@@ -150,7 +150,7 @@
                           <dt class="govuk-summary-list__key">Participant attendance</dt>
                           <dd class="govuk-summary-list__value">
                             <div
-                              *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
+                              *ngFor="let party of actualHearingUtils.getPartiesCYA(hearingActualsMainModel, actualHearingDay.hearingDate)">
                               <span *ngIf="party.individualDetails">
                                 {{party.individualDetails.firstName}} {{party.individualDetails.lastName}}:
                                 {{party.partyChannelSubType | convertToValue: partyChannels}}

@@ -4,15 +4,21 @@ import { Router } from '@angular/router';
 import {
   FilterService
 } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { Roles } from '../../../models/roles.enum';
 import { filter } from 'rxjs/operators';
 import { InfoMessage } from '../../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../../app/shared/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../../role-access/models/enums';
-import { Roles } from '../../../../staff-administrator/models/roles.enum';
 import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffJobTitles } from '../../../models/staff-job-titles';
+import * as fromAppStore from '../../../../app/store';
+import { UserDetails } from '../../../../app/models/user-details.model';
+import { map } from 'rxjs/operators';
+
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -32,6 +38,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     skills: StaffFilterOption[],
     services: StaffFilterOption[]
   };
+  public userDetails$: Observable<UserDetails>;
   public firstName: string;
   public lastName: string;
   public email: string;
@@ -48,8 +55,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public regionPayload = [];
   public userTypesPayload = [];
   public skillsPayload;
+  public idamRoles = [];
 
   constructor(
+    private readonly appStore: Store<fromAppStore.State>,
     private filterService: FilterService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -65,10 +74,13 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.filterService.getStream(this.formId)
-    .pipe(filter(responseFormValue => responseFormValue !== null))
-    .subscribe(responseFormValue => {
-      this.addUserData = responseFormValue.fields;
+    this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
+    this.userDetails$.pipe(
+      map(details => {
+       this.idamRoles = details.userInfo.roles
+    }));
+    this.filterService.getStream(this.formId).subscribe(data => {
+      this.addUserData = data.fields;
       if (this.addUserData) {
         this.firstName = this.addUserData[0].value[0];
         this.lastName = this.addUserData[1].value[0];
@@ -123,13 +135,13 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   private prepareLocationPayload() {
     const locationPayload = [];
     locationPayload.push({
-      location_id: this.primaryLocations.court_venue_id,
+      location_id: +this.primaryLocations.court_venue_id,
       location: this.primaryLocations.site_name,
       is_primary: true
     });
     this.additionalLocations.map(location => {
       locationPayload.push({
-        location_id: location.court_venue_id,
+        location_id: +location.court_venue_id,
         location: location.site_name,
         is_primary: false
       });
@@ -163,7 +175,14 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     let nonEmptySkillsPayload = [[]];
     this.skills.map(skill => {
       this.staffFilterOptions.skills.map(skillgroup => {
-        skillsPayload.push(skillgroup.options.filter(skills => skills.key === skill));
+        const matchingSkills = skillgroup.options.filter(skills => skills.key === skill)
+        skillsPayload.push(matchingSkills.map(matchingSkill => {
+          return {
+            skill_id: matchingSkill.key,
+            description: matchingSkill.label,
+            skill_code: matchingSkill.label
+          }
+        }));
       });
     });
 
@@ -194,20 +213,21 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     });
 
     const addNewUserPayload = {
+      base_locations: this.prepareLocationPayload(),
+      case_allocator: case_allocator_flag,
       email_id: this.email,
       first_name: this.firstName,
+      idam_roles: this.idamRoles,
       last_name: this.lastName,
-      services: this.servicePayload,
       region: this.regionPayload.length ? this.regionPayload[0].label : '' ,
       region_id: 1,
       roles: this.jobTitlesPayload,
-      task_supervisor: task_supervisor_flag,
-      case_allocator: case_allocator_flag,
+      services: this.servicePayload,
+      skills: this.skillsPayload,
       staff_admin: staff_admin_flag,
       suspended: false,
-      base_locations: this.prepareLocationPayload(),
+      task_supervisor: task_supervisor_flag,
       user_type: this.userTypesPayload[0].label,
-      skills: this.skillsPayload
     };
 
     this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {

@@ -542,61 +542,11 @@ describe('HearingActualsSummaryBaseComponent', () => {
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
   });
 
-  // it('should return empty string for hearing result reason type completed', () => {
-  //   const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
-  //   const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
-  //   hearingOutcome.hearingResult = HearingResult.COMPLETED;
-  //   hearingOutcome.hearingResultReasonType = '';
-  //   const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
-  //   expect(description).toEqual('');
-  // });
-
-  // it('should check is errror bar handling', () => {
-  //   expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
-  //   expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
-  // });
-
-  // it('should return hearing result reason type description for adjourned', () => {
-  //   const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
-  //   component.actualPartHeardReasonCodes = actualPartHeardReasonCodes;
-  //   const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
-  //   hearingOutcome.hearingResult = HearingResult.ADJOURNED;
-  //   hearingOutcome.hearingResultReasonType = 'postponedDueToOtherReasons';
-  //   const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
-  //   expect(description).toEqual('Postponed, due to Other Reasons');
-  // });
-
-  // it('should return hearing result reason type description for cancelled', () => {
-  //   const clonedActualModel = _.cloneDeep(hearingActualsMainModel);
-  //   component.actualCancellationReasonCodes = actualCancellationReasonCodes;
-  //   const hearingOutcome = clonedActualModel.hearingActuals.hearingOutcome;
-  //   hearingOutcome.hearingResult = HearingResult.CANCELLED;
-  //   hearingOutcome.hearingResultReasonType = 'unable';
-  //   const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
-  //   expect(description).toEqual('Party unable to attend');
-  // });
-
   it('should return correct hearing type from the hearing types', () => {
     component.hearingTypes = hearingStageRefData;
     const description = component.getHearingTypeDescription('initial');
     expect(description).toEqual('Initial');
   });
-
-  // it('should check is errror bar handling', () => {
-  //   const hearingActuals = _.cloneDeep(hearingActualsMainModel);
-  //   hearingActuals.hearingActuals.actualHearingDays = [
-  //     {
-  //       hearingDate: '2021-03-12',
-  //       hearingStartTime: '2021-03-12T09:00:00.000Z',
-  //       hearingEndTime: '2021-03-12T10:00:00.000Z',
-  //       pauseDateTimes: [],
-  //       notRequired: false,
-  //       actualDayParties: []
-  //     },
-  //   ];
-  //   expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
-  //   expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
-  // });
 
   it('should return only one date if only one hearing date', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);

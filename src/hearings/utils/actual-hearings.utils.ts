@@ -139,7 +139,7 @@ export class ActualHearingsUtils {
   }
 
   public static getActualDayIndexFromHearingDate(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): number | undefined {
-    const hasActualsHearingDays = hearingActualsMainModel && hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
+    const hasActualsHearingDays = hearingActualsMainModel?.hearingActuals?.actualHearingDays?.length > 0;
     let index: number;
     if (hasActualsHearingDays) {
       index = hearingActualsMainModel.hearingActuals.actualHearingDays
@@ -150,7 +150,7 @@ export class ActualHearingsUtils {
   }
 
   public static getPlannedDayIndexFromHearingDate(hearingActualsMainModel: HearingActualsMainModel, hearingDate: string): number | undefined {
-    const hasPlannedHearingDays = hearingActualsMainModel.hearingPlanned && hearingActualsMainModel.hearingPlanned.plannedHearingDays;
+    const hasPlannedHearingDays = hearingActualsMainModel?.hearingPlanned?.plannedHearingDays;
     let index: number;
     if (hasPlannedHearingDays) {
       index = hearingActualsMainModel.hearingPlanned.plannedHearingDays

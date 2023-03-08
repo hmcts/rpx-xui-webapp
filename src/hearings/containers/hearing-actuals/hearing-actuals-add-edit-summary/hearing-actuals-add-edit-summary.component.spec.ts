@@ -490,7 +490,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
       declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
       imports: [RouterTestingModule.withRoutes(
         [
-          {path: 'hearings/actuals/1000000/hearing-actual-summary', component: NothingComponent}
+          {path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent}
         ]
       )],
       providers: [

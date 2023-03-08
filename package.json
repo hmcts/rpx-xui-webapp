@@ -60,7 +60,7 @@
     "test:ngIntegrationDebug": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js --debug",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
     "test:backendMock": "nodemon test_codecept/backendMock/app --standalone",
-    "test:codecept": "npx codeceptjs run --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.js --steps  --features --grep @codecept_test --reporter mochawesome "
+    "test:codecept": "npx codeceptjs run --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.js --steps  --features --grep @@codecept_enabled --reporter mochawesome "
   },
   "private": true,
   "dependencies": {

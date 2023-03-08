@@ -319,7 +319,11 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         this.claimTask(taskAction.task.id);
         return;
       }
-      if (taskAction.action.id === TaskActionIds.GO) {
+      else if (taskAction.action.id === TaskActionIds.CLAIM_AND_GO) {
+        this.claimTaskAndGo(taskAction.task);
+        return;
+      }
+      else if (taskAction.action.id === TaskActionIds.GO) {
         const goToTaskUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
         this.router.navigate([goToTaskUrl]);
         return;

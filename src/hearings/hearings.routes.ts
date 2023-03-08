@@ -2,8 +2,8 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './components';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
-import { HearingActualAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
-import { HearingActualEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-edit-summary/hearing-actual-edit-summary.component';
+import { HearingActualsAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actuals-add-edit-summary/hearing-actuals-add-edit-summary.component';
+import { HearingActualsEditSummaryComponent } from './containers/hearing-actuals/hearing-actuals-edit-summary/hearing-actuals-edit-summary.component';
 import { HearingActualsFinalConfirmationComponent } from './containers/hearing-actuals/hearing-actuals-final-confirmation/hearing-actuals-final-confirmation.component';
 import { HearingActualsTimingComponent } from './containers/hearing-actuals/hearing-actuals-timing/hearing-actuals-timing.component';
 import { HearingActualsViewEditPartiesComponent } from './containers/hearing-actuals/hearing-actuals-view-edit-parties/hearing-actuals-view-edit-parties.component';
@@ -62,8 +62,6 @@ import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.serv
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { PartySubChannelsResolverService } from './resolvers/party-subchannels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
-
-
 
 export const ROUTES: Routes = [
   {
@@ -191,7 +189,7 @@ export const ROUTES: Routes = [
           actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
           cancelHearingActualReasons: CancelHearingActualReasonResolver
         },
-        component: HearingActualAddEditSummaryComponent,
+        component: HearingActualsAddEditSummaryComponent,
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
@@ -205,7 +203,7 @@ export const ROUTES: Routes = [
           actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
           cancelHearingActualReasons: CancelHearingActualReasonResolver
         },
-        component: HearingActualEditSummaryComponent,
+        component: HearingActualsEditSummaryComponent,
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check your answers'

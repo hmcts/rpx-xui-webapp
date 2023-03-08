@@ -5,17 +5,17 @@ import * as moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import {
-  ActualHearingDayModel,
-  HearingActualsMainModel,
-  HearingOutcomeModel
+    ActualHearingDayModel,
+    HearingActualsMainModel,
+    HearingOutcomeModel
 } from '../../../models/hearingActualsMainModel';
 import {
-  ACTION,
-  AnswerSource,
-  HearingChannelEnum,
-  HearingDateEnum,
-  HearingResult,
-  PartyType
+    ACTION,
+    AnswerSource,
+    HearingChannelEnum,
+    HearingDateEnum,
+    HearingResult,
+    PartyType
 } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -28,19 +28,19 @@ import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
   template: ''
 
 })
-export class HearingActualSummaryBaseComponent implements OnInit, OnDestroy {
+export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
   public isPaperHearing: boolean;
   public hearingActualsMainModel: HearingActualsMainModel;
   public hearingOutcome: HearingOutcomeModel;
   public hearingRoles: LovRefDataModel[] = [];
   public actualHearingDays: ActualHearingDayModel[];
+  public actualHearingDaysCYA: ActualHearingDayModel[];
   public hearingTypes: LovRefDataModel[];
   public actualPartHeardReasonCodes: LovRefDataModel[];
   public actualCancellationReasonCodes: LovRefDataModel[];
   public hearingResult: string;
   public hearingTypeDescription: string;
-  public hearingResultReasonTypeDescription: string;
   public validationErrors: { id: string, message: string }[] = [];
   public serverErrors: { id: string, message: string }[] = [
     { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
@@ -90,11 +90,11 @@ export class HearingActualSummaryBaseComponent implements OnInit, OnDestroy {
       .subscribe((state) => {
         this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
-        this.hearingTypeDescription = this.hearingOutcome && this.hearingOutcome.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
-        this.hearingResultReasonTypeDescription = this.hearingOutcome && this.getHearingResultReasonTypeDescription(this.hearingOutcome);
+        this.hearingTypeDescription = this.hearingOutcome?.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingRequestID = state.hearingRequest.hearingRequestMainModel.requestDetails.hearingRequestID;
-        this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
+        this.hearingResult = this.hearingOutcome?.hearingResult;
         this.actualHearingDays = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel);
+        this.actualHearingDaysCYA = ActualHearingsUtils.getActualHearingDaysCYA(this.hearingActualsMainModel);
         this.hearingDateRange = this.calculateEarliestHearingDate(this.actualHearingDays);
         this.individualParties = state.hearingValues.serviceHearingValuesModel.parties?.filter((party) => party.partyType === PartyType.IND);
 
@@ -137,8 +137,7 @@ export class HearingActualSummaryBaseComponent implements OnInit, OnDestroy {
 
   public isHearingAllRequiredDaysCovered(): boolean {
     let isAllDaysCovered: boolean = true;
-    const isActualHearingDaysAvailable = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0;
+    const isActualHearingDaysAvailable = this.hearingActualsMainModel.hearingActuals?.actualHearingDays?.length > 0;
     if (isActualHearingDaysAvailable) {
       this.actualHearingDays.forEach((actualHearingDay) => {
         if (!actualHearingDay.notRequired && !this.isDetailsProvidedForDay(actualHearingDay)) {
@@ -149,10 +148,10 @@ export class HearingActualSummaryBaseComponent implements OnInit, OnDestroy {
     return isAllDaysCovered;
   }
 
-  public isAcutalTimingAvailable(actualDay: ActualHearingDayModel): boolean {
-    return actualDay.notRequired || Boolean(actualDay.hearingDate && actualDay.hearingStartTime
-      && actualDay.hearingEndTime && actualDay.pauseDateTimes);
-  }
+  // private isAcutalTimingAvailable(actualDay: ActualHearingDayModel): boolean {
+  //   return actualDay.notRequired || Boolean(actualDay.hearingDate && actualDay.hearingStartTime
+  //     && actualDay.hearingEndTime && actualDay.pauseDateTimes);
+  // }
 
   public getHearingTypeDescription(hearingType: string): string {
     const hearingTypeFromLookup = this.hearingTypes && this.hearingTypes.find((x) => x.key.toLowerCase() === hearingType.toLowerCase());
@@ -160,20 +159,20 @@ export class HearingActualSummaryBaseComponent implements OnInit, OnDestroy {
     return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }
 
-  public isHearingActualsDaysAvailable(hearingDate: string) {
-    const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-        .find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
-    return !!hearingInfo && this.isAcutalTimingAvailable(hearingInfo);
-  }
+  // public isHearingActualsDaysAvailable(hearingDate: string) {
+  //   const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
+  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
+  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays
+  //       .find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
+  //   return !!hearingInfo && this.isAcutalTimingAvailable(hearingInfo);
+  // }
 
-  public isHearingActualsPartiesAvailable(hearingDate: string): boolean {
-    const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
-      && this.hearingActualsMainModel.hearingActuals.actualHearingDays.find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
-    return hearingInfo && (hearingInfo.notRequired || hearingInfo.actualDayParties.length > 0);
-  }
+  // public isHearingActualsPartiesAvailable(hearingDate: string): boolean {
+  //   const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
+  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
+  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays.find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
+  //   return hearingInfo && (hearingInfo.notRequired || hearingInfo.actualDayParties.length > 0);
+  // }
 
   public isAllHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
     const hasAllActualDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays

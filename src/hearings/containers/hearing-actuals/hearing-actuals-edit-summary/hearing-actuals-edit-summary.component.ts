@@ -8,22 +8,14 @@ import {
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
-import { HearingActualSummaryBaseComponent } from '../hearing-actual-summary-base/hearing-actual-summary-base.component';
+import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-base/hearing-actuals-summary-base.component';
 
 @Component({
-  selector: 'exui-hearing-actual-summary',
-  templateUrl: './hearing-actual-summary.component.html',
-  styleUrls: ['./hearing-actual-summary.component.scss']
+  selector: 'exui-hearing-actuals-edit-summary',
+  templateUrl: './hearing-actuals-edit-summary.component.html',
+  styleUrls: ['./hearing-actuals-edit-summary.component.scss']
 })
-export class HearingActualSummaryComponent extends HearingActualSummaryBaseComponent {
-  public serverErrors: { id: string, message: string }[] = [
-    { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
-  ];
-
-  public hearingTimingResultErrorMessage = '';
-  public hearingPartiesResultErrorMessage = '';
-  public hearingDaysRequiredErrorMessage = '';
-  public actualHearingUtils = ActualHearingsUtils;
+export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBaseComponent {
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -40,7 +32,6 @@ export class HearingActualSummaryComponent extends HearingActualSummaryBaseCompo
   }
 
   public onSubmitHearingDetails(): void {
-    this.submitted = true;
     this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
   }
 

@@ -46,7 +46,6 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
   ];
   public hearingStageResultErrorMessage = '';
-  public submitted = false;
   public sub: Subscription;
   public id: string;
   public errors$: Observable<number>;

@@ -57,7 +57,6 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
       this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals
     );
-    console.log('PATCHED HEARING ACTUALS - HEARING TIMINGS', patchedHearingActuals);
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
       hearingActuals: patchedHearingActuals,
@@ -77,7 +76,6 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
       this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals
     );
-    console.log('PATCHED HEARING ACTUALS - PARTIES', patchedHearingActuals);
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
       hearingActuals: patchedHearingActuals,

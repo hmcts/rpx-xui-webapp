@@ -9,7 +9,6 @@ import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffStatusComponent } from './components/staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from './components/staff-suspended-banner/staff-suspended-banner.component';
-import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
 import { StaffDataFilterService } from './components/staff-users/services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from './components/staff-users/staff-search/staff-search.component';
@@ -19,7 +18,7 @@ import {
   StaffEditUserContainerComponent
 } from './containers/staff-edit-user-container/staff-edit-user-container.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
-import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
+import { StaffUserDetailsComponent } from './containers/staff-user-details/staff-user-details.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
 import { PluckAndJoinPipe } from './pipes/pluckAndJoin.pipe';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
@@ -40,8 +39,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffAddEditUserFormComponent,
     StaffAddUserComponent,
     StaffUserCheckAnswersComponent,
-    StaffUserDetailsContainerComponent,
-    StaffUserDetailsComponent,
+      StaffUserDetailsComponent,
     StaffStatusComponent,
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,

@@ -1,17 +1,15 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HmctsBannerComponent } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-import { staffUserDetailsTestData } from 'src/staff-administrator/test-data/staff-user-details.test.data';
+import { StaffStatusComponent } from '../../components/staff-status/staff-status.component';
+import { StaffSuspendedBannerComponent } from '../../components/staff-suspended-banner/staff-suspended-banner.component';
+import { StaffUser } from '../../models/staff-user.model';
 import { PluckAndJoinPipe } from '../../pipes/pluckAndJoin.pipe';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
-import { staffSingleUserDetailsTestData } from '../../test-data/staff-single-user-details.test.data';
-import { StaffStatusComponent } from '../staff-status/staff-status.component';
-import { StaffSuspendedBannerComponent } from '../staff-suspended-banner/staff-suspended-banner.component';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
 
 @Component({
@@ -26,16 +24,59 @@ describe('StaffUserDetailsComponent', () => {
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let location: Location;
   let router: jasmine.SpyObj<Router>;
+  let testStaffUser: StaffUser;
 
   beforeEach(async(() => {
-    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['updateUserStatus']);
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
+      'mockStaffDataAccessService', ['updateUser']
+    );
+    const testStaffUserData = {
+      email_id: 'email@test.hmcts',
+      first_name: 'Kevin',
+      last_name: 'Silver',
+      suspended: 'false',
+      user_type: 'userType',
+      task_supervisor: 'Y',
+      case_allocator: 'Y',
+      staff_admin: 'N',
+      userCategory: 'userCategory',
+      role: [
+        {
+          role_id: 1,
+          role: 'Role',
+          is_primary: true,
+        }
+      ],
+      skills: [
+        {
+          skill_id: 1,
+          description: 'SKILLDESCRIPTION',
+          skill_code: 'SKILLCODE',
+        }
+      ],
+      work_area: [
+        {
+          area_of_work: 'service',
+          service_code: 'SERVICE_CODE'
+        }
+      ],
+      base_location: [
+        {
+          location_id: 333,
+          location: 'Location',
+          is_primary: true
+        }
+      ],
+      region: 'West Midlands',
+      region_id: 12,
+    };
+    testStaffUser = StaffUser.from(testStaffUserData);
 
     TestBed.configureTestingModule({
       declarations: [
         StaffUserDetailsComponent,
         StaffStatusComponent,
         StaffSuspendedBannerComponent,
-        HmctsBannerComponent,
         StubComponent,
         PluckAndJoinPipe
       ],
@@ -47,16 +88,26 @@ describe('StaffUserDetailsComponent', () => {
       ],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
-      ]
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                staffUserDetails: {
+                  userDetails: testStaffUser
+                }
+              }
+            },
+          },
+        }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
     router = TestBed.get(Router);
-    spyOn(router, 'getCurrentNavigation').and.returnValue(
-      { extras: { state: { user: staffSingleUserDetailsTestData } } }
-    );
 
     fixture = TestBed.createComponent(StaffUserDetailsComponent);
     component = fixture.componentInstance;
@@ -70,14 +121,14 @@ describe('StaffUserDetailsComponent', () => {
   });
 
   it('should navigate to service-down if error is 500', fakeAsync(() => {
-    mockStaffDataAccessService.updateUserStatus.and.returnValue(throwError({ status: 500 }));
+    mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 500 }));
     component.updateUserStatus();
     tick();
     expect(location.path()).toBe('/service-down');
   }));
 
   it('should navigate to service-down if error is 401', fakeAsync(() => {
-    mockStaffDataAccessService.updateUserStatus.and.returnValue(throwError({ status: 401 }));
+    mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 401 }));
     component.updateUserStatus();
     tick();
     expect(location.path()).toBe('/service-down');
@@ -85,36 +136,37 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should set suspendedStatus to "error" to show the error banner and it shouldn\'t modify suspended status' + ' ' +
     'when calling updateUserStatus', () => {
-    mockStaffDataAccessService.updateUserStatus.and.returnValue(throwError({ status: 403 }));
+    mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 403 }));
     const userSuspendedStatusBefore = component.userDetails.suspended;
     component.updateUserStatus();
     fixture.detectChanges();
 
-    expect(mockStaffDataAccessService.updateUserStatus).toHaveBeenCalled();
+    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
     expect(component.userDetails.suspended).toBe(userSuspendedStatusBefore);
     expect(component.suspendedStatus).toBe('error');
   });
 
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
-    mockStaffDataAccessService.updateUserStatus.and.returnValue(of({suspended: true}));
+    mockStaffDataAccessService.updateUser.and.returnValue(of([{case_worker_id: '123'}]));
     component.updateUserStatus();
     fixture.detectChanges();
 
-    expect(mockStaffDataAccessService.updateUserStatus).toHaveBeenCalled();
+    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
     expect(component.suspendedStatus).toBe('suspended');
   });
 
-  it('should set suspendedStatus to "restored" to show the banner when calling updateUserStatus with isSuspended false', () => {
-    mockStaffDataAccessService.updateUserStatus.and.returnValue(of({suspended: false}));
+  it('should set suspendedStatus to "restored" to show the banner when calling updateUserStatus with isSuspended true', () => {
+    mockStaffDataAccessService.updateUser.and.returnValue(of([{case_worker_id: '123'}]));
+    testStaffUser.suspended = 'true';
     component.updateUserStatus();
     fixture.detectChanges();
 
-    expect(mockStaffDataAccessService.updateUserStatus).toHaveBeenCalled();
+    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
     expect(component.suspendedStatus).toBe('restored');
   });
 
   it('should userDetails property if it exists in routers extra state', () => {
-    expect(component.userDetails).toEqual(staffSingleUserDetailsTestData);
+    expect(component.userDetails).toEqual(testStaffUser);
   });
 
   it('should set filterSettings on sessionStorage and navigate to /staff/update-user with userDetails as state on setDataAndNavigateToUpdateUser', fakeAsync(() => {

@@ -159,6 +159,8 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           } else {
             this.staffDataFilterService.resetSearch();
           }
+
+          window.scrollTo(0, 0);
         }
       });
 

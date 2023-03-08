@@ -29,8 +29,8 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Services</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let service of staffUser.services; let isLast=last">
-                {{service.service}}
+              <span *ngFor="let service of staffUser.work_area; let isLast=last">
+                {{service.area_of_work}}
                 <span *ngIf="!isLast"><br/></span>
               </span>
             </div>
@@ -60,7 +60,7 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Primary location</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let location of staffUser.base_locations; let isLast=last">
+              <span *ngFor="let location of staffUser.base_location; let isLast=last">
                 <ng-container *ngIf="location.is_primary">
                   {{location.location}}
                 </ng-container>
@@ -78,7 +78,7 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Additional locations</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let location of staffUser.base_locations; let isLast=last">
+              <span *ngFor="let location of staffUser.base_location; let isLast=last">
                 <ng-container *ngIf="!location.is_primary">
                   {{location.location}}
                   <span *ngIf="!isLast"><br/></span>
@@ -127,7 +127,7 @@
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Job title</div>
             <div class="govuk-summary-list__value">
-              <span *ngFor="let jobTitle of staffUser.roles; let isLast=last">
+              <span *ngFor="let jobTitle of staffUser.role; let isLast=last">
                 {{jobTitle.role}}
                 <span *ngIf="!isLast"><br/></span>
               </span>

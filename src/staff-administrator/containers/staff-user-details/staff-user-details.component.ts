@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { StaffUser } from '../../../staff-administrator/models/staff-user.model';
+import { StaffUser } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
 @Component({
@@ -21,13 +21,9 @@ export class StaffUserDetailsComponent {
     private readonly router: Router,
     private staffDataAccessService: StaffDataAccessService
   ) {
-    const routerStateUserDetails = router.getCurrentNavigation().extras.state &&
-      router.getCurrentNavigation().extras.state.user;
+    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails;
 
-    if (routerStateUserDetails) {
-      this.userDetails = { ...routerStateUserDetails };
-      // this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails[0];
-    } else {
+    if (!this.userDetails) {
       this.router.navigateByUrl('/staff');
     }
   }
@@ -35,20 +31,24 @@ export class StaffUserDetailsComponent {
   public updateUserStatus(): void {
     if (!this.loading) {
       this.loading = true;
-      this.staffDataAccessService.updateUserStatus(this.userDetails).pipe(
-        finalize(() => this.loading = false),
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, this.userDetails);
+      staffUser.suspended = this.userDetails.suspended === 'true' ? 'false' : 'true';
+      this.staffDataAccessService.updateUser(staffUser).pipe(
+        finalize(() => {
+          this.loading = false;
+          window.scrollTo(0, 0);
+        })
       )
         .subscribe(
-          (res) => {
-            this.userDetails.suspended = res.suspended;
-            window.scrollTo(0, 0);
-            this.suspendedStatus = res.suspended ? 'suspended' : 'restored';
+          () => {
+            this.suspendedStatus = staffUser.suspended === 'true' ? 'suspended' : 'restored';
+            this.userDetails.suspended = staffUser.suspended;
           },
           (err) => {
             if (err.status === 401 || err.status.toString().startsWith('5')) {
               this.router.navigateByUrl('/service-down');
             } else {
-              window.scrollTo(0, 0);
               this.suspendedStatus = 'error';
             }
           }
@@ -62,7 +62,7 @@ export class StaffUserDetailsComponent {
   }
 
   public setDataAndNavigateToUpdateUser() {
-    const primaryLocation = this.userDetails.base_locations.find(item => item.is_primary);
+    const primaryLocation = this.userDetails.base_location.find(item => item.is_primary);
     const formValues = {
       id: this.FILTER_ID,
       fields: [
@@ -80,7 +80,7 @@ export class StaffUserDetailsComponent {
         },
         {
           name: 'user-services',
-          value: this.userDetails.services.map(item => item.service_code)
+          value: this.userDetails.work_area.map(item => item.service_code)
         },
         {
           name: 'region_id',
@@ -92,7 +92,7 @@ export class StaffUserDetailsComponent {
         },
         {
           name: 'additionalLocations',
-          value: this.userDetails.base_locations.filter(item => !item.is_primary).map(location => {
+          value: this.userDetails.base_location.filter(item => !item.is_primary).map(location => {
             return { epimms_id: location.location_id, site_name: location.location };
           })
         },
@@ -110,7 +110,7 @@ export class StaffUserDetailsComponent {
         },
         {
           name: 'jobTitle',
-          value: this.userDetails.roles.map(item => Number(item.role_id))
+          value: this.userDetails.role.map(item => Number(item.role_id))
         },
         {
           name: 'user-skills',

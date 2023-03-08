@@ -4,10 +4,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
+import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
+import { StaffUser } from '../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
-import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 
 describe('StaffUserCheckAnswersComponent', () => {
   let component: StaffUserCheckAnswersComponent;
@@ -16,11 +17,53 @@ describe('StaffUserCheckAnswersComponent', () => {
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
+  let testStaffUser: StaffUser;
 
   beforeEach(waitForAsync(() => {
     mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser']);
     mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
+
+    testStaffUser = StaffUser.from({
+      email_id: 'email@test.hmcts',
+      first_name: 'Kevin',
+      last_name: 'Silver',
+      suspended: 'false',
+      user_type: 'userType',
+      task_supervisor: 'Y',
+      case_allocator: 'Y',
+      staff_admin: 'N',
+      userCategory: 'userCategory',
+      role: [
+        {
+          role_id: 1,
+          role: 'Role',
+          is_primary: true,
+        }
+      ],
+      skills: [
+        {
+          skill_id: 1,
+          description: 'SKILLDESCRIPTION',
+          skill_code: 'SKILLCODE',
+        }
+      ],
+      work_area: [
+        {
+          area_of_work: 'service',
+          service_code: 'SERVICE_CODE'
+        }
+      ],
+      base_location: [
+        {
+          location_id: 333,
+          location: 'Location',
+          is_primary: true
+        }
+      ],
+      region: 'West Midlands',
+      region_id: 12,
+    });
 
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
@@ -144,40 +187,17 @@ describe('StaffUserCheckAnswersComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call addNewUser and be successful', (done) => {
-    mockStaffDataAccessService.addNewUser.and.returnValue(of({
-      id: 2,
-      firstName: 'Victoria',
-      lastName: 'Patton',
-      userCategory: '',
-      userType: 'Officer2',
-      jobTitle: 'Solicitor',
-      locations: [
-        'Locatin Y',
-      ],
-      region: 'London',
-      services: [
-        'Mock Service 2',
-      ],
-      suspended: true,
-      email: 'victoria@hmcts.com',
-      primaryLocation: 'London',
-      roles: 'Case allocator',
-      skills: ['SCSS'],
-    }));
+  it('should call addNewUser and on being succesful it should redirect to "/staff"', (done) => {
+    mockStaffDataAccessService.addNewUser.and.returnValue(of(testStaffUser));
     component.onSubmit();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
-  });
-
-  it('after a banner, it should redirect to the staff page', (done) => {
-    component.addNewUser();
-    done();
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/staff');
   });
 
   it('should display a banner once an user has been added successfully', (done) => {
-    component.addNewUser();
+    mockStaffDataAccessService.addNewUser.and.returnValue(of(testStaffUser));
+    component.onSubmit();
     done();
     expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalled();
   });

@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Navigation,Router } from '@angular/router';
 import {
   BookingCheckType,
@@ -8,8 +9,8 @@ import {
   GenericFilterComponent,
   GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { finalize, map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { STAFF_REGIONS } from '../../../models/staff-regions';
@@ -21,7 +22,7 @@ import { StaffDataAccessService } from '../../../services/staff-data-access/staf
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit {
+export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   @Input() public editMode = false;
   public formId: string = '';
   public staffFilterOptions: {
@@ -39,6 +40,9 @@ export class StaffAddEditUserFormComponent implements OnInit {
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
   private currentNavigation: Navigation;
+  private previousUrl: string;
+  private isLoading = false;
+  private filterStreamSubscription: Subscription;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
@@ -49,6 +53,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
     private readonly staffDataAccessService: StaffDataAccessService
   ) {
     this.currentNavigation = this.router.getCurrentNavigation();
+    this.previousUrl = this.currentNavigation?.previousNavigation?.finalUrl.toString();
     this.formId = activatedRoute.snapshot.data.formId;
 
     this.staffFilterOptions = {
@@ -61,17 +66,16 @@ export class StaffAddEditUserFormComponent implements OnInit {
 
   public ngOnInit() {
     this.initFormConfig();
-
-    this.filterService.getStream(this.formId).subscribe(data => {
+    this.filterStreamSubscription = this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
         if (data.reset) {
           this.resetForm();
         } else {
-          if (this.genericFilterComponent.submitted) {
+          if (this.genericFilterComponent?.submitted) {
             if (this.editMode) {
               this.onSubmitEditMode(data);
             } else {
-              this.router.navigate(['check-your-answers'], {relativeTo: this.activatedRoute});
+              this.router.navigate(['check-your-answers'], { relativeTo: this.activatedRoute });
             }
           }
         }
@@ -99,19 +103,25 @@ export class StaffAddEditUserFormComponent implements OnInit {
     );
   }
 
+  public ngOnDestroy() {
+    this.filterStreamSubscription?.unsubscribe();
+  }
+
   public resetForm() {
     this.filterService.clearSessionAndLocalPersistance(this.formId);
     this.filterService.givenErrors.next(null);
   }
 
   public onSubmitEditMode(data: FilterSetting) {
+    this.isLoading = true;
     const staffUser = new StaffUser();
-    staffUser.initFromGenericFilter(data, this.staffFilterOptions);
-
-    this.staffDataAccessService.updateUser(staffUser).subscribe(res => {
-      this.router.navigateByUrl('/staff');
-    }, error => {
-      this.router.navigateByUrl('/service-down');
+    staffUser.toDtoFromGenericFilter(data, this.staffFilterOptions);
+    this.staffDataAccessService.updateUser(staffUser)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe(res => {
+        this.router.navigateByUrl('/staff');
+      }, error => {
+        this.router.navigateByUrl('/service-down');
     });
   }
 
@@ -265,7 +275,6 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxSelected: 99,
           displayMinSelectedError: true,
           minSelectedError: 'Select at least one job title',
-          maxWidth480px: true,
           lineBreakBefore: true,
         },
         {
@@ -292,7 +301,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
       }
     };
 
-    if (this.currentNavigation.extras && this.currentNavigation.extras.state && this.currentNavigation.extras.state.user && this.previousUrl.indexOf('/staff/users/user-details') >= 0) {
+    if (this.currentNavigation.extras && this.currentNavigation.extras.state && this.currentNavigation.extras.state.user && this.previousUrl.indexOf('/staff/user-details') >= 0) {
       const copyUser = this.currentNavigation.extras.state.user;
       this.filterConfig.copyFields = (frm: FormGroup): FormGroup => {
         frm.patchValue({
@@ -334,7 +343,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
     const selected: boolean[] = [] ;
     allOptions.forEach((el: GroupOptions) => {
       el.options.forEach((op: FilterFieldOption) => {
-        const selctedOption = selectedOptions.filter(s => s === op.key)
+        const selctedOption = selectedOptions.filter(s => s === op.key);
         if (selctedOption.length > 0 ) {
           selected.push(true);
         } else {
@@ -344,5 +353,4 @@ export class StaffAddEditUserFormComponent implements OnInit {
     });
     return selected;
   }
-
 }

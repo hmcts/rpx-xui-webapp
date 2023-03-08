@@ -4,13 +4,13 @@ import {
   FilterService, GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
 import { take } from 'rxjs/operators';
-import { StaffFilterOption } from '../../../models/staff-filter-option.model';
-import { StaffUser } from '../../../models/staff-user.model';
-import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { InfoMessage } from '../../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../../app/shared/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../../role-access/models/enums';
+import { StaffFilterOption } from '../../../models/staff-filter-option.model';
+import { StaffUser } from '../../../models/staff-user.model';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -51,7 +51,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       .subscribe(data => {
       if (data.fields) {
         this.staffUser = new StaffUser();
-        this.staffUser.initFromGenericFilter(data, this.staffFilterOptions);
+        this.staffUser.toDtoFromGenericFilter(data, this.staffFilterOptions);
       }
     });
   }
@@ -59,7 +59,13 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public onSubmit() {
     this.staffDataAccessService.addNewUser(this.staffUser).subscribe(res => {
       // success banner
-    }, error => {
+      this.messageService.nextMessage({
+        message: InfoMessage.ADD_NEW_USER,
+        type: InfoMessageType.SUCCESS
+      } as InformationMessage);
+      this.filterService.clearSessionAndLocalPersistance(this.formId);
+      this.router.navigateByUrl('/staff');
+      }, error => {
       this.router.navigateByUrl('/service-down');
     });
   }

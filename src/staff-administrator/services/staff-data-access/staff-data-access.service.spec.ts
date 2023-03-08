@@ -27,9 +27,9 @@ describe('StaffDataAccessService', () => {
     expect(mockHttpService.get).toHaveBeenCalledTimes(2);
   });
 
-  it('getStaffRefUserDetails should make a GET API call', () => {
+  it('getStaffRefUsersById should make a GET API call', () => {
     const service = new StaffDataAccessService(mockHttpService);
-    service.getStaffRefUserDetails(1);
+    service.getStaffRefUsersById([1]);
     expect(mockHttpService.post).toHaveBeenCalledTimes(1);
   });
 });

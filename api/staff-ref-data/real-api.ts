@@ -3,8 +3,8 @@ import * as querystring from 'querystring';
 import { handleGet, handlePost, handlePut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
-import { StaffDataAPI, StaffDataUser, WorkArea } from './models/staff-data-user.model';
-import { GroupOption, StaffFilterOption, Service } from './models/staff-filter-option.model';
+import { StaffDataAPI, StaffDataUser } from './models/staff-data-user.model';
+import { GroupOption, Service, StaffFilterOption } from './models/staff-filter-option.model';
 
 const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 
@@ -108,9 +108,21 @@ export async function getUsersByPartialName(req, res: Response, next: NextFuncti
   }
 }
 
+export async function addNewUser(req, res, next: NextFunction) {
+  const reqBody = req.body;
+  const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile`;
+
+  try {
+    const { status, data }: { status: number; data: StaffDataUser } = await handlePost(apiPath, reqBody, req, next);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function updateUser(req, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  const apiPath: string = `/refdata/case-worker/profile`;
+  const apiPath: string = `${baseCaseWorkerRefUrl}/refdata/case-worker/profile`;
 
   try {
     const {status, data}: { status: number, data: StaffDataUser } = await handlePut(apiPath, reqBody, req, next);
@@ -120,7 +132,7 @@ export async function updateUser(req, res: Response, next: NextFunction) {
   }
 }
 
-export async function getStaffRefUserDetails(req, res, next: NextFunction) {
+export async function getStaffRefUsersById(req, res, next: NextFunction) {
   const reqbody = req.body;
   const apiPath = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
 

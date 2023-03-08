@@ -2,20 +2,20 @@ import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService, GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffFilterOption } from '../../../models//staff-filter-option.model';
-import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from '../staff-user-check-answers/staff-user-check-answers.component';
+import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 
 @Component({ selector: 'exui-staff-main-container', template: '' })
 class StaffMainContainerStubComponent { }
 
-xdescribe('StaffAddEditUserFormComponent', () => {
+describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
   let fixture: ComponentFixture<StaffAddEditUserFormComponent>;
   let location: Location;
@@ -52,6 +52,7 @@ xdescribe('StaffAddEditUserFormComponent', () => {
     }
   ];
   const streamTestData = {
+    id: 'staff-add-edit-form-mock-data',
     reset: false,
     fields: [
       {
@@ -136,7 +137,7 @@ xdescribe('StaffAddEditUserFormComponent', () => {
       }]
   };
   const streamSubject = new BehaviorSubject(streamTestData);
-  const mockFilterService: any = {
+  const mockFilterService = {
     getStream: () => streamSubject,
     get: jasmine.createSpy(),
     persist: jasmine.createSpy(),
@@ -152,7 +153,9 @@ xdescribe('StaffAddEditUserFormComponent', () => {
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
 
   beforeEach(async () => {
-    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['updateUser']);
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
+      'mockStaffDataAccessService', ['updateUser']
+    );
     await TestBed.configureTestingModule({
       declarations: [StaffAddEditUserFormComponent, StaffMainContainerStubComponent, StaffUserCheckAnswersComponent],
       imports: [
@@ -288,12 +291,10 @@ xdescribe('StaffAddEditUserFormComponent', () => {
   beforeEach(() => {
     router = TestBed.inject(Router);
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
-    // spyOn(router, 'getCurrentNavigation').and.returnValues({ previousNavigation: { finalUrl: {root : {children: { primary: { segments: [{path: 'staff', parameters: {}}, {path: 'add-user', parameters: {}}, {path: 'check-your-answer', parameters: {}}]}}}}}});
     spyOn(router, 'getCurrentNavigation').and.returnValues({previousNavigation: { finalUrl: '/staff' }} as any);
     location = TestBed.inject(Location);
     fixture = TestBed.createComponent(StaffAddEditUserFormComponent);
     component = fixture.componentInstance;
-    // component.formGroup = new FormGroup({});
     router.initialNavigation();
     fixture.detectChanges();
   });
@@ -334,7 +335,7 @@ xdescribe('StaffAddEditUserFormComponent', () => {
     component.editMode = true;
     fixture.detectChanges();
 
-    mockStaffDataAccessService.updateUser.and.returnValue(of({}));
+    mockStaffDataAccessService.updateUser.and.returnValue(of([{ case_worker_id: '123' }]));
     streamSubject.next(streamTestData);
     tick();
     expect(location.path()).toBe('/staff');
@@ -349,6 +350,33 @@ xdescribe('StaffAddEditUserFormComponent', () => {
     streamSubject.next(streamTestData);
     tick();
     expect(location.path()).toBe('/service-down');
+    flush();
+  }));
+
+  it('should unsubscribe from filterStreamSubscription onDestroy', () => {
+    // @ts-expect-error - filterStreamSubscription is a private property
+    spyOn(component.filterStreamSubscription, 'unsubscribe').and.callThrough();
+
+    component.ngOnDestroy();
+    // @ts-expect-error - filterStreamSubscription is a private property
+    expect(component.filterStreamSubscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should call updateUser and then redirect to staff on successful call when calling onSubmitEditMode',fakeAsync(() => {
+    mockStaffDataAccessService.updateUser.and.returnValue(of([{ case_worker_id: '123' }]));
+    component.onSubmitEditMode(streamTestData);
+    tick();
+    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
+    expect(location.path()).toBe('/staff');
+    flush();
+  }));
+
+  it('should call updateUser and then redirect to service down on error call when calling onSubmitEditMode',fakeAsync(() => {
+    mockStaffDataAccessService.updateUser.and.returnValue(throwError('error'));
+    component.onSubmitEditMode(streamTestData);
+    tick();
+    expect(location.path()).toBe('/service-down');
+    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
     flush();
   }));
 });

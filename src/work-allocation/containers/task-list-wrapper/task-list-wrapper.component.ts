@@ -390,9 +390,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         type: InfoMessageType.WARNING,
         message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
       });
-      if (handledStatus === 400) {
-        this.refreshTasks();
-      }
     }
   }
 

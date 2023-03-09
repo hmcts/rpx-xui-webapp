@@ -88,8 +88,8 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
         this.hearingTypeDescription = this.hearingOutcome?.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingRequestID = state.hearingRequest.hearingRequestMainModel.requestDetails.hearingRequestID;
         this.hearingResult = this.hearingOutcome?.hearingResult;
-        this.actualHearingDays = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel);
-        this.actualHearingDaysCYA = ActualHearingsUtils.getActualHearingDaysCYA(this.hearingActualsMainModel);
+        this.actualHearingDays = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel, false);
+        this.actualHearingDaysCYA = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel, true);
         this.hearingDateRange = this.calculateEarliestHearingDate(this.actualHearingDays);
         this.individualParties = state.hearingValues.serviceHearingValuesModel.parties?.filter(party => party.partyType === PartyType.IND);
 

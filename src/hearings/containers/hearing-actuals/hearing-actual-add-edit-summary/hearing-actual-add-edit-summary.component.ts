@@ -19,6 +19,8 @@ import { HearingActualSummaryBaseComponent } from '../hearing-actual-summary-bas
   styleUrls: ['./hearing-actual-add-edit-summary.component.scss']
 })
 export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBaseComponent {
+  public actualHearingUtils = ActualHearingsUtils;
+
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
     public readonly hearingsService: HearingsService,
@@ -47,16 +49,20 @@ export class HearingActualAddEditSummaryComponent extends HearingActualSummaryBa
   }
 
   public confirmActualHearingTimeAndParties(hearingDay: ActualHearingDayModel) {
+    // Organisation parties do not have partyChannelSubType and can be ignored
+    // as they do not attend the actual hearing
+    const individualPartyIds = this.individualParties.map(party => party.partyID);
+    const actualDayParties = hearingDay?.actualDayParties?.filter(party => individualPartyIds.includes(party.actualPartyId));
     const updatedActuals = {
       hearingDate: hearingDay.hearingDate,
       hearingStartTime: hearingDay.hearingStartTime,
       hearingEndTime: hearingDay.hearingEndTime,
       pauseDateTimes: hearingDay.pauseDateTimes,
-      actualDayParties: [...hearingDay.actualDayParties]
+      actualDayParties: [...actualDayParties]
     } as ActualHearingDayModel;
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
-      (this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
-
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
+      this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals
+    );
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
       hearingActuals: patchedHearingActuals,

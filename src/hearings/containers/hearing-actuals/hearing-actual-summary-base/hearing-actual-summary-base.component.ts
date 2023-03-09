@@ -14,9 +14,11 @@ import {
   AnswerSource,
   HearingChannelEnum,
   HearingDateEnum,
-  HearingResult
+  HearingResult,
+  PartyType
 } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
@@ -55,6 +57,7 @@ export class HearingActualSummaryBaseComponent implements OnInit, OnDestroy {
   public actualHearingUtils = ActualHearingsUtils;
   public answerSource = AnswerSource;
   public hearingRequestID: string;
+  public individualParties: PartyDetailsModel[];
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -92,6 +95,7 @@ export class HearingActualSummaryBaseComponent implements OnInit, OnDestroy {
         this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult;
         this.actualHearingDays = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel);
         this.hearingDateRange = this.calculateEarliestHearingDate(this.actualHearingDays);
+        this.individualParties = state.hearingValues.serviceHearingValuesModel.parties?.filter(party => party.partyType === PartyType.IND);
 
         this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.forEach(
           plannedDay => {

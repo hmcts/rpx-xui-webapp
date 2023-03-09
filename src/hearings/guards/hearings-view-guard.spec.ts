@@ -68,6 +68,7 @@ describe('HearingsViewGuard', () => {
   const FEATURE_FLAG = [
     {
       jurisdiction: 'SSCS',
+      caseType: 'Benefit',
       roles: [
         'caseworker-sscs',
         'caseworker-sscs-judge',
@@ -129,4 +130,16 @@ describe('HearingsViewGuard', () => {
     expect(result$).toBeObservable(expected);
   });
 
+  it('user should not be able to access the hearings view link', () => {
+    storeMock.pipe.and.returnValue(of(USER_1));
+    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
+    const caseInfo = {cid: '1546518523959179', caseType: 'PRLAPPS', jurisdiction: 'PRL'};
+    sessionStorageMock.getItem.and.returnValue(JSON.stringify(caseInfo));
+    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    const result$ = hearingsViewGuard.canActivate();
+    const canActive = false;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
+  });
 });

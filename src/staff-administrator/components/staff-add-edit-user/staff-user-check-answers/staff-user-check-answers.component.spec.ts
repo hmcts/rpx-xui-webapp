@@ -3,8 +3,11 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
+import { UserDetails } from '../../../../app/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
+import { StaffUser } from '../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
 
@@ -16,6 +19,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
   let testStaffUser: StaffUser;
+  let storeMock: jasmine.SpyObj<Store<UserDetails>>;
 
   beforeEach(waitForAsync(() => {
     mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
@@ -62,6 +66,26 @@ describe('StaffUserCheckAnswersComponent', () => {
       region: 'West Midlands',
       region_id: 12,
     });
+
+    storeMock = jasmine.createSpyObj('Store', [
+      'dispatch', 'pipe'
+    ]);
+    const userDetails = {
+      sessionTimeout: {
+        idleModalDisplayTime: 10,
+        totalIdleTime: 1,
+      },
+      canShareCases: true,
+      userInfo: {
+        id: 'someId',
+        forename: 'foreName',
+        surname: 'surName',
+        email: 'email@email.com',
+        active: true,
+        roles: ['pui-case-manager']
+      }
+    };
+    storeMock.pipe.and.returnValue(of(userDetails));
 
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
@@ -279,27 +303,6 @@ describe('StaffUserCheckAnswersComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffUserCheckAnswersComponent);
     component = fixture.componentInstance;
-    storeMock.pipe.and.returnValue(of(userDetails));
-    mockStaffDataAccessService.addNewUser.and.returnValue(of({
-      id: '2',
-      firstName: 'Victoria',
-      lastName: 'Patton',
-      userCategory: '',
-      userType: 'Officer2',
-      jobTitle: 'Solicitor',
-      locations: [
-        'Locatin Y',
-      ],
-      region: 'London',
-      services: [
-        'Mock Service 2',
-      ],
-      suspended: true,
-      email: 'victoria@hmcts.com',
-      primaryLocation: {id: '123', is_primary: true, location: 'London'},
-      roles: ['Case allocator'],
-      skills: ['SCSS'],
-    }));
     fixture.detectChanges();
   });
 

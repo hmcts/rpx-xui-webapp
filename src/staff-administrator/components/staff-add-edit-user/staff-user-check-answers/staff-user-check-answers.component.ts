@@ -3,19 +3,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   FilterService, GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
-import { take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { UserDetails } from '../../../../app/models/user-details.model';
 import { InfoMessage } from '../../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../../app/shared/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
+import * as fromAppStore from '../../../../app/store';
 import { InfoMessageType } from '../../../../role-access/models/enums';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffUser } from '../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
-import * as fromAppStore from '../../../../app/store';
-import { UserDetails } from '../../../../app/models/user-details.model';
-import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -58,23 +57,20 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     this.userDetails$.pipe(
       map(details => {
-        this.idamRoles = details.userInfo.roles
+        this.idamRoles = details.userInfo.roles;
       }));
     this.filterService.getStream(this.formId)
       .pipe(take(1))
       .subscribe(data => {
       if (data.fields) {
         this.staffUser = new StaffUser();
-        this.staffUser.toDtoFromGenericFilter(data, this.staffFilterOptions);
+        this.staffUser.fromGenericFilter(data, this.staffFilterOptions);
       }
     });
   }
 
   public onSubmit() {
-    this.staffDataAccessService.addNewUser({
-      this.staffUser,
-      ...this.idamRoles
-    }).subscribe(res => {
+    this.staffDataAccessService.addNewUser(this.staffUser).subscribe(() => {
       // success banner
       this.messageService.nextMessage({
         message: InfoMessage.ADD_NEW_USER,
@@ -82,7 +78,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       } as InformationMessage);
       this.filterService.clearSessionAndLocalPersistance(this.formId);
       this.router.navigateByUrl('/staff');
-    }, error => {
+    }, () => {
       this.router.navigateByUrl('/service-down');
     });
   }

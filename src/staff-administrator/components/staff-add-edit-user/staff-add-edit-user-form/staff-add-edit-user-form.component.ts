@@ -115,12 +115,12 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   public onSubmitEditMode(data: FilterSetting) {
     this.isLoading = true;
     const staffUser = new StaffUser();
-    staffUser.toDtoFromGenericFilter(data, this.staffFilterOptions);
+    staffUser.fromGenericFilter(data, this.staffFilterOptions);
     this.staffDataAccessService.updateUser(staffUser)
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(res => {
+      .subscribe(() => {
         this.router.navigateByUrl('/staff');
-      }, error => {
+      }, () => {
         this.router.navigateByUrl('/service-down');
     });
   }

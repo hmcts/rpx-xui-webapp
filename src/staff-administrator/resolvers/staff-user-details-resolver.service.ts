@@ -12,7 +12,7 @@ export class StaffUserDetailsResolverService implements Resolve<{ userDetails: S
   }
 
   public resolve(route?: ActivatedRouteSnapshot) {
-    return this.staffDataAccessService.getStaffRefUsersById([ route.params.id ]).pipe(
+    return this.staffDataAccessService.fetchUsersById([ route.params.id ]).pipe(
       map(res => {
         return {
           userDetails: res[0]

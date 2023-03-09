@@ -193,7 +193,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     return services;
   }
 
-  async getStaffRefUsersById(req, res, next: NextFunction) {
+  async fetchUsersById(req, res, next: NextFunction) {
     const reqbody = req.body;
     const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
 

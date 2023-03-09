@@ -32,8 +32,8 @@ export class StaffDataAccessService {
     return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getSkills`);
   }
 
-  public getStaffRefUsersById(userIds: number[]) {
-    return this.http.post<StaffUser>(`${this.API_PATH}/getStaffRefUsersById`, { userIds });
+  public fetchUsersById(userIds: number[]) {
+    return this.http.post<StaffUser>(`${this.API_PATH}/fetchUsersById`, { userIds });
   }
 
   public getServices() {

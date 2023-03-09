@@ -44,6 +44,6 @@ export async function getStaffRefUserDetails(req: any, res: Response, next: Next
 export async function updateUser(req: any, res: Response, next: NextFunction) {
   staffRefDataService.updateUser(req, res, next);
 }
-export async function getStaffRefUsersById(req: any, res: Response, next: NextFunction) {
-  staffRefDataService.getStaffRefUsersById(req, res, next);
+export async function fetchUsersById(req: any, res: Response, next: NextFunction) {
+  staffRefDataService.fetchUsersById(req, res, next);
 }

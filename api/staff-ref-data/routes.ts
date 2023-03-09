@@ -1,15 +1,15 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import {
-  getFilteredUsers,
   addNewUser,
-  getSkills,
+  fetchUsersById,
+  getFilteredUsers,
   getJobTitles,
   getServices,
+  getSkills,
   getUsersByPartialName,
-  getStaffRefUsersById,
-  updateUser,
-  getUserTypes
+  getUserTypes,
+  updateUser
 } from './staff-ref-data.controller';
 
 const router = express.Router({ mergeParams: true });
@@ -17,7 +17,7 @@ const router = express.Router({ mergeParams: true });
 router.use(authInterceptor);
 router.get('/getFilteredUsers', getFilteredUsers);
 router.get('/getUsersByPartialName', getUsersByPartialName);
-router.post('/getStaffRefUsersById', getStaffRefUsersById);
+router.post('/fetchUsersById', fetchUsersById);
 router.get('/getUserTypes', getUserTypes);
 router.get('/getJobTitles', getJobTitles);
 router.get('/getSkills', getSkills);

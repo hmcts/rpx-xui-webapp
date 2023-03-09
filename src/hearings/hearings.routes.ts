@@ -63,8 +63,6 @@ import { PartyChannelsResolverService } from './resolvers/party-channels-resolve
 import { PartySubChannelsResolverService } from './resolvers/party-subchannels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 
-
-
 export const ROUTES: Routes = [
   {
     path: 'cancel/:hearingId',

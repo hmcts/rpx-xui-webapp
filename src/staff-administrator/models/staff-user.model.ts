@@ -68,7 +68,7 @@ export class StaffUser {
     this.first_name = fieldsData[0].value[0];
     this.last_name = fieldsData[1].value[0];
     this.suspended = 'false';
-    this.user_type = staffFilterOptions.userTypes.find(item => item.key === fieldsData[7].value[0]).label;
+    this.user_type = fieldsData[7].value[0];
 
     this.task_supervisor = roles.includes(Roles.TaskSupervisor) ? 'Y' : 'N';
     this.case_allocator = roles.includes(Roles.CaseAllocator) ? 'Y' : 'N';

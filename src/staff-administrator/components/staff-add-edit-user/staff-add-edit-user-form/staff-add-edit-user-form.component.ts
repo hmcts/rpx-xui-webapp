@@ -245,7 +245,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           type: 'select',
           title: 'User type',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [...this.staffFilterOptions.userTypes],
+          options: [...this.staffFilterOptions.userTypes.map(item => ({key: item.label, label: item.label}))],
           minSelected: 1,
           maxSelected: 1,
           minSelectedError: 'Select at least one user type',

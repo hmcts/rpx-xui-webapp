@@ -59,15 +59,10 @@
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
         <br>
-<!--        <div class="govuk-summary-list__row">-->
-<!--          <dt class="govuk-summary-list__key">Job title</dt>-->
-<!--          <dd class="govuk-summary-list__value">{{ userDetails.jobTitle }}</dd>-->
-<!--          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>-->
-<!--        </div><br>-->
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Skills</dt>
           <dd class="govuk-summary-list__value">
-            {{ userDetails.skills | pluckAndJoin: 'skill_code':', '  }}
+            {{ userDetails.skills | pluckAndJoin: 'description':', '  }}
           </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div><br>
@@ -75,6 +70,8 @@
           <dt class="govuk-summary-list__key">Status</dt>
           <dd class="govuk-summary-list__value">
             <exui-staff-status [status]="userDetails.suspended === 'true'"></exui-staff-status>
+          </dd>
+          <dd class="govuk-summary-list__actions">
           </dd>
         </div>
       </dl>

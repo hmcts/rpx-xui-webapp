@@ -30,6 +30,7 @@ import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-op
 import { StaffUserDetailsResolverService } from './resolvers/staff-user-details-resolver.service';
 import { StaffDataAccessService } from './services/staff-data-access/staff-data-access.service';
 import { staffAdministratorRouting } from './staff-administrator.routes';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,6 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffAddUserComponent,
     StaffUserCheckAnswersComponent,
     StaffUserDetailsComponent,
-    StaffStatusComponent,
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,
     StaffStatusComponent,
@@ -55,7 +55,8 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     ExuiCommonLibModule,
     ReactiveFormsModule,
     staffAdministratorRouting,
-    NgxPaginationModule
+    NgxPaginationModule,
+    MatTooltipModule,
   ],
   providers: [
     StaffDataAccessService,

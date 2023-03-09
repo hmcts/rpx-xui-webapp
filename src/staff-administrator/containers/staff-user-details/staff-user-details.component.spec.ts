@@ -13,6 +13,7 @@ import { StaffUser } from '../../models/staff-user.model';
 import { PluckAndJoinPipe } from '../../pipes/pluckAndJoin.pipe';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
+import { By } from '@angular/platform-browser';
 
 @Component({
   template: ''
@@ -209,4 +210,13 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.setDataForGenericFilterAndNavigate)
       .toHaveBeenCalledWith(StaffAddEditUserFormId.CopyUser, `/staff/user-details/${caseWorkerId}/copy`);
   }));
+
+  it('should have a disabled button if suspended is true', () => {
+    const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));
+    expect(component.userDetails.suspended).toBe('false');
+    expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toBeNull();
+    component.userDetails.suspended = 'true';
+    fixture.detectChanges();
+    expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toEqual('');
+  });
 });

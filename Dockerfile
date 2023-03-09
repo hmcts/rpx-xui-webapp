@@ -1,4 +1,4 @@
-FROM hmctspublic.azurecr.io/base/node:12-alpine as base
+FROM hmctspublic.azurecr.io/base/node:14-alpine as base
 LABEL maintainer = "HMCTS Expert UI <https://github.com/hmcts>"
 COPY --chown=hmcts:hmcts package.json yarn.lock ./
 

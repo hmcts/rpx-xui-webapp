@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertComponent as CCDAlertComponent, AlertIconClassPipe, AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { of } from 'rxjs';
 import { AlertComponent } from './alert.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -15,14 +16,21 @@ describe('AlertComponent', () => {
   let component: AlertComponent;
   let fixture: ComponentFixture<AlertComponent>;
 
+  const alertServiceMock = {
+    alerts: of({ message: 'message', level: 'success' })
+  }
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([
-        ])
+        ]),
       ],
       declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
-      providers: [AlertService]
+      providers: [{
+        provide: AlertService,
+        useValue: alertServiceMock
+      }]
     })
       .compileComponents();
   }));
@@ -43,8 +51,6 @@ describe('AlertComponent', () => {
   });
 
   it('should have updated the value of message and level in ngOnInit', async () => {
-    const alertService = fixture.debugElement.injector.get<AlertService>(AlertService);
-    alertService.push({ message: 'message', level: 'success' });
     component.ngOnInit();
     await fixture.whenStable();
     fixture.detectChanges();

@@ -69,8 +69,7 @@
       <div *ngIf="showManage[rowData.id]" class="govuk-accordion__section-heading">
         <button type="button" [id]="'manage_' + rowData.id" (click)="setSelectedTask(rowData)"
                 class="govuk-accordion__section-button xui-reset"
-                [attr.aria-expanded]="isTaskSelected(rowData)">
-          Manage
+                [attr.aria-expanded]="isTaskSelected(rowData)">Manage
           <span class="govuk-accordion__icon" aria-hidden="true"></span>
         </button>
       </div>

@@ -26,7 +26,7 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors } from '../../utils';
+import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -315,7 +315,15 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
     try {
-      if (taskAction.action.id === TaskActionIds.GO) {
+      if (taskAction.action.id === TaskActionIds.CLAIM) {
+        this.claimTask(taskAction.task.id);
+        return;
+      }
+      else if (taskAction.action.id === TaskActionIds.CLAIM_AND_GO) {
+        this.claimTaskAndGo(taskAction.task);
+        return;
+      }
+      else if (taskAction.action.id === TaskActionIds.GO) {
         const goToTaskUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
         this.router.navigate([goToTaskUrl]);
         return;
@@ -331,6 +339,57 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       this.router.navigate([actionUrl], {queryParams: {service: taskAction.task.jurisdiction},  state });
     } catch (error) {
       console.error('onActionHandler', error, taskAction);
+    }
+  }
+
+  /**
+   * A User 'Claims' themselves a task aka. 'Assign to me'.
+   */
+   public claimTask(taskId: string): void {
+
+    this.taskService.claimTask(taskId).subscribe(() => {
+      this.infoMessageCommService.nextMessage({
+        type: InfoMessageType.SUCCESS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+      });
+      this.refreshTasks();
+    }, error => {
+
+      this.claimTaskErrors(error.status);
+    });
+  }
+
+  /**
+   * A User 'Claims' themselves a task and goes to the case details page for that case aka. 'Assign to me'.
+   */
+  public claimTaskAndGo(task: Task): void {
+    this.taskService.claimTask(task.id).subscribe(() => {
+      const goToCaseUrl = `/cases/case-details/${task.case_id}/tasks`;
+      // navigates to case details page for specific case id
+      this.router.navigate([goToCaseUrl], {
+        state: {
+          showMessage: true,
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        }
+      });
+    }, error => {
+
+      this.claimTaskErrors(error.status);
+    });
+  }
+
+  /**
+   * Navigate the User to the correct error page, or throw an on page warning
+   * that the Task is no longer available.
+   */
+  public claimTaskErrors(status: number): void {
+    const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
+    const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
+    if (handledStatus > 0) {
+      this.infoMessageCommService.nextMessage({
+        type: InfoMessageType.WARNING,
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+      });
     }
   }
 

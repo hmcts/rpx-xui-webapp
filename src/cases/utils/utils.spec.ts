@@ -33,6 +33,7 @@ describe('Utils', () => {
       email_id: '330085EMP-@ejudiciary.net',
     }
   ];
+
   it('should determine string or number', () => {
     expect(Utils.isStringOrNumber('string')).toEqual(true);
     expect(Utils.isStringOrNumber(1)).toEqual(true);
@@ -52,11 +53,13 @@ describe('Utils', () => {
     expect(Utils.sanitiseMetadataFieldName('metadataFilter', fieldName)).toEqual('somefieldname');
     expect(Utils.sanitiseMetadataFieldName('caseFilter', fieldName)).toEqual('[someFieldName]');
   });
+
   it('should map caseRoles', () => {
     const result = Utils.mapCaseRoles(caseRolesData, data);
     expect(result.length).toBe(1);
     expect(result[0].name).toBe('Tom Cruz');
   });
+
   it('should map mapCaseRolesForExclusions', () => {
     const roleExclusions = [{
       actorId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
@@ -71,5 +74,41 @@ describe('Utils', () => {
     const result = Utils.mapCaseRolesForExclusions(roleExclusions, data);
     expect(result.length).toBe(1);
     expect(result[0].name).toBe('Tom');
+  });
+
+  it('should check for matched permissions return true', () => {
+    const featureVariation = {
+      jurisdiction: 'SSCS',
+      caseType: 'Benefit',
+      roles: [
+        'caseworker-sscs',
+        'caseworker-sscs-judge'
+      ]
+    };
+    const jurisdictionId = 'SSCS';
+    const caseTypeId = 'Benefit';
+    const userRoles = [
+      'caseworker-sscs',
+      'caseworker-sscs-judge'
+    ];
+    expect(Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId, userRoles)).toEqual(true);
+  });
+
+  it('should check for matched permissions return false', () => {
+    const featureVariation = {
+      jurisdiction: 'SSCS',
+      caseType: 'Benefit',
+      roles: [
+        'caseworker-sscs',
+        'caseworker-sscs-judge'
+      ]
+    };
+    const jurisdictionId = 'PRL';
+    const caseTypeId = 'PRLAPPS';
+    const userRoles = [
+      'caseworker-sscs',
+      'caseworker-sscs-judge'
+    ];
+    expect(Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId, userRoles)).toEqual(false);
   });
 });

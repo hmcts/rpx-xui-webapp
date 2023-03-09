@@ -34,7 +34,7 @@
               {{ task.dueDate | date: 'd MMMM yyyy' }}
           </td>
           <td *ngIf="!isUserJudicial" class="govuk-table__cell">
-            <exui-priority-field [dueDate]="toDate(task.dueDate)"></exui-priority-field>
+            <exui-priority-field [date]="toDate(task.dueDate)" [majorPriority]="task.major_priority"></exui-priority-field>
           </td>
           <td class="govuk-table__cell">{{ selectedPerson.name }}</td>
           <td class="govuk-table__cell"><a class="govuk-link fright" href="javascript:void(0)"

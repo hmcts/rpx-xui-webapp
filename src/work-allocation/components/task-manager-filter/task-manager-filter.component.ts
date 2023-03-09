@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { BookingCheckType, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { BookingCheckType, FeatureToggleService, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Store, select } from '@ngrx/store';
@@ -9,6 +9,7 @@ import { filter, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
+import { AppConstants } from '../../../app/app.constants';
 import { getRoleCategory } from '../../utils';
 
 @Component({
@@ -20,13 +21,13 @@ import { getRoleCategory } from '../../utils';
 export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';
   @Input() public jurisdictions: string[] = [];
-  @Input() public waSupportedJurisdictions: string[];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
   public appStoreSub: Subscription;
   public filterSub: Subscription;
   public roleType: string;
   public userRole: UserRole;
+  public isRelease4: boolean;
 
   public fieldsConfig: FilterConfig = {
     persistence: 'local',
@@ -47,11 +48,16 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           name: 'selectPerson',
           value: ['All']
         },
+        {
+          name: 'taskName',
+          value: ['']
+        },
       ]
     }
   };
 
   constructor(private readonly filterService: FilterService,
+              private featureToggleService: FeatureToggleService,
               private readonly appStore: Store<fromAppStore.State>) {
   }
 
@@ -63,14 +69,13 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
-      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType'],
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType', 'findTaskNameControl'],
       title: 'Service',
       type: 'select'
     };
   }
 
   private static initLocationFilter(): FilterFieldConfig {
-
     return {
       name: 'location',
       options: [],
@@ -80,7 +85,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectLocation=search',
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
-      enableAddLocationButton: false,
+      enableAddButton: false,
       type: 'find-location',
       radioSelectionChange: 'selectLocation=search',
       bookingCheckType: BookingCheckType.NO_CHECK
@@ -165,7 +170,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
-  private static findPersonFilter(jurisdictions: string[]): FilterFieldConfig {
+  private static findPersonFilter(): FilterFieldConfig {
     return {
       name: 'person',
       options: [],
@@ -177,7 +182,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person',
       radioSelectionChange: 'selectPerson=Specific person',
-      services: jurisdictions
+      servicesField: 'service',
     };
   }
 
@@ -216,7 +221,23 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
+  private static initTaskNameFilter(): FilterFieldConfig {
+    return {
+      name: 'taskName',
+      title: 'Task by name',
+      options: [],
+      minSelected: 0,
+      maxSelected: 1,
+      findLocationField: 'service',
+      minSelectedError: 'You must select a task name',
+      maxSelectedError: null,
+      enableAddTaskNameButton: false,
+      type: 'find-task-name',
+    };
+  }
+
   public ngOnInit(): void {
+    this.checkForReleaseVersion();
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
         this.userRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.getUserRole(userDetails.userInfo.roles) : null;
@@ -240,11 +261,15 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
       TaskManagerFilterComponent.initSelectLocationFilter(),
       TaskManagerFilterComponent.initLocationFilter(),
+      // TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
-      TaskManagerFilterComponent.findPersonFilter(this.jurisdictions),
-      TaskManagerFilterComponent.initTaskTypeFilter()
+      TaskManagerFilterComponent.findPersonFilter(),
+      TaskManagerFilterComponent.initTaskTypeFilter(),
     ];
+    if (this.isRelease4) {
+      this.fieldsConfig.fields.push(TaskManagerFilterComponent.initTaskNameFilter());
+    }
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
       .pipe(
         map((f: FilterSetting) => {
@@ -279,5 +304,11 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     if (this.filterSub && !this.filterSub.closed) {
       this.filterSub.unsubscribe();
     }
+  }
+
+  public checkForReleaseVersion(): void {
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null).subscribe(features => {
+      this.isRelease4 = features.configurations.findIndex(serviceConfig =>  parseFloat(serviceConfig.releaseVersion) === 4) > -1;
+    });
   }
 }

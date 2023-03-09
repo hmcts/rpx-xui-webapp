@@ -1,12 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { InfoMessage } from '../../../work-allocation/enums';
 
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { AppConstants } from 'src/app/app.constants';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
-import { Utils} from '../../../cases/utils/utils';
+import { Utils } from '../../../cases/utils/utils';
+import { PriorityLimits } from '../../../work-allocation/enums';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
@@ -29,12 +32,15 @@ export class CaseTaskComponent implements OnInit {
   ];
   public manageOptions: {id: string, title: string }[];
   public isUserJudicial: boolean;
+  public isTaskUrgent: boolean;
   private pTask: Task;
+  public isRelease4: boolean;
 
   constructor(private readonly alertService: AlertService,
               private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
-              protected taskService: WorkAllocationTaskService) {
+              protected taskService: WorkAllocationTaskService,
+              private featureToggleService: FeatureToggleService ) {
   }
 
   public get task(): Task {
@@ -49,6 +55,7 @@ export class CaseTaskComponent implements OnInit {
   public set task(value: Task) {
     value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
     this.pTask = value;
+    this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent ? true : false;
   }
 
   @Input() public caseworkers: Caseworker[] = [];
@@ -77,6 +84,7 @@ export class CaseTaskComponent implements OnInit {
 
   public ngOnInit(): void {
     this.manageOptions = this.task.actions;
+    this.checkForReleaseVersion();
   }
 
   public getAssigneeName(task: Task): string {
@@ -147,6 +155,12 @@ export class CaseTaskComponent implements OnInit {
       queryParams: {
         tid: urls[1].split('=')[1]
       }
+    });
+  }
+
+  public checkForReleaseVersion(): void {
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, null).subscribe(features => {
+      this.isRelease4 = features.configurations.findIndex(serviceConfig =>  parseFloat(serviceConfig.releaseVersion) === 4) > -1;
     });
   }
 }

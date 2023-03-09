@@ -155,7 +155,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     }
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
-    console.log('starting check');
+
     let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
@@ -702,6 +702,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
 export async function getTaskNames(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const service = req.body.service;
   const response = await handleTaskGet(`${baseWorkAllocationTaskUrl}/task/task-types?jurisdiction=${service}`, req);
-  console.log(response, 'banananananaan', response.task_types)
+
   return res.send(response.task_types).status(200);
 }

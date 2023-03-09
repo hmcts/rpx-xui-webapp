@@ -138,7 +138,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
-    console.log('selected task name is ', selection.taskName.task_type_id)
     this.selectedTaskName = selection.taskName ? selection.taskName.task_type_id : null;
     this.onPaginationHandler(1);
   }

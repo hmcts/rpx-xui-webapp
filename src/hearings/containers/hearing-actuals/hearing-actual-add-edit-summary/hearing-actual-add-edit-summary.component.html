@@ -23,7 +23,7 @@
     <h1 class="govuk-heading-m">Hearing details</h1>
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">{{ getHearingDateText() }}</dt>
+        <dt class="govuk-summary-list__key">{{getHearingDateText()}}</dt>
         <dd class="govuk-summary-list__value">{{hearingDateRange}}</dd>
       </div>
       <div class="govuk-summary-list__row">
@@ -124,12 +124,12 @@
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Pause time</dt>
-                    <dd class="govuk-summary-list__value">{{getPauseDateTime(actualHearingDay, 'start')}}</dd>
+                    <dd class="govuk-summary-list__value">{{actualHearingUtils.getPauseDateTime(actualHearingDay, 'start')}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Resume time</dt>
-                    <dd class="govuk-summary-list__value">{{getPauseDateTime(actualHearingDay, 'end')}}</dd>
+                    <dd class="govuk-summary-list__value">{{actualHearingUtils.getPauseDateTime(actualHearingDay, 'end')}}</dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                 </div>
@@ -153,7 +153,9 @@
                     <dd class="govuk-summary-list__value">
                       <div
                         *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
-                        {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}
+                        <span *ngIf="party.individualDetails">
+                          {{party.individualDetails.firstName}} {{party.individualDetails.lastName}}
+                        </span>
                       </div>
                     </dd>
                     <dd class="govuk-summary-list__actions"></dd>
@@ -164,8 +166,10 @@
                       <dd class="govuk-summary-list__value">
                         <div
                           *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
-                          {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}:
-                          {{party.partyChannelSubType | convertToValue: partyChannels}}
+                          <span *ngIf="party.individualDetails">
+                            {{party.individualDetails.firstName}} {{party.individualDetails.lastName}}:
+                            {{party.partyChannelSubType | convertToValue: partyChannels}}
+                          </span>
                         </div>
                       </dd>
                       <dd class="govuk-summary-list__actions"></dd>

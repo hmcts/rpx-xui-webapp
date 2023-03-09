@@ -15,10 +15,6 @@
     <p class="govuk-body">Details submitted</p>
   </div>
 </div>
-
-<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="errors$ | async">
-</xuilib-hmcts-error-summary>
-
 <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">
   <div class="govuk-grid-column-two-thirds">
     <exui-hearing-case-name></exui-hearing-case-name>

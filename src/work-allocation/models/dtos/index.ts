@@ -163,3 +163,8 @@ export interface TaskSearchParameter {
 export interface TaskSearchParameters {
   parameters: TaskSearchParameter[];
 }
+
+export interface TaskNamesResponse {
+  taskName: string;
+  taskId: number
+}

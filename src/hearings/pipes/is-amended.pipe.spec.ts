@@ -136,6 +136,14 @@ describe('IsAmendedPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
+  it('should not transform the amended flag when previous vs current people attend count are equal', () => {
+    const STATE: State = _.cloneDeep(initialStateImmutable.hearings);
+    const result$ = isAmendedPipe.transform(AnswerSource.HOW_PARTICIPANTS_ATTEND, of(STATE));
+    const isAmended = false;
+    const expected = cold('(b|)', { b: isAmended });
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should return amended flag false for hearing type', () => {
     const STATE: State = _.cloneDeep(initialStateImmutable.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'final';

@@ -5,7 +5,7 @@ import { of } from 'rxjs/internal/observable/of';
 import { map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
 import { UserInfo, UserRole } from '../../app/models';
-import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
+import { SearchTaskRequest, TaskNamesResponse, TaskSearchParameters } from '../models/dtos';
 import { Task, TaskRole } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
 
@@ -56,7 +56,7 @@ export class WorkAllocationTaskService {
   }
 
   public searchTask(body: { searchRequest: SearchTaskRequest, view: string, currentUser: string, refined: boolean }): Observable<TaskResponse> {
-    return this.http.post<any>(`${BASE_URL}`, body).pipe(
+    return this.http.post<TaskResponse>(`${BASE_URL}`, body).pipe(
       tap(response => this.currentTasks$.next(response.tasks)),
     );
   }
@@ -106,5 +106,9 @@ export class WorkAllocationTaskService {
       return this.http.post<any>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(map(response => response.tasks));
     }
     return of(null);
+  }
+
+  public getTaskNames(): Observable<TaskNamesResponse[]> {
+    return this.http.get<TaskNamesResponse[]>('/workallocation2/taskNames');
   }
 }

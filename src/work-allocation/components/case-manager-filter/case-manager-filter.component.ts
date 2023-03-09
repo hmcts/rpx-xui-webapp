@@ -78,7 +78,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectLocation=search',
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
-      enableAddLocationButton: false,
+      enableAddButton: false,
       type: 'find-location',
       radioSelectionChange: 'selectLocation=search'
     };
@@ -144,7 +144,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       title: 'Person',
       subTitle: 'Search for a person',
       lineBreakBefore: true,
-      services: jurisdictions,
+      servicesField: 'jurisdiction',
       placeholderContent: 'You must specify a person...'
     };
   }

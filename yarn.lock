@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-checkbox-label-fix":
-  version "1.8.10-checkbox-label-fix"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-checkbox-label-fix.tgz#c5508f3b0f2acd8eef34c5e311d9aadc2c6b6ae2"
-  integrity sha512-8pXZRP0jNe+qKKgAtJT6yh+kNe3FFlHlepMvvQCV2A5gi8VGigXfqqJ7RBxyShrFoYKGlZDHrggHxYDhtSmRig==
+"@hmcts/rpx-xui-common-lib@1.8.10-generic-filter-readonly-changes":
+  version "1.8.10-generic-filter-readonly-changes"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-generic-filter-readonly-changes.tgz#56f78e2b2538dccd391c5f1009ecc2d3fe014d1b"
+  integrity sha512-gExN/OnfKwkIBUhZQ654wBytIvZhfz3gCO/3IdvBv1xG3USNW9extrMGdBpoWVc5btWWeeqA9UtSX4HckUG7ng==
   dependencies:
     tslib "^2.0.0"
 

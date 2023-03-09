@@ -1,11 +1,11 @@
-import { StaffRefDataAPI } from './models/staff-ref-data.model';
-import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
-import { getConfigValue } from '../configuration';
-import { handleGet, handlePost } from '../common/crudService';
-import * as querystring from 'querystring';
 import { NextFunction, Response } from 'express';
-import { StaffDataUser, StaffDataAPI, WorkArea } from './models/staff-data-user.model';
-import { GroupOption, StaffFilterOption, Service } from './models/staff-filter-option.model';
+import * as querystring from 'querystring';
+import { handleGet, handlePost, handlePut } from '../common/crudService';
+import { getConfigValue } from '../configuration';
+import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
+import { StaffDataAPI, StaffDataUser, WorkArea } from './models/staff-data-user.model';
+import { GroupOption, Service, StaffFilterOption } from './models/staff-filter-option.model';
+import { StaffRefDataAPI } from './models/staff-ref-data.model';
 
 export class RealStaffRefDataAPI implements StaffRefDataAPI {
   public baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -189,17 +189,28 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const services = [];
     workarea.forEach(workArea => {
       services.push(workArea.area_of_work);
-    })
+    });
     return services;
   }
 
-  async updateUserStatus(req, res, next: NextFunction) {
-    const id = req.params.id;
-    const reqBody = req.body;
-    const apiPath: string = `/refdata/case-worker/user-status/${id}`;
+  async getStaffRefUsersById(req, res, next: NextFunction) {
+    const reqbody = req.body;
+    const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
 
     try {
-      const {status, data}: { status: number, data: { suspended: boolean } } = await handlePost(apiPath, reqBody, req, next);
+      const { status, data }: { status: number; data: StaffDataAPI[] } = await handlePost(apiPath, reqbody, req, next);
+      res.status(status).send(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateUser(req, res: Response, next: NextFunction) {
+    const reqBody = req.body;
+    const apiPath: string = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile`;
+
+    try {
+      const {status, data}: { status: number, data: StaffDataUser } = await handlePut(apiPath, reqBody, req, next);
       res.status(status).send(data);
     } catch (error) {
       next(error);

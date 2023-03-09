@@ -40,6 +40,13 @@ class StaffRefDataService {
     return this.service.getStaffRefUserDetails(req, res, next);
   }
 
+  async getStaffRefUsersById(req, res: Response, next: NextFunction) {
+    return this.service.getStaffRefUsersById(req, res, next);
+  }
+
+  async updateUser(req, res: Response, next: NextFunction) {
+    return this.service.updateUser(req, res, next);
+  }
 }
 
 module.exports = StaffRefDataService;

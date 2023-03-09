@@ -1,7 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { UserInfo } from '../auth/interfaces/UserInfo';
-import { handleGet } from '../common/crudService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,

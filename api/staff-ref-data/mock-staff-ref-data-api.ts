@@ -92,7 +92,6 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
   }
 
   async getStaffRefUsersById(req, res: Response, next: NextFunction) {
-    const id = req.params.id;
     const apiPath: string = `/refdata/case-worker/users/fetchUsersById`;
 
     try {

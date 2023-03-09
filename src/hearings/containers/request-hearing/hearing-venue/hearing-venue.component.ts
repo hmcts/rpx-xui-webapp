@@ -86,8 +86,8 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public updateHearingConditions(): void {
-    const strRegions = this.selectedLocations.map(location => location.region).join(',');
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({region: strRegions}));
+    const strRegions = this.selectedLocations.map(location => location.region_id).join(',');
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({regionId: strRegions}));
   }
 
   public isLocationValid() {
@@ -118,7 +118,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
         locationType: HMCLocationType.COURT,
         locationId: locationByEPIMMSModel.epimms_id,
         locationName: locationByEPIMMSModel.court_name,
-        region: locationByEPIMMSModel.region,
+        regionId: locationByEPIMMSModel.region_id,
       } as HearingLocationModel;
     });
     this.hearingRequestMainModel = {

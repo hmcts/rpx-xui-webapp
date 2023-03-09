@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -308,6 +308,46 @@ describe('HmctsGlobalHeaderComponent', () => {
     leftItems.pipe(
       switchMap(items => {
         expect(items).toEqual([component.items[1]]);
+        return rightItems;
+      })
+    ).subscribe(items => {
+      expect(items).toEqual([component.items[0]]);
+      done();
+    });
+  });
+
+  it('filters out menu items for which not all features are enabled correctly with non-left-right observable', (done) => {
+    component.items = [{
+      align: 'right',
+      text: '1',
+      href: '',
+      active: false,
+      flags: ['enabledFlag'],
+      roles: ['roleA']
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false,
+      // important to verify this
+      flags: ['enabledFlag2'],
+      roles: ['roleB']
+    },
+    {
+      align: 'right',
+      text: '3',
+      href: '',
+      active: false,
+      flags: ['enabledFlag'],
+      roles: ['roleC']
+    }];
+    component.ngOnChanges(changesMock);
+    const leftItems = component.leftItems;
+    const rightItems = component.rightItems;
+    leftItems.pipe(
+      switchMap(items => {
+        expect(items).toEqual([]);
         return rightItems;
       })
     ).subscribe(items => {

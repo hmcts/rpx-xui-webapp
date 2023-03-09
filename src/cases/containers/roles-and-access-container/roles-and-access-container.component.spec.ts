@@ -1,12 +1,19 @@
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
+import { RoleCategory } from '../../../role-access/models';
+import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
 metadataField.value = 'JUDICIAL';
+const flags = {
+  enabledFlag: true,
+  disabledFlag: false
+};
 const CASE_VIEW: CaseView = {
   metadataFields: [metadataField],
   events: [],
@@ -104,6 +111,7 @@ const CASE_VIEW: CaseView = {
 };
 
 describe('RolesContainerComponent', () => {
+  let featureToggleService: FeatureToggleService;
   let component: RolesAndAccessContainerComponent;
 
   const route = {
@@ -116,16 +124,104 @@ describe('RolesContainerComponent', () => {
   const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getCaseworkersForServices']);
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
 
-  it('setDisplayAllocateLink to set true for JUDICIAL', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
+  featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+  const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
+    mockNotifierService.cachedCaseView = {};
 
+
+  const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRoles', 'getCaseRolesUserDetails']);
+  mockNotifierService.cachedCaseView = {};
+  const data: CaseRoleDetails[] = [
+    {
+      idam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+      sidam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+      known_as: 'Tom',
+      surname: 'Cruz',
+      full_name: 'Tom Cruz',
+      email_id: '330085EMP-@ejudiciary.net',
+    }
+  ];
+  const caseRolesData: any[] = [
+    {
+      actions: [
+        {
+          id: 'reallocate',
+          title: 'Reallocate'
+        },
+        {
+          id: 'remove',
+          title: 'Remove Allocation'
+        }
+      ],
+      actorId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+      end: null,
+      id: '13daef07-dbd2-4106-9099-711c4505f04f',
+      location: null,
+      roleCategory: RoleCategory.JUDICIAL,
+      roleName: 'hearing-judge',
+      start: '2021-12-09T00:00:00Z'
+    }
+  ];
+
+  // beforeEach(async(() => {
+  //   TestBed.configureTestingModule({
+  //     imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule],
+  //     providers: [
+  //       CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
+  //       { provide: CaseNotifier, useValue: mockNotifierService },
+  //       {
+  //         provide: RoleExclusionsService,
+  //         useClass: RoleExclusionsMockService
+  //       },
+  //       {
+  //         provide: FeatureToggleService,
+  //         useValue: {
+  //           isEnabled: (flag) => of(flags[flag]),
+  //           getValue: (flag) => of(flags[flag])
+  //         }
+  //       },
+  //       provideMockStore({ initialState: initialMockState }),
+  //       {
+  //         provide: ActivatedRoute,
+  //         useValue: {
+  //           snapshot: {
+  //             data: {
+  //               roles: CASEROLES,
+  //               showAllocateRoleLink: true,
+  //               case: CASE_VIEW
+  //             }
+  //           }
+  //         }
+  //       },
+  //     ],
+  //     declarations: [
+  //       RolesAndAccessContainerComponent,
+  //       RolesAndAccessComponent,
+  //       CaseRolesTableComponent,
+  //       ShowAllocateLinkDirective,
+  //       ExclusionsTableComponent,
+  //       RoleAccessSectionComponent,
+  //       AllocateARoleLinkComponent
+  //     ]
+  //   })
+  //     .compileComponents();
+  // }));
+
+  // beforeEach(() => {
+  //   fixture = TestBed.createComponent(RolesAndAccessContainerComponent);
+  //   component = fixture.componentInstance;
+  //   fixture.detectChanges();
+  // });
+
+  it('setDisplayAllocateLink to set true for JUDICIAL', () => {
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
     component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
 
     expect(component.showAllocateRoleLink).toBeTruthy();
   });
 
   it('ngOnit', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
 
     spyOn(component, 'applyJurisdiction');
     spyOn(component, 'loadExclusions');
@@ -141,7 +237,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadRoles', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
     caseDetails.case_type = {
@@ -154,7 +250,7 @@ describe('RolesContainerComponent', () => {
         description: '',
       },
       printEnabled: false
-    }
+    };
     component.caseDetails = caseDetails;
     const caseRoles = [{ roleCategory: 'JUDICIAL', actorId: '234' }];
     allocateService.getCaseRoles.and.returnValue(of(caseRoles));
@@ -171,7 +267,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadRoles should update with caseRoles', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
     caseDetails.case_type = {
@@ -198,7 +294,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadExclusions', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
 
     const jurisdiction = { value: 'ia' };
     const exclusions = [
@@ -223,7 +319,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadExclusions should update exclusions with empty array', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
 
     const jurisdiction = { value: 'ia' };
     const exclusions = [];
@@ -237,7 +333,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('applyJurisdiction', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
     spyOn(component, 'setDisplayAllocateLink');
 
     store.select.and.returnValue(of({}));

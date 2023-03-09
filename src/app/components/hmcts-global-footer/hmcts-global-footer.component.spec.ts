@@ -12,7 +12,6 @@ class RpxTranslateMockPipe implements PipeTransform {
     return value;
   }
 }
-
 describe('HmctsGlobalFooterComponent', () => {
     @Component({
         selector: `exui-app-host-dummy-component`,

@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-confirm-flag-status-page-validation":
-  version "6.10.7-case-flags-confirm-flag-status-page-validation"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-confirm-flag-status-page-validation.tgz#2dd460994d6aaac2d8adba7551b7e81f3cec0e17"
-  integrity sha512-cNorWCrWskZlISRh8VMTJbsrlUmznv+IoH6Yh3Hu58mg83XpsAadyVezHiN7q1LCnRPlnn9BsAe47MD0tHFFbQ==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-manage-case-flags-ui-amendments":
+  version "6.10.7-case-flags-manage-case-flags-ui-amendments"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-manage-case-flags-ui-amendments.tgz#3afe49d232a47a15b79341423f09f87ca76dd444"
+  integrity sha512-BLjsNugxVq//evKh9LvjOj55/z1FK44lHklMDQ7ago9etm+EnXAPM/vkmKmy4GXRXzkX0J/Krag1s+oHCXsFfQ==
   dependencies:
     tslib "^2.0.0"
 

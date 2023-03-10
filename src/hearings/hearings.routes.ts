@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ErrorPageComponent } from './components';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
 import { HearingActualAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
+import { HearingActualSummaryComponent } from './containers/hearing-actuals/hearing-actual-edit-summary/hearing-actual-summary.component';
 import { HearingActualsFinalConfirmationComponent } from './containers/hearing-actuals/hearing-actuals-final-confirmation/hearing-actuals-final-confirmation.component';
 import { HearingActualsTimingComponent } from './containers/hearing-actuals/hearing-actuals-timing/hearing-actuals-timing.component';
 import { HearingActualsViewEditPartiesComponent } from './containers/hearing-actuals/hearing-actuals-view-edit-parties/hearing-actuals-view-edit-parties.component';
@@ -61,6 +62,8 @@ import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.serv
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { PartySubChannelsResolverService } from './resolvers/party-subchannels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
+
+
 
 export const ROUTES: Routes = [
   {
@@ -192,6 +195,20 @@ export const ROUTES: Routes = [
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
+        }
+      },
+      {
+        path: 'hearing-actual-summary',
+        resolve: {
+          hearingTypes: RefDataResolver,
+          caseType: CaseTypesResolver,
+          actualPartHeardReasonCodes: AdjournHearingActualReasonResolver,
+          cancelHearingActualReasons: CancelHearingActualReasonResolver
+        },
+        component: HearingActualSummaryComponent,
+        data: {
+          category: HearingCategory.HearingType,
+          title: 'HMCTS Hearings | Hearing Actuals | Check your answers'
         }
       },
       {

@@ -4,7 +4,7 @@ import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BookingCheckType, FilterConfig, FilterFieldOption, FilterService, GenericFilterComponent, GroupOptions, LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { StaffLocation, StaffSkill, StaffUser } from './../../../models/staff-user.model';
+import { StaffSkill, StaffUser } from './../../../models/staff-user.model';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 
@@ -33,6 +33,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
   public errors$: Observable<ErrorMessage | undefined>;
   private previousUrl: string;
   private currentNavigation: Navigation;
+  public backLink: string;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
@@ -87,6 +88,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
         }
       })
     );
+    this.backLink = this.filterConfig.copyFields? this.previousUrl: '/staff';
   }
 
   public resetForm() {
@@ -288,13 +290,14 @@ export class StaffAddEditUserFormComponent implements OnInit {
           lastName: null,
           email: null,
           region: selectedRegion,
-          'user-services': this.getSelectedByKey(this.staffFilterOptions.services, copyUser.services),
+          'user-services': copyUser.services,
           jobTitle: this.getSelectedByKey(this.staffFilterOptions.jobTitles, copyUser.role.map(role => role.role_id)),
           roles: this.getSelectedRoles(copyUser.case_allocator, copyUser.task_supervisor, copyUser.staff_admin),
-          'user-skills': this.getSelectedSkills(this.staffFilterOptions.skills, copyUser.skills),
+          'user-skills': this.staffFilterOptions.skills,
           userType: this.getSelectedByName(this.staffFilterOptions.userTypes, copyUser.userType),
         });
 
+        console.log(copyUser.skills);
         const additionalLocations = copyUser.additionalLocations;
         const primaryLocation = copyUser.primaryLocation;
         if(additionalLocations.length > 0) {
@@ -308,6 +311,8 @@ export class StaffAddEditUserFormComponent implements OnInit {
 
         return frm;
       };
+
+      this.filterConfig.preSelectedNestedCheckbox = copyUser.skills.map(skill => skill.skill_id);
     }
   }
 
@@ -359,20 +364,4 @@ export class StaffAddEditUserFormComponent implements OnInit {
     });
     return selected;
   }
-
-  private getSelectedSkills(allOptions: GroupOptions[], selectedOptions: StaffSkill[]): boolean[] {
-    const selected: boolean[] = [] ;
-    allOptions.forEach((el: GroupOptions) => {
-      el.options.forEach((op: FilterFieldOption) => {
-        const selctedOption = selectedOptions.filter(s => s.skill_id.toString() === op.key.toString());
-        if (selctedOption.length > 0 ) {
-          selected.push(true);
-        } else {
-          selected.push(false);
-        }
-      });
-    });
-    return selected;
-  }
-
 }

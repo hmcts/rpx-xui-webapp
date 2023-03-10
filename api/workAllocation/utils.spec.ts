@@ -31,6 +31,7 @@ import {
   getCaseIdListFromRoles,
   getCaseName,
   getCaseworkerDataForServices,
+  getEndDate,
   getRoleAssignmentsByQuery,
   getRoleIdsFromRoles,
   getSessionCaseworkerInfo,
@@ -2025,6 +2026,21 @@ describe('workAllocation.utils', () => {
         it('should return false if the request is denied and isNew is false', () => {
           const isNew = checkIsNew(specificRoleAssignments[4], newRoleAssignment);
           expect(isNew).to.equal(false);
+        });
+      });
+
+      describe('getEndDate', () => {
+        it('should return empty string if the request is still pending', () => {
+          const endDate = getEndDate(specificRoleAssignments[0]);
+          expect(endDate).to.equal('');
+        });
+        it('should return date if the request is denied', () => {
+          const endDate = getEndDate(specificRoleAssignments[3]);
+          expect(endDate).to.equal('24 Jan 2023');
+        });
+        it('should return date if the request is accepted', () => {
+          const endDate = getEndDate(specificRoleAssignments[2]);
+          expect(endDate).to.equal('24 Jan 2023');
         });
       });
       

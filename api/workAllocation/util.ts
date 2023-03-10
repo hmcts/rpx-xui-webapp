@@ -809,9 +809,10 @@ export function getStartDate(roleAssignment: RoleAssignment): Date | string {
 }
 
 export function getEndDate(roleAssignment: RoleAssignment): Date | string {
-  if (roleAssignment.roleName === 'specific-access-requested' || roleAssignment.roleName === 'specific-access-denied') {
+  if (roleAssignment.roleName === 'specific-access-requested') {
     return '';
-  } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED') && roleAssignment.endTime) {
+  } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED'
+        || roleAssignment.roleName === 'specific-access-denied') && roleAssignment.endTime) {
     return formatDate(new Date(roleAssignment.endTime));
   }
   return roleAssignment.endTime;

@@ -813,6 +813,7 @@ export function getEndDate(roleAssignment: RoleAssignment): Date | string {
     return '';
   } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED'
         || roleAssignment.roleName === 'specific-access-denied') && roleAssignment.endTime) {
+    //EUI-7802: For Specific access denied the enddate is required to be displayed in the message 
     return formatDate(new Date(roleAssignment.endTime));
   }
   return roleAssignment.endTime;

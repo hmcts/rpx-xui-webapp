@@ -32,11 +32,17 @@ import * as fromActions from '../../../app/store';
 describe('AllWorkCaseComponent', () => {
   let component: AllWorkCaseComponent;
 
-  const mockLocationService = jasmine.createSpyObj('LocationDataService', ['getLocations']);
-  const mockWASupportedJurisdictionService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
-  const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem']);
-  const mockLoadingService = jasmine.createSpyObj('LoadingService', ['register', 'unregister']);
-  const mockCaseService = jasmine.createSpyObj('CaseworkerDataService', ['searchCase', 'getCases']);
+  const routerMock = jasmine.createSpyObj('Router', [ 'navigateByUrl' ]);
+  const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases', 'getMyAccess']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
+  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
+  const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
+  const mockjurisdictionsService = jasmine.createSpyObj('mockJurisdictionsService', ['getJurisdictions']);
   const mockChangeDetectorRef = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
   const mockJurisdictionsService = jasmine.createSpyObj('JurisdictionsService', ['getJurisdictions']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
@@ -76,10 +82,20 @@ describe('AllWorkCaseComponent', () => {
     httpClient as HttpClient,
     store as Store<fromActions.State>
   );
-  it('should create', () => {
-    component = initializeComponent({});
 
-    expect(component).toBeTruthy();
+  beforeEach(() => {
+    const cases: Case[] = getMockCases();
+    const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
+    mockCaseService.getCases.and.returnValue(of({ cases }));
+    mockCaseworkerService.getAll.and.returnValue(of([]));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
+    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+    mockjurisdictionsService.getJurisdictions.and.returnValue(of(['IA']));
+    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ));
+    mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
+    mockSessionStorageService.getItem.and.returnValue(undefined);
   });
 
   describe('ngOnInit', () => {

@@ -157,12 +157,6 @@ describe('HearingAnswersPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform paper hearing', () => {
-    const result$ = hearingAnswersPipe.transform(AnswerSource.IS_PAPER_HEARING, of(STATE), 0);
-    const expected = cold('(b|)', {b: 'No'});
-    expect(result$).toBeObservable(expected);
-  });
-
   it('should transform venue', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.VENUE, of(STATE), 0);
     const caseFlags = '<ul><li>LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL</li><li>CARDIFF CIVIL AND FAMILY JUSTICE CENTRE</li></ul>';

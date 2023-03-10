@@ -128,6 +128,27 @@ describe('HearingAttendanceComponent', () => {
     expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
   });
 
+  it('should get individual parties', () => {
+    expect(component.getIndividualParties()[0].partyID).toEqual('P1');
+  });
+
+  it('should get organisation parties', () => {
+    const organisationDetails = {
+      name: 'DWP',
+      organisationType: 'GOV',
+      cftOrganisationID: 'O100000'
+    };
+    const organisationParties = component.getOrganisationParties();
+    expect(organisationParties[0].organisationDetails).toEqual(organisationDetails);
+  });
+
+  it('should get hearing channels', () => {
+    component.attendanceFormGroup.controls.paperHearing.setValue('No');
+    expect(component.getHearingChannels()).toEqual(['TEL']);
+    component.attendanceFormGroup.controls.paperHearing.setValue('Yes');
+    expect(component.getHearingChannels()).toEqual(['ONPPRS']);
+  });
+
   describe('The forms paperHearing', () => {
     it('should equal No as hearingChannels has NOT got ONPPRS', () => {
       fixture.detectChanges();

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
@@ -47,7 +47,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hasRequestAction: boolean = false;
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
-  public isOgdRole$: Observable<boolean>;
+  public isOgdRole: boolean;
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
@@ -104,13 +104,14 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         this.hearingsActions = [Actions.READ];
         if (userRole === UserRole.LegalOps) {
           this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
+        } else if (userRole === UserRole.Ogd) {
+          this.isOgdRole = true;
         }
         if (this.hearingsActions.includes(Actions.CREATE)) {
           this.hasRequestAction = true;
         }
       }
     );
-    this.isOgdRole$ = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(map(userRole => userRole === UserRole.Ogd));
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {

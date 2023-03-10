@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.13.9-rc1":
-  version "6.13.9-rc1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.9-rc1.tgz#9c862c4cd7c5bcd094863ccc7a0ce8c2a67a9f02"
-  integrity sha512-sqgTCxnil416g6vEwBREj2jEHbELkD7WALz1DUGdJMvU3rhyibGbtRGfzWgtPD6NuN9VWbSJCj6qtYECt8PdUw==
+"@hmcts/ccd-case-ui-toolkit@6.13.10-rc1":
+  version "6.13.10-rc1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.10-rc1.tgz#f7918991fd0cbcf2d3e8defb7038902ec1847839"
+  integrity sha512-bBRsR3wHk9FYH919IUlCQF5dVenoF8rX7T4g/iYH9SgmK7pIkl5MnUHlpAxq+g/aibZm7kmo0mRwKYloRKc2IA==
   dependencies:
     tslib "^2.0.0"
 
@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-eui-6408-copy-user-v2":
-  version "1.8.10-eui-6408-copy-user-v2"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-eui-6408-copy-user-v2.tgz#cd88221d5d8cd5fdfd591899ba92597b97e897cb"
-  integrity sha512-2xmxTKyUXrac89DcGQJeGeglXiAX2fJMwvc3X98qA6wQkdkaHyGwIy/+9bac89HkDg/vTJWmanaIZZtYnvccIA==
+"@hmcts/rpx-xui-common-lib@1.8.10-eui-6783-clear-selected":
+  version "1.8.10-eui-6783-clear-selected"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-eui-6783-clear-selected.tgz#1675ff4dbb37eece4012670fe11659c00180c737"
+  integrity sha512-jZ624KP3W+mbtFmH3QQ5/qScSq8Tbozp0Me9fnmw0cUVn1nmBeQiz59YHotyHXbWKl6xA9js5nWry1JR7IF5FA==
   dependencies:
     tslib "^2.0.0"
 

@@ -7,7 +7,6 @@ import { IndividualDetailsModel } from '../../../models/individualDetails.model'
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
-import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
@@ -33,7 +32,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     private readonly validatorsUtils: ValidatorsUtils,
-    private readonly lovRefDataService: LovRefDataService,
     private readonly fb: FormBuilder,
     protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, route);
@@ -103,8 +101,20 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     }
   }
 
-  public prepareHearingRequestData() {
-    const partyDetails: PartyDetailsModel[] = [];
+  public prepareHearingRequestData(): void {
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      partyDetails: [...this.getIndividualParties(), ...this.getOrganisationParties()],
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        hearingChannels: this.getHearingChannels(),
+        numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
+      }
+    };
+  }
+
+  public getIndividualParties(): PartyDetailsModel[] {
+    const individualParties: PartyDetailsModel[] = [];
     (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach(control => {
       const partyDetail: PartyDetailsModel = {
         partyID: control.value.partyID,
@@ -112,27 +122,23 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         partyRole: control.value.partyRole,
         partyName: control.value.partyName,
         individualDetails: control.value.individualDetails,
-        organisationDetails: control.value.organisationDetails,
         unavailabilityDOW: control.value.unavailabilityDOW,
         unavailabilityRanges: control.value.unavailabilityRanges
       };
-      partyDetails.push(partyDetail);
+      individualParties.push(partyDetail);
     });
-    let hearingChannels: string[];
+    return individualParties;
+  }
+
+  public getOrganisationParties(): PartyDetailsModel[] {
+    return this.serviceHearingValuesModel.parties.filter(party => party.partyType === PartyType.ORG);
+  }
+
+  public getHearingChannels(): string[] {
     if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
-      hearingChannels = [HearingChannelEnum.ONPPR];
-    } else {
-      hearingChannels = this.attendanceFormGroup.controls.hearingLevelChannels.value.filter((channel) => channel.selected).map(channel => channel.key);
+      return [HearingChannelEnum.ONPPR];
     }
-    this.hearingRequestMainModel = {
-      ...this.hearingRequestMainModel,
-      partyDetails,
-      hearingDetails: {
-        ...this.hearingRequestMainModel.hearingDetails,
-        hearingChannels,
-        numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
-      }
-    };
+    return this.attendanceFormGroup.controls.hearingLevelChannels.value.filter((channel) => channel.selected).map(channel => channel.key);
   }
 
   public isFormValid(): boolean {
@@ -204,9 +210,12 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       reasonableAdjustments: [individualDetails.reasonableAdjustments],
       relatedParties: [individualDetails.relatedParties],
       title: [individualDetails.title],
+      vulnerableFlag: [individualDetails.vulnerableFlag],
       vulnerabilityDetails: [individualDetails.vulnerabilityDetails],
       hearingChannelEmail: [individualDetails.hearingChannelEmail],
-      hearingChannelPhone: [individualDetails.hearingChannelPhone]
+      hearingChannelPhone: [individualDetails.hearingChannelPhone],
+      custodyStatus: [individualDetails.custodyStatus],
+      otherReasonableAdjustmentDetails: [individualDetails.otherReasonableAdjustmentDetails]
     });
   }
 }

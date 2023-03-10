@@ -9,16 +9,34 @@ import { StaffDataAccessService } from '../../services/staff-data-access/staff-d
   templateUrl: './staff-user-details.component.html',
   styleUrls: ['./staff-user-details.component.scss']
 })
-export class StaffUserDetailsComponent {
+export class StaffUserDetailsComponent implements OnInit {
   public userDetails: StaffUser;
   public showAction: boolean = false;
   public loading = false;
   public suspendedStatus: 'suspended' | 'restored' | 'error';
+  public selectedRoles: string[] = [];
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private staffDataAccessService: StaffDataAccessService) {
     this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails[0];
+  }
+
+  ngOnInit() {
+    this.getSelectedRoles();
+  }
+
+  private getSelectedRoles() {
+    if(this.userDetails.case_allocator === 'Y') {
+      this.selectedRoles.push('Case Allocator');
+    }
+    if(this.userDetails.task_supervisor === 'Y') {
+      this.selectedRoles.push('Task Supervisor');
+    }
+    if(this.userDetails.staff_admin === 'Y') {
+      this.selectedRoles.push('Staff Administrator');
+    }
+    return this.selectedRoles;
   }
 
   public updateUserStatus(): void {

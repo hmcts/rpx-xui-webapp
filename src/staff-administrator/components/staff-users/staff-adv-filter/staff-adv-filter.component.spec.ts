@@ -109,7 +109,9 @@ describe('StaffAdvFilterComponent', () => {
       email: 'victoria@hmcts.com',
       primaryLocation: {id: '123', is_primary: true, location: 'London'},
       roles: ['Case allocator'],
-      skills: ['SCSS'],
+      case_allocator: 'Y',
+      staff_admin: 'Y',
+      task_supervisor: 'Y',
     }]));
 
   });

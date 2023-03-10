@@ -1475,10 +1475,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.13.9-eui-7744-mv-upgrade":
-  version "6.13.9-eui-7744-mv-upgrade"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.9-eui-7744-mv-upgrade.tgz#cbb53526f2db4bd26fecccf9fa11b34769c9c674"
-  integrity sha512-Q44GjrtNHX6baaw1wpgawCm9SuUuKVI+se65GhvwdJIen5OV0ffLTpa231LHr0aPluHyFSJaSi4KkTv10j6yDQ==
+"@hmcts/ccd-case-ui-toolkit@6.13.10-mv-upgrade":
+  version "6.13.10-mv-upgrade"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.10-mv-upgrade.tgz#91cc2f526d241063844e59f0c275ae58866ac81b"
+  integrity sha512-0hFCYyn2FtLwofM4nWkcb3hNsNaZ5PCzhTobdPh4Ja+y5xlQSh1QEovyjpE08LJbbwiaRVZuNCdAlctVDo9w1g==
   dependencies:
     tslib "^2.0.0"
 
@@ -1494,10 +1494,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.9.2":
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.9.2.tgz#164389986057dfb0c25f84fd4138f281501974e1"
-  integrity sha512-sG+Rp/PL6vzXuEZQ+WPYdw86FseNkOJloxRNCk5WPq6oshdCTvYNWYuZYxp9wtbpPytE3ynpHGrl/wzmGFstQg==
+"@hmcts/media-viewer@2.9.3":
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.9.3.tgz#cc3d43e4082c152bc2648e74dd2fb342a8fc28e7"
+  integrity sha512-QmLTxho8yu6j19oag4zjLA9GX/wHhueGvwKWzB6mkFltCstuKhzQIdQ5VMJ91nFS7X+GxT6JHcHf/PeKyeLvww==
   dependencies:
     "@circlon/angular-tree-component" "^11.0.0"
     "@swimlane/ngx-datatable" "^19.0.0"

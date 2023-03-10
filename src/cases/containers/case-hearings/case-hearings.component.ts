@@ -110,9 +110,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         if (this.hearingsActions.includes(Actions.CREATE)) {
           this.hasRequestAction = true;
         }
-        if (this.hearingsActions.includes(Actions.CREATE)) {
-          this.hasRequestAction = true;
-        }
       }
     );
   }

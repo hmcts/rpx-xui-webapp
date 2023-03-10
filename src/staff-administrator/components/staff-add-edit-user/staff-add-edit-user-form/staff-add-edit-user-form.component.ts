@@ -290,14 +290,12 @@ export class StaffAddEditUserFormComponent implements OnInit {
           lastName: null,
           email: null,
           region: selectedRegion,
-          'user-services': copyUser.services,
+          'user-services': this.getSelectedByLabel(this.staffFilterOptions.services, copyUser.services),
           jobTitle: this.getSelectedByKey(this.staffFilterOptions.jobTitles, copyUser.role.map(role => role.role_id)),
           roles: this.getSelectedRoles(copyUser.case_allocator, copyUser.task_supervisor, copyUser.staff_admin),
           'user-skills': this.staffFilterOptions.skills,
           userType: this.getSelectedByName(this.staffFilterOptions.userTypes, copyUser.userType),
         });
-
-        console.log(copyUser.skills);
         const additionalLocations = copyUser.additionalLocations;
         const primaryLocation = copyUser.primaryLocation;
         if(additionalLocations.length > 0) {
@@ -357,6 +355,21 @@ export class StaffAddEditUserFormComponent implements OnInit {
     }
     allOptions.forEach((el: StaffFilterOption) => {
       if (selectedOptions.filter(s => s.toString() === el.key.toString()).length > 0 ) {
+        selected.push(true);
+      } else {
+        selected.push(false);
+      }
+    });
+    return selected;
+  }
+
+  private getSelectedByLabel(allOptions: StaffFilterOption[], selectedOptions: string[]): boolean[] {
+    const selected: boolean[] = [] ;
+    if (!Array.isArray(selectedOptions)) {
+      selectedOptions = new Array(selectedOptions);
+    }
+    allOptions.forEach((el: StaffFilterOption) => {
+      if (selectedOptions.filter(s => s.toString() === el.label.toString()).length > 0 ) {
         selected.push(true);
       } else {
         selected.push(false);

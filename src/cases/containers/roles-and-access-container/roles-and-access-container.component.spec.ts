@@ -112,6 +112,7 @@ const CASE_VIEW: CaseView = {
 
 describe('RolesContainerComponent', () => {
   let featureToggleService: FeatureToggleService;
+  featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   let component: RolesAndAccessContainerComponent;
 
   const route = {

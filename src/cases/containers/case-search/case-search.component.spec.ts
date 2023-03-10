@@ -116,13 +116,6 @@ describe('CaseSearchComponent', () => {
 
     beforeEach(() => {
 
-      const jurisdiction = { id: 'PROBATE' };
-      const caseType = { id: 'GrantOfRepresentation' };
-      const caseState = { id: 'CaseCreated' };
-      const metadataFields = ['[CASE_REFERENCE]'];
-      const formGroupValues = {};
-      const page = 1;
-
       event = component.getEvent();
     });
 

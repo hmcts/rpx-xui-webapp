@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.7-find-persn-by-service":
-  version "1.8.7-find-persn-by-service"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.7-find-persn-by-service.tgz#e37935312117384f32f6be44419fcc3d23628fa7"
-  integrity sha512-UcpX3qn0jaqEELLcXqPMUdbrFVAfUWmdDfhbf9AdfOXZ7+UDq5zeOxZNlgWwK9zMknjLfRA8TeihwQYaWkhUvQ==
+"@hmcts/rpx-xui-common-lib@1.8.7-fee-paid-filter-change":
+  version "1.8.7-fee-paid-filter-change"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.7-fee-paid-filter-change.tgz#6c87c024baa934e5a2695c1b3f6de66128d3ef09"
+  integrity sha512-Ug09rFIcJl2wlkeG4wySSaC8Vbo1SvqikqOEoU9Hk2suKtwNr2nf0DVpqI7N0WMVXkedd5dpmdLNOdx//aRUBQ==
   dependencies:
     tslib "^2.0.0"
 

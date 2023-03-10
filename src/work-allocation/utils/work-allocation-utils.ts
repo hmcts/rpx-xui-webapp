@@ -256,7 +256,7 @@ export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorag
   return null;
 }
 
-export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[], bookable = false): LocationsByService[] {
+export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[]): LocationsByService[] {
   if (allLocationServices.includes(service)) {
     // if we know that all location services includes the current service we need to ensure this is present
     return locationsByServices;
@@ -264,11 +264,11 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
   let locationsByService = locationsByServices.find(serviceLocations => serviceLocations.service === service);
   if (!locationsByService) {
     // check to ensure that if service present with null location (i.e. a base location not within region), we register this
-    !location.id && !location.regionId ? locationsByServices.push({service, locations: [], bookable}) : locationsByServices.push({service, locations: [location], bookable});
+    !location.id && !location.regionId ? locationsByServices.push({service, locations: []}) : locationsByServices.push({service, locations: [location]});
   } else {
     const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
-    locationsByService = {service, locations: locationsByService.locations.concat([location]), bookable}
+    locationsByService = {service, locations: locationsByService.locations.concat([location])}
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;

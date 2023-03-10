@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { UserService } from 'src/app/services/user/user.service';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { BookingNavigationEvent, BookingProcess, BookingRequest } from '../../models';
@@ -92,7 +93,8 @@ export class BookingCheckComponent implements OnInit {
         state: {
           location: {
             ids: [this.bookingProcess.location.epimms_id]
-          }
+          },
+          newBooking: true
         }
       });
     },

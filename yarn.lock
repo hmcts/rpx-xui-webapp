@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.13.9-rc1":
-  version "6.13.9-rc1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.9-rc1.tgz#9c862c4cd7c5bcd094863ccc7a0ce8c2a67a9f02"
-  integrity sha512-sqgTCxnil416g6vEwBREj2jEHbELkD7WALz1DUGdJMvU3rhyibGbtRGfzWgtPD6NuN9VWbSJCj6qtYECt8PdUw==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-r4-access-view-alignment":
+  version "6.10.7-r4-access-view-alignment"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-r4-access-view-alignment.tgz#6b339af196cbc4432b4b2ef7fee9c9077a828eab"
+  integrity sha512-IB8JGXTwPOX20tLDouEWVD1q4PuMdkbcQtRWA8dz2p/PyTn4z/gESVkFdDWz3JUadXTzudBDVQmOWJ/RSRiRbA==
   dependencies:
     tslib "^2.0.0"
 
@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-checkbox-label-fix":
-  version "1.8.10-checkbox-label-fix"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-checkbox-label-fix.tgz#c5508f3b0f2acd8eef34c5e311d9aadc2c6b6ae2"
-  integrity sha512-8pXZRP0jNe+qKKgAtJT6yh+kNe3FFlHlepMvvQCV2A5gi8VGigXfqqJ7RBxyShrFoYKGlZDHrggHxYDhtSmRig==
+"@hmcts/rpx-xui-common-lib@1.8.10-eui-6783-clear-selected":
+  version "1.8.10-eui-6783-clear-selected"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-eui-6783-clear-selected.tgz#1675ff4dbb37eece4012670fe11659c00180c737"
+  integrity sha512-jZ624KP3W+mbtFmH3QQ5/qScSq8Tbozp0Me9fnmw0cUVn1nmBeQiz59YHotyHXbWKl6xA9js5nWry1JR7IF5FA==
   dependencies:
     tslib "^2.0.0"
 

@@ -6,13 +6,14 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
+import { ActualHearingsUtils } from 'src/hearings/utils/actual-hearings.utils';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { ACTION, HearingResult } from '../../../models/hearings.enum';
+import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
-import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
-import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
+import * as fromHearingStore from '../../../store';
+import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
 
 @Pipe({name: 'transformAnswer'})
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -28,9 +29,9 @@ export class MockHearingAnswersPipe implements PipeTransform {
 class NothingComponent {
 }
 
-describe('HearingActualAddEditSummaryComponent', () => {
-  let component: HearingActualAddEditSummaryComponent;
-  let fixture: ComponentFixture<HearingActualAddEditSummaryComponent>;
+describe('HearingActualSummaryComponent', () => {
+  let component: HearingActualSummaryComponent;
+  let fixture: ComponentFixture<HearingActualSummaryComponent>;
   let store: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
@@ -487,8 +488,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
-      imports: [RouterTestingModule.withRoutes(
+      declarations: [HearingActualSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
+      imports: [ RouterTestingModule.withRoutes(
         [
           {path: 'hearings/actuals/1000000/hearing-actual-summary', component: NothingComponent}
         ]
@@ -520,7 +521,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HearingActualAddEditSummaryComponent);
+    fixture = TestBed.createComponent(HearingActualSummaryComponent);
     store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -590,6 +591,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
     component.hearingResult = HearingResult.COMPLETED;
     component.onSubmitHearingDetails();
     expect(component.submitted).toEqual(true);
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals(component.id));
   });
 
   it('should check is errror bar handling', () => {
@@ -606,69 +608,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     ];
     expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
     expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
-  });
-
-
-  it('should fail submitting hearing details if hearing result is not selected', () => {
-    const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.hearingResult = '';
-    component.onSubmitHearingDetails();
-    expect(component.submitted).toEqual(true);
-    expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
-  });
-
-  it('should dispatach and update Hearing Actuals', () => {
-    const hearingDay = {
-      hearingDate: '2021-03-12',
-      hearingStartTime: '2021-03-12T09:00:00.000Z',
-      hearingEndTime: '2021-03-13T10:00:00.000Z',
-      notRequired: false,
-      pauseDateTimes: [],
-      actualDayParties: [
-        {
-          actualPartyId: '1',
-          individualDetails: {
-            firstName: 'Bob',
-            lastName: 'Jones',
-          },
-          actualOrganisationName: 'Company A',
-          didNotAttendFlag: false,
-          partyChannelSubType: 'inPerson',
-          partyRole: 'appellant',
-          representedParty: '',
-        },
-        {
-          actualPartyId: '2',
-          individualDetails: {
-            firstName: 'Mary',
-            lastName: 'Jones',
-          },
-          actualOrganisationName: 'Company B',
-          didNotAttendFlag: false,
-          partyChannelSubType: 'inPerson',
-          partyRole: 'claimant',
-          representedParty: '',
-        },
-        {
-          actualPartyId: '3',
-          individualDetails: {
-            firstName: 'James',
-            lastName: 'Gods',
-          },
-          actualOrganisationName: 'Solicitors A',
-          didNotAttendFlag: false,
-          partyChannelSubType: 'inPerson',
-          partyRole: 'interpreter',
-          representedParty: '1',
-        },
-      ],
-    };
-    const storeDispatchSpy = spyOn(store, 'dispatch');
-    spyOn(ActualHearingsUtils, 'mergeSingleHearingPartActuals');
-
-    component.changeWasThisHearingDayRequired(hearingDay);
-    expect(storeDispatchSpy).toHaveBeenCalledTimes(1);
-    expect(ActualHearingsUtils.mergeSingleHearingPartActuals).toHaveBeenCalledTimes(1);
   });
 
   it('should save one hearing day actuals for specific hearingDate', () => {
@@ -718,8 +657,8 @@ describe('HearingActualAddEditSummaryComponent', () => {
       ],
     };
     const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.confirmActualHearingTimeAndParties(hearingDay);
-    component.confirmActualHearingTimeAndParties(hearingDay);
+    component.confirmActualHearingTimeForDay(hearingDay);
+    component.confirmActualPartiesForDay(hearingDay);
     expect(storeDispatchSpy).toHaveBeenCalledTimes(2);
   });
 
@@ -768,53 +707,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals
       (component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
-  });
-
-  describe('getPauseDateTime', () => {
-    it('should return start time', () => {
-      const actualHearingDays = {
-          hearingDate: '2021-03-12',
-          hearingStartTime: '2021-03-12T09:00:00.000Z',
-          hearingEndTime: '2021-03-12T10:00:00.000Z',
-          pauseDateTimes: [{
-            pauseStartTime: '2021-03-12T10:10:00.000Z',
-            pauseEndTime: '2021-03-12T11:15:00.000Z',
-          }],
-          notRequired: false,
-          actualDayParties: []
-        };
-      const actual = component.getPauseDateTime(actualHearingDays, 'start');
-      expect(actual).toEqual('10:10');
-    });
-
-    it('should return end time', () => {
-      const actualHearingDays = {
-          hearingDate: '2021-03-12',
-          hearingStartTime: '2021-03-12T09:00:00.000Z',
-          hearingEndTime: '2021-03-12T10:00:00.000Z',
-          pauseDateTimes: [{
-            pauseStartTime: '2021-03-12T10:10:00.000Z',
-            pauseEndTime: '2021-03-12T11:15:00.000Z',
-          }],
-          notRequired: false,
-          actualDayParties: []
-        };
-      const actual = component.getPauseDateTime(actualHearingDays, 'end');
-      expect(actual).toEqual('11:15');
-    });
-
-    it('should return null as no pause times are present', () => {
-      const actualHearingDays = {
-          hearingDate: '2021-03-12',
-          hearingStartTime: '2021-03-12T09:00:00.000Z',
-          hearingEndTime: '2021-03-12T10:00:00.000Z',
-          pauseDateTimes: [],
-          notRequired: false,
-          actualDayParties: []
-        };
-      const actual = component.getPauseDateTime(actualHearingDays, 'start');
-      expect(actual).toEqual(null);
-    });
   });
 
   afterEach(() => {

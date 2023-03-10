@@ -1,6 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { PartyType } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { State } from '../store';
@@ -15,12 +16,12 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
 
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
     const preferredHearingChannelRefData = refData.find(ref => ref.key === party.hearingSubChannel);
-    return preferredHearingChannelRefData && preferredHearingChannelRefData.value_en ? preferredHearingChannelRefData.value_en : party.hearingSubChannel;
+    return preferredHearingChannelRefData?.value_en ? preferredHearingChannelRefData.value_en : `Error: ${party.hearingSubChannel}`;
   }
 
   private static getPartyName(partiesFromServiceValue: PartyDetailsModel[], partyInfo: PartyDetailsModel): string {
     const partyDetails = partiesFromServiceValue.find(pty => pty.partyID === partyInfo.partyID);
-    return (partyDetails && partyDetails.partyName) || partyInfo.partyID;
+    return (partyDetails && partyDetails.partyName) || `Error: ${partyInfo.partyID}`;
   }
 
   public transformAnswer(hearingState$: Observable<State>, index: number): Observable<string> {
@@ -33,9 +34,13 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
         if (!hearingDaySchedule) {
           return '';
         }
+        const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties?.filter(party => party.partyType === PartyType.IND);
+        if(!partiesFromServiceValue) {
+          return '';
+        }
+        const partyIds = partiesFromServiceValue.map(party => party.partyID);
         hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
-        const partiesFromRequest: PartyDetailsModel[] = hearingDaySchedule[index || 0].attendees;
-        const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
+        const partiesFromRequest = hearingDaySchedule[index || 0].attendees?.filter(attendee => partyIds.includes(attendee.partyID));
         return partiesFromRequest.map((partyInfo) => {
           const name = ParticipantAttendenceAnswerConverter.getPartyName(partiesFromServiceValue, partyInfo);
           const value = ParticipantAttendenceAnswerConverter.getPartyChannelValue(partyChannels, partyInfo);

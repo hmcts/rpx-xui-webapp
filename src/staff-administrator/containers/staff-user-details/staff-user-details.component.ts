@@ -120,8 +120,6 @@ export class StaffUserDetailsComponent {
     };
 
     sessionStorage.setItem(this.FILTER_ID, JSON.stringify(formValues));
-    this.router.navigateByUrl('/staff/update-user',
-      { state: {userDetails: this.userDetails} }
-    );
+    this.router.navigateByUrl('/staff/update-user');
   }
 }

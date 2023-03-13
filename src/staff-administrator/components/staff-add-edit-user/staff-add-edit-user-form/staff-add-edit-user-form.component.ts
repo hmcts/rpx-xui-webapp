@@ -41,7 +41,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   public errors$: Observable<ErrorMessage | undefined>;
   private currentNavigation: Navigation;
   private previousUrl: string;
-  private isLoading = false;
   private filterStreamSubscription: Subscription;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
@@ -50,7 +49,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private filterService: FilterService,
     private router: Router,
-    private readonly staffDataAccessService: StaffDataAccessService
   ) {
     this.currentNavigation = this.router.getCurrentNavigation();
     this.previousUrl = this.currentNavigation?.previousNavigation?.finalUrl.toString();
@@ -72,11 +70,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           this.resetForm();
         } else {
           if (this.genericFilterComponent?.submitted) {
-            if (this.editMode) {
-              this.onSubmitEditMode(data);
-            } else {
-              this.router.navigate(['check-your-answers'], { relativeTo: this.activatedRoute });
-            }
+            this.router.navigate(['check-your-answers'], { relativeTo: this.activatedRoute });
           }
         }
       }
@@ -110,19 +104,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   public resetForm() {
     this.filterService.clearSessionAndLocalPersistance(this.formId);
     this.filterService.givenErrors.next(null);
-  }
-
-  public onSubmitEditMode(data: FilterSetting) {
-    this.isLoading = true;
-    const staffUser = new StaffUser();
-    staffUser.fromGenericFilter(data, this.staffFilterOptions);
-    this.staffDataAccessService.updateUser(staffUser)
-      .pipe(finalize(() => this.isLoading = false))
-      .subscribe(() => {
-        this.router.navigateByUrl('/staff');
-      }, () => {
-        this.router.navigateByUrl('/service-down');
-    });
   }
 
   public initFormConfig() {

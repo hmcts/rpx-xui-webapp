@@ -147,7 +147,7 @@ describe('StaffUserDetailsComponent', () => {
   });
 
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
-    mockStaffDataAccessService.updateUser.and.returnValue(of([{case_worker_id: '123'}]));
+    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
     component.updateUserStatus();
     fixture.detectChanges();
 
@@ -156,7 +156,7 @@ describe('StaffUserDetailsComponent', () => {
   });
 
   it('should set suspendedStatus to "restored" to show the banner when calling updateUserStatus with isSuspended true', () => {
-    mockStaffDataAccessService.updateUser.and.returnValue(of([{case_worker_id: '123'}]));
+    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
     testStaffUser.suspended = 'true';
     component.updateUserStatus();
     fixture.detectChanges();
@@ -174,7 +174,7 @@ describe('StaffUserDetailsComponent', () => {
     component.setDataAndNavigateToUpdateUser();
     tick();
     expect(sessionStorage.getItem(component.FILTER_ID)).toBeTruthy();
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/staff/update-user', { state: { userDetails: component.userDetails } });
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/staff/update-user');
     expect(location.path()).toBe('/staff/update-user');
   }));
 });

@@ -15,6 +15,7 @@ import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-opt
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
 import { StaffUserDetailsResolverService } from './resolvers/staff-user-details-resolver.service';
+import { StaffAddEditUserFormId } from './components/staff-add-edit-user-form-id.enum';
 
 export const ROUTES: Routes = [
   {
@@ -37,7 +38,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'add-edit-user',
-        data: { formId: 'staff-add-user' },
+        data: { formId: StaffAddEditUserFormId.AddUser },
         children: [
           { path: '', component: StaffAddUserComponent },
           { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
@@ -45,7 +46,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'update-user',
-        data: { formId: 'staff-update-user' },
+        data: { formId: StaffAddEditUserFormId.UpdateUser },
         children: [
           { path: '', component: StaffEditUserContainerComponent },
           { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }

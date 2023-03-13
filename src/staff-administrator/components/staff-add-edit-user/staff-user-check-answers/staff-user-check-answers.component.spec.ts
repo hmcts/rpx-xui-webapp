@@ -1,6 +1,7 @@
+import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -9,6 +10,7 @@ import { UserDetails } from '../../../../app/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 import { StaffUser } from '../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
+import { StaffAddEditUserFormId } from '../../staff-add-edit-user-form-id.enum';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
 
 describe('StaffUserCheckAnswersComponent', () => {
@@ -20,10 +22,11 @@ describe('StaffUserCheckAnswersComponent', () => {
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
   let testStaffUser: StaffUser;
   let storeMock: jasmine.SpyObj<Store<UserDetails>>;
+  let location: Location;
 
   beforeEach(waitForAsync(() => {
     mockFilterService = jasmine.createSpyObj<FilterService>('mockFilterService', ['getStream', 'get', 'persist', 'clearSessionAndLocalPersistance', 'givenErrors']);
-    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser']);
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser', 'updateUser']);
     mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
 
     testStaffUser = StaffUser.from({
@@ -301,6 +304,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   }));
 
   beforeEach(() => {
+    location = TestBed.inject(Location);
     fixture = TestBed.createComponent(StaffUserCheckAnswersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -311,6 +315,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   });
 
   it('should call addNewUser and on being succesful it should redirect to "/staff"', (done) => {
+    component.formId = StaffAddEditUserFormId.AddUser;
     mockStaffDataAccessService.addNewUser.and.returnValue(of(testStaffUser));
     component.onSubmit();
     done();
@@ -319,6 +324,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   });
 
   it('should display a banner once an user has been added successfully', (done) => {
+    component.formId = StaffAddEditUserFormId.AddUser;
     mockStaffDataAccessService.addNewUser.and.returnValue(of(testStaffUser));
     component.onSubmit();
     done();
@@ -326,10 +332,34 @@ describe('StaffUserCheckAnswersComponent', () => {
   });
 
   it('should call addNewUser and throw error', (done) => {
+    component.formId = StaffAddEditUserFormId.AddUser;
     mockStaffDataAccessService.addNewUser.and.returnValue(throwError({status: 500}));
     component.onSubmit();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down');
   });
+
+  it('should call updateUser and then redirect to staff on successful call when calling onSubmitEditMode', fakeAsync(() => {
+    component.formId = StaffAddEditUserFormId.UpdateUser;
+    const caseworkerId = '123';
+    mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: caseworkerId }));
+    component.onSubmitUpdateUser();
+    tick();
+    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/staff/user-details/${caseworkerId}`);
+    flush();
+  }));
+
+  it('should call updateUser and then redirect to service down on error call when calling onSubmitEditMode', fakeAsync(() => {
+    component.formId = StaffAddEditUserFormId.UpdateUser;
+    mockStaffDataAccessService.updateUser.and.returnValue(throwError('error'));
+    spyOn(window, 'scrollTo').and.callFake(() => {});
+    component.onSubmitUpdateUser();
+    tick();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down');
+    expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
+    flush();
+  }));
 });

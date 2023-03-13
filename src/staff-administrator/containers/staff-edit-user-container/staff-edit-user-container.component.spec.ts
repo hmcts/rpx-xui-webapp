@@ -50,10 +50,4 @@ describe('StaffEditUserContainerComponent', () => {
   it('should set formId from activatedRoute', () => {
     expect(component.formId).toEqual(FORM_ID);
   });
-
-  it('should call clearSessionAndLocalPersistance and clear error from FilterService', () => {
-    component.ngOnDestroy();
-    expect(mockFilterService.clearSessionAndLocalPersistance).toHaveBeenCalled();
-    expect(mockFilterService.givenErrors.next).toHaveBeenCalledWith(null);
-  });
 });

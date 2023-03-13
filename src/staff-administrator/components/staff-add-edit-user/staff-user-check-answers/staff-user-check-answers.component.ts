@@ -5,7 +5,7 @@ import {
 } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { finalize, map, take } from 'rxjs/operators';
 import { UserDetails } from '../../../../app/models/user-details.model';
 import { InfoMessage } from '../../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../../app/shared/models';
@@ -15,6 +15,7 @@ import { InfoMessageType } from '../../../../role-access/models/enums';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffUser } from '../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
+import { StaffAddEditUserFormId } from '../../staff-add-edit-user-form-id.enum';
 
 
 @Component({
@@ -34,6 +35,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   };
   public userDetails$: Observable<UserDetails>;
   public idamRoles = [];
+  public isLoading = false;
 
   constructor(
     private readonly appStore: Store<fromAppStore.State>,
@@ -70,6 +72,14 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public onSubmit() {
+    if (this.formId === StaffAddEditUserFormId.AddUser) {
+      this.onSubmitAddUser();
+    } else if (this.formId === StaffAddEditUserFormId.UpdateUser) {
+      this.onSubmitUpdateUser();
+    }
+  }
+
+  public onSubmitAddUser() {
     this.staffDataAccessService.addNewUser(this.staffUser).subscribe(() => {
       // success banner
       this.messageService.nextMessage({
@@ -81,6 +91,21 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     }, () => {
       this.router.navigateByUrl('/service-down');
     });
+  }
+
+  public onSubmitUpdateUser() {
+    this.isLoading = true;
+    this.staffDataAccessService.updateUser(this.staffUser)
+      .pipe(finalize(() => {
+        this.isLoading = false;
+        this.filterService.clearSessionAndLocalPersistance(this.formId);
+      }))
+      .subscribe((response) => {
+        this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`);
+      }, (error) => {
+        window.scrollTo(0, 0);
+        this.router.navigateByUrl('/service-down');
+      });
   }
 
   public cancel() {

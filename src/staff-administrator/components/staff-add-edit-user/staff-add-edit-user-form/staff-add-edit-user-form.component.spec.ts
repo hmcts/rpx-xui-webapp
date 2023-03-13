@@ -6,20 +6,21 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService, GroupOptions } from '@hmcts/rpx-xui-common-lib';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { StaffFilterOption } from '../../../models//staff-filter-option.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
-import { StaffUserCheckAnswersComponent } from '../staff-user-check-answers/staff-user-check-answers.component';
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 
-@Component({ selector: 'exui-staff-main-container', template: '' })
-class StaffMainContainerStubComponent { }
+@Component({ selector: 'exui-stub-component', template: '' })
+class StubComponent { }
 
 describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
   let fixture: ComponentFixture<StaffAddEditUserFormComponent>;
   let location: Location;
   let router: Router;
+  let activatedRoute: ActivatedRoute;
+
   const jobTitles: StaffFilterOption[] = [
     {key: 'senior-legal-caseworker', label: 'Senior Legal Caseworker'},
     {key: 'legal-caseworker', label: 'Legal Caseworker'},
@@ -157,13 +158,10 @@ describe('StaffAddEditUserFormComponent', () => {
       'mockStaffDataAccessService', ['updateUser']
     );
     await TestBed.configureTestingModule({
-      declarations: [StaffAddEditUserFormComponent, StaffMainContainerStubComponent, StaffUserCheckAnswersComponent],
+      declarations: [StaffAddEditUserFormComponent],
       imports: [
         RouterTestingModule.withRoutes([
-          { path: 'staff', component: StaffMainContainerStubComponent },
-          { path: 'staff/add-edit-user/check-your-answers', component: StaffUserCheckAnswersComponent },
-          { path: 'service-down', component: StaffUserCheckAnswersComponent }
-
+          { path: 'staff', component: StubComponent },
         ]),
         ReactiveFormsModule,
         HttpClientTestingModule,
@@ -293,6 +291,7 @@ describe('StaffAddEditUserFormComponent', () => {
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
     spyOn(router, 'getCurrentNavigation').and.returnValues({previousNavigation: { finalUrl: '/staff' }} as any);
     location = TestBed.inject(Location);
+    activatedRoute = TestBed.inject(ActivatedRoute);
     fixture = TestBed.createComponent(StaffAddEditUserFormComponent);
     component = fixture.componentInstance;
     router.initialNavigation();
@@ -320,6 +319,20 @@ describe('StaffAddEditUserFormComponent', () => {
     flush();
   }));
 
+  it('should navigate to relative route' +
+    '/check-your-answers regardless of editMode = false or editMode = true and form is marked as submitted', fakeAsync(() => {
+    component.genericFilterComponent.submitted = true;
+    component.editMode = true;
+    tick();
+
+    spyOn(router, 'navigate');
+    mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
+    streamSubject.next(streamTestData);
+    tick();
+    expect(router.navigate).toHaveBeenCalledWith(['check-your-answers'], { relativeTo: activatedRoute });
+    flush();
+  }));
+
   it('should return the selected options with true value', () => {
     const result = (component as any).getSelected(jobTitles, ['hearing-centre-team-leader', 'hearing-centre-administrator']);
     expect(result).toEqual([false, false, true, true, false]);
@@ -330,29 +343,6 @@ describe('StaffAddEditUserFormComponent', () => {
     expect(result).toEqual([ false, true, true]);
   });
 
-  it('should submit data and navigate to staff if editMode and form is marked as submitted', fakeAsync(() => {
-    component.genericFilterComponent.submitted = true;
-    component.editMode = true;
-    fixture.detectChanges();
-
-    mockStaffDataAccessService.updateUser.and.returnValue(of([{ case_worker_id: '123' }]));
-    streamSubject.next(streamTestData);
-    tick();
-    expect(location.path()).toBe('/staff');
-    flush();
-  }));
-  it('should navigate to service down if editMode and form is marked as submitted', fakeAsync(() => {
-    component.genericFilterComponent.submitted = true;
-    component.editMode = true;
-    fixture.detectChanges();
-
-    mockStaffDataAccessService.updateUser.and.returnValue(throwError({status: 500}));
-    streamSubject.next(streamTestData);
-    tick();
-    expect(location.path()).toBe('/service-down');
-    flush();
-  }));
-
   it('should unsubscribe from filterStreamSubscription onDestroy', () => {
     // @ts-expect-error - filterStreamSubscription is a private property
     spyOn(component.filterStreamSubscription, 'unsubscribe').and.callThrough();
@@ -361,22 +351,4 @@ describe('StaffAddEditUserFormComponent', () => {
     // @ts-expect-error - filterStreamSubscription is a private property
     expect(component.filterStreamSubscription.unsubscribe).toHaveBeenCalled();
   });
-
-  it('should call updateUser and then redirect to staff on successful call when calling onSubmitEditMode',fakeAsync(() => {
-    mockStaffDataAccessService.updateUser.and.returnValue(of([{ case_worker_id: '123' }]));
-    component.onSubmitEditMode(streamTestData);
-    tick();
-    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(location.path()).toBe('/staff');
-    flush();
-  }));
-
-  it('should call updateUser and then redirect to service down on error call when calling onSubmitEditMode',fakeAsync(() => {
-    mockStaffDataAccessService.updateUser.and.returnValue(throwError('error'));
-    component.onSubmitEditMode(streamTestData);
-    tick();
-    expect(location.path()).toBe('/service-down');
-    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    flush();
-  }));
 });

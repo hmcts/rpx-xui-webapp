@@ -24,7 +24,7 @@ describe('HearingRequestFailedSummaryComponent', () => {
   });
 
   it('should check error section defined', (): void => {
-    const errors = [{id: 'request-failed', message: HearingSummaryEnum.RequestFailedError}]
+    const errors = [{id: 'request-failed', message: HearingSummaryEnum.RequestFailedError}];
     component.requestErrors = errors;
     const errorSummaryEle = fixture.debugElement.query(By.css('.govuk-error-summary__title'));
     expect(errorSummaryEle).toBeDefined();

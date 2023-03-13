@@ -1,11 +1,11 @@
-import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {hearingStageRefData, initialState} from '../hearing.test.data';
-import {State} from '../store';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { hearingStageRefData, initialState } from '../hearing.test.data';
+import { State } from '../store';
 import { HowManyPeopleAttendAmendedConverter } from './how-many-people-attend.amended.converter';
 
 describe('HowManyPeopleAttendAmendedConverter', () => {
@@ -30,8 +30,8 @@ describe('HowManyPeopleAttendAmendedConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new HowManyPeopleAttendAmendedConverter();
   });
 

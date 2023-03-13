@@ -2,29 +2,47 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-import { MatDialogModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
 import {
   AbstractAppConfig,
+  AlertModule,
   AlertService,
   AuthService as CCDAuthService,
+  CaseEditorModule,
   CaseEditWizardGuard,
+  CaseFileViewService,
+  CaseHeaderModule,
   CaseListFiltersModule,
+  CaseListModule,
+  CaseNotifier,
+  CaseReferencePipe,
+  CaseResolver,
   CasesService,
-  CaseUIToolkitModule,
+  CaseViewerModule,
+  CcdCYAPageLabelFilterPipe,
   CreateCaseFiltersModule,
   DocumentManagementService,
   DraftService,
+  ErrorNotifierService,
+  FormatTranslatorService,
   HttpErrorService,
   HttpService,
+  IsCompoundPipe,
   LoadingModule,
+  NavigationNotifierService,
+  OrganisationConverter,
+  OrganisationService,
   PageValidationService,
+  PaletteModule,
+  PipesModule,
   PlaceholderService,
   RequestOptionsBuilder,
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule
+  WorkbasketFiltersModule,
+  JurisdictionService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -53,18 +71,17 @@ import { effects, reducers } from './store';
 
 @NgModule({
   imports: [
+    AlertModule,
     CommonModule,
-    CaseUIToolkitModule,
     CreateCaseFiltersModule,
     SearchResultModule,
-    HttpClientModule,
     StoreModule.forFeature('cases', reducers),
     EffectsModule.forFeature(effects),
     casesRouting,
     SharedModule,
     OrganisationModule,
     SearchFiltersModule,
-    HttpModule,
+    HttpClientModule,
     MatDialogModule,
     CaseListFiltersModule,
     WorkbasketFiltersModule,
@@ -73,11 +90,21 @@ import { effects, reducers } from './store';
     ReactiveFormsModule,
     PriorityFieldComponentModule,
     HearingsModule,
-    HearingsPipesModule
+    HearingsPipesModule,
+    CaseHeaderModule,
+    CaseEditorModule,
+    CaseListModule,
+    PaletteModule,
+    CaseViewerModule,
+    PipesModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
     PlaceholderService,
+    CaseReferencePipe,
+    CaseNotifier,
+    ErrorNotifierService,
+    NavigationNotifierService,
     CasesService,
     CCDAuthService,
     HttpService,
@@ -95,9 +122,17 @@ import { effects, reducers } from './store';
     ScrollToService,
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
+    CaseResolver,
     ActivityResolver,
     HearingsService,
-    WASupportedJurisdictionsService
+    FormatTranslatorService,
+    WASupportedJurisdictionsService,
+    OrganisationService,
+    OrganisationConverter,
+    IsCompoundPipe,
+    CcdCYAPageLabelFilterPipe,
+    CaseFileViewService,
+    JurisdictionService
   ]
 })
 /**
@@ -108,7 +143,7 @@ export class CasesModule {
     CasesModule.forRoot();
   }
 
-  public static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: CasesModule,
       providers: [

@@ -1,0 +1,79 @@
+<exui-app-header></exui-app-header>
+
+<div class="govuk-width-container">
+    <div class="page">
+      <main id="content" role="main">
+        <a class="govuk-back-link govuk-!-margin-bottom-5" href="javascript:void(0)" (click)="onBack()">Back</a>
+        <div class="govuk-grid-row">
+    <h1 class="govuk-heading-l">
+      Review your case access request and decision
+      <span class="govuk-caption-l">Check the details of your case access request.</span>
+    </h1>
+    <h2 class="govuk-heading-m">Request details</h2>
+    <dl class="govuk-summary-list">
+        <div *ngIf="caseName !== caseReference" class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Case name
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{caseName}}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Case reference
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{caseReference}}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Date submitted
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{dateSubmitted | date: 'd MMMM yyyy'}}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Reason for case access
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{accessReason}}
+        </dd>
+      </div>
+    </dl>
+    <h2 class="govuk-heading-m">Rejected request details</h2>
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Decision date
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{dateRejected | date: 'd MMMM yyyy'}}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Request reviewed by
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{reviewerName}}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Reason for rejection
+        </dt>
+        <dd class="govuk-summary-list__value">
+            {{reviewReason}}
+        </dd>
+      </div>
+    </dl>
+    <button class="govuk-button govuk-button--primary" (click)="goToRequest()">Request access again</button>
+    </div>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

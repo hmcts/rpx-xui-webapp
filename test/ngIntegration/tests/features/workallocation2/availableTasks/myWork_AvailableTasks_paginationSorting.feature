@@ -15,8 +15,14 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | 20008 | IA Court North Shields |
             | 20009 | IA Court Taylor House  |
 
+
     Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
             | locationId | locationName           |
             | 20001      | IA Court Aldgate Tower |
@@ -24,7 +30,7 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -54,16 +60,18 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
         Then I validate task list page results text displayed as "Showing 51 to 75 of 140 results"
 
         When I click work allocation table "tasks" column header "Case name"
+
+
         Then I see work allocation table "tasks" column "Case name" is sorted in "asc"
         Then I see work allocation table "tasks" reset sort button state isDisplayed is "true"
         When I click work allocation table "tasks" reset sort button
         Then I see work allocation table "tasks" reset sort button state isDisplayed is "false"
         Then I see work allocation table "tasks" column "Case name" is sorted in "none"
         Then I see work allocation table "tasks" default column sorted by "asc" for user type "<UserType>"
-            | Caseworker | Due date     |
+            | Caseworker | Priority     |
             | Judge      | Task created |
 
-        Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation2/task/" on page 3 for user type "<UserType>"
+        Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation/task/" on page 3 for user type "<UserType>"
             | ColumnHeader  | Caseworker | Judge | FieldId      |
             | Case name     | Yes        | Yes   | caseName     |
             | Case category | Yes        | Yes   | caseCategory |
@@ -81,11 +89,16 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
 
     Scenario Outline: Available Tasks pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10   |
             | Read        | 10    |
-        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -104,11 +117,16 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
 @ignore
     Scenario Outline: Available Tasks pagnation control display 0 items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 0     |
             | Read        | 0     |
-        Given I set MOCK request "/workallocation2/task/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -118,7 +136,7 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
         Then I validate tasks count in page 0
         Then I validate task table pagination controls, is displayed state is "false"
         Then I validate WA tasks table footer displayed status is "true"
-        Then I validate WA tasks table footer message is "There are no tasks that match your selection."
+        Then I validate WA tasks table footer message is "There are no available tasks. Use the location filter to view available tasks at other locations."
 
         Examples:
             | UserIdentifier  | UserType | Roles                                           |

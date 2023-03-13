@@ -9,6 +9,9 @@ const browserUtil = require("../../../ngIntegration/util/browserUtil");
 const headerpage = require('../pageObjects/headerPage');
 const config = require('../../config/conf.js');
 const reportLogger = require('../../support/reportLogger');
+const { LOG_LEVELS } = require('../../support/constants');
+
+const appTestData = require('../../config/appTestConfig')
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -38,6 +41,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click on primary navigation header tab {string}', async function (headerTabLabel) {
         await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+
+    });
+
+    When('I validate primary navigation items count {int}', async function (count) {
+        let actual = await headerPage.getMenuItemsCount();
+        expect(actual, `expected menu items displayed to be ${count} actual ${actual} `).to.equal(count)
 
     });
 
@@ -73,6 +82,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see primary navigation tabs {string} in main header', async function (navigationTabs) {
         await browserWaits.retryWithActionCallback(async () => {
+            await browserUtil.waitForLD(); 
             try{
                 const softAssert = new SoftAssert();
                 const navigationTabsArr = navigationTabs.split(',');
@@ -84,7 +94,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                             return await headerPage.isTabPresentInMainNav(headerlabel);
                         });
                     } catch (err) {
-                        reportLogger.AddMessage(`Expected main nav tab "${headerlabel}" not present in "${navigationTabsArr}"`);
+                        reportLogger.AddMessage(`Expected main nav tab "${headerlabel}" not present in "${navigationTabsArr}"`, LOG_LEVELS.Error);
                     }
                     softAssert.setScenario('Nav header in main tab ' + headerlabel);
                     await softAssert.assert(async () => expect(await headerPage.isTabPresentInMainNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
@@ -101,6 +111,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     })
 
     Then('I do not see primary navigation tabs does not exist excluding {string}', async function (displayedTabs,allTabsDatatable) {
+        await browserUtil.waitForLD();
         const tableHashes = allTabsDatatable.hashes();
         const displayedTabArr = [];
         for (const dusplayedTab of displayedTabs.split(",")){
@@ -113,7 +124,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
 
-        cucumberReporter.AddMessage("Tabs not to be displaued " + navigationTabsArr); 
+        cucumberReporter.AddMessage("Tabs not to be displaued " + navigationTabsArr, LOG_LEVELS.Info); 
         await browserWaits.retryWithActionCallback(async () => {
             try {
                 const softAssert = new SoftAssert();
@@ -142,6 +153,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see primary navigation tabs {string} in right side header column', async function (navigationTabs) {
         await browserWaits.retryWithActionCallback(async () => {
+            await browserUtil.waitForLD(); 
             try{
                 const softAssert = new SoftAssert();
                 const navigationTabsArr = navigationTabs.split(',');
@@ -182,23 +194,51 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate header displayed for user type {string}', async function(userType){
         await browserWaits.retryWithActionCallback(async () => {
-            
+            await browserUtil.waitForLD(); 
             try{
-                await headerPage.validateHeaderDisplayedForUserType(userType);
+                await browserWaits.retryWithActionCallback(async () => {
+                    try {
+                        await headerPage.validateHeaderDisplayedForUserType(userType);
+                    } catch (err) {
+                        await headerpage.clickManageCases();
+                        throw new Error(err); 
+                    }
+                });
             }catch(err){
                 const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/';
                 await browser.get(baseUrl);
-                await headerpage.waitForPrimaryNavDisplay();
+                await headerpage.click();
                 await browserUtil.waitForLD();
                 throw new Error(err);
-            } 
+            }
+            
         });
-
+        
     });
 
     Then('I validate 16-digit Case reference search box isDisplayed? is {string}', async function(isDisplayed){
         isDisplayed = isDisplayed.toLowerCase();
         expect(await headerPage.caseReferenceSearchBox.isPresent()).to.equal(isDisplayed.includes('yes') || isDisplayed.includes('true') );
+    });
+
+
+    Then('I validate primary navigation headers not displayed', async function () {
+        const tabsDisplayed = await headerPage.getPrimaryTabsDisplayed();
+        expect(tabsDisplayed.length).to.equal(0);
+    });
+
+    When('If env is {string}, I enter {string} in  case ref in header 16 digit ref search', async function (env,input) {
+        if (appTestData.getTestEnvFromEnviornment() === env){
+            await browserWaits.waitForSpinnerToDissappear();
+            await headerPage.headerCaseRefSearch.searchInput(input);
+        }
+       
+    });
+
+    When('I click find in case ref in header 16 digit ref search', async function () {
+        await browserWaits.retryWithActionCallback(async () => {
+            await headerPage.headerCaseRefSearch.clickFind();
+        });
     });
 
 });

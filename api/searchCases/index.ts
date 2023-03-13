@@ -9,18 +9,21 @@ import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery';
  * Manually creating Elastic search query
  */
 export function modifyRequest(proxyReq, req) {
-  const userInfo = req.session.passport.user.userinfo as UserInfo;
-  const request = prepareElasticQuery(req.query, req.body, userInfo);
+  const userInfo = getUserInfoFromRequest(req);
 
-  // Write out body changes to the proxyReq stream
-  const body = JSON.stringify(request);
+  if (userInfo) {
+    const request = prepareElasticQuery(req.query, req.body, userInfo);
 
-  // Update header
-  proxyReq.setHeader('content-type', 'application/json');
-  proxyReq.setHeader('content-length', body.length);
+    // Write out body changes to the proxyReq stream
+    const body = JSON.stringify(request);
 
-  // Write out body changes to the proxyReq stream
-  proxyReq.write(body);
+    // Update header
+    proxyReq.setHeader('content-type', 'application/json');
+    proxyReq.setHeader('content-length', body.length);
+
+    // Write out body changes to the proxyReq stream
+    proxyReq.write(body);
+  }
 
   // Remove body-parser body object from the request
   delete req.body;
@@ -34,7 +37,7 @@ export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
     .indexOf(role.toLowerCase()) >= 0).length > 0;
 }
 
-export function prepareElasticQuery(queryParams: { page? }, body: any, user: UserInfo): ElasticSearchQuery {
+export function prepareElasticQuery(queryParams: { page?}, body: any, user: UserInfo): ElasticSearchQuery {
   const metaCriteria: { [key: string]: string } = queryParams;
   let caseCriteria = {};
   let nativeEsQuery: {};
@@ -46,6 +49,7 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
   const canPerformWildCardSearch: boolean = userCanPerformWildCardSearch(user);
   const caseType: string = metaCriteria.ctid;
   const fieldsToApplyWildCardSearchesTo = getConfigValue(WILDCARD_SEARCH_FIELDS) as { [key: string]: string[] };
+  const hasESQueryTypeInPayload = Object.keys(body) && Object.keys(body).length && Object.keys(body)[0] === 'query';
 
   Object.keys(metaCriteria).map(key => {
     if (key === 'ctid' || key === 'use_case' || key === 'view' || key === 'page') {
@@ -132,7 +136,7 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
   };
 
   return {
-    native_es_query: nativeEsQuery,
+    native_es_query: hasESQueryTypeInPayload ? {...body} : nativeEsQuery,
     supplementary_data: ['*'],
   };
 }
@@ -201,4 +205,13 @@ function canApplyWildCardSearch(
 function phraseHasSpecialCharacters(phrase: string): boolean {
   const specialCharacters: string[] = [' ', '-', '_'];
   return specialCharacters.filter((specialCharacter: string) => phrase.indexOf(specialCharacter) >= 0).length > 0;
+}
+
+function getUserInfoFromRequest(req: any): UserInfo {
+  try {
+    const userInfo = req.session.passport.user.userinfo as UserInfo;
+    return userInfo;
+  } catch (error) {
+    return null;
+  }
 }

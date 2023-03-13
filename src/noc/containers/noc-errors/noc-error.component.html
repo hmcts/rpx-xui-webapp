@@ -4,54 +4,52 @@
 </div>
 
 <div class="govuk-width-container">
-    <main class="govuk-main-wrapper " id="main-content" role="main">
-        <div class="govuk-width-container">
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    <ng-container [ngSwitch]="(lastError$ | async)?.error.code">
-                      <ng-container *ngSwitchCase="nocErrorMap.HAS_REPRESENTED">
-                        <h1 class="govuk-heading-l" id="has-represented">Your organisation already has access to this case</h1>
-                        <p>You or a colleague are already representing this client on this case.</p>
-                        <p><a href="/cases">View case list</a></p>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="nocErrorMap.NOC_IN_PROGRESS">
-                          <h1 class="govuk-heading-l" id="noc-in-progress">Something went wrong</h1>
-                          <p class="govuk-body">Your notice of change request has not been submitted.</p>
-                          <p class="govuk-body">A notice of change is already in progress for this case.</p>
-                          <p class="govuk-body"><a [routerLink]="'/get-help'">Contact us</a> for more information.</p>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="nocErrorMap.ANSWERS_NOT_IDENTIFY_LITIGANT">
-                        <h1 class="govuk-heading-l" id="answers-not-identify-litigant">Your request cannot be submitted online</h1>
-                        <p class="govuk-body">You can't currently file an online notice of change for this case.</p>
-                        <p> You can fill out a <a href="https://www.gov.uk/government/publications/form-n434-notice-of-change-of-solicitor">paper form</a>
-                          to complete a notice of change for this case offline. If you do this, you won't be able to access the case online.</p>
-                        <p><a href="/cases">View case list</a></p>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="nocErrorMap.MULTIPLE_NOC_REQUESTS_ON_USER">
-                        <exui-noc-fill-form-offline>
-                        </exui-noc-fill-form-offline>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="nocErrorMap.MULTIPLE_NOC_REQUESTS_ON_CASE">
-                        <exui-noc-fill-form-offline>
-                        </exui-noc-fill-form-offline>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="nocErrorMap.NO_ORG_POLICY">
-                        <exui-noc-fill-form-offline>
-                        </exui-noc-fill-form-offline>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="nocErrorMap.NOC_EVENT_UNAVAILABLE">
-                        <exui-noc-fill-form-offline>
-                        </exui-noc-fill-form-offline>
-                      </ng-container>
-                      <ng-container *ngSwitchDefault>
-                        <h1 class="govuk-heading-l" id="generic-error">Something went wrong</h1>
-                        <p class="govuk-body">Your notice of change request has not been submitted.</p>
-                        <p class="govuk-body">{{(lastError$ | async)?.error.message}}</p>
-                        <p class="govuk-body"><a href="/get-help">Contact us</a> for more information.</p>
-                      </ng-container>
-                    </ng-container>
-                </div>
-            </div>
-        </div>
-    </main>
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <ng-container [ngSwitch]="(lastError$ | async)?.error.code">
+          <ng-container *ngSwitchCase="nocErrorMap.HAS_REPRESENTED">
+            <h1 class="govuk-heading-l" id="has-represented">Your organisation already has access to this case</h1>
+            <p>You or a colleague are already representing this client on this case.</p>
+            <p><a href="/cases">View case list</a></p>
+          </ng-container>
+          <ng-container *ngSwitchCase="nocErrorMap.NOC_IN_PROGRESS">
+            <h1 class="govuk-heading-l" id="noc-in-progress">Something went wrong</h1>
+            <p class="govuk-body">Your notice of change request has not been submitted.</p>
+            <p class="govuk-body">A notice of change is already in progress for this case.</p>
+            <p class="govuk-body"><a [routerLink]="'/get-help'">Contact us</a> for more information.</p>
+          </ng-container>
+          <ng-container *ngSwitchCase="nocErrorMap.ANSWERS_NOT_IDENTIFY_LITIGANT">
+            <h1 class="govuk-heading-l" id="answers-not-identify-litigant">Your request cannot be submitted online</h1>
+            <p class="govuk-body">You can't currently file an online notice of change for this case.</p>
+            <p> You can fill out a <a href="https://www.gov.uk/government/publications/form-n434-notice-of-change-of-solicitor">paper form</a>
+              to complete a notice of change for this case offline. If you do this, you won't be able to access the case online.</p>
+            <p><a href="/cases">View case list</a></p>
+          </ng-container>
+          <ng-container *ngSwitchCase="nocErrorMap.MULTIPLE_NOC_REQUESTS_ON_USER">
+            <exui-noc-fill-form-offline>
+            </exui-noc-fill-form-offline>
+          </ng-container>
+          <ng-container *ngSwitchCase="nocErrorMap.MULTIPLE_NOC_REQUESTS_ON_CASE">
+            <exui-noc-fill-form-offline>
+            </exui-noc-fill-form-offline>
+          </ng-container>
+          <ng-container *ngSwitchCase="nocErrorMap.NO_ORG_POLICY">
+            <exui-noc-fill-form-offline>
+            </exui-noc-fill-form-offline>
+          </ng-container>
+          <ng-container *ngSwitchCase="nocErrorMap.NOC_EVENT_UNAVAILABLE">
+            <exui-noc-fill-form-offline>
+            </exui-noc-fill-form-offline>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <h1 class="govuk-heading-l" id="generic-error">Something went wrong</h1>
+            <p class="govuk-body">Your notice of change request has not been submitted.</p>
+            <p class="govuk-body">{{(lastError$ | async)?.error.message}}</p>
+            <p class="govuk-body"><a href="/get-help">Contact us</a> for more information.</p>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
 </div>

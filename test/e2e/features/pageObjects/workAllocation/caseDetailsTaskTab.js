@@ -21,7 +21,7 @@ class CaseDetailsTaskTab{
 
 
     async getTaskContainerAtPosition(pos){
-        const taskCount = this.tasks.count();
+        const taskCount = await this.tasks.count();
         if (taskCount < pos ){
             throw new Error(`Total Tasks displayed are ${taskCount}. Cannot get task at position ${pos}`);
         }
@@ -35,21 +35,22 @@ class CaseDetailsTaskTab{
         return taskName;
     }
 
-    async getTaskContainerWithName(taskName){
-        const taskCount = this.tasks.count();
+    async getTaskContainerWithName(name){
+        const taskCount = await this.tasks.count();
         let returnVal = null;
+
+        const tasksInPage = [];
         for (let i = 0; i < taskCount; i++){
             const task = await this.tasks.get(i);
-
             const taskName = await task.$(this.taskNameLocator).getText();
-
-            if (taskName.includes(taskName)){
+            tasksInPage.push(taskName);
+            if (taskName.includes(name)){
                 returnVal = task;
                 break;
             }
         }
         if (returnVal === null){
-            throw new Error(`Task with name ${taskName} not found`);
+            throw new Error(`Task with name ${name} not found. ${tasksInPage.join(',')}`);
         }
         return returnVal;
     }
@@ -102,7 +103,7 @@ class CaseDetailsTaskTab{
     }
 
     async getAttributesDisplayedForTaskWithName(taskName){
-        const taskContainer = this.getTaskContainerWithName(taskName);
+        const taskContainer = await this.getTaskContainerWithName(taskName);
         return await this.getTaskAttributeElementsFromTaskContainer(taskContainer);
     }
 
@@ -122,6 +123,12 @@ class CaseDetailsTaskTab{
         }
 
         return attributeElements;
+    }
+
+    async clickTaskNextStepLink(taskName, linkText){
+        const attributes = await this.getAttributesDisplayedForTaskWithName(taskName);
+        const link = await this.getAttributeLink(attributes, 'Next steps', linkText);
+        await link.click();
     }
 
 }

@@ -41,19 +41,27 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task tab alert banner header is {string}', async function (alertheader) {
-        expect(await caseDetailsTaskTabPage.alertBannerHeading.getText()).includes(alertheader);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.alertBannerHeading.getText()).includes(alertheader);
+        });
     });
 
     Then('I validate task tab alert banner message is {string}', async function (alertMessagee) {
-        expect(await caseDetailsTaskTabPage.alertBannerMessage.getText()).includes(alertMessagee);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.alertBannerMessage.getText()).includes(alertMessagee);
+        });
     });
 
     Then('I validate task tab active tasks container displayed', async function () {
-        expect(await caseDetailsTaskTabPage.activeTasksContainer.isPresent()).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.activeTasksContainer.isPresent()).to.be.true;
+        });
     });
 
     Then('I validate task tab active tasks displayed count {int}', async function (taskCount) {
-        expect(await caseDetailsTaskTabPage.tasks.count()).to.equal(taskCount);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.tasks.count()).to.equal(taskCount);
+        });
     });
 
 
@@ -64,6 +72,43 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate task tab active task at position {int} is {string}', async function (position, taskName) {
         expect(await caseDetailsTaskTabPage.getTaskNameForTaskAtPosition(position)).to.include(taskName);
+    });
+
+    When('I click active tast attribute Next steps link {string} for task at position {int} with name {string}', async function (attributeLinktext, position, taskNameExpected){
+        let taskAttributes = null;
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            taskAttributes = await caseDetailsTaskTabPage.getAttributeElementssDisplayedForTaskAtPos(position);
+            reportLogger.AddMessage(`*** Actual values displayed ***`);
+
+            const actualDisplayValues = {};
+            for (const taskAttrib of Object.keys(taskAttributes)) {
+                const attriText = await taskAttributes[taskAttrib].getText();
+                actualDisplayValues[taskAttrib] = attriText;
+            }
+            reportLogger.FormatPrintJson(actualDisplayValues);
+
+        });
+        const nextSteps = taskAttributes['Next steps'];
+        const links = nextSteps.$$('a');
+        const linksCount = await links.count();
+
+        let linkToClick = null;
+        for(let i =0 ; i < linksCount;i++){
+            const link = await links.get(i);
+            const linktext = await link.getText();
+            if (linktext.includes(attributeLinktext)){
+                linkToClick = link;
+                break;
+            } 
+        }
+        expect(linkToClick !== null, `lnk with text ${attributeLinktext} not found in next steps`).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await linkToClick.click();
+        });
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await BrowserWaits.waitForElement($('ccd-case-edit-page'));
+        });
     });
 
     Then('I validate task tab active task at position {int} with task name {string} has attributes', async function(position,taskNameExpected ,attributesDatatable){
@@ -147,6 +192,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }   
         });
         
+    });
+
+    When('I click next step {string} for task with name {string}', async function(linkText, taskName){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseDetailsTaskTabPage.clickTaskNextStepLink(taskName, linkText) 
+        });
     });
 
 

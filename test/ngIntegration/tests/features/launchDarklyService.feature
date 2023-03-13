@@ -13,7 +13,7 @@ Feature: Launch darkly service testing for targeting users variants
         Then I validate launch darkly feature toggle values
             | valueType | name                              | value                  |
             | bool      | mc-mvp-wa-pagination              | true                   |
-            | string    | mc-work-allocation-active-feature | WorkAllocationRelease1 |
+            | string    | mc-work-allocation-active-feature | WorkAllocationRelease2 |
             | bool      | MC_Work_Allocation                | true                   |
 
 
@@ -25,7 +25,7 @@ Feature: Launch darkly service testing for targeting users variants
         Then I validate launch darkly feature toggle values
             | valueType | name                              | value                  |
             | bool      | mc-mvp-wa-pagination              | false                  |
-            | string    | mc-work-allocation-active-feature | WorkAllocationRelease1 |
+            | string    | mc-work-allocation-active-feature | WorkAllocationRelease2 |
             | bool      | MC_Work_Allocation                | true                   |
 
     Scenario:  LD values for toggles, user IAC_CaseOfficer_R2

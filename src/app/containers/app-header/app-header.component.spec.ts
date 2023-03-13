@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AppConstants } from '../../app.constants';
 import { ApplicationThemeLogo } from '../../enums';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -16,20 +16,13 @@ const storeMock = {
   }
 };
 
-const featureToggleServiceMock = {
-  getValue: () => {
-    return {
-      subscribe: () => AppConstants.DEFAULT_USER_THEME
-    };
-  }
-};
-
 const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
 let dispatchSpy: jasmine.Spy;
 let subscribeSpy: jasmine.Spy;
 
 describe('AppHeaderComponent', () => {
+  let featureToggleServiceSpy: jasmine.SpyObj<FeatureToggleService>;
 
   let component: AppHeaderComponent;
   let fixture: ComponentFixture<AppHeaderComponent>;
@@ -37,8 +30,9 @@ describe('AppHeaderComponent', () => {
   const subscriptionMock: Subscription = new Subscription();
   const stateStoreMock: Store<fromActions.State> = new Store<fromActions.State>(null, null, null);
   const eventsSub = new BehaviorSubject<any>(null);
+  const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
 
-  beforeEach(async(() => {
+  beforeEach(async () => {
     dispatchSpy = spyOn(storeMock, 'dispatch');
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
@@ -74,12 +68,14 @@ describe('AppHeaderComponent', () => {
       ],
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
+    featureToggleServiceSpy = TestBed.inject(FeatureToggleService) as jasmine.SpyObj<FeatureToggleService>;
 
+    featureToggleServiceSpy.getValue.and.returnValue(of(AppConstants.DEFAULT_MENU_ITEMS));
     fixture = TestBed.createComponent(AppHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   describe('deserialiseUserRoles()', () => {
 
@@ -100,12 +96,64 @@ describe('AppHeaderComponent', () => {
     it('should take a theme and update the app header properties.', () => {
 
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-      const menuItems = AppConstants.DEFAULT_MENU_ITEMS
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
 
       component.setAppHeaderProperties(defaultTheme, menuItems);
 
       expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
       expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
+      expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
+      expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
+    });
+
+    it('should set app header content', async () => {
+      const themeSpy = spyOn(component, 'getApplicationThemeForUser').and.returnValue(of(AppConstants.DEFAULT_USER_THEME));
+
+      const userDetails = {
+        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+      };
+      component.setHeaderContent(userDetails);
+      expect(themeSpy).toHaveBeenCalled();
+
+    });
+
+    it('should call userThems on getApplicationThemeForUser', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
+
+      const userDetails = {
+        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+      };
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+
+    });
+
+    it('should call userThems on getApplicationThemeForUser with no roles', () => {
+      const userThemeSpy = spyOn(component, 'getUsersTheme').and.callThrough();
+
+      const userDetails = {
+        userInfo: []
+      };
+      component.getApplicationThemeForUser();
+      expect(userThemeSpy).toHaveBeenCalled();
+      expect(component.userNav.items).toEqual([]);
+    });
+
+    it('should update theme app header properties.', () => {
+
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
+      component.setAppHeaderNavItems(menuItems);
+      expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
+
+    });
+
+    it('should updatee navItems app header properties.', () => {
+
+      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
+      component.setAppHeaderTheme(defaultTheme);
+
+      expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
       expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
@@ -145,7 +193,7 @@ describe('AppHeaderComponent', () => {
     it('should allow subscribing to an observable', () => {
       // ensure that the component's subscribe method runs with mock data
       const url = '/tasks/list';
-      const exObservable$ = Observable.of(url);
+      const exObservable$ = of(url);
       expect(component.subscribe(exObservable$)).toBeTruthy();
     });
   });

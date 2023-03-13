@@ -1,17 +1,17 @@
-import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { first, map, mergeMap } from 'rxjs/operators';
-import { SessionStorageService } from '../../../app/services';
-import { getJudicialUserIds, mapCaseRoles } from '../../../cases/utils/utils';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
-import { CaseworkerDataService } from '../../../work-allocation-2/services';
-import { handleFatalErrors } from '../../../work-allocation-2/utils';
-import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
-import { CaseRoleDetails } from '../../models/case-role-details.interface';
-import { RemoveRoleText } from '../../models/enums/answer-text';
-import { AllocateRoleService } from '../../services';
+import {Location} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {first, map, mergeMap} from 'rxjs/operators';
+import {SessionStorageService} from '../../../app/services';
+import {Utils} from '../../../cases/utils/utils';
+import {Caseworker} from '../../../work-allocation/models/dtos';
+import {CaseworkerDataService} from '../../../work-allocation/services';
+import {handleFatalErrors} from '../../../work-allocation/utils';
+import {Answer, CaseRole, RemoveAllocationNavigationEvent} from '../../models';
+import {CaseRoleDetails} from '../../models/case-role-details.interface';
+import {RemoveRoleText} from '../../models/enums/answer-text';
+import {AllocateRoleService} from '../../services';
 
 @Component({
   selector: 'exui-remove-role',
@@ -30,6 +30,8 @@ export class RemoveRoleComponent implements OnInit {
   public role: CaseRole;
 
   private backUrl: string;
+
+  public showSpinner: boolean;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -73,8 +75,8 @@ export class RemoveRoleComponent implements OnInit {
     this.jurisdiction = queryMap.get('jurisdiction');
     const caseType = queryMap.get('caseType');
     return this.allocateRoleService.getCaseRoles(this.caseId, this.jurisdiction, caseType, this.assignmentId).pipe(
-      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles), [this.jurisdiction]).pipe(
-        map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
+      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(Utils.getJudicialUserIds(caseRoles), [this.jurisdiction]).pipe(
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => Utils.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
     );
   }
@@ -82,6 +84,7 @@ export class RemoveRoleComponent implements OnInit {
   public onNavEvent(navEvent: RemoveAllocationNavigationEvent): void {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
+        this.showSpinner = true;
         this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() => {
             const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
             this.router.navigate([this.backUrl], {
@@ -104,6 +107,7 @@ export class RemoveRoleComponent implements OnInit {
         return;
       }
       default: {
+        this.showSpinner = false;
         throw new Error('Invalid option');
       }
     }

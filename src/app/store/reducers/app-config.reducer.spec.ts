@@ -107,4 +107,14 @@ describe('App Config Reducer', () => {
         };
         expect(state).toEqual(expectedState);
     });
+
+    it('Decorate16digitCaseReferenceSearchBoxInHeader', () => {
+        const action = new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(true);
+        const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
+        const expectedState = {
+            ...appConfigReducer.initialState,
+            decorate16digitCaseReferenceSearchBoxInHeader: true
+        };
+        expect(state).toEqual(expectedState);
+    });
 });

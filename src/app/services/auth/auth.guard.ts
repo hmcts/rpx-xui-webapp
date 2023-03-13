@@ -55,9 +55,8 @@ export class AuthGuard implements CanActivate {
         const userInfo: UserInfo = JSON.parse(userInfoStr);
         isFeePaidJudgeUser = userInfo.roles.includes('fee-paid-judge');
     }
-    if (currentPathIsRoot) {
+    if (currentPathIsRoot && userInfoStr && this.getJSONObject(userInfoStr)) {
       const redirectUrl = isFeePaidJudgeUser ? '/booking' : this.sessionStorage.getItem('redirectUrl', true);
-      console.log('redirectUrl', redirectUrl)
       if (!redirectUrl) { return; }
 
       this.authService.setWindowLocationHref(redirectUrl);

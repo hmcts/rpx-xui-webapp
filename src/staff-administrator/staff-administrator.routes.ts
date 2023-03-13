@@ -1,5 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { StaffAddEditUserFormId } from './components/staff-add-edit-user-form-id.enum';
 import {
   StaffUserCheckAnswersComponent
 } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
@@ -16,7 +17,6 @@ import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-opt
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
 import { StaffUserDetailsResolverService } from './resolvers/staff-user-details-resolver.service';
-import { StaffAddEditUserFormId } from './components/staff-add-edit-user-form-id.enum';
 
 export const ROUTES: Routes = [
   {
@@ -39,7 +39,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'add-edit-user',
+        path: 'add-user',
         data: { formId: StaffAddEditUserFormId.AddUser },
         children: [
           { path: '', component: StaffAddUserComponent },

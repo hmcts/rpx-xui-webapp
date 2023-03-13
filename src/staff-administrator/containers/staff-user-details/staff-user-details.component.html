@@ -62,7 +62,10 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Skills</dt>
           <dd class="govuk-summary-list__value">
-            {{ userDetails.skills | pluckAndJoin: 'description':', '  }}
+            <span *ngFor="let skill of userDetails.skills; let isLast=last">
+              {{skill.description}}
+              <span *ngIf="!isLast"><br/></span>
+            </span>
           </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div><br>
@@ -77,14 +80,14 @@
       </dl>
 
       <div class="govuk-button-group">
-        <button class="govuk-button" data-module="govuk-button" (click)="setDataAndNavigateToUpdateUser()">
+        <button id="updateUserButton" class="govuk-button" data-module="govuk-button" (click)="onUpdateUser()">
           Update
         </button>
         <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
                 (click)="updateUserStatus()">
           {{ userDetails.suspended === 'true' ? 'Restore' : 'Suspend' }}
         </button>
-        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        <button id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="onCopyUser()">
           Copy
         </button>
       </div>

@@ -145,12 +145,6 @@ export class StaffUser {
       return region ? region.label : '';
     })();
   }
-export interface StaffLocation {
-  id?: string;
-  is_primary: boolean;
-  location?: string;
-  location_id?: number;
-}
 
   public toDto() {
     // Needs some modifications due to inconsistency of property names and types
@@ -163,7 +157,7 @@ export interface StaffLocation {
       region: this.region,
       region_id: this.region_id,
       roles: this.role,
-      services: this.work_area.map(item => ({ service: item.area_of_work, service_code: item.service_code })),
+      services: this.work_area.map(item => ({service: item.area_of_work, service_code: item.service_code})),
       skills: this.skills,
       user_type: this.user_type,
       staff_admin: this.staff_admin === 'Y',
@@ -173,15 +167,4 @@ export interface StaffLocation {
       work_area: this.work_area
     };
   }
-export interface StaffRole {
-  id: string;
-  is_primary: boolean;
-  role: string;
-  role_id?: string;
-}
-
-export interface StaffSkill {
-  description: string;
-  skill_code: string;
-  skill_id: number;
 }

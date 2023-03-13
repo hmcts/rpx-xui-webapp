@@ -5,9 +5,8 @@ import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ExuiCommonLibModule, FilterService, GroupOptions } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { BehaviorSubject, of } from 'rxjs';
-import { StaffFilterOption } from '../../../models//staff-filter-option.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 
@@ -21,37 +20,6 @@ describe('StaffAddEditUserFormComponent', () => {
   let router: Router;
   let activatedRoute: ActivatedRoute;
 
-  const jobTitles: StaffFilterOption[] = [
-    {key: 'senior-legal-caseworker', label: 'Senior Legal Caseworker'},
-    {key: 'legal-caseworker', label: 'Legal Caseworker'},
-    {key: 'hearing-centre-team-leader', label: 'Hearing Centre Team Leader'},
-    {key: 'hearing-centre-administrator', label: 'Hearing Centre Administrator'},
-    {key: 'court-clerk', label: 'Court Clerk'}
-  ];
-  const skills: GroupOptions[] = [
-    {
-       group: 'adoption',
-       options: [
-          {
-             key: 'adoption-underwriter',
-             label: 'Underwriter',
-          },
-          {
-             key: 'adoption-caseworker',
-             label: 'Caseworker',
-          }
-       ]
-    },
-    {
-       group: 'family-public-law',
-       options: [
-          {
-             key: 'family-public-law-underwriter',
-             label: 'Underwriter',
-          }
-       ]
-    }
-  ];
   const streamTestData = {
     id: 'staff-add-edit-form-mock-data',
     reset: false,
@@ -332,16 +300,6 @@ describe('StaffAddEditUserFormComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['check-your-answers'], { relativeTo: activatedRoute });
     flush();
   }));
-
-  it('should return the selected options with true value', () => {
-    const result = (component as any).getSelected(jobTitles, ['hearing-centre-team-leader', 'hearing-centre-administrator']);
-    expect(result).toEqual([false, false, true, true, false]);
-  });
-
-  it('should return the selected options with true value for skills', () => {
-    const result = (component as any).getSelectedSkills(skills, ['adoption-caseworker', 'family-public-law-underwriter']);
-    expect(result).toEqual([ false, true, true]);
-  });
 
   it('should unsubscribe from filterStreamSubscription onDestroy', () => {
     // @ts-expect-error - filterStreamSubscription is a private property

@@ -1,23 +1,18 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Navigation,Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   BookingCheckType,
   FilterConfig,
-  FilterFieldOption,
   FilterService,
-  FilterSetting,
   GenericFilterComponent,
   GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Observable, Subscription } from 'rxjs';
-import { finalize, map, tap } from 'rxjs/operators';
-import { StaffSkill, StaffUser } from './../../../models/staff-user.model';
+import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { STAFF_REGIONS } from '../../../models/staff-regions';
-import { StaffUser } from '../../../models/staff-user.model';
-import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 
 @Component({
   selector: 'exui-staff-add-edit-user-form',
@@ -42,25 +37,23 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   public locations: StaffFilterOption[] = [{key: 'location-x', label: 'Location X'}, {key: 'location-y', label: 'Location Y'}, {key: 'location-z', label: 'Location Z'}];
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
-  private currentNavigation: Navigation;
-  public backLink: string;
-  private previousUrl: string;
+  public previousUrl: string;
   private filterStreamSubscription: Subscription;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
     private filterService: FilterService,
-    private router: Router,
   ) {
-    this.currentNavigation = this.router.getCurrentNavigation();
-    if (this.currentNavigation) {
-      const previousNavigation = this.currentNavigation.previousNavigation;
-      if (previousNavigation) {
-        this.previousUrl = previousNavigation.finalUrl.toString();
-      }
+    this.formId = activatedRoute.snapshot.data.formId;
+
+    const currentNavigation = this.router.getCurrentNavigation();
+    if (currentNavigation) {
+      this.previousUrl = currentNavigation.previousNavigation?.finalUrl.toString();
     }
+
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
@@ -103,7 +96,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
         }
       })
     );
-    this.backLink = this.filterConfig.copyFields? this.previousUrl: '/staff';
   }
 
   public ngOnDestroy() {
@@ -118,7 +110,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   public initFormConfig() {
     this.filterConfig = {
       id: this.formId,
-        fields: [
+      fields: [
         {
           name: 'Personal Information',
           type: 'group-title',
@@ -290,108 +282,5 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('/staff');
       }
     };
-
-    if (this.currentNavigation.extras && this.currentNavigation.extras.state && this.currentNavigation.extras.state.user && this.previousUrl.indexOf('/staff/users/user-details') >= 0) {
-      const copyUser: StaffUser = this.currentNavigation.extras.state.user;
-
-      this.filterConfig.copyFields = (frm: FormGroup): FormGroup => {
-        const selectedRegion = regionOptions.map(region => {
-          if(region.label.toString() === copyUser.region.toString())
-          {
-            return region.key
-          }
-        });
-
-        frm.patchValue({
-          firstName: null,
-          lastName: null,
-          email: null,
-          region: selectedRegion,
-          'user-services': this.getSelectedByLabel(this.staffFilterOptions.services, copyUser.services),
-          jobTitle: this.getSelectedByKey(this.staffFilterOptions.jobTitles, copyUser.role.map(role => role.role_id)),
-          roles: this.getSelectedRoles(copyUser.case_allocator, copyUser.task_supervisor, copyUser.staff_admin),
-          'user-skills': this.staffFilterOptions.skills,
-          userType: this.getSelectedByName(this.staffFilterOptions.userTypes, copyUser.userType),
-        });
-        const additionalLocations = copyUser.additionalLocations;
-        const primaryLocation = copyUser.primaryLocation;
-        if(additionalLocations.length > 0) {
-          const addLoc = (frm.controls['additionalLocations'] as FormArray);
-          addLoc.push(new FormControl(this.getSelectedLocation(this.staffFilterOptions.locations, copyUser.additionalLocations)));
-        }
-        if(primaryLocation) {
-          const primLoc = (frm.controls['primaryLocation'] as FormArray);
-          primLoc.push(new FormControl(this.getSelectedLocation(this.staffFilterOptions.locations, [copyUser.primaryLocation])));
-        }
-
-        return frm;
-      };
-
-      this.filterConfig.preSelectedNestedCheckbox = copyUser.skills.map(skill => skill.skill_id);
-    }
-  }
-
-  private getSelectedLocation(allLocations: LocationByEPIMMSModel[],selectedLocations: any) {
-    let locationsObject;
-    allLocations.map(location => {
-      selectedLocations.map(selectedLocation => {
-        const selectedLoc = selectedLocation.location? selectedLocation.location.toString().toLowerCase(): selectedLocation.toString().toLowerCase();
-        if(location.site_name.toString().toLowerCase() === selectedLoc) {
-          locationsObject = location;
-        }
-      });
-     });
-     return locationsObject;
-  }
-
-  private getSelectedByName(allOptions: StaffFilterOption[], selectedOption: string) {
-    let selectedKey: string;
-    allOptions.forEach((el: StaffFilterOption) => {
-      if(selectedOption.toString() === el.label.toString()) {
-        selectedKey = el.key;
-      }
-    });
-    return selectedKey;
-  }
-
-  private getSelectedRoles(selectedCaseAllocator: string, selectedTaskSupervisor: string, selectedStaffAdmin: string) {
-    let task_supervisor_flag = false;
-    let case_allocator_flag = false;
-    let staff_admin_flag = false;
-    case_allocator_flag = selectedCaseAllocator === 'Y'? true: false;
-    task_supervisor_flag = selectedTaskSupervisor === 'Y'? true: false;
-    staff_admin_flag = selectedStaffAdmin === 'Y'? true: false;
-
-    return [case_allocator_flag, task_supervisor_flag, staff_admin_flag];
-  }
-
-  private getSelectedByKey(allOptions: StaffFilterOption[], selectedOptions: string[]): boolean[] {
-    const selected: boolean[] = [] ;
-    if (!Array.isArray(selectedOptions)) {
-      selectedOptions = new Array(selectedOptions);
-    }
-    allOptions.forEach((el: StaffFilterOption) => {
-      if (selectedOptions.filter(s => s.toString() === el.key.toString()).length > 0 ) {
-        selected.push(true);
-      } else {
-        selected.push(false);
-      }
-    });
-    return selected;
-  }
-
-  private getSelectedByLabel(allOptions: StaffFilterOption[], selectedOptions: string[]): boolean[] {
-    const selected: boolean[] = [] ;
-    if (!Array.isArray(selectedOptions)) {
-      selectedOptions = new Array(selectedOptions);
-    }
-    allOptions.forEach((el: StaffFilterOption) => {
-      if (selectedOptions.filter(s => s.toString() === el.label.toString()).length > 0 ) {
-        selected.push(true);
-      } else {
-        selected.push(false);
-      }
-    });
-    return selected;
   }
 }

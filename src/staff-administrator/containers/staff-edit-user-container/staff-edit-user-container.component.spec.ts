@@ -46,8 +46,4 @@ describe('StaffEditUserContainerComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should set formId from activatedRoute', () => {
-    expect(component.formId).toEqual(FORM_ID);
-  });
 });

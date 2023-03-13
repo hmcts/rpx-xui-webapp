@@ -1,10 +1,12 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
+import { StaffAddEditUserFormId } from '../../components/staff-add-edit-user-form-id.enum';
 import { StaffStatusComponent } from '../../components/staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from '../../components/staff-suspended-banner/staff-suspended-banner.component';
 import { StaffUser } from '../../models/staff-user.model';
@@ -26,7 +28,7 @@ describe('StaffUserDetailsComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let testStaffUser: StaffUser;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
       'mockStaffDataAccessService', ['updateUser']
     );
@@ -83,7 +85,8 @@ describe('StaffUserDetailsComponent', () => {
       imports: [HttpClientTestingModule,
         RouterTestingModule.withRoutes([
           { path: 'service-down', component: StubComponent },
-          { path: 'staff/update-user', component: StubComponent }
+          { path: 'staff/update-user', component: StubComponent },
+          { path: 'staff/add-user', component: StubComponent }
         ])
       ],
       providers: [
@@ -169,12 +172,34 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.userDetails).toEqual(testStaffUser);
   });
 
-  it('should set filterSettings on sessionStorage and navigate to /staff/update-user with userDetails as state on setDataAndNavigateToUpdateUser', fakeAsync(() => {
+  it('should set filterSettings on sessionStorage on FILTER_ID as key and navigate' +
+    'to DESTINATION on setDataForGenericFilterAndNavigate', fakeAsync(() => {
+    const FILTER_ID = 'FILTER_ID';
+    const DESTINATION = '/staff/update-user';
     spyOn(router, 'navigateByUrl').and.callThrough();
-    component.setDataAndNavigateToUpdateUser();
+
+    component.setDataForGenericFilterAndNavigate(FILTER_ID, DESTINATION);
     tick();
-    expect(sessionStorage.getItem(component.FILTER_ID)).toBeTruthy();
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/staff/update-user');
-    expect(location.path()).toBe('/staff/update-user');
+    expect(sessionStorage.getItem(FILTER_ID)).toBeTruthy();
+    expect(router.navigateByUrl).toHaveBeenCalledWith(DESTINATION);
+    expect(location.path()).toBe(DESTINATION);
+  }));
+
+  it('should call onUpdateUser which in turn should call setDataForGenericFilterAndNavigate', fakeAsync(() => {
+    spyOn(component, 'onUpdateUser').and.callThrough();
+    spyOn(component, 'setDataForGenericFilterAndNavigate').and.callThrough();
+    const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
+    updateUserButton.triggerEventHandler('click', null);
+    expect(component.onUpdateUser).toHaveBeenCalled();
+    expect(component.setDataForGenericFilterAndNavigate).toHaveBeenCalledWith(StaffAddEditUserFormId.UpdateUser, '/staff/update-user');
+  }));
+
+  it('should call onCopyUser which in turn should call setDataForGenericFilterAndNavigate', fakeAsync(() => {
+    spyOn(component, 'onCopyUser').and.callThrough();
+    spyOn(component, 'setDataForGenericFilterAndNavigate').and.callThrough();
+    const copyUserButton = fixture.debugElement.query(By.css('#copyUserButton'));
+    copyUserButton.triggerEventHandler('click', null);
+    expect(component.onCopyUser).toHaveBeenCalled();
+    expect(component.setDataForGenericFilterAndNavigate).toHaveBeenCalledWith(StaffAddEditUserFormId.AddUser, '/staff/add-user');
   }));
 });

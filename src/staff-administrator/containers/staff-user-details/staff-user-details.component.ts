@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { StaffAddEditUserFormId } from '../../components/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
@@ -14,7 +15,6 @@ export class StaffUserDetailsComponent {
   public showAction: boolean = false;
   public loading = false;
   public suspendedStatus: 'suspended' | 'restored' | 'error';
-  public FILTER_ID = 'staff-update-user';
 
   constructor(
     private route: ActivatedRoute,
@@ -56,15 +56,22 @@ export class StaffUserDetailsComponent {
     }
   }
 
-  public copy(): void {
-    const url = '/staff/add-user';
-    this.router.navigate([url], { state: { user: this.userDetails } });
+  public onUpdateUser() {
+    this.setDataForGenericFilterAndNavigate(StaffAddEditUserFormId.UpdateUser, '/staff/update-user');
   }
 
-  public setDataAndNavigateToUpdateUser() {
+  public onCopyUser() {
+    this.userDetails.first_name = '';
+    this.userDetails.last_name = '';
+    this.userDetails.email_id = '';
+
+    this.setDataForGenericFilterAndNavigate(StaffAddEditUserFormId.AddUser, '/staff/add-user');
+  }
+
+  public setDataForGenericFilterAndNavigate(filterId: string, destination: string) {
     const primaryLocation = this.userDetails.base_location.find(item => item.is_primary);
     const formValues = {
-      id: this.FILTER_ID,
+      id: filterId,
       fields: [
         {
           name: 'first_name',
@@ -104,7 +111,7 @@ export class StaffUserDetailsComponent {
           name: 'roles',
           value: [
             this.userDetails.case_allocator ? 'case_allocator' : false,
-            this.userDetails.task_supervisor ? 'task-supervisor' : false,
+            this.userDetails.task_supervisor ? 'task_supervisor' : false,
             this.userDetails.staff_admin ? 'staff_admin' : false
           ].filter(item => item)
         },
@@ -119,7 +126,7 @@ export class StaffUserDetailsComponent {
       ]
     };
 
-    sessionStorage.setItem(this.FILTER_ID, JSON.stringify(formValues));
-    this.router.navigateByUrl('/staff/update-user');
+    sessionStorage.setItem(filterId, JSON.stringify(formValues));
+    this.router.navigateByUrl(destination);
   }
 }

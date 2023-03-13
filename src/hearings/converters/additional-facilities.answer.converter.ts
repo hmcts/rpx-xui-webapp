@@ -1,9 +1,9 @@
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {LovRefDataModel} from '../models/lovRefData.model';
-import {State} from '../store';
-import {AnswerConverter} from './answer.converter';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
 

@@ -1,18 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import * as fromNocStore from '../../store';
 import { NocAffirmationComponent } from './noc-affirmation.component';
 
+
 describe('NocAffirmationComponent', () => {
-  let store: MockStore<fromNocStore.State>;
+  let store;
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
   let component: NocAffirmationComponent;
   let fixture: ComponentFixture<NocAffirmationComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ NocAffirmationComponent ],
       providers: [
@@ -23,7 +23,7 @@ describe('NocAffirmationComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();

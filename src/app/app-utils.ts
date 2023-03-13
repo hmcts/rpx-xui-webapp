@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
+import { FilterPersistence, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { ADMIN_ROLE_LIST, AppConstants, CTSC_ROLE_LIST, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
 import { Theme, UserTypeRole } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
@@ -23,6 +23,8 @@ export class AppUtils {
           return AppConstants.ENVIRONMENT_NAMES.ithc;
         case AppConstants.ENVIRONMENT_NAMES.perftest:
           return AppConstants.ENVIRONMENT_NAMES.perftest;
+        default:
+          break;
       }
     }
     return AppConstants.ENVIRONMENT_NAMES.prod;
@@ -162,6 +164,21 @@ export class AppUtils {
     } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
       return UserRole.LegalOps;
     }
+    // TODO: When we know roles for Admin we can put this in this method
+    return null;
+  }
+
+  public static getUserRole(userRoles: string[]): UserRole {
+    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => userRole.includes(role)))) {
+      return UserRole.Judicial;
+    } else if (userRoles.some(userRole => ADMIN_ROLE_LIST.some(role => userRole.includes(role)))) {
+      return UserRole.Admin;
+    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => userRole.includes(role)))) {
+      return UserRole.LegalOps;
+    // TODO: Use actual admin and cts roles within respective role lists
+    } else if (userRoles.some(userRole => CTSC_ROLE_LIST.some(role => userRole.includes(role)))) {
+      return UserRole.Ctsc;
+    }
     return null;
   }
 
@@ -179,20 +196,23 @@ export class AppUtils {
         userRole = 'Admin';
         break;
       }
+      default:
+        break;
     }
     return userRole;
   }
 
 
   public static getFilterPersistenceByRoleType(userDetails: UserDetails): FilterPersistence {
-    const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-    const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
+    const userRole = AppUtils.getUserRole(userDetails.userInfo.roles);
+    const roleType = AppUtils.convertDomainToLabel(userRole);
     switch (roleType) {
       case 'LegalOps':
         return 'session';
       case 'Judicial':
         return 'local';
       default:
+        // admin and ctsc currently default unless specified
         return 'session';
     }
   }
@@ -214,6 +234,8 @@ export class AppUtils {
         theme.backgroundColor = '#202020';
         theme.logo = 'myhmcts';
         break;
+      default:
+        break;
     }
   }
 
@@ -225,5 +247,12 @@ export class AppUtils {
     } else {
       return 'LegalOps';
     }
+  }
+
+  public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {
+    const { roleAssignmentInfo, userInfo } = userDetails;
+    return userInfo.roleCategory === RoleCategory.JUDICIAL
+      && roleAssignmentInfo.some(roleAssignment => 'bookable' in roleAssignment
+        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
   }
 }

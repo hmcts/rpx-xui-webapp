@@ -1,4 +1,4 @@
-import {DefaultHiddenConverter} from './default.hidden.converter';
+import { DefaultHiddenConverter } from './default.hidden.converter';
 
 describe('DefaultHiddenConverter', () => {
 

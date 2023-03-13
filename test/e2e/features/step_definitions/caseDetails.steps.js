@@ -5,6 +5,8 @@ var { defineSupportCode } = require('cucumber');
 const BrowserWaits = require("../../support/customWaits");
 const caseDetailsPage = require("../pageObjects/caseDetailsPage");
 
+const caseDetailsBasicViewPage = require('../pageObjects/caseAccessManagement/caseDetailsBasicView');
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
    
     Then('I see case details tab label {string} is displayed is {string}', async function (tabLabel, boolString) {
@@ -55,9 +57,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see case details page displayed with tab {string} selected', async function(tabLabel){
-        expect(await caseDetailsPage.amOnPage(),'Not on case details page').to.be.true;
-        expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel), `Tab with label "${tabLabel}" is not present or displayed`).to.be.true;
-        expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel), `Tab with label "${tabLabel}" is not selected`).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsPage.amOnPage(), 'Not on case details page').to.be.true;
+            expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel), `Tab with label "${tabLabel}" is not present or displayed`).to.be.true;
+            expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel), `Tab with label "${tabLabel}" is not selected`).to.be.true;
+        }); 
     });
 
     Then('I see case details page with message banner {string}', async function(expectedBannerMessage){
@@ -67,4 +71,24 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
         
     });
+
+    Then('I see case details basic view and request access page', async () =>{
+        await BrowserWaits.waitForElement(caseDetailsBasicViewPage.container)
+    })
+
+    Then('I see case details basic view displays banner with message {string}', async (message) => {
+        await BrowserWaits.waitForElement(caseDetailsBasicViewPage.bannerMessageContainer)
+        const bannerMessage = await caseDetailsBasicViewPage.bannerMessageContainer.getText()
+        expect(bannerMessage).to.contains(message);
+    })
+
+    Then('I see case details basic view displays case property {string} with values {string}', async (attribute, value) => {
+        await BrowserWaits.waitForElement(caseDetailsBasicViewPage.bannerMessageContainer)
+        expect(await caseDetailsBasicViewPage.isRowDisplayedWithAttribute(attribute), 'Attribute not displayed').to.be.true
+        expect(await caseDetailsBasicViewPage.getAttributeValues(attribute)).to.contains(value)
+    })
+
+    When('I click request access button in case basic view page', async () => {
+        await caseDetailsBasicViewPage.requestAccessButton.click() 
+    })
 });

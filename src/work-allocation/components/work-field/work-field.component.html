@@ -1,6 +1,8 @@
 <ng-container *ngIf="config && workField" [ngSwitch]="config.type" class="xui-work-field">
   <ng-container *ngSwitchCase="fieldType.STRING">
+    <div *ngIf="!(workField.case_role === 'specific-access-denied' && config.name === 'endDate')">
     {{ workField[config.name] }}
+    </div>    
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.CASE_REFERENCE_STRING">
     {{ workField[config.name] | ccdCaseReference }}
@@ -18,7 +20,7 @@
     {{ workField[config.name] | date:'dd/MM/yyyy HH:mm'}}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.FORMATTED_DATE">
-    {{ workField[config.name] | date:'d MMMM yyyy'}}
+      {{ workField[config.name] | date:'d MMMM yyyy'}}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.BOOLEAN">
     {{ workField[config.name] | yesNo }}

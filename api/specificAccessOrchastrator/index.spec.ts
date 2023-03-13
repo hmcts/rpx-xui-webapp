@@ -114,6 +114,7 @@ describe('specificAccessRequestUpdateAttributes', () => {
   let req;
   let next;
   let spyDelete: any;
+  let postSpy: any;
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const data = {
     roleAssignmentResponse: [{
@@ -143,7 +144,7 @@ describe('specificAccessRequestUpdateAttributes', () => {
       },
     };
     next = sandbox.stub();
-    const postSpy = sandbox.stub(http, 'post');
+    postSpy = sandbox.stub(http, 'post')
     postSpy.onCall(0).resolves({
       data, status: 201
     });
@@ -156,6 +157,7 @@ describe('specificAccessRequestUpdateAttributes', () => {
   });
 
   afterEach(() => {
+    postSpy.restore();
     spyDelete.restore();
     sandbox.restore();
   });

@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
+import { LocationModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { EMPTY } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
-import { UserService } from 'src/app/services/user/user.service';
-import { LocationModel } from '../../../api/locations/models/location.model';
 import { RoleAssignmentInfo, UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
+import { UserService } from '../../app/services/user/user.service';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { Booking } from '../../booking/models';

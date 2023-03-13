@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Router, RoutesRecognized } from '@angular/router';
+import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
-
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { SessionStorageService } from 'src/app/services';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import { UserDetails, UserInfo } from '../../models/user-details.model';
@@ -31,6 +31,11 @@ export class AppComponent implements OnInit, OnDestroy {
   public isCookieBannerVisible: boolean = false;
   private cookieBannerEnabledSubscription: Subscription;
   private cookieBannerEnabled: boolean = false;
+  public subscription: Subscription;
+  private pageReloading: boolean = false;
+  private timeoutNotificationServiceInitialised: boolean = false;
+  private idleModalDisplayTimeInMilliseconds: number;
+  private totalIdleTimeInMilliseconds: number;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -41,7 +46,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly featureService: FeatureToggleService,
     private readonly loggerService: LoggerService,
     private readonly cookieService: CookieService,
-    private readonly environmentService: EnvironmentService
+    private readonly environmentService: EnvironmentService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
 
     this.router.events.subscribe((data) => {
@@ -54,6 +60,13 @@ export class AppComponent implements OnInit, OnDestroy {
         if (d.title) {
           this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
         }
+      }
+    });
+
+    this.subscription = router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.pageReloading = !router.navigated;
+        this.sessionStorageService.setItem('isPageRefreshed', this.pageReloading.toString());
       }
     });
   }
@@ -77,6 +90,10 @@ export class AppComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     if (this.cookieBannerEnabledSubscription) {
       this.cookieBannerEnabledSubscription.unsubscribe();
+    }
+
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 
@@ -119,7 +136,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.initializeFeature(userDetails.userInfo, ldClientId);
       if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
-        this.addTimeoutNotificationServiceListener();
         /**
          * Fix for EUI-4469 Live Defect - Google Tag Manager broken
          *
@@ -138,7 +154,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public initializeFeature(userInfo: UserInfo, ldClientId: string) {
     if (userInfo) {
-
       const featureUser: FeatureUser = {
         key: userInfo.id || userInfo.uid,
         custom: {
@@ -185,18 +200,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.cookieService.deleteCookieByPartialMatch('rxVisitor', '/', `.${domainName}`);
       this.cookieService.deleteCookieByPartialMatch('dt', '/', `.${domainName}`);
     }
-  }
-
-  /**
-   * Add Timeout Notification Service Listener
-   *
-   * We listen for Timeout Notification Service events.
-   */
-  public addTimeoutNotificationServiceListener() {
-
-    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
-      this.timeoutNotificationEventHandler(event);
-    });
   }
 
   /**
@@ -262,6 +265,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public staySignedInHandler() {
 
     this.updateTimeoutModal(undefined, false);
+    this.setupTimeoutNotificationService();
   }
 
   public signOutHandler() {
@@ -296,19 +300,28 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param totalIdleTime - Should reach here in minutes
    */
   public initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime) {
+    if (this.timeoutNotificationServiceInitialised) return;
 
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
-    const idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
 
-    const totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
+    this.idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
+    this.totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
 
+    this.setupTimeoutNotificationService();
+  }
+
+  private setupTimeoutNotificationService(): void {
     const timeoutNotificationConfig: any = {
-      idleModalDisplayTime: idleModalDisplayTimeInMilliseconds,
-      totalIdleTime: totalIdleTimeInMilliseconds,
+      idleModalDisplayTime: this.idleModalDisplayTimeInMilliseconds,
+      totalIdleTime: this.totalIdleTimeInMilliseconds,
       idleServiceName: 'idleSession'
     };
 
+    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
+      this.timeoutNotificationEventHandler(event);
+    });
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
+    this.timeoutNotificationServiceInitialised = true;
   }
 
   public setCookieBannerVisibility(): void {

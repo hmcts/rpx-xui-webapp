@@ -1,6 +1,7 @@
 import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import {
   BookingCheckType,
   FilterConfig,
@@ -20,7 +21,7 @@ import { Location, LocationByEPIMMSModel } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
-import { servicesMap } from '../../utils';
+import { locationWithinRegion, servicesMap } from '../../utils';
 
 
 
@@ -56,8 +57,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   };
   public allLocations: string[] = [];
   public defaultLocations: any[] = null;
-  public primaryLocations: string[] = [];
-  public primaryLocationServices: string[] = [];
+  public baseLocations: string[] = [];
+  public baseLocationServices: string[] = [];
   public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,
@@ -84,6 +85,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     private readonly taskService: WorkAllocationTaskService,
     private readonly service: WASupportedJurisdictionsService,
     private readonly taskTypesService: TaskTypesService,
+    private readonly sessionStorageService: SessionStorageService,
     private readonly appStore: Store<fromAppStore.State>) {
     if (this.router.getCurrentNavigation() &&
       this.router.getCurrentNavigation().extras.state &&
@@ -152,7 +154,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.taskTypesService.getTypesOfWork(),
       this.service.getWASupportedJurisdictions(),
       this.taskService.getUsersAssignedTasks(),
-      this.locationService.getSpecificLocations(this.defaultLocations, this.primaryLocationServices)
+      this.locationService.getSpecificLocations(this.defaultLocations, this.baseLocationServices)
     ]).subscribe(([typesOfWork, services, assignedTasks, locations]: [any[], string[], Task[], LocationByEPIMMSModel[]]) => {
       this.setUpServicesFilter(services);
       this.setUpLocationFilter(locations);
@@ -231,6 +233,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const filterService = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
     const availableLocations = filterService && filterService.fields && filterService.fields.find(field => field.name === 'locations');
     const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
+    const regionLocations = JSON.parse(this.sessionStorageService.getItem('regionLocations'));
+    const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices'));
     // get booking locations
     if (this.bookingLocations && this.bookingLocations.length > 0) {
       this.defaultLocations = this.bookingLocations;
@@ -240,21 +244,27 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     }
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
-        const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0 && userDetails.roleAssignmentInfo.filter(p => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable).length === 0;
+        const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0
+         && userDetails.roleAssignmentInfo.filter(p => p.roleType && p.roleType === 'ORGANISATION'
+          && !p.bookable).length === 0;
         if (isFeePaidJudgeWithNoBooking) {
           localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
         } else if (!isLocationsAvailable) {
-          const primaryLocations: string[] = [];
+          const baseLocations: string[] = [];
           userDetails.roleAssignmentInfo.forEach(roleAssignment => {
             const roleJurisdiction = roleAssignment.jurisdiction;
-            if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION'
-              && roleAssignment.primaryLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
-              primaryLocations.push(roleAssignment.primaryLocation);
-              this.primaryLocationServices = [...this.primaryLocationServices, roleAssignment.jurisdiction];
+            if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION' && !bookableServices.includes(roleAssignment.jurisdiction)
+              && roleAssignment.baseLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
+              // EUI-7339 - Added to ensure default locations are actually selectable
+              if (!roleAssignment.region || locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)) {
+                baseLocations.push(roleAssignment.baseLocation);
+                this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
+              }
             }
           });
-          this.primaryLocationServices = Array.from(new Set(this.primaryLocationServices));
-          this.defaultLocations = this.defaultLocations && this.defaultLocations.length > 0 ? this.defaultLocations : Array.from(new Set(primaryLocations));
+          this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
+          this.defaultLocations = this.defaultLocations && this.defaultLocations.length > 0
+           ? this.defaultLocations : Array.from(new Set(baseLocations));
         }
       });
   }
@@ -293,7 +303,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       displayMinSelectedError: true,
       minSelectedError: 'Search for a location by name',
       type: 'find-location',
-      enableAddLocationButton: true,
+      enableAddButton: true,
       bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
     };
     let baseLocation = null;

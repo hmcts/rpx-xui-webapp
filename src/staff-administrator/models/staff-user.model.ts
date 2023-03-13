@@ -145,6 +145,12 @@ export class StaffUser {
       return region ? region.label : '';
     })();
   }
+export interface StaffLocation {
+  id?: string;
+  is_primary: boolean;
+  location?: string;
+  location_id?: number;
+}
 
   public toDto() {
     // Needs some modifications due to inconsistency of property names and types
@@ -167,4 +173,15 @@ export class StaffUser {
       work_area: this.work_area
     };
   }
+export interface StaffRole {
+  id: string;
+  is_primary: boolean;
+  role: string;
+  role_id?: string;
+}
+
+export interface StaffSkill {
+  description: string;
+  skill_code: string;
+  skill_id: number;
 }

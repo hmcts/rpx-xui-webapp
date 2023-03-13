@@ -1,13 +1,12 @@
 import { expect } from 'chai';
-import { v4 as uuid } from 'uuid';
 // import mocha from 'mocha';
 import { config } from '../config/config';
-import { getUserId, getXSRFToken } from '../utils/authUtil';
+import { getXSRFToken } from '../utils/authUtil';
 import { reporterJson, reporterMsg, setTestContext } from '../utils/helper';
-
 import Request from '../utils/request';
-
 import CaseRequestBody from '../utils/wa/caseRequestBody';
+
+
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2:  Cases', () => {
@@ -87,13 +86,13 @@ describe('Work allocation Release 2:  Cases', () => {
             'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length
         };
 
-        const response = await Request.post(`workallocation2/my-work/cases`, caseRequestObj.getRequestBody(), headers, 200);
+        const response = await Request.post(`workallocation/my-work/cases`, caseRequestObj.getRequestBody(), headers, 200);
         return response;
     }
 
 
     function getSearchCaseReqBody(view, users,locations,userType) {
-        // const response = await Request.get('api/user/details', null, 200); 
+        // const response = await Request.get('api/user/details', null, 200);
 
         const caseRequestBody = new CaseRequestBody();
         caseRequestBody.inView(view);
@@ -102,7 +101,7 @@ describe('Work allocation Release 2:  Cases', () => {
                 caseRequestBody.searchWithlocation(loc);
             });
         }
- 
+
         switch (view) {
             case 'MyCases':
                 if (users) {

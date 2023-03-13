@@ -1,13 +1,13 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
-import { CaseworkerDataService } from 'src/work-allocation-2/services';
+import { CaseworkerDataService } from 'src/work-allocation/services';
 
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
+import { Caseworker } from '../../../work-allocation/models/dtos';
 import { AnswersComponent } from '../../components';
 import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
 import { CaseRoleDetails } from '../../models/case-role-details.interface';
@@ -15,12 +15,13 @@ import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text'
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
 
+
 @Component({
   template: `
     <exui-remove-role></exui-remove-role>`
 })
 class WrapperComponent {
-  @ViewChild(RemoveRoleComponent) public appComponentRef: RemoveRoleComponent;
+  @ViewChild(RemoveRoleComponent, { static: true }) public appComponentRef: RemoveRoleComponent;
 }
 
 const mockCaseworker: Caseworker = {
@@ -87,7 +88,7 @@ describe('RemoveRoleComponent', () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
@@ -187,6 +188,22 @@ describe('RemoveRoleComponent', () => {
     const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
     const additionalState = { state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage } };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
+  });
+
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when removal is confirmed', () => {
+      component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
+      expect(component.showSpinner).toBeTruthy();
+    });
+
+    it('should be false when exclusion navigation is not handled', () => {
+      expect(() => component.onNavEvent(RemoveAllocationNavigationEvent.BACK)).toThrow();
+      expect(component.showSpinner).toBeFalsy();
+    });
   });
 
   describe('navigationHandler cancel', () => {

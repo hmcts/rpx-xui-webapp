@@ -24,6 +24,16 @@ export async function handleGet(path: string, req: EnhancedRequest, next: NextFu
   }
 }
 
+export async function sendGet<T>(path: string, req: EnhancedRequest): Promise<AxiosResponse> {
+  try {
+    logger.info('send get request to:', path);
+    const headers = setHeaders(req);
+    return await http.get(path, {headers});
+  } catch (e) {
+    logger.error(e.status, e.statusText, JSON.stringify(e.data));
+    throw e;
+  }
+}
 /**
  * Generic handlePost call Rest API with POST method
  * @param path
@@ -83,7 +93,6 @@ export async function handlePostBlob<T>(path: string, body: T, req: EnhancedRequ
  * @returns {Promise<AxiosResponse>}
  */
 export async function handlePut<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
-
   try {
     logger.info('handle put:', path);
     const headers = setHeaders(req);
@@ -91,7 +100,17 @@ export async function handlePut<T>(path: string, body: T, req: EnhancedRequest, 
   } catch (e) {
     next(e);
   }
+}
 
+export async function sendPut<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
+  try {
+    logger.info('send put request to:', path);
+    const headers = setHeaders(req);
+    return await http.put(path, body, {headers});
+  } catch (e) {
+    logger.error(e.status, e.statusText, JSON.stringify(e.data));
+    throw e;
+  }
 }
 
 /**
@@ -119,6 +138,9 @@ export async function sendDelete<T>(path: string, body: T, req: EnhancedRequest)
   try {
     logger.info('send delete request to:', path);
     const headers = setHeaders(req);
+    // AM service reject header with 406 error if accept is sent
+    /* tslint:disable:no-string-literal */
+    delete headers['accept'];
     return await http.delete(path, {
       data: body,
       headers,

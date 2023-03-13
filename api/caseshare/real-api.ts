@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { handleGet, sendDelete, sendPost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { CASE_SHARE_PERMISSIONS, SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references';
+import { SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import { ccdToUserDetails, prdToUserDetails } from './dtos/user-dto';
 import { CaseAssigneeMappingModel } from './models/case-assignee-mapping.model';
@@ -15,11 +15,9 @@ const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH);
 
 export async function getUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
-    const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=true&status=active`;
+    const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=false&status=active`;
     const {status, data}: {status: number, data: any} = await handleGet(path, req, next);
-    const permissions = CASE_SHARE_PERMISSIONS.split(',');
     const users = [...data.users]
-                  .filter(user => user.roles.some(role => permissions.includes(role)))
                   .map(user => prdToUserDetails(user));
     return res.status(status).send(users);
   } catch (error) {
@@ -75,7 +73,7 @@ export async function assignCases(req: EnhancedRequest, res: Response, next: Nex
   const finalSharedCases = handleUnSharedCase(updatedSharedCases, rejectedUnShareCaseReason);
   // when none of the apis successfully
   if (allPromises.length === rejectedCount) {
-    return res.status(500).send(updatedErrorMessages);
+    return res.status(422).send(updatedErrorMessages);
   } else {
     return res.status(201).send(finalSharedCases);
   }

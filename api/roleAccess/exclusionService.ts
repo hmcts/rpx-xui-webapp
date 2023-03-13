@@ -106,7 +106,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
-    notes: roleAssignment.attributes.notes,
+    notes: roleAssignment.attributes.notes as string,
   }));
 }
 
@@ -151,6 +151,8 @@ export function mapRoleCategory(roleCategory: string): RoleCategory {
       return RoleCategory.JUDICIAL;
     case 'ADMIN':
       return RoleCategory.ADMIN;
+    case 'CTSC':
+      return RoleCategory.CTSC;
     default:
       throw new Error('Invalid roleCategory');
   }

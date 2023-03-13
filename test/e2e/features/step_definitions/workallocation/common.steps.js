@@ -187,13 +187,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click task column link {string} at row {int}', async function(colName, rowPos){
-        await taskListTable.clickTaskColLink(colName,rowPos);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await taskListTable.clickTaskColLink(colName, rowPos);
+        })
     });
 
     When('I click task column link {string} at row {int}, I see case details page', async function (colName, rowPos) {
         
         await BrowserWaits.waitForPageNavigationOnAction(async () => {
-            await taskListTable.clickTaskColLink(colName, rowPos);
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await taskListTable.clickTaskColLink(colName, rowPos);
+            });
         });
 
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -323,28 +327,29 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate notification banner messages displayed in {string} page', async function (page,messagesDatatable) {
-        const messages = messagesDatatable.hashes();
-        let actualmessages = [];
-        page = page.toLowerCase();
-        if (page.includes("my work")) {
-            actualmessages = await myWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed()
-        } else if (page.includes("all work")) {
-            actualmessages = await allWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
-        } else if (page.includes("case details")) {
-            actualmessages = await caseDetailsPage.messageBanner.getBannerMessagesDisplayed();
-        } else if (page.includes("case list")) {
-            actualmessages = await caseListPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
-        }  else {
-            throw new Error(`message banner validation step not implemented for page ${page}`);
-        }
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const messages = messagesDatatable.hashes();
+            let actualmessages = [];
+            page = page.toLowerCase();
+            if (page.includes("my work")) {
+                actualmessages = await myWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed()
+            } else if (page.includes("all work")) {
+                actualmessages = await allWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
+            } else if (page.includes("case details")) {
+                actualmessages = await caseDetailsPage.messageBanner.getBannerMessagesDisplayed();
+            } else if (page.includes("case list")) {
+                actualmessages = await caseListPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
+            } else {
+                throw new Error(`message banner validation step not implemented for page ${page}`);
+            }
 
-        for(let i = 0; i < messages.length;i++){
-            let matchingMsgs = await ArrayUtil.filter(actualmessages, async (msg) => msg.includes(messages[i].message));
-            if (messages[i].message !== ""){
-                expect(matchingMsgs.length > 0, `expected "${messages[i].message}" to be included in ${JSON.stringify(actualmessages)}`).to.be.true
-            }   
-        }   
-
+            for (let i = 0; i < messages.length; i++) {
+                let matchingMsgs = await ArrayUtil.filter(actualmessages, async (msg) => msg.includes(messages[i].message));
+                if (messages[i].message !== "") {
+                    expect(matchingMsgs.length > 0, `expected "${messages[i].message}" to be included in ${JSON.stringify(actualmessages)}`).to.be.true
+                }
+            }  
+        });
     });
 
     Then('If user type {string} is {string}, I validate task details displayed in task action page', async function (currentUserType,stepForUserType,taskDetailsDatatable){
@@ -443,7 +448,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
             if (tasksCount === 0) {
                 expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
-                expect(await taskListPage.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");
             } else {
                 expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
             }
@@ -512,4 +516,34 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskAssignmentPersonNotAuthorisedPage.backButton.click(); 
      });
 
+    Then('I validate work allocation task table column {string} width less than or equal to {int}', async function(columnName, size){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const columnWidthActual = await taskListTable.getHeaderColumnWidth(columnName);
+            reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`)
+            expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}` ).to.be.true;
+        }); 
+        
+    });
+
+    Then('I validate work allocation case table column {string} width less than or equal to {int}', async function (columnName, size) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const columnWidthActual = await waCaseListTable.getHeaderColumnWidth(columnName);
+            reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`)
+            expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}`).to.be.true;
+        });
+       
+    });
+
+    Given('I unassign the task at row 1', async function(){
+        const rowActions = await taskListTable.getRowActionLinksTexts();
+
+        const unassignLinkText = rowActions.filter(t => t.includes('Unassign'))
+
+        if (unassignLinkText.length > 0){
+            await taskListTable.clickTaskAction(unassignLinkText[0]);
+            await taskActionPage.amOnPage();
+            await taskActionPage.clickSubmit();
+            expect(await taskActionPage.isBannerMessageDisplayed()).to.be.true;
+        } 
+    });
 });

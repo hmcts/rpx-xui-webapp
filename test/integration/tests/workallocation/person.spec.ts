@@ -1,11 +1,10 @@
 import { expect } from 'chai';
-import { v4 as uuid } from 'uuid';
 // import mocha from 'mocha';
 import { config } from '../config/config';
-import { getUserId, getXSRFToken } from '../utils/authUtil';
+import { getXSRFToken } from '../utils/authUtil';
 import { setTestContext } from '../utils/helper';
-
 import Request from '../utils/request';
+
 
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
@@ -33,7 +32,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/retrieveCaseWorkersForServices`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation/retrieveCaseWorkersForServices`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('array');
 
@@ -85,7 +84,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/findPerson`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation/findPerson`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('array');
 

@@ -1,19 +1,31 @@
+import { AssignHintText } from './assign-hint-text';
+import { CaseActionIds } from './case-action-ids';
+import { CaseService } from './case-service';
+import { FieldType } from './field-type';
 import { InfoMessage } from './info-message';
 import { InfoMessageType } from './info-message-type';
+import { SortOrder } from './sort-order';
 import { TaskActionIds } from './task-action-ids';
 import { TaskActionType } from './task-action-type';
-import { TaskFieldType } from './task-field-type';
+import { TaskContext } from './task-context';
+import { TaskPriority } from './task-priority';
 import { TaskService } from './task-service';
 import { TaskSort } from './task-sort';
 import { TaskView } from './task-view';
 
 export {
+  AssignHintText,
+  CaseService,
+  CaseActionIds,
+  FieldType,
   InfoMessage,
   InfoMessageType,
+  SortOrder,
   TaskActionIds,
   TaskActionType,
-  TaskFieldType,
   TaskService,
   TaskSort,
-  TaskView
+  TaskPriority,
+  TaskView,
+  TaskContext
 };

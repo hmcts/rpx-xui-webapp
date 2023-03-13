@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -11,7 +11,7 @@ import { NocCheckAndSubmitComponent } from './noc-check-and-submit.component';
 describe('NocCheckAndSubmitComponent', () => {
   let component: NocCheckAndSubmitComponent;
   let fixture: ComponentFixture<NocCheckAndSubmitComponent>;
-  let store: MockStore<fromFeature.State>;
+  let store;
   let spyOnPipeToStore: any;
   let spyOnDispatchToStore = jasmine.createSpy();
 
@@ -60,7 +60,7 @@ describe('NocCheckAndSubmitComponent', () => {
     question_id: 'q2',
     value: 'Priest'
   }];
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ NocCheckAndSubmitComponent ],
@@ -72,7 +72,7 @@ describe('NocCheckAndSubmitComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     fixture = TestBed.createComponent(NocCheckAndSubmitComponent);
     component = fixture.componentInstance;

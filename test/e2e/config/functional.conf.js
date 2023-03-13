@@ -8,7 +8,7 @@ const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
-
+const apptTestConfig = require('./appTestConfig');
 
 const isParallelExecution = argv.parallel ? argv.parallel === "true" : true;;
 const chromeOptArgs = ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
@@ -17,6 +17,7 @@ if (!argv.head) {
     chromeOptArgs.push('--headless');
 }
 
+apptTestConfig.testEnv = apptTestConfig.getTestEnvFromEnviornment();
 
 const jenkinsConfig = [
 
@@ -46,7 +47,7 @@ const localConfig = [
 
 if (isParallelExecution) {
     jenkinsConfig[0].shardTestFiles = true;
-    jenkinsConfig[0].maxInstances = 6;
+    jenkinsConfig[0].maxInstances = 7;
 }
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
@@ -91,7 +92,7 @@ const config = {
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
+        format: ['node_modules/cucumber-pretty', 'json:functional-output/tests/functional/json/results.json'],
         tags: getBDDTags(),
         require: [
             '../support/timeout.js',
@@ -110,8 +111,8 @@ const config = {
                 removeExistingJsonReportFile: true,
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
-                jsonDir: 'reports/tests/functional',
-                reportPath: 'reports/tests/functional',
+                jsonDir: 'functional-output/tests/functional',
+                reportPath: 'functional-output/tests/functional',
                 displayDuration: true,
                 durationInMS: false
             }
@@ -128,6 +129,11 @@ function getBDDTags(){
     } else {
         tags = ["@fullfunctional", "~@ignore"];
     }
+    if (apptTestConfig.testEnv === 'demo') {
+        tags.push("~@aat")
+    }else{
+        tags.push("~@demo") 
+    } 
     return tags;
 }
 

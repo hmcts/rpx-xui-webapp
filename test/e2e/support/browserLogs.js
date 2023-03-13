@@ -49,7 +49,7 @@ class BrowserLogs {
                 }
                 
                 if (browserLog[browserLogCounter]['message'].includes("ERROR [") || browserLog[browserLogCounter]['message'].includes(".js")) {
-                    this.javascriptErrors.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
+                    this.javascriptErrors.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} ${JSON.stringify(browserLog[browserLogCounter])}`);
                 }else if (!ignore) {
                     browserErrorLogs.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
                 }
@@ -71,19 +71,25 @@ class BrowserLogs {
     }
 
     async printAllBrowserLogs() {
-        const browserErrorLogs = await this.getBrowserLogs();
-        this.browserlogs.push(...browserErrorLogs)
+        try{
+            const browserErrorLogs = await this.getBrowserLogs();
+            this.browserlogs.push(...browserErrorLogs)
 
-        cucumberReporter.AddMessage("************* Netwrok errors *****************");
-        for (const log of this.browserlogs) {
-            cucumberReporter.AddMessage(log);
-        }
+            cucumberReporter.AddMessage("************* Netwrok errors *****************");
+            for (const log of this.browserlogs) {
+                cucumberReporter.AddMessage(log);
+            }
 
-        cucumberReporter.AddMessage("************* Javascript errors *****************");
-        for (const log of this.javascriptErrors) {
-            cucumberReporter.AddMessage(log);
+            cucumberReporter.AddMessage("************* Javascript errors *****************");
+            for (const log of this.javascriptErrors) {
+                cucumberReporter.AddMessage(log);
+            }
+            return this.browserlogs;
+        }catch(err){
+            cucumberReporter.AddMessage('error occures in collecting browser logs')
+            cucumberReporter.AddMessage(err)  
         }
-        return this.browserlogs;
+        
     }
 
 

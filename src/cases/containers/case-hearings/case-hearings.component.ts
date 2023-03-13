@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
@@ -38,7 +38,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public listedHearings$: Observable<HearingListViewModel[]>;
 
   public hearingState$: Observable<fromHearingStore.State>;
-  public hearingsActions: Actions[] = [Actions.READ];
+  public hearingsActions: Actions[];
   public userRoles$: Observable<string[]>;
   public hearingListLastErrorState$: Observable<fromHearingStore.State>;
   public hearingValuesLastErrorState$: Observable<fromHearingStore.State>;
@@ -47,7 +47,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hasRequestAction: boolean = false;
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
-  public isOgdRole$: Observable<boolean>;
+  public isOgdRole: boolean;
   public hearingStageOptions: LovRefDataModel[];
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
@@ -101,15 +101,17 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
     this.roleCatSubscription = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).subscribe(
       userRole => {
+        this.hearingsActions = [Actions.READ];
         if (userRole === UserRole.LegalOps) {
           this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
+        } else if (userRole === UserRole.Ogd) {
+          this.isOgdRole = true;
+        }
+        if (this.hearingsActions.includes(Actions.CREATE)) {
+          this.hasRequestAction = true;
         }
       }
     );
-    if (this.hearingsActions.includes(Actions.CREATE)) {
-      this.hasRequestAction = true;
-    }
-    this.isOgdRole$ = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(map(userRole => userRole === UserRole.Ogd));
   }
 
   public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
@@ -117,12 +119,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       map(hearingListStateData => {
           if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
             let caseHearingModels: HearingListModel[] = [];
-            if (Object.values(EXUISectionStatusEnum).includes(status)) {
+            if (Object.values(EXUISectionStatusEnum).includes(status as EXUISectionStatusEnum)) {
               caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
                 hearing.exuiSectionStatus === status
               );
             }
-            if (Object.values(EXUIDisplayStatusEnum).includes(status)) {
+            if (Object.values(EXUIDisplayStatusEnum).includes(status as EXUIDisplayStatusEnum)) {
               caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
                 hearing.exuiDisplayStatus === status
               );
@@ -141,12 +143,13 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     const viewModels: HearingListViewModel[] = [];
     hearings.forEach((hearing) => {
       const viewModel = {} as HearingListViewModel;
+      viewModel.earliestHearingStartDateTime = null;
       Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
-        const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime));
-        viewModel.earliestHearingStartDateTime = moment.min(moments).toString();
-      } else {
-        viewModel.earliestHearingStartDateTime = null;
+        const moments = hearing.hearingDaySchedule.map(d => d.hearingStartDateTime !== null && moment(d.hearingStartDateTime));
+        if (moments.length > 1 || (moments.length === 1 && moments[0])) {
+          viewModel.earliestHearingStartDateTime = moment.min(moments).toString();
+        }
       }
       viewModels.push(viewModel);
     });

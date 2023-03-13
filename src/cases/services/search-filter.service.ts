@@ -10,10 +10,10 @@ export class SearchFilterService {
   public metadataFields: string[];
 
   constructor(
-    private ccdSearchService: SearchService,
-    private appConfig: AbstractAppConfig,
-    private httpService: HttpService,
-    private requestOptionsBuilder: RequestOptionsBuilder,
+    private readonly ccdSearchService: SearchService,
+    private readonly appConfig: AbstractAppConfig,
+    private readonly httpService: HttpService,
+    private readonly requestOptionsBuilder: RequestOptionsBuilder,
   ) { }
 
   public search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {

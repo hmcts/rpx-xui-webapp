@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatTabsModule } from '@angular/material';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -12,7 +12,9 @@ import { Observable, of } from 'rxjs';
 import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { WASupportedJurisdictionsService } from 'src/work-allocation-2/services';
+
+import { AllocateRoleService } from '../../../role-access/services';
+import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -134,8 +136,12 @@ describe('CaseViewerContainerComponent', () => {
 
   class MockFeatureToggleService implements FeatureToggleService {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
+      if (_key === 'wa-service-config') {
+        // @ts-ignore
+        return of({configurations: [{serviceName: 'SSCS', caseTypes: ['TestAddressBookCase'], releaseVersion: '3.0'}]});
+      }
       // @ts-ignore
-      return of('WorkAllocationRelease2');
+      return of([]);
     }
 
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
@@ -151,6 +157,12 @@ describe('CaseViewerContainerComponent', () => {
 
     public isEnabled(_feature: string): Observable<boolean> {
       return undefined;
+    }
+  }
+
+  class MockAllocateRoleService {
+    public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
+      return of([]);
     }
   }
 
@@ -193,7 +205,8 @@ describe('CaseViewerContainerComponent', () => {
           surname: 'judge'
         },
         roleAssignmentInfo: []
-      }
+      },
+      decorate16digitCaseReferenceSearchBoxInHeader: false
     }
   };
   const TABS: CaseTab[] = [
@@ -211,7 +224,7 @@ describe('CaseViewerContainerComponent', () => {
     }
   ];
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
       providers: [
@@ -227,12 +240,13 @@ describe('CaseViewerContainerComponent', () => {
           }
         },
         {provide: FeatureToggleService, useClass: MockFeatureToggleService},
+        {provide: AllocateRoleService, useClass: MockAllocateRoleService },
         {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService}
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseViewerContainerComponent);

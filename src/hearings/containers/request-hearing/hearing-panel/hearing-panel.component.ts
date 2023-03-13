@@ -37,8 +37,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public personalCodejudgeList: JudicialUserModel[] = [];
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   public serviceId: string;
-  @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
-  @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('includedJudge', {static: false}) public includedJudge: HearingJudgeNamesListComponent;
+  @ViewChild('excludedJudge', {static: false}) public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -136,7 +136,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       this.hearingRequestMainModel.hearingDetails &&
       this.hearingRequestMainModel.hearingDetails.panelRequirements &&
       this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType) {
-      selectedPanelRoles = this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.filter(roleKey => this.multiLevelSelections.map((role) => role.key).includes(roleKey))
+      selectedPanelRoles = this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.filter(roleKey => this.multiLevelSelections.map((role) => role.key).includes(roleKey));
       selectedPanelRoles.forEach(selectedPanelRole => {
         let skipRoleSelection = false;
         if (this.multiLevelSelections && this.multiLevelSelections.length) {

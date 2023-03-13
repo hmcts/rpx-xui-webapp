@@ -12,11 +12,11 @@ const checkYourAnswersPage = require("./common/checkYourAnswersPage");
 class ExclusionRoleWorkFlow {
 
     constructor() {
-        this.workFlowContainer = new WorkFlowContainer($('exui-exclusion-navigation'));
+        this.workFlowContainer = new WorkFlowContainer();
 
-        this.chooseWhoExclusion = new ChooseRadioOptionComponent(this.workFlowContainer.container.$('exui-choose-exclusion'));
-        this.choosePersonRole = new ChooseRadioOptionComponent(this.workFlowContainer.container.$('exui-choose-person-role'));
-        this.findPersonPage = new FindPersonComponent(this.workFlowContainer.container);
+        this.chooseWhoExclusion = new ChooseRadioOptionComponent('exui-exclusion-navigation exui-choose-exclusion');
+        this.choosePersonRole = new ChooseRadioOptionComponent('exui-exclusion-navigation exui-choose-person-role');
+        this.findPersonPage = new FindPersonComponent($('exui-exclusion-navigation'));
         this.describeExclusion = describeExclusionPage;
 
         this.checkYourAnswers = checkYourAnswersPage;

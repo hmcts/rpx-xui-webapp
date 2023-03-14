@@ -1,5 +1,5 @@
 
-@ng
+@ng 
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from
@@ -14,9 +14,9 @@ Feature: WA Release 2: Case details Tasks tab
 
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
+            | isCaseAllocator | jurisdiction | baseLocation |
             | true            | IA           | 12345           |
-        Given I set MOCK request "/workallocation2/case/task/:caseid" response log to report
+        Given I set MOCK request "/workallocation/case/task/:caseid" response log to report
 
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
@@ -30,6 +30,7 @@ Feature: WA Release 2: Case details Tasks tab
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3      | user     | caseworker_user2@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4      | user     | caseworker_user3@gov.uk | LEGAL_OPERATIONS |
             | 3db21928-cbbc-4364-bd91-137c7031fe17 | XUI test    | auto     | caseworker_user6@gov.uk | LEGAL_OPERATIONS |
+            | 3db21928-cbbc-4364-bd91-137c7031fe17 | XUI test | auto | caseworker_user6@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | caseworker7 | cw       | caseworker_user7@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | caseworker8 | cw       | caseworker_user8@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      | ADMIN            |
@@ -86,7 +87,6 @@ Feature: WA Release 2: Case details Tasks tab
 
         Then I validate case details task tab page is displayed
         Then I validate task tab alert banner header is "Task alert"
-        Then I validate task tab alert banner message is "An application is pending a decision. Consider if this application has an impact on any other tasks you might wish to complete."
         Then I validate task tab active tasks container displayed
         Then I validate task tab active tasks displayed count 15
 

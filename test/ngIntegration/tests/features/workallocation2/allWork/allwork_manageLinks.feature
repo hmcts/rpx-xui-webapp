@@ -21,7 +21,7 @@ Feature: WA Release 2: All work - Manage links
 
     Scenario Outline:  Task Manage links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        # Given I set MOCK request "/workallocation2/taskWithPagination" response log to report
+        # Given I set MOCK request "/workallocation/taskWithPagination" response log to report
         Given I start MockApp
         Given I navigate to home page
 

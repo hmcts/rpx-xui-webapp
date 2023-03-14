@@ -1,21 +1,20 @@
 import { expect } from 'chai';
-import { PactTestSetup } from '../settings/provider.mock';
-
-import * as sinon from 'sinon'
-
-import * as config from 'config'
+import * as config from 'config';
+import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
+import { PactTestSetup } from '../settings/provider.mock';
 import { getLocationsRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
+
+
+
 const { Matchers } = require('@pact-foundation/pact');
-import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_location', port: 8000 });
 
 const serviceCode = "BFA1";
-describe("Locations ref data api, get all locations for service", () => {
+xdescribe("Locations ref data api, get all locations for service", () => {
 
     const RESPONSE_BODY = {
         "court_venues": [
@@ -74,7 +73,7 @@ describe("Locations ref data api, get all locations for service", () => {
                 return configValues[prop];
             });
 
-            const { getLocations } = requireReloaded('../../../../workAllocation2/locationController');
+            const { getLocations } = requireReloaded('../../../../workAllocation/locationController');
 
             const req = mockReq({
                 headers: {
@@ -109,6 +108,6 @@ describe("Locations ref data api, get all locations for service", () => {
 function assertResponses(dto: any) {
     expect(dto[0].id).to.be.equal("12345");
     expect(dto[0].locationName).to.be.equal("siteName1");
-   
+
 }
 

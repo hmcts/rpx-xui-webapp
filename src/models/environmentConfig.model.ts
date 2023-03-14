@@ -12,4 +12,5 @@ export interface EnvironmentConfig {
   launchDarklyClientId?: string;
   accessManagementEnabled?: boolean;
   paymentReturnUrl: string;
+  waSupportedServices?: any;
 }

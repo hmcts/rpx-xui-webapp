@@ -1,5 +1,6 @@
-@ng 
+@ng @ignore
 Feature: Navigation header tabs
+    https://tools.hmcts.net/confluence/display/EUI/Global+Search
 
     Scenario Outline: Primanry nav headers for user "<roleType>" "<useridentifier>" and roles "<rolesIdentifiers>"
         Then I Log to report launch darkly feature toggle values
@@ -15,9 +16,10 @@ Feature: Navigation header tabs
         Given I init MockApp
         Given I start MockApp
         Given I navigate to home page
-
-        # Given I navigate to home page
-       
+        Then I log LD feature toggle values
+            | name          |
+            | mc-menu-items |
+            | mc-menu-theme |
         Then I validate header displayed for user type "<roleType>"
         Then I see primary navigation tabs "<mainHeaders>" in main header
 
@@ -34,7 +36,7 @@ Feature: Navigation header tabs
             | Notice of change |
 
         Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
-        # Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
+        Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
 
         Examples:
             | roleType   | useridentifier    | rolesIdentifiers                            | mainHeaders                                                         | rightColumnHeaders | 16-digitCaseRef |

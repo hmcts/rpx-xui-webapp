@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { TestBed, inject } from '@angular/core/testing';
-import { MonitoringService, IMonitoringService, MonitorConfig } from './monitoring.service';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
+import { MonitorConfig, MonitoringService } from './monitoring.service';
 
 describe('Monitoring service', () => {
     const mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', {get: of({key: 'Some Value'})});

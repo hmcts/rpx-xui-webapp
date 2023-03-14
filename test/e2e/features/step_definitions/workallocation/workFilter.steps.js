@@ -14,6 +14,18 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
+    Then('I see work filter of type {string} is displayed',async function(filterType){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await myWorkPage.isWorkFilterOfTypeDisplayed(filterType)).to.be.true;
+        });
+    });
+
+    Then('I see work filter of type {string} is not displayed', async function (filterType) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await myWorkPage.isWorkFilterOfTypeDisplayed(filterType)).to.be.false;
+        });
+    });
+
     Then('I see work filter button displayed', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
             await BrowserWaits.waitForElement(myWorkPage.showHideWorkFilterBtn);
@@ -22,7 +34,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate work filter button text is {string}', async function (btntext) {
-        expect(await myWorkPage.showHideWorkFilterBtn.getText()).to.contains(btntext);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await myWorkPage.showHideWorkFilterBtn.getText()).to.contains(btntext);
+        });
     });
 
     When('I click work filter button to {string} filter', async function (filterStateTo) {
@@ -162,6 +176,22 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
+    Then('I validate my work filter services listed {string}', async function(servicesListString){
+        const services = servicesListString.split(",");
+        const servicesListed = await myWorkPage.getWorkFilterServicesList();
+        expect(servicesListed).to.contains.members(services)
+ 
+    });
+
+    Then('I Validate my work filter services selected {string}', async function (servicesSelectedString) {
+        const services = servicesSelectedString.split(",");
+        const expectedServicesSelected = await myWorkPage.getWorkFilterServicesList();
+
+        for (const selectedService of expectedServicesSelected) {
+            expect(await myWorkPage.isWorkFilterServiceSelected(selectedService)).to.be.true;
+        }
+    });
+
     Then('I Validate my work filter services selected', async function (expectedServicesDatatable){
          const datatableHashes = expectedServicesDatatable.hashes();
         const expectedServieNames = [];
@@ -212,7 +242,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expectedLocations.push(hash.name);
         } 
         
-
         await BrowserWaits.retryWithActionCallback(async () => {
             const locationResults = await myWorkPage.getWorkFilterLocationSearchResults();
             for (const expectLoc of expectedLocations) {
@@ -220,8 +249,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         });
         
+    });
+
+    Then('I see location search results returned {int} results in my work filter', async function (expectecResults) {
+        
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const locationResults = await myWorkPage.getWorkFilterLocationSearchResults();
+            expect(locationResults.length, "Expected results count does not match").to.equal(expectecResults); 
+        });
 
     });
+
+
 
     When('I select locations search result {string} in my work filter', async function(location){
         await myWorkPage.selectWorkFilterLocationSearchResult(location);
@@ -248,6 +287,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I remove slected location {string} from my work filters', async function(location){
         await myWorkPage.clickSelectedLocationFromWorkFilter(location);
     });
+
+
+    When('I remove all selected locations from my work filters', async function () {
+        await myWorkPage.clearAllSelectedLocations();
+    });
+
     
 });
 

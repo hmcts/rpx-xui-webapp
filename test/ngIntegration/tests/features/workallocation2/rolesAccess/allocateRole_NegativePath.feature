@@ -1,6 +1,6 @@
 
 
-@ng @ignore
+@ng1 @ignore
 Feature: WA Release 2: Allocate Role judiciary - Negative path
 
     Scenario Outline: Roles and access - "<Useridentifier>" - Allocate role, reserve to me for Another period

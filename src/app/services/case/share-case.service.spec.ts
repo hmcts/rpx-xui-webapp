@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import {TestBed} from '@angular/core/testing';
-import {StoreModule} from '@ngrx/store';
+import { TestBed } from '@angular/core/testing';
+import { StoreModule } from '@ngrx/store';
 import { CaseShareService } from './share-case.service';
 
 describe('Share Case Service', () => {
@@ -20,7 +20,7 @@ describe('Share Case Service', () => {
   });
 
   it('should have configuration service', () => {
-    service = TestBed.get(CaseShareService);
+    service = TestBed.inject(CaseShareService);
     expect(service).toBeTruthy();
   });
 

@@ -1,138 +1,90 @@
-// /* tslint:disable:no-unused-expression no-var-requires */
-// import * as chai from 'chai'
-// import { expect } from 'chai'
-// import 'mocha'
-// import * as sinon from 'sinon'
-// import * as sinonChai from 'sinon-chai'
-// import { mockReq, mockRes } from 'sinon-express-mock'
-// import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants'
-// import { getUserDetails, getUserRoleAssignments } from './index'
+import { expect } from 'chai';
+import { LEGAL_OPS_TYPE } from './constants';
+import { getActiveRoleAssignments } from './index';
+import { RoleAssignment } from './interfaces/roleAssignment';
 
-// chai.use(sinonChai)
-// describe('getUserDetails', () => {
+describe('Index', () => {
+  let roleAssignments: RoleAssignment[];
+  beforeEach(() => {
+    roleAssignments = [{
+      id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
+      actorIdType: 'IDAM',
+      actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
+      roleType: 'ORGANISATION',
+      roleName: 'ROLE',
+      classification: 'PUBLIC',
+      grantType: 'STANDARD',
+      roleCategory: LEGAL_OPS_TYPE,
+      readOnly: false,
+      created: new Date(2021, 9, 8),
+      attributes: {
+        baseLocation: '231596',
+        jurisdiction: 'IA'
+      }
+    }]
+  });
 
-//     let sandbox
-//     let next
-//     let req
-//     let res
 
-//     beforeEach(() => {
-//         sandbox = sinon.createSandbox()
-//         next = sandbox.spy()
-//         res = mockRes()
-//     })
+  describe('getActiveRoleAssignments', () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    const yesterday = new Date(today);
+    
+    it('should return role assignment if end date is empty', async () => {
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, new Date());
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
 
-//     afterEach(() => {
-//         sandbox.restore()
-//     })
+    it('should return role assignment if end date is tomorrow (not expired)', async () => {
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      roleAssignments[0].endTime = tomorrow;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, new Date());
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
 
-//     it('should return a true response when case share permission is existent', async () => {
-//       const reqQuery = {
-//         session: {
-//           passport: {
-//             user: {
-//               tokenset: {
-//                 accessToken: '124'
-//               },
-//               userinfo: {
-//                 roles: ['pui-case-manager'],
-//               },
-//             },
-//           },
-//         },
-//       }
-//       req = mockReq(reqQuery)
-//       await getUserDetails(req, res, next)
-//       const response = {
-//         canShareCases: true,
-//       }
-//       expect(res.send).to.have.been.calledWith(sinon.match(response))
-//     })
+    it('should return role assignment if end date is now (not expired)', async () => {
+      roleAssignments[0].endTime = today;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, today);
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
 
-//     it('should return a false response when case share permission is non-existent', async () => {
-//       const reqQuery = {
-//         session: {
-//           passport: {
-//             user: {
-//               tokenset: {
-//                 accessToken: '124'
-//               },
-//               userinfo: {
-//                 roles: ['dummy'],
-//               },
-//             },
-//           },
-//         },
-//       }
-//       req = mockReq(reqQuery)
-//       await getUserDetails(req, res, next)
-//       const response = {
-//         canShareCases: false
-//       }
-//       expect(res.send).to.have.been.calledWith(sinon.match(response))
-//     })
+    it('should return role assignment if end date is now (expired)', async () => {
+      roleAssignments[0].endTime = today;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, new Date());
+      expect(activeRoleAsignments.length).to.equal(0);
+    });
 
-//     it('should catch an error', async () => {
-//       const reqQuery = {
-//         session: {
-//           passport: {
-//             user: {
-//               tokenset: {
-//                 accessToken: '124'
-//               },
-//               userinfo: {
-//                 roles: [],
-//               },
-//             },
-//           },
-//         },
-//       }
-//       req = mockReq(reqQuery)
-//       res.send.throws()
+    it('should return role assignment if end date is yesterday (expired)', async () => {
+      yesterday.setDate(yesterday.getDate() - 1);
+      roleAssignments[0].endTime = yesterday;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, new Date());
+      expect(activeRoleAsignments.length).to.equal(0);
+    });
 
-//       await getUserDetails(req, res, next)
+    const filterDate = new Date(2022, 10, 20);
 
-//       expect(next).to.have.been.calledWith()
-//     })
-// });
+    it('should return role assignment if end date is empty and filter date 20 Oct 2022', async () => {
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, filterDate);
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
 
-// // describe('getUserRoleAssignments', async () => {
+    it('should return role assignment if end date is 20 Oct 2022 filter date 20 Oct 2022', async () => {      
+      roleAssignments[0].endTime = filterDate;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, filterDate);
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
 
-// //     it('use session', async () =>  {
-// //     const userInfo = {
-// //       forename: 'foreName',
-// //       surname: 'surName',
-// //       email: 'email@email.com',
-// //       active: true,
-// //       id: '223',
-// //       uid: '223',
-// //       roles: ['role1', 'role3']
-// //     };
+    it('should return role assignment if end date is end date is 21 Oct 2022 filter date 20 Oct 2022', async () => {
+      roleAssignments[0].endTime = new Date(2022, 10, 21);
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, filterDate);
+      expect(activeRoleAsignments.length).to.equal(1);
+    });
 
-// //     const req = {
-// //       session: {
-// //         roleAssignmentResponse: [
-// //           {
-// //             id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
-// //             actorIdType: 'IDAM',
-// //             actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
-// //             roleType: 'ORGANISATION',
-// //             roleName: CASE_ALLOCATOR_ROLE,
-// //             classification: 'PUBLIC',
-// //             grantType: 'STANDARD',
-// //             roleCategory: LEGAL_OPS_TYPE,
-// //             readOnly: false,
-// //             created: Date.UTC.toString(),
-// //             attributes: {
-// //               primaryLocation: '231596',
-// //               jurisdiction: 'IA'
-// //             }
-// //           }
-// //         ]
-// //       }
-// //     };
-// //     const locationInfo = await getUserRoleAssignments(userInfo, req);
-// //     expect(locationInfo[0].primaryLocation).to.equal('231596');
-// //     expect(locationInfo[0].isCaseAllocator).to.equal(true);
-// //   });
-// // });
+    it('should return role assignment if end date is is 19 Oct 2022 filter date 20 Oct 2022', async () => {
+      roleAssignments[0].endTime = new Date(2022, 10, 19);;
+      const activeRoleAsignments = getActiveRoleAssignments(roleAssignments, filterDate);
+      expect(activeRoleAsignments.length).to.equal(0);
+    });
+  });
+});
+

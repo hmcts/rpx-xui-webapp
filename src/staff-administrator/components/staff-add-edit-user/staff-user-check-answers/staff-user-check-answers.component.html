@@ -1,6 +1,6 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
-    <exui-page-wrapper [title]="'Check your answers before adding a new user'" [backLink]="'../'">
+    <exui-page-wrapper [title]="'Check your answers before ' + (!isUpdateMode ? 'adding a new user' : 'updating the user')" [backLink]="'../'">
         <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="staffUser.first_name">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Name</dt>
@@ -169,7 +169,7 @@
         </dl>
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-          <button class="govuk-button govuk-!-margin-right-1 govuk-!-margin-bottom-0"
+          <button id="user-staff-check-answers-submit" class="govuk-button govuk-!-margin-right-1 govuk-!-margin-bottom-0"
             (click)="onSubmit()"
           >
             Submit

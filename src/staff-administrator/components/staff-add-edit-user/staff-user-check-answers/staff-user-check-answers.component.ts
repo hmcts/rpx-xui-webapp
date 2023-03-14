@@ -36,6 +36,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public userDetails$: Observable<UserDetails>;
   public idamRoles = [];
   public isLoading = false;
+  public isUpdateMode = false;
 
   constructor(
     private readonly appStore: Store<fromAppStore.State>,
@@ -44,8 +45,14 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private staffDataAccessService: StaffDataAccessService,
     private readonly messageService: InfoMessageCommService,
-  ) {
-    this.formId = activatedRoute.snapshot.data.formId;
+  ) {}
+
+
+  public ngOnInit() {
+    this.formId = this.activatedRoute.snapshot.data.formId;
+    this.isUpdateMode = this.formId === StaffAddEditUserFormId.UpdateUser;
+    console.log(this.formId);
+    console.log(this.isUpdateMode);
 
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
@@ -53,9 +60,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services
     };
-  }
 
-  public ngOnInit() {
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     this.userDetails$.pipe(
       map(details => {
@@ -72,10 +77,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public onSubmit() {
-    if (this.formId === StaffAddEditUserFormId.AddUser) {
-      this.onSubmitAddUser();
-    } else if (this.formId === StaffAddEditUserFormId.UpdateUser) {
+    if (this.isUpdateMode) {
       this.onSubmitUpdateUser();
+    } else {
+      this.onSubmitAddUser();
     }
   }
 

@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -108,6 +109,7 @@ describe('StaffUserCheckAnswersComponent', () => {
           useValue: {
             snapshot: {
               data: {
+                formId: StaffAddEditUserFormId.AddUser,
                 userTypes: [
                   {
                     key: 'userType',
@@ -314,10 +316,40 @@ describe('StaffUserCheckAnswersComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set is updateMode', () => {
+    component.formId = StaffAddEditUserFormId.AddUser;
+    component.ngOnInit();
+    expect(component.isUpdateMode).toBe(false);
+
+    // @ts-expect-error - private property; we are setting the value for testing purposes
+    component.activatedRoute.snapshot.data.formId = StaffAddEditUserFormId.UpdateUser;
+    component.ngOnInit();
+    expect(component.isUpdateMode).toBe(true);
+  });
+
+  it('should call the right method based on isEditMode on calling the onSubmit method', () => {
+    component.isUpdateMode = false;
+    spyOn(component, 'onSubmitAddUser').and.callFake(() => {});
+    component.onSubmit();
+    expect(component.onSubmitAddUser).toHaveBeenCalled();
+
+    component.isUpdateMode = true;
+    spyOn(component, 'onSubmitUpdateUser').and.callFake(() => {});
+    component.onSubmit();
+    expect(component.onSubmitUpdateUser).toHaveBeenCalled();
+  });
+
+  it('should call onSubmit method on clicking the submit button', () => {
+    spyOn(component, 'onSubmit').and.callThrough();
+    const checkAnswersSubmitButton = fixture.debugElement.query(By.css('#user-staff-check-answers-submit'));
+    checkAnswersSubmitButton.triggerEventHandler('click', null);
+    expect(component.onSubmit).toHaveBeenCalled();
+  });
+
   it('should call addNewUser and on being succesful it should redirect to "/staff"', (done) => {
     component.formId = StaffAddEditUserFormId.AddUser;
     mockStaffDataAccessService.addNewUser.and.returnValue(of(testStaffUser));
-    component.onSubmit();
+    component.onSubmitAddUser();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/staff');
@@ -326,7 +358,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   it('should display a banner once an user has been added successfully', (done) => {
     component.formId = StaffAddEditUserFormId.AddUser;
     mockStaffDataAccessService.addNewUser.and.returnValue(of(testStaffUser));
-    component.onSubmit();
+    component.onSubmitAddUser();
     done();
     expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalled();
   });
@@ -334,7 +366,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   it('should call addNewUser and throw error', (done) => {
     component.formId = StaffAddEditUserFormId.AddUser;
     mockStaffDataAccessService.addNewUser.and.returnValue(throwError({status: 500}));
-    component.onSubmit();
+    component.onSubmitAddUser();
     done();
     expect(mockStaffDataAccessService.addNewUser).toHaveBeenCalled();
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down');

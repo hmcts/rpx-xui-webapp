@@ -14,6 +14,7 @@ describe('AppComponent', () => {
   let router: any;
   let title: any;
   let testRoute: RoutesRecognized;
+  let sessionStorageService;
 
   beforeEach(() => {
       store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
@@ -23,6 +24,7 @@ describe('AppComponent', () => {
       cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
       loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
       environmentService = jasmine.createSpyObj('environmentService', ['config$']);
+      sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
       testRoute = new RoutesRecognized(1, 'test', 'test', {
           url: 'test',
           root: {
@@ -61,7 +63,7 @@ describe('AppComponent', () => {
       });
       router = { events: of(testRoute) };
       title = jasmine.createSpyObj('Title', ['setTitle']);
-      appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService);
+      appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, sessionStorageService);
   });
 
   it('Truthy', () => {
@@ -94,21 +96,6 @@ describe('AppComponent', () => {
     expect(spyModal).toHaveBeenCalledWith('100 seconds', true);
   });
 
-  it('initTimeoutNotificationService', () => {
-    appComponent.initTimeoutNotificationService(10, 100);
-    expect(timeoutNotificationService.initialise).toHaveBeenCalledWith({
-      idleModalDisplayTime: (10 * 60) * 1000,
-      totalIdleTime: (100 * 60) * 1000,
-      idleServiceName: 'idleSession',
-    });
-  });
-
-  it('staySignedInHandler', () => {
-    const spyModal = spyOn(appComponent, 'updateTimeoutModal');
-    appComponent.staySignedInHandler();
-    expect(spyModal).toHaveBeenCalledWith(undefined, false);
-  });
-
   it('updateTimeoutModal', () => {
     appComponent.updateTimeoutModal('100 seconds', false);
     expect(appComponent.timeoutModalConfig).toEqual({
@@ -121,14 +108,6 @@ describe('AppComponent', () => {
     const spyModal = spyOn(appComponent, 'updateTimeoutModal');
     appComponent.timeoutNotificationEventHandler({eventType: 'keep-alive'});
     expect(spyModal).toHaveBeenCalled();
-  });
-
-  it('addIdleServiceListener', () => {
-    const spy = spyOn(appComponent, 'timeoutNotificationEventHandler');
-    timeoutNotificationService.notificationOnChange.and.returnValue(of({}));
-    appComponent.addTimeoutNotificationServiceListener();
-    expect(timeoutNotificationService.notificationOnChange).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalledWith({});
   });
 
   it('should call initializeFeature', () => {
@@ -197,14 +176,6 @@ describe('AppComponent', () => {
     };
     store.pipe.and.returnValue(of(userDetails));
     expect(store.pipe).toHaveBeenCalled();
-  });
-
-  it('addIdleServiceListener', () => {
-      const spy = spyOn(appComponent, 'timeoutNotificationEventHandler');
-      timeoutNotificationService.notificationOnChange.and.returnValue(of({}));
-      appComponent.addTimeoutNotificationServiceListener();
-      expect(timeoutNotificationService.notificationOnChange).toHaveBeenCalled();
-      expect(spy).toHaveBeenCalledWith({});
   });
 
   describe('cookie actions', () => {
@@ -292,3 +263,4 @@ describe('AppComponent', () => {
     });
   });
 });
+

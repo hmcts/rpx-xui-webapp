@@ -4,8 +4,8 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { initialState } from '../hearing.test.data';
-import { LovRefDataModel } from '../models/lovRefData.model';
+import { initialState, partyChannelsRefData, partySubChannelsRefData } from '../hearing.test.data';
+import { LaCaseStatus, ListingStatus, PartyType, UnavailabilityType } from '../models/hearings.enum';
 import { State } from '../store';
 import { ParticipantAttendenceAnswerConverter } from './participant-attendence.answer.converter';
 
@@ -14,166 +14,6 @@ describe('ParticipantAttendenceAnswerConverter', () => {
   let converter: ParticipantAttendenceAnswerConverter;
   let store: Store<any>;
   let router: any;
-  const PARTY_CHANNELS: LovRefDataModel[] = [
-    {
-      key: 'inPerson',
-      value_en: 'In person',
-      value_cy: '',
-      hint_text_en: 'in person',
-      hint_text_cy: 'Wyneb yn wyneb',
-      lov_order: 1,
-      parent_key: null,
-      category_key: 'HearingChannel',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-    },
-    {
-      key: 'byPhone',
-      value_en: 'By phone',
-      value_cy: '',
-      hint_text_en: 'By Phone',
-      hint_text_cy: 'Ffôn',
-      lov_order: 2,
-      parent_key: null,
-      category_key: 'HearingChannel',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: [
-        {
-          key: 'telephone-btMeetMe',
-          value_en: 'Telephone - BTMeetme',
-          value_cy: '',
-          hint_text_en: 'By Phone bTMeetme',
-          hint_text_cy: '',
-          lov_order: 1,
-          parent_key: 'byPhone',
-          category_key: 'HearingChannel',
-          parent_category: 'byPhone',
-          active_flag: 'Y',
-          child_nodes: null,
-        },
-        {
-          key: 'telephone-CVP',
-          value_en: 'Telephone - CVP',
-          value_cy: '',
-          hint_text_en: 'By Phone CVP',
-          hint_text_cy: '',
-          lov_order: 2,
-          parent_key: 'byPhone',
-          category_key: 'HearingChannel',
-          parent_category: 'byPhone',
-          active_flag: 'Y',
-          child_nodes: null,
-        },
-        {
-          key: 'telephone-other',
-          value_en: 'Telephone - Other',
-          value_cy: '',
-          hint_text_en: 'By Phone Other',
-          hint_text_cy: '',
-          lov_order: 3,
-          parent_key: 'byPhone',
-          category_key: 'HearingChannel',
-          parent_category: 'byPhone',
-          active_flag: 'Y',
-          child_nodes: null,
-        },
-        {
-          key: 'telephone-skype',
-          value_en: 'Telephone - Skype',
-          value_cy: '',
-          hint_text_en: 'By Phone Skype',
-          hint_text_cy: '',
-          lov_order: 4,
-          parent_key: 'byPhone',
-          category_key: 'HearingChannel',
-          parent_category: 'byPhone',
-          active_flag: 'Y',
-          child_nodes: null,
-        },
-      ],
-    },
-    {
-      key: 'byVideo',
-      value_en: 'By video',
-      value_cy: 'Fideo',
-      hint_text_en: 'By video',
-      hint_text_cy: '',
-      lov_order: 4,
-      parent_key: null,
-      category_key: 'HearingChannel',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: [
-        {
-          key: 'video-conference',
-          value_en: 'Video Conference',
-          value_cy: '',
-          hint_text_en: 'By video conference',
-          hint_text_cy: '',
-          lov_order: 4,
-          parent_key: 'byVideo',
-          category_key: 'HearingChannel',
-          parent_category: 'byVideo',
-          active_flag: 'Y',
-          child_nodes: null,
-        },
-        {
-          key: 'video-other',
-          value_en: 'Video - Other',
-          value_cy: '',
-          hint_text_en: 'By video other',
-          hint_text_cy: '',
-          lov_order: 4,
-          parent_key: 'byVideo',
-          category_key: 'HearingChannel',
-          parent_category: 'byVideo',
-          active_flag: 'Y',
-          child_nodes: null,
-        },
-        {
-          key: 'video-skype',
-          value_en: 'Video - Skype',
-          value_cy: '',
-          hint_text_en: 'By video skype',
-          hint_text_cy: '',
-          lov_order: 4,
-          parent_key: 'byVideo',
-          category_key: 'HearingChannel',
-          parent_category: 'byVideo',
-          active_flag: 'Y',
-          child_nodes: null,
-        },
-        {
-          key: 'video-teams',
-          value_en: 'Video - Teams',
-          value_cy: '',
-          hint_text_en: 'By video teams',
-          hint_text_cy: '',
-          lov_order: 4,
-          parent_key: 'byVideo',
-          category_key: 'HearingChannel',
-          parent_category: 'byVideo',
-          active_flag: 'Y',
-          child_nodes: null,
-        },
-      ],
-    },
-    {
-      key: 'notAttending',
-      value_en: 'Not attending',
-      value_cy: '',
-      hint_text_en: 'not attending',
-      hint_text_cy: '',
-      lov_order: 5,
-      parent_key: null,
-      category_key: 'HearingChannel',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-    },
-  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -184,24 +24,173 @@ describe('ParticipantAttendenceAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                partyChannels: PARTY_CHANNELS,
+                partyChannels: partyChannelsRefData,
+                partySubChannels: partySubChannelsRefData
               },
             },
           },
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new ParticipantAttendenceAnswerConverter(router);
   });
 
   it('should transform hearing stage', () => {
     const STATE: State = initialState.hearings;
-    const result$ = converter.transformAnswer(of(STATE));
-    const room = 'Jane Smith - In person<br>DWP - By video';
+    const result$ = converter.transformAnswer(of(STATE), 0);
+    const room = 'Jane Smith - In person';
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);
   });
 
+  it('should transform hearing stage with error', () => {
+    const STATE: State = {
+      hearingList: null,
+      hearingValues: {
+        serviceHearingValuesModel: {
+          hmctsServiceID: 'BBA3',
+          hmctsInternalCaseName: 'Jane vs DWP',
+          publicCaseName: 'Jane vs DWP',
+          autoListFlag: false,
+          hearingType: 'Final',
+          hearingChannels: [],
+          caseCategories: null,
+          caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
+          caserestrictedFlag: false,
+          externalCaseReference: '',
+          caseManagementLocationCode: '196538',
+          caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+          hearingWindow: {
+            dateRangeStart: '2022-11-23T09:00:00.000Z',
+            dateRangeEnd: '2022-11-30T09:00:00.000Z',
+            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+          },
+          duration: 45,
+          hearingPriorityType: 'standard',
+          numberOfPhysicalAttendees: 2,
+          hearingInWelshFlag: false,
+          hearingLocations: null,
+          caseAdditionalSecurityFlag: false,
+          facilitiesRequired: [],
+          listingComments: '',
+          hearingRequester: '',
+          privateHearingRequiredFlag: false,
+          caseInterpreterRequiredFlag: false,
+          leadJudgeContractType: '',
+          judiciary: null,
+          hearingIsLinkedFlag: false,
+          panelRequirements: null,
+          parties: [
+            {
+              partyID: 'P1',
+              partyType: PartyType.IND,
+              partyRole: 'appellant',
+              partyName: null,
+              individualDetails: {
+                title: 'Mrs',
+                firstName: 'Jane',
+                lastName: 'Smith',
+                preferredHearingChannel: 'inPerson',
+              },
+              unavailabilityRanges: [
+                {
+                  unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                  unavailableToDate: '2021-12-31T09:00:00.000Z',
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
+            },
+            {
+              partyID: 'P2',
+              partyType: PartyType.ORG,
+              partyRole: 'claimant',
+              partyName: 'DWP',
+              individualDetails: {
+                title: null,
+                firstName: 'DWP',
+                lastName: null,
+                preferredHearingChannel: 'inPerson',
+              },
+              organisationDetails: {
+                name: 'DWP',
+                organisationType: 'GOV',
+                cftOrganisationID: 'O100000'
+              },
+              unavailabilityRanges: [
+                {
+                  unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                  unavailableToDate: '2021-12-31T09:00:00.000Z',
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
+            }
+          ],
+          caseFlags: null,
+          screenFlow: null,
+          vocabulary: null
+        }
+      },
+      hearingRequestToCompare: null,
+      hearingRequest: {
+        hearingRequestMainModel: {
+          requestDetails: null,
+          hearingResponse: {
+            listAssistTransactionID: '',
+            responseVersion: 1,
+            receivedDateTime: '2021-11-30T09:00:00.000Z',
+            laCaseStatus: LaCaseStatus.PENDING_RELISTING,
+            listingStatus: ListingStatus.FIXED,
+            hearingCancellationReason: '',
+            hearingDaySchedule: [{
+              hearingStartDateTime: '2022-12-12T09:00:00.000Z',
+              hearingEndDateTime: '2022-12-12T16:00:00.000Z',
+              listAssistSessionID: '',
+              hearingVenueId: '815833',
+              hearingRoomId: 'room 3',
+              hearingJudgeId: 'p1000002',
+              panelMemberIds: ['p1000001'],
+              attendees: [
+                {
+                  partyID: 'P1',
+                  hearingSubChannel: 'invalidChannel',
+                  partyName: null,
+                  partyType: PartyType.IND,
+                  partyRole: 'appellant',
+                  individualDetails: {
+                    firstName: 'Jane',
+                    lastName: 'Smith',
+                    preferredHearingChannel: 'invalidChannel',
+                  }
+                },
+                {
+                  partyID: 'P2',
+                  hearingSubChannel: 'byVideo',
+                  partyName: 'DWP',
+                  partyType: PartyType.ORG,
+                  partyRole: 'claimant',
+                  individualDetails: {
+                    firstName: 'DWP',
+                    lastName: null,
+                    preferredHearingChannel: 'byVideo',
+                  }
+                },
+              ],
+            }],
+          },
+          hearingDetails: null,
+          caseDetails: null,
+          partyDetails: null
+        }
+      },
+      hearingConditions: null,
+      hearingActuals: null,
+      hearingLinks: null
+    };
+    const result$ = converter.transformAnswer(of(STATE), 0);
+    const room = 'Error: P1 - Error: invalidChannel';
+    const expected = cold('(b|)', { b: room });
+    expect(result$).toBeObservable(expected);
+  });
 });

@@ -1,0 +1,45 @@
+{
+  "linkedCases": [
+    {
+      "caseNameHmctsInternal": "Smith vs Peterson",
+      "caseReference": "1234123412341234",
+      "ccdCaseType": "benefit",
+      "ccdJurisdiction": "SSCS",
+      "state": "withDwp",
+      "linkDetails": [
+        {
+          "createdDateTime": "2022-02-04T15:00:00.000",
+          "reasons": [
+            {
+              "reasonCode": "CLRC016",
+              "OtherDescription": ""
+            },
+            {
+              "reasonCode": "CLRC017",
+              "OtherDescription": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "caseNameHmctsInternal": "Lysiak vs Barlass",
+      "caseReference": "9231123412341234",
+      "ccdCaseType": "benefit",
+      "ccdJurisdiction": "SSCS",
+      "state": "withDwp",
+      "linkDetails": [
+        {
+          "createdDateTime": "2021-12-04T15:00:00.000",
+          "reasons": [
+            {
+              "reasonCode": "CLRC010",
+              "OtherDescription": "Judge has an interest"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "hasMoreRecords": "False"
+}

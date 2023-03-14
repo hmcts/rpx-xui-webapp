@@ -64,6 +64,7 @@ export const SERVICES_PAYMENTS_URL = 'services.payments';
 export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
 
 export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices'
+export const WA_SUPPORTED_SERVICE_CASETYPES = 'waSupportedServiceandCaseTypes';
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 export const SERVICES_PRD_LOCATION_API = 'services.prd.locationApi';
@@ -114,6 +115,7 @@ export const FEATURE_SUBSTANTIVE_ROLE_ENABLED = 'substantiveRoleEnabled';
 export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
+export const FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED = 'updatedTaskPermissionsEnabled';
 
 export const HELMET = 'helmet';
 

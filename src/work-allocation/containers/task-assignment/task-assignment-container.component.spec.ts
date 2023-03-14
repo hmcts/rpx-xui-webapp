@@ -3,15 +3,14 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
@@ -29,7 +28,7 @@ import { TaskAssignmentContainerComponent } from './task-assignment-container.co
     <exui-task-container-assignment></exui-task-container-assignment>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentContainerComponent) public appComponentRef: TaskAssignmentContainerComponent;
+  @ViewChild(TaskAssignmentContainerComponent, {static: true}) public appComponentRef: TaskAssignmentContainerComponent;
   @Input() public tasks: Task[];
 }
 
@@ -55,13 +54,13 @@ describe('TaskAssignmentContainerComponent2', () => {
   };
   const mockTasks = getMockTasks();
   const mockWorkAllocationService = {
-    assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
+    assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
   };
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [
         TaskAssignmentContainerComponent,
@@ -106,8 +105,8 @@ describe('TaskAssignmentContainerComponent2', () => {
                 taskId: 'task1111111'
               }
             },
-            params: Observable.of({task: mockTasks[0]}),
-            paramMap: Observable.of({selectedPerson: SELECTED_PERSON})
+            params: of({task: mockTasks[0]}),
+            paramMap: of({selectedPerson: SELECTED_PERSON})
           }
         },
         {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},

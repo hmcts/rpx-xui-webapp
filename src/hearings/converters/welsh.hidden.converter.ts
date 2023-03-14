@@ -20,7 +20,7 @@ export class WelshHiddenConverter implements HiddenConverter {
       const locations$: Observable<LocationByEPIMMSModel[]> = this.locationsDataService.getLocationById(locationIds);
       return locations$.pipe(map(
         locations => {
-          return !locations.some(location => location.region === 'Wales');
+          return !locations.some(location => location.region_id === '7');
         })
       );
     }));

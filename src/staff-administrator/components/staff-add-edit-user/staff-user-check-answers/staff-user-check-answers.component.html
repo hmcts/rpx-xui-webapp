@@ -6,7 +6,7 @@
             <dt class="govuk-summary-list__key">Name</dt>
             <dd class="govuk-summary-list__value">{{firstName}} {{lastName}}</dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="firstName">
                 Change<span class="govuk-visually-hidden"> name </span>
               </a>
             </dd>
@@ -18,7 +18,7 @@
             <div class="govuk-summary-list__key">Email address</div>
             <div class="govuk-summary-list__value">{{email}}</div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="email">
                 Change<span class="govuk-visually-hidden"> email </span>
               </a>
             </div>
@@ -36,7 +36,7 @@
             </div>
             <div class="govuk-summary-list__actions">
               <div routerLink="/staff/add-user">
-                <a class="govuk-link" routerLink="/staff/add-user">
+                <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="user-services">
                   Change<span class="govuk-visually-hidden"> services </span>
                 </a>
               </div>
@@ -54,7 +54,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="region">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -66,7 +66,7 @@
             <div class="govuk-summary-list__key">Primary location</div>
             <div class="govuk-summary-list__value">{{primaryLocations.site_name}}</div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="primaryLocation">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -83,7 +83,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="additionalLocations">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -100,7 +100,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="userType">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -117,7 +117,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="roles">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -134,7 +134,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="jobTitle">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>
@@ -151,7 +151,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="/staff/add-user">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="user-skills">
                 Change<span class="govuk-visually-hidden"> name</span>
               </a>
             </div>

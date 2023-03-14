@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BookingCheckType, FilterConfig, FilterFieldOption, FilterService, GenericFilterComponent, GroupOptions, LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib';
@@ -13,7 +13,7 @@ import { StaffFilterOption } from '../../../models/staff-filter-option.model';
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit {
+export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   // @Input() public formGroup!: FormGroup;
   public formId: string = 'staff-add-edit-user';
   public staffFilterOptions: {
@@ -312,6 +312,20 @@ export class StaffAddEditUserFormComponent implements OnInit {
 
       this.filterConfig.preSelectedNestedCheckbox = copyUser.skills.map(skill => skill.skill_id);
     }
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+  }
+
+  public fragmentFocus(): void {
+    this.activatedRoute.fragment.subscribe(frag => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
+        element.focus();
+      }
+    });
   }
 
   private getSelectedLocation(allLocations: LocationByEPIMMSModel[],selectedLocations: any) {

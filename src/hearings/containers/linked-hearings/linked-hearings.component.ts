@@ -27,6 +27,8 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases(
+      {caseReference: this.caseId, hearingId: this.hearingId }));
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesWithHearings(
       {caseReference: this.caseId, caseName: this.caseName, hearingId: this.hearingId }));
   }

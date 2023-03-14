@@ -71,7 +71,7 @@ export enum EXUIDisplayStatusEnum {
 export enum HMCLocationType {
   COURT = 'court',
   CLUSTER = 'cluster',
-  REGION = 'region',
+  REGION = 'regionId',
 }
 
 export enum UnavailabilityType {
@@ -107,6 +107,11 @@ export enum RadioOptions {
   CHOOSE_DATE_RANGE = 'Choose a date range'
 }
 
+export enum RadioOptionType {
+  YES = 'yes',
+  NO = 'no',
+}
+
 export enum DOW {
   Monday = 'Monday',
   Tuesday = 'Tuesday',
@@ -126,6 +131,7 @@ export enum DOWUnavailabilityType {
 export enum HearingCategory {
   HearingPriority = 'HearingPriority',
   HearingChannel = 'HearingChannel',
+  HearingSubChannel = 'HearingSubChannel',
   HearingType = 'HearingType',
   CaseType = 'caseType',
   Facilities = 'Facilities',
@@ -283,6 +289,7 @@ export enum AnswerSource {
   STAGE,
   HEARING_RESPONSE_STATUS,
   HOW_ATTENDANT,
+  HOW_PARTICIPANTS_ATTEND,
   IS_PAPER_HEARING,
   PARTICIPANT_ATTENDENCE,
   ATTENDANT_PERSON_AMOUNT,
@@ -320,6 +327,7 @@ export enum IsHiddenSource {
   JUDGE_TYPES,
   JUDGE_NAME,
   LISTED,
+  LISTED_HEARING_VIEWER,
   NOT_LISTED
 }
 

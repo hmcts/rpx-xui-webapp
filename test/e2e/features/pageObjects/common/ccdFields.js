@@ -25,10 +25,11 @@ class CcdFields {
   async docUpload(){
     var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
     await this.docUploadField.sendKeys(fileToUpload);
-
+    await browser.sleep(10000);
     await BrowserWaits.waitForCondition(async () => {
       let isUploadDone = await this.uploadDone.isPresent();
       console.log("file upload status : " + isUploadDone);
+      await browser.sleep(5000);
       return !isUploadDone;
     });
   }

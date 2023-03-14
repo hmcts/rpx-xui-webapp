@@ -7,8 +7,6 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
-import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
-import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -23,6 +21,8 @@ import {
   HearingListingStatusEnum,
   HMCStatus
 } from '../../../hearings/models/hearings.enum';
+import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
+import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
 
@@ -436,7 +436,7 @@ describe('CaseHearingsComponent', () => {
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     component = fixture.componentInstance;
     // @ts-ignore
     mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));
@@ -496,6 +496,31 @@ describe('CaseHearingsComponent', () => {
     expect(component.hearingsActions.length).toBe(4);
     expect(component.hearingsActions.includes(Actions.CREATE)).toBeTruthy();
     expect(component.hasRequestAction).toBeTruthy();
+  });
+
+  it('should set hearings actions on OGD/DWP user', () => {
+    const USER_DETAILS = {
+      sessionTimeout: {
+        idleModalDisplayTime: 12,
+        totalIdleTime: 10,
+      },
+      canShareCases: true,
+      userInfo: {
+        id: '123',
+        forename: 'test',
+        surname: 'test',
+        email: 'test@test.com',
+        active: 'true',
+        roles: ['caseworker-sscs'],
+      }
+    };
+
+    spyStore.pipe.and.returnValue(of(USER_DETAILS));
+    // @ts-ignore
+    mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.Ogd));
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.isOgdRole).toBeTruthy();
   });
 
   it('should getHearsList by EXUISectionStatus', (done) => {
@@ -567,9 +592,9 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should have the cancel and passed section status hearings with Cancel listing state and no hearing date assigned in creation date order', (done) => {
-    component.pastAndCancelledHearings$.subscribe(hearing => {
-      expect(hearing[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
-      expect(hearing[1].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
+    component.pastAndCancelledHearings$.subscribe(hearings => {
+      expect(hearings[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
+      expect(hearings[1].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
       done();
     });
   });

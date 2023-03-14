@@ -1,16 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs/internal/observable/of';
-
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
+import { of } from 'rxjs/internal/observable/of';
 import { CaseDetailsComponent } from './case-details.component';
+
 
 describe('CaseDetailsComponent', () => {
   let component: CaseDetailsComponent;
   let fixture: ComponentFixture<CaseDetailsComponent>;
   const storeMock = jasmine.createSpyObj('mockStore', ['pipe']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
       ],
@@ -37,7 +37,6 @@ describe('CaseDetailsComponent', () => {
   it('should assign case id', () => {
     expect(component.caseId).toEqual('dummy');
   });
-
   it('should unsubscribe', () => {
     spyOn(component.$caseIdSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();

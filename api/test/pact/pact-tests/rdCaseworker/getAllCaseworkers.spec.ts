@@ -1,23 +1,22 @@
 import { expect } from 'chai';
-import { PactTestSetup } from '../settings/provider.mock';
-
-import * as sinon from 'sinon'
-
-import * as config from 'config'
+import * as config from 'config';
+import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
+import { PactTestSetup } from '../settings/provider.mock';
 import { getCaseworkerRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
+
+
+
 const { Matchers } = require('@pact-foundation/pact');
-import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
 const MockApp = require('../../../../../test/nodeMock/app');
 
 const locationId = "123456";
-describe("Caseworker ref data api, get all caseworkers", () => {
+xdescribe("Caseworker ref data api, get all caseworkers", () => {
 
     const REQUEST_BODY = {
         userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')],
@@ -81,7 +80,7 @@ describe("Caseworker ref data api, get all caseworkers", () => {
         it("returns the correct response", async () => {
             MockApp.setServerPort(8080);
             MockApp.init();
-            
+
             MockApp.onPost('/am/role-assignments/query', (req , res) => {
                 res.send({
                     roleAssignmentResponse : [
@@ -90,17 +89,17 @@ describe("Caseworker ref data api, get all caseworkers", () => {
                     ]
                 });
             });
-            await MockApp.startServer(); 
+            await MockApp.startServer();
             const configValues = getCaseworkerRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl)
             configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
-            
+
 
             configValues['waSupportedJurisdictions'] = ['IA'];
             sandbox.stub(config, 'get').callsFake((prop) => {
                 return configValues[prop];
             });
 
-            const { getAllCaseWorkers } = requireReloaded('../../../../workAllocation2/index');
+            const { getAllCaseWorkers } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers: {

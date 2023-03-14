@@ -1,0 +1,58 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <ng-container *ngIf="isAnyError()">
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li *ngFor="let validationError of searchValidationErrors">
+            <a href="search#{{validationError.documentHRef}}">{{validationError.errorMessage}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </ng-container>
+  <exui-page-wrapper [title]="'Search cases'">
+    <form [formGroup]="formGroup" (submit)="onSubmit()">
+      <div class="govuk-form-group">
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Using partial information to search for a case
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">You can use an asterisk (*) to search for:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>one or more unknown characters in any part of a word, for example 'J* Smith'</li>
+              <li>a missing word, for example 'John *'</li>
+            </ul>
+            <p class="govuk-body govuk-!-margin-top-7">You can only do this if you're searching for any of the following:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>16-digit case reference</li>
+              <li>other reference</li>
+              <li>name</li>
+              <li>first line of address</li>
+            </ul>
+          </div>
+        </details>
+        <p class="govuk-body">Search for at least one of the following to find a case:</p>
+        <xuilib-gov-uk-input [config]="caseRefConfig" [group]="formGroup" [errorMessage]="caseRefErrorMessage"></xuilib-gov-uk-input>
+        <xuilib-gov-uk-input [config]="otherRefConfig" [group]="formGroup"></xuilib-gov-uk-input>
+        <xuilib-gov-uk-input [config]="fullNameConfig" [group]="formGroup"></xuilib-gov-uk-input>
+        <xuilib-gov-uk-input [config]="addressLine1Config" [group]="formGroup"></xuilib-gov-uk-input>
+        <xuilib-gov-uk-input [config]="postcodeConfig" [group]="formGroup" [errorMessage]="postcodeErrorMessage"></xuilib-gov-uk-input>
+        <xuilib-gov-uk-input [config]="emailConfig" [group]="formGroup" [errorMessage]="emailErrorMessage"></xuilib-gov-uk-input>
+        <xuilib-gov-uk-date [config]="dateOfBirthConfig" [formGroup]="formGroup" [errorMessage]="dateOfBirthErrorMessage" [isOptional]="true"></xuilib-gov-uk-date>
+        <xuilib-gov-uk-date [config]="dateOfDeathConfig" [formGroup]="formGroup" [errorMessage]="dateOfDeathErrorMessage" [isOptional]="true"></xuilib-gov-uk-date>
+        <xuilib-gov-select [config]="servicesConfig" [group]="formGroup" [items]="services"></xuilib-gov-select>
+        <button class="govuk-button govuk-!-margin-top-7" type="submit">
+          Search
+        </button>
+      </div>
+    </form>
+  </exui-page-wrapper>
+</div>
+<exui-app-footer></exui-app-footer>

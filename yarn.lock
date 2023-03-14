@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-add-translations-page-validation":
-  version "6.10.7-case-flags-add-translations-page-validation"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-add-translations-page-validation.tgz#b19d95830e8514d4fcec486f7ca4f2f337bf8375"
-  integrity sha512-msN9pTEtU3sZgQrJymm8NfMdfDAU7HyinU1WIJG+ua9FmeuoFJTW80FaYVa37Mf6K8v3MK+hNHEgYGdi7i9Nsg==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-manage-support-first-step-text-changes":
+  version "6.10.7-manage-support-first-step-text-changes"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-manage-support-first-step-text-changes.tgz#aa65be32cea66ed01bd859c65ce60d364c08f130"
+  integrity sha512-pF/KTfM9cQ05DSy22hUrRKT5nDzmYMpg8T68gxb4LuQrVUKqAmGK/bLvm+9yRXozvj6A2Ti5WBDtKAkx1dR/0g==
   dependencies:
     tslib "^2.0.0"
 

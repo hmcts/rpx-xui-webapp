@@ -1,20 +1,20 @@
-import { ALL_LOCATIONS } from '../constants/locations';
-import { By } from '@angular/platform-browser';
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { LocationDataService } from '../../services';
-import { MyCasesFilterComponent } from './my-cases-filter.component';
-import { of } from 'rxjs/internal/observable/of';
+import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { of } from 'rxjs/internal/observable/of';
+import { LocationDataService } from '../../services';
+import { ALL_LOCATIONS } from '../constants/locations';
+import { MyCasesFilterComponent } from './my-cases-filter.component';
 
 @Component({
   template: `<exui-my-cases-filter></exui-my-cases-filter>`
 })
 class WrapperComponent {
-  @ViewChild(MyCasesFilterComponent) public appComponentRef: MyCasesFilterComponent;
+  @ViewChild(MyCasesFilterComponent, {static: true}) public appComponentRef: MyCasesFilterComponent;
 }
 
 describe('MyCasesFilterComponent', () => {
@@ -53,7 +53,7 @@ describe('MyCasesFilterComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
     fixture.detectChanges();
   });

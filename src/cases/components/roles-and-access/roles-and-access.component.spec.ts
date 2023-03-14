@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AbstractAppConfig, AlertService, AuthService, CaseNotifier, CasesService, CaseUIToolkitModule, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, AlertService, AuthService, CaseNotifier, CasesService, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '..';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
@@ -12,6 +12,7 @@ import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/mode
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessComponent } from './roles-and-access.component';
+import 'mocha';
 
 describe('RolesAndAccessComponent', () => {
   let component: RolesAndAccessComponent;
@@ -22,8 +23,7 @@ describe('RolesAndAccessComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule,
-        CaseUIToolkitModule],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule],
       declarations: [
         RolesAndAccessComponent,
         CaseRolesTableComponent,
@@ -62,6 +62,17 @@ describe('RolesAndAccessComponent', () => {
       triggers: [],
       events: [],
       metadataFields: []
+    };
+    component.waServiceConfig = {
+      configurations: [
+        {
+          caseTypes: [
+            'TestAddressBookCase'
+          ],
+          releaseVersion: '3.5',
+          serviceName: 'TEST'
+        }
+      ]
     };
     component.showAllocateRoleLink = false;
     fixture.detectChanges();
@@ -158,6 +169,7 @@ describe('RolesAndAccessComponent', () => {
     }];
     component.caseworkers = mockCaseworkers;
     component.legalOpsRoles = mockLegalOpsRoles;
+    component.waServiceConfig = null;
     component.ngOnChanges();
     expect(component.namedLegalRoles).toBeDefined();
     expect(component.namedLegalRoles[0].name).toBe('A Test');
@@ -165,6 +177,59 @@ describe('RolesAndAccessComponent', () => {
     expect(component.namedLegalRoles[2].name).toBe('C Test');
     expect(component.namedLegalRoles[3].name).toBe('D Test');
   });
+
+  it('should set names for unnamed ctsc roles', () => {
+    const mockCTSCRoles: CaseRole[] = [{
+      id: '1',
+      name: undefined,
+      roleCategory: RoleCategory.CTSC,
+      location: null,
+      start: null,
+      end: null,
+      actorId: '12341',
+      actions: [],
+      email: null
+    },
+    {
+      id: '2',
+      name: undefined,
+      roleCategory: RoleCategory.CTSC,
+      location: null,
+      start: null,
+      end: null,
+      actorId: '12342',
+      actions: [],
+      email: null
+    },
+    {
+      id: '3',
+      name: undefined,
+      roleCategory: RoleCategory.ADMIN,
+      location: null,
+      start: null,
+      end: null,
+      actorId: '12343',
+      actions: [],
+      email: null
+    },
+    {
+      id: '4',
+      name: undefined,
+      roleCategory: RoleCategory.CTSC,
+      location: null,
+      start: null,
+      end: null,
+      actorId: '12344',
+      actions: [],
+      email: null
+    }];
+    component.caseworkers = mockCaseworkers;
+    component.ctscRoles = mockCTSCRoles;
+    component.ngOnChanges();
+    expect(component.namedCTSCRoles).toBeDefined();
+    expect(component.namedCTSCRoles[0].name).toBe('A Test');
+  });
+
 
   it('should set names for unnamed exclusions', () => {
     const mockExclusions: RoleExclusion[] = [{
@@ -206,9 +271,30 @@ describe('RolesAndAccessComponent', () => {
       userType: RoleCategory.LEGAL_OPERATIONS,
       notes: null,
       added: null
+    },
+    {
+      id: '5',
+      name: undefined,
+      actorId: '12344',
+      email: null,
+      type: 'test',
+      userType: RoleCategory.CTSC,
+      notes: null,
+      added: null
+    },
+    {
+      id: '6',
+      name: undefined,
+      actorId: '12344',
+      email: null,
+      type: 'test',
+      userType: RoleCategory.JUDICIAL,
+      notes: null,
+      added: null
     }];
     component.caseworkers = mockCaseworkers;
     component.exclusions = mockExclusions;
+    component.caseDetails.case_type.jurisdiction = null;
     component.ngOnChanges();
     expect(component.namedExclusions).toBeDefined();
     expect(component.namedExclusions[0].name).toBe('A Test');
@@ -217,3 +303,7 @@ describe('RolesAndAccessComponent', () => {
     expect(component.namedExclusions[3].name).toBe('D Test');
   });
 });
+function waitForAsync(arg0: () => void): Mocha.Func {
+  throw new Error('Function not implemented.');
+}
+

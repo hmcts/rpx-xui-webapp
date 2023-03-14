@@ -326,7 +326,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.linkedCases = linkedCases;
     component.getHearingsAvailable();
     expect(component.isHearingsAvailable).toEqual(false);
-    
+
     component.linkedCases = linkedCasesWithHearings;
     component.getHearingsAvailable();
     expect(component.isHearingsAvailable).toEqual(true);

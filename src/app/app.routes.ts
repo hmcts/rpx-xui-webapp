@@ -1,8 +1,8 @@
 import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
-import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
-import { BookingSystemErrorComponent } from 'src/booking/containers/utils/booking-system-error/booking-system-error.component';
-import { MyTasksComponent } from 'src/work-allocation/containers';
+import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
+import { BookingSystemErrorComponent } from '../booking/containers/utils/booking-system-error/booking-system-error.component';
+import { MyTasksComponent } from '../work-allocation/containers';
 import {
   AccessibilityComponent,
   ApplicationRoutingComponent,

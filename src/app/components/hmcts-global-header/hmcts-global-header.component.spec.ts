@@ -7,7 +7,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { UserService } from 'src/app/services/user/user.service';
+import { UserService } from '../../../app/services/user/user.service';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../../noc/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';

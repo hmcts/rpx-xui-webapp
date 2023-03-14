@@ -12,6 +12,7 @@ export class StaffUserListComponent implements OnInit {
   public pagination: Pagination;
   public currentPageNumber?: number = 1;
   public pageTotalSize?: number;
+  public noResultsFoundText = 'No results found';
   @Output() public pageChange = new EventEmitter();
   @Output() public paginationEvent = new EventEmitter<number>();
 

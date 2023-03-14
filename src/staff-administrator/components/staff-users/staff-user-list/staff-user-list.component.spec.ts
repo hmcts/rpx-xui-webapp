@@ -69,6 +69,6 @@ describe('StaffUserListComponent', () => {
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('#user-list-no-results'));
     expect(element).toBeTruthy();
-    expect(element.nativeElement.textContent).toContain('No results found');
+    expect(element.nativeElement.textContent).toContain(component.noResultsFoundText);
   });
 });

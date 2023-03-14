@@ -14,6 +14,7 @@ export class StaffUser {
   public task_supervisor: 'Y' | 'N';
   public case_allocator: 'Y' | 'N';
   public staff_admin: 'Y' | 'N';
+
   public idam_roles: string[];
 
   public role: {

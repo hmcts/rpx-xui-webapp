@@ -34,10 +34,8 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
     { key: 'task-supervisor', label: 'Task Supervisor' },
     { key: 'staff-administrator', label: 'Staff Administrator' },
   ];
-  public locations: StaffFilterOption[] = [{key: 'location-x', label: 'Location X'}, {key: 'location-y', label: 'Location Y'}, {key: 'location-z', label: 'Location Z'}];
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
-  public previousUrl: string;
   private filterStreamSubscription: Subscription;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
@@ -46,14 +44,10 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private filterService: FilterService,
-  ) {
-    this.formId = activatedRoute.snapshot.data.formId;
+  ) {}
 
-    const currentNavigation = this.router.getCurrentNavigation();
-    if (currentNavigation) {
-      this.previousUrl = currentNavigation.previousNavigation?.finalUrl.toString();
-    }
-
+  public ngOnInit() {
+    this.formId = this.activatedRoute.snapshot.data.formId;
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
@@ -61,9 +55,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
       services: this.activatedRoute.snapshot.data.services,
       locations: this.activatedRoute.snapshot.data.locations
     };
-  }
 
-  public ngOnInit() {
     this.initFormConfig();
     this.filterStreamSubscription = this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
@@ -216,8 +208,8 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
           title: 'Additional locations',
           titleHint: '(optional)',
           locationTitle: 'Enter a location name',
+          options: [],
           enableAddButton: true,
-          options: [...this.locations],
           minSelected: 0,
           maxSelected: 0,
           maxWidth480px: true,

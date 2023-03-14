@@ -27,6 +27,7 @@ describe('StaffUserDetailsComponent', () => {
   let location: Location;
   let router: jasmine.SpyObj<Router>;
   let testStaffUser: StaffUser;
+  const caseWorkerId = '123456';
 
   beforeEach(waitForAsync(() => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
@@ -85,7 +86,8 @@ describe('StaffUserDetailsComponent', () => {
       imports: [HttpClientTestingModule,
         RouterTestingModule.withRoutes([
           { path: 'service-down', component: StubComponent },
-          { path: 'staff/update-user', component: StubComponent },
+          { path: 'staff/user-details/:id/update', component: StubComponent },
+          { path: 'staff/user-details/:id/copy', component: StubComponent },
           { path: 'staff/add-user', component: StubComponent }
         ])
       ],
@@ -95,10 +97,13 @@ describe('StaffUserDetailsComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
+              params: {
+                id: caseWorkerId
+              },
               data: {
                 staffUserDetails: {
                   userDetails: testStaffUser
-                }
+                },
               }
             },
           },
@@ -175,7 +180,7 @@ describe('StaffUserDetailsComponent', () => {
   it('should set filterSettings on sessionStorage on FILTER_ID as key and navigate' +
     'to DESTINATION on setDataForGenericFilterAndNavigate', fakeAsync(() => {
     const FILTER_ID = 'FILTER_ID';
-    const DESTINATION = '/staff/update-user';
+    const DESTINATION = `/staff/user-details/${caseWorkerId}/update`;
     spyOn(router, 'navigateByUrl').and.callThrough();
 
     component.setDataForGenericFilterAndNavigate(FILTER_ID, DESTINATION);
@@ -191,7 +196,8 @@ describe('StaffUserDetailsComponent', () => {
     const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
     updateUserButton.triggerEventHandler('click', null);
     expect(component.onUpdateUser).toHaveBeenCalled();
-    expect(component.setDataForGenericFilterAndNavigate).toHaveBeenCalledWith(StaffAddEditUserFormId.UpdateUser, '/staff/update-user');
+    expect(component.setDataForGenericFilterAndNavigate)
+      .toHaveBeenCalledWith(StaffAddEditUserFormId.UpdateUser, `/staff/user-details/${caseWorkerId}/update`);
   }));
 
   it('should call onCopyUser which in turn should call setDataForGenericFilterAndNavigate', fakeAsync(() => {
@@ -200,6 +206,7 @@ describe('StaffUserDetailsComponent', () => {
     const copyUserButton = fixture.debugElement.query(By.css('#copyUserButton'));
     copyUserButton.triggerEventHandler('click', null);
     expect(component.onCopyUser).toHaveBeenCalled();
-    expect(component.setDataForGenericFilterAndNavigate).toHaveBeenCalledWith(StaffAddEditUserFormId.AddUser, '/staff/add-user');
+    expect(component.setDataForGenericFilterAndNavigate)
+      .toHaveBeenCalledWith(StaffAddEditUserFormId.CopyUser, `/staff/user-details/${caseWorkerId}/copy`);
   }));
 });

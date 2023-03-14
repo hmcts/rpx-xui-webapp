@@ -22,7 +22,6 @@ export class StaffUserDetailsComponent {
     private staffDataAccessService: StaffDataAccessService
   ) {
     this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails;
-
     if (!this.userDetails) {
       this.router.navigateByUrl('/staff');
     }
@@ -57,7 +56,8 @@ export class StaffUserDetailsComponent {
   }
 
   public onUpdateUser() {
-    this.setDataForGenericFilterAndNavigate(StaffAddEditUserFormId.UpdateUser, '/staff/update-user');
+    this.setDataForGenericFilterAndNavigate(StaffAddEditUserFormId.UpdateUser,
+      `/staff/user-details/${this.route.snapshot.params.id}/update`);
   }
 
   public onCopyUser() {
@@ -65,7 +65,8 @@ export class StaffUserDetailsComponent {
     this.userDetails.last_name = '';
     this.userDetails.email_id = '';
 
-    this.setDataForGenericFilterAndNavigate(StaffAddEditUserFormId.AddUser, '/staff/add-user');
+    this.setDataForGenericFilterAndNavigate(StaffAddEditUserFormId.CopyUser,
+      `/staff/user-details/${this.route.snapshot.params.id}/copy`);
   }
 
   public setDataForGenericFilterAndNavigate(filterId: string, destination: string) {

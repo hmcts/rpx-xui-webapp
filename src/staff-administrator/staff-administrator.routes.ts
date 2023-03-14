@@ -33,24 +33,34 @@ export const ROUTES: Routes = [
       { path: '', component: StaffUsersComponent },
       {
         path: 'user-details/:id',
-        component: StaffUserDetailsComponent,
         resolve: {
           staffUserDetails: StaffUserDetailsResolverService
-        }
+        },
+        children: [
+          { path: '', component: StaffUserDetailsComponent },
+          {
+            path: 'update',
+            data: { formId: StaffAddEditUserFormId.UpdateUser },
+            children: [
+              { path: '', component: StaffEditUserContainerComponent },
+              { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
+            ]
+          },
+          {
+            path: 'copy',
+            data: { formId: StaffAddEditUserFormId.CopyUser },
+            children: [
+              { path: '', component: StaffAddUserComponent },
+              { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
+            ]
+          }
+        ],
       },
       {
         path: 'add-user',
         data: { formId: StaffAddEditUserFormId.AddUser },
         children: [
           { path: '', component: StaffAddUserComponent },
-          { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
-        ]
-      },
-      {
-        path: 'update-user',
-        data: { formId: StaffAddEditUserFormId.UpdateUser },
-        children: [
-          { path: '', component: StaffEditUserContainerComponent },
           { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
         ]
       }

@@ -1,54 +1,42 @@
-export interface StaffDataUser {
-  id?: number;
-  firstName?: string;
-  lastName?: string;
-  userCategory?: string;
-  userType?: string;
-  jobTitle?: string[];
-  locations: string[];
-  region: string;
-  services: string[];
-  suspended: boolean;
-  email?: string;
-  primaryLocation?: BaseLocation;
-  roles?: string[];
-  skills?: string[];
-  additionalLocations?: string[];
-  role?: StaffRole[];
-  primaryRole?: StaffRole;
-}
-
-export interface StaffDataAPI {
-  id?: number;
+export interface StaffUser {
+  email_id: string;
   first_name: string;
   last_name: string;
-  user_category: string;
-  user_type: string;
-  job_title: string[];
-  locations: string[];
-  region: string;
-  services: string[];
   suspended: boolean;
-  email_id: string;
-  base_location?: BaseLocation[];
-  roles?: string[];
-  skills?: string[];
-  work_area: WorkArea[];
-  primaryLocation?: BaseLocation;
-  additionalLocations?: string[]
-}
+  user_type: string;
 
-export interface WorkArea {
-  area_of_work: string;
-  service: string;
-}
+  task_supervisor: boolean;
+  case_allocator: boolean;
+  staff_admin: boolean;
+  idam_roles: string[];
+  up_idam_status: 'ACTIVE' | 'SUSPENDED' | 'PENDING';
 
-export interface BaseLocation {
-  location: string;
-  is_primary: boolean;
-}
+  roles: {
+    role_id: string,
+    role: string,
+    is_primary: boolean,
+    created_time?: Date,
+    last_updated_time?: Date,
+  }[];
 
-export interface StaffRole {
-  role: string;
-  is_primary: boolean;
+  skills: {
+    skill_id: number;
+    description: string;
+  }[];
+
+  services: {
+    service: string;
+    service_code: string;
+  }[];
+
+  base_locations: {
+    created_time?: Date,
+    last_updated_time?: Date,
+    location_id: number,
+    location: string,
+    is_primary: boolean
+  }[];
+
+  region: string;
+  region_id: number;
 }

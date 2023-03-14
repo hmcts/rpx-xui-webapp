@@ -28,7 +28,7 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Services</dt>
           <dd class="govuk-summary-list__value">
-            {{ userDetails.work_area | pluckAndJoin: 'area_of_work':', ' }}
+            {{ userDetails.services | pluckAndJoin: 'service':', ' }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
@@ -41,11 +41,31 @@
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
         <br>
-        <div class="govuk-summary-list__row" *ngFor="let location of userDetails.base_location; let i = index;">
-          <dt class="govuk-summary-list__key">{{ location.is_primary ? 'Primary location' : 'Additional locations' }}</dt>
-          <dd class="govuk-summary-list__value">{{ location.location }}</dd>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Primary location</dt>
+          <dd class="govuk-summary-list__value">
+            <span>
+              {{userDetails.primaryLocation.location}}
+            </span>
+          </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
+
+        <ng-container *ngIf="userDetails.additionalLocations.length">
+          <br>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Additional locations</dt>
+            <dd class="govuk-summary-list__value">
+              <div *ngFor="let location of userDetails.additionalLocations">
+                {{ location.location }}
+              </div>
+            </dd>
+            <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+          </div>
+        </ng-container>
+
+
         <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">User type</dt>
@@ -55,7 +75,9 @@
         <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Roles</dt>
-          <dd class="govuk-summary-list__value">{{ userDetails.role | pluckAndJoin: 'role':', '  }}</dd>
+          <dd class="govuk-summary-list__value">
+            {{ userDetails.roles | pluckAndJoin: 'role':', '  }}
+          </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
         <br>
@@ -68,11 +90,12 @@
             </span>
           </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
-        </div><br>
+        </div>
+        <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Status</dt>
           <dd class="govuk-summary-list__value">
-            <exui-staff-status [status]="userDetails.suspended === 'true'"></exui-staff-status>
+            <exui-staff-status [status]="userDetails.status"></exui-staff-status>
           </dd>
           <dd class="govuk-summary-list__actions">
           </dd>
@@ -85,7 +108,7 @@
         </button>
         <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
                 (click)="updateUserStatus()">
-          {{ userDetails.suspended === 'true' ? 'Restore' : 'Suspend' }}
+          {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
         </button>
         <button id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="onCopyUser()">
           Copy

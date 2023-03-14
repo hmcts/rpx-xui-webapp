@@ -1,17 +1,17 @@
 <ng-container [ngSwitch]="status">
-  <div *ngSwitchCase="'active'">
+  <div *ngSwitchCase="'ACTIVE'">
     <strong class="hmcts-badge hmcts-badge--green">
       ACTIVE
     </strong>
   </div>
 
-  <div *ngSwitchCase="'suspended'">
+  <div *ngSwitchCase="'SUSPENDED'">
     <strong class="hmcts-badge hmcts-badge--red">
       SUSPENDED
     </strong>
   </div>
 
-  <div *ngSwitchCase="'pending'">
+  <div *ngSwitchCase="'PENDING'">
     <strong class="hmcts-badge hmcts-badge--yellow">
       PENDING
     </strong>

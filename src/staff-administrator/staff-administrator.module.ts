@@ -46,6 +46,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,
     StaffStatusComponent,
+    PluckAndJoinPipe,
+    StaffEditUserContainerComponent,
+    StaffStatusComponent,
     StaffSuspendedBannerComponent
   ],
   imports: [

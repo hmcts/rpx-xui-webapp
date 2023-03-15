@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { PERSON_ERROR_MESSAGE } from '../../../constants';
@@ -22,7 +22,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
   public person: Person;
   public subscription: Subscription;
   public personRole: PersonRole;
-  public services: string[];
+  public services: string;
   public assignedUser: string;
 
   constructor(private readonly store: Store<fromFeature.State>) {
@@ -36,7 +36,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
     this.personName = exclusion && exclusion.person ? this.getDisplayName(exclusion.person) : null;
     this.person = exclusion.person;
     this.personRole = exclusion.personRole;
-    this.services = [exclusion.jurisdiction];
+    this.services = exclusion.jurisdiction;
     this.assignedUser = exclusion.person ? exclusion.person.id : null;
   }
 

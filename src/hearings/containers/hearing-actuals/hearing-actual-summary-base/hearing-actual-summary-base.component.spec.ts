@@ -12,7 +12,8 @@ import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
-import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
+import { HearingActualSummaryBaseComponent } from './hearing-actual-summary-base.component';
+
 
 @Pipe({name: 'transformAnswer'})
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -28,9 +29,9 @@ export class MockHearingAnswersPipe implements PipeTransform {
 class NothingComponent {
 }
 
-describe('HearingActualAddEditSummaryComponent', () => {
-  let component: HearingActualAddEditSummaryComponent;
-  let fixture: ComponentFixture<HearingActualAddEditSummaryComponent>;
+describe('HearingActualSummaryBaseComponent', () => {
+  let component: HearingActualSummaryBaseComponent;
+  let fixture: ComponentFixture<HearingActualSummaryBaseComponent>;
   let store: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
@@ -487,7 +488,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe],
+      declarations: [HearingActualSummaryBaseComponent, ConvertToValuePipe, MockHearingAnswersPipe],
       imports: [RouterTestingModule.withRoutes(
         [
           {path: 'hearings/actuals/1000000/hearing-actual-summary', component: NothingComponent}
@@ -520,7 +521,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HearingActualAddEditSummaryComponent);
+    fixture = TestBed.createComponent(HearingActualSummaryBaseComponent);
     store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -583,15 +584,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     expect(description).toEqual('Initial');
   });
 
-  it('should submit hearing details', () => {
-    component.actualHearingDays = hearingActualsMainModel.hearingActuals.actualHearingDays;
-    const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.id = '1111222233334444';
-    component.hearingResult = HearingResult.COMPLETED;
-    component.onSubmitHearingDetails();
-    expect(component.submitted).toEqual(true);
-  });
-
   it('should check is errror bar handling', () => {
     const hearingActuals = _.cloneDeep(hearingActualsMainModel);
     hearingActuals.hearingActuals.actualHearingDays = [
@@ -606,69 +598,6 @@ describe('HearingActualAddEditSummaryComponent', () => {
     ];
     expect(component.isHearingActualsDaysAvailable('2021-03-12')).toBeTruthy();
     expect(component.isHearingActualsPartiesAvailable('2021-03-12')).toBeTruthy();
-  });
-
-
-  it('should fail submitting hearing details if hearing result is not selected', () => {
-    const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.hearingResult = '';
-    component.onSubmitHearingDetails();
-    expect(component.submitted).toEqual(true);
-    expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
-  });
-
-  it('should dispatach and update Hearing Actuals', () => {
-    const hearingDay = {
-      hearingDate: '2021-03-12',
-      hearingStartTime: '2021-03-12T09:00:00.000Z',
-      hearingEndTime: '2021-03-13T10:00:00.000Z',
-      notRequired: false,
-      pauseDateTimes: [],
-      actualDayParties: [
-        {
-          actualPartyId: '1',
-          individualDetails: {
-            firstName: 'Bob',
-            lastName: 'Jones',
-          },
-          actualOrganisationName: 'Company A',
-          didNotAttendFlag: false,
-          partyChannelSubType: 'inPerson',
-          partyRole: 'appellant',
-          representedParty: '',
-        },
-        {
-          actualPartyId: '2',
-          individualDetails: {
-            firstName: 'Mary',
-            lastName: 'Jones',
-          },
-          actualOrganisationName: 'Company B',
-          didNotAttendFlag: false,
-          partyChannelSubType: 'inPerson',
-          partyRole: 'claimant',
-          representedParty: '',
-        },
-        {
-          actualPartyId: '3',
-          individualDetails: {
-            firstName: 'James',
-            lastName: 'Gods',
-          },
-          actualOrganisationName: 'Solicitors A',
-          didNotAttendFlag: false,
-          partyChannelSubType: 'inPerson',
-          partyRole: 'interpreter',
-          representedParty: '1',
-        },
-      ],
-    };
-    const storeDispatchSpy = spyOn(store, 'dispatch');
-    spyOn(ActualHearingsUtils, 'mergeSingleHearingPartActuals');
-
-    component.changeWasThisHearingDayRequired(hearingDay);
-    expect(storeDispatchSpy).toHaveBeenCalledTimes(1);
-    expect(ActualHearingsUtils.mergeSingleHearingPartActuals).toHaveBeenCalledTimes(1);
   });
 
   it('should save one hearing day actuals for specific hearingDate', () => {

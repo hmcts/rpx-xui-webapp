@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.11-judicial-user-typeahead-fix":
-  version "6.10.11-judicial-user-typeahead-fix"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.11-judicial-user-typeahead-fix.tgz#b8cfa534c1702c14a86754437201aedd896c6b83"
-  integrity sha512-OZwzihMEjGUP6L6E6z7jZNLGpVSjCY8bt5pLQxEs9YuUjjAzTc49rHw2lcfG1dMEb2YrR6aOEH9bymGeqaT87g==
+"@hmcts/ccd-case-ui-toolkit@6.10.12-judicial-user-typeahead-fix":
+  version "6.10.12-judicial-user-typeahead-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.12-judicial-user-typeahead-fix.tgz#81e28d4a2d261f8d2f9879c2c5a236cccbfd7796"
+  integrity sha512-FTEfoMMuGkToy2y0eQ6hZGUWg8hjta5irH6w/jR7DtJvX5zmiQjD4n+WdzalHb07N68GyOF89BdXkQ+bhECigQ==
   dependencies:
     tslib "^2.0.0"
 

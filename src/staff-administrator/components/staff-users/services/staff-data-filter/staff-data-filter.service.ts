@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ErrorMessage, MultipleErrorMessage } from '../../../../../app/models';
-import { StaffSearchFilters } from '../../../../../staff-administrator/models/staff-search-filters.model';
-import { StaffUser } from '../../../../models/staff-user.model';
+import { StaffSearchFilters } from '../../../../models/staff-search-filters.model';
+import { StaffUsersFilterResult } from '../../../../models/staff-users-filter-result.model';
 import { StaffDataAccessService } from '../../../../services/staff-data-access/staff-data-access.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StaffDataFilterService {
-  private tableData = new BehaviorSubject<{ results: StaffUser[]; }>({ results: [] });
+  private tableData = new BehaviorSubject<{ results: StaffUsersFilterResult[]; }>({ results: [] });
   private readonly errors = new BehaviorSubject<ErrorMessage>({
     title: 'There is a problem',
     description: '',

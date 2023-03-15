@@ -1467,9 +1467,12 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit":
-  version "0.0.0"
-  uid ""
+"@hmcts/ccd-case-ui-toolkit@6.13.11-activity-tracker":
+  version "6.13.11-activity-tracker"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.11-activity-tracker.tgz#8afb667a62355d05e68e6e57ca100a6e982ed495"
+  integrity sha512-Y7Cgme7AOzbJsIl9hlBEW+3mYwRpbNqd4gwKtCpE6+EiMupacqenF6P29X+udJnHilTCqJyFgIIj15XyL4RHDQ==
+  dependencies:
+    tslib "^2.0.0"
 
 "@hmcts/ccpay-web-component@5.0.10-beta14":
   version "5.0.10-beta14"

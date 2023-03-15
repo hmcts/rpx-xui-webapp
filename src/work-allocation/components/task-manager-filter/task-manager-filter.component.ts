@@ -173,7 +173,9 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person',
       radioSelectionChange: 'selectPerson=Specific person',
-      servicesField: 'service'
+      userIncluded: true,
+      services: waSupportedJurisdictions,
+      servicesField: 'service',
     };
   }
 

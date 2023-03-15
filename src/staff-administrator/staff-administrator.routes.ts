@@ -33,6 +33,7 @@ export const ROUTES: Routes = [
       { path: '', component: StaffUsersComponent },
       {
         path: 'user-details/:id',
+        runGuardsAndResolvers: 'always',
         resolve: {
           staffUserDetails: StaffUserDetailsResolverService
         },

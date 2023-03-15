@@ -26,7 +26,7 @@ describe('StaffUserDetailsComponent', () => {
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let location: Location;
   let router: jasmine.SpyObj<Router>;
-  let testStaffUserData: StaffUser;
+  let testStaffUserData: Partial<StaffUser>;
   const caseWorkerId = '123456';
 
   beforeEach(waitForAsync(() => {
@@ -44,7 +44,7 @@ describe('StaffUserDetailsComponent', () => {
       staff_admin: false,
       roles: [
         {
-          role_id: 1,
+          role_id: '1',
           role: 'Role',
           is_primary: true,
         }
@@ -52,7 +52,7 @@ describe('StaffUserDetailsComponent', () => {
       skills: [
         {
           skill_id: 1,
-          skill_code: 'SKILLCODE',
+          description: 'SKILLCODE',
         }
       ],
       services: [

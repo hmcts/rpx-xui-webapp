@@ -14,7 +14,9 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Name</dt>
           <dd class="govuk-summary-list__value">{{userDetails.first_name}} {{userDetails.last_name}}</dd>
-          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
         </div>
         <br>
         <div class="govuk-summary-list__row">
@@ -38,7 +40,9 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Region</dt>
           <dd class="govuk-summary-list__value">{{ userDetails.region }}</dd>
-          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
         </div>
         <br>
 
@@ -49,7 +53,9 @@
               {{userDetails.primaryLocation.location}}
             </span>
           </dd>
-          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
         </div>
 
         <ng-container *ngIf="userDetails.additionalLocations.length">
@@ -61,7 +67,8 @@
                 {{ location.location }}
               </div>
             </dd>
-            <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+            <dd class="govuk-summary-list__actions">
+              <a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
           </div>
         </ng-container>
 

@@ -1,11 +1,11 @@
-import { StaffRefDataAPI } from './models/staff-ref-data.model';
-import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
-import { getConfigValue } from '../configuration';
-import { handleGet, handlePost } from '../common/crudService';
-import * as querystring from 'querystring';
 import { NextFunction, Response } from 'express';
-import { StaffDataUser, StaffDataAPI, WorkArea } from './models/staff-data-user.model';
-import { GroupOption, StaffFilterOption, Service } from './models/staff-filter-option.model';
+import * as querystring from 'querystring';
+import { sendGet, sendPost, sendPut } from '../common/crudService';
+import { getConfigValue } from '../configuration';
+import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
+import { StaffDataAPI, StaffDataUser, WorkArea } from './models/staff-data-user.model';
+import { GroupOption, Service, StaffFilterOption } from './models/staff-filter-option.model';
+import { StaffRefDataAPI } from './models/staff-ref-data.model';
 
 export class RealStaffRefDataAPI implements StaffRefDataAPI {
   public baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -14,7 +14,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const parsed = querystring.stringify(req.query);
     try {
       const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${parsed}`;
-      const { status, data }: { status: number, data: StaffDataUser[] } = await handleGet(apiPath, req, next);
+      const { status, data }: { status: number, data: StaffDataUser[] } = await sendGet(apiPath, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -25,7 +25,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/user-type`;
 
     try {
-      const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
+      const { status, data }: { status: number, data } = await sendGet(apiPath, req);
 
       const options: StaffFilterOption[] = [];
       data.user_type.forEach(element => {
@@ -42,7 +42,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/job-title`;
 
     try {
-      const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
+      const { status, data }: { status: number, data } = await sendGet(apiPath, req);
 
       const options: StaffFilterOption[] = [];
       data.job_title.forEach(element => {
@@ -59,7 +59,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/skill`;
 
     try {
-      const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
+      const { status, data }: { status: number, data } = await sendGet(apiPath, req);
 
       const options: StaffFilterOption[] = [];
       const serviceRefData = getConfigValue(SERVICE_REF_DATA_MAPPING) as Service[];
@@ -82,7 +82,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/skill`;
 
     try {
-      const { status, data }: { status: number, data } = await handleGet(apiPath, req, next);
+      const { status, data }: { status: number, data } = await sendGet(apiPath, req);
 
       const groupOptions: GroupOption[] = [];
       data.service_skill.forEach(services => {
@@ -103,7 +103,8 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const searchParam = req.query.search ? req.query.search : '';
     const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search-by-name?search=${searchParam}`;
     try {
-      const { status, data }: { status: number, data: StaffDataUser[] } = await handleGet(apiPath, req, next);
+      const { status, data }: { status: number, data: StaffDataUser[] } =
+        await sendGet(apiPath, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -119,8 +120,8 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `/refdata/case-worker/profile`;
 
     try {
-      const {status, data}: { status: number, data: StaffDataUser } =
-        await handlePost(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req, next);
+      const {status, data}: { status: number, data: StaffDataUser }
+        = await sendPost(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -128,11 +129,11 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
   }
 
   async getStaffRefUserDetails(req, res, next: NextFunction) {
-    const reqbody = req.body;
+    const reqBody = req.body;
     const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
 
     try {
-      const { status, data }: { status: number; data: StaffDataAPI[] } = await handlePost(apiPath, reqbody, req, next);
+      const { status, data }: { status: number; data: StaffDataAPI[] } = await sendPost(apiPath, reqBody, req);
       const thisUser = this.getUserInfoFromDetails(data);
       res.status(status).send(thisUser);
     } catch (error) {
@@ -189,17 +190,28 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const services = [];
     workarea.forEach(workArea => {
       services.push(workArea.area_of_work);
-    })
+    });
     return services;
   }
 
-  async updateUserStatus(req, res, next: NextFunction) {
-    const id = req.params.id;
+  async fetchUsersById(req, res, next: NextFunction) {
     const reqBody = req.body;
-    const apiPath: string = `/refdata/case-worker/user-status/${id}`;
+    const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
 
     try {
-      const {status, data}: { status: number, data: { suspended: boolean } } = await handlePost(apiPath, reqBody, req, next);
+      const { status, data }: { status: number; data: StaffDataAPI[] } = await sendPost(apiPath, reqBody, req);
+      res.status(status).send(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateUser(req, res: Response, next: NextFunction) {
+    const reqBody = req.body;
+    const apiPath: string = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile`;
+
+    try {
+      const {status, data}: { status: number, data: StaffDataUser } = await sendPut(apiPath, reqBody, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);

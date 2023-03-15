@@ -1,141 +1,113 @@
-import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ExuiCommonLibModule, FilterService, GroupOptions } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
-
-import { StaffFilterOption } from '../../../models//staff-filter-option.model';
+import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { BehaviorSubject, of } from 'rxjs';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
-import { StaffUserCheckAnswersComponent } from '../staff-user-check-answers/staff-user-check-answers.component';
 
-@Component({ selector: 'exui-staff-main-container', template: '' })
-class StaffMainContainerStubComponent { }
+@Component({ selector: 'exui-stub-component', template: '' })
+class StubComponent { }
 
-xdescribe('StaffAddEditUserFormComponent', () => {
+describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
   let fixture: ComponentFixture<StaffAddEditUserFormComponent>;
   let location: Location;
   let router: Router;
-  const jobTitles: StaffFilterOption[] = [
-    {key: 'senior-legal-caseworker', label: 'Senior Legal Caseworker'},
-    {key: 'legal-caseworker', label: 'Legal Caseworker'},
-    {key: 'hearing-centre-team-leader', label: 'Hearing Centre Team Leader'},
-    {key: 'hearing-centre-administrator', label: 'Hearing Centre Administrator'},
-    {key: 'court-clerk', label: 'Court Clerk'}
-  ];
-  const skills: GroupOptions[] = [
-    {
-       group: 'adoption',
-       options: [
+  let activatedRoute: ActivatedRoute;
+
+  const streamTestData = {
+    id: 'staff-add-edit-form-mock-data',
+    reset: false,
+    fields: [
+      {
+        value: [
+          'Adele'
+        ],
+        name: 'firstName'
+      },
+      {
+        value: [
+          'Adkins'
+        ],
+        name: 'lastName'
+      },
+      {
+        value: [
+          'adele.adkins@dfsd.com'
+        ],
+        name: 'email'
+      },
+      {
+        value: [
+          'region-1'
+        ],
+        name: 'region'
+      },
+      {
+        value: [
+          'family-private-law',
+          'employment-tribunals'
+        ],
+        name: 'services'
+      },
+      {
+        value: [
           {
-             key: 'adoption-underwriter',
-             label: 'Underwriter',
+            court_venue_id: '10453',
+            epimms_id: '366796',
+            site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
+          }
+        ],
+        name: 'primaryLocation'
+      },
+      {
+        value: [
+          {
+            court_venue_id: '10253',
+            epimms_id: '366559',
+            site_name: 'Glasgow Tribunals Centre',
           },
           {
-             key: 'adoption-caseworker',
-             label: 'Caseworker',
+            court_venue_id: '10453',
+            epimms_id: '366796',
+            site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
           }
-       ]
-    },
-    {
-       group: 'family-public-law',
-       options: [
-          {
-             key: 'family-public-law-underwriter',
-             label: 'Underwriter',
-          }
-       ]
-    }
-  ];
-  const mockFilterService: any = {
-    getStream: () => of({
-      reset: true,
-      fields: [
-        {
-          value: [
-            'Adele'
-          ],
-          name: 'firstName'
-        },
-        {
-          value: [
-            'Adkins'
-          ],
-          name: 'lastName'
-        },
-        {
-          value: [
-            'adele.adkins@dfsd.com'
-          ],
-          name: 'email'
-        },
-        {
-          value: [
-            'region-1'
-          ],
-          name: 'region'
-        },
-        {
-          value: [
-            'family-private-law',
-            'employment-tribunals'
-          ],
-          name: 'services'
-        },
-        {
-          value: [
-            {
-              court_venue_id: '10453',
-              epimms_id: '366796',
-              site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
-            }
-          ],
-          name: 'primaryLocation'
-        },
-        {
-          value: [
-            {
-              court_venue_id: '10253',
-              epimms_id: '366559',
-              site_name: 'Glasgow Tribunals Centre',
-            },
-            {
-              court_venue_id: '10453',
-              epimms_id: '366796',
-              site_name: 'Newcastle Civil & Family Courts and Tribunals Centre',
-            }
-          ],
-          name: 'additionalLocations'
-        },
-        {
-          value: [
-            'ctsc'
-          ],
-          name: 'userType'
-        },
-        {
-          value: [
-            'task-supervisor'
-          ],
-          name: 'roles'
-        },
-        {
-          value: [
-            'hearing-centre-team-leader'
-          ],
-          name: 'jobTitle'
-        },
-        {
-          value: [
-            'family-public-law-underwriter'
-          ],
-          name: 'skills'
-        }]
-    }),
+        ],
+        name: 'additionalLocations'
+      },
+      {
+        value: [
+          'ctsc'
+        ],
+        name: 'userType'
+      },
+      {
+        value: [
+          'task-supervisor'
+        ],
+        name: 'roles'
+      },
+      {
+        value: [
+          'hearing-centre-team-leader'
+        ],
+        name: 'jobTitle'
+      },
+      {
+        value: [
+          'family-public-law-underwriter'
+        ],
+        name: 'skills'
+      }]
+  };
+  const streamSubject = new BehaviorSubject(streamTestData);
+  const mockFilterService = {
+    getStream: () => streamSubject,
     get: jasmine.createSpy(),
     persist: jasmine.createSpy(),
     givenErrors: {
@@ -144,28 +116,27 @@ xdescribe('StaffAddEditUserFormComponent', () => {
       next: () => null,
       unsubscribe: () => null
     },
-    clearSessionAndLocalPersistance: jasmine.createSpy()
+    clearSessionAndLocalPersistance: jasmine.createSpy(),
+    submitted: false
   };
+  let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
 
   beforeEach(async () => {
-    class routerClass {
-      getCurrentNavigation() {
-        return { previousNavigation: { finalUrl: '/staff' } }
-      }
-    }
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
+      'mockStaffDataAccessService', ['updateUser']
+    );
     await TestBed.configureTestingModule({
-      declarations: [StaffAddEditUserFormComponent, StaffMainContainerStubComponent, StaffUserCheckAnswersComponent],
+      declarations: [StaffAddEditUserFormComponent],
       imports: [
         RouterTestingModule.withRoutes([
-          { path: 'staff', component: StaffMainContainerStubComponent },
-          { path: 'staff/add-user/check-your-answers', component: StaffUserCheckAnswersComponent }
+          { path: 'staff', component: StubComponent },
         ]),
         ReactiveFormsModule,
         HttpClientTestingModule,
         ExuiCommonLibModule,
-
       ],
       providers: [
+        { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: FilterService, useValue: mockFilterService },
         {
           provide: ActivatedRoute,
@@ -286,12 +257,11 @@ xdescribe('StaffAddEditUserFormComponent', () => {
   beforeEach(() => {
     router = TestBed.inject(Router);
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
-    // spyOn(router, 'getCurrentNavigation').and.returnValues({ previousNavigation: { finalUrl: {root : {children: { primary: { segments: [{path: 'staff', parameters: {}}, {path: 'add-user', parameters: {}}, {path: 'check-your-answer', parameters: {}}]}}}}}});
     spyOn(router, 'getCurrentNavigation').and.returnValues({previousNavigation: { finalUrl: '/staff' }} as any);
     location = TestBed.inject(Location);
+    activatedRoute = TestBed.inject(ActivatedRoute);
     fixture = TestBed.createComponent(StaffAddEditUserFormComponent);
     component = fixture.componentInstance;
-    // component.formGroup = new FormGroup({});
     router.initialNavigation();
     fixture.detectChanges();
   });
@@ -317,13 +287,26 @@ xdescribe('StaffAddEditUserFormComponent', () => {
     flush();
   }));
 
-  it('should return the selected options with true value', () => {
-    const result = (component as any).getSelected(jobTitles, ['hearing-centre-team-leader', 'hearing-centre-administrator']);
-    expect(result).toEqual([false, false, true, true, false]);
-  });
+  it('should navigate to relative route' +
+    '/check-your-answers regardless of editMode = false or editMode = true and form is marked as submitted', fakeAsync(() => {
+    component.genericFilterComponent.submitted = true;
+    component.editMode = true;
+    tick();
 
-  it('should return the selected options with true value for skills', () => {
-    const result = (component as any).getSelectedSkills(skills, ['adoption-caseworker', 'family-public-law-underwriter']);
-    expect(result).toEqual([ false, true, true]);
+    spyOn(router, 'navigate');
+    mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
+    streamSubject.next(streamTestData);
+    tick();
+    expect(router.navigate).toHaveBeenCalledWith(['check-your-answers'], { relativeTo: activatedRoute });
+    flush();
+  }));
+
+  it('should unsubscribe from filterStreamSubscription onDestroy', () => {
+    // @ts-expect-error - filterStreamSubscription is a private property
+    spyOn(component.filterStreamSubscription, 'unsubscribe').and.callThrough();
+
+    component.ngOnDestroy();
+    // @ts-expect-error - filterStreamSubscription is a private property
+    expect(component.filterStreamSubscription.unsubscribe).toHaveBeenCalled();
   });
 });

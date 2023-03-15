@@ -104,10 +104,20 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search-by-name?search=${searchParam}`;
     try {
       const { status, data }: { status: number, data: StaffDataUser[] } = await handleGet(apiPath, req, next);
+      console.log(data[0].services, 'aintastic');
+      data.forEach(user => user.jobTitle = this.setJobTitles(user.roles));
       res.status(status).send(data);
     } catch (error) {
       next(error);
     }
+  }
+
+  setJobTitles(roles: any): string[] {
+    const jobTitles = [];
+    roles.forEach(role => {
+      jobTitles.push(role.role);
+    })
+    return jobTitles;
   }
 
   sortArray(array: StaffFilterOption[]) {

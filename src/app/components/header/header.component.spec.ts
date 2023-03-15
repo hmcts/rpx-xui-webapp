@@ -46,7 +46,6 @@ describe('Header Component', () => {
   });
 
   it('should emitNavigate', () => {
-
       const event = {};
       const emitter = jasmine.createSpyObj('emitter', ['emit']);
       component.emitNavigate(event, emitter);

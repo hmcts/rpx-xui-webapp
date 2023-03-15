@@ -100,6 +100,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
   }
 
   public initFormConfig() {
+    console.log(...this.staffFilterOptions.services);
     this.filterConfig = {
       id: this.formId,
       fields: [

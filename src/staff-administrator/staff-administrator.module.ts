@@ -41,7 +41,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffAddEditUserFormComponent,
     StaffAddUserComponent,
     StaffUserCheckAnswersComponent,
-      StaffUserDetailsComponent,
+    StaffUserDetailsComponent,
     StaffStatusComponent,
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,

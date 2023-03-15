@@ -13,7 +13,6 @@ import { StaffUser } from '../../models/staff-user.model';
 import { PluckAndJoinPipe } from '../../pipes/pluckAndJoin.pipe';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
-import { By } from '@angular/platform-browser';
 
 @Component({
   template: ''
@@ -212,7 +211,7 @@ describe('StaffUserDetailsComponent', () => {
   });
 
   it('should not make a api call if user is suspended when calling updateUserStatus', () => {
-    mockStaffDataAccessService.updateUser.and.returnValue(of([{case_worker_id: '123'}]));
+    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
     component.userDetails.suspended = 'true';
     component.updateUserStatus();
     expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();

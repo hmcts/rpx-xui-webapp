@@ -140,6 +140,8 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: ['RA0005'],
+          interpreterLanguage: 'POR',
         },
         unavailabilityRanges: [
           {
@@ -159,6 +161,8 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'DWP',
           lastName: null,
           preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: ['RA0005'],
+          interpreterLanguage: null,
         },
         organisationDetails: {
           name: 'DWP',
@@ -614,16 +618,9 @@ describe('HearingRequirementsComponent', () => {
                 title: 'Miss',
                 firstName: 'Jane',
                 lastName: 'Smith',
-                reasonableAdjustments: [
-                  'RA0042',
-                  'RA0053',
-                  'RA0013',
-                  'RA0016',
-                  'RA0042',
-                  'RA0009',
-                ],
-                interpreterLanguage: 'PF0015',
+                interpreterLanguage: 'POR',
                 preferredHearingChannel: 'byVideo',
+                reasonableAdjustments: ['RA0005'],
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -644,9 +641,7 @@ describe('HearingRequirementsComponent', () => {
                 firstName: 'DWP',
                 lastName: null,
                 preferredHearingChannel: 'byVideo',
-                reasonableAdjustments: [
-                  'RA0005',
-                ],
+                reasonableAdjustments: ['RA0005'],
                 interpreterLanguage: null,
               },
               organisationDetails: {
@@ -702,6 +697,8 @@ describe('HearingRequirementsComponent', () => {
                     firstName: 'Jane',
                     lastName: 'Smith',
                     preferredHearingChannel: 'inPerson',
+                    reasonableAdjustments: ['RA0005'],
+                    interpreterLanguage: 'POR',
                   }
                 },
                 {
@@ -714,6 +711,8 @@ describe('HearingRequirementsComponent', () => {
                     firstName: 'DWP',
                     lastName: null,
                     preferredHearingChannel: 'byVideo',
+                    reasonableAdjustments: ['RA0005'],
+                    interpreterLanguage: null,
                   }
                 },
               ],
@@ -799,14 +798,8 @@ describe('HearingRequirementsComponent', () => {
                 firstName: 'Jane',
                 lastName: 'Smith',
                 preferredHearingChannel: 'inPerson',
-                reasonableAdjustments: [
-                  'RA0042',
-                  'RA0053',
-                  'RA0013',
-                  'RA0016',
-                  'RA0042',
-                ],
-                interpreterLanguage: 'PF0015',
+                reasonableAdjustments: ['RA0005'],
+                interpreterLanguage: 'POR',
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -825,9 +818,7 @@ describe('HearingRequirementsComponent', () => {
               partyRole: 'claimant',
               individualDetails: {
                 preferredHearingChannel: 'byVideo',
-                reasonableAdjustments: [
-                  'RA0005',
-                ],
+                reasonableAdjustments: ['RA0005'],
                 interpreterLanguage: null,
               },
               organisationDetails: {
@@ -2335,7 +2326,8 @@ describe('HearingRequirementsComponent', () => {
         ],
         caseManagementLocationCode: '196538',
         caserestrictedFlag: false,
-        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+        externalCaseReference: ''
       },
       partyDetails: [{
         partyID: 'P1',
@@ -2352,13 +2344,8 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: [
-            'RA0042',
-            'RA0053',
-            'RA0013',
-            'RA0016',
-            'RA0042'],
-          interpreterLanguage: 'PF0015'
+          reasonableAdjustments: ['RA0005'],
+          interpreterLanguage: 'POR'
         },
       }, {
         partyID: 'P2',

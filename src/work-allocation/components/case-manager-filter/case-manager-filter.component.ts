@@ -131,7 +131,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
-  private static findPersonFilter(): FilterFieldConfig {
+  private static findPersonFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'person',
       options: [],
@@ -145,6 +145,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       title: 'Person',
       subTitle: 'Search for a person',
       lineBreakBefore: true,
+      servicesField: 'jurisdiction',
       placeholderContent: 'You must specify a person...'
     };
   }
@@ -168,7 +169,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     this.filterConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
       CaseManagerFilterComponent.initRoleTypeFilter(),
-      CaseManagerFilterComponent.findPersonFilter(),
+      CaseManagerFilterComponent.findPersonFilter(this.jurisdictions),
       CaseManagerFilterComponent.initSelectLocationFilter(),
       CaseManagerFilterComponent.initLocationFilter()
     ];

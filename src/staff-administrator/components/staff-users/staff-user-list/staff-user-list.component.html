@@ -1,7 +1,7 @@
-<ng-container *ngIf="!((staffDataFilterService.tableData$ | async).results?.length)">
+<ng-container *ngIf="!((staffDataFilterService.tableData$ | async).results?.length); else showTable">
   <p>Please select filters and click Search</p>
 </ng-container>
-<ng-container *ngIf="(staffDataFilterService.tableData$ | async).results?.length">
+<ng-container #showTable>
   <div class="govuk-!-margin-bottom-4">
     <p class="hmcts-pagination__results">Showing <b>{{(this.currentPageNumber * pagination.itemsPerPage) - pagination.itemsPerPage + 1}}</b>
       to <b>{{ (this.currentPageNumber * pagination.itemsPerPage) > (staffDataFilterService.tableData$ | async).results.length  ? (staffDataFilterService.tableData$ | async).results.length : this.currentPageNumber *
@@ -23,7 +23,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="services">
-        <th cdk-header-cell *cdkHeaderCellDef>Services</th>
+        <th cdk-header-cell *cdkHeaderCellDef>Service</th>
         <td cdk-cell *cdkCellDef="let element">
           <div *ngFor="let obj of element.services">
             {{ obj.service }}
@@ -32,7 +32,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="locations">
-        <th cdk-header-cell *cdkHeaderCellDef>Locations</th>
+        <th cdk-header-cell *cdkHeaderCellDef>Location</th>
         <td cdk-cell *cdkCellDef="let element">
           <div *ngFor="let obj of element.base_locations">
             {{ obj.location }}

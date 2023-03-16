@@ -1,7 +1,7 @@
 <ng-container *ngIf="!((staffDataFilterService.tableData$ | async).results?.length); else showTable">
   <p>Please select filters and click Search</p>
 </ng-container>
-<ng-container #showTable>
+<ng-template #showTable>
   <div class="govuk-!-margin-bottom-4">
     <p class="hmcts-pagination__results">Showing <b>{{(this.currentPageNumber * pagination.itemsPerPage) - pagination.itemsPerPage + 1}}</b>
       to <b>{{ (this.currentPageNumber * pagination.itemsPerPage) > (staffDataFilterService.tableData$ | async).results.length  ? (staffDataFilterService.tableData$ | async).results.length : this.currentPageNumber *
@@ -54,4 +54,4 @@
     </table>
     <xuilib-hmcts-pagination (pageChange)="emitPageClickEvent($event)" [pageSize]="pagination.itemsPerPage"></xuilib-hmcts-pagination>
   </div>
-</ng-container>
+</ng-template>

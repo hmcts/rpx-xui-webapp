@@ -15,6 +15,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     try {
       const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${parsed}`;
       const { status, data }: { status: number, data: StaffDataUser[] } = await sendGet(apiPath, req);
+      data.forEach(user => user.jobTitle = this.setJobTitles(user.roles));
       res.status(status).send(data);
     } catch (error) {
       next(error);

@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-generic-filter-readonly-changes-3":
-  version "1.8.10-generic-filter-readonly-changes-3"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-generic-filter-readonly-changes-3.tgz#ed5efda0e244affa91badd0be748ec68c8cbe2fd"
-  integrity sha512-OpDSiKKSsCDE0nOZow+IaETygXHwqhsvHQJ8ep9X89x3Kawvust753ZoQ/e7D0Y1hIB2ww8/siOmbKy9rnKjfw==
+"@hmcts/rpx-xui-common-lib@1.8.10-add-location-button-gap":
+  version "1.8.10-add-location-button-gap"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-add-location-button-gap.tgz#3de0299ee5587a78b8b517136cbccda38d8bcb90"
+  integrity sha512-mLPih39+1LVTCPfhSoqmWl7YLd+IIqay1uRlgKTRTXkcGi47TK56X1iiKQz2wb/+8LD5HBJSH0TOTXQVZaD2dw==
   dependencies:
     tslib "^2.0.0"
 

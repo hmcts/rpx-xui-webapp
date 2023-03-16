@@ -12,6 +12,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
 
   async getFilteredUsers(req: any, res: Response, next: NextFunction) {
     const parsed = querystring.stringify(req.query);
+
     try {
       const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${parsed}`;
       const { status, data }: { status: number, data: StaffDataUser[] } = await sendGet(apiPath, req);

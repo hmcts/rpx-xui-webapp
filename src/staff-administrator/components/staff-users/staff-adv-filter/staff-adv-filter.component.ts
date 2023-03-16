@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterConfig, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
-import { StaffSearchFilters } from '../../../../staff-administrator/models/staff-search-filters.model';
+import { StaffSearchFilters } from '../../../models/staff-search-filters.model';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
@@ -137,7 +137,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           const roles = filterConfig.fields.find(item => item.name === 'user-role').value;
           const skills = filterConfig.fields.find(item => item.name === 'user-skills').value;
 
-          if (services && services.length > 0) {
+          if (services && services.length > 0 && services.some(s => s.toLowerCase() !== 'all')) {
             searchFilters.serviceCode = services.toString();
           }
           if (locations && locations.length > 0) {
@@ -181,5 +181,4 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       this.filterSub.unsubscribe();
     }
   }
-
 }

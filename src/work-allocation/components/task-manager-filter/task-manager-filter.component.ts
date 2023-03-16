@@ -2,14 +2,14 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { BookingCheckType, FeatureToggleService, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
+import { AppConstants } from '../../../app/app.constants';
 import { UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
-import { AppConstants } from '../../../app/app.constants';
 import { getRoleCategory } from '../../utils';
 
 @Component({
@@ -50,8 +50,12 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           name: 'taskName',
-          value: ['']
+          value: [{task_type_id: '', task_type_name: ''}]
         },
+        {
+          name: 'findTaskNameControl',
+          value: ['']
+        }
       ]
     }
   };
@@ -228,7 +232,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       options: [],
       minSelected: 0,
       maxSelected: 1,
-      findLocationField: 'service',
+      servicesField: 'service',
       minSelectedError: 'You must select a task name',
       maxSelectedError: null,
       enableAddTaskNameButton: false,
@@ -265,11 +269,13 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(),
-      TaskManagerFilterComponent.initTaskTypeFilter(),
+      TaskManagerFilterComponent.initTaskTypeFilter()
     ];
+
     if (this.isRelease4) {
       this.fieldsConfig.fields.push(TaskManagerFilterComponent.initTaskNameFilter());
     }
+
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
       .pipe(
         map((f: FilterSetting) => {

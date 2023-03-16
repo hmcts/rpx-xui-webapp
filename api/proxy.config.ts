@@ -7,27 +7,6 @@ import { applyProxy } from './lib/middleware/proxy';
 import { handleElasticSearchResponse, modifyRequest } from './searchCases';
 
 export const initProxy = (app: Express) => {
-  // applyProxy(app, {
-  //   rewrite: true,
-  //   rewriteUrl: '/activity',
-  //   source: [
-  //     '/activity',
-  //   ],
-  //   target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
-  // });
-
-  // applyProxy(app, {
-  //   rewrite: false,
-  //   source: '/documents',
-  //   target: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
-  // });
-
-  // applyProxy(app, {
-  //   rewrite: false,
-  //   source: '/hearing-recordings',
-  //   target: getConfigValue(SERVICES_EM_HRS_API_PATH),
-  // });
-
   applyProxy(app, {
     rewrite: true,
     rewriteUrl: '/socket.io',
@@ -36,6 +15,14 @@ export const initProxy = (app: Express) => {
     ws: true,
   });
 
+  // applyProxy(app, {
+  //   rewrite: true,
+  //   rewriteUrl: '/activity',
+  //   source: [
+  //     '/activity',
+  //   ],
+  //   target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
+  // });
   applyProxy(app, {
     rewrite: true,
     skipAuth: true,

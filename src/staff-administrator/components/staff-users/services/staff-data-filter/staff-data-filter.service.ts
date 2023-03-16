@@ -1,56 +1,57 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, iif, Observable } from 'rxjs';
+import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { ErrorMessage, MultipleErrorMessage } from '../../../../../app/models';
 import { StaffSearchFilters } from '../../../../models/staff-search-filters.model';
-import { StaffUsersFilterResult } from '../../../../models/staff-users-filter-result.model';
+import { StaffUserListData } from '../../../../models/staff-user-list-data.model';
 import { StaffDataAccessService } from '../../../../services/staff-data-access/staff-data-access.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StaffDataFilterService {
-  private tableData = new BehaviorSubject<{ results: StaffUsersFilterResult[]; }>({ results: [] });
-  private readonly errors = new BehaviorSubject<ErrorMessage>({
-    title: 'There is a problem',
-    description: '',
-    multiple: true,
-    errors: []
-  });
+  private readonly searchFilters = new BehaviorSubject<StaffSearchFilters>(null);
+  private readonly errors = new BehaviorSubject<MultipleErrorMessage[]>([]);
 
-  public tableData$ = this.tableData.asObservable();
-  public errors$ = this.errors.asObservable();
+  public readonly tableData$: Observable<StaffUserListData> = this.searchFilters.asObservable().pipe(
+    filter((searchFilters) => !!searchFilters),
+    tap(() => this.setErrors([])),
+    switchMap((searchFilters) => iif(
+      () => !!searchFilters.advancedSearchFilters,
+      this.staffDataAccessService.getFilteredUsers(searchFilters),
+      this.staffDataAccessService.getUsersByPartialName(searchFilters),
+    )),
+    shareReplay(1),
+    tap((data) => { console.log(data); })
+  );
+
+  public readonly errors$: Observable<ErrorMessage> = this.errors.asObservable().pipe(
+    map((errors) => ({
+      title: 'There is a problem',
+      description: '',
+      multiple: true,
+      errors: [...errors]
+    })
+  ));
 
   constructor(private staffDataAccessService: StaffDataAccessService) {}
 
-  public filterByPartialName(partialName: string) {
-    this.setErrors([]);
-    return this.staffDataAccessService.getUsersByPartialName(partialName).pipe(
-      tap((tableData) => this.tableData.next({
-        results: tableData
-      }))
-    );
+  public search(searchFilters: StaffSearchFilters) {
+    this.searchFilters.next({
+      ...searchFilters,
+      pageNumber: 1,
+      pageSize: 15,
+    });
   }
 
-  public filterByAdvancedSearch(searchFilters: StaffSearchFilters) {
-    this.setErrors([]);
-    return this.staffDataAccessService.getFilteredUsers(searchFilters).pipe(
-      tap((tableData) => this.tableData.next({
-        results: tableData
-      }))
-    );
-  }
-
-  public resetSearch() {
-    return this.tableData.next({
-      results: null
+  public changePage(pageNumber: number) {
+    this.searchFilters.next({
+      ...this.searchFilters.value,
+      pageNumber,
     });
   }
 
   public setErrors(errors: MultipleErrorMessage[]) {
-    this.errors.next({
-      ...this.errors.getValue(),
-      errors
-    });
+    this.errors.next(errors);
   }
 }

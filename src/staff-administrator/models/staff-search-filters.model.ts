@@ -1,8 +1,14 @@
+export interface StaffAdvancedSearchFilters {
+  serviceCode: string;
+  location: string;
+  userType: string;
+  jobTitle: string;
+  skill: string;
+  role: string;
+}
 export interface StaffSearchFilters {
-  serviceCode?: string;
-  location?: string;
-  userType?: string;
-  jobTitle?: string;
-  skill?: string;
-  role?: string;
+  partialName?: string;
+  advancedSearchFilters?: StaffAdvancedSearchFilters;
+  pageSize: number;
+  pageNumber: number;
 }

@@ -1,5 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Pagination } from '@hmcts/rpx-xui-common-lib';
+import { Component, OnInit } from '@angular/core';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
@@ -9,20 +8,13 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
 })
 export class StaffUserListComponent implements OnInit {
   public displayedColumns = ['name', 'services', 'locations', 'jobTitle', 'status'];
-  public pagination: Pagination;
-  public currentPageNumber?: number = 1;
-  public pageTotalSize?: number;
-  @Output() public pageChange = new EventEmitter();
-  @Output() public paginationEvent = new EventEmitter<number>();
 
   constructor(public staffDataFilterService: StaffDataFilterService) { }
 
   public ngOnInit() {
-    this.pagination = { itemsPerPage: 15, currentPage: this.currentPageNumber, totalItems: this.pageTotalSize };
   }
 
   public emitPageClickEvent(pageNumber: number) {
-    this.currentPageNumber = pageNumber;
-    this.pageChange.emit(pageNumber);
+    this.staffDataFilterService.changePage(pageNumber);
   }
 }

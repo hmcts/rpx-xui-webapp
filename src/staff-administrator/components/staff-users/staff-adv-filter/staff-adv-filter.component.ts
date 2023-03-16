@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterConfig, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
-import { StaffSearchFilters } from '../../../models/staff-search-filters.model';
+import { StaffAdvancedSearchFilters } from '../../../models/staff-search-filters.model';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
@@ -13,8 +13,8 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
 export class StaffAdvFilterComponent implements OnInit, OnDestroy {
   public filterConfig: FilterConfig;
   private readonly FILTER_NAME = 'staff-advanced-filters';
-  private filterSub: Subscription;
-  private filterErrorsSub: Subscription;
+  private readonly filterSub: Subscription;
+  private readonly filterErrorsSub: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -129,7 +129,8 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
     this.filterSub = this.filterService.getStream(this.FILTER_NAME)
       .subscribe(filterConfig => {
         if (filterConfig) {
-          const searchFilters: StaffSearchFilters = {};
+          const advancedSearchFilters = {} as StaffAdvancedSearchFilters;
+
           const jobTitle = filterConfig.fields.find(item => item.name === 'user-job-title').value[0];
           const userType = filterConfig.fields.find(item => item.name === 'user-type').value[0];
           const services = (filterConfig.fields.find(item => item.name === 'user-services').value).map(s => s.key);
@@ -138,29 +139,34 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           const skills = filterConfig.fields.find(item => item.name === 'user-skills').value;
 
           if (services && services.length > 0 && services.some(s => s.toLowerCase() !== 'all')) {
-            searchFilters.serviceCode = services.toString();
-          }
-          if (locations && locations.length > 0) {
-            searchFilters.location = locations.toString();
-          }
-          if (roles && roles.length > 0) {
-            searchFilters.role = roles.toString();
-          }
-          if (skills && skills.some(s => s !== 'All')) {
-            searchFilters.skill = skills.toString();
-          }
-          if (userType && userType !== 'All') {
-            searchFilters.userType = userType;
-          }
-          if (jobTitle && jobTitle !== 'All') {
-            searchFilters.jobTitle = jobTitle;
+            advancedSearchFilters.serviceCode = services.toString();
           }
 
-          if (Object.keys(searchFilters).length !== 0) {
-            this.staffDataFilterService.filterByAdvancedSearch(searchFilters).subscribe();
-          } else {
-            this.staffDataFilterService.resetSearch();
+          if (locations && locations.length > 0) {
+            advancedSearchFilters.location = locations.toString();
           }
+
+          if (roles && roles.length > 0) {
+            advancedSearchFilters.role = roles.toString();
+          }
+
+          if (skills && skills.some(s => s !== 'All')) {
+            advancedSearchFilters.skill = skills.toString();
+          }
+
+          if (userType && userType !== 'All') {
+            advancedSearchFilters.userType = userType;
+          }
+
+          if (jobTitle && jobTitle !== 'All') {
+            advancedSearchFilters.jobTitle = jobTitle;
+          }
+
+          this.staffDataFilterService.search({
+            advancedSearchFilters,
+            pageSize: 1,
+            pageNumber: 1,
+          });
 
           window.scrollTo(0, 0);
         }

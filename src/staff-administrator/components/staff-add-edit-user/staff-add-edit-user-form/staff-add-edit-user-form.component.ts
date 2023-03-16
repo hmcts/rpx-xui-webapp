@@ -94,6 +94,20 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
     this.filterStreamSubscription?.unsubscribe();
   }
 
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+  }
+
+  public fragmentFocus(): void {
+    this.activatedRoute.fragment.subscribe(frag => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
+        element.focus();
+      }
+    });
+  }
+
   public resetForm() {
     this.filterService.clearSessionAndLocalPersistance(this.formId);
     this.filterService.givenErrors.next(null);

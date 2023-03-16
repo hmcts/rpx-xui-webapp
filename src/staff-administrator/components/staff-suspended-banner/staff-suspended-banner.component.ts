@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./staff-suspended-banner.component.scss']
 })
 export class StaffSuspendedBannerComponent {
-  @Input() public messageType: 'suspended' | 'restored' |  'error';
+  @Input() public messageType: 'suspended' |  'error';
 
   constructor() { }
 }

@@ -1,23 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
-  FilterService
+  FilterService, GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Roles } from '../../../models/roles.enum';
-import { filter } from 'rxjs/operators';
+import { finalize, map, take } from 'rxjs/operators';
+import { UserDetails } from '../../../../app/models/user-details.model';
 import { InfoMessage } from '../../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../../app/shared/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
-import { InfoMessageType } from '../../../../role-access/models/enums';
-import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
-import { StaffFilterOption } from '../../../models/staff-filter-option.model';
-import { StaffJobTitles } from '../../../models/staff-job-titles';
 import * as fromAppStore from '../../../../app/store';
-import { UserDetails } from '../../../../app/models/user-details.model';
-import { map } from 'rxjs/operators';
+import { InfoMessageType } from '../../../../role-access/models/enums';
+import { StaffFilterOption } from '../../../models/staff-filter-option.model';
+import { StaffUser } from '../../../models/staff-user.model';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
+import { StaffAddEditUserFormId } from '../../staff-add-edit-user-form-id.enum';
 
 
 @Component({
@@ -27,35 +25,18 @@ import { map } from 'rxjs/operators';
 })
 
 export class StaffUserCheckAnswersComponent implements OnInit {
-  public formId: string = 'staff-add-edit-user';
-  public addUserData: {
-    name: string;
-    value: string[];
-  }[];
+  public formId: string;
+  public staffUser: StaffUser;
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
     jobTitles: StaffFilterOption[],
-    skills: StaffFilterOption[],
+    skills: GroupOptions[],
     services: StaffFilterOption[]
   };
   public userDetails$: Observable<UserDetails>;
-  public firstName: string;
-  public lastName: string;
-  public email: string;
-  public region: string[];
-  public services: string[];
-  public primaryLocations;
-  public additionalLocations;
-  public userType: string[];
-  public roles: string[];
-  public skills: string[];
-  public servicePayload;
-  public rolesPayload = [];
-  public jobTitlesPayload = [];
-  public regionPayload = [];
-  public userTypesPayload = [];
-  public skillsPayload;
   public idamRoles = [];
+  public isLoading = false;
+  public isUpdateMode = false;
 
   constructor(
     private readonly appStore: Store<fromAppStore.State>,
@@ -64,182 +45,72 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private staffDataAccessService: StaffDataAccessService,
     private readonly messageService: InfoMessageCommService,
-  ) {
+  ) {}
+
+
+  public ngOnInit() {
+    this.formId = this.activatedRoute.snapshot.data.formId;
+    this.isUpdateMode = this.formId === StaffAddEditUserFormId.UpdateUser;
+    console.log(this.formId);
+    console.log(this.isUpdateMode);
+
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services
     };
-  }
 
-  public ngOnInit() {
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     this.userDetails$.pipe(
       map(details => {
-       this.idamRoles = details.userInfo.roles
-    }));
-    this.filterService.getStream(this.formId).subscribe(data => {
-      this.addUserData = data.fields;
-      if (this.addUserData) {
-        this.firstName = this.addUserData[0].value[0];
-        this.lastName = this.addUserData[1].value[0];
-        this.email = this.addUserData[2].value[0];
-        this.region = this.addUserData[3].value;
-        this.primaryLocations = this.addUserData[5].value[0];
-        this.additionalLocations = this.addUserData[6].value;
-        this.userType = this.addUserData[7].value;
-        this.roles = this.addUserData[8].value;
-        this.skills = this.addUserData[10]?.value;
-
-        this.prepareServicesPayload();
-        this.prepareJobTitlesPayload();
-        this.prepareUserTypePayload();
-        this.prepareRolesPayload();
-        this.prepareRegionPayload();
-        this.prepareSkillsPayload();
+        this.idamRoles = details.userInfo.roles;
+      }));
+    this.filterService.getStream(this.formId)
+      .pipe(take(1))
+      .subscribe(data => {
+      if (data.fields) {
+        this.staffUser = new StaffUser();
+        this.staffUser.fromGenericFilter(data, this.staffFilterOptions);
       }
     });
   }
 
-  private prepareServicesPayload() {
-    const selectedServices = [];
-    this.addUserData[4].value.map(service => {
-      selectedServices.push(this.staffFilterOptions.services.find(services => services.key === service));
-    });
-    this.servicePayload = selectedServices.map(service => {
-      return {
-        service: service.label,
-        service_code: service.key
-      }
-    });
+  public onSubmit() {
+    if (this.isUpdateMode) {
+      this.onSubmitUpdateUser();
+    } else {
+      this.onSubmitAddUser();
+    }
   }
 
-  private prepareJobTitlesPayload() {
-    const jobTitlesNamePayload = [];
-    this.addUserData[9].value.map(jobTitle => {
-      jobTitlesNamePayload.push(this.staffFilterOptions.jobTitles.find(jobTitles => jobTitles.key.toString() === jobTitle.toString()));
-    });
-
-    jobTitlesNamePayload.map(jobTitleName => {
-      this.jobTitlesPayload.push(StaffJobTitles.jobTitles.find(jobTitle => jobTitle.role === jobTitleName.label));
-    });
-  }
-
-  private prepareUserTypePayload() {
-    this.userType.map(userType => {
-      this.userTypesPayload.push(this.staffFilterOptions.userTypes.find(userTypes => userTypes.key.toString() === userType.toString()));
-    });
-  }
-
-  private prepareLocationPayload() {
-    const locationPayload = [];
-    locationPayload.push({
-      location_id: +this.primaryLocations.court_venue_id,
-      location: this.primaryLocations.site_name,
-      is_primary: true
-    });
-    this.additionalLocations.map(location => {
-      locationPayload.push({
-        location_id: +location.court_venue_id,
-        location: location.site_name,
-        is_primary: false
-      });
-    });
-    return locationPayload;
-  }
-
-  private prepareRolesPayload() {
-    const roleObj = [
-      { key: 'case-allocator', label: 'Case Allocator' },
-      { key: 'task-supervisor', label: 'Task Supervisor' },
-      { key: 'staff-administrator', label: 'Staff Administrator' }
-    ];
-    this.roles.map(role => {
-      this.rolesPayload.push(roleObj.find(roles => roles.key === role));
-    })
-  }
-
-  private prepareRegionPayload() {
-    const regionObj = [
-      { key: 'region-1', label: 'Region 1'}
-    ];
-
-    this.region.map(region => {
-      this.regionPayload.push(regionObj.find(regions => regions.key === region));
-    })
-  }
-
-  private prepareSkillsPayload() {
-    const skillsPayload = [[]];
-    let nonEmptySkillsPayload = [[]];
-    this.skills.map(skill => {
-      this.staffFilterOptions.skills.map(skillgroup => {
-        const matchingSkills = skillgroup.options.filter(skills => skills.key === skill)
-        skillsPayload.push(matchingSkills.map(matchingSkill => {
-          return {
-            skill_id: matchingSkill.key,
-            description: matchingSkill.label,
-            skill_code: matchingSkill.label
-          }
-        }));
-      });
-    });
-
-    nonEmptySkillsPayload = skillsPayload.filter(skill => skill.length > 0);
-
-    this.skillsPayload = nonEmptySkillsPayload.reduce((a, b) => {
-      return a.concat(b);
-    }, []);
-  }
-
-  public addNewUser() {
-    let task_supervisor_flag = false;
-    let case_allocator_flag = false;
-    let staff_admin_flag = false;
-    this.roles.map(role => {
-      if (role === Roles.TaskSupervisor) {
-        task_supervisor_flag = true;
-        return;
-      }
-      if (role === Roles.CaseAllocator) {
-        case_allocator_flag = true;
-        return;
-      }
-      if (role === Roles.StaffAdmin) {
-        staff_admin_flag = true;
-        return;
-      }
-    });
-
-    const addNewUserPayload = {
-      base_locations: this.prepareLocationPayload(),
-      case_allocator: case_allocator_flag,
-      email_id: this.email,
-      first_name: this.firstName,
-      idam_roles: this.idamRoles,
-      last_name: this.lastName,
-      region: this.regionPayload.length ? this.regionPayload[0].label : '' ,
-      region_id: 1,
-      roles: this.jobTitlesPayload,
-      services: this.servicePayload,
-      skills: this.skillsPayload,
-      staff_admin: staff_admin_flag,
-      suspended: false,
-      task_supervisor: task_supervisor_flag,
-      user_type: this.userTypesPayload[0].label,
-    };
-
-    this.staffDataAccessService.addNewUser(addNewUserPayload).subscribe(res => {
+  public onSubmitAddUser() {
+    this.staffDataAccessService.addNewUser(this.staffUser).subscribe(() => {
+      // success banner
       this.messageService.nextMessage({
         message: InfoMessage.ADD_NEW_USER,
         type: InfoMessageType.SUCCESS
       } as InformationMessage);
       this.filterService.clearSessionAndLocalPersistance(this.formId);
       this.router.navigateByUrl('/staff');
-    }, error => {
+    }, () => {
       this.router.navigateByUrl('/service-down');
     });
+  }
+
+  public onSubmitUpdateUser() {
+    this.isLoading = true;
+    this.staffDataAccessService.updateUser(this.staffUser)
+      .pipe(finalize(() => {
+        this.isLoading = false;
+        this.filterService.clearSessionAndLocalPersistance(this.formId);
+      }))
+      .subscribe((response) => {
+        this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`);
+      }, (error) => {
+        window.scrollTo(0, 0);
+        this.router.navigateByUrl('/service-down');
+      });
   }
 
   public cancel() {

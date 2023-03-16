@@ -5,6 +5,5 @@ import { Component } from '@angular/core';
   templateUrl: './staff-add-user.component.html',
   styleUrls: ['./staff-add-user.component.scss']
 })
-export class StaffAddUserComponent {
-  constructor() {}
-}
+export class StaffAddUserComponent {}
+

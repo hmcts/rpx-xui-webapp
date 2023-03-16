@@ -27,15 +27,17 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       services: this.route.snapshot.data.services,
     };
     const defaultOption = { key: 'All', label: 'All' };
-    const staffServices = staffFilters.services;
-    staffServices.unshift(defaultOption)
+
     this.filterConfig = {
       id: this.FILTER_NAME,
       fields: [{
         name: 'user-services',
         title: 'Services',
         subTitle: 'Search for a service by name',
-        options: staffServices,
+        options: [
+          defaultOption,
+          ...staffFilters.services
+        ],
         minSelected: 1,
         maxSelected: 0,
         type: 'find-service',
@@ -159,6 +161,8 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           } else {
             this.staffDataFilterService.resetSearch();
           }
+
+          window.scrollTo(0, 0);
         }
       });
 

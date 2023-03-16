@@ -30,9 +30,9 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
     locations: LocationByEPIMMSModel[];
   };
   public roles: StaffFilterOption[] = [
-    { key: 'case-allocator', label: 'Case Allocator' },
-    { key: 'task-supervisor', label: 'Task Supervisor' },
-    { key: 'staff-administrator', label: 'Staff Administrator' },
+    { key: 'case-allocator', label: 'Case allocator' },
+    { key: 'task-supervisor', label: 'Task supervisor' },
+    { key: 'staff-administrator', label: 'Staff administrator' },
   ];
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;

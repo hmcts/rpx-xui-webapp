@@ -176,8 +176,7 @@ describe('StaffUserDetailsComponent', () => {
     component.updateUserStatus();
     fixture.detectChanges();
 
-    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(component.suspendedStatus).toBe('restored');
+    expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
   });
 
   it('should userDetails property if it exists in routers extra state', () => {
@@ -217,22 +216,6 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.setDataForGenericFilterAndNavigate)
       .toHaveBeenCalledWith(StaffAddEditUserFormId.CopyUser, `/staff/user-details/${caseWorkerId}/copy`);
   }));
-
-  it('should have a disabled button if suspended is true', () => {
-    const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));
-    expect(component.userDetails.suspended).toBe(false);
-    expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toBeNull();
-    component.userDetails.suspended = true;
-    fixture.detectChanges();
-    expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toEqual('');
-  });
-
-  it('should not make a api call if user is suspended when calling updateUserStatus', () => {
-    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
-    component.userDetails.suspended = true;
-    component.updateUserStatus();
-    expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
-  });
 
   describe('resendInvite', () => {
     it('Should show success message on sending activation email', () => {

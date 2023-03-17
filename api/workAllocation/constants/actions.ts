@@ -148,6 +148,8 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
   },
   MyTasks: {
     default: [GO], // not permission but go needed to be added
+    assign: [REASSIGN],
+    unassignassign: [REASSIGN],
     unclaimassign: [REASSIGN],
     unclaim: [RELEASE],
     complete: [COMPLETE],

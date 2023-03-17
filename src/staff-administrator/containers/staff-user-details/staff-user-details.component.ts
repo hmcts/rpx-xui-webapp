@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
-import { InformationMessage } from 'src/app/shared/models';
-import { InfoMessageCommService } from 'src/app/shared/services/info-message-comms.service';
-import { InfoMessageType } from 'src/role-access/models/enums';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { StaffAddEditUserFormId } from '../../components/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';

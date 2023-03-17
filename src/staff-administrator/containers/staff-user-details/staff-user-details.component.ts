@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InformationMessage } from 'src/app/shared/models';
+import { InfoMessageCommService } from 'src/app/shared/services/info-message-comms.service';
+import { InfoMessageType } from 'src/role-access/models/enums';
 import { StaffAddEditUserFormId } from '../../components/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
@@ -19,7 +23,8 @@ export class StaffUserDetailsComponent {
   constructor(
     private route: ActivatedRoute,
     private readonly router: Router,
-    private staffDataAccessService: StaffDataAccessService
+    private staffDataAccessService: StaffDataAccessService,
+    private readonly messageService: InfoMessageCommService,
   ) {
     const userDetailsFromSnapshot = this.route.snapshot.data.staffUserDetails.userDetails;
 
@@ -55,6 +60,34 @@ export class StaffUserDetailsComponent {
             }
           }
         );
+    }
+  }
+
+  public resendInvite(): void {
+    if (!this.loading) {
+      this.loading = true;
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, this.userDetails);
+      staffUser.is_resend_invite = true;
+      this.staffDataAccessService.updateUser(staffUser).pipe(
+        finalize(() => {
+          this.loading = false;
+          window.scrollTo(0, 0);
+        })
+      )
+      .subscribe((success) => {
+        this.messageService.nextMessage({
+          message: InfoMessage.ACTIVATION_EMAIL_SENT,
+          type: InfoMessageType.SUCCESS
+        } as InformationMessage);
+        },
+        (err) => {
+          this.messageService.nextMessage({
+            message: InfoMessage.ACTIVATION_EMAIL_ERROR,
+            type: InfoMessageType.WARNING
+          } as InformationMessage);
+        }
+      );
     }
   }
 

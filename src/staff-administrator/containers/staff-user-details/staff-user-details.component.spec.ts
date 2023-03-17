@@ -1,11 +1,15 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
+import { InfoMessage } from 'src/app/shared/enums/info-message';
+import { InformationMessage } from 'src/app/shared/models';
+import { InfoMessageType } from 'src/role-access/models/enums';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { StaffAddEditUserFormId } from '../../components/staff-add-edit-user-form-id.enum';
 import { StaffStatusComponent } from '../../components/staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from '../../components/staff-suspended-banner/staff-suspended-banner.component';
@@ -24,6 +28,7 @@ describe('StaffUserDetailsComponent', () => {
   let fixture: ComponentFixture<StaffUserDetailsComponent>;
   let route: ActivatedRoute;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
+  let mockMessageService: jasmine.SpyObj<InfoMessageCommService>
   let location: Location;
   let router: jasmine.SpyObj<Router>;
   let testStaffUserData: Partial<StaffUser>;
@@ -32,6 +37,9 @@ describe('StaffUserDetailsComponent', () => {
   beforeEach(waitForAsync(() => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
       'mockStaffDataAccessService', ['updateUser']
+    );
+    mockMessageService = jasmine.createSpyObj<InfoMessageCommService>(
+      'mockMessageService', ['nextMessage']
     );
     testStaffUserData = {
       email_id: 'email@test.hmcts',
@@ -90,6 +98,7 @@ describe('StaffUserDetailsComponent', () => {
       ],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
+        { provide: InfoMessageCommService, useValue: mockMessageService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -207,4 +216,34 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.setDataForGenericFilterAndNavigate)
       .toHaveBeenCalledWith(StaffAddEditUserFormId.CopyUser, `/staff/user-details/${caseWorkerId}/copy`);
   }));
+
+  describe('resendInvite', () => {
+    it('Should show success message on sending activation email', () => {
+      mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
+      component.resendInvite();
+      fixture.detectChanges();
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, testStaffUserData);
+      staffUser.is_resend_invite = true;
+      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
+      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
+        message: InfoMessage.ACTIVATION_EMAIL_SENT,
+        type: InfoMessageType.SUCCESS
+      } as InformationMessage);
+    });
+
+    it('should show error messge on failure in sending activation emails', () => {
+      mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 500 }));
+      component.resendInvite();
+      fixture.detectChanges();
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, testStaffUserData);
+      staffUser.is_resend_invite = true;
+      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
+      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
+        message: InfoMessage.ACTIVATION_EMAIL_ERROR,
+        type: InfoMessageType.WARNING
+      } as InformationMessage);
+    });
+  });
 });

@@ -18,7 +18,7 @@
             <div class="govuk-summary-list__key">Email address</div>
             <div class="govuk-summary-list__value">{{ staffUser.email_id }}</div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="email">
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="email_id">
                 Change<span class="govuk-visually-hidden"> email </span>
               </a>
             </div>
@@ -51,8 +51,8 @@
               {{ staffUser.region }}
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" routerLink="../">
-                Change<span class="govuk-visually-hidden"> name</span>
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="region_id">
+                Change<span class="govuk-visually-hidden"> region</span>
               </a>
             </div>
           </div>
@@ -69,26 +69,14 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="region">
-                Change<span class="govuk-visually-hidden"> name</span>
-              </a>
-            </div>
-          </div>
-        </dl>
-
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="primaryLocations">
-          <div class="govuk-summary-list__row">
-            <div class="govuk-summary-list__key">Primary location</div>
-            <div class="govuk-summary-list__value">{{primaryLocations.site_name}}</div>
-            <div class="govuk-summary-list__actions">
               <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="primaryLocation">
-                Change<span class="govuk-visually-hidden"> name</span>
+                Change<span class="govuk-visually-hidden"> primary location</span>
               </a>
             </div>
           </div>
         </dl>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="additionalLocations">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
           <div class="govuk-summary-list__row">
             <div class="govuk-summary-list__key">Additional locations</div>
             <div class="govuk-summary-list__value">
@@ -101,7 +89,7 @@
             </div>
             <div class="govuk-summary-list__actions">
               <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="additionalLocations">
-                Change<span class="govuk-visually-hidden"> name</span>
+                Change<span class="govuk-visually-hidden"> additional locations</span>
               </a>
             </div>
           </div>
@@ -114,8 +102,8 @@
               {{ staffUser.user_type }}
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="userType">
-                Change<span class="govuk-visually-hidden"> name</span>
+              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="user_type">
+                Change<span class="govuk-visually-hidden"> user type</span>
               </a>
             </div>
           </div>
@@ -131,7 +119,7 @@
             </div>
             <div class="govuk-summary-list__actions">
               <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="roles">
-                Change<span class="govuk-visually-hidden"> name</span>
+                Change<span class="govuk-visually-hidden"> roles</span>
               </a>
             </div>
           </div>
@@ -148,7 +136,7 @@
             </div>
             <div class="govuk-summary-list__actions">
               <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="jobTitle">
-                Change<span class="govuk-visually-hidden"> name</span>
+                Change<span class="govuk-visually-hidden"> job title</span>
               </a>
             </div>
           </div>
@@ -165,7 +153,7 @@
             </div>
             <div class="govuk-summary-list__actions">
               <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="user-skills">
-                Change<span class="govuk-visually-hidden"> name</span>
+                Change<span class="govuk-visually-hidden"> skills</span>
               </a>
             </div>
           </div>

@@ -13,7 +13,7 @@ Feature: WA Release 2: Task actions
             | 20006 | IA Court Newcastle     |
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
+            | 20009 | IA Court Center 1  |
 
     Scenario Outline:  Available Tasks actions for "<UserType>"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"

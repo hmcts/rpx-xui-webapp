@@ -67,6 +67,3 @@ const { DataTableArgument } = require('codeceptjs');
 
 
     });
-
-
-});

@@ -19,7 +19,7 @@ const { DataTableArgument } = require('codeceptjs');
 
 
 
-    Given('I set mock for existing bookings', async function (bookingDatatAble) {
+Given('I set mock for existing bookings', async function (bookingdatatable) {
         const bookingsTestData = bookingdatatable.parse().hashes();
         const bookings = [];
         for (const booking of bookingsTestData){
@@ -46,9 +46,9 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Given('I set mock locations for bookings', async function (bookinglocations) {
-        const locationsHashes = bookinglocations.hashes();
+        const locationsHashes = bookinglocations.parse().hashes();
       
         bookingsMockData.setupLocations(locationsHashes);
     });
 
-});
+

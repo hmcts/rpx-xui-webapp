@@ -102,6 +102,3 @@ const { DataTableArgument } = require('codeceptjs');
         softAssert.finally();
 
     });
-
-
-});

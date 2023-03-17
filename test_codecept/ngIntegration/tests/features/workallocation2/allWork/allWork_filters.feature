@@ -17,7 +17,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | 20006 | IA Court Newcastle     |
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
-            | 12347 | IA Court Taylor House  |
+            | 12347 | IA Court Center 1  |
 
         Given I set MOCK locations with names in service "SSCS"
             | id    | locationName             |
@@ -149,12 +149,12 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Search for a location |
         When I select filter item "Location radios" select or radio option "Search for a location" in all work page
         Then I see location search input is enabled in all work filters
-        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I enter location search "IA Court Center 1" in all work filter
         Then I see location search results in all work filter
             | location              |
-            | IA Court Taylor House |
-        Then I select location search result "IA Court Taylor House" in all work filter
-        Then I see location "IA Court Taylor House" selected in all work filter
+            | IA Court Center 1 |
+        Then I select location search result "IA Court Center 1" in all work filter
+        Then I see location "IA Court Center 1" selected in all work filter
 
         When I select filter item "Tasks" select or radio option "<Task_Category>" in all work page
         When I select filter item "Tasks by role type" select or radio option "<Person_Role_Type>" in all work page
@@ -257,12 +257,12 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Search for a location |
         When I select filter item "Location radios" select or radio option "Search for a location" in all work page
         Then I see location search input is enabled in all work filters
-        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I enter location search "IA Court Center 1" in all work filter
         Then I see location search results in all work filter
             | location              |
-            | IA Court Taylor House |
-        Then I select location search result "IA Court Taylor House" in all work filter
-        Then I see location "IA Court Taylor House" selected in all work filter
+            | IA Court Center 1 |
+        Then I select location search result "IA Court Center 1" in all work filter
+        Then I see location "IA Court Center 1" selected in all work filter
 
 
         When I select filter item "Tasks" select or radio option "<Task_Category>" in all work page

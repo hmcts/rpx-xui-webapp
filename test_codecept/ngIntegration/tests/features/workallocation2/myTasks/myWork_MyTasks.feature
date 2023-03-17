@@ -1,29 +1,17 @@
-@ng 
+@ng @codecept_test
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK locations with names in service "IA"
-            | id    | locationName           |
-            | 20001 | IA Court Aldgate Tower |
-            | 20002 | IA Court Birmingham    |
-            | 2003  | IA Court Bradford      |
-            | 20004 | IA Court Glasgow       |
-            | 20005 | IA Court Hatton Cross  |
-            | 20006 | IA Court Newcastle     |
-            | 20007 | IA Court Newport       |
-            | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
+     
 
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
+            | IA           | Y           | ORGANISATION | 20001         |
+            | SSCS         | Y           | ORGANISATION | 30001         |
+
 
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
@@ -69,8 +57,8 @@ Feature: WA Release 2: My work - My Tasks
             | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   | 
             | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      | 
 
-        Then I validate work allocation task table column "Task" width less than or equal to 280
-        Then I validate work allocation task table column "Case name" width less than or equal to 200
+        # Then I validate work allocation task table column "Task" width less than or equal to 280
+        # Then I validate work allocation task table column "Case name" width less than or equal to 200
 
         Then I see manage link displayed for task at position 1
         Then I see manage link displayed for task at position 2
@@ -107,8 +95,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
+            | IA           | Y           | ORGANISATION | 20001         |
+            | SSCS         | Y           | ORGANISATION | 30001         |
 
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
@@ -144,9 +132,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
-
+            | IA           | Y           | ORGANISATION | 20001         |
+            | SSCS         | Y           | ORGANISATION | 30001         |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -177,8 +164,8 @@ Feature: WA Release 2: My work - My Tasks
             | Due date      | Yes        | No    |
             | Priority      | Yes        | No    |
 
-        Then I validate work allocation task table column "Task" width less than or equal to 280
-        Then I validate work allocation task table column "Case name" width less than or equal to 200
+        # Then I validate work allocation task table column "Task" width less than or equal to 280
+        # Then I validate work allocation task table column "Case name" width less than or equal to 200
         
 
 

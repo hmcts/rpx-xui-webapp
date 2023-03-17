@@ -665,5 +665,3 @@ const { DataTableArgument } = require('codeceptjs');
             CucumberReporter.AddJson(task);
         })
     });
-
-});

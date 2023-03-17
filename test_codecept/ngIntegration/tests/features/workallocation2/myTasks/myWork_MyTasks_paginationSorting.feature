@@ -13,7 +13,7 @@ Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
             | 20006 | IA Court Newcastle     |
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
+            | 20009 | IA Court Center 1  |
 
     Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"

@@ -28,7 +28,7 @@ Feature: WA Release 2: My work - My tasks - Task assignment
             | 20006 | IA Court Newcastle     |
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
+            | 20009 | IA Court Center 1  |
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"

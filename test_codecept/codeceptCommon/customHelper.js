@@ -4,7 +4,10 @@ const codeceptMochawesomeLog = require('./reportLogger')
 
 
 const browserErrorLogsExclusions = [
-    'Unable to find Target Element'
+    'Unable to find Target Element',
+    'JSHandle@object',
+    'JSHandle@error',
+    'dc.services.visualstudio.com/'
 ]
 
 class CustomHelper extends Helper {
@@ -26,10 +29,8 @@ class CustomHelper extends Helper {
                 const type = msg.type();
                 if (type === 'error') {
                     // console.log(msg);
-                    codeceptMochawesomeLog.AddMessage('---------------------- BROWSER CONSOLE ERROR ----------------------');
                     this.attachBrowserLog(msg)
                     this.browserErrorLogs.push(msg)
-                    codeceptMochawesomeLog.AddMessage('------------------------------------------------------------------');
                 }
             });
             this.pageOnListener = true;
@@ -44,16 +45,22 @@ class CustomHelper extends Helper {
     }
 
     async  attachBrowserLog(log) {
-        if (log._type !== 'error') {
+        if (log._type !== 'error' ) {
             return;
         }
-        if(browserErrorLogsExclusions.includes(log._text)){
+        if (browserErrorLogsExclusions.filter(exclusion => log._text.includes(exclusion)).length > 0){
             return;
         }
+        codeceptMochawesomeLog.AddMessage('---------------------- BROWSER CONSOLE ERROR ----------------------');
         codeceptMochawesomeLog.AddMessage(`Error: ${log._text}`);
         for (const stacktraceLocation of log._stackTraceLocations) {
+            if (stacktraceLocation.url.endsWith('.js')){
+                continue;
+            }
             codeceptMochawesomeLog.AddMessage(`       ${stacktraceLocation.url}:${stacktraceLocation.lineNumber}`);
         }
+        codeceptMochawesomeLog.AddMessage('------------------------------------------------------------------');
+
     }
     
     async getCookies(){

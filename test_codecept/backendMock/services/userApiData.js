@@ -9,7 +9,7 @@ class UserApiData{
     sendResponse(req,res, apiMethod, defaultResponseCallback){
         const response = this.getUserData(req.headers.authorization, apiMethod)
         if (response) {
-            res.status(response.status).send(response.data)
+            res.send(response)
         } else {
             res.send(defaultResponseCallback())
         }
@@ -38,7 +38,7 @@ class UserApiData{
     }
 
     getUserData(token, apiMethod){
-        let userSession = this.sessionUsers.find(sess => sess.token === token)
+        let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ',''))
         if (!userSession) {
             return null;
         }

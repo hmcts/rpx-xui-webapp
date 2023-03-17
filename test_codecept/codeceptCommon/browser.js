@@ -14,6 +14,12 @@ class DriverManager{
     async getCookies(){
         return await getActor().getCookies();
     }
+
+    async setCookies(cookies){
+        for(const cookie of cookies){
+            await getActor().setCookie(cookie)
+        }
+    }
 }
 
 const driverManager = new DriverManager();
@@ -42,8 +48,8 @@ class Browser{
         })
     }
 
-    get(url){
-        getActor().amOnPage(url);
+    async get(url){
+        await getActor().amOnPage(url);
     }
 
     async getCurrentUrl(){

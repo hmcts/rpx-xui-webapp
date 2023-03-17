@@ -1,14 +1,33 @@
 
 const global = require('./globals')
-const path = require('path')
+import applicationServer from '../localServer'
 
-const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-e2e`)
+const path = require('path')
+var spawn = require('child_process').spawn;
+
+const backendMockApp = require('../backendMock/app');
+let appWithMockBackend = null;
+const testType = process.env.TEST_TYPE
+
+let features = ''
+if (testType === 'e2e'){
+  features = `../e2e/features/app/**/*.feature`
+} else if (testType === 'ngIntegration'){
+  features = `../ngIntegration/tests/features/**/*.feature`
+
+}else{
+  throw new Error(`Unrecognized test type ${testType}`);
+}
+
+const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
+
+
 
 exports.config = {
   timeout: 120,
   "gherkin": {
-    "features": "../e2e/features/app/**/*.feature",
-    "steps": "../e2e/features/step_definitions/**/*.steps.js",
+    "features": features,
+    "steps": "../**/*.steps.js"
   },
   output: functional_output_dir,
  
@@ -108,16 +127,30 @@ exports.config = {
       enabled: true
     }
   },
-  bootstrap: false,
   include: {
   },
   retry: {
     Feature: 3
 
+  },
+  bootstrap:async () =>{
+    if (testType === "ngIntegration"){
+       await backendMockApp.startServer();
+      // appWithMockBackend = spawn("NODE_CONFIG_ENV=mock yarn start", { detached: true, shell :true});
+      // appWithMockBackend.stdout.on('data', function (data) {
+      //   console.log(data.toString());
+      // });
+      await applicationServer.start()
+      
+    }
+  },
+  teardown: async () => {
+    if(testType === "ngIntegration"){
+      await backendMockApp.stopServer();
+      // process.kill(-appWithMockBackend.pid)
+      await applicationServer.stop()
+
+    }
+    return true
   }
-  // teardown: () => {
-  //   console.log("Run complete...")
-    
-  //   return true
-  // }
 }

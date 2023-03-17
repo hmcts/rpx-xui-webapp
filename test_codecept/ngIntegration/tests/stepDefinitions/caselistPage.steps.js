@@ -99,5 +99,3 @@ const ccdApi = require('../../../nodeMock/ccd/ccdApi');
         let totalCount = await caseListPage.getCasesCount();
         expect(reqData.size).to.equal(totalCount);
     });
-
-});

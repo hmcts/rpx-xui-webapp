@@ -18,7 +18,7 @@ const nodeAppMockData = require('../../nodeMock/nodeApp/mockData');
 class BrowserUtil{
 
     async gotoHomePage(){
-        const baseUrl =  argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/';
+        const baseUrl =  'http://localhost:3000/';
         await browser.get(baseUrl);
     }
 
@@ -28,6 +28,11 @@ class BrowserUtil{
         }, 'secret', { expiresIn: 60 * 60 });
         this.addCookie('__auth__', token);
         
+    }
+
+    async getAuthCookieValue(){
+        const cookies = await browser.driver.manage().getCookies();
+        return cookies.find(cookie => cookie.name === '__auth__').value
     }
 
     addCookie(cookieName, cookieVal){

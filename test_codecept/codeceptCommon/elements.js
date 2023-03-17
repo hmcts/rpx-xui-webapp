@@ -52,39 +52,48 @@ class PuppeteerNativeElement {
     }
 
     async __checkAndGetNativeElement(){
-        this.page = await getActor().getPuppeteerPage();
-
-        let source = null;
-
-        if(this.parent){
-            if(this.parent.type === 'element'){
-               const parentElement =  await this.parent.__checkAndGetNativeElement();
-                source = parentElement;
-            } else if (this.parent.type === 'collection'){
-                const collectionCount = await this.parent.count();
-                if (this.selector >= collectionCount){
-                    throw Error(`Array index out of bound, elements count ${collectionCount} , index to get ${this.selector}`);
+        let i = 0;
+        while(i < 3){
+            try {
+                this.page = await getActor().getPuppeteerPage();
+                let source = null;
+                if (this.parent) {
+                    if (this.parent.type === 'element') {
+                        const parentElement = await this.parent.__checkAndGetNativeElement();
+                        source = parentElement;
+                    } else if (this.parent.type === 'collection') {
+                        const collectionCount = await this.parent.count();
+                        if (this.selector >= collectionCount) {
+                            throw Error(`Array index out of bound, elements count ${collectionCount} , index to get ${this.selector}`);
+                        }
+                        source = this.parent.nativeElements
+                    }
+                } else {
+                    source = this.page;
                 }
-                source = this.parent.nativeElements
-            }
-        }else {
-            source = this.page;
-        }
-        
-        if ( this.selector !== null){
-            const keys = Object.keys(this.selector)
-            if (keys[0] === 'css'){
-                this.nativeElement = await source.$(this.selector[keys[0]])
+                if (this.selector !== null) {
+                    const keys = Object.keys(this.selector)
+                    if (keys[0] === 'css') {
+                        this.nativeElement = await source.$(this.selector[keys[0]])
 
-            } else if (keys[0] === 'xpath') {
-                this.nativeElement = await source.$x(this.selector[keys[0]])
-                this.nativeElement = this.nativeElement[0]
+                    } else if (keys[0] === 'xpath') {
+                        this.nativeElement = await source.$x(this.selector[keys[0]])
+                        this.nativeElement = this.nativeElement[0]
 
-            }else{
-                this.nativeElement = source[this.selector]
+                    } else {
+                        this.nativeElement = source[this.selector]
+                    }
+                }
+                break;
+                
+            } catch (err) {
+                i++;
+                console.log(err)
             }
         }
         return this.nativeElement;
+        
+        
     }
 
    
@@ -125,13 +134,22 @@ class PuppeteerNativeElement {
     }
 
     async isDisplayed(){
-        await this.__checkAndGetNativeElement();
-        if (!this.nativeElement){
-            return false;
-        }
-        const elementVisisbleBox = await this.nativeElement.boundingBox();
+        let i = 0;
+        while(i < 0){
+            try {
+                await this.__checkAndGetNativeElement();
+                if (!this.nativeElement) {
+                    return false;
+                }
+                const elementVisisbleBox = await this.nativeElement.boundingBox();
 
-        return elementVisisbleBox !== null
+                return elementVisisbleBox !== null
+            } catch (err) {
+                i++;
+            }
+        }
+       
+        
     }
 
     async sendKeys(keys){
@@ -208,6 +226,11 @@ class PuppeteerNativeElement {
         await this.__checkAndGetNativeElement();
         await this.page.evaluate((el) => el.scrollIntoView(), this.nativeElement)
 
+    }
+
+    async isSelected() {
+        await this.__checkAndGetNativeElement();
+        return await this.getAttribute('checked')
     }
 }
 
@@ -318,18 +341,37 @@ class Element {
         this.selector = selector
     }
 
+    _childElement(locator){
+        let newSelector = '';
+        const locatorType = Object.keys(this.selector)[0]
+        if (this.selector[locatorType].includes(',')) {
+            for (let l of this.selector[locatorType].split(',')) {
+
+                if (newSelector !== '') {
+                    newSelector += locatorType === 'css' ? ',' : 'or';
+                }
+                let thisSelector = {}
+                thisSelector[locatorType] = l.trim()
+                newSelector += locate(thisSelector).find(locator)[locatorType]
+            }
+        } else {
+            newSelector = locate(this.selector).find(locator)
+        }
+        return new Element(newSelector)
+    }
+
     element(locator) {
-        return new PuppeteerNativeElement(locator, new PuppeteerNativeElement(this.selector, null))
+        return this._childElement(locator)
     }
 
     $(locator) {
-        return new PuppeteerNativeElement({ css: locator }, new PuppeteerNativeElement(this.selector, null))
+        return this._childElement(locator)
     }
     $$(locator) {
         return new ElementCollection({css: locator}, new PuppeteerNativeElement(this.selector, null))
     }
     wait() {
-        getActor().waitForElement(this.selector, 60)
+        getActor().waitForElement(this.selector, 10)
     }
 
     locator() {
@@ -346,7 +388,7 @@ class Element {
     }
 
     clear(){
-        getActor().clearField(this.selector)  
+        // getActor().clearField(this.selector)  
     }
 
     async click(){
@@ -363,8 +405,12 @@ class Element {
     }
 
     async isPresent(){
-        const count = await getActor().grabTextFromAll(this.selector);
-        return count.length > 0
+        try {
+            const count = await getActor().grabNumberOfVisibleElements(this.selector)
+            return count > 0;
+        } catch (err) {
+            return false;
+        } 
     }
 
     async isEnabled(){
@@ -373,10 +419,12 @@ class Element {
     }
 
     async isDisplayed(){
-        const ele = new PuppeteerNativeElement(this.selector,null)
-        return await ele.isDisplayed()
-      
-        
+        try{
+            await getActor().seeElement(this.selector)
+            return true;
+        }catch(err){
+            return false;
+        } 
     }
 
 
@@ -425,6 +473,10 @@ class Element {
 
     async scrollIntoView(){
         await getActor().scrollTo(this.selector)
+    }
+
+    async isSelected(){
+        return await getActor().grabAttributeFrom(this.selector, 'checked');
     }
 
     

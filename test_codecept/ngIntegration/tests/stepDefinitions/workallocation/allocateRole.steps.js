@@ -37,5 +37,3 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
         }
 
     });
-
-});

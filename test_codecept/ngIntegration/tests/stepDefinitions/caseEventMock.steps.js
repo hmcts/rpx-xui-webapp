@@ -117,7 +117,7 @@ const { DataTableArgument } = require('codeceptjs');
 
     Given('I set complex field overrides for case field {string} in event {string}', async function (fieldId, eventRef, overrides){
         const mockCaseEvent = global.scenarioData[eventRef];
-        const overridesHashes = overrides.hashes();
+        const overridesHashes = overrides.parse().hashes();
         mockCaseEvent.addComplexFieldOverridesToCaseField(fieldId, overridesHashes)
 
 
@@ -125,7 +125,7 @@ const { DataTableArgument } = require('codeceptjs');
 
     Given('I set caseField values in event config {string}', async function (eventRef, fields){
         const mockCaseEvent = global.scenarioData[eventRef];
-        const fieldHashes = fields.hashes();
+        const fieldHashes = fields.parse().hashes();
        
         for (let i = 0; i < fieldHashes.length; i++){
             mockCaseEvent.setCaseFieldValue(fieldHashes[i].id, fieldHashes[i].value);
@@ -175,4 +175,3 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
 
-});

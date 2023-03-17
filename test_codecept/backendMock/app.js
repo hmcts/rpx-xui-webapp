@@ -10,7 +10,13 @@ const http = axios.create({})
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 
 const taskApi = require('./services/task-management-api/routes')
+const workTypeRoutes = require('./services/task-management-api/workTypeRoutes')
+
+
 const locationRoutes = require('./services/rdLocation/routes')
+const roleAssignmentRoutes = require('./services/roleAssignments/routes')
+const bookingRoutes = require('./services/roleAssignments/bookingRoutes')
+
 
 const idamOpenId = require('./services/idam/routes')
 const sessionRoutes = require('./services/session/routes')
@@ -53,15 +59,19 @@ class MockApp {
         app.use(express.json());
 
         app.use((req,res,next) => {
-            console.log(`${req.method} : ${req.url}`);
+            // console.log(`${req.method} : ${req.url}`);
             next();
         })
 
-        app.use('/session', sessionRoutes)
+        app.use('/client', sessionRoutes)
 
         app.use('/', idamOpenId)
         app.use('/task', taskApi)
+        app.use('/work-types', workTypeRoutes)
         app.use('/refdata/location', locationRoutes)
+        app.use('/am/role-assignments', roleAssignmentRoutes)
+        app.use('/am/bookings', bookingRoutes)
+
 
 
         // await this.stopServer();
@@ -88,6 +98,7 @@ class MockApp {
 
 
 const mockInstance = new MockApp();
+module.exports = mockInstance;
 
 const args = minimist(process.argv)
 if (args.standalone) {

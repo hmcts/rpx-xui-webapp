@@ -8,8 +8,8 @@ const service = require('./index')
 const userApiData = require('../userApiData')
 
 
-router.post('/', (req, res) => {
-    userApiData.sendResponse(req, res, "onSearchTasks", () => service.getSearchTasks(25))
+router.get('/', (req, res) => {
+    userApiData.sendResponse(req, res, "onWorkTypes", () => service.getWorkTypes())
 });
 
-module.exports =  router;
+module.exports = router;

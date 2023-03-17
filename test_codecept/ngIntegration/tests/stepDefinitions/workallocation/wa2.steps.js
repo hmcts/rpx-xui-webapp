@@ -5,6 +5,9 @@ const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
 const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
+const backendMockClient = require('../../../../backendMock/client/index')
+const taskManagementMock = require('../../../../backendMock/services/task-management-api/index')
+
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('../../../../e2e/features/pageObjects/workAllocation/taskManagerPage');
@@ -30,7 +33,6 @@ const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 
 const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/myWorkPage');
-const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -102,7 +104,7 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (inputView,assignedState ,taskPermissionsTable) {
-        const taskPermissionHashes = taskPermissionsTable.hashes(); 
+        const taskPermissionHashes = taskPermissionsTable.parse().hashes(); 
         const tasks = [];
         let view = inputView.split(" ").join("");
         view = view.toLowerCase();
@@ -142,24 +144,16 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
 
+
     Given('I set MOCK tasks with attributes for view {string}', async function (forView, attributesDatatable) {
-        const tasksHashes = attributesdatatable.parse().hashes();
-        let tasksObj = {};
-        let view = forView.toLowerCase();
-        view = view.split(" ").join("");
-        let tasks = [];
-        if (view.includes("mytasks")) {
-            tasks = workAllocationMockData.myWorkMyTasks;
-        } else if (view.includes("availabletask")) {
-            tasks = workAllocationMockData.myWorkAvailableTasks;
-        } else if (view.includes("allwork")) {
-            tasks = workAllocationMockData.allWorkTasks;
-        } else {
-            throw new Error("Unrecognised task view " + forView);
+        const tasksHashes = attributesDatatable.parse().hashes();
+        
+        const response = { 
+            tasks:[],
+            total_records: tasksHashes.length
         }
-        tasksObj = tasks;
         await ArrayUtil.forEach(tasksHashes, async  (taskHash) => {
-            let task = tasksObj.tasks[taskHash.index];
+            let task = taskManagementMock.getTaskTemplate();
 
             let taskHashKeys = Object.keys(taskHash);
             await ArrayUtil.forEach(taskHashKeys, key => {
@@ -167,7 +161,7 @@ const { DataTableArgument } = require('codeceptjs');
                     //ignore index;
                 } else if (key.toLowerCase() === "permissions"){
                     task.permissions = taskHash[key].split(",");
-                    task.actions = workAllocationDataModel.getRelease2TaskActions(task.permissions, view, taskHash.assignee ? "assigned": "unassigned")
+                    // task.actions = workAllocationDataModel.getRelease2TaskActions(task.permissions, view, taskHash.assignee ? "assigned": "unassigned")
                 } else if (key.toLowerCase() === "assignee") {
                     if (taskHash[key] === ""){
                         delete task[key];
@@ -180,12 +174,13 @@ const { DataTableArgument } = require('codeceptjs');
                 }else{
                     task[key] = taskHash[key];
                 }
-
+                
             });
-            CucumberReporter.AddMessage(`Mock Task at index  ${taskHash.index}  `);
-            CucumberReporter.AddJson(task);
+            response.tasks.push(task)
         })
-       
+
+        
+        backendMockClient.setUserApiData(await browserUtil.getAuthCookieValue(), "onSearchTasks", response)
     });
 
 
@@ -277,7 +272,7 @@ const { DataTableArgument } = require('codeceptjs');
 
 
     Given('I set MOCK task details for WA release2', async function(taskDetailsDatatable){
-        const inputTaskDetails = taskDetailsdatatable.parse().hashes();
+        const inputTaskDetails = taskDetailsDatatable.parse().hashes();
 
         const taskDetails = workAllocationMockData.taskDetails;
         const taskKeys = Object.keys(inputTaskDetails);
@@ -349,5 +344,3 @@ const { DataTableArgument } = require('codeceptjs');
         
         
     }
-
-}) ;

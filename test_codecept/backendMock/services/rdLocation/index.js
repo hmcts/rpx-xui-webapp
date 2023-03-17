@@ -10,53 +10,89 @@ const courtTypeIds = {
 }
 
 const locationServiceCodes = {
-    "IA": "BFA1"
+    "IA": ["BFA1"]
     }
 
 class RDLocationService{
 
     constructor(){
-        this.allLocations = [];
+        this.caseManagementLocations = [];
         this.locationsConfig = [
             {
                 service:'IA',
-                startIndex:1000
+                startIndex:20000
             },
             {
                 service: 'CIVIL',
-                startIndex: 1000
+                startIndex: 10000
+            },
+            {
+                service: 'SSCS',
+                startIndex: 30000
             }
         ];
 
-        this.setupMockLocations();
+        this.setupMockCaseManagementLocations();
     }   
 
-    setupMockLocations(){
+    setupMockCaseManagementLocations(){
         this.locationsConfig.forEach(serviceConf => {
             const service = serviceConf.service;
             const typeIds = courtTypeIds[serviceConf.service];
-            const index = serviceConf.startIndex;
+            let index = serviceConf.startIndex;
             for(let i = 1; i<= 10; i++){
+                index++;
                 const temp = this.getMockLocations();
-                temp.court_name = `${service} ${i} Center court`;
+                temp.epimms_id = index+'';
+                temp.is_case_management_location = 'Y';
+                temp.court_name = `${service} Court Center ${i}`;
+                temp.venue_name = `${service} Court Center ${i}`;
+                temp.site_name = `${service} Court Center ${i}`;
                 temp.court_type_id = typeIds[0];
                 temp.court_type = `${service} Court`;
-                this.allLocations.push(temp)
+                this.caseManagementLocations.push(temp)
             }
 
         })
     }
 
-    searchLocations(seearchTerm, serviceIds){
-        return this.allLocations.filter(court => {
-            return serviceIds.include(court.court_type_id) && court.court_name.includes(seearchTerm)
-        })
+    getLocationById(epimms_id){
+        const results = this.caseManagementLocations.filter(loc => loc.epimms_id === epimms_id);
+        return results;
+    }
+
+    searchLocations(seearchTerm, courtTypeIds){
+        const results = [];
+        for (const court of this.caseManagementLocations){
+            if (courtTypeIds.includes(court.court_type_id) && court.court_name.includes(seearchTerm)){
+                results.push(court);
+            }
+        }
+        return results;
     }
 
     getServiceLocations(serviceCode){
-        return this.allLocations.filter(court => {
-            return court.court_type_id === serviceCode;
-        })
+
+        const services = Object.keys(locationServiceCodes)
+        const courtTypeIds = []
+        for(const service of services){
+            if(locationServiceCodes[service].includes(serviceCode)){
+                courtTypeIds.push(courtTypeIds[service])
+            }
+        }
+        const results = [];
+        for (const court of this.caseManagementLocations) {
+            if (courtTypeIds.includes(court.court_type_id) && court.court_name.includes(seearchTerm)) {
+                results.push(court);
+            }
+        }
+        return {
+            "service_code": serviceCode,
+            "court_type_id": courtTypeIds[0],
+            "court_type": "CASE_MANAGEMENT",
+            "welsh_court_type": "N",
+            "court_venues": results
+        };
     }
 
 
@@ -75,7 +111,7 @@ class RDLocationService{
             "dx_address": "",
             "epimms_id": "999983",
             "fact_url": "",
-            "is_case_management_location": "N",
+            "is_case_management_location": "Y",
             "is_hearing_location": "Y",
             "is_nightingale_court": "N",
             "is_temporary_location": "Y",

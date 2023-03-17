@@ -1,21 +1,15 @@
-@ng @ignore
+@ng @ignore @codecept_enabled
 Feature: WA Release 2: My work - Work filters, Services and locations for user roles
     https://tools.hmcts.net/jira/browse/EUI-5921
 
     Background: Mock and browser setup
-        Given I init MockApp
-
-
+       
         Given I set mock for existing bookings
             | appointmentId | locationId | locationName    | beginTime | endTime |
             | 1001          | 100001     | Test location 1 | -1        | +2      |
             | 1002          | 100002     | Test location 2 | -2        | +4      |
             | 1003          | 100003     | Test location 3 | -4        | +8      |
 
-        Given I set MOCK request "/workallocation/task" intercept with reference "workallocationTaskRequest"
-        Given I set MOCK request "/workallocation/my-work/cases" intercept with reference "workallocationCasesRequest"
-
-        Given I set MOCK request "/api/locations/getLocations" intercept with reference "workFilterLocationsRequest"
 
     Scenario Outline:  Services displayed for fee-paid judicial user bookable service "<bookableServices>"
         Given I have workallocation on boarded services "<onBoardedServices>"
@@ -75,7 +69,7 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
             | 20006 | IA Court Newcastle     |
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
+            | 20009 | IA Court Center 1  |
 
 
         Given I set MOCK locations with names in service "CIVIL"
@@ -158,7 +152,7 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
             | 20006 | IA Court Newcastle     |
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
+            | 20009 | IA Court Center 1  |
 
 
         Given I set MOCK locations with names in service "CIVIL"
@@ -253,7 +247,7 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
             | 20006 | IA Court Newcastle     |
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
+            | 20009 | IA Court Center 1  |
 
 
         Given I set MOCK locations with names in service "CIVIL"

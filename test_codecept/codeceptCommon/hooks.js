@@ -66,11 +66,14 @@ module.exports = async function () {
 async function attachBrowserLogs(){
     const logs = await browser.getBrowserLogs();
     for(const log of logs){
-        if(log._type !== 'error'){
+        if (log._type !== 'error'){
             continue;
         }
         codeceptMochawesomeLog.AddMessage(`Error: ${log._text}`);
         for(const stacktraceLocation of log._stackTraceLocations){
+            if (stacktraceLocation.url.includes('.js')){
+                continue;
+            }
             codeceptMochawesomeLog.AddMessage(`       ${stacktraceLocation.url}:${stacktraceLocation.lineNumber}`);
         }
     }

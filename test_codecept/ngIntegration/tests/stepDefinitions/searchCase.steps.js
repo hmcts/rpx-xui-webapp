@@ -153,5 +153,3 @@ const caseDetailsData = require('../../../nodeMock/ccd/caseDetails_data');
         
     });
 
-
-});

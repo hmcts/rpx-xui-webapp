@@ -34,6 +34,3 @@ const ccdApi = require('../../../nodeMock/ccd/ccdApi');
         
     });
 
-
-});
-

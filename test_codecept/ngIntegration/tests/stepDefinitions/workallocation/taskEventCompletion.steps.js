@@ -49,8 +49,6 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Given('I set MOCK task details', async function(datatable){
-        const taskRow = datatable.rowsHash();
+        const taskRow = datatable.parse().rowsHash();
         waMockData.setTaskDetails(taskRow); 
     });
-
-});

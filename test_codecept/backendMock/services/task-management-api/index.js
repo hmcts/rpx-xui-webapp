@@ -17,7 +17,29 @@ class TaskManagementApi{
         return { tasks:tasks , 'total_records' : count};
     }
 
-
+    getWorkTypes(){
+        return {
+            'work_types':[
+                        {
+                            "key": "hearing_work",
+                            "label": "Hearing work"
+                        },
+                        {
+                            "key": "decision_making_work",
+                            "label": "Decision-making work"
+                        },
+                        {
+                            "key": "applications",
+                            "label": "Applications"
+                        },
+                        {
+                            "key": "access_requests",
+                            "label": "Access requests"
+                        }
+                    ]
+        }
+    }
+    
 
     getTaskTemplate(){
         return {

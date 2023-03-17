@@ -8,18 +8,23 @@ const service = require('./index')
 const userApiData = require('../userApiData')
 
 
+
 router.get('/court-venues', (req, res) => {
-    const serviceIds = req.query.serviceIds;
+    const locationId = req.query['epimms_id'];
+    const locations = service.getLocationById(locationId);
+    res.send(locations)
+    // userApiData.sendResponse(req, res, "onSearchLocations", () => service.searchLocations(searchTerm, serviceIds ))
+
+});
+
+router.get('/court-venues/venue-search?', (req, res) => {
+    const serviceIds = req.query['court-type-id'].split(',');
     const locationType = req.query.locationType;
-    const searchTerm = req.query.searchTerm;
+    const searchTerm = req.query['search-string'];
 
-    const service_code = req.query.service_code
-    if (service_code){
-        userApiData.sendResponse(req, res, "onServiceLocations", () => service.getServiceLocations(service_code))
-    } else if (serviceIds){
-        userApiData.sendResponse(req, res, "onServiceLocations", () => service.searchLocations(serviceIds, searchTerm))
-
-    }
+    const locations = service.searchLocations(searchTerm, serviceIds);
+    res.send(locations)
+    // userApiData.sendResponse(req, res, "onSearchLocations", () => service.searchLocations(searchTerm, serviceIds ))
 
 });
 

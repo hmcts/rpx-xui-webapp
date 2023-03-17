@@ -311,5 +311,3 @@ const { DataTableArgument } = require('codeceptjs');
         }
         return personsData;
     }
-
-});

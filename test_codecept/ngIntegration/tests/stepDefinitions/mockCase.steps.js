@@ -256,7 +256,7 @@ const { DataTableArgument } = require('codeceptjs');
         }
         
     });
-});
+
 
 function getCaseDetailsMetadataField(caseDetails, metadatFieldId){
     const fields = caseDetails.metadataFields;

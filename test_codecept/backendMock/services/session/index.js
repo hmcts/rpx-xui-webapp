@@ -11,7 +11,7 @@ class MockSessionService{
             baseURL: "http://localhost:3000",
             timeout: 60000,
         })
-        this.sessionsPath = path.resolve(__dirname, '../../../../api/.sessions')
+        this.sessionsPath = path.resolve(__dirname, '../../../../.sessions')
         this.defaultSession = '';
     }
 
@@ -75,12 +75,64 @@ class MockSessionService{
         return authSessionFile;
     }
 
+    async waitForSessionWithRoleAssignments(auth){
+
+
+        return new Promise((resolve,reject) => {
+            const interval = setInterval(async () => {
+                const sessionFile = await this.getSessionFileAuth(auth);
+                let sessionJson = await fs.readFileSync(sessionFile);
+                sessionJson = JSON.parse(sessionJson);
+
+                if(sessionJson.roleAssignmentResponse){
+                    clearInterval(interval);
+                    resolve(true)
+                }
+            }, 2000)
+
+            setTimeout(() => {
+                clearInterval(interval)
+                reject('Session not updated with actual role assignments')
+            },40000)
+            
+        })
+
+    }
+
     async updateAuthSessionWithRoles(auth, roles){
+        await this.waitForSessionWithRoleAssignments(auth)
+        const sessionFile = await this.getSessionFileAuth(auth);
+        let sessionJson = await fs.readFileSync(sessionFile);
+
+        sessionJson = JSON.parse(sessionJson)
+
+
+        // console.log(sessionFile)
+        // console.log(JSON.stringify(sessionJson.passport.user), null, 2)
+
+
+        sessionJson.passport.user.userinfo.roles = roles;
+        await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
+    }
+
+    async updateAuthSessionWithRoleAssignments(auth, roleAssignments) {
+        await this.waitForSessionWithRoleAssignments(auth)
+
         const sessionFile = await this.getSessionFileAuth(auth);
         let sessionJson = await fs.readFileSync(sessionFile);
         sessionJson = JSON.parse(sessionJson)
-        sessionJson.passport.user.userinfo.roles = roles;
-        fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
+        sessionJson.roleAssignmentResponse = roleAssignments;
+        await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
+    }
+
+    async getSessionRolesAndRoleAssignments(auth){
+        const sessionFile = await this.getSessionFileAuth(auth);
+        let sessionJson = await fs.readFileSync(sessionFile);
+        sessionJson = JSON.parse(sessionJson)
+        return {
+            roles: sessionJson.passport.user.userinfo.roles,
+            roleAssignments: sessionJson.roleAssignmentResponse
+        }
     }
 }
 

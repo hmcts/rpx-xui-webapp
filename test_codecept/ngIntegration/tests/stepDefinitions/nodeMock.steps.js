@@ -19,11 +19,11 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Given('I start MockApp', async function () {
-        try{
-            await MockApp.stopServer();
-        }
-        catch(err){}
-       await MockApp.startServer();
+    //     try{
+    //         await MockApp.stopServer();
+    //     }
+    //     catch(err){}
+    //    await MockApp.startServer();
     });
 
     Given('I stop MockApp', async function () {
@@ -37,7 +37,7 @@ const { DataTableArgument } = require('codeceptjs');
 
     When('I set MOCK with user roles', async function(rolesTable){
         const roles = [];
-        const rolesTablerows = rolesTable.rows();
+        const rolesTablerows = rolesTable.parse().rows();
         for (const row of rolesTablerows){
             roles.push(row[0]);
         }
@@ -47,46 +47,46 @@ const { DataTableArgument } = require('codeceptjs');
      });
 
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
-        global.scenarioData[reference] = null;
-        MockApp.addIntercept(url,(req,res,next) => {
-            CucumberReporter.AddMessage(`Intercepted: ${url}`)
-            CucumberReporter.AddJson(req.body) 
-            global.scenarioData[reference] = req.body;
-            next();
-        })
+        // global.scenarioData[reference] = null;
+        // MockApp.addIntercept(url,(req,res,next) => {
+        //     CucumberReporter.AddMessage(`Intercepted: ${url}`)
+        //     CucumberReporter.AddJson(req.body) 
+        //     global.scenarioData[reference] = req.body;
+        //     next();
+        // })
      });
 
     Given('I set MOCK request {string} response log to report', async function (url) {
-        MockApp.addIntercept(url, (req, res, next) => { 
-            let send = res.send;
-            res.send = function (body) {
-                CucumberReporter.AddMessage(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort }" ---------------------------`);
-                CucumberReporter.AddMessage('Intercept response on MOCK api ' + url);
-                CucumberReporter.AddMessage('response code ' + res.statusCode);
-                try{
-                    CucumberReporter.AddJson(body)
-                }catch(err){
-                    CucumberReporter.AddMessage(body)
-                }
-                CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
-                send.call(this, body);
-            }
-            next();
-        })
+        // MockApp.addIntercept(url, (req, res, next) => { 
+        //     let send = res.send;
+        //     res.send = function (body) {
+        //         CucumberReporter.AddMessage(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort }" ---------------------------`);
+        //         CucumberReporter.AddMessage('Intercept response on MOCK api ' + url);
+        //         CucumberReporter.AddMessage('response code ' + res.statusCode);
+        //         try{
+        //             CucumberReporter.AddJson(body)
+        //         }catch(err){
+        //             CucumberReporter.AddMessage(body)
+        //         }
+        //         CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
+        //         send.call(this, body);
+        //     }
+        //     next();
+        // })
     });
 
     Given('I set MOCK request {string} intercept, hold response with reference {string}', async function (url,reference) {
-        MockApp.addIntercept(url, (req, res, next) => {
-            CucumberReporter.AddJson(req.body)
-            let send = res.send;
-            res.send = function (body) {
-                CucumberReporter.AddMessage('Intercept response or api ' + url);
-                CucumberReporter.AddJson(body)
-                global.scenarioData[reference] = body;
-                send.call(this, body);
-            }
-            next();
-        })
+        // MockApp.addIntercept(url, (req, res, next) => {
+        //     CucumberReporter.AddJson(req.body)
+        //     let send = res.send;
+        //     res.send = function (body) {
+        //         CucumberReporter.AddMessage('Intercept response or api ' + url);
+        //         CucumberReporter.AddJson(body)
+        //         global.scenarioData[reference] = body;
+        //         send.call(this, body);
+        //     }
+        //     next();
+        // })
     });
 
      Given('I reset reference {string} value to null', async function(reference){
@@ -98,15 +98,15 @@ const { DataTableArgument } = require('codeceptjs');
      });
 
      When('I wait for reference {string} value not null', async function(reference){
-         await BrowserWaits.retryWithActionCallback(async () => {
-             expect(global.scenarioData[reference] !== null, `reference ${reference} is null`).to.be.true;
-             try{
-                 reportLogger.AddJson(global.scenarioData[reference]);
-             }catch(err){
-                 reportLogger.AddMessage(global.scenarioData[reference]);
-             }
+        //  await BrowserWaits.retryWithActionCallback(async () => {
+        //      expect(global.scenarioData[reference] !== null, `reference ${reference} is null`).to.be.true;
+        //      try{
+        //          reportLogger.AddJson(global.scenarioData[reference]);
+        //      }catch(err){
+        //          reportLogger.AddMessage(global.scenarioData[reference]);
+        //      }
  
-         });
+        //  });
      });
 
      Given('I set MOCK api method {string} endpoint {string} with error response code {int}', async function(apiMethod, apiEndpoint, responseCode){
@@ -175,6 +175,3 @@ const { DataTableArgument } = require('codeceptjs');
 
 
      });
-
-
-});

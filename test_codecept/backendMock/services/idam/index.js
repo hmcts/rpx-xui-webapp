@@ -50,7 +50,7 @@ const openIdConfig = {
         'client_secret_basic'
     ],
     scopes_supported: ['acr', 'openid', 'profile', 'roles', 'authorities', 'email'],
-    issuer: 'https://forgerock-am.service.core-compute-idam-demo.internal:8443/openam/oauth2/realms/root/realms/hmcts',
+    issuer: 'https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts',
     id_token_encryption_enc_values_supported: [
         'A256GCM',
         'A192GCM',
@@ -60,7 +60,7 @@ const openIdConfig = {
         'A256CBC-HS512'
     ],
     acr_values_supported: [],
-    authorization_endpoint: 'https://idam-web-public.demo.platform.hmcts.net/o/authorize',
+    authorization_endpoint: 'https://idam-web-public.aat.platform.hmcts.net/o/authorize',
     request_object_encryption_enc_values_supported: [
         'A256GCM',
         'A192GCM',
@@ -86,7 +86,7 @@ const openIdConfig = {
         'PS256', 'PS512',
         'RS512'
     ],
-    token_endpoint: 'https://idam-web-public.demo.platform.hmcts.net/o/token',
+    token_endpoint: 'https://idam-web-public.aat.platform.hmcts.net/o/token',
     response_types_supported: [
         'code token id_token',
         'code',
@@ -105,7 +105,7 @@ const openIdConfig = {
         'A192CBC-HS384',
         'A256CBC-HS512'
     ],
-    end_session_endpoint: 'https://idam-web-public.demo.platform.hmcts.net/o/endSession',
+    end_session_endpoint: 'https://idam-web-public.aat.platform.hmcts.net/o/endSession',
     rcs_request_encryption_enc_values_supported: [
         'A256GCM',
         'A192GCM',
@@ -124,7 +124,7 @@ const openIdConfig = {
         'dir',
         'A192KW'
     ],
-    userinfo_endpoint: 'https://idam-web-public.demo.platform.hmcts.net/o/userinfo',
+    userinfo_endpoint: 'https://idam-web-public.aat.platform.hmcts.net/o/userinfo',
     id_token_encryption_alg_values_supported: [
         'RSA-OAEP',
         'RSA-OAEP-256',
@@ -134,7 +134,7 @@ const openIdConfig = {
         'dir',
         'A192KW'
     ],
-    jwks_uri: 'https://idam-web-public.demo.platform.hmcts.net/o/jwks',
+    jwks_uri: 'https://idam-web-public.aat.platform.hmcts.net/o/jwks',
     subject_types_supported: ['public'],
     id_token_signing_alg_values_supported: ['HS256', 'HS512', 'RS256', 'HS384'],
     request_object_signing_alg_values_supported: ['HS256', 'HS512', 'RS256', 'HS384'],

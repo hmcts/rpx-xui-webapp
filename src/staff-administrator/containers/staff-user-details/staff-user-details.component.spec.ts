@@ -161,12 +161,12 @@ describe('StaffUserDetailsComponent', () => {
   });
 
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
-    expect(component.userDetails.suspended).toBe('false');
+    expect(component.userDetails.suspended).toBe(false);
     mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
     component.updateUserStatus();
 
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(component.userDetails.suspended).toBe('true');
+    expect(component.userDetails.suspended).toBe(true);
     expect(component.suspendedStatus).toBe('suspended');
   });
 
@@ -220,7 +220,7 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should have a disabled button if suspended is true', () => {
     const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));
-    expect(component.userDetails.suspended).toBe('false');
+    expect(component.userDetails.suspended).toBe(false);
     expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toBeNull();
     component.userDetails.suspended = true;
     fixture.detectChanges();

@@ -10,7 +10,7 @@ import { StaffDataAccessService } from '../../../../services/staff-data-access/s
   providedIn: 'root'
 })
 export class StaffDataFilterService {
-  private tableData = new BehaviorSubject<{ results: StaffUsersFilterResult[]; }>({ results: [] });
+  private tableData = new BehaviorSubject<{ results: StaffUsersFilterResult[]; } | null>(null);
   private readonly errors = new BehaviorSubject<ErrorMessage>({
     title: 'There is a problem',
     description: '',

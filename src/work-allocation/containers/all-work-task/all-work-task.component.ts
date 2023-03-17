@@ -132,13 +132,13 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { findTaskNameControl: string, location: string, service: string, selectPerson: string, person: Person, taskType: string, taskName: string }): void {
+  public onSelectionChanged(selection: { findTaskNameControl: any, location: string, service: string, selectPerson: string, person: Person, taskType: string, taskName: any }): void {
     this.selectedLocation.id = selection.location;
     this.selectedServices = [selection.service];
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
-    this.selectedTaskName = selection.findTaskNameControl;
+    this.selectedTaskName = selection.taskName ? selection.taskName.task_type_id : null;
     this.onPaginationHandler(1);
   }
 
@@ -172,7 +172,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   private getTaskNameParameter(): {key: string, operator: string, values: string[]} {
     if (this.selectedTaskName) {
-      return {key: 'task_name', operator: 'IN', values: [this.selectedTaskName]};
+      return {key: 'task_type', operator: 'IN', values: [this.selectedTaskName]};
     }
   }
 }

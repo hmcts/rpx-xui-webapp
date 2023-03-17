@@ -1,4 +1,4 @@
-import { createProxyMiddleware as proxy, Options } from '@hmcts/http-proxy-middleware';
+import { createProxyMiddleware as proxy, Options } from 'http-proxy-middleware';
 import * as modifyResponse from 'node-http-proxy-json';
 import { getConfigValue } from '../../configuration';
 import { LOGGING } from '../../configuration/references';

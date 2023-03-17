@@ -26,7 +26,7 @@
         </div>
         <br>
         <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">Services</dt>
+          <dt class="govuk-summary-list__key">Service</dt>
           <dd class="govuk-summary-list__value">
             {{ userDetails.work_area | pluckAndJoin: 'area_of_work':', ' }}
           </dd>
@@ -54,8 +54,18 @@
         </div>
         <br>
         <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">Roles</dt>
+          <dt class="govuk-summary-list__key">Role</dt>
           <dd class="govuk-summary-list__value">{{ userDetails.role | pluckAndJoin: 'role':', '  }}</dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Job title</dt>
+          <dd class="govuk-summary-list__value">
+            <div *ngIf="userDetails.case_allocator === 'Y'">Case allocator</div>
+            <div *ngIf="userDetails.task_supervisor === 'Y'">Task supervisor</div>
+            <div *ngIf="userDetails.staff_admin === 'Y'">Staff administrator</div>
+          </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
         <br>

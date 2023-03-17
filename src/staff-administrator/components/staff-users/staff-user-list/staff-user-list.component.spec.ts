@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { of } from 'rxjs';
-import { StaffUser } from '../../../models/staff-user.model';
+import { StaffUsersFilterResult } from '../../../models/staff-users-filter-result.model';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffUserListComponent } from './staff-user-list.component';
 
@@ -57,7 +57,7 @@ describe('StaffUserListComponent', () => {
 
   it('should display data if tableData$ returns { results: StaffUser[] }' +
     ' and length of results is greater than 0', () => {
-    mockStaffDataFilterService.tableData$ = of({ results: [ {} as StaffUser ] });
+    mockStaffDataFilterService.tableData$ = of({ results: [ {} as StaffUsersFilterResult ] });
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('table'));
     expect(element).toBeTruthy();

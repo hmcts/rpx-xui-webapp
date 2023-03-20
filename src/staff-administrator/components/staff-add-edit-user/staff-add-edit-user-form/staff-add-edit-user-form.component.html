@@ -1,10 +1,12 @@
-<exui-page-wrapper [backLink]="'/staff'">
-  <div *ngIf="(errors$ | async) as errors">
-    <exui-error-message [error]="errors"></exui-error-message>
+<exui-page-wrapper [backLink]="'../'">
+  <div class="govuk-grid-column-full">
+    <div *ngIf="(errors$ | async) as errors">
+      <exui-error-message [error]="errors"></exui-error-message>
+    </div>
+    <div>
+      <ng-content select="[pageHeader]"></ng-content>
+      <xuilib-generic-filter [config]="filterConfig"
+      ></xuilib-generic-filter>
+    </div>
   </div>
-
-  <ng-content select="[pageHeader]"></ng-content>
-
-  <xuilib-generic-filter [config]="filterConfig"
-  ></xuilib-generic-filter>
 </exui-page-wrapper>

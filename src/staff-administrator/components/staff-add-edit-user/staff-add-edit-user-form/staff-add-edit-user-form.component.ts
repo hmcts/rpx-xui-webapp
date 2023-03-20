@@ -1,63 +1,69 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BookingCheckType, FilterConfig, FilterService, GenericFilterComponent, GroupOptions } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {
+  BookingCheckType,
+  FilterConfig,
+  FilterService,
+  GenericFilterComponent,
+  GroupOptions
+} from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { Observable, Subscription } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
+import { STAFF_REGIONS } from '../../../models/staff-regions';
 
 @Component({
   selector: 'exui-staff-add-edit-user-form',
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit {
-  // @Input() public formGroup!: FormGroup;
-  public formId: string = 'staff-add-edit-user';
+export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() public editMode = false;
+  public formId: string = '';
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
     jobTitles: StaffFilterOption[],
     skills: GroupOptions[],
-    services: StaffFilterOption[]
+    services: StaffFilterOption[],
+    locations: LocationByEPIMMSModel[];
   };
+  public roles: StaffFilterOption[] = [
+    { key: 'case-allocator', label: 'Case allocator' },
+    { key: 'task-supervisor', label: 'Task supervisor' },
+    { key: 'staff-administrator', label: 'Staff administrator' },
+  ];
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
-  private previousUrl: string;
+  private filterStreamSubscription: Subscription;
 
   @ViewChild(GenericFilterComponent) public genericFilterComponent: GenericFilterComponent;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
     private filterService: FilterService,
-    private router: Router
-  ) {
-    const currentNavigation = this.router.getCurrentNavigation();
-    if (currentNavigation) {
-      const previousNavigation = currentNavigation.previousNavigation;
-      if (previousNavigation) {
-        this.previousUrl = previousNavigation.finalUrl.toString();
-      }
-    }
+  ) {}
+
+  public ngOnInit() {
+    this.formId = this.activatedRoute.snapshot.data.formId;
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
-      services: this.activatedRoute.snapshot.data.services
+      services: this.activatedRoute.snapshot.data.services,
+      locations: this.activatedRoute.snapshot.data.locations
     };
-  }
-
-  public ngOnInit() {
 
     this.initFormConfig();
-    this.filterService.getStream(this.formId).subscribe(data => {
+    this.filterStreamSubscription = this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
         if (data.reset) {
           this.resetForm();
         } else {
-          const checkYourAnswerUrl = '/staff/add-user/check-your-answers';
-          if (this.previousUrl !== checkYourAnswerUrl) {
-            this.router.navigateByUrl(checkYourAnswerUrl);
+          if (this.genericFilterComponent?.submitted) {
+            this.router.navigate(['check-your-answers'], { relativeTo: this.activatedRoute });
           }
         }
       }
@@ -75,8 +81,31 @@ export class StaffAddEditUserFormComponent implements OnInit {
         } else {
           return;
         }
+      }),
+      tap((errors) => {
+        if (errors) {
+          window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
+        }
       })
     );
+  }
+
+  public ngOnDestroy() {
+    this.filterStreamSubscription?.unsubscribe();
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+  }
+
+  public fragmentFocus(): void {
+    this.activatedRoute.fragment.subscribe(frag => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
+        element.focus();
+      }
+    });
   }
 
   public resetForm() {
@@ -85,9 +114,10 @@ export class StaffAddEditUserFormComponent implements OnInit {
   }
 
   public initFormConfig() {
+    console.log(...this.staffFilterOptions.services);
     this.filterConfig = {
       id: this.formId,
-        fields: [
+      fields: [
         {
           name: 'Personal Information',
           type: 'group-title',
@@ -96,7 +126,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxSelected: 0
         },
         {
-          name: 'firstName',
+          name: 'first_name',
           type: 'text-input',
           title: 'First Name',
           titleClasses: 'govuk-label',
@@ -110,7 +140,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxlength: 255,
         },
         {
-          name: 'lastName',
+          name: 'last_name',
           type: 'text-input',
           title: 'Last Name',
           titleClasses: 'govuk-label',
@@ -124,7 +154,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxlength: 255,
         },
         {
-          name: 'email',
+          name: 'email_id',
           type: 'email-input',
           title: 'Email',
           titleClasses: 'govuk-label',
@@ -136,13 +166,14 @@ export class StaffAddEditUserFormComponent implements OnInit {
           subTitle: '',
           options: [],
           maxWidth480px: true,
+          readonly: this.editMode
         },
         {
-          name: 'region',
+          name: 'region_id',
           type: 'select',
           title: 'Region',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [{ key: 'region-1', label: 'Region 1'}],
+          options: [...STAFF_REGIONS],
           minSelected: 1,
           maxSelected: 10,
           minSelectedError: 'Select at least one region',
@@ -179,7 +210,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           subTitle: 'A user can only have one primary location.',
           locationTitle: 'Enter a location name',
           options: [],
-          minSelected: 1,
+          minSelected: 0,
           maxSelected: 1,
           displayMinSelectedError: true,
           minSelectedError: 'Select at least one location',
@@ -192,18 +223,18 @@ export class StaffAddEditUserFormComponent implements OnInit {
           title: 'Additional locations',
           titleHint: '(optional)',
           locationTitle: 'Enter a location name',
+          options: [],
           enableAddButton: true,
-          options: [{key: 'location-1', label: 'Location 1'}, {key: 'location-2', label: 'Location 2'}],
           minSelected: 0,
           maxSelected: 0,
           maxWidth480px: true,
         },
         {
-          name: 'userType',
+          name: 'user_type',
           type: 'select',
           title: 'User type',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [...this.staffFilterOptions.userTypes],
+          options: [...this.staffFilterOptions.userTypes.map(item => ({key: item.label, label: item.label}))],
           minSelected: 1,
           maxSelected: 1,
           minSelectedError: 'Select at least one user type',
@@ -217,11 +248,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
           title: 'Roles',
           titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [
-            { key: 'case-allocator', label: 'Case Allocator' },
-            { key: 'task-supervisor', label: 'Task Supervisor' },
-            { key: 'staff-administrator', label: 'Staff Administrator' },
-          ],
+          options: [...this.roles],
           minSelected: 0,
           maxSelected: 99,
           lineBreakBefore: true,
@@ -237,7 +264,6 @@ export class StaffAddEditUserFormComponent implements OnInit {
           maxSelected: 99,
           displayMinSelectedError: true,
           minSelectedError: 'Select at least one job title',
-          maxWidth480px: true,
           lineBreakBefore: true,
         },
         {
@@ -247,7 +273,6 @@ export class StaffAddEditUserFormComponent implements OnInit {
           titleHint: '(optional)',
           titleClasses: 'govuk-label govuk-label--m',
           options: [...this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b))],
-          // options: [],
           groupOptions: this.staffFilterOptions.skills,
           minSelected: 0,
           maxSelected: 10,
@@ -256,7 +281,7 @@ export class StaffAddEditUserFormComponent implements OnInit {
         },
       ],
       persistence: 'session',
-      applyButtonText: 'Continue',
+      applyButtonText: this.editMode ? 'Save changes' : 'Continue',
       cancelButtonText: 'Cancel',
       enableDisabledButton: false,
       showCancelFilterButton: true,

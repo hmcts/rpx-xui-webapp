@@ -1,0 +1,113 @@
+<div>
+  <a class="govuk-back-link" [routerLink]="'/staff'">Back</a>
+</div>
+<ng-container *ngIf="userDetails">
+  <div *ngIf="suspendedStatus">
+    <exui-staff-suspended-banner [messageType]="suspendedStatus"></exui-staff-suspended-banner>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+      <h2 class="govuk-heading-m">User details</h2>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Name</dt>
+          <dd class="govuk-summary-list__value">{{userDetails.first_name}} {{userDetails.last_name}}</dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Email address</dt>
+          <dd class="govuk-summary-list__value">{{ userDetails.email_id }}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Service</dt>
+          <dd class="govuk-summary-list__value">
+            {{ userDetails.work_area | pluckAndJoin: 'area_of_work':', ' }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+          </dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Region</dt>
+          <dd class="govuk-summary-list__value">{{ userDetails.region }}</dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row" *ngFor="let location of userDetails.base_location; let i = index;">
+          <dt class="govuk-summary-list__key">{{ location.is_primary ? 'Primary location' : 'Additional locations' }}</dt>
+          <dd class="govuk-summary-list__value">{{ location.location }}</dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">User type</dt>
+          <dd class="govuk-summary-list__value">{{ userDetails.user_type }}</dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Role</dt>
+          <dd class="govuk-summary-list__value">{{ userDetails.role | pluckAndJoin: 'role':', '  }}</dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Job title</dt>
+          <dd class="govuk-summary-list__value">
+            <div *ngIf="userDetails.case_allocator === 'Y'">Case allocator</div>
+            <div *ngIf="userDetails.task_supervisor === 'Y'">Task supervisor</div>
+            <div *ngIf="userDetails.staff_admin === 'Y'">Staff administrator</div>
+          </dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Skills</dt>
+          <dd class="govuk-summary-list__value">
+            <span *ngFor="let skill of userDetails.skills; let isLast=last">
+              {{skill.description}}
+              <span *ngIf="!isLast"><br/></span>
+            </span>
+          </dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div><br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Status</dt>
+          <dd class="govuk-summary-list__value">
+            <exui-staff-status [status]="userDetails.suspended === 'true'"></exui-staff-status>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+      </dl>
+
+      <div class="govuk-button-group">
+        <button id="updateUserButton" class="govuk-button" data-module="govuk-button" (click)="onUpdateUser()">
+          Update
+        </button>
+        <div [matTooltip]="userDetails.suspended === 'true' ? 'If you want to unsuspend a user raise a support request' : ''">
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
+                  id="user-suspended-restore-button"
+                  [disabled]="userDetails.suspended === 'true'"
+                  [attr.aria-disabled]="userDetails.suspended === 'true'"
+                  [class.govuk-button--disabled]="userDetails.suspended === 'true'"
+                  (click)="updateUserStatus()">
+            {{ userDetails.suspended === 'true' ? 'Restore' : 'Suspend' }}
+          </button>
+        </div>
+
+        <button id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="onCopyUser()">
+          Copy
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>

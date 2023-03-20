@@ -77,7 +77,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected store: Store<fromActions.State>,
     protected checkReleaseVersionService: CheckReleaseVersionService
   ) {
-    this.isUpdatedTaskPermissions$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
+    this.isUpdatedTaskPermissions$ = this.featureToggleService?.isEnabled(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature);
   }
 
   public get tasks(): Task[] {

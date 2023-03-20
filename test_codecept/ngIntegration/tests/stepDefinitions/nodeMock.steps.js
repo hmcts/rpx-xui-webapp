@@ -3,36 +3,36 @@ var { defineSupportCode } = require('cucumber');
 const MockApp = require('../../../nodeMock/app');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const browserUtil = require('../../util/browserUtil');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
+const nodeAppMockData = require('../../mockData/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAllocationDataModel = require("../../../dataModels/workAllocation");
 const reportLogger = require('../../../codeceptCommon/reportLogger');
-const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
+const workAllocationMockData = require('../../mockData/workAllocation/mockData');
 const { DataTableArgument } = require('codeceptjs');
 
+const idamlogin = require('../../util/idamLogin')
 
 
     Given('I init MockApp', async function () {
-        MockApp.init();
+        // MockApp.init();
     });
 
     Given('I start MockApp', async function () {
-    //     try{
-    //         await MockApp.stopServer();
-    //     }
-    //     catch(err){}
-    //    await MockApp.startServer();
+        const userDetails = await idamlogin.getUserDetails();
+        reportLogger.AddJson(userDetails)
+        // await workAllocationMockData.applyToSession();
+  
     });
 
     Given('I stop MockApp', async function () {
-       await MockApp.stopServer();
+    //    await MockApp.stopServer();
     });
 
     Given('I restart MockApp', async function () {
-        await MockApp.stopServer();
-        await MockApp.startServer();
+        // await MockApp.stopServer();
+        // await MockApp.startServer();
     });
 
     When('I set MOCK with user roles', async function(rolesTable){

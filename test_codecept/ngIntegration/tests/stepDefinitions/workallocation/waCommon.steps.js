@@ -4,9 +4,9 @@ const mockClient = require('../../../../backendMock/client/index');
 const roleAssignmentMock = require('../../../../backendMock/services/roleAssignments/index');
 
 const MockApp = require('../../../../nodeMock/app');
-const nodeAppMock = require('../../../../nodeMock/nodeApp/mockData');
+const nodeAppMock = require('../../../mockData/nodeApp/mockData');
 
-const waMockData = require('../../../../nodeMock/workAllocation/mockData');
+const waMockData = require('../../../mockData/workAllocation/mockData');
 ;
 const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
 const SoftAssert = require('../../../util/softAssert');
@@ -16,7 +16,7 @@ const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocati
 const BrowserUtil = require('../../../util/browserUtil');
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 
-const workallocationMockData = require('../../../../nodeMock/workAllocation/mockData');
+const workallocationMockData = require('../../../mockData/workAllocation/mockData');
 
 const userRolesConfig = require('../../../../e2e/config/userRolesConfig');
 
@@ -29,7 +29,7 @@ const loginPage = require('../../../../e2e/features/pageObjects/loginLogoutObjec
 
 const testData = require('../../../../e2e/config/appTestConfig');
 
-const IdamLogin = require('../../../util/idamLogin');
+const idamLogin = require('../../../util/idamLogin');
 const browser = require('../../../../codeceptCommon/browser');
 
 let invalidCredentialsCounter = 0;
@@ -96,38 +96,46 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 }
 
 
+    async function mockLoginWithRoles(roles){
+        idamLogin.withCredentials('lukesuperuserxui@mailnesia.com','Monday01')
+
+
+        await browser.get('http://localhost:3000/get-help');
+
+        await idamLogin.do();
+        const userDetails = await idamLogin.userDetailsResponse;
+
+        await browser.sleep(10)
+
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await browser.driver.manage().setCookies(idamLogin.xuiCallbackResponse.details.setCookies)
+            await browser.get('http://localhost:3000/');
+
+        })
+
+        const authCookies = await browser.driver.manage().getCookies()
+        const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
+        await mockClient.updateAuthSessionWithRoles(authCookie.value, roles)
+
+        await browser.get('http://localhost:3000/');
+    }
+
     Given('I set MOCK with {string} release user and roles', async function (releaseUer,datatableroles ) {
-        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.release === releaseUer)[0];
-        if (!testUserIdamId) {
-            throw new Error("Provided release user is not configured in test data. " + releaseUer);
-        }
-
-        const userIdamID = testUserIdamId.idamId;
-        await CucumberReporter.AddMessage(`${releaseUer} id ${testUserIdamId.idamId}`);
-
+      
         const datatablehashes = datatableroles.hashes();
         const roles = datatablehashes.map(roleHash => roleHash.ROLE);
-        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        }
+      
+        await mockLoginWithRoles(roles)
 
     });
 
     Given('I set MOCK with {string} release user and roles {string}', async function (releaseUer, roles) {
-        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.release === releaseUer)[0];
-        if (!testUserIdamId) {
-            throw new Error("Provided release user is not configured in test data. " + releaseUer);
-        }
-
-        const userIdamID = testUserIdamId.idamId;
-        await CucumberReporter.AddMessage(`${releaseUer} id ${testUserIdamId.idamId}`);
-        
+   
         roles = roles.split(",");
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        } 
-        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
+      
+        await  mockLoginWithRoles(roles)
+
 
     });
     
@@ -182,52 +190,12 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         for (const row of rolesTablerows) {
             roles.push(row[0]);
         }
-
-        await BrowserUtil.gotoHomePage();
-        await loginlogout.loginWithCredentials('lukesuperuserxui@mailnesia.com', 'Monday01')
-        await headerPage.waitForPrimaryNavDisplay();
-
-        const cookies = await browser.driver.manage().getCookies();
-        const authCookie = cookies.find(cookie => cookie.name === '__auth__')
-        CucumberReporter.AddJson(nodeAppMock.userDetails);
-        await mockClient.updateAuthSessionWithRoles(authCookie.value, roles)
+        await mockLoginWithRoles(roles)
 
     });
 
     Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) { 
-        // nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles(useridentifier,roles);
-        // await BrowserUtil.gotoHomePage();
-        // await loginattemptCheckAndRelogin('lukesuperuserxui@mailnesia.com', 'Monday01');
-        // await loginlogout.loginWithCredentials('lukesuperuserxui@mailnesia.com', 'Monday01')
-        const idamLogin = new IdamLogin({
-            username:'lukesuperuserxui@mailnesia.com',
-            password:'Monday01'
-        })
-
-        
-        await browser.get('http://localhost:3000/get-help');
-
-        await idamLogin.do();
-        const userDetails = await idamLogin.userDetailsResponse;
-
-        await browser.sleep(10)
-
-     
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await browser.driver.manage().setCookies(idamLogin.xuiCallbackResponse.details.setCookies)
-            await browser.get('http://localhost:3000/');
-            
-            // await BrowserWaits.waitForConditionAsync(async () => {
-            //     const currentUrl = await browser.getCurrentUrl();
-            //     return currentUrl !== "http://localhost:3000/" && !currentUrl.includes('idam')
-            // })
-        })
-
-        const authCookies = await browser.driver.manage().getCookies()
-        const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
-        await mockClient.updateAuthSessionWithRoles(authCookie.value, roles.split(','))
-      
-        await browser.get('http://localhost:3000/');
+        await mockLoginWithRoles(roles.split(','))
 
     });
 
@@ -261,8 +229,8 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         const roleAttributes = roleAttributesDataTable.parse().rowsHash()
 
         for (const service of services.split(",")) {
-            const roleAssignmentTemplate = roleAssignmentMock.getMockRoleAssignment();
-            const roleKeys = Object.keys(roleAssignment);
+            const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
+            const roleKeys = Object.keys(roleAssignmentTemplate);
 
             const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation']
 
@@ -302,7 +270,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         const boolAttributes = ['isCaseAllocator'];
         const roleAssignmentArr = [];
         for (let roleAssignment of roleAssignments.parse().hashes()) {
-            const roleAssignmentTemplate = roleAssignmentMock.getMockRoleAssignment();
+            const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
             const roleKeys = Object.keys(roleAssignment);
 
             const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId','baseLocation', 'primaryLocation']

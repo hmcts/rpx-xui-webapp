@@ -1,18 +1,27 @@
 
 
-
-
+const roles = require('./roles')
 class RoleAssignments{
 
     constructor(){
-    
+       this.serviceUsersRoleAssignments = []
     }   
 
     getActorRoles(actorID){
-        const role = this.getMockRoleAssignment();
+        const role = this.getRoleAssignmentTemplate();
         role.actorId = actorID;
         return {
             roleAssignmentResponse : [role]}
+    }
+
+    getServiceUsersRoleAssignments(reqBody){
+        return this.serviceUsersRoleAssignments.filter(roleAssignment => {
+            return reqBody.attributes.jurisdiction.includes(roleAssignment.attributes.jurisdiction)
+        })
+    }
+
+    getRoleAssignmentsRoles(){
+        return roles;
     }
 
     getBookings(reqBody){
@@ -33,7 +42,7 @@ class RoleAssignments{
     }
   
 
-    getMockRoleAssignment(){
+    getRoleAssignmentTemplate(){
         return {
             "actorId": "0fb93311-47fe-4df2-b712-d541779cd565",
             "actorIdType": "IDAM",
@@ -53,6 +62,8 @@ class RoleAssignments{
             }
         }
     }
+
+
 
 
 }

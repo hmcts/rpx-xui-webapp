@@ -1,7 +1,10 @@
 const { v4 } = require('uuid');
-const ArrayUtil = require("../../e2e/utils/ArrayUtil");
-const WorkAllocationDataModels = require("../../dataModels/workAllocation");
+const ArrayUtil = require("../../../e2e/utils/ArrayUtil");
+const WorkAllocationDataModels = require("../../../dataModels/workAllocation");
 const nodeAppMock = require('../nodeApp/mockData');
+
+const mockClient = require('../../../backendMock/client/index')
+
 class WorkAllocationMockData {
 
     constructor() {
@@ -15,6 +18,8 @@ class WorkAllocationMockData {
         this.updateWASupportedJurisdictions(['IA', 'SSCS']);
         this.setDefaultData();
     }
+
+ 
 
     setDefaultData(){
         this.findPersonsAllAdata = [];
@@ -61,6 +66,13 @@ class WorkAllocationMockData {
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
     }
 
+    async applyToSession() {
+        const authCookie = await browser.driver.manage().getCookie('__auth__');
+        mockClient.setUserApiData(authCookie.value, 'OnMyTasks', this.myWorkMyTasks)
+        mockClient.setUserApiData(authCookie.value, 'OnAvailableTasks', this.myWorkAvailableTasks)
+        mockClient.setUserApiData(authCookie.value, 'OnAllTasks', this.allWorkTasks)
+
+    }
 
 
     setTaskDetails(task){

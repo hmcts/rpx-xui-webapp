@@ -1,6 +1,6 @@
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const reportLogger = require('../../../codeceptCommon/reportLogger');
-const ccdApi = require('../../../nodeMock/ccd/ccdApi');
+const ccdApi = require('../../mockData/ccd/ccdApi');
 
 class CaseListPage{
 

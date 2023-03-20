@@ -11,12 +11,11 @@ const axiosInstance = axios.create({
     validateStatus: null
 })
 class IdamLogin{
-    constructor(conf){
+    constructor(){
         this.conf = {
             xuiBaseUrl: 'http://localhost:3000',
             idamBaseUrl: 'https://idam-web-public.aat.platform.hmcts.net',
             idamClientId: 'xuiwebapp',
-            ...conf
         }
 
        
@@ -33,7 +32,18 @@ class IdamLogin{
 
     }
 
+    withCredentials(username, password){
+        this.username = username;
+        this.password = password
+    }
+
     async do(){
+        this.xuiLoginResponse = {}
+        this.idamLoginGetResponse = {};
+        this.idamAuthorizeResponse = {};
+        this.idamLoginresponse = {};
+        this.xuiCallbackResponse = {}
+        this.userDetailsResponse = {};
         try{
             await this.onXuiLogin()
             await this.onIdamAuthorize()
@@ -41,6 +51,7 @@ class IdamLogin{
             await this.onIdamLoginPost()
             await this.onXuiCallback()
             await this.getUserDetails()
+
         }catch(err){
             reportLogger.AddMessage('************* Login error *************')
             reportLogger.AddMessage(
@@ -70,6 +81,10 @@ class IdamLogin{
 
     getCookiesFromSetCookies(rawCookies){
         const cookies = []
+        if (!Array.isArray(rawCookies)){
+            reportLogger.AddMessage(`raw cookies : ${rawCookies}`)
+            throw new Error('Idamlogin process, Cookies error: ' + rawCookies);
+        }
         for (const strCookie of rawCookies){
             const cookiesParts = strCookie.split(';');
             const naveValue = cookiesParts[0].split('=');
@@ -147,8 +162,8 @@ class IdamLogin{
 
     async onIdamLoginPost(){
         const formdata = {
-            username: this.conf.username,
-        password: this.conf.password,
+            username: this.username,
+        password: this.password,
         selfRegistrationEnabled: 'false',
         azureLoginEnabled: 'true',
         mojLoginEnabled: 'true',
@@ -201,8 +216,10 @@ class IdamLogin{
         })
         this.userDetailsResponse.status = this.getResponseStatus(response);
         this.userDetailsResponse.details = {data:response.data}
+        return response.data;
     }
+    
 
 }
 
-module.exports = IdamLogin;
+module.exports = new IdamLogin();

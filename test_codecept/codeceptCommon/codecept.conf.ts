@@ -1,4 +1,6 @@
 
+const report = require("multiple-cucumber-html-reporter");
+
 const global = require('./globals')
 import applicationServer from '../localServer'
 
@@ -8,6 +10,7 @@ var spawn = require('child_process').spawn;
 const backendMockApp = require('../backendMock/app');
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
+const parallel = process.env.PARALLEL
 
 let features = ''
 if (testType === 'e2e'){
@@ -49,6 +52,10 @@ exports.config = {
       waitForTimeout: 90000,
       chrome: {
         ignoreHTTPSErrors: true,
+        defaultViewport: {
+          width: 1280,
+          height: 960
+        },
         args: [
           '--headless',
           '—disable-notifications',
@@ -58,6 +65,7 @@ exports.config = {
           '--allow-running-insecure-content',
           '--ignore-certificate-errors',
           '--window-size=1440,1400',
+          '--viewport-size=1440,1400',
 
            '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'
         ]
@@ -79,7 +87,8 @@ exports.config = {
     // }
   },
   "mocha": {
-    reporter: 'mochawesome',
+    reporter: 'cucumberJsonReporter',
+   
     "reporterOptions": {
       "reportDir": functional_output_dir,
       reportName:'XUI_MC',
@@ -125,7 +134,18 @@ exports.config = {
     },
     retryFailedStep: {
       enabled: true
+    },
+    cucumberJsonReporter: {
+      require: 'codeceptjs-cucumber-json-reporter',
+      enabled: true,               // if false, pass --plugins cucumberJsonReporter
+      attachScreenshots: true,     // true by default
+      attachComments: true,        // true by default
+      outputFile: functional_output_dir + '/cucumberOutput/',     // cucumber_output.json by default
+      uniqueFileNames: true,      // if true outputFile is ignored in favor of unique file names in the format of `cucumber_output_<UUID>.json`.  Useful for parallel test execution
+      includeExampleValues: false, // if true incorporate actual values from Examples table along with variable placeholder when writing steps to the report
+      timeMultiplier: 1000000,     // Used when calculating duration of individual BDD steps.  Defaults to nanoseconds
     }
+   
   },
   include: {
   },
@@ -134,23 +154,59 @@ exports.config = {
 
   },
   bootstrap:async () =>{
-    if (testType === "ngIntegration"){
-       await backendMockApp.startServer();
-      // appWithMockBackend = spawn("NODE_CONFIG_ENV=mock yarn start", { detached: true, shell :true});
-      // appWithMockBackend.stdout.on('data', function (data) {
-      //   console.log(data.toString());
-      // });
-      await applicationServer.start()
-      
+    if (testType === "ngIntegration" && !parallel){
+      await setup()
     }
   },
   teardown: async () => {
-    if(testType === "ngIntegration"){
-      await backendMockApp.stopServer();
-      // process.kill(-appWithMockBackend.pid)
-      await applicationServer.stop()
+    if (testType === "ngIntegration" && !parallel){
+      await teardown()
+    }
+    return true
+  },
+  bootstrapAll: async () => {
+    if (testType === "ngIntegration" && parallel) {
+      await setup()
 
+    }
+  },
+  teardownAll: async () => {  
+    if (testType === "ngIntegration" && parallel) {
+      await teardown()
     }
     return true
   }
 }
+
+
+async function setup(){
+  await backendMockApp.startServer();
+  await applicationServer.start()
+}
+
+async function teardown(){
+  await backendMockApp.stopServer();
+  await applicationServer.stop()
+}
+
+
+
+function generateCucumberReport(){
+   report.generate({
+      jsonDir: functional_output_dir + '',
+      reportPath: functional_output_dir + '',
+      metadata: {
+        browser: {
+          name: "chrome",
+          version: "60",
+        },
+        device: "Local test machine",
+        platform: {
+          name: "ubuntu",
+          version: "16.04",
+        },
+      }
+    });
+}
+
+

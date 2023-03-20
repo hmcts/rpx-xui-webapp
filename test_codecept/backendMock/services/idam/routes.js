@@ -11,9 +11,6 @@ const jwt = require('jsonwebtoken');
 
 const { privateKey, publicKey } = require('./index')
 
-console.log(`privateKey : ${privateKey}`);
-console.log(`publicKey : ${publicKey}`);
-
 
 router.get('/o/.well-known/openid-configuration', (req, res) => {
     const oidcConf = service.getOpenIdConfig();

@@ -1,6 +1,6 @@
 
 
-const BookingDataModel = require('../../dataModels/bookings');
+const BookingDataModel = require('../../../dataModels/bookings');
 class BookingsData{
 
     constructor(){

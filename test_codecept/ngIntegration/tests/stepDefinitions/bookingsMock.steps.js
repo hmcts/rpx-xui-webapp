@@ -1,12 +1,12 @@
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../nodeMock/app');
+// const MockApp = require('../../../nodeMock/app');
 
 const browserUtil = require('../../util/browserUtil');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
+// const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
-const dummyCaseDetails = require('../../../nodeMock/ccd/caseDetails_data');
-const bookingsMockData = require('../../../nodeMock/workAllocation/bookingsData');
+const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
+const bookingsMockData = require('../../mockData/workAllocation/bookingsData');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 

@@ -1,8 +1,8 @@
-const nodeAppDataModel = require('../../dataModels/nodeApp');
+const nodeAppDataModel = require('../../../dataModels/nodeApp');
 
 
-const testData = require('../../e2e/config/appTestConfig');
-const userUtil = require('../../ngIntegration/util/userRole');
+const testData = require('../../../e2e/config/appTestConfig');
+const userUtil = require('../../util/userRole');
 
 class NodeAppMockData {
 

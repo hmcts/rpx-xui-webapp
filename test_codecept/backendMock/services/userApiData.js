@@ -10,6 +10,7 @@ class UserApiData{
         const response = this.getUserData(req.headers.authorization, apiMethod)
         if (response) {
             res.send(response)
+           
         } else {
             res.send(defaultResponseCallback())
         }

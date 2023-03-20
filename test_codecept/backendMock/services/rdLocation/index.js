@@ -64,7 +64,7 @@ class RDLocationService{
     searchLocations(seearchTerm, courtTypeIds){
         const results = [];
         for (const court of this.caseManagementLocations){
-            if (courtTypeIds.includes(court.court_type_id) && court.court_name.includes(seearchTerm)){
+            if (courtTypeIds.includes(court.court_type_id) && court.court_name.toLowerCase().includes(seearchTerm.toLowerCase())){
                 results.push(court);
             }
         }

@@ -1,16 +1,16 @@
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../nodeMock/app');
+// const MockApp = require('../../../nodeMock/app');
 
 const caseEditPage = require('../pageObjects/ccdCaseEditPages');
 
 const browserUtil = require('../../util/browserUtil');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
+// const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
-const dummyCaseDetails = require('../../../nodeMock/ccd/caseDetails_data');
+const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
-const workAlloctionMockData = require('../../../nodeMock/workAllocation/mockData');
+const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
 
 const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');

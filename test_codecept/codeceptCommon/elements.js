@@ -134,20 +134,13 @@ class PuppeteerNativeElement {
     }
 
     async isDisplayed(){
-        let i = 0;
-        while(i < 0){
-            try {
-                await this.__checkAndGetNativeElement();
-                if (!this.nativeElement) {
-                    return false;
-                }
-                const elementVisisbleBox = await this.nativeElement.boundingBox();
-
-                return elementVisisbleBox !== null
-            } catch (err) {
-                i++;
-            }
+        await this.__checkAndGetNativeElement();
+        if (!this.nativeElement) {
+            return false;
         }
+        const elementVisisbleBox = await this.nativeElement.boundingBox();
+
+        return elementVisisbleBox !== null
        
         
     }
@@ -371,7 +364,7 @@ class Element {
         return new ElementCollection({css: locator}, new PuppeteerNativeElement(this.selector, null))
     }
     wait() {
-        getActor().waitForElement(this.selector, 10)
+        getActor().waitForElement(this.selector, 20)
     }
 
     locator() {

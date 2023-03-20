@@ -1,16 +1,16 @@
-@ng @codecept_test
+@ng @codecept_enabled
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
         Given I init MockApp
-     
+
 
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001         |
-            | SSCS         | Y           | ORGANISATION | 30001         |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 30001        |
 
 
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
@@ -25,13 +25,13 @@ Feature: WA Release 2: My work - My Tasks
             | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
             | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
         Given I set MOCK tasks with attributes for view "My tasks"
-            | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | hearing_date | created_date | case_category        |
-            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1      | 20           | -10          | auto test category 1 |
-            | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0       | 21           | -10          | auto test category 2 |
-            | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1       | 22           | -10          | auto test category 3 |
-            | 3     | Manage,Read                | 1234-1234-1234-1231 | case 4    | test location 4 | test auto task 4 | -10     | 24           | -20          | auto test category 4 |
-            | 4     | Manage                     | 1234-1234-1234-1231 | case 5    | test location 5 | test auto task 5 | -20     | 26           | -30          | auto test category 5 |
-            | 5     | Read                       | 1234-1234-1234-1231 | case 6    | test location 6 | test auto task 6 | -30     | 30           | -40          | auto test category 6 |
+            | index | permissions                | assignee            | case_name | location_name   | task_title       | due_date | hearing_date | created_date | case_category        |
+            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1       | 20           | -10          | auto test category 1 |
+            | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0        | 21           | -10          | auto test category 2 |
+            | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1        | 22           | -10          | auto test category 3 |
+            | 3     | Manage,Read                | 1234-1234-1234-1231 | case 4    | test location 4 | test auto task 4 | -10      | 24           | -20          | auto test category 4 |
+            | 4     | Manage                     | 1234-1234-1234-1231 | case 5    | test location 5 | test auto task 5 | -20      | 26           | -30          | auto test category 5 |
+            | 5     | Read                       | 1234-1234-1234-1231 | case 6    | test location 6 | test auto task 6 | -30      | 30           | -40          | auto test category 6 |
 
 
         Given I start MockApp
@@ -47,15 +47,15 @@ Feature: WA Release 2: My work - My Tasks
             | Priority      | Yes        | No    |
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
-            | row | Case name | Case category | Location | Task | Task created | 
-            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -10          | 
-            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          | 
+            | row | Case name | Case category        | Location        | Task             | Task created |
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -10          |
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          |
 
         Then If current user "<UserType>" is "Caseworker", I validate task table values displayed
-            | row | Case name | Case category | Location | Task | Due date | Priority | 
-            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | HIGH     | 
-            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   | 
-            | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      | 
+            | row | Case name | Case category        | Location        | Task             | Due date | Priority |
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | HIGH     |
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   |
+            | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
 
         # Then I validate work allocation task table column "Task" width less than or equal to 280
         # Then I validate work allocation task table column "Case name" width less than or equal to 200
@@ -95,8 +95,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001         |
-            | SSCS         | Y           | ORGANISATION | 30001         |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 30001        |
 
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
@@ -132,8 +132,8 @@ Feature: WA Release 2: My work - My Tasks
             | 20001      | IA Court Aldgate Tower |
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001         |
-            | SSCS         | Y           | ORGANISATION | 30001         |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 30001        |
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -146,10 +146,10 @@ Feature: WA Release 2: My work - My Tasks
             | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
             | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
         Given I set MOCK tasks with attributes for view "My tasks"
-            | index | permissions                | assignee            | case_name                                                                                  | location_name   | task_title                                                                                                                                                       | dueDate | created_date | case_category        |
-            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1                                                                                     | test location 1 | test auto task 1                                                                                                                                                 | -1      | -10          | auto test category 1 |
-            | 1     | Manage                     | 1234-1234-1234-1231 | case 2                                                                                     | test location 2 | test auto task 2                                                                                                                                                 | 0       | -10          | auto test category 2 |                                                                                 
-            | 2     | Read                       | 1234-1234-1234-1231 | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30     | -40          | auto test category 3 |
+            | index | permissions                | assignee            | case_name                                                                                  | location_name   | task_title                                                                                                                                                       | due_date | created_date | case_category        |
+            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1                                                                                     | test location 1 | test auto task 1                                                                                                                                                 | -1       | -10          | auto test category 1 |
+            | 1     | Manage                     | 1234-1234-1234-1231 | case 2                                                                                     | test location 2 | test auto task 2                                                                                                                                                 | 0        | -10          | auto test category 2 |
+            | 2     | Read                       | 1234-1234-1234-1231 | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      | -40          | auto test category 3 |
 
 
         Given I start MockApp
@@ -166,7 +166,7 @@ Feature: WA Release 2: My work - My Tasks
 
         # Then I validate work allocation task table column "Task" width less than or equal to 280
         # Then I validate work allocation task table column "Case name" width less than or equal to 200
-        
+
 
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
@@ -178,8 +178,8 @@ Feature: WA Release 2: My work - My Tasks
             | row | Case name                                                                                  | Case category        | Location        | Task                                                                                                                                                             | Due date | Priority |
             | 1   | case 1                                                                                     | auto test category 1 | test location 1 | test auto task 1                                                                                                                                                 | -1       | HIGH     |
             | 2   | case 2                                                                                     | auto test category 2 | test location 2 | test auto task 2                                                                                                                                                 | 0        | MEDIUM   |
-            | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      | HIGH   |
-           
+            | 3   | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | auto test category 3 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30      | HIGH     |
+
         Examples:
             | UserIdentifier     | UserType   | Roles                                                            |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |

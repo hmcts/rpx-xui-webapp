@@ -14,7 +14,7 @@ const axiosOptions = {
 axios.defaults.withCredentials = true;
 
 const http = axios.create(axiosOptions);
-const nodeAppMockData = require('../../nodeMock/nodeApp/mockData'); 
+const nodeAppMockData = require('../mockData/nodeApp/mockData'); 
 class BrowserUtil{
 
     async gotoHomePage(){

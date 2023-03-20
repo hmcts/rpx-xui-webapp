@@ -1,5 +1,5 @@
 
-const RolesAccessDataModel = require('../../dataModels/roleAccess');
+const RolesAccessDataModel = require('../../../dataModels/roleAccess');
 class RoleAccess{
 
     constructor(){

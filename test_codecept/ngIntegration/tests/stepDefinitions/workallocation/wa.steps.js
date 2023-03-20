@@ -1,8 +1,8 @@
 
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../../nodeMock/app');
-const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
+// const MockApp = require('../../../../nodeMock/app');
+const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
@@ -22,7 +22,7 @@ const errorMessageForResponseCode = require('../../../util/errorResonseMessage')
 
 const MockUtil = require('../../../util/mockUtil');
 const WAUtil = require('../../workAllocation/utils');
-const nodeAppMockData = require('../../../../nodeMock/nodeApp/mockData');
+// const nodeAppMockData = require('../../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 

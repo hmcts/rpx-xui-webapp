@@ -14,7 +14,8 @@ module.exports = async function () {
     });
 
     event.dispatcher.on(event.test.after, function (test) {
-        output.print(`Test completed : ${test.title}`)
+        output.print(`Test ${test.state} : ${test.title}`)
+        actor().flushLogsToReport();
     });
 
 
@@ -24,15 +25,15 @@ module.exports = async function () {
 
     });
 
-    // event.dispatcher.on(event.test.failed, async function (test,err) {
-    //     output.print(`Test failed : ${test.title}`)
-    //     const logs = await browser.getBrowserLogs();
-    //     await attachBrowserLogs();
-    //     codeceptMochawesomeLog.AddJson(logs)
-    //     codeceptMochawesomeLog.AddMessage(`************ Test failed : ${err}`)
+    event.dispatcher.on(event.test.failed, async function (test) {
+        output.print(`Test failed event : ${test.title}`)
+        // const logs = await browser.getBrowserLogs();
+        // await attachBrowserLogs();
+        // codeceptMochawesomeLog.AddJson(logs)
+        codeceptMochawesomeLog.AddMessage(`************ Test failed : `)
         
 
-    // });
+    });
 
     
     event.dispatcher.on(event.bddStep.before, function (bddStep) {

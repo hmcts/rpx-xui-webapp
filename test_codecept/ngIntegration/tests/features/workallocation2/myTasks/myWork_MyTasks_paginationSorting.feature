@@ -1,4 +1,4 @@
-@ng @known_bug @EUI-4804
+@ng @known_bug @EUI-4804 @codecept_test
 Feature: WA Release 2: My work of My Tasks of pagination sorting (EUI-4804)
 
     Background: Mock and browser setup

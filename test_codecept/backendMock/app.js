@@ -14,12 +14,17 @@ const workTypeRoutes = require('./services/task-management-api/workTypeRoutes')
 
 
 const locationRoutes = require('./services/rdLocation/routes')
+const caseworkerRoutes = require('./services/rdCaseworker/routes')
+const judicialRoutes = require('./services/rdJudicial/routes')
+
 const roleAssignmentRoutes = require('./services/roleAssignments/routes')
 const bookingRoutes = require('./services/roleAssignments/bookingRoutes')
-
+const ccdRoutes = require('./services/ccd/routes')
 
 const idamOpenId = require('./services/idam/routes')
 const sessionRoutes = require('./services/session/routes')
+
+const users = require('./services/users');
 
 class MockApp {
 
@@ -69,8 +74,12 @@ class MockApp {
         app.use('/task', taskApi)
         app.use('/work-types', workTypeRoutes)
         app.use('/refdata/location', locationRoutes)
+        app.use('/refdata/case-worker', caseworkerRoutes )
+        app.use('/refdata/judicial', judicialRoutes )
         app.use('/am/role-assignments', roleAssignmentRoutes)
         app.use('/am/bookings', bookingRoutes)
+
+        app.use('/', ccdRoutes )
 
 
 

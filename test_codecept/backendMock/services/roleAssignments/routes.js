@@ -14,4 +14,19 @@ router.get('/actors/:actorId', (req, res) => {
 
 });
 
+router.get('/roles', (req,res) => {
+    res.send(service.getRoleAssignmentsRoles())
+})
+
+
+router.post('/query' , (req,res) => {
+
+    const reqProps = Object.keys(req.body);
+    if (reqProps.includes('roleName') && reqProps.includes('roleType') && reqProps.includes('attributes')){
+        const serviceUsers = service.getServiceUsersRoleAssignments(req.body);
+        res.send({ roleAssignmentResponse: serviceUsers });
+    }
+
+})
+
 module.exports = router;

@@ -29,7 +29,7 @@ class CustomHelper extends Helper {
                 const type = msg.type();
                 if (type === 'error') {
                     // console.log(msg);
-                    this.attachBrowserLog(msg)
+                    // this.attachBrowserLog(msg)
                     this.browserErrorLogs.push(msg)
                 }
             });
@@ -39,9 +39,22 @@ class CustomHelper extends Helper {
 
 
     async _failed(){
+        codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
+
        for(const log of this.browserErrorLogs){
            this.attachBrowserLog(log)
+        //    await getActor().saveScreenshot()
        }
+    }
+
+    async flushLogsToReport(){
+        codeceptMochawesomeLog.AddMessage('---------------------- BROWSER CONSOLE ERROR ----------------------');
+        for (const log of this.browserErrorLogs) {
+            this.attachBrowserLog(log)
+            //    await getActor().saveScreenshot()
+        }
+        codeceptMochawesomeLog.AddMessage('------------------------------------------------------------------');
+
     }
 
     async  attachBrowserLog(log) {
@@ -51,7 +64,7 @@ class CustomHelper extends Helper {
         if (browserErrorLogsExclusions.filter(exclusion => log._text.includes(exclusion)).length > 0){
             return;
         }
-        codeceptMochawesomeLog.AddMessage('---------------------- BROWSER CONSOLE ERROR ----------------------');
+        
         codeceptMochawesomeLog.AddMessage(`Error: ${log._text}`);
         for (const stacktraceLocation of log._stackTraceLocations) {
             if (stacktraceLocation.url.endsWith('.js')){
@@ -59,8 +72,7 @@ class CustomHelper extends Helper {
             }
             codeceptMochawesomeLog.AddMessage(`       ${stacktraceLocation.url}:${stacktraceLocation.lineNumber}`);
         }
-        codeceptMochawesomeLog.AddMessage('------------------------------------------------------------------');
-
+       
     }
     
     async getCookies(){

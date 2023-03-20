@@ -5,7 +5,7 @@ const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../nodeMock/app');
+// const MockApp = require('../../../nodeMock/app');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const { DataTableArgument } = require('codeceptjs');
 

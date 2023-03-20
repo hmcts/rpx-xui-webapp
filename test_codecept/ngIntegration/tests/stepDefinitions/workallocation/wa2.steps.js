@@ -2,7 +2,7 @@
 var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../../nodeMock/app');
-const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
+const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
 const backendMockClient = require('../../../../backendMock/client/index')
@@ -26,7 +26,7 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 const MockUtil = require('../../../util/mockUtil');
 const WAUtil = require('../../workAllocation/utils');
-const nodeAppMockData = require('../../../../nodeMock/nodeApp/mockData');
+// const nodeAppMockData = require('../../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 
 const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
@@ -34,7 +34,8 @@ const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocat
 
 const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/myWorkPage');
 
-
+const taskApiMock = require('../../../../backendMock/services/task-management-api/index')
+const mockClient = require('../../../../backendMock/client/index');
 
     const caseListPage = new CaseListPage();
 
@@ -117,20 +118,26 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
             }
 
             for (let j = 0; j < taskCount;j++){
-                tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(taskPermissionHashes[i]['Permissions'].split(","), view, assignedState));
+                tasks.push(taskManagementMock.getTaskTemplate());
             }
             
         }
 
+        const auth = await browser.driver.manage().getCookie('__auth__')
         switch (view){
             case 'mytasks':
-                workAllocationMockData.myWorkMyTasks = { tasks: tasks, total_records: tasks.length };
+                workAllocationMockData.myWorkMyTasks = { tasks: tasks.slice(0, 25), total_records: tasks.length };
+                await mockClient.setUserApiData(auth.value, 'OnSearchTasks', workAllocationMockData.myWorkMyTasks);
                 break;
             case 'availabletasks':
-                workAllocationMockData.myWorkAvailableTasks = { tasks: tasks, total_records: tasks.length };
+                workAllocationMockData.myWorkAvailableTasks = { tasks: tasks.slice(0,25), total_records: tasks.length };
+                await mockClient.setUserApiData(auth.value, 'OnSearchTasks', workAllocationMockData.myWorkAvailableTasks);
+
                 break;
             case 'allwork':
-                workAllocationMockData.allWorkTasks = { tasks: tasks, total_records: tasks.length };
+                workAllocationMockData.allWorkTasks = { tasks: tasks.slice(0, 25), total_records: tasks.length };
+                await mockClient.setUserApiData(auth.value, 'OnSearchTasks', workAllocationMockData.allWorkTasks);
+
                 break;
 
             default:
@@ -179,8 +186,8 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
             response.tasks.push(task)
         })
 
-        
-        backendMockClient.setUserApiData(await browserUtil.getAuthCookieValue(), "onSearchTasks", response)
+        const auth = await browser.driver.manage().getCookie('__auth__')
+        await backendMockClient.setUserApiData(auth.value, "onSearchTasks", response)
     });
 
 
@@ -274,8 +281,8 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
     Given('I set MOCK task details for WA release2', async function(taskDetailsDatatable){
         const inputTaskDetails = taskDetailsDatatable.parse().hashes();
 
-        const taskDetails = workAllocationMockData.taskDetails;
-        const taskKeys = Object.keys(inputTaskDetails);
+        const taskDetails = taskApiMock.getTask();
+        const taskKeys = Object.keys(inputTaskDetails[0]);
 
         await ArrayUtil.forEach(taskKeys,async(key) => {
             if(key.toLowerCase().includes("date")){
@@ -284,6 +291,8 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
                 taskDetails.task[key] = inputTaskDetails[key];
             } 
         })
+        const auth = await browser.driver.manage().getCookie('__auth__')
+        mockClient.setUserApiData(auth.value, 'OnTask', taskDetails);
 
     });
 

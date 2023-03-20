@@ -1,17 +1,17 @@
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../nodeMock/app');
+// const MockApp = require('../../../nodeMock/app');
 
 const caseEditPage = require('../pageObjects/ccdCaseEditPages');
 
 const browserUtil = require('../../util/browserUtil');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
+// const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
-const dummyCaseDetails = require('../../../nodeMock/ccd/caseDetails_data');
-const ccdMockData = require('../../../nodeMock/ccd/ccdApi');
+const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
+const ccdMockData = require('../../mockData/ccd/ccdApi');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
-const workAlloctionMockData = require('../../../nodeMock/workAllocation/mockData');
+const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
 
 const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
@@ -21,11 +21,11 @@ const { DataTableArgument } = require('codeceptjs');
 
 
     Given('I set mock case create config {string}', async function (configReference) {
-        const caseConfig = getTestJurisdiction();
-        global.scenarioData[configReference] = caseConfig;
-        MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => { 
-            res.send(caseConfig.getCase());
-        });
+        // const caseConfig = getTestJurisdiction();
+        // global.scenarioData[configReference] = caseConfig;
+        // MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => { 
+        //     res.send(caseConfig.getCase());
+        // });
       
     });
 
@@ -45,11 +45,11 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Given('I set mock case searchinput config {string}', async function(searchInputRef){
-        const searchInputConfigurator = getMockJurisdictionSearchInputConfig();
-        global.scenarioData[searchInputRef] = searchInputConfigurator;
-        MockApp.onGet('/data/internal/case-types/:jurisdiction/search-inputs', (req, res) => {
-            res.send(searchInputConfigurator.getConfig());
-        });
+        // const searchInputConfigurator = getMockJurisdictionSearchInputConfig();
+        // global.scenarioData[searchInputRef] = searchInputConfigurator;
+        // MockApp.onGet('/data/internal/case-types/:jurisdiction/search-inputs', (req, res) => {
+        //     res.send(searchInputConfigurator.getConfig());
+        // });
 
     });
 
@@ -68,8 +68,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
-        const caseDetails = ccdMockData.caseDetailsResponse;
-        global.scenarioData[caseDetailsReference] = caseDetails;
+        // const caseDetails = ccdMockData.caseDetailsResponse;
+        // global.scenarioData[caseDetailsReference] = caseDetails;
         // MockApp.onGet('/data/internal/cases/:caseid', (req, res) => {
         //     res.send(caseDetails);
         // });
@@ -233,27 +233,27 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Given('I set MOCK case list values', async function(caseListAttributesDatatable){
-        const cases = ccdMockData.caseList.results;
-        const inputDatatableHashes = caseListAttributesdatatable.parse().hashes();
+        // const cases = ccdMockData.caseList.results;
+        // const inputDatatableHashes = caseListAttributesdatatable.parse().hashes();
         
-        for (let i = 0; i < inputDatatableHashes.length; i++){
-            const caseItem = cases[i];
-            const inputHash = inputDatatableHashes[i];
+        // for (let i = 0; i < inputDatatableHashes.length; i++){
+        //     const caseItem = cases[i];
+        //     const inputHash = inputDatatableHashes[i];
             
-            const keys = Object.keys(inputHash);
-            for(const caseAttrib of keys){
-                if (caseAttrib.startsWith('case_fields.')){
-                    const caseFieldAttrib = caseAttrib.replace('case_fields.',''); 
-                    caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];  
-                } else if (caseAttrib.startsWith('case_fields_formatted.')){
-                    const caseFieldAttrib = caseAttrib.replace('case_fields_formatted.', '');
-                    caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];  
-                }else{
-                    caseItem[caseAttrib] = inputHash[caseAttrib]; 
-                }
-            } 
+        //     const keys = Object.keys(inputHash);
+        //     for(const caseAttrib of keys){
+        //         if (caseAttrib.startsWith('case_fields.')){
+        //             const caseFieldAttrib = caseAttrib.replace('case_fields.',''); 
+        //             caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];  
+        //         } else if (caseAttrib.startsWith('case_fields_formatted.')){
+        //             const caseFieldAttrib = caseAttrib.replace('case_fields_formatted.', '');
+        //             caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];  
+        //         }else{
+        //             caseItem[caseAttrib] = inputHash[caseAttrib]; 
+        //         }
+        //     } 
 
-        }
+        // }
         
     });
 

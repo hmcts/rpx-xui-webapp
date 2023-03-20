@@ -15,6 +15,12 @@ class DriverManager{
         return await getActor().getCookies();
     }
 
+    async getCookie(name) {
+        const cookies = await this.getCookies();
+        return cookies.find(cookie => cookie.name === name)
+
+    }
+
     async setCookies(cookies){
         for(const cookie of cookies){
             await getActor().setCookie(cookie)

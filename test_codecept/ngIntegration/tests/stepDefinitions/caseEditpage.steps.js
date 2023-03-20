@@ -1,6 +1,6 @@
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../nodeMock/app');
+// const MockApp = require('../../../nodeMock/app');
 
 const caseEditPage = require('../pageObjects/ccdCaseEditPages');
 const caseListPage = require('../pageObjects/caselistPage');
@@ -9,7 +9,7 @@ const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 
 
 const browserUtil = require('../../util/browserUtil');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
+// const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 

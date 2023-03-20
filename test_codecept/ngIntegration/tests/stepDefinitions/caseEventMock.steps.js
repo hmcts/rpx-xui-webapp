@@ -6,8 +6,8 @@ var { defineSupportCode } = require('cucumber');
 const jsonpath = require('jsonpath');
 
 const BrowserWaits = require('../../../e2e/support/customWaits');
-const MockApp = require('../../../nodeMock/app');
-const CCDCaseConfig = require('../../../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
+// const MockApp = require('../../../nodeMock/app');
+const CCDCaseConfig = require('../../mockData/ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const { DataTableArgument } = require('codeceptjs');
 

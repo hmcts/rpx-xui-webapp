@@ -1,4 +1,4 @@
-@ng @ignore @codecept_enabled
+@ng @ignore 
 Feature: WA Release 2: My work - Work filters, Services and locations for user roles
     https://tools.hmcts.net/jira/browse/EUI-5921
 

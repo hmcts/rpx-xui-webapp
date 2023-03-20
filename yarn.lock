@@ -4073,6 +4073,11 @@ bser@2.1.1:
   dependencies:
     node-int64 "^0.4.0"
 
+btoa@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/btoa/-/btoa-1.2.1.tgz#01a9909f8b2c93f6bf680ba26131eb30f7fa3d73"
+  integrity sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g==
+
 buffer-crc32@~0.2.3:
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/buffer-crc32/-/buffer-crc32-0.2.13.tgz#0d333e3f00eac50aa1454abd30ef8c2a5d9a7242"
@@ -4748,6 +4753,14 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha512-RpAVKQA5T63xEj6/giIbUEtZwJ4UFIc3ZtvEkiaUERylqe8xb5IvqcgOurZLahv93CLKfxcw5YI+DZcUBRyLXA==
+
+codeceptjs-cucumber-json-reporter@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/codeceptjs-cucumber-json-reporter/-/codeceptjs-cucumber-json-reporter-1.0.11.tgz#9d0697720b704cc84531b0892358d5e2a3696296"
+  integrity sha512-UtP+oZugIxMV5FXaSWA67TEULmj2g+K2vkV/FswaKIBThxkxYOcNWqfTzqcxl0B0+SQZ6AmxRH5FM3gLs3tt+A==
+  dependencies:
+    btoa "^1.2.1"
+    lodash "^4.17.21"
 
 codeceptjs@3.3.7:
   version "3.3.7"
@@ -8177,11 +8190,6 @@ html_codesniffer@~2.4.1:
   resolved "https://registry.yarnpkg.com/html_codesniffer/-/html_codesniffer-2.4.1.tgz#c1ea1412360e44079b82eb2b06c816c5933aac9e"
   integrity sha512-7g4Z8+7agJFi7XJGu2r0onIqA7ig9b26vFEvUE6DgtFJlJzy1ELYEKzzd5Xwam4xjHiHQ/w8yHO7KTGNcXnwzg==
 
-htmlparser@^1.7.7:
-  version "1.7.7"
-  resolved "https://registry.yarnpkg.com/htmlparser/-/htmlparser-1.7.7.tgz#19e7b3997ff6fbac99ae5a7d2766489efe7e2d0e"
-  integrity sha512-zpK66ifkT0fauyFh2Mulrq4AqGTucxGtOhZ8OjkbSfcCpkqQEI8qRkY0tSQSJNAQ4HUZkgWaU4fK4EH6SVH9PQ==
-
 http-cache-semantics@^4.0.0, http-cache-semantics@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.0.tgz#49e91c5cbf36c9b94bcfcd71c23d5249ec74e390"
@@ -9970,13 +9978,6 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.4.0"
     verror "1.10.0"
-
-jssoup@^0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/jssoup/-/jssoup-0.0.15.tgz#6e9f18013f6f4b2e8cc20f87c0aa32f605e935b1"
-  integrity sha512-9/7qzZQ878Jey0JyNTuy1NYE8Y4G5PbpWQ5hS8vlBD2Ar4MKJNMQ0239yjb+WExRNLiYPSgZSVLyFUwQNWa1ag==
-  dependencies:
-    htmlparser "^1.7.7"
 
 jszip@^3.1.3:
   version "3.10.1"

@@ -9,17 +9,18 @@ import { handleElasticSearchResponse, modifyRequest } from './searchCases';
 export const initProxy = (app: Express) => {
   applyProxy(app, {
     rewrite: true,
-    rewriteUrl: '/socket.io',
-    source: '/socket.io',
+    rewriteUrl: '/activity',
+    skipAuth: true,
+    source: '/activity',
     target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH),
-    ws: true,
   });
 
   applyProxy(app, {
     rewrite: true,
-    skipAuth: true,
-    source: '/activity',
+    rewriteUrl: '/socket.io',
+    source: '/socket.io',
     target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH),
+    ws: true,
   });
 
   applyProxy(app, {

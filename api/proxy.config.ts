@@ -7,14 +7,6 @@ import { applyProxy } from './lib/middleware/proxy';
 import { handleElasticSearchResponse, modifyRequest } from './searchCases';
 
 export const initProxy = (app: Express) => {
-  applyProxy(app, {
-    rewrite: true,
-    rewriteUrl: '/socket.io',
-    source: '/socket.io',
-    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH),
-    ws: true,
-  });
-
   // applyProxy(app, {
   //   rewrite: true,
   //   rewriteUrl: '/activity',
@@ -23,6 +15,7 @@ export const initProxy = (app: Express) => {
   //   ],
   //   target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   // });
+
   applyProxy(app, {
     rewrite: true,
     skipAuth: true,
@@ -37,16 +30,16 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
+    rewrite: false,
+    source: '/hearing-recordings',
+    target: getConfigValue(proxiedReferences.SERVICES_EM_HRS_API_PATH),
+  });
+
+  applyProxy(app, {
     rewrite: true,
     rewriteUrl: '/cases/documents',
     source: '/documentsv2',
     target: getConfigValue(proxiedReferences.SERVICES_DOCUMENTS_API_PATH_V2),
-  });
-
-  applyProxy(app, {
-    rewrite: false,
-    source: '/hearing-recordings',
-    target: getConfigValue(proxiedReferences.SERVICES_EM_HRS_API_PATH),
   });
 
   applyProxy(app, {
@@ -173,5 +166,13 @@ export const initProxy = (app: Express) => {
     // https://github.com/hmcts/rd-commondata-api/blob/master/src/main/java/uk/gov/hmcts/reform/cdapi/controllers)
     source: '/refdata/commondata/caseflags/service-id=:sid',
     target: getConfigValue(proxiedReferences.SERVICES_PRD_COMMONDATA_API),
+  });
+
+  applyProxy(app, {
+    rewrite: true,
+    rewriteUrl: '/socket.io',
+    source: '/socket.io',
+    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH),
+    ws: true,
   });
 };

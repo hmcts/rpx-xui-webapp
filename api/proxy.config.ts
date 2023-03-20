@@ -7,14 +7,13 @@ import { applyProxy } from './lib/middleware/proxy';
 import { handleElasticSearchResponse, modifyRequest } from './searchCases';
 
 export const initProxy = (app: Express) => {
-  // applyProxy(app, {
-  //   rewrite: true,
-  //   rewriteUrl: '/activity',
-  //   source: [
-  //     '/activity',
-  //   ],
-  //   target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
-  // });
+  applyProxy(app, {
+    rewrite: true,
+    rewriteUrl: '/socket.io',
+    source: '/socket.io',
+    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH),
+    ws: true,
+  });
 
   applyProxy(app, {
     rewrite: true,
@@ -166,13 +165,5 @@ export const initProxy = (app: Express) => {
     // https://github.com/hmcts/rd-commondata-api/blob/master/src/main/java/uk/gov/hmcts/reform/cdapi/controllers)
     source: '/refdata/commondata/caseflags/service-id=:sid',
     target: getConfigValue(proxiedReferences.SERVICES_PRD_COMMONDATA_API),
-  });
-
-  applyProxy(app, {
-    rewrite: true,
-    rewriteUrl: '/socket.io',
-    source: '/socket.io',
-    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH),
-    ws: true,
   });
 };

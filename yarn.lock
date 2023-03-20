@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.13.10-eui-8000":
-  version "6.13.10-eui-8000"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.10-eui-8000.tgz#1ea54ebcfedc755497308274a98ca015b24106d5"
-  integrity sha512-cSMUMiieq5NLrF95MVdrjHK18Rc6Kt5lweoX5FJnYFW6pdTjmgw2FJLbPURGV5fQye5mcqs1SkhKfjvL/oRdmA==
+"@hmcts/ccd-case-ui-toolkit@6.13.10-b":
+  version "6.13.10-b"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.10-b.tgz#ce91a0609f9abd61696c8ccb56432d81ceabeddb"
+  integrity sha512-NUg5BQjdw3YqhlOBjxeD+q8rbrSD3n+9/XnzrW1WYzchDHNQuC6Iu6ezqTbYS7bPTnB7wnwUdTiBvE6Y7NCLrA==
   dependencies:
     tslib "^2.0.0"
 

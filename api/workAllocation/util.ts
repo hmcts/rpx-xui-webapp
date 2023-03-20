@@ -103,7 +103,7 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
     const sortingParameters = req.body.searchRequest.sorting_parameters;
     if (sortingParameters && sortingParameters.length > 0) {
       sortingParameters.forEach( sortParam => {
-        if (sortParam.sort_by === 'hearing_date') {
+        if (sortParam.sort_by === 'next_hearing_date') {
           sortParam.sort_by = 'caseName';
         }
       });

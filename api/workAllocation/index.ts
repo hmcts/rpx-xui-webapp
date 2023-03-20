@@ -171,7 +171,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       const sortingParameters = payload.searchRequest.sorting_parameters;
       if (sortingParameters && sortingParameters.length > 0) {
         sortingParameters.forEach( sortParameter => {
-          if (sortParameter.sort_by === 'hearing_date') {
+          if (sortParameter.sort_by === 'next_hearing_date') {
             sortParameter.sort_by = 'caseName'
           }
         });
@@ -631,8 +631,8 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       (new Date(2022, 6, 20) as any - (new Date() as any) )).toString();
     });
     if ( sorting_parameters &&
-        sorting_parameters.some(parameter => parameter.sort_by === 'hearing_date')) {
-        if ( sorting_parameters.find(parameter => parameter.sort_by === 'hearing_date').sort_order === 'desc' ) {
+        sorting_parameters.some(parameter => parameter.sort_by === 'next_hearing_date')) {
+        if ( sorting_parameters.find(parameter => parameter.sort_by === 'next_hearing_date').sort_order === 'desc' ) {
           result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) > Date.parse(b.hearing_date) ? -1 : 1));
         } else {
           result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) < Date.parse(b.hearing_date) ? -1 : 1));

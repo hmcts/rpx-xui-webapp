@@ -498,6 +498,31 @@ describe('CaseHearingsComponent', () => {
     expect(component.hasRequestAction).toBeTruthy();
   });
 
+  it('should set hearings actions on OGD/DWP user', () => {
+    const USER_DETAILS = {
+      sessionTimeout: {
+        idleModalDisplayTime: 12,
+        totalIdleTime: 10,
+      },
+      canShareCases: true,
+      userInfo: {
+        id: '123',
+        forename: 'test',
+        surname: 'test',
+        email: 'test@test.com',
+        active: 'true',
+        roles: ['caseworker-sscs'],
+      }
+    };
+
+    spyStore.pipe.and.returnValue(of(USER_DETAILS));
+    // @ts-ignore
+    mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.Ogd));
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.isOgdRole).toBeTruthy();
+  });
+
   it('should getHearsList by EXUISectionStatus', (done) => {
     const hearingList = component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     hearingList.subscribe(hearing => {

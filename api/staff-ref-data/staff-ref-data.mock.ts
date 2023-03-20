@@ -1,12 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as _ from 'lodash';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
-import { STAFF_REF_USERS_LIST } from './mock-data/staff-ref-users-list.mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
-  const getStaffRefUserDetails = /refdata\/case-worker\/user-details\/[0-9]/;
   const getUserTypes = /refdata\/case-worker\/user-type/;
   const getJobTitles = /refdata\/case-worker\/job-title/;
   const getSkills = /refdata\/case-worker\/skill/;
@@ -88,21 +86,6 @@ export const init = () => {
         { key: 'employment-tribunals', label: 'Employment Tribunals' },
         { key: 'financial-remedy', label: 'Financial Remedy' },
       ],
-    ];
-  });
-
-  mock.onGet(getStaffRefUserDetails).reply(config => {
-    const url = config.url;
-    const strId = url.match(/[0-9]/g);
-    const id = parseInt(strId[0], 10);
-    const filteredUser = STAFF_REF_USERS_LIST
-      .filter(item => item.id === id);
-
-    return [
-      200,
-      {
-        results: filteredUser,
-      },
     ];
   });
 

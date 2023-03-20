@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-// import { StaffDataAccessService } from '../../../../staff-administrator/services/staff-data-access/staff-data-access.service';
+import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from './staff-adv-filter.component';
 
-xdescribe('StaffAdvFilterComponent', () => {
+describe('StaffAdvFilterComponent', () => {
   let component: StaffAdvFilterComponent;
   let fixture: ComponentFixture<StaffAdvFilterComponent>;
 
@@ -45,7 +45,7 @@ xdescribe('StaffAdvFilterComponent', () => {
       }
     ],
     reset: false
-  }
+  };
 
   const mockFilterService = {
     getStream: () => of(mockFilterServiceResponse),
@@ -72,7 +72,7 @@ xdescribe('StaffAdvFilterComponent', () => {
       providers: [
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
         { provide: FilterService, useValue: mockFilterService },
-        // StaffDataAccessService,
+        StaffDataAccessService,
         {
           provide: ActivatedRoute,
           useValue: {
@@ -92,25 +92,39 @@ xdescribe('StaffAdvFilterComponent', () => {
     .compileComponents();
 
     mockStaffDataFilterService.filterByAdvancedSearch.and.returnValue(of([{
-      id: '2',
-      firstName: 'Victoria',
-      lastName: 'Patton',
+      email_id: '2',
+      first_name: 'Victoria',
+      last_name: 'Patton',
+      suspended: false,
+      user_type: 'Officer2',
       userCategory: '',
-      userType: 'Officer2',
-      jobTitle: 'Solicitor',
-      locations: [
-        'Locatin Y',
-      ],
-      region: 'London',
-      services: [
-        'Mock Service 2',
-      ],
-      suspended: true,
-      email: 'victoria@hmcts.com',
-      primaryLocation: 'London',
-      roles: 'Case allocator',
-      skills: ['SCSS'],
+      task_supervisor: false,
+      case_allocator: true,
+      staff_admin: false,
+      roles: [{
+        role_id: 1,
+        role: 'Role 1',
+        is_primary: true,
+      }],
+      skills: [{
+        skill_id: 123,
+        description: 'Skill 123',
+        skill_code: 'SK123'
+      }],
+      services: [{
+        service: 'Service',
+        service_code: 'Service_Code'
+      }],
+      base_locations: [{
+        location_id: 123,
+        location: 'Location',
+        is_primary: true
+      }],
+      region: 'Region',
+      region_id: 999
     }]));
+
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffAdvFilterComponent);
@@ -141,5 +155,4 @@ xdescribe('StaffAdvFilterComponent', () => {
   it('should not make a call to advanced search', () => {
     expect(mockStaffDataFilterService.filterByAdvancedSearch).toHaveBeenCalled();
   });
-})
-})
+});

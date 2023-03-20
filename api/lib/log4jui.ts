@@ -1,8 +1,8 @@
 import * as log4js from 'log4js';
 import {getConfigValue} from '../configuration';
 import {
-LOG4_J_CONFIG,
-LOGGING,
+  LOG4_J_CONFIG,
+  LOGGING,
 } from '../configuration/references';
 import { client } from './appInsights';
 import { JUILogger } from './models';

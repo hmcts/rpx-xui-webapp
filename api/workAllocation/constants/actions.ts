@@ -152,6 +152,7 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
     unassignassign: [REASSIGN],
     unclaimassign: [REASSIGN],
     unclaim: [RELEASE],
+    unassign: [RELEASE],
     complete: [COMPLETE],
     completeown: [COMPLETE],
     cancel: [CANCEL],

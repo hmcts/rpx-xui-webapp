@@ -3,11 +3,17 @@
 <xuilib-hmcts-error-summary [errorMessages]="errors" [header]="'There is a problem'" *ngIf="errors && errors.length">
 </xuilib-hmcts-error-summary>
 <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"></exui-linked-hearings-case-title>
-<h1 class="govuk-heading-l" *ngIf="!linkedCases?.length">{{ linkedHearingEnum.NoLinkedCases}}</h1>
-<h1 class="govuk-heading-l" *ngIf="linkedCases?.length">{{ isHearingsAvailable ? linkedHearingEnum.HearingSelection :
-  linkedHearingEnum.NoHearingSelection}}</h1>
-<p class="govuk-hint" *ngIf="linkedCases?.length">Hearings may be unavailable due to their status, or if they are already
-  linked to another hearing.<br>Only hearings from cases linked to this case will appear in this list.</p>
+<h1 class="govuk-heading-l" *ngIf="!linkedCases?.length">{{linkedHearingEnum.NoLinkedCases}}</h1>
+<h1 class="govuk-heading-l" *ngIf="linkedCases?.length">
+  {{isHearingsAvailable ? linkedHearingEnum.HearingSelection : linkedHearingEnum.NoHearingSelection}}
+</h1>
+<p class="govuk-hint" *ngIf="linkedCases?.length && isHearingsAvailable">
+  Hearings may be unavailable due to their status, or if they are already
+  linked to another hearing.<br>Only hearings from cases linked to this case will appear in this list.
+</p>
+<p class="govuk-hint" *ngIf="!isHearingsAvailable">
+  {{linkedHearingEnum.NoHearingsAvailable}}
+</p>
 <div class="govuk-!-margin-top-5" *ngIf="linkedCases && linkedCases.length">
   <h3 class="govuk-heading-m">Linked cases</h3>
   <form class="form" [formGroup]="linkHearingForm" id="linked-form">

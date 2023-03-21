@@ -573,7 +573,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
     // get 'service' and 'location' filters from search_parameters on request
-    const { search_parameters, sorting_parameters } = req.body.searchRequest;
+    const { search_parameters } = req.body.searchRequest;
     const services = search_parameters.find(searchParam => searchParam.key === 'services');
     const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
 
@@ -617,19 +617,6 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       result.unique_cases = getUniqueCasesCount(mappedCases);
       const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
       result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
-    }
-    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
-    result.cases.forEach(item => {
-      item.hearing_date = new Date(+new Date() + Math.random() *
-      (new Date(2022, 6, 20) as any - (new Date() as any) )).toString();
-    });
-    if ( sorting_parameters &&
-        sorting_parameters.some(parameter => parameter.sort_by === 'hearing_date')) {
-        if ( sorting_parameters.find(parameter => parameter.sort_by === 'hearing_date').sort_order === 'desc' ) {
-          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) > Date.parse(b.hearing_date) ? -1 : 1));
-        } else {
-          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) < Date.parse(b.hearing_date) ? -1 : 1));
-        }
     }
     return res.send(result).status(200);
   } catch (e) {
@@ -679,11 +666,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
     result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
-    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
-    result.cases.forEach(item => {
-      item.hearing_date =
-      new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString();
-    });
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

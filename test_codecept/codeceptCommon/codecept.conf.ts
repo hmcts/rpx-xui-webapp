@@ -1,16 +1,20 @@
 
 const report = require("multiple-cucumber-html-reporter");
-
 const global = require('./globals')
 import applicationServer from '../localServer'
 
 const path = require('path')
 var spawn = require('child_process').spawn;
-
 const backendMockApp = require('../backendMock/app');
+
+
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
 const parallel = process.env.PARALLEL
+
+if (process.env.TEST_URL.includes('pr-2807') || process.env.TEST_URL.includes('pr-2421')){
+  process.env.TEST_URL = 'https://manage-case-int1.demo.platform.hmcts.net/';
+}
 
 let features = ''
 if (testType === 'e2e'){
@@ -22,9 +26,9 @@ if (testType === 'e2e'){
   throw new Error(`Unrecognized test type ${testType}`);
 }
 
+
+
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
-
-
 
 exports.config = {
   timeout: 120,

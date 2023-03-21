@@ -14,6 +14,8 @@ describe('StaffDataFilterService', () => {
   it('should be created', () => {
     const service: StaffDataFilterService = TestBed.inject(StaffDataFilterService);
     expect(service).toBeTruthy();
+    // @ts-expect-error -- tableData is private property
+    expect(service.tableData.value).toBeNull();
   });
 
   it('should set and emit errors', () => {

@@ -1,4 +1,3 @@
-var { defineSupportCode } = require('cucumber');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
@@ -7,6 +6,7 @@ const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const TaskListTable = require('../../pageObjects/workAllocation/taskListTable');
 const CaseListTable = require('../../pageObjects/workAllocation/casesTable');
 
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -28,7 +28,7 @@ const CaseListTable = require('../../pageObjects/workAllocation/casesTable');
 
     Then('I validate work allocation table {string} columns sortability', async function (waTableFor, datatable){
         const table = getWATableObject(waTableFor);
-        const datatableHashes = datatable.hashes();
+        const datatableHashes = datatable.parse().hashes();
         for (const hash of datatableHashes){
             const lowerCaseExpectedState = hash.isSortable.toLowerCase();
             const expectedIsSortable = lowerCaseExpectedState.includes('true') || lowerCaseExpectedState.includes('yes');

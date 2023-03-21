@@ -17,7 +17,7 @@ Feature: WA Release 2: All work > cases - Manage links
             | 20006 | IA Court Newcastle     |
             | 20007 | IA Court Newport       |
             | 20008 | IA Court North Shields |
-            | 12347 | IA Court Taylor House  |
+            | 12347 | IA Court Center 1  |
 
         Given I set MOCK locations with names in service "SSCS"
             | id    | locationName             |

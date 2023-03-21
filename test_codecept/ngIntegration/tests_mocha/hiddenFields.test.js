@@ -1,6 +1,6 @@
 
 const MockApp = require('../../nodeMock/app');
-const { browser } = require('protractor');
+
 const BrowserUtil = require('../util/browserUtil');
 const BrowserWaits = require('../../e2e/support/customWaits');
 

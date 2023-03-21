@@ -8,6 +8,7 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
 })
 export class StaffUserListComponent implements OnInit {
   public displayedColumns = ['name', 'services', 'locations', 'jobTitle', 'status'];
+  public noResultsFoundText = 'No results found';
 
   constructor(public staffDataFilterService: StaffDataFilterService) { }
 

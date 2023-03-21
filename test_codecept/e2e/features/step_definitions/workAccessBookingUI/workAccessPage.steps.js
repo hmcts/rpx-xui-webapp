@@ -12,6 +12,7 @@ const workAllocationDateUtil = require("../../pageObjects/workAllocation/common/
 
 const createNewBookingWorkflow = require('../../pageObjects/workAccessBookingUI/createNewBookingWorkflow');
 const customWaits = require('../../../support/customWaits');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -113,7 +114,7 @@ const customWaits = require('../../../support/customWaits');
     });
 
     Then('I see work access existing bookings displayed with details', async function(datatable){
-        const bookingsHashes = datatable.hashes();
+        const bookingsHashes = datatable.parse().hashes();
         await customWaits.retryWithActionCallback(async () => {
             for (const booking of bookingsHashes) {
                 workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.fromDate)

@@ -1,8 +1,21 @@
-@ng 
+@ng @codecept_enabled
 Feature: WA Release 2: My work - My tasks - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
+       
+    
+            
+    Scenario Outline:  My Tasks, colums and column links for "<UserType>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
+
         Given I set MOCK tasks with permissions for view "My tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -18,28 +31,7 @@ Feature: WA Release 2: My work - My tasks - Manage links
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
-        Given I set MOCK locations with names in service "IA"
-            | id    | locationName           |
-            | 20001 | IA Court Aldgate Tower |
-            | 20002 | IA Court Birmingham    |
-            | 2003  | IA Court Bradford      |
-            | 20004 | IA Court Glasgow       |
-            | 20005 | IA Court Hatton Cross  |
-            | 20006 | IA Court Newcastle     |
-            | 20007 | IA Court Newport       |
-            | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
 
-            
-    Scenario Outline:  My Tasks, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -50,10 +42,8 @@ Feature: WA Release 2: My work - My tasks - Manage links
             | index | actions                                |
             | 1     | Reassign task,Unassign task,Go to task |
             | 2     | Reassign task,Unassign task,Go to task |
-            | 3     |                                        |
             | 4     | Reassign task,Unassign task,Go to task |
             | 5     | Reassign task,Unassign task,Go to task |
-            | 6     |                                        |
         When I open Manage link for task at row 1
         Then I see action link "Go to task" is present for task with Manage link open
         When I click action link "Go to task" on task with Manage link open

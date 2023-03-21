@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const reportLogger = require('../../e2e/support/reportLogger');
+const reportLogger = require('../../codeceptCommon/reportLogger');
 // const addContext = require('mochawesome/addContext');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
@@ -14,11 +14,11 @@ const axiosOptions = {
 axios.defaults.withCredentials = true;
 
 const http = axios.create(axiosOptions);
-const nodeAppMockData = require('../../nodeMock/nodeApp/mockData'); 
+const nodeAppMockData = require('../mockData/nodeApp/mockData'); 
 class BrowserUtil{
 
     async gotoHomePage(){
-        const baseUrl =  argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/';
+        const baseUrl =  'http://localhost:3000/';
         await browser.get(baseUrl);
     }
 
@@ -28,6 +28,11 @@ class BrowserUtil{
         }, 'secret', { expiresIn: 60 * 60 });
         this.addCookie('__auth__', token);
         
+    }
+
+    async getAuthCookieValue(){
+        const cookies = await browser.driver.manage().getCookies();
+        return cookies.find(cookie => cookie.name === '__auth__').value
     }
 
     addCookie(cookieName, cookieVal){

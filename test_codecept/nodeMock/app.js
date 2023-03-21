@@ -11,14 +11,14 @@ axios.defaults.headers.common['Content-Type'] = 'application/json'
 
 
 let { requestMapping,configurations} = require('./reqResMapping');
-const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
-const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
+const CCDCaseConfig = require('../ngIntegration/mockData/ccd/ccdCaseConfig/caseCreateConfigGenerator');
+const CCDCaseDetails = require('../ngIntegration/mockData/ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 
 const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
-const nodeAppMock = require('./nodeApp/mockData');
+// const nodeAppMock = require('./nodeApp/mockData');
 
-const waMockDataService = require('./workAllocation/mockData');
-const CucumberReporter = require('../e2e/support/reportLogger');
+// const waMockDataService = require('./workAllocation/mockData');
+const CucumberReporter = require('../codeceptCommon/reportLogger');
 
 const nodeMockConfig = require('./config');
 
@@ -64,7 +64,7 @@ class MockApp{
 
 
     initialiseMockDataServices(){
-        waMockDataService.init();
+        // waMockDataService.init();
     }
 
     setServerPort(port){
@@ -361,12 +361,12 @@ class MockApp{
 const mockInstance = new MockApp();
 module.exports = mockInstance;
 
-const bookingsMockData = require('./workAllocation/bookingsData')
+// const bookingsMockData = require('./workAllocation/bookingsData')
 const args = minimist(process.argv)
 if (args.standalone){
     mockInstance.setServerPort(3001);
     mockInstance.init();
-    nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles("IAC_CaseOfficer_R2", "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator");
+    // nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles("IAC_CaseOfficer_R2", "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator");
     // bookingsMockData.bookingResponse = [];
     // setUpcaseConfig();
     // getDLCaseConfig();
@@ -398,7 +398,7 @@ function setUpcaseConfig() {
         // },10);
 
 
-        res.send(nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, idamid));
+        // res.send(nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, idamid));
 
 
     });

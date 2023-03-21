@@ -1,12 +1,12 @@
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../nodeMock/app');
+// const MockApp = require('../../../nodeMock/app');
 
 const browserUtil = require('../../util/browserUtil');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
-const CucumberReporter = require('../../../e2e/support/reportLogger');
-const dummyCaseDetails = require('../../../nodeMock/ccd/caseDetails_data');
-const bookingsMockData = require('../../../nodeMock/workAllocation/bookingsData');
+// const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
+const CucumberReporter = require('../../../codeceptCommon/reportLogger');
+const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
+const bookingsMockData = require('../../mockData/workAllocation/bookingsData');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 
@@ -15,11 +15,12 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 const workAllocationDateUtil = require("../../../e2e/features/pageObjects/workAllocation/common/workAllocationDateUtil");
 const { LOG_LEVELS } = require('../../../e2e/support/constants');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
-    Given('I set mock for existing bookings', async function (bookingDatatAble) {
-        const bookingsTestData = bookingDatatAble.hashes();
+Given('I set mock for existing bookings', async function (bookingdatatable) {
+        const bookingsTestData = bookingdatatable.parse().hashes();
         const bookings = [];
         for (const booking of bookingsTestData){
             if(booking.locationId === ""){
@@ -45,9 +46,9 @@ const { LOG_LEVELS } = require('../../../e2e/support/constants');
     });
 
     Given('I set mock locations for bookings', async function (bookinglocations) {
-        const locationsHashes = bookinglocations.hashes();
+        const locationsHashes = bookinglocations.parse().hashes();
       
         bookingsMockData.setupLocations(locationsHashes);
     });
 
-});
+

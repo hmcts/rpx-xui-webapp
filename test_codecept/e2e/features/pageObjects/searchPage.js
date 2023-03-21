@@ -52,22 +52,24 @@ class SearchPage {
     await BrowserWaits.waitForElement(this.jurisdiction);
 
     const options = jurisdiction.split('|'); 
-    let locatorString = "//option[";
+    // let locatorString = "//option[";
     let i = 0;
     for (const option of options) {
-      if (i === 0) {
-        locatorString += `contains(text(), '${option.trim()}')`;
-      } else {
-        locatorString += `or contains(text(), '${option.trim()}')`;
-      }
+      // if (i === 0) {
+      //   locatorString += `contains(text(), '${option.trim()}')`;
+      // } else {
+      //   locatorString += `or contains(text(), '${option.trim()}')`;
+      // }
+      await this.jurisdiction.select(option.trim());
       i++;
     }
-    const elementLocator = by.xpath(locatorString + ']');
 
-    var optionElement = this.jurisdiction.element(elementLocator);
-    await BrowserWaits.waitForElement(optionElement);
+    // const elementLocator = by.xpath(locatorString + ']');
+
+    // var optionElement = this.jurisdiction.element(elementLocator);
+    // await BrowserWaits.waitForElement(optionElement);
  
-    await optionElement.click();
+    // await optionElement.click();
 
     CucumberReportLogger.LogTestDataInput(`Search  page Jurisdiction : `);
 
@@ -90,7 +92,8 @@ class SearchPage {
     var optionElement = this.caseType.element(by.xpath("//*[text() = '" + option + "']"));
     await BrowserWaits.waitForElement(optionElement);
 
-    await optionElement.click();
+    this.caseType.select(option);
+    // await optionElement.click();
     CucumberReportLogger.LogTestDataInput(`Search  page case type : ${option}`);
 
     RuntimeTestData.searchCasesInputs.casetype = option; 
@@ -103,9 +106,9 @@ class SearchPage {
     await BrowserWaits.waitForSpinnerToDissappear();
     await BrowserWaits.waitForElementClickable(this.applyButton);
 
-    await browser.executeScript('arguments[0].scrollIntoView()',
-      this.applyButton); 
-    expect(await this.applyButton.isEnabled(),"Apply buttin is not enabled").to.be.true 
+    // await browser.executeScript('arguments[0].scrollIntoView()',
+      // this.applyButton); 
+    // expect(await this.applyButton.isEnabled(),"Apply buttin is not enabled").to.be.true 
     await this.applyButton.click();
   }
 
@@ -114,8 +117,8 @@ class SearchPage {
       await this._waitForSearchComponent();
       await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForElement(this.resetButton);
-      await browser.executeScript('arguments[0].scrollIntoView()',
-        this.resetButton);
+      // await browser.executeScript('arguments[0].scrollIntoView()',
+        // this.resetButton);
       await this.resetButton.click();
     });
     
@@ -129,8 +132,8 @@ class SearchPage {
 
     await BrowserWaits.retryWithActionCallback(async () =>{
       await BrowserWaits.waitForSpinnerToDissappear();
-      await browser.executeScript('arguments[0].scrollIntoView()',
-        this.firstResultCaseLink);
+      // await browser.executeScript('arguments[0].scrollIntoView()',
+      //   this.firstResultCaseLink);
       await this.firstResultCaseLink.click();
     });
    

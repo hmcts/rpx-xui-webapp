@@ -81,3 +81,5 @@ stryker.log
 yalc.lock
 
 ignore/
+
+/functional_output/

@@ -1,5 +1,4 @@
 
-var { defineSupportCode } = require('cucumber');
 
 const headerPage = require('../../pageObjects/headerPage');
 const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
@@ -12,6 +11,7 @@ const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskC
 const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
 
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -50,7 +50,7 @@ const workflowUtil = require('../../pageObjects/common/workflowUtil');
     });
 
     Then('I validate My work sub navigations displayed', async function(datatable){
-        const tabshashes = datatable.hashes();
+        const tabshashes = datatable.parse().hashes();
         for(let i = 0; i < tabshashes.length;i++){
             expect(await myWorkPage.isSubNavigationTabPresent(tabshashes[i]['Tab'])).to.be.true
         }

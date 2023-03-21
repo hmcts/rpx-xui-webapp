@@ -26,21 +26,11 @@ class CreateCaseStartPage {
 
   async selectJurisdiction(jurisdiction){
 
-    // let locatorString = "//*[@id = 'cc-jurisdiction']/option[";
-    // let i = 0;
-    // const options = jurisdiction.split('|');
-    // for (const option of options) {
-    //   if (i === 0) {
-    //     locatorString += `contains(text(), '${option.trim()}')`;
-    //   } else {
-    //     locatorString += ` or contains(text(), '${option.trim()}')`;
-    //   }
-    //   i++;
-    // }
-    // locatorString = locatorString + ']';
-    
+
     var e = element(by.xpath("//*[@id = 'cc-jurisdiction']"));
-    await e.select(jurisdiction)
+    const options = await e.getSelectOptions();
+    const matchingOption = options.find(opt => opt.includes(jurisdiction))
+    await e.select(matchingOption)
     // await BrowserWaits.waitForElement(e);
     // await e.click();
      
@@ -48,36 +38,20 @@ class CreateCaseStartPage {
 
   async selectCaseType(caseType){
     
-    // let locatorString = "//*[@id = 'cc-case-type']/option[";
-    // let i = 0;
-    // const options = caseType.split('|'); 
-    // for (const option of options) {
-    //   if (i === 0) {
-    //     locatorString += `contains(text(), '${option.trim()}')`;
-    //   } else {
-    //     locatorString += ` or contains(text(), '${option.trim()}')`;
-    //   }
-    //   i++;
-    // }
-    // locatorString = locatorString + ']';
-
-    // var e = element(by.xpath(locatorString));
-    // await BrowserWaits.waitForElement(e);
-    // await e.click();
-    
     var e = element(by.xpath("//*[@id = 'cc-case-type']"));
-    await e.select(caseType)
+    const options = await e.getSelectOptions();
+    const matchingOption = options.find(opt => opt.includes(caseType))
+    await e.select(matchingOption)
 
     // await this._caseType.selectFromDropdownByText(option);
   }
 
   async selectEvent(option){
-    // var e = element(by.xpath('//*[@id = "cc-event"]/option[text() = "' + option + '"]'));
-    // await BrowserWaits.waitForElement(e)
-    // await e.click(); 
-
+    
     var e = element(by.xpath("//*[@id = 'cc-event']"));
-    await e.select(option)
+    const options = await e.getSelectOptions();
+    const matchingOption = options.find(opt => opt.includes(option))
+    await e.select(matchingOption)
       // await this._event.selectFromDropdownByText(option);
   }
 

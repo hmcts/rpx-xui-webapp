@@ -12,8 +12,12 @@ let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
 const parallel = process.env.PARALLEL
 
-if (process.env.TEST_URL.includes('pr-2807') || process.env.TEST_URL.includes('pr-2421')){
-  process.env.TEST_URL = 'https://manage-case-int1.demo.platform.hmcts.net/';
+if (process.env.TEST_URL.includes('pr-2807') || 
+    process.env.TEST_URL.includes('pr-2421') ||
+    process.env.TEST_URL.includes('localhost'))
+  {
+    process.env.TEST_ENV='demo';
+    process.env.TEST_URL = 'https://manage-case-int1.demo.platform.hmcts.net/';
 }
 
 let features = ''
@@ -138,17 +142,17 @@ exports.config = {
     },
     retryFailedStep: {
       enabled: true
-    },
-    cucumberJsonReporter: {
-      require: 'codeceptjs-cucumber-json-reporter',
-      enabled: true,               // if false, pass --plugins cucumberJsonReporter
-      attachScreenshots: true,     // true by default
-      attachComments: true,        // true by default
-      outputFile: functional_output_dir + '/cucumberOutput/',     // cucumber_output.json by default
-      uniqueFileNames: true,      // if true outputFile is ignored in favor of unique file names in the format of `cucumber_output_<UUID>.json`.  Useful for parallel test execution
-      includeExampleValues: false, // if true incorporate actual values from Examples table along with variable placeholder when writing steps to the report
-      timeMultiplier: 1000000,     // Used when calculating duration of individual BDD steps.  Defaults to nanoseconds
     }
+    // cucumberJsonReporter: {
+    //   require: 'codeceptjs-cucumber-json-reporter',
+    //   enabled: true,               // if false, pass --plugins cucumberJsonReporter
+    //   attachScreenshots: true,     // true by default
+    //   attachComments: true,        // true by default
+    //   outputFile: functional_output_dir + '/cucumberOutput/',     // cucumber_output.json by default
+    //   uniqueFileNames: true,      // if true outputFile is ignored in favor of unique file names in the format of `cucumber_output_<UUID>.json`.  Useful for parallel test execution
+    //   includeExampleValues: false, // if true incorporate actual values from Examples table along with variable placeholder when writing steps to the report
+    //   timeMultiplier: 1000000,     // Used when calculating duration of individual BDD steps.  Defaults to nanoseconds
+    // }
    
   },
   include: {

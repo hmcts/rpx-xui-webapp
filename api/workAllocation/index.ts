@@ -39,7 +39,6 @@ import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
   assignActionsToCases,
-  assignActionsToTasks,
   assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
@@ -178,14 +177,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       }
       // TEMPORARY CODE: end
 
-      // These should be mocked as if we were getting them from the user themselves
-      if (refined) {
-        data = mockTaskPermissions(data);
-      }
-      returnData = !!req.body.refined ?
-       { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
-        : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
-
+      returnData = {
+        tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
+        total_records: data.total_records,
+      };
     }
     res.send(returnData);
   } catch (error) {
@@ -278,9 +273,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     }
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const actionedTasks = !!req.body.refined
-      ? assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId)
-      : assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
+    const actionedTasks = assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
     return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);

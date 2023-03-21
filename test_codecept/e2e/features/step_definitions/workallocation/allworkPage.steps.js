@@ -6,6 +6,7 @@ const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const allWorkPage = require('../../pageObjects/workAllocation/allWorkPage');
 
 const ArrayUtil = require('../../../utils/ArrayUtil');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -51,7 +52,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
     Then('I validate filter item {string} select or radio options present in all work page', async function (filterItem, datatable){
         const actualOption = await allWorkPage.getFilterSelectOrRadioOptions(filterItem);
 
-        const hashes = datatable.hashes();
+        const hashes = datatable.parse().hashes();
         for (const hash of hashes){
             expect(actualOption).to.includes(hash.option) 
         }
@@ -124,7 +125,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
     });
 
     Then('I see location search results in all work filter', async function (dataTable) {
-        const locationsHashes = dataTable.hashes();
+        const locationsHashes = datatable.parse().hashes();
         const expectdLocations = [];
         for (const locationsHash of locationsHashes){
             expectdLocations.push(locationsHash.location);

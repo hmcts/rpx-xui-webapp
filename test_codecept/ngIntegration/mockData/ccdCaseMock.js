@@ -1,6 +1,6 @@
-const CCDCaseConfig = require('../../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
-const CCDWorkbasketConfig = require('../../nodeMock/ccd/ccdCaseConfig/workBasketInputGenerator');
-const CCDSearchInputConfig = require('../../nodeMock/ccd/ccdCaseConfig/searchInputGenerator');
+const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
+const CCDWorkbasketConfig = require('./ccd/ccdCaseConfig/workBasketInputGenerator');
+const CCDSearchInputConfig = require('./ccd/ccdCaseConfig/searchInputGenerator');
 
 function getTestJurisdiction(scenario) {
     const job = {

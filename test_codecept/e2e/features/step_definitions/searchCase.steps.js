@@ -11,7 +11,6 @@ const CucumberReporter = require("../../../codeceptCommon/reportLogger");
 const BrowserWaits = require('../../support/customWaits');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
  
-const { browser } = require('protractor');
 const config = require('../../utils/config/config.js');
 
 const RuntimeTestData = require("../../support/runtimeTestData");

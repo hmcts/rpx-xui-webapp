@@ -13,6 +13,7 @@ const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const taskManagerPage = require('../../pageObjects/workAllocation/taskManagerPage');
 const featureToggleUtil = require('../../../../ngIntegration/util/featureToggleUtil');
 
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -278,7 +279,7 @@ const featureToggleUtil = require('../../../../ngIntegration/util/featureToggleU
 
     Then('I validate task list columns for release {string} are links to case details', async function(release,datatable){
         const softAssert = new SoftAssert();
-        const releaseColumnHashes = datatable.hashes();
+        const releaseColumnHashes = datatable.parse().hashes();
         for (let i = 0; i < releaseColumnHashes.length; i ++){
             const dataRow = releaseColumnHashes[i];
             const columnName = dataRow[release];

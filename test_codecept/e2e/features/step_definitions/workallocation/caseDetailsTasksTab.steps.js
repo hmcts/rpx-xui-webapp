@@ -7,6 +7,7 @@ const WorkAllocationDateUtil = require('../../pageObjects/workAllocation/common/
 const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
 const caseRolesAndAccessPage = require("../../pageObjects/workAllocation/caseRolesAccessPage");
 
+const { DataTableArgument } = require('codeceptjs');
 
 
     When('I click manage link {string} for task at position {int} in case details tasks tab', async function(manageLinkText,taskPos){
@@ -134,7 +135,7 @@ const caseRolesAndAccessPage = require("../../pageObjects/workAllocation/caseRol
             softAssert.setScenario("Task name match");
             await softAssert.assert(async () => expect(taskName).to.includes(taskNameExpected));
 
-            const expectedAttributeHashes = attributesDatatable.hashes();
+            const expectedAttributeHashes = attributesDatatable.parse().hashes();
 
             for (const attributeHash of expectedAttributeHashes) {
 

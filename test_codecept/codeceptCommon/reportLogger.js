@@ -1,5 +1,7 @@
 const browser = require('./browser')
 
+// const I = getActor();
+
 class CodeceptMochawesomeLog{
     getDate(){
         const d = new Date();
@@ -41,6 +43,7 @@ class CodeceptMochawesomeLog{
 
         try{
             browser.get_I().addMochawesomeContext(this.getDate() + message);
+            // browser.get_I().say( message)
         }
         catch(err){
             console.log("Error occured adding message to report. "+err.stack);
@@ -52,6 +55,8 @@ class CodeceptMochawesomeLog{
         // if (!this._isLevelEnabled(logLevel)) return;
 
         browser.get_I().addMochawesomeContext(this.getDate() + message);
+        // browser.get_I().say(this.getDate() + message)
+
     }
 
     AddJson(json, logLevel){
@@ -59,6 +64,8 @@ class CodeceptMochawesomeLog{
 
         try {
             browser.get_I().addMochawesomeContext(JSON.stringify(json, null, 2));
+            // browser.get_I().say(JSON.stringify(json, null, 2))
+
         }
         catch(err) {
              console.log("Error occured adding message to report. " + err.stack);
@@ -75,8 +82,9 @@ class CodeceptMochawesomeLog{
         // if (!this._isLevelEnabled(logLevel)) return;
 
         // const decodedImage = await this.getScreenshot(onbrowser);
-        await browser.get_I().addMochawesomeContext(decodedImage, 'image/png');
-       
+        // await browser.get_I().addMochawesomeContext(decodedImage, 'image/png');
+        this.AddMessage(`!!! Add screenshot not implemented !!!`)
+        
     }
 
     async getScreenshot(onbrowser){
@@ -85,6 +93,7 @@ class CodeceptMochawesomeLog{
         const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
         return decodedImage; 
     }
+
 
     // _isLevelEnabled(msgLoglevel){
     //     msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;  

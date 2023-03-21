@@ -10,6 +10,7 @@ const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 
 
 const ArrayUtil = require('../../../utils/ArrayUtil');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -97,7 +98,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 
     async function validateLocationsSelected(locationsDatatable){
         const selectedLocations = await myWorkPage.getListOfSelectedLocations();
-        const locationNameHashes = locationsDatatable.hashes();
+        const locationNameHashes = locationsDatatable.parse().hashes()
         const locationNamesArr = [];
         for (let i = 0; i < locationNameHashes.length; i++) {
             locationNamesArr.push(locationNameHashes[i].locationName);
@@ -165,7 +166,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
     });
 
     Then('I validate my work filter services listed', async function(expectedServicesDatatable){
-        const datatableHashes = expectedServicesDatatable.hashes();
+        const datatableHashes = expectedServicesDatatable.parse().hashes()
         const expectedServieNames= [];
         for (const hash of datatableHashes){
             expectedServieNames.push(hash.name);
@@ -193,7 +194,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
     });
 
     Then('I Validate my work filter services selected', async function (expectedServicesDatatable){
-         const datatableHashes = expectedServicesDatatable.hashes();
+        const datatableHashes = expectedServicesDatatable.parse().hashes();
         const expectedServieNames = [];
         for (const hash of datatableHashes) {
             expectedServieNames.push(hash.name);
@@ -207,7 +208,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 
 
     Then('I validate my work filter locations selected', async function (expectedLocationsDatatable){
-        const datatableHashes = expectedLocationsDatatable.hashes();
+        const datatableHashes = expectedLocationsDatatable.parse().hashes();
         const expectedLocations = [];
         for (const hash of datatableHashes) {
             expectedLocations.push(hash.name);
@@ -236,7 +237,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 
 
     Then('I see location search results in my work filter', async function (expectedLocationsDatatable){
-        const datatableHashes = expectedLocationsDatatable.hashes();
+        const datatableHashes = expectedLocationsDatatable.parse().hashes();
         const expectedLocations = [];
         for (const hash of datatableHashes) {
             expectedLocations.push(hash.name);

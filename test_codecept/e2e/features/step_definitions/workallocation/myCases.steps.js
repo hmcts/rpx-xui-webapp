@@ -10,13 +10,14 @@ const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
 
 
 const ArrayUtil = require('../../../utils/ArrayUtil');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
     const casesListTable = new WACasesListTable();
 
     Then('I validate work allocation cases table columns displayed', async function (datatable) {
-        const columnHeadersHash = datatable.hashes();
+        const columnHeadersHash = datatable.parse().hashes();
         const expectdColHeaders = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader);
         const actualHeadeColumns = await casesListTable.getColumnHeaderNames();
         expect(actualHeadeColumns.length, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.equal(expectdColHeaders.length);
@@ -25,7 +26,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
     });
 
     Then('I validate work allocation table columns are links', async function (datatable) {
-        const columnHeadersHash = datatable.hashes();
+        const columnHeadersHash = datatable.parse().hashes();
         const expectdLinkCols = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader);
 
         const actualHeadeColumns = await casesListTable.getColumnHeaderNames();

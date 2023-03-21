@@ -9,7 +9,6 @@ const argv = minimist(process.argv.slice(2));
 
 const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
-const customReporter = require('../../e2e/support/reportLogger');
 
 const appTestConfig = require('../../e2e/config/appTestConfig');
 const {LOG_LEVELS} = require("../../e2e/support/constants");

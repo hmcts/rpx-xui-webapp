@@ -68,7 +68,7 @@ class CcdApi {
 
                 await Request.withSession(this.userName, this.password);
                 let reqData = { size: 25 }
-                const response = await Request.post(reqURL, reqData, { experimental: true });
+                const response = await Request.post(reqURL, reqData);
                 expect(response.status, `${reqURL} ccd api faild status code: ${response.status}`).to.eql(200);
                 return response.data;
             });
@@ -105,7 +105,7 @@ class CcdApi {
 
     async _getCaseId() {
         let publicUrl;
-        const caseId = await browser.wait(() => {
+        const caseId = await BrowserWaits.retryWithActionCallback(() => {
             return browser.getCurrentUrl().then((url) => {
                 publicUrl = url;
                 this.caseId = publicUrl.split('/').slice(5, 6).join('/');

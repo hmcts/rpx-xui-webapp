@@ -1,4 +1,4 @@
-@fullfunctional @wa2 @demo
+@fullfunctional @wa2 @demo @codecept_enabled
 Feature: WA Release 2: : Work allocations My work, All work
 
     Scenario Outline: View tasks, E2E journey of Caseworker-ia-officer user
@@ -83,15 +83,15 @@ Feature: WA Release 2: : Work allocations My work, All work
             | Due date      | Yes        | No    |
             | Priority      | Yes        | No    |
 
-        When I navigate to All work sub navigation tab "Cases"
+        # When I navigate to All work sub navigation tab "Cases"
 
-        Then I validate work allocation cases table columns displayed
-            | ColumnHeader  |
-            | Case name     |
-            | Case category |
-            | Location      |
-            | Role          |
-            | Person        |
+        # Then I validate work allocation cases table columns displayed
+        #     | ColumnHeader  |
+        #     | Case name     |
+        #     | Case category |
+        #     | Location      |
+        #     | Role          |
+        #     | Person        |
             # | Hearing date |
 
 

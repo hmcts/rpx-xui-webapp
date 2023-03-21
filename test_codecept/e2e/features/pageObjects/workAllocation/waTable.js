@@ -1,6 +1,6 @@
 const c = require('config');
 const { constants } = require('karma');
-const { browser } = require('protractor');
+
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 const ArrayUtil = require('../../../utils/ArrayUtil');
@@ -209,8 +209,7 @@ class WAListTable {
         await BrowserWaits.retryWithActionCallback(async () => {
             const row = await this.getTableRowAt(position);
             let rowManageLink = row.$('button[id^="manage_"]');
-            await browser.executeScript('arguments[0].scrollIntoView()',
-                rowManageLink.getWebElement())
+            await browser.scrollToElement(rowManageLink)
             await rowManageLink.click();
             if (!(await this.isManageLinkOpenAtPos(position))) {
                 throw new Error('Manage link not open. retying action');
@@ -243,8 +242,7 @@ class WAListTable {
         expect(await this.isRowActionPresent(action), 'action row not displayed').to.be.true;
         await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`, LOG_LEVELS.Debug)
         const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`))
-        await browser.executeScript('arguments[0].scrollIntoView()',
-            actionLink.getWebElement());
+        await browser.scrollToElement(actionLink);
         await actionLink.click();
     }
 

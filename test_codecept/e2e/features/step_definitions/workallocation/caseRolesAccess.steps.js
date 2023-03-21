@@ -9,6 +9,7 @@ const workAllocationDateUtil = require('../../pageObjects/workAllocation/common/
 const ArrayUtil = require('../../../utils/ArrayUtil');
 
 const checkYourAnswersPage = require('../../pageObjects/workAllocation/common/checkYourAnswersPage');
+const { DataTableArgument } = require('codeceptjs');
 
 
     Then('I see Roles and access page is displayed', async function(){
@@ -164,7 +165,7 @@ const checkYourAnswersPage = require('../../pageObjects/workAllocation/common/ch
     Then('I validate actions row for role category {string} has action links in Roles and access page', async function (roleCategory, actionLinksdatatable){
         const caseRolesTable = caseRolesAndAccessPage.getTableForRoleACcessType(roleCategory);
 
-        for (const tableHash of actionLinksdatatable.hashes()){
+        for (const tableHash of actionLinksdatatable.parse().hashes()){
             const actionLink = tableHash['ActionLinks'];
             expect(await caseRolesTable.isManageActionLinkDisplayed(actionLink), `${actionLink} is not displayed`).to.be.true;
 

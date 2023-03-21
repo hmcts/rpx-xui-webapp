@@ -23,7 +23,7 @@ const BrowserLogs = require('./browserLogs');
 const browserUtil = require("../../ngIntegration/util/browserUtil");
 const RuntimetestData = require("./runtimeTestData");
 // defineSupportCode(function({After }) {
-//     registerHandler("BeforeFeature", { timeout: 500 * 1000 }, function() {
+//     registerHandler("BeforeFeature"], function() {
 //         var origFn = browser.driver.controlFlow().execute;
 //
 //         browser.driver.controlFlow().execute = function () {

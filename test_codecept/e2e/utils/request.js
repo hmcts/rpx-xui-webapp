@@ -37,6 +37,8 @@ class Request {
                         cookieString = `${cookieString}${cookiesArray[i].name}=${cookiesArray[i].value};`;
                     }
                     resolve(cookieString)
+                }).catch(err =>{
+                    reject(err)
                 })
             }catch(err){
                 reject(err)

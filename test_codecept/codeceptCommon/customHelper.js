@@ -1,16 +1,79 @@
 const Helper = require('@codeceptjs/helper');
 
+const codeceptMochawesomeLog = require('./reportLogger')
+
+
+const browserErrorLogsExclusions = [
+    'Unable to find Target Element',
+    'JSHandle@object',
+    'JSHandle@error',
+    'dc.services.visualstudio.com/'
+]
+
 class CustomHelper extends Helper {
 
     // before/after hooks
     _before() {
-        // remove if not used
+       this.browserErrorLogs = [];
+        
+       this.pageOnListener = false;
+       
     }
 
-    _after() {
-        // remove if not used
+    _beforeStep(){
+        const page = this.getPuppeteerPage();
+
+        if (!this.pageOnListener && page){
+           
+            page.on('console', (msg) => {
+                const type = msg.type();
+                if (type === 'error') {
+                    // console.log(msg);
+                    // this.attachBrowserLog(msg)
+                    this.browserErrorLogs.push(msg)
+                }
+            });
+            this.pageOnListener = true;
+        }
     }
 
+
+    async _failed(){
+        codeceptMochawesomeLog.AddMessage('---------------------- TEST FAILED ----------------------');
+
+       for(const log of this.browserErrorLogs){
+           this.attachBrowserLog(log)
+        //    await getActor().saveScreenshot()
+       }
+    }
+
+    async flushLogsToReport(){
+        codeceptMochawesomeLog.AddMessage('---------------------- BROWSER CONSOLE ERROR ----------------------');
+        for (const log of this.browserErrorLogs) {
+            this.attachBrowserLog(log)
+            //    await getActor().saveScreenshot()
+        }
+        codeceptMochawesomeLog.AddMessage('------------------------------------------------------------------');
+
+    }
+
+    async  attachBrowserLog(log) {
+        if (log._type !== 'error' ) {
+            return;
+        }
+        if (browserErrorLogsExclusions.filter(exclusion => log._text.includes(exclusion)).length > 0){
+            return;
+        }
+        
+        codeceptMochawesomeLog.AddMessage(`Error: ${log._text}`);
+        for (const stacktraceLocation of log._stackTraceLocations) {
+            if (stacktraceLocation.url.endsWith('.js')){
+                continue;
+            }
+            codeceptMochawesomeLog.AddMessage(`       ${stacktraceLocation.url}:${stacktraceLocation.lineNumber}`);
+        }
+       
+    }
     
     async getCookies(){
         const puppeteerPage = this._getHelper().page;
@@ -43,6 +106,8 @@ class CustomHelper extends Helper {
         const puppeteerPage = this._getHelper().page;
         return puppeteerPage.evaluate(...args);
     }
+
+   
 
 }
 

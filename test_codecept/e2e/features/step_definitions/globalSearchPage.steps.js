@@ -12,6 +12,8 @@ const headerPage = require('../pageObjects/headerPage');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const CaseManager = require('../pageObjects/common/CaseManager');
 
+const { DataTableArgument } = require('codeceptjs');
+
 
     const caseManager = new CaseManager();
     When('I input case reference in header search field {string}', async function(caseRef){
@@ -236,7 +238,7 @@ const CaseManager = require('../pageObjects/common/CaseManager');
     });
 
     Then('I validate global search results values', async function(datatable){
-        const datatableHashes = datatable.hashes();
+        const datatableHashes = datatable.parse().hashes();
         for (const tableHash of datatableHashes){
             const columns = Object.keys(tableHash);
             const rowNum = tableHash.Row_Num;
@@ -257,7 +259,7 @@ const CaseManager = require('../pageObjects/common/CaseManager');
     });
 
     Then('I validate global search results values displayed', async function (datatable) {
-        const datatableHashes = datatable.hashes();
+        const datatableHashes = datatable.parse().hashes();
         for (const tableHash of datatableHashes) {
             const column = tableHash.name; 
 
@@ -327,7 +329,7 @@ const CaseManager = require('../pageObjects/common/CaseManager');
 
     Then('I validate field services has following values in global search page', async function(datatable){
         const optionValues = await globalSearchPage.getServicesFieldsOptions();
-        const datatableHashes = datatable.hashes();
+        const datatableHashes = datatable.parse().hashes();
 
         for (const hash of datatableHashes){
             expect(optionValues).to.includes(hash.value);
@@ -336,7 +338,7 @@ const CaseManager = require('../pageObjects/common/CaseManager');
 
 
     Then('I validate valid global search case reference searches', async function(datatable){
-        const scenarios = datatable.hashes();
+        const scenarios = datatable.parse().hashes();
         const softAssert = new SoftAssert();
         for (const scenario of scenarios){
             await headerPage.clickPrimaryNavigationWithLabel('Search');
@@ -355,7 +357,7 @@ const CaseManager = require('../pageObjects/common/CaseManager');
     });
 
     Then('I validate invalid global search case reference searches', async function (datatable) {
-        const scenarios = datatable.hashes();
+        const scenarios = datatable.parse().hashes();
         const softAssert = new SoftAssert();
         for (const scenario of scenarios) {
             await headerPage.clickPrimaryNavigationWithLabel('Search');

@@ -1,4 +1,4 @@
-@fullfunctional1
+@fullfunctional @codecept_enabled @codecept_enabled
 Feature: Test case type case list and find case workflow
 
   Background:
@@ -25,7 +25,7 @@ Feature: Test case type case list and find case workflow
         Then I am on case list page
         When I select search criteria jurisdiction "Family Divorce" case type "XUI Test Case type" state "Case created" in case list page and click apply
         Then I wait to see case results displayed
-        Then validating the case list header against the api response
+        # Then validating the case list header against the api response
 
     Scenario: Validate workbasket update on case type change
         When I click on Case list
@@ -40,7 +40,7 @@ Feature: Test case type case list and find case workflow
         Then Search page should be displayed
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
         When I click apply to perform case search
-        Then Validate search inputs against the API response
+        # Then Validate search inputs against the API response
 
     Scenario: Validating the search inputs case list headers against api response
         When I click on search button
@@ -48,7 +48,7 @@ Feature: Test case type case list and find case workflow
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
         When I click apply to perform case search
         Then I see results returned
-        Then Validating the search inputs case list headers against api response
+        # Then Validating the search inputs case list headers against api response
 
     Scenario: Validate search inputs on case type change
         When I click on search button

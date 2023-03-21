@@ -3,7 +3,7 @@ const helper = require('codeceptjs').helper;
 
 
 function getActor(){
-    return actor()
+    return actor().retry({ retries: 3, minTimeout: 30 });
 }
 
 class DriverManager{
@@ -14,6 +14,18 @@ class DriverManager{
     async getCookies(){
         return await getActor().getCookies();
     }
+
+    async getCookie(name) {
+        const cookies = await this.getCookies();
+        return cookies.find(cookie => cookie.name === name)
+
+    }
+
+    async setCookies(cookies){
+        for(const cookie of cookies){
+            await getActor().setCookie(cookie)
+        }
+    }
 }
 
 const driverManager = new DriverManager();
@@ -21,8 +33,9 @@ const driverManager = new DriverManager();
 class Browser{
     constructor(){
         this.driver = {
-            manage: () =>  new DriverManager()
+            manage: () => driverManager
         }
+        this.logs = [];
     }
 
     manage(){
@@ -34,15 +47,15 @@ class Browser{
     }
 
     async sleep(seconds){
-        return new Promise(() => {
+        return new Promise((resolve,reject) => {
             setTimeout(() => {
                 resolve(true)
             }, seconds*1000)
         })
     }
 
-    get(url){
-        getActor().amOnPage(url);
+    async get(url){
+        await getActor().amOnPage(url);
     }
 
     async getCurrentUrl(){
@@ -55,6 +68,16 @@ class Browser{
 
     }
 
+
+    async handlePopups(){
+        try{
+            return getActor().cancelPopup();
+        }catch(err){
+
+        }
+        
+    }
+
     async executeScript(fn){
         return getActor().executeScript(fn);  
     }
@@ -63,21 +86,25 @@ class Browser{
         return await getActor().grabBrowserLogs();  
     }
 
+    async captureBrowserLogs(){
+        this.logs = await this.getBrowserLogs();
+    }
+
     async scrollToElement(elementObj){
         const actor = getActor();
         return await actor.scrollTo(elementObj.selector)
     }
 
     async getSessionStorage(key) {
-        return await getActor().executeScript(() => {
+        return await getActor().executeScript((key) => {
             return window.sessionStorage[key]
-        }); 
+        },key); 
     }
 
     async getLocalStorage(key) {
-        return await getActor().executeScript(() => {
+        return await getActor().executeScript(function (key) {
             return window.localStorage[key]
-        });
+        }, key);
     }
 
     async getCurrentWindowHandle(){

@@ -1,5 +1,5 @@
 
-const CCDCaseConfig = require('../../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
+const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 
 function getEventConfig(event){
     const mockEvent = new CCDCaseConfig(event, "Mock " + event, "Mock event description " + event);

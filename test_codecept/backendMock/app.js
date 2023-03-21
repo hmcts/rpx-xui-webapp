@@ -10,7 +10,21 @@ const http = axios.create({})
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 
 const taskApi = require('./services/task-management-api/routes')
+const workTypeRoutes = require('./services/task-management-api/workTypeRoutes')
 
+
+const locationRoutes = require('./services/rdLocation/routes')
+const caseworkerRoutes = require('./services/rdCaseworker/routes')
+const judicialRoutes = require('./services/rdJudicial/routes')
+
+const roleAssignmentRoutes = require('./services/roleAssignments/routes')
+const bookingRoutes = require('./services/roleAssignments/bookingRoutes')
+const ccdRoutes = require('./services/ccd/routes')
+
+const idamOpenId = require('./services/idam/routes')
+const sessionRoutes = require('./services/session/routes')
+
+const users = require('./services/users');
 
 class MockApp {
 
@@ -49,8 +63,24 @@ class MockApp {
         app.use(cookieParser());
         app.use(express.json());
 
+        app.use((req,res,next) => {
+            // console.log(`${req.method} : ${req.url}`);
+            next();
+        })
 
+        app.use('/client', sessionRoutes)
+
+        app.use('/', idamOpenId)
         app.use('/task', taskApi)
+        app.use('/work-types', workTypeRoutes)
+        app.use('/refdata/location', locationRoutes)
+        app.use('/refdata/case-worker', caseworkerRoutes )
+        app.use('/refdata/judicial', judicialRoutes )
+        app.use('/am/role-assignments', roleAssignmentRoutes)
+        app.use('/am/bookings', bookingRoutes)
+
+        app.use('/', ccdRoutes )
+
 
 
         // await this.stopServer();
@@ -77,6 +107,7 @@ class MockApp {
 
 
 const mockInstance = new MockApp();
+module.exports = mockInstance;
 
 const args = minimist(process.argv)
 if (args.standalone) {

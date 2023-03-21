@@ -5,7 +5,7 @@ const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
 class BrowserWaits{
     constructor(){
-        this.waitTime = 45000; 
+        this.waitTime = 30000; 
         this.pageErrors = $$(".error-summary");
         this.retriesCount = 3;
 
@@ -41,7 +41,7 @@ class BrowserWaits{
     async waitForElement(element, message, waitForSeconds) {
         const startTime = Date.now();
         CucumberReporter.AddMessage("starting wait for element max in sec " + this.waitTime / 1000 + " : " + JSON.stringify(element.selector));
-        await element.wait()
+        await element.wait(this.waitTime / 1000)
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime) / 1000);
 
     }
@@ -55,7 +55,7 @@ class BrowserWaits{
         const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
         CucumberReporter.AddMessage("starting wait for element clickable max in sec " + waitTimeInMilliSec + " : " + JSON.stringify(element.selector));
         try {
-            await I.waitForElement(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + JSON.stringify(element.selector));
+            // await I.waitForElement(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + JSON.stringify(element.selector));
         } catch (err) {
             CucumberReporter.AddMessage(`Wait for element clikable failed ${JSON.stringify(element.selector) }, not throwing exception to let test fail in next step if required state not met`);
         }
@@ -148,7 +148,7 @@ class BrowserWaits{
                 if (callback) {
                     callback(retryCounter + "");
                 }
-                console.log(element.locator().toString() + " .    Retry attempt for page load : " + retryCounter);
+                console.log(element.selector + " .    Retry attempt for page load : " + retryCounter);
 
                 await browser.refresh();
 
@@ -194,11 +194,19 @@ class BrowserWaits{
     }
 
     async waitForSpinnerToDissappear() {
-        await this.waitForCondition(async () => {
-            const isSpinnerPresent = await $("div.spinner-container").isPresent();
-            CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
-            return !isSpinnerPresent;
-        }, 'Spinner is still displayed after waiting ');
+        let status = true
+        do{
+            status = await $("div.spinner-container").isPresent();
+        }
+        while (status)
+        
+        // const isSpinnerPresent = await $("div.spinner-container").isPresent();
+
+        // await this.waitForCondition(async () => {
+        //     const isSpinnerPresent = await $("div.spinner-container").isPresent();
+        //     CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
+        //     return !isSpinnerPresent;
+        // }, 'Spinner is still displayed after waiting ');
     }
 }
 

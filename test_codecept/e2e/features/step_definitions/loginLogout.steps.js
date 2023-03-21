@@ -11,6 +11,7 @@ const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 const testConfig = require('../../config/appTestConfig');
+const reportLogger = require('../../../codeceptCommon/reportLogger');
 
 async function waitForElement(el) {
   return element(`.${el}`).isDisplayed();
@@ -105,6 +106,8 @@ async function waitForElement(el) {
       CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl, LOG_LEVELS.Info);
       await browser.get(config.config.baseUrl);
       await BrowserWaits.waitForElement(loginPage.signinTitle);
+      await BrowserWaits.waitForElement(loginPage.signinBtn);
+
       expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
     }).catch(err => {
       throw err
@@ -137,6 +140,8 @@ async function waitForElement(el) {
 
 
   When(/^I enter an valid email-address and password to login$/, async function () {
+    CucumberReportLogger.AddMessage(`Login user  is ${this.config.username}`)
+
     await loginPage.emailAddress.sendKeys(this.config.username);          //replace username and password
     browser.sleep(MID_DELAY);
     await loginPage.password.sendKeys(this.config.password);
@@ -191,7 +196,8 @@ async function waitForElement(el) {
         await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
         await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
         
-
+        const cookies = await browser.driver.manage().getCookies();
+        reportLogger.AddMessage(JSON.stringify(cookies, null, 2))
       }catch(err){
         await browser.get(config.config.baseUrl);
         throw new Error(err);
@@ -205,6 +211,7 @@ async function waitForElement(el) {
 
   Given('I am logged into Expert UI with valid user details', async function () {
     const matchingUsers = testConfig.users[testConfig.testEnv].filter(user => user.userIdentifier === 'PROD_LIKE');
+    CucumberReportLogger.AddMessage(`Login user  is ${matchingUsers[0].email}`)
 
     await loginPage.givenIAmLoggedIn(matchingUsers[0].email, matchingUsers[0].key);
 
@@ -218,6 +225,8 @@ async function waitForElement(el) {
   });
 
   Given('I am logged into Expert UI with valid Probate back office user credentials', async function () {
+    CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.usernameProbate}`)
+
     await loginPage.givenIAmLoggedIn(config.config.params.usernameProbate, config.config.params.password);
     const world = this;
 
@@ -231,6 +240,8 @@ async function waitForElement(el) {
   });
 
   Given('I am logged into Expert UI with non professional user details', async function () {
+    CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.caseworkerUser}`)
+
     await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
     const world = this;
 
@@ -243,6 +254,8 @@ async function waitForElement(el) {
   });
 
   Given('I am logged into Expert UI with FPL user details', async function () {
+    CucumberReportLogger.AddMessage(`Login user  is kurt@swansea.gov.uk`)
+
     await loginPage.givenIAmLoggedIn("kurt@swansea.gov.uk", "Password12");
     const world = this;
 
@@ -255,6 +268,8 @@ async function waitForElement(el) {
   });
 
   Given('I am logged into Expert UI with valid Case Worker user details', async function () {
+    CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.caseworkerUser}`)
+
     await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
     loginAttempts++;
     await loginattemptCheckAndRelogin(this.config.caseworkerUser, this.config.caseworkerPassword, this);
@@ -262,6 +277,8 @@ async function waitForElement(el) {
 
   Given(/^I am logged into Expert UI with Probate user details$/, async function () {
     browser.sleep(MID_DELAY);
+    CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.probate_username}`)
+
     await loginPage.emailAddress.sendKeys(config.config.params.probate_username);
     browser.sleep(MID_DELAY);
     await loginPage.password.sendKeys(config.config.params.probate_password);
@@ -274,6 +291,8 @@ async function waitForElement(el) {
 
   Given('I am logged into Expert UI as IA {string}', async function (usertype) {
     browser.sleep(MID_DELAY);
+    CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.ia_users_credentials[usertype].username}`)
+
     await loginPage.emailAddress.sendKeys(config.config.params.ia_users_credentials[usertype].username);
     browser.sleep(MID_DELAY);
     await loginPage.password.sendKeys(config.config.params.ia_users_credentials[usertype].password);
@@ -297,6 +316,7 @@ async function waitForElement(el) {
   Given('I am logged into Expert UI caseworker-ia-adm user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password);
     const world = this;
+    CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.caseworker_iac_adm_username}`)
 
     loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password, this);
@@ -310,6 +330,7 @@ async function waitForElement(el) {
   Given('I am logged into Expert UI caseworker-ia-caseofficer user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_off_username, config.config.params.caseworker_iac_off_password);
     const world = this;
+    CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.caseworker_iac_off_username}`)
 
     loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.caseworker_iac_off_username, config.config.params.caseworker_iac_off_password, this);
@@ -331,25 +352,26 @@ async function waitForElement(el) {
     const userEmail = matchingUsers[0].email;
     const key = matchingUsers[0].key;
 
+    CucumberReportLogger.AddMessage(`Login user ${testUserIdentifier} is ${userEmail}`)
     await loginPage.givenIAmLoggedIn(userEmail, key);
 
-    loginAttempts++;
-    await loginattemptCheckAndRelogin(userEmail, key, this);
-    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
-      world.attach("Login success page load load attempt : " + message)
-    });
+    // loginAttempts++;
+    // await loginattemptCheckAndRelogin(userEmail, key, this);
+    // await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+    //   world.attach("Login success page load load attempt : " + message)
+    // });
     
-    await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForSpinnerToDissappear();
-      await headerPage.clickAppLogoLink();
-    });
+    // await BrowserWaits.retryWithActionCallback(async () => {
+    //   await BrowserWaits.waitForSpinnerToDissappear();
+    //   await headerPage.clickAppLogoLink();
+    // });
    
   });
 
   Given('I am logged into Expert UI with hrs testes user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.hrsTesterUser, config.config.params.hrsTesterPassword);
-    const world = this;
-
+    CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.hrsTesterUser}`)
+    
     loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.hrsTesterUser, config.config.params.hrsTesterPassword, this);
 

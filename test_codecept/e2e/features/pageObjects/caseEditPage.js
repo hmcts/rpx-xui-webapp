@@ -135,7 +135,7 @@ class caseEditPage {
         let tabsCount = await thLable.count();
         if (caseDetailsRes) {
             for (let i = 0; i < tabsCount; i++) {
-                let thText = thLable.get(i).$$(".mat-tab-label-content");
+                let thText = thLable.get(i).$(".mat-tab-label-content");
                 let tabText = await thText.getText();
                 let tab = await caseDetailsRes.tabs.find(tab => tab.label == tabText);
                 let tabStatus = tab.label == tabText;
@@ -304,12 +304,10 @@ class caseEditPage {
         let buttonEnable = await this.continueButton.isEnabled();
         expect(buttonEnable).to.eql(true);
 
-        await browser.executeScript('arguments[0].scrollIntoView()',
-            $('button[type=submit]').getWebElement()) 
+        // await browser.executeScript('arguments[0].scrollIntoView()',
+        //     $('button[type=submit]').getWebElement()) 
         await this.continueButton.click();
         let e = $("#TextField");
-        await e.sendKeys(protractor.Key.ENTER);
-        await e.sendKeys(protractor.Key.TAB);
         let errormsg = await $("ccd-write-text-field .error-message").getText();
         expect(errormsg).to.eql("Text Field is required");
         
@@ -324,8 +322,8 @@ class caseEditPage {
         await selectionFields.get(0).click();
 
         var continieElement = element(by.xpath('//button[@type= "submit"]'));
-        await browser.executeScript('arguments[0].scrollIntoView()',
-            continieElement.getWebElement())
+        // await browser.executeScript('arguments[0].scrollIntoView()',
+        //     continieElement.getWebElement())
 
         await BrowserWaits.waitForElement(continieElement);
         await BrowserWaits.waitForElementClickable(continieElement);

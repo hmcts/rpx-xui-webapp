@@ -108,6 +108,7 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
   },
   ActiveTasksUnassigned: {
     assign: [ASSIGN],
+    cancel: [CANCEL],
     claim: [CLAIM],
   },
   AllCases: {
@@ -135,6 +136,7 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED = {
   },
   AllWorkUnassigned: {
     assign: [ASSIGN],
+    cancel: [CANCEL],
     claim: [CLAIM],
     default: [GO], // Note: was not specified so assumed default
   },

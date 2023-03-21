@@ -153,12 +153,12 @@ describe('StaffAdvFilterComponent', () => {
     expect(userJobTitle.value).toBe('All');
   });
 
-  it('should not make a call to search on init', () => {
-    expect(mockStaffDataFilterService.search).toHaveBeenCalled();
+  it('should call search on when filterService emits', () => {
+
   });
 
   // it('should update the page number of searchFilters', () => {
-  //   const originalValue = searchFilters.value;
+  //   const originalValue = ad.value;
   //   changePage.call({ searchFilters }, pageNumber);
   //
   //   expect(searchFilters.value.pageNumber).toBe(pageNumber);

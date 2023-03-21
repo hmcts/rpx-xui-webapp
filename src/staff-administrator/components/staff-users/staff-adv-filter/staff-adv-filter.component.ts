@@ -139,7 +139,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           const roles = filterConfig.fields.find(item => item.name === 'user-role').value;
           const skills = filterConfig.fields.find(item => item.name === 'user-skills').value;
 
-          if (services && services.length > 0 && services.some(s => s.toLowerCase() !== 'all')) {
+          if (services && services.length > 0) {
             advancedSearchFilters.serviceCode = services;
           }
 
@@ -166,7 +166,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           this.staffDataFilterService.search({
             advancedSearchFilters,
             pageSize: 1,
-            pageNumber: 1,
+            pageNumber: StaffDataFilterService.PAGE_SIZE,
           });
 
           window.scrollTo(0, 0);

@@ -53,7 +53,7 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
             this.staffDataFilterService.search({
               partialName: userPartialName,
               pageNumber: 1,
-              pageSize: 15
+              pageSize: StaffDataFilterService.PAGE_SIZE
             });
           }
         }

@@ -1554,10 +1554,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-find-service-input-3":
-  version "1.8.10-find-service-input-3"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-find-service-input-3.tgz#1af62c722206e870f398dd1c62c6b1ed5c2a4240"
-  integrity sha512-OvUMl1KfQ2DxdL5517qYXgEnajuoIerEe/yf5g+UFUDzZHLlt+yl+pQYYnmf9S7GD/aakcxpK9dz7V2or6bMFw==
+"@hmcts/rpx-xui-common-lib@1.8.10-find-service-input-4":
+  version "1.8.10-find-service-input-4"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-find-service-input-4.tgz#f28b7227e9d9e8b573ef38217c26cec6a2d84bd0"
+  integrity sha512-yGt740GDLoOwh16hJjFf3gdvfKnwOunn7db9Fxr6n+Yl4MmIblob6HgZ0KqPN1sK2OSypBW5muvo/Rw2ZJy+fg==
   dependencies:
     tslib "^2.0.0"
 

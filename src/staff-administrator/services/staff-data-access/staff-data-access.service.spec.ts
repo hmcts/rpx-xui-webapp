@@ -1,3 +1,6 @@
+import {
+  StaffDataFilterService
+} from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
 import { StaffDataAccessService } from './staff-data-access.service';
 
 describe('StaffDataAccessService', () => {
@@ -19,7 +22,7 @@ describe('StaffDataAccessService', () => {
         skill: ['Skill 1'],
         role: ['Role 1']
       },
-      pageSize: 15,
+      pageSize: StaffDataFilterService.PAGE_SIZE,
       pageNumber: 1,
     });
     expect(mockHttpService.get).toHaveBeenCalledTimes(1);

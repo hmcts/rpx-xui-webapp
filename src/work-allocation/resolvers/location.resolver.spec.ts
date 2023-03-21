@@ -233,6 +233,33 @@ describe('LocationResolver', () => {
     }]
   };
 
+  const JUDICIAL_WORKER_WITH_BOOKABLE: UserDetails = {
+    sessionTimeout: {
+      idleModalDisplayTime: 10,
+      totalIdleTime: 10,
+    },
+    canShareCases: true,
+    userInfo: {
+      id: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f',
+      forename: 'IAC',
+      surname: 'CW1',
+      email: 'JWR-func-test-user1-#s@justice.gov.uk',
+      active: true,
+      roles: [
+        'judicialworker'
+      ]
+    },
+    roleAssignmentInfo: [{
+      jurisdiction: 'IA',
+      isCaseAllocator: false,
+      baseLocation: '12345',
+      primaryLocation: '54321',
+      roleType: 'ORGANISATION',
+      substantive: 'n',
+      bookable: true
+    }]
+  };
+
   const JUDICIAL_WORKERS = [
     {
       email: 'JWR-func-test-user1-#s@justice.gov.uk',
@@ -331,7 +358,7 @@ describe('LocationResolver', () => {
     const expectedLocation = [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: [ 'IA' ]}];
     const locationsByRegion: LocationsByRegion = {regionId: '1', locations: ['12345']};
     const expectedLocationList = [{service: 'IA', locations:
-      [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: ['IA']}], bookable: false}];
+      [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: ['IA']}]}];
     expect(service.getJudicialWorkersOrCaseWorkers([locationsByRegion], JUDICIAL_WORKER)).toEqual(expectedLocation);
     expect(sessionStorageService.setItem).toHaveBeenCalledWith('userLocations', JSON.stringify(expectedLocationList));
   }));
@@ -341,7 +368,7 @@ describe('LocationResolver', () => {
     const expectedLocation = [{id: undefined, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', regionId: '3', locationName: '', locationId: undefined, services: [ 'IA' ]}];
     const locationsByRegion: LocationsByRegion[] = [{regionId: '4', locations: ['12345']}, {regionId: '3', locations: ['512345']}];
     const expectedLocationList = [{service: 'IA', locations:
-      [{userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', services: ['IA'], regionId: '3'}], bookable: false}];
+      [{userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', services: ['IA'], regionId: '3'}]}];
     expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, CASE_WORKER_WITH_REGION)).toEqual(expectedLocation);
     expect(sessionStorageService.setItem).toHaveBeenCalledWith('userLocations', JSON.stringify(expectedLocationList));
   }));
@@ -351,7 +378,7 @@ describe('LocationResolver', () => {
     const expectedLocation = [{id: '54321', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: '54321', services: [ 'IA' ]}];
     const locationsByRegion: LocationsByRegion[] = [{regionId: '4', locations: ['12345']}, {regionId: '3', locations: ['54321']}];
     const expectedLocationList = [{service: 'IA', locations:
-      [{id: '54321', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '54321', locationName: '', services: ['IA']}], bookable: false}];
+      [{id: '54321', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '54321', locationName: '', services: ['IA']}]}];
     expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, CASE_WORKER_WITH_BASE_IN_REGION)).toEqual(expectedLocation);
     expect(sessionStorageService.setItem).toHaveBeenCalledWith('userLocations', JSON.stringify(expectedLocationList));
   }));
@@ -360,7 +387,7 @@ describe('LocationResolver', () => {
     spyOn(sessionStorageService, 'setItem');
     const expectedLocation = [{id: null, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: null, services: [ 'IA' ]}];
     const locationsByRegion: LocationsByRegion[] = [{regionId: '4', locations: ['12345', '2341']}, {regionId: '3', locations: ['54321']}];
-    const expectedLocationList = [{service: 'IA', locations: [], bookable: false}];
+    const expectedLocationList = [{service: 'IA', locations: []}];
     expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, CASE_WORKER_WITH_BASE_NOT_IN_REGION)).toEqual(expectedLocation);
     expect(sessionStorageService.setItem).toHaveBeenCalledWith('userLocations', JSON.stringify(expectedLocationList));
   }));
@@ -376,9 +403,17 @@ describe('LocationResolver', () => {
     spyOn(sessionStorageService, 'setItem');
     const locationsByRegion: LocationsByRegion[] = [{regionId: '4', locations: ['12345', '2341']}, {regionId: '3', locations: ['54321']}];
     const expectedLocation = [{id: null, userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationName: '', locationId: null, services: [ 'IA' ]}];
-    const expectedUserLocations = [];
     expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, CASE_WORKER_SHOULD_HAVE_ALL_LOCATIONS)).toEqual(expectedLocation);
     expect(sessionStorageService.setItem).toHaveBeenCalledWith('userLocations', '[]');
+  }));
+
+  it('should get all relevant locations for fee paid judge user for booking UI', inject([LocationResolver], (service: LocationResolver) => {
+    spyOn(sessionStorageService, 'setItem');
+    const locationsByRegion: LocationsByRegion[] = [{regionId: '4', locations: ['12345', '2341']}, {regionId: '3', locations: ['54321']}];
+    const expectedLocationList = [{service: 'IA', locations:
+      [{id: '12345', userId: '998db99b-08aa-43d4-bc6b-0aabbb0e3c6f', locationId: '12345', locationName: '', services: ['IA']}]}];
+    expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, JUDICIAL_WORKER_WITH_BOOKABLE)).toEqual([]);
+    expect(sessionStorageService.setItem).toHaveBeenCalledWith('bookableUserLocations', JSON.stringify(expectedLocationList));
   }));
 
 });

@@ -35,7 +35,11 @@ describe('StaffDataFilterService', () => {
     }];
     service.setErrors(errorsToSet);
 
-    service.filterByPartialName('Kevin').subscribe();
+    service.search({
+      partialName: 'Kevin',
+      pageNumber: 1,
+      pageSize: 15,
+    });
 
     service.errors$.pipe(take(1)).subscribe(errors => {
       expect(errors.errors.length).toBe(0);

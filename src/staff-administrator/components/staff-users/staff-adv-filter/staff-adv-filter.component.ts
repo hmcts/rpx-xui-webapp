@@ -26,7 +26,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       skills: this.route.snapshot.data.skills,
       services: this.route.snapshot.data.services,
     };
-    const defaultOption = { key: 'All', label: 'All' };
+    const defaultOption = { key: 'All', label: 'All', selectAll: true };
 
     this.filterConfig = {
       id: this.FILTER_NAME,
@@ -38,6 +38,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           defaultOption,
           ...staffFilters.services
         ],
+        defaultOption,
         minSelected: 1,
         maxSelected: 0,
         type: 'find-service',
@@ -139,19 +140,19 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           const skills = filterConfig.fields.find(item => item.name === 'user-skills').value;
 
           if (services && services.length > 0 && services.some(s => s.toLowerCase() !== 'all')) {
-            advancedSearchFilters.serviceCode = services.toString();
+            advancedSearchFilters.serviceCode = services;
           }
 
           if (locations && locations.length > 0) {
-            advancedSearchFilters.location = locations.toString();
+            advancedSearchFilters.location = locations;
           }
 
           if (roles && roles.length > 0) {
-            advancedSearchFilters.role = roles.toString();
+            advancedSearchFilters.role = roles;
           }
 
           if (skills && skills.some(s => s !== 'All')) {
-            advancedSearchFilters.skill = skills.toString();
+            advancedSearchFilters.skill = skills;
           }
 
           if (userType && userType !== 'All') {

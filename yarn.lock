@@ -1536,10 +1536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-generic-filter-readonly-changes-3":
-  version "1.8.10-generic-filter-readonly-changes-3"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-generic-filter-readonly-changes-3.tgz#ed5efda0e244affa91badd0be748ec68c8cbe2fd"
-  integrity sha512-OpDSiKKSsCDE0nOZow+IaETygXHwqhsvHQJ8ep9X89x3Kawvust753ZoQ/e7D0Y1hIB2ww8/siOmbKy9rnKjfw==
+"@hmcts/rpx-xui-common-lib@1.8.10-find-service-input-3":
+  version "1.8.10-find-service-input-3"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-find-service-input-3.tgz#1af62c722206e870f398dd1c62c6b1ed5c2a4240"
+  integrity sha512-OvUMl1KfQ2DxdL5517qYXgEnajuoIerEe/yf5g+UFUDzZHLlt+yl+pQYYnmf9S7GD/aakcxpK9dz7V2or6bMFw==
   dependencies:
     tslib "^2.0.0"
 

@@ -1,10 +1,10 @@
 export interface StaffAdvancedSearchFilters {
-  serviceCode: string;
-  location: string;
+  serviceCode: string[];
+  location: string[];
   userType: string;
   jobTitle: string;
-  skill: string;
-  role: string;
+  skill: string[];
+  role: string[];
 }
 export interface StaffSearchFilters {
   partialName?: string;

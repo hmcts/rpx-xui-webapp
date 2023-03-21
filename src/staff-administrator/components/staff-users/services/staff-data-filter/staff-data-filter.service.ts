@@ -22,7 +22,6 @@ export class StaffDataFilterService {
       this.staffDataAccessService.getUsersByPartialName(searchFilters),
     )),
     shareReplay(1),
-    tap((data) => { console.log(data); })
   );
 
   public readonly errors$: Observable<ErrorMessage> = this.errors.asObservable().pipe(

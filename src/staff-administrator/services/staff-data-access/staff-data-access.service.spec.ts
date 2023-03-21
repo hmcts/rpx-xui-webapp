@@ -11,19 +11,23 @@ describe('StaffDataAccessService', () => {
   it('getFilteredUsers should make a GET API call', () => {
     const service = new StaffDataAccessService(mockHttpService);
     service.getFilteredUsers({
-      services: ['AAA7'],
-      locations: [],
-      userType: '',
-      jobTitle: '',
-      skills: [],
-      roles: []
+      advancedSearchFilters: {
+        serviceCode: ['AAA7'],
+        location: ['Location 1'],
+        userType: '',
+        jobTitle: '',
+        skill: ['Skill 1'],
+        role: ['Role 1']
+      },
+      pageSize: 15,
+      pageNumber: 1,
     });
     expect(mockHttpService.get).toHaveBeenCalledTimes(1);
   });
 
   it('getUsersByPartialName should make a GET API call', () => {
     const service = new StaffDataAccessService(mockHttpService);
-    service.getUsersByPartialName('Kevin');
+    service.getUsersByPartialName({ partialName: 'Kevin', pageSize: 1, pageNumber: 1 });
     expect(mockHttpService.get).toHaveBeenCalledTimes(2);
   });
 

@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FilterService } from '@hmcts/rpx-xui-common-lib';
-import { FilterConfig } from '@hmcts/rpx-xui-common-lib/lib/models';
+import { FilterConfig, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';

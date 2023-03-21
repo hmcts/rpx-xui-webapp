@@ -13,7 +13,7 @@ Feature: Staff UI Manager user
         Then I validate staff UI search results displayed
         Then I validate staff user details display
 
-    @codecept_test
+
     Scenario: Add new user work flow - back, cancel and change
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"

@@ -1,9 +1,4 @@
 
-
-
-
-
-
 function getActor() {
     return actor().retry({ retries: 3, minTimeout: 30 });
 }
@@ -178,7 +173,7 @@ class PuppeteerNativeElement {
 
     async selectOptionWithLabel(label) {
         await this.__checkAndGetNativeElement();
-        const selectOptions = await this.nativeElement.$$('option')
+        // const selectOptions = await this.nativeElement.$$('option')
 
         await this.nativeElement.type(label)
 
@@ -250,8 +245,9 @@ class ElementCollection {
 
     first(){
         // await this.count();
-        const nativeLement = new PuppeteerNativeElement(0, null);
-        return nativeLement;
+        // const nativeLement = new PuppeteerNativeElement(0, null);
+        // return nativeLement;
+        return this.get(0)
     }
 
     get(index){
@@ -260,9 +256,11 @@ class ElementCollection {
         // if (index >= this.nativeElements.length ){
         //     throw Error(`Array index out of bound, elements count ${this.nativeElements.length} , index to get ${index}`);
         // }
-        const nativeLement = new PuppeteerNativeElement(index, this);
-        return nativeLement;
-
+        
+        // const nativeLement = new PuppeteerNativeElement(index, this);
+        // return nativeLement;
+        const locatorAtIndex = locate(this.selector).at(index + 1)
+        return new Element({ xpath: locatorAtIndex })
     }
 
     async wait(){
@@ -303,22 +301,24 @@ class ElementCollection {
         //     this.nativeElements = await helperNativeElement.getNativeElements(this.selector);
         // }
         
-        let sourceElement = null;
-        if (this.parent){
-            sourceElement = await this.parent.__checkAndGetNativeElement();
-        }else{
-            sourceElement = await getActor().getPuppeteerPage();
+        // let sourceElement = null;
+        // if (this.parent){
+        //     sourceElement = await this.parent.__checkAndGetNativeElement();
+        // }else{
+        //     sourceElement = await getActor().getPuppeteerPage();
 
-        }
+        // }
 
-        const keys = Object.keys(this.selector)
-        if (keys[0] === 'css') {
-            this.nativeElements =  await sourceElement.$$(this.selector[keys[0]])
+        // const keys = Object.keys(this.selector)
+        // if (keys[0] === 'css') {
+        //     this.nativeElements =  await sourceElement.$$(this.selector[keys[0]])
 
-        } else {
-            this.nativeElements =  await sourceElement.$x(this.selector[keys[0]])
-        }
-        return this.nativeElements.length
+        // } else {
+        //     this.nativeElements =  await sourceElement.$x(this.selector[keys[0]])
+        // }
+        // return this.nativeElements.length
+
+        return await getActor().grabNumberOfVisibleElements(this.selector)
     }
 
 
@@ -361,7 +361,8 @@ class Element {
         return this._childElement(locator)
     }
     $$(locator) {
-        return new ElementCollection({css: locator}, new PuppeteerNativeElement(this.selector, null))
+        const child = this._childElement(locator)
+        return new ElementCollection(child.selector, null)
     }
     wait() {
         getActor().waitForElement(this.selector, 20)
@@ -389,8 +390,7 @@ class Element {
     }
 
     async selectOptionWithLabel(label){
-        const puppeteerNativeElement = new PuppeteerNativeElement(this.selector,null)
-        await puppeteerNativeElement.selectOptionWithLabel(label)
+        await getActor().selectOption(this.selector, label)
     }
 
     async select(option){
@@ -472,6 +472,11 @@ class Element {
         return await getActor().grabAttributeFrom(this.selector, 'checked');
     }
 
+    async getSelectOptions(){
+        const options = await this._childElement('option')
+        const labels = await getActor().grabTextFromAll(options.selector)
+        return labels;
+    }
     
 }
 

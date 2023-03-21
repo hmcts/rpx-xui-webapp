@@ -141,6 +141,7 @@ describe('StaffAddEditUserFormComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
+            fragment: of('user-skills'),
             snapshot: {
               data: {
                 userTypes: [

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   BookingCheckType,
@@ -19,7 +19,7 @@ import { STAFF_REGIONS } from '../../../models/staff-regions';
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
+export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public editMode = false;
   public formId: string = '';
   public staffFilterOptions: {
@@ -30,9 +30,9 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
     locations: LocationByEPIMMSModel[];
   };
   public roles: StaffFilterOption[] = [
-    { key: 'case-allocator', label: 'Case Allocator' },
-    { key: 'task-supervisor', label: 'Task Supervisor' },
-    { key: 'staff-administrator', label: 'Staff Administrator' },
+    { key: 'case-allocator', label: 'Case allocator' },
+    { key: 'task-supervisor', label: 'Task supervisor' },
+    { key: 'staff-administrator', label: 'Staff administrator' },
   ];
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
@@ -92,6 +92,20 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.filterStreamSubscription?.unsubscribe();
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+  }
+
+  public fragmentFocus(): void {
+    this.activatedRoute.fragment.subscribe(frag => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
+        element.focus();
+      }
+    });
   }
 
   public resetForm() {

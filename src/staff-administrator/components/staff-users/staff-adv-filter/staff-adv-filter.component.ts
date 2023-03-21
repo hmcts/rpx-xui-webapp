@@ -93,7 +93,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
         name: 'user-role',
         title: 'Role',
         options: [
-          { label: 'Case Allocator', key: 'case allocator' },
+          { label: 'Case allocator', key: 'case allocator' },
           { label: 'Task supervisor', key: 'task supervisor' },
           { label: 'Staff administrator', key: 'staff administrator' }
         ],

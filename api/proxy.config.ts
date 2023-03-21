@@ -13,6 +13,7 @@ export const initProxy = (app: Express) => {
     skipAuth: true,
     source: '/activity',
     target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH),
+    ws: true,
   });
 
   applyProxy(app, {

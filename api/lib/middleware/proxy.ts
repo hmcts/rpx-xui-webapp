@@ -61,7 +61,7 @@ export const applyProxy = (app, config) => {
     options.ws = config.ws;
   }
 
-  if (false !== config.rewrite) {
+  if (config.rewrite !== false) {
     if (typeof config.rewriteUrl === 'function') {
       options.pathRewrite = config.rewriteUrl;
     } else {

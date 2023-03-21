@@ -121,10 +121,10 @@ describe('SpecificAccessDurationComponent', () => {
             }
           }
         }
-      }
+      };
       component.selectSpecificAccessDuration(specificAccessState);
       expect(component.selectedDuration).toEqual(DurationType.SEVEN_DAYS);
-    })
+    });
 
   });
 
@@ -158,7 +158,7 @@ describe('SpecificAccessDurationComponent', () => {
             }
           }
         }
-      }
+      };
       // fake form group and form control values
       component.startDateDayCtrl = new FormControl(7);
       component.startDateMonthCtrl = new FormControl(7);
@@ -170,7 +170,7 @@ describe('SpecificAccessDurationComponent', () => {
 
       component.selectSpecificAccessDuration(specificAccessState);
       expect(component.selectedDuration).toEqual(DurationType.ANOTHER_PERIOD);
-    })
+    });
 
   });
 
@@ -213,7 +213,7 @@ describe('SpecificAccessDurationComponent', () => {
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
       date.setUTCHours(0, 0, 0, 0);
       expect(period.startDate).toEqual(date);
-      date.setDate(date.getDate() + 7);
+      date.setUTCDate(date.getUTCDate() + 7);
       date.setUTCHours(23, 59, 59, 999);
       expect(period.endDate).toEqual(date);
     });

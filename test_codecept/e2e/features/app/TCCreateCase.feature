@@ -1,4 +1,4 @@
-@fullfunctional @test @codecept_enabled
+@fullfunctional @test @codecept_enabled @codecept_test
 Feature: Test case type case creation and case details validations
 
   Background:

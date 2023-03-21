@@ -61,7 +61,8 @@
     "test:ngIntegrationDebug": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js --debug",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
     "test:backendMock": "nodemon test_codecept/backendMock/app --standalone",
-    "test:codeceptE2E": "TEST_TYPE=e2e  npx codeceptjs run-workers --suites 2 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome ",
+    "test:codeceptE2EDebug": "TEST_TYPE=e2e  npx codeceptjs run  --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_test --reporter mochawesome ",
+    "test:codeceptE2E": "TEST_TYPE=e2e  npx codeceptjs run-workers --suites 5 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome ",
     "test:xuiIntegrationDebug": "NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration  npx codeceptjs run  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome ",
     "test:xuiIntegration": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=y  npx codeceptjs run-workers 5  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome "
   },

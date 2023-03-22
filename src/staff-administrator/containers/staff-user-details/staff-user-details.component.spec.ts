@@ -19,7 +19,7 @@ import { StaffUserDetailsComponent } from './staff-user-details.component';
 })
 class StubComponent {}
 
-fdescribe('StaffUserDetailsComponent', () => {
+describe('StaffUserDetailsComponent', () => {
   let component: StaffUserDetailsComponent;
   let fixture: ComponentFixture<StaffUserDetailsComponent>;
   let route: ActivatedRoute;

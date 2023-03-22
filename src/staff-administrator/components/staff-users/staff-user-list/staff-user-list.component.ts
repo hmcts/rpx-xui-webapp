@@ -8,7 +8,7 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   styleUrls: ['./staff-user-list.component.scss']
 })
 export class StaffUserListComponent implements OnInit {
-  public displayedColumns = ['name', 'services', 'locations', 'jobTitle', 'status'];
+  public displayedColumns = ['name', 'services', 'locations', 'jobTitle'];
   public pagination: Pagination;
   public currentPageNumber?: number = 1;
   public pageTotalSize?: number;

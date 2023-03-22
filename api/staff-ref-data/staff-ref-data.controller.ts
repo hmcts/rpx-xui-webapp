@@ -37,13 +37,14 @@ export async function addNewUser(req: any, res: Response, next: NextFunction) {
   staffRefDataService.addNewUser(req, res, next);
 }
 
-export async function getStaffRefUserDetails(req: any, res: Response, next: NextFunction) {
-  staffRefDataService.getStaffRefUserDetails(req, res, next);
+export async function fetchSingleUserById(req: any, res: Response, next: NextFunction) {
+  staffRefDataService.fetchSingleUserById(req, res, next);
+}
+
+export async function fetchUsersById(req: any, res: Response, next: NextFunction) {
+  staffRefDataService.fetchUsersById(req, res, next);
 }
 
 export async function updateUser(req: any, res: Response, next: NextFunction) {
   staffRefDataService.updateUser(req, res, next);
-}
-export async function fetchUsersById(req: any, res: Response, next: NextFunction) {
-  staffRefDataService.fetchUsersById(req, res, next);
 }

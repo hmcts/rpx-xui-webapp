@@ -42,13 +42,6 @@
           <td cdk-cell *cdkCellDef="let element"> {{element.jobTitle}} </td>
         </ng-container>
 
-        <ng-container cdkColumnDef="status">
-          <th cdk-header-cell *cdkHeaderCellDef>Status</th>
-          <td cdk-cell *cdkCellDef="let element">
-            <exui-staff-status [status]="element.suspended" ></exui-staff-status>
-          </td>
-        </ng-container>
-
         <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
         <tr cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
       </table>

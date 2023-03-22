@@ -7,12 +7,13 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { JurisdictionsService } from 'src/work-allocation/services/juridictions.service';
+
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { reducers } from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
 import { AllocateRoleService } from '../../../role-access/services';
+import { JurisdictionsService } from '../../../work-allocation/services/juridictions.service';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
 import * as dtos from '../../models/dtos';

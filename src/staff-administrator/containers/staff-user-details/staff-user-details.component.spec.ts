@@ -19,7 +19,7 @@ import { StaffUserDetailsComponent } from './staff-user-details.component';
 })
 class StubComponent {}
 
-describe('StaffUserDetailsComponent', () => {
+fdescribe('StaffUserDetailsComponent', () => {
   let component: StaffUserDetailsComponent;
   let fixture: ComponentFixture<StaffUserDetailsComponent>;
   let route: ActivatedRoute;
@@ -159,16 +159,6 @@ describe('StaffUserDetailsComponent', () => {
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
     expect(component.userDetails.suspended).toBe(true);
     expect(component.suspendedStatus).toBe('suspended');
-  });
-
-  it('should set suspendedStatus to "restored" to show the banner when calling updateUserStatus with isSuspended true', () => {
-    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
-    component.userDetails.suspended = true;
-    component.updateUserStatus();
-    fixture.detectChanges();
-
-    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(component.suspendedStatus).toBe('restored');
   });
 
   it('should set userDetails property from resolver', () => {

@@ -11,6 +11,7 @@ import {
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
 import { StaffUserDetailsComponent } from './containers/staff-user-details/staff-user-details.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
+import { RegionResolver } from './resolvers/regions.resolver';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
 import { StaffFilterOptionsLocationsResolver } from './resolvers/staff-filter-options-locations.resolver';
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
@@ -28,6 +29,7 @@ export const ROUTES: Routes = [
       skills: StaffFilterOptionsSkillsResolver,
       userTypes: StaffFilterOptionsUserTypesResolver,
       locations: StaffFilterOptionsLocationsResolver,
+      regions: RegionResolver
     },
     children: [
       { path: '', component: StaffUsersComponent },

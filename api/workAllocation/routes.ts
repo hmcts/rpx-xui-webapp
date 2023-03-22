@@ -24,7 +24,7 @@ import {
   getTaskNames
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
-import { getFullLocations, getLocationById, getLocations, getLocationsByRegion } from './locationController';
+import { getFullLocations, getLocationById, getLocations, getLocationsByRegion, getRegions } from './locationController';
 import { postFindPersonSearch } from './personService';
 
 const router = Router({mergeParams: true});
@@ -42,6 +42,7 @@ router.use('/findPerson', postFindPersonSearch);
 
 router.use('/location/:locationId', getLocationById);
 router.use('/location', getLocations);
+router.use('/region', getRegions);
 router.use('/full-location', getFullLocations);
 router.use('/region-location', getLocationsByRegion);
 

@@ -1,10 +1,12 @@
 import { NextFunction, Response } from 'express';
+import { http } from '../lib/http';
 import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
+import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICES_LOCATION_API_PATH, SERVICES_PRD_LOCATION_API } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import { CourtVenue, Location } from './interfaces/location';
 import { commonGetFullLocation, getRegionLocationsForServices, handleLocationGet } from './locationService';
 import { prepareGetLocationByIdUrl, prepareGetLocationsUrl } from './util';
+import { sendGet } from '../common/crudService';
 
 export const baseUrl: string = 'http://localhost:8080';
 
@@ -41,6 +43,22 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     const newLocations = response.data.court_venues.filter(venue => venue.is_case_management_location === 'Y').
                          map(venue => ({id: venue.epimms_id, locationName: venue.site_name }));
     res.send(newLocations).status(response.status);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Get locations
+ *
+ */
+ export async function getRegions(req: EnhancedRequest, res: Response, next: NextFunction) {
+
+  try {
+    const baseCaseWorkerRefUrl = getConfigValue(SERVICES_PRD_LOCATION_API)
+    const response = await sendGet(`${baseCaseWorkerRefUrl}/refdata/location/regions`, req);
+    console.log(response, 'is the response')
+    res.send(response.data).status(response.status);
   } catch (error) {
     next(error);
   }

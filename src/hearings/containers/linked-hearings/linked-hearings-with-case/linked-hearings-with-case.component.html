@@ -8,31 +8,31 @@
   linkedHearingEnum.NoHearingSelection}}</h1>
 <p class="govuk-hint" *ngIf="linkedCases?.length">Hearings may be unavailable due to their status, or if they are already
   linked to another hearing.<br>Only hearings from cases linked to this case will appear in this list.</p>
-<div *ngIf="linkedCases && linkedCases.length">
+<div class="govuk-!-margin-top-5" *ngIf="linkedCases && linkedCases.length">
+  <h3 class="govuk-heading-m">Linked cases</h3>
   <form class="form" [formGroup]="linkHearingForm" id="linked-form">
-    <div class="govuk-form-group govuk-!-margin-top-5" formArrayName="linkedCasesWithHearings"
+    <div class="govuk-form-group" formArrayName="linkedCasesWithHearings"
          [ngClass]="{'govuk-form-group--error': !!linkedHearingSelectionError}">
-    <span class="govuk-error-message" *ngIf="linkedHearingSelectionError">
-      <span class="govuk-visually-hidden">Error:</span> {{linkedHearingSelectionError}}
-    </span>
+      <span class="govuk-error-message" *ngIf="linkedHearingSelectionError">
+        <span class="govuk-visually-hidden">Error:</span> {{linkedHearingSelectionError}}
+      </span>
       <div [formGroupName]="i" *ngFor="let case of linkedCases; let i = index">
-        <br>
         <table class="govuk-table">
           <thead class="govuk-table__head">
-          <tr class="govuk-table__row" *ngIf="case.caseHearings.length > 0">
-            <th scope="col" [attr.colspan]="mode === pageMode.MANAGE_HEARINGS ? '2' : '3'" class="govuk-table__header"
-                width="550px">
-              {{case.caseName}} &nbsp;{{case.caseRef | caseReference}}
-            </th>
-            <th scope="col" class="govuk-table__header" width="80px" *ngIf="mode === pageMode.MANAGE_HEARINGS">
-              <a href="javascript:void(0)" class="clear-link" (click)="clearHearings(i)">Clear</a>
-            </th>
-          </tr>
-          <tr class="govuk-table__row" *ngIf="case.caseHearings.length === 0">
-            <th scope="col" class="govuk-table__header" width="550px">
-              {{case.caseName}} &nbsp;{{case.caseRef | caseReference}}
-            </th>
-          </tr>
+            <tr class="govuk-table__row" *ngIf="case.caseHearings.length > 0">
+              <th scope="col" [attr.colspan]="mode === pageMode.MANAGE_HEARINGS ? '2' : '3'" class="govuk-table__header"
+                  width="550px">
+                {{case.caseName}} &nbsp;{{case.caseRef | caseReference}}
+              </th>
+              <th scope="col" class="govuk-table__header" width="80px" *ngIf="mode === pageMode.MANAGE_HEARINGS">
+                <a href="javascript:void(0)" class="clear-link" (click)="clearHearings(i)">Clear</a>
+              </th>
+            </tr>
+            <tr class="govuk-table__row" *ngIf="case.caseHearings.length === 0">
+              <th scope="col" class="govuk-table__header" width="550px">
+                {{case.caseName}} &nbsp;{{case.caseRef | caseReference}}
+              </th>
+            </tr>
           </thead>
           <tbody class="govuk-table__body">
           <ng-container formArrayName="caseHearings">
@@ -73,6 +73,19 @@
       </div>
     </div>
   </form>
+</div>
+<div class=" govuk-!-margin-top-9" *ngIf="linkedCasesWithNoAccessToLoggedInUser && linkedCasesWithNoAccessToLoggedInUser.length">
+  <h3 class="govuk-heading-m">Other cases</h3>
+  You do not have access to the following cases.
+  <div class="govuk-form-group govuk-!-margin-top-3">
+    <table class="govuk-table">
+      <tr class="govuk-table__row" *ngFor="let case of linkedCasesWithNoAccessToLoggedInUser">
+        <td scope="col">
+          {{case.caseName}} &nbsp;{{case.caseReference | caseReference}}
+        </td>
+      </tr>
+    </table>
+  </div>
 </div>
 <br>
 

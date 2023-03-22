@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   BookingCheckType,
   FilterConfig,
+  FilterConfigOption,
   FilterService,
   GenericFilterComponent,
   GroupOptions
@@ -12,7 +13,6 @@ import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
-import { STAFF_REGIONS } from '../../../models/staff-regions';
 
 @Component({
   selector: 'exui-staff-add-edit-user-form',
@@ -22,18 +22,19 @@ import { STAFF_REGIONS } from '../../../models/staff-regions';
 export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public editMode = false;
   public formId: string = '';
-  public form: FormGroup;
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
     jobTitles: StaffFilterOption[],
     skills: GroupOptions[],
     services: StaffFilterOption[],
   };
+  public regions: FilterConfigOption[] = [];
   public roles: StaffFilterOption[] = [
     { key: 'case-allocator', label: 'Case allocator' },
     { key: 'task-supervisor', label: 'Task supervisor' },
     { key: 'staff-administrator', label: 'Staff administrator' },
   ];
+  public form: FormGroup;
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
   private filterStreamSubscription: Subscription;
@@ -49,16 +50,18 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
 
   public ngOnInit() {
     this.formId = this.activatedRoute.snapshot.data.formId;
-    this.form = this.fb.group({
-      first_name: new FormControl(null, null),
-    });
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services,
     };
-
+    const regions = this.activatedRoute.snapshot.data.regions;
+    console.log(regions, 'are regions');
+    regions.forEach(region => {
+      const thisRegion = {key: region.region_id, label: region.description};
+      this.regions.push(thisRegion);
+    });
     this.initFormConfig();
     this.filterStreamSubscription = this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
@@ -175,7 +178,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
           type: 'select',
           title: 'Region',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [...STAFF_REGIONS],
+          options: [...this.regions],
           minSelected: 1,
           maxSelected: 10,
           minSelectedError: 'Select at least one region',
@@ -218,6 +221,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
           minSelectedError: 'Select at least one location',
           bookingCheckType: BookingCheckType.NO_CHECK,
           maxWidth480px: true,
+          findLocationField: 'user-services',
         },
         {
           name: 'additionalLocations',

@@ -84,6 +84,12 @@ export interface LocationsByRegion {
   locations: string[];
 }
 
+// need to store from API, rather than local
+export interface Region {
+  regionId: string;
+  region: string;
+}
+
 export interface CaseSearchParameter {
   ccdId?: string;
   eventId?: string;

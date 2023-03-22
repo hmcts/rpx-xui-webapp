@@ -36,3 +36,13 @@
 
 
 }
+
+.govuk-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.govuk-input {
+  max-width: 480px;
+}

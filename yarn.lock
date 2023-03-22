@@ -1485,10 +1485,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-r4-access-view-alignment":
-  version "6.10.7-r4-access-view-alignment"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-r4-access-view-alignment.tgz#6b339af196cbc4432b4b2ef7fee9c9077a828eab"
-  integrity sha512-IB8JGXTwPOX20tLDouEWVD1q4PuMdkbcQtRWA8dz2p/PyTn4z/gESVkFdDWz3JUadXTzudBDVQmOWJ/RSRiRbA==
+"@hmcts/ccd-case-ui-toolkit@6.13.10-merge-3.5-improvements":
+  version "6.13.10-merge-3.5-improvements"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.10-merge-3.5-improvements.tgz#4335c8ac137e2df6576ca617d444efe6e1d3523b"
+  integrity sha512-OqCudXmj5pKVfffJ3KOcjqQySgpURrv7o1t8mrea7Eqc4rzb9qt8TT962dhDzpLh4g3pzrCdmEV1/aFGNnhbpw==
   dependencies:
     tslib "^2.0.0"
 
@@ -1554,10 +1554,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-task-name-filter-2":
-  version "1.8.10-task-name-filter-2"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-task-name-filter-2.tgz#1a302f97cd3489cd376d0ecffc39ea5c2d8ca1ef"
-  integrity sha512-jLWqyTwT7Kfwr4ZXhvIPXFYSCMMX6EWPAc+33TUY4NJs3KZLjR9VgFM3dkbrM6OCKBVw3NdGx96F+F1aEtk7DA==
+"@hmcts/rpx-xui-common-lib@1.8.10-fee-paid-filter-change":
+  version "1.8.10-fee-paid-filter-change"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-fee-paid-filter-change.tgz#25d59d817b5969033a25a9e201bf415ef624d3f9"
+  integrity sha512-WFrmIuWuJR9a5pZPP/2DrvISGPGFKs9eJ4E06+Q6PT2kLWYaiTOkmWGiLzAqlSRgno0k5ZdDjp2kJf8poH9YHA==
   dependencies:
     tslib "^2.0.0"
 

@@ -24,6 +24,7 @@ export class RejectedRequestViewComponent implements OnInit {
   public reviewReason: string;
   public reviewerName: string;
   public reviewerRole: string;
+  public endDate: string;
 
   constructor(private readonly route: ActivatedRoute,
               private router: Router,
@@ -50,6 +51,8 @@ export class RejectedRequestViewComponent implements OnInit {
     this.reviewReason = this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired ?
       this.getRejectReason(JSON.parse(this.route.snapshot.queryParams.infoRequired), this.route.snapshot.queryParams.infoRequiredComment)
       : 'No reason for rejection found';
+    this.endDate = this.route.snapshot.queryParams && this.route.snapshot.queryParams.endDate ?
+      this.route.snapshot.queryParams.endDate : '';
   }
 
   public ngOnInit(): void {

@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { convertToName } from 'src/role-access/utils';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { AppUtils } from '../../../../app/app-utils';
 import { UserRole } from '../../../../app/models';
 import * as fromAppStore from '../../../../app/store';
+import { convertToName } from '../../../../role-access/utils';
 import {
   checkAnswersVisibilityStates,
   chooseAllocateToVisibilityStates,

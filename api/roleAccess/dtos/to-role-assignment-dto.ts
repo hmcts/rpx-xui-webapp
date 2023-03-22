@@ -145,7 +145,7 @@ export function toDenySARoleAssignmentBody(
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.assigneeId,
-      endTime: new Date(new Date().setDate(new Date().getDate() + 14)),
+      endTime: new Date(new Date(new Date().setDate(new Date().getDate() + 14)).setUTCHours(0,0,0,0)),
       notes: [{comment: allocateRoleData.comment,
       time: new Date(),
       userId: currentUserId}],

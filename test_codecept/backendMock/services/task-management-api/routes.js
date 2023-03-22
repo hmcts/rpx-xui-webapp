@@ -9,7 +9,25 @@ const userApiData = require('../userApiData')
 
 
 router.post('/', (req, res) => {
-    userApiData.sendResponse(req, res, "onSearchTasks", () => service.getSearchTasks(25))
+    const search_parameters = req.body.search_parameters;
+    const caseFilter = search_parameters.find(param => param.key === 'caseId' )
+    if (caseFilter){
+        userApiData.sendResponse(req, res, "OnTasksByCase", () => service.getSearchTasks(25))
+    }else{
+        userApiData.sendResponse(req, res, "OnSearchTasks", () => service.getSearchTasks(25))
+    }
 });
+
+router.get('/:taskId', (req, res) => {
+    userApiData.sendResponse(req, res, "OnTask", () => service.getTask())
+});
+
+router.get('/:taskId/roles', (req, res) => {
+    userApiData.sendResponse(req, res, "OnTaskRoles", () => service.getTaskRoles())
+});
+
+router.post('/:taskId/:action', (req,res) => {
+    res.send({})
+})
 
 module.exports =  router;

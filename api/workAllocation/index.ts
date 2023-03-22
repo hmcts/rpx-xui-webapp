@@ -39,7 +39,6 @@ import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
   assignActionsToCases,
-  assignActionsToTasks,
   assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
@@ -142,7 +141,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
     // determines whether should use release 3 or release 4 permission logic
-    const refined = req.body.refined;
     searchRequest.sorting_parameters.find((sort, index) => {
       if (sort.sort_by === 'priority') {
         searchRequest.sorting_parameters.splice(index, 1)
@@ -155,7 +153,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
 
-    let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
@@ -178,14 +176,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       }
       // TEMPORARY CODE: end
 
-      // These should be mocked as if we were getting them from the user themselves
-      if (refined) {
-        data = mockTaskPermissions(data);
-      }
-      returnData = !!req.body.refined ?
-       { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
-        : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
-
+      returnData = {
+        tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
+        total_records: data.total_records,
+      };
     }
     res.send(returnData);
   } catch (error) {
@@ -278,9 +272,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     }
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const actionedTasks = !!req.body.refined
-      ? assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId)
-      : assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
+    const actionedTasks = assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
     return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);
@@ -580,7 +572,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
     // get 'service' and 'location' filters from search_parameters on request
-    const { search_parameters, sorting_parameters } = req.body.searchRequest;
+    const { search_parameters } = req.body.searchRequest;
     const services = search_parameters.find(searchParam => searchParam.key === 'services');
     const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
 
@@ -624,19 +616,6 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       result.unique_cases = getUniqueCasesCount(mappedCases);
       const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
       result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
-    }
-    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
-    result.cases.forEach(item => {
-      item.hearing_date = new Date(+new Date() + Math.random() *
-      (new Date(2022, 6, 20) as any - (new Date() as any) )).toString();
-    });
-    if ( sorting_parameters &&
-        sorting_parameters.some(parameter => parameter.sort_by === 'hearing_date')) {
-        if ( sorting_parameters.find(parameter => parameter.sort_by === 'hearing_date').sort_order === 'desc' ) {
-          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) > Date.parse(b.hearing_date) ? -1 : 1));
-        } else {
-          result.cases = result.cases.sort((a, b) => ( Date.parse(a.hearing_date) < Date.parse(b.hearing_date) ? -1 : 1));
-        }
     }
     return res.send(result).status(200);
   } catch (e) {
@@ -686,11 +665,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
     result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
-    // Temporary code , because hearing_date is not yet enabled by Task API. to be removed
-    result.cases.forEach(item => {
-      item.hearing_date =
-      new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString();
-    });
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

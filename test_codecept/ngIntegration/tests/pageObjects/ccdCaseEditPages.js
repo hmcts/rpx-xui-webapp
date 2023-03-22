@@ -1,5 +1,5 @@
 const BrowserWaits = require('../../../e2e/support/customWaits');
-const reportLogger = require('../../../e2e/support/reportLogger');
+const reportLogger = require('../../../codeceptCommon/reportLogger');
 
 const SoftAssert = require('../../util/softAssert');
 const date = require('moment');

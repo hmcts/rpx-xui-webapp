@@ -1,8 +1,8 @@
 module.exports = {
-    LONG_DELAY: 8000,
-    AMAZING_DELAY: 15000,
-    MID_DELAY: 6000,
-    SHORT_DELAY: 4000,
+    LONG_DELAY: 8,
+    AMAZING_DELAY: 15,
+    MID_DELAY: 6,
+    SHORT_DELAY: 4,
 
     LOG_LEVELS: {
         Debug: 0,

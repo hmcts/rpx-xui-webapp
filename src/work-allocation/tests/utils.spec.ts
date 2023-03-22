@@ -1,7 +1,7 @@
 import { NavigationExtras, RouterEvent } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { CaseRoleDetails } from 'src/role-access/models/case-role-details.interface';
 
+import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
 import { RoleCategory } from '../../role-access/models';
 import { ConfigConstants } from '../components/constants';
 import { CaseService, SortOrder, TaskService } from '../enums';

@@ -5,7 +5,7 @@ const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
 class BrowserWaits{
     constructor(){
-        this.waitTime = 45000; 
+        this.waitTime = 30000; 
         this.pageErrors = $$(".error-summary");
         this.retriesCount = 3;
 
@@ -41,7 +41,7 @@ class BrowserWaits{
     async waitForElement(element, message, waitForSeconds) {
         const startTime = Date.now();
         CucumberReporter.AddMessage("starting wait for element max in sec " + this.waitTime / 1000 + " : " + JSON.stringify(element.selector));
-        await element.wait()
+        await element.wait(this.waitTime / 1000)
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime) / 1000);
 
     }
@@ -55,7 +55,7 @@ class BrowserWaits{
         const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
         CucumberReporter.AddMessage("starting wait for element clickable max in sec " + waitTimeInMilliSec + " : " + JSON.stringify(element.selector));
         try {
-            await I.waitForElement(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + JSON.stringify(element.selector));
+            // await I.waitForElement(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + JSON.stringify(element.selector));
         } catch (err) {
             CucumberReporter.AddMessage(`Wait for element clikable failed ${JSON.stringify(element.selector) }, not throwing exception to let test fail in next step if required state not met`);
         }
@@ -148,7 +148,7 @@ class BrowserWaits{
                 if (callback) {
                     callback(retryCounter + "");
                 }
-                console.log(element.locator().toString() + " .    Retry attempt for page load : " + retryCounter);
+                console.log(element.selector + " .    Retry attempt for page load : " + retryCounter);
 
                 await browser.refresh();
 
@@ -158,12 +158,26 @@ class BrowserWaits{
 
 
     async retryWithActionCallback(callback, actionMessage, retryTryAttempts) {
+        
+        let e = new Error();
+        let frame = e.stack.split("\n")[2]; // change to 3 for grandparent func
+        let lineNumber = frame.split(":").reverse()[1];
+        let functionName = frame.split(" ")[5];
+       
+        if (functionName.includes('/')){
+            functionName = functionName.split('/').reverse()[0]
+        }
+        functionName + ":" + lineNumber  ;
+
         let retryCounter = 0;
         let isSuccess = false;
         let error = null;
         while (retryCounter <= this.retriesCount) {
-            CucumberReporter.AddMessage(`Sleeping for ${retryCounter * 2}sec before performing action.`);
-            await this.waitForSeconds(retryCounter * 2);
+            const waitSec = retryCounter * 2;
+            if (retryCounter > 0){
+                CucumberReporter.AddMessage(`ACTION_WARNING: retrying ${retryCounter} ${functionName}`);
+            }
+            await this.waitForSeconds(waitSec);
 
             try {
                 const retVal = await callback();
@@ -185,20 +199,27 @@ class BrowserWaits{
 
             }
             retryCounter += 1;
-            CucumberReporter.AddMessage(`************** [ Retrying attempt ${retryCounter}. ] **************`);
 
         }
         if (!isSuccess) {
-            throw new Error(`Action failed to meet success condition after ${this.retriesCount} retry attempts.`, error);
+            throw new Error(`ACTION_FAILURE: Action failed to meet success condition after ${this.retriesCount} retry attempts. ${ functionName }`, error);
         }
     }
 
     async waitForSpinnerToDissappear() {
-        await this.waitForCondition(async () => {
-            const isSpinnerPresent = await $("div.spinner-container").isPresent();
-            CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
-            return !isSpinnerPresent;
-        }, 'Spinner is still displayed after waiting ');
+        let status = true
+        do{
+            status = await $("div.spinner-container").isPresent();
+        }
+        while (status)
+        
+        // const isSpinnerPresent = await $("div.spinner-container").isPresent();
+
+        // await this.waitForCondition(async () => {
+        //     const isSpinnerPresent = await $("div.spinner-container").isPresent();
+        //     CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
+        //     return !isSpinnerPresent;
+        // }, 'Spinner is still displayed after waiting ');
     }
 }
 

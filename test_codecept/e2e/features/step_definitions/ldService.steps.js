@@ -16,8 +16,11 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate launch darkly feature toggle values', async function(featureToggleValuesDataTable){
+        CucumberReportLogger.reportDatatable(featureToggleValuesDataTable)
+
         const softAssert = new SoftAssert();
         const featureToggleHashes = featureToggleValuesDataTable.parse().hashes();
+
         const ldfeatureToggles = global.scenarioData['featureToggles'];
         for (let i = 0; i < featureToggleHashes.length; i++){
             const toggleName = featureToggleHashes[i].name;
@@ -43,6 +46,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I log LD feature toggle values', async function(datatable){
+        CucumberReportLogger.reportDatatable(datatable)
+
         const featureHashes = datatable.parse().hashes();
         const allFeaturesinLD = global.scenarioData['featureToggles']; 
         
@@ -55,6 +60,8 @@ const { DataTableArgument } = require('codeceptjs');
     }); 
 
     Then('I Log to report launch darkly feature toggle values', async function (featureToggleValuesDataTable) {
+        CucumberReportLogger.reportDatatable(featureToggleValuesDataTable)
+
         const featureToggleHashes = featureToggleValuesDataTable.parse().hashes();
         for (let i = 0; i < featureToggleHashes.length; i++) {
             const toggleName = featureToggleHashes[i].name;

@@ -3,7 +3,7 @@ import * as querystring from 'querystring';
 import { sendGet, sendPost, sendPut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
-import { StaffDataAPI, StaffDataUser, WorkArea } from './models/staff-data-user.model';
+import { StaffUser } from './models/staff-data-user.model';
 import { GroupOption, Service, StaffFilterOption } from './models/staff-filter-option.model';
 import { StaffRefDataAPI } from './models/staff-ref-data.model';
 
@@ -138,6 +138,14 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     }
   }
 
+  setJobTitles(roles: any): string[] {
+    const jobTitles = [];
+    roles.forEach(role => {
+      jobTitles.push(role.role);
+    })
+    return jobTitles;
+  }
+
   sortArray(array: StaffFilterOption[]) {
     return array.sort((a, b) => a.label.localeCompare(b.label));
   }
@@ -147,7 +155,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `/refdata/case-worker/profile`;
 
     try {
-      const {status, data}: { status: number, data: StaffDataUser }
+      const {status, data}: { status: number, data: StaffUser }
         = await sendPost(`${this.baseCaseWorkerRefUrl}${apiPath}`, reqBody, req);
       res.status(status).send(data);
     } catch (error) {
@@ -155,78 +163,24 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     }
   }
 
-  async getStaffRefUserDetails(req, res, next: NextFunction) {
-    const reqBody = req.body;
-    const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
-
-    try {
-      const { status, data }: { status: number; data: StaffDataAPI[] } = await sendPost(apiPath, reqBody, req);
-      const thisUser = this.getUserInfoFromDetails(data);
-      res.status(status).send(thisUser);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  getUserInfoFromDetails(userInfo: StaffDataAPI[]): StaffDataUser[] {
-    const finalUserInfo = [];
-    userInfo.forEach(userDetails => {
-      let newUserInfo;
-      newUserInfo = this.setRoleInfo(userDetails);
-      newUserInfo = this.setLocationInfo(newUserInfo);
-      newUserInfo.services = this.getServiceLabels(newUserInfo.work_area);
-      newUserInfo.firstName = newUserInfo.first_name;
-      newUserInfo.lastName = newUserInfo.last_name;
-      newUserInfo.email = newUserInfo.email_id;
-      newUserInfo.userType = newUserInfo.user_type;
-      finalUserInfo.push(newUserInfo);
-    });
-    return finalUserInfo;
-  }
-
-  setRoleInfo(userInfo: StaffDataUser): StaffDataUser {
-    let primaryRole;
-    const roleList = [];
-    userInfo.role.forEach(role => {
-      roleList.push(role.role);
-      if (role.is_primary) {
-        primaryRole = role;
-      }
-    });
-    userInfo.primaryRole = primaryRole ? primaryRole : userInfo.role[0];
-    userInfo.roles = roleList;
-    return userInfo;
-  }
-
-  setLocationInfo(userInfo: StaffDataAPI): StaffDataUser {
-    let primaryLocation;
-    const locationList = [];
-    userInfo.base_location.forEach(location => {
-      if (location.is_primary) {
-        primaryLocation = location;
-      } else {
-        locationList.push(location.location);
-      }
-    });
-    userInfo.primaryLocation = primaryLocation ? primaryLocation : userInfo.base_location[0];
-    userInfo.additionalLocations = locationList;
-    return userInfo;
-  }
-
-  getServiceLabels(workarea: WorkArea[]): string[] {
-    const services = [];
-    workarea.forEach(workArea => {
-      services.push(workArea.area_of_work);
-    });
-    return services;
-  }
-
   async fetchUsersById(req, res, next: NextFunction) {
     const reqBody = req.body;
     const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
 
     try {
-      const { status, data }: { status: number; data: StaffDataAPI[] } = await sendPost(apiPath, reqBody, req);
+      const { status, data }: { status: number; data: StaffUser } = await sendPost(apiPath, reqBody, req);
+      res.status(status).send(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async fetchSingleUserById(req, res, next: NextFunction) {
+    const userId = req.query.id;
+    const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search-by-id?id=${userId}`;
+
+    try {
+      const { status, data }: { status: number; data: StaffUser } = await sendGet(apiPath, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);
@@ -238,7 +192,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath: string = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile`;
 
     try {
-      const {status, data}: { status: number, data: StaffDataUser } = await sendPut(apiPath, reqBody, req);
+      const {status, data}: { status: number, data: StaffUser } = await sendPut(apiPath, reqBody, req);
       res.status(status).send(data);
     } catch (error) {
       next(error);

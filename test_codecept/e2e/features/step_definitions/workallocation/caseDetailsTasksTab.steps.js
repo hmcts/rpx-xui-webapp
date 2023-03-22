@@ -113,6 +113,7 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate task tab active task at position {int} with task name {string} has attributes', async function(position,taskNameExpected ,attributesDatatable){
+        reportLogger.reportDatatable(attributesDatatable)
         await BrowserWaits.retryWithActionCallback(async () => {
             const softAssert = new SoftAssert();
             const taskName = await caseDetailsTaskTabPage.getTaskNameForTaskAtPosition(position);

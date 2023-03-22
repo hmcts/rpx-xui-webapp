@@ -2,23 +2,23 @@ import { FilterSetting, GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { Roles } from './roles.enum';
 import { StaffFilterOption } from './staff-filter-option.model';
 import { STAFF_REGIONS } from './staff-regions';
+import { StaffUserStatus } from './staff-user-status.enum';
 
 export class StaffUser {
   public email_id: string;
   public first_name: string;
   public last_name: string;
-  public suspended: 'true' | 'false';
+  public suspended: boolean;
   public user_type: string;
-  public userCategory: string;
 
-  public task_supervisor: 'Y' | 'N';
-  public case_allocator: 'Y' | 'N';
-  public staff_admin: 'Y' | 'N';
-
+  public task_supervisor: boolean;
+  public case_allocator: boolean;
+  public staff_admin: boolean;
   public idam_roles: string[];
+  public up_idam_status: 'ACTIVE' | 'SUSPENDED' | 'PENDING';
 
-  public role: {
-    role_id: number,
+  public roles: {
+    role_id: string,
     role: string,
     is_primary: boolean,
     created_time?: Date,
@@ -28,17 +28,14 @@ export class StaffUser {
   public skills: {
     skill_id: number;
     description: string;
-    skill_code: string
   }[];
 
-  public work_area: {
-    area_of_work: string;
+  public services: {
+    service: string;
     service_code: string;
-    created_time?: Date;
-    last_updated_time?: Date;
   }[];
 
-  public base_location: {
+  public base_locations: {
     created_time?: Date,
     last_updated_time?: Date,
     location_id: number,
@@ -48,6 +45,22 @@ export class StaffUser {
 
   public region: string;
   public region_id: number;
+
+  public get status(): StaffUserStatus {
+    if (this.suspended) {
+      return StaffUserStatus.SUSPENDED;
+    } else {
+      return this.up_idam_status === 'ACTIVE' ? StaffUserStatus.ACTIVE : StaffUserStatus.PENDING;
+    }
+  }
+
+  public get primaryLocation() {
+    return this.base_locations.find(item => item.is_primary);
+  }
+
+  public get additionalLocations() {
+    return this.base_locations.filter(item => !item.is_primary);
+  }
 
   public static from(json: any) {
     return Object.assign(new StaffUser(), json);
@@ -68,18 +81,18 @@ export class StaffUser {
     this.email_id = fieldsData[2].value[0];
     this.first_name = fieldsData[0].value[0];
     this.last_name = fieldsData[1].value[0];
-    this.suspended = 'false';
+    this.suspended = false;
     this.user_type = fieldsData[7].value[0];
 
-    this.task_supervisor = roles.includes(Roles.TaskSupervisor) ? 'Y' : 'N';
-    this.case_allocator = roles.includes(Roles.CaseAllocator) ? 'Y' : 'N';
-    this.staff_admin = roles.includes(Roles.StaffAdmin) ? 'Y' : 'N';
+    this.task_supervisor = roles.includes(Roles.TaskSupervisor);
+    this.case_allocator = roles.includes(Roles.CaseAllocator);
+    this.staff_admin = roles.includes(Roles.StaffAdmin);
 
-    this.role = fieldsData[9].value
+    this.roles = fieldsData[9].value
       .map(jobTitle => staffFilterOptions.jobTitles.find(jobTitles => jobTitles.key === jobTitle))
       .map(role => {
         return {
-          role_id: Number(role.key),
+          role_id: role.key,
           role: role.label,
           is_primary: true
         };
@@ -104,7 +117,7 @@ export class StaffUser {
       });
     })();
 
-    this.work_area = (() => {
+    this.services = (() => {
       const selectedServices = [];
       fieldsData[4].value.map(service => {
         selectedServices.push(staffFilterOptions.services.find(services => services.key === service));
@@ -112,13 +125,13 @@ export class StaffUser {
 
       return selectedServices.map(service => {
         return {
-          area_of_work: service.label,
+          service: service.label,
           service_code: service.key
         };
       });
     })();
 
-    this.base_location = (() => {
+    this.base_locations = (() => {
       const primaryLocations = fieldsData[5].value[0];
       const additionalLocations = fieldsData[6].value;
 
@@ -145,27 +158,5 @@ export class StaffUser {
       const region = STAFF_REGIONS.find(item => item.key === String(this.region_id));
       return region ? region.label : '';
     })();
-  }
-
-  public toDto() {
-    // Needs some modifications due to inconsistency of property names and types
-    // in POST 'users/fetchUsersById', PUT/POST 'profile'
-    return {
-      base_locations: this.base_location,
-      email_id: this.email_id,
-      first_name: this.first_name,
-      last_name: this.last_name,
-      region: this.region,
-      region_id: this.region_id,
-      roles: this.role,
-      services: this.work_area.map(item => ({service: item.area_of_work, service_code: item.service_code})),
-      skills: this.skills,
-      user_type: this.user_type,
-      staff_admin: this.staff_admin === 'Y',
-      task_supervisor: this.task_supervisor === 'Y',
-      case_allocator: this.case_allocator === 'Y',
-      suspended: this.suspended === 'true',
-      work_area: this.work_area
-    };
   }
 }

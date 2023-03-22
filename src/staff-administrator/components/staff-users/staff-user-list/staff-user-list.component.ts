@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
@@ -6,14 +6,11 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   templateUrl: './staff-user-list.component.html',
   styleUrls: ['./staff-user-list.component.scss']
 })
-export class StaffUserListComponent implements OnInit {
-  public displayedColumns = ['name', 'services', 'locations', 'jobTitle', 'status'];
+export class StaffUserListComponent {
+  public displayedColumns = ['name', 'services', 'locations', 'jobTitle'];
   public noResultsFoundText = 'No results found';
 
   constructor(public staffDataFilterService: StaffDataFilterService) { }
-
-  public ngOnInit() {
-  }
 
   public emitPageClickEvent(pageNumber: number) {
     this.staffDataFilterService.changePage(pageNumber);

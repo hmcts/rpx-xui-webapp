@@ -50,6 +50,7 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate filter item {string} select or radio options present in all work page', async function (filterItem, datatable){
+        reportLogger.reportDatatable(datatable)
         const actualOption = await allWorkPage.getFilterSelectOrRadioOptions(filterItem);
 
         const hashes = datatable.parse().hashes();
@@ -125,7 +126,9 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I see location search results in all work filter', async function (dataTable) {
-        const locationsHashes = datatable.parse().hashes();
+        reportLogger.reportDatatable(dataTable)
+
+        const locationsHashes = dataTable.parse().hashes();
         const expectdLocations = [];
         for (const locationsHash of locationsHashes){
             expectdLocations.push(locationsHash.location);

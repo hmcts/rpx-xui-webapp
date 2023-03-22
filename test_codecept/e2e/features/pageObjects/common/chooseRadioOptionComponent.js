@@ -4,11 +4,13 @@ const BrowserWaits = require("../../../support/customWaits");
 class ChooseRadioOptionComponent{
 
     constructor(parentCss){
-        if (typeof parentCss === 'string'){
-            this.component = $(`${parentCss ? parentCss : ''} exui-choose-radio-option`);
-        }else{
-            this.component = parentCss.$(`exui-choose-radio-option`); 
-        }
+        // if (typeof parentCss === 'string'){
+        //     this.component = $(`${parentCss ? parentCss : ''} exui-choose-radio-option`);
+        // }else{
+        //     this.component = parentCss.$(`exui-choose-radio-option`); 
+        // }
+
+        this.component = $(`exui-choose-radio-option`);
 
         this.header = this.component.$("h1");
         this.headerCaption = this.component.$("h1 span");

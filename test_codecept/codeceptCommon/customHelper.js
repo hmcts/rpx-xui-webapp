@@ -76,9 +76,8 @@ class CustomHelper extends Helper {
     }
     
     async getCookies(){
-        const puppeteerPage = this._getHelper().page;
-        const cookiesString = await puppeteerPage.evaluate(() => {
-            return document.cookie
+        const cookiesString = await actor().executeScript(function() {
+            return document.cookie;
         })
 
         const cookies = cookiesString.split(';').map(cookie => {
@@ -98,14 +97,6 @@ class CustomHelper extends Helper {
     }
 
 
-
-
-
-    executeScript(...args){
-
-        const puppeteerPage = this._getHelper().page;
-        return puppeteerPage.evaluate(...args);
-    }
 
    
 

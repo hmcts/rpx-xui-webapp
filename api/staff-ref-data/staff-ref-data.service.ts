@@ -36,12 +36,12 @@ class StaffRefDataService {
     return this.service.addNewUser(req, res, next);
   }
 
-  async getStaffRefUserDetails(req, res: Response, next: NextFunction) {
-    return this.service.getStaffRefUserDetails(req, res, next);
-  }
-
   async fetchUsersById(req, res: Response, next: NextFunction) {
     return this.service.fetchUsersById(req, res, next);
+  }
+
+  async fetchSingleUserById(req, res: Response, next: NextFunction) {
+    return this.service.fetchSingleUserById(req, res, next);
   }
 
   async updateUser(req, res: Response, next: NextFunction) {

@@ -39,7 +39,6 @@ import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
   assignActionsToCases,
-  assignActionsToTasks,
   assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
@@ -142,7 +141,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
     // determines whether should use release 3 or release 4 permission logic
-    const refined = req.body.refined;
     searchRequest.sorting_parameters.find((sort, index) => {
       if (sort.sort_by === 'priority') {
         searchRequest.sorting_parameters.splice(index, 1)
@@ -155,20 +153,33 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     delete searchRequest.pagination_parameters;
     delete searchRequest.search_by;
 
-    let { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
 
     if (data) {
-      if (refined) {
-        data = mockTaskPermissions(data);
+      // TEMPORARY CODE: for next_hearing_date until it is enabled in Task API
+      data.tasks.forEach(task => {
+        task.hearing_date =
+          new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString()
+      });
+      const payload = req.body;
+      const sortingParameters = payload.searchRequest.sorting_parameters;
+      if (sortingParameters && sortingParameters.length > 0) {
+        sortingParameters.forEach( sortParameter => {
+          if (sortParameter.sort_by === 'hearing_date') {
+            sortParameter.sort_by = 'caseName'
+          }
+        });
       }
-      returnData = !!req.body.refined ?
-       { tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records }
-        : { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+      // TEMPORARY CODE: end
 
+      returnData = {
+        tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
+        total_records: data.total_records,
+      };
     }
     res.send(returnData);
   } catch (error) {
@@ -261,9 +272,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     }
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const actionedTasks = !!req.body.refined
-      ? assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId)
-      : assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
+    const actionedTasks = assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
     return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);

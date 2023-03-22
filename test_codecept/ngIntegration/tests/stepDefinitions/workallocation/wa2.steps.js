@@ -153,6 +153,7 @@ const mockClient = require('../../../../backendMock/client/index');
 
 
     Given('I set MOCK tasks with attributes for view {string}', async function (forView, attributesDatatable) {
+        CucumberReporter.reportDatatable(attributesDatatable)
         const tasksHashes = attributesDatatable.parse().hashes();
         
         const response = { 
@@ -279,6 +280,7 @@ const mockClient = require('../../../../backendMock/client/index');
 
 
     Given('I set MOCK task details for WA release2', async function(taskDetailsDatatable){
+        CucumberReporter.reportDatatable(taskDetailsDatatable)
         const inputTaskDetails = taskDetailsDatatable.parse().hashes();
 
         const taskDetails = taskApiMock.getTask();

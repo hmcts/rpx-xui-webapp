@@ -26,26 +26,25 @@ describe('StaffUserDetailsComponent', () => {
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let location: Location;
   let router: jasmine.SpyObj<Router>;
-  let testStaffUser: StaffUser;
+  let testStaffUserData: Partial<StaffUser>;
   const caseWorkerId = '123456';
 
   beforeEach(waitForAsync(() => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
       'mockStaffDataAccessService', ['updateUser']
     );
-    const testStaffUserData = {
+    testStaffUserData = {
       email_id: 'email@test.hmcts',
       first_name: 'Kevin',
       last_name: 'Silver',
-      suspended: 'false',
+      suspended: false,
       user_type: 'userType',
-      task_supervisor: 'Y',
-      case_allocator: 'Y',
-      staff_admin: 'N',
-      userCategory: 'userCategory',
-      role: [
+      task_supervisor: true,
+      case_allocator: true,
+      staff_admin: false,
+      roles: [
         {
-          role_id: 1,
+          role_id: '1',
           role: 'Role',
           is_primary: true,
         }
@@ -53,17 +52,16 @@ describe('StaffUserDetailsComponent', () => {
       skills: [
         {
           skill_id: 1,
-          description: 'SKILLDESCRIPTION',
-          skill_code: 'SKILLCODE',
+          description: 'SKILLCODE',
         }
       ],
-      work_area: [
+      services: [
         {
-          area_of_work: 'service',
+          service: 'service',
           service_code: 'SERVICE_CODE'
         }
       ],
-      base_location: [
+      base_locations: [
         {
           location_id: 333,
           location: 'Location',
@@ -73,7 +71,6 @@ describe('StaffUserDetailsComponent', () => {
       region: 'West Midlands',
       region_id: 12,
     };
-    testStaffUser = StaffUser.from(testStaffUserData);
 
     TestBed.configureTestingModule({
       declarations: [
@@ -102,8 +99,8 @@ describe('StaffUserDetailsComponent', () => {
               },
               data: {
                 staffUserDetails: {
-                  userDetails: testStaffUser
-                },
+                  userDetails: testStaffUserData
+                }
               }
             },
           },
@@ -155,17 +152,18 @@ describe('StaffUserDetailsComponent', () => {
   });
 
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
-    expect(component.userDetails.suspended).toBe('false');
+    expect(component.userDetails.suspended).toBe(false);
     mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
     component.updateUserStatus();
 
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(component.userDetails.suspended).toBe('true');
+    expect(component.userDetails.suspended).toBe(true);
     expect(component.suspendedStatus).toBe('suspended');
   });
 
-  it('should userDetails property if it exists in routers extra state', () => {
-    expect(component.userDetails).toEqual(testStaffUser);
+  it('should set userDetails property from resolver', () => {
+    const testStaffUserObject = StaffUser.from(testStaffUserData);
+    expect(component.userDetails).toEqual(testStaffUserObject);
   });
 
   it('should set filterSettings on sessionStorage on FILTER_ID as key and navigate' +
@@ -203,16 +201,16 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should have a disabled button if suspended is true', () => {
     const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));
-    expect(component.userDetails.suspended).toBe('false');
+    expect(component.userDetails.suspended).toBe(false);
     expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toBeNull();
-    component.userDetails.suspended = 'true';
+    component.userDetails.suspended = true;
     fixture.detectChanges();
     expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toEqual('');
   });
 
   it('should not make a api call if user is suspended when calling updateUserStatus', () => {
     mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
-    component.userDetails.suspended = 'true';
+    component.userDetails.suspended = true;
     component.updateUserStatus();
     expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
   });

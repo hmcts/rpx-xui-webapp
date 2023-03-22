@@ -63,7 +63,7 @@
     "test:backendMock": "nodemon test_codecept/backendMock/app --standalone",
     "test:codeceptE2EDebug": "TEST_TYPE=e2e  npx codeceptjs run  --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_test --reporter mochawesome ",
     "test:codeceptE2E": "TEST_TYPE=e2e  npx codeceptjs run-workers --suites 5 --plugins retryFailedStep --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome ",
-    "test:xuiIntegrationDebug": "NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration  npx codeceptjs run  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome ",
+    "test:xuiIntegrationDebug": "NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration  npx codeceptjs run  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_test --reporter mochawesome ",
     "test:xuiIntegration": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=y  npx codeceptjs run-workers 5  --config=./test_codecept/codeceptCommon/codecept.conf.ts  --features --grep @codecept_enabled --reporter mochawesome "
   },
   "private": true,
@@ -80,7 +80,7 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "6.10.7-r4-access-view-alignment",
+    "@hmcts/ccd-case-ui-toolkit": "6.13.10-merge-3.5-improvements",
     "@hmcts/ccpay-web-component": "5.0.10-beta14",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.18-RC.3",

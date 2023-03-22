@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   BookingCheckType,
@@ -22,6 +23,7 @@ import { STAFF_REGIONS } from '../../../models/staff-regions';
 export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public editMode = false;
   public formId: string = '';
+  public form: FormGroup;
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
     jobTitles: StaffFilterOption[],
@@ -42,12 +44,16 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
+    private readonly fb: FormBuilder,
     private readonly router: Router,
     private filterService: FilterService,
   ) {}
 
   public ngOnInit() {
     this.formId = this.activatedRoute.snapshot.data.formId;
+    this.form = this.fb.group({
+      first_name: new FormControl(null, null),
+    });
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,

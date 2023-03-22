@@ -1,8 +1,10 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   BookingCheckType,
   FilterConfig,
+  FilterConfigOption,
   FilterService,
   GenericFilterComponent,
   GroupOptions
@@ -12,7 +14,6 @@ import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
-import { STAFF_REGIONS } from '../../../models/staff-regions';
 
 @Component({
   selector: 'exui-staff-add-edit-user-form',
@@ -29,11 +30,13 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
     services: StaffFilterOption[],
     locations: LocationByEPIMMSModel[];
   };
+  public regions: FilterConfigOption[] = [];
   public roles: StaffFilterOption[] = [
     { key: 'case-allocator', label: 'Case Allocator' },
     { key: 'task-supervisor', label: 'Task Supervisor' },
     { key: 'staff-administrator', label: 'Staff Administrator' },
   ];
+  public form: FormGroup;
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
   private filterStreamSubscription: Subscription;
@@ -55,7 +58,12 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
       services: this.activatedRoute.snapshot.data.services,
       locations: this.activatedRoute.snapshot.data.locations
     };
-
+    const regions = this.activatedRoute.snapshot.data.regions;
+    console.log(regions, 'are regions');
+    regions.forEach(region => {
+      const thisRegion = {key: region.region_id, label: region.description};
+      this.regions.push(thisRegion);
+    });
     this.initFormConfig();
     this.filterStreamSubscription = this.filterService.getStream(this.formId).subscribe(data => {
       if (data) {
@@ -173,7 +181,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
           type: 'select',
           title: 'Region',
           titleClasses: 'govuk-label govuk-label--m',
-          options: [...STAFF_REGIONS],
+          options: [...this.regions],
           minSelected: 1,
           maxSelected: 10,
           minSelectedError: 'Select at least one region',
@@ -216,6 +224,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
           minSelectedError: 'Select at least one location',
           bookingCheckType: BookingCheckType.NO_CHECK,
           maxWidth480px: true,
+          findLocationField: 'user-services',
         },
         {
           name: 'additionalLocations',

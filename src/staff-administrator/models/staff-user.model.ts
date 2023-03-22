@@ -1,7 +1,6 @@
 import { FilterSetting, GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { Roles } from './roles.enum';
 import { StaffFilterOption } from './staff-filter-option.model';
-import { STAFF_REGIONS } from './staff-regions';
 
 export class StaffUser {
   public email_id: string;
@@ -141,10 +140,11 @@ export class StaffUser {
     })();
 
     this.region_id = fieldsData[3].value[0];
-    this.region = (() => {
+    this.region = fieldsData[3].value[1];
+    /* this.region = (() => {
       const region = STAFF_REGIONS.find(item => item.key === String(this.region_id));
       return region ? region.label : '';
-    })();
+    })(); */
   }
 
   public toDto() {

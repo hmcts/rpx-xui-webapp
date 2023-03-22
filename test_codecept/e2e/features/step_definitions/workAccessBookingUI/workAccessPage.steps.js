@@ -12,7 +12,6 @@ const workAllocationDateUtil = require("../../pageObjects/workAllocation/common/
 
 const createNewBookingWorkflow = require('../../pageObjects/workAccessBookingUI/createNewBookingWorkflow');
 const customWaits = require('../../../support/customWaits');
-const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -114,6 +113,7 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I see work access existing bookings displayed with details', async function(datatable){
+        CucumberReportLogger.reportDatatable(datatable)
         const bookingsHashes = datatable.parse().hashes();
         await customWaits.retryWithActionCallback(async () => {
             for (const booking of bookingsHashes) {

@@ -65,7 +65,7 @@ exports.config = {
           height: 960
         },
         args: [
-          '--headless',
+          '--headless1',
           '—disable-notifications',
           '--smartwait',
           '--disable-gpu',

@@ -1,4 +1,4 @@
-@ng @codecept_enabled
+@ng @codecept_enabled 
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup

@@ -95,6 +95,35 @@ class CodeceptMochawesomeLog{
     }
 
 
+    reportDatatable(datatable){
+
+        const rows =  datatable.parse().raw();
+        const topRow = rows[0]
+        const rowsCount = rows.length;
+        const columnsCount = topRow.length;
+        
+        const columnSizes = [];
+
+        for (let i = 0; i < columnsCount; i++){
+            const columnValues = rows.map(row => row[i])
+            
+            let columnSize = columnValues.sort((a,b) => a.length < b.length ? 1:-1)[0].length
+            columnSize = columnSize + 3;
+            columnSizes[i] = columnSize;
+
+        }
+        for (let row = 0; row < rowsCount; row++){
+            let tableRow = ""
+            for (let col = 0; col < columnsCount ; col++){
+                tableRow += rows[row][col].padEnd(columnSizes[col], ' ')
+            }
+            this.AddMessage('=======> BDD DATATABLE:    '+tableRow)
+           
+        }
+
+
+    }
+
     // _isLevelEnabled(msgLoglevel){
     //     msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;  
     //     return msgLoglevel >= this.logLevel; 

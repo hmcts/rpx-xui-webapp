@@ -59,9 +59,7 @@ class Browser{
     }
 
     async getCurrentUrl(){
-        return await browser.executeScript(function(){
-            return window.document.location.href 
-        }); 
+        return await getActor().grabCurrentUrl()
     }
    
     refresh(){
@@ -78,8 +76,8 @@ class Browser{
         
     }
 
-    async executeScript(fn){
-        return getActor().executeScript(fn);  
+    async executeScript(fn, element){
+        return getActor().executeScript(fn, element.selector);  
     }
 
     async getBrowserLogs(){

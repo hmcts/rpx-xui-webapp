@@ -121,6 +121,8 @@ const { DataTableArgument } = require('codeceptjs');
     })
 
     Then('I do not see primary navigation tabs does not exist excluding {string}', async function (displayedTabs,allTabsDatatable) {
+        cucumberReporter.reportDatatable(allTabsDatatable); 
+
         await browserUtil.waitForLD();
         const tableHashes = allTabsDatatable.parse().hashes();
         const displayedTabArr = [];

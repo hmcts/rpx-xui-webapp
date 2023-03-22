@@ -1,226 +1,225 @@
 
 function getActor() {
-    return actor().retry({ retries: 3, minTimeout: 30 });
+    return actor().retry({ retries: 3, minTimeout:  5});
 }
 
+const reportLogger = require('./reportLogger')
 
-
-class PuppeteerNativeElement {
-    constructor(locator ,parent){
+// class PuppeteerNativeElement {
+//     constructor(locator ,parent){
        
-        this.type = 'element'
+//         this.type = 'element'
 
-        this.nativeElement = null;
-        this.selector = locator;
-        this.parent = parent
+//         this.nativeElement = null;
+//         this.selector = locator;
+//         this.parent = parent
        
-        this.meta = this.getElementSelector()
-    }
+//         this.meta = this.getElementSelector()
+//     }
 
-    getElementSelector(){
-        const selectors = [];
-        const parentSelectors = this.parent ? this.parent.getElementSelector() : null
-        if (this.parent){
-            const parentSelectors = this.parent.getElementSelector();
-            selectors.push(...parentSelectors)
-        }
-        const keys = Object.keys(this.selector)
-        if (keys.includes('css') || keys.includes('xpath')){
-            selectors.push(this.selector)
-        }else{
-            selectors.push({ index: this.selector })
-        }
-        return selectors
-    }
+//     getElementSelector(){
+//         const selectors = [];
+//         const parentSelectors = this.parent ? this.parent.getElementSelector() : null
+//         if (this.parent){
+//             const parentSelectors = this.parent.getElementSelector();
+//             selectors.push(...parentSelectors)
+//         }
+//         const keys = Object.keys(this.selector)
+//         if (keys.includes('css') || keys.includes('xpath')){
+//             selectors.push(this.selector)
+//         }else{
+//             selectors.push({ index: this.selector })
+//         }
+//         return selectors
+//     }
 
-    async getNativeElements(locator) {
-        this.page = await getActor().getPuppeteerPage();
+//     async getNativeElements(locator) {
+//         this.page = await getActor().getPuppeteerPage();
 
-        const keys = Object.keys(locator)
-        if (keys[0] === 'css') {
-            return await this.page.$$(locator[keys[0]])
+//         const keys = Object.keys(locator)
+//         if (keys[0] === 'css') {
+//             return await this.page.$$(locator[keys[0]])
 
-        } else {
-            return await this.page.$x(locator[keys[0]])
-        }
+//         } else {
+//             return await this.page.$x(locator[keys[0]])
+//         }
        
-    }
+//     }
 
-    async __checkAndGetNativeElement(){
-        let i = 0;
-        while(i < 3){
-            try {
-                this.page = await getActor().getPuppeteerPage();
-                let source = null;
-                if (this.parent) {
-                    if (this.parent.type === 'element') {
-                        const parentElement = await this.parent.__checkAndGetNativeElement();
-                        source = parentElement;
-                    } else if (this.parent.type === 'collection') {
-                        const collectionCount = await this.parent.count();
-                        if (this.selector >= collectionCount) {
-                            throw Error(`Array index out of bound, elements count ${collectionCount} , index to get ${this.selector}`);
-                        }
-                        source = this.parent.nativeElements
-                    }
-                } else {
-                    source = this.page;
-                }
-                if (this.selector !== null) {
-                    const keys = Object.keys(this.selector)
-                    if (keys[0] === 'css') {
-                        this.nativeElement = await source.$(this.selector[keys[0]])
+//     async __checkAndGetNativeElement(){
+//         let i = 0;
+//         while(i < 3){
+//             try {
+//                 this.page = await getActor().getPuppeteerPage();
+//                 let source = null;
+//                 if (this.parent) {
+//                     if (this.parent.type === 'element') {
+//                         const parentElement = await this.parent.__checkAndGetNativeElement();
+//                         source = parentElement;
+//                     } else if (this.parent.type === 'collection') {
+//                         const collectionCount = await this.parent.count();
+//                         if (this.selector >= collectionCount) {
+//                             throw Error(`Array index out of bound, elements count ${collectionCount} , index to get ${this.selector}`);
+//                         }
+//                         source = this.parent.nativeElements
+//                     }
+//                 } else {
+//                     source = this.page;
+//                 }
+//                 if (this.selector !== null) {
+//                     const keys = Object.keys(this.selector)
+//                     if (keys[0] === 'css') {
+//                         this.nativeElement = await source.$(this.selector[keys[0]])
 
-                    } else if (keys[0] === 'xpath') {
-                        this.nativeElement = await source.$x(this.selector[keys[0]])
-                        this.nativeElement = this.nativeElement[0]
+//                     } else if (keys[0] === 'xpath') {
+//                         this.nativeElement = await source.$x(this.selector[keys[0]])
+//                         this.nativeElement = this.nativeElement[0]
 
-                    } else {
-                        this.nativeElement = source[this.selector]
-                    }
-                }
-                break;
+//                     } else {
+//                         this.nativeElement = source[this.selector]
+//                     }
+//                 }
+//                 break;
                 
-            } catch (err) {
-                i++;
-                console.log(err)
-            }
-        }
-        return this.nativeElement;
+//             } catch (err) {
+//                 i++;
+//                 console.log(err)
+//             }
+//         }
+//         return this.nativeElement;
         
         
-    }
+//     }
 
    
-    async getAttribute(attr){
-        await this.__checkAndGetNativeElement();
-        return await (await this.nativeElement.getProperty(attr)).jsonValue()
-    }
+//     async getAttribute(attr){
+//         await this.__checkAndGetNativeElement();
+//         return await (await this.nativeElement.getProperty(attr)).jsonValue()
+//     }
 
-    element(locator) {
-        return new PuppeteerNativeElement(locator, this)
-    }
+//     element(locator) {
+//         return new PuppeteerNativeElement(locator, this)
+//     }
 
-    $(cssSelector){
-        // await this.__checkAndGetNativeElement();
-        // let childElement = await this.nativeElement.$(cssSelector) 
-        return new PuppeteerNativeElement({ css: cssSelector }, this)
-    }
+//     $(cssSelector){
+//         // await this.__checkAndGetNativeElement();
+//         // let childElement = await this.nativeElement.$(cssSelector) 
+//         return new PuppeteerNativeElement({ css: cssSelector }, this)
+//     }
 
-    $$(cssSelector) {
-        // await this.__checkAndGetNativeElement();
-        // let childElements = await this.nativeElement.$$(cssSelector)
-        const collection = new ElementCollection({ css: cssSelector }, this)
-        // collection.nativeElements = childElements;
-        return collection;
-    }
+//     $$(cssSelector) {
+//         // await this.__checkAndGetNativeElement();
+//         // let childElements = await this.nativeElement.$$(cssSelector)
+//         const collection = new ElementCollection({ css: cssSelector }, this)
+//         // collection.nativeElements = childElements;
+//         return collection;
+//     }
 
 
-    async getTagName(){
-        await this.__checkAndGetNativeElement();
+//     async getTagName(){
+//         await this.__checkAndGetNativeElement();
 
-        const tagName = await this.nativeElement.getProperty('tagName');
-        return (await tagName.jsonValue()).toLowerCase()
-    }
+//         const tagName = await this.nativeElement.getProperty('tagName');
+//         return (await tagName.jsonValue()).toLowerCase()
+//     }
 
-    async isPresent(){
-        await this.__checkAndGetNativeElement();
-        return this.nativeElement !== null
-    }
+//     async isPresent(){
+//         await this.__checkAndGetNativeElement();
+//         return this.nativeElement !== null
+//     }
 
-    async isDisplayed(){
-        await this.__checkAndGetNativeElement();
-        if (!this.nativeElement) {
-            return false;
-        }
-        const elementVisisbleBox = await this.nativeElement.boundingBox();
+//     async isDisplayed(){
+//         await this.__checkAndGetNativeElement();
+//         if (!this.nativeElement) {
+//             return false;
+//         }
+//         const elementVisisbleBox = await this.nativeElement.boundingBox();
 
-        return elementVisisbleBox !== null
+//         return elementVisisbleBox !== null
        
         
-    }
+//     }
 
-    async sendKeys(keys){
-        await this.__checkAndGetNativeElement();
-        await this.nativeElement.scrollIntoView();
-        await this.click();
-        await this.nativeElement.type(keys.toString());
-    }
+//     async sendKeys(keys){
+//         await this.__checkAndGetNativeElement();
+//         await this.nativeElement.scrollIntoView();
+//         await this.click();
+//         await this.nativeElement.type(keys.toString());
+//     }
 
-    async clear(){
-        await this.__checkAndGetNativeElement();
-        await this.page.evaluate((el) => el.value = '', this.nativeElement)
-        // await this.nativeElement.type("");
-    }
+//     async clear(){
+//         await this.__checkAndGetNativeElement();
+//         // await this.page.evaluate((el) => el.value = '', this.nativeElement)
+//         // await this.nativeElement.type("");
+//     }
 
-    async click(){
-        await this.__checkAndGetNativeElement();
-        // await this.nativeElement.scrollIntoView();
-        await this.nativeElement.click();
-    }
+//     async click(){
+//         await this.__checkAndGetNativeElement();
+//         // await this.nativeElement.scrollIntoView();
+//         await this.nativeElement.click();
+//     }
 
 
-    async selectOptionAtIndex(index){
-        await this.__checkAndGetNativeElement();
-        const selectOptions = await this.nativeElement.$$('option')
+//     async selectOptionAtIndex(index){
+//         await this.__checkAndGetNativeElement();
+//         const selectOptions = await this.nativeElement.$$('option')
          
 
-        let optionName = await selectOptions[index].evaluate(el => el.textContent, selectOptions[index])
-        optionName = optionName.trim()
-        // await select.select(optionName);
-        await this.nativeElement.type(optionName)
-    }
+//         let optionName = await selectOptions[index].evaluate(el => el.textContent, selectOptions[index])
+//         optionName = optionName.trim()
+//         // await select.select(optionName);
+//         await this.nativeElement.type(optionName)
+//     }
 
-    async selectOptionWithLabel(label) {
-        await this.__checkAndGetNativeElement();
-        // const selectOptions = await this.nativeElement.$$('option')
+//     async selectOptionWithLabel(label) {
+//         await this.__checkAndGetNativeElement();
+//         // const selectOptions = await this.nativeElement.$$('option')
 
-        await this.nativeElement.type(label)
+//         await this.nativeElement.type(label)
 
-        // let optionName = await selectOptions[index].evaluate(el => el.textContent, selectOptions[index])
 
        
-        }
+//         }
 
-    async getText(){
-        await this.__checkAndGetNativeElement();
-        return await this.nativeElement.evaluate(el => el.textContent, this.nativeElement)
-    }
+//     async getText(){
+//         await this.__checkAndGetNativeElement();
+//         return await this.nativeElement.evaluate(el => el.textContent, this.nativeElement)
+//     }
 
-    async uploadFile(filePath){
-        await this.__checkAndGetNativeElement();
-        await this.nativeElement.uploadFile(filePath);
-    }
+//     async uploadFile(filePath){
+//         await this.__checkAndGetNativeElement();
+//         await this.nativeElement.uploadFile(filePath);
+//     }
 
-    async wait(){
-        return new Promise((resolve,reject) => {
-            const interval = setInterval(async () => {
-                await this.__checkAndGetNativeElement();
-                if(this.nativeElement !== null){
-                    clearInterval(interval)
-                    resolve(true)
-                }
-            }, 1000);
+//     async wait(){
+//         return new Promise((resolve,reject) => {
+//             const interval = setInterval(async () => {
+//                 await this.__checkAndGetNativeElement();
+//                 if(this.nativeElement !== null){
+//                     clearInterval(interval)
+//                     resolve(true)
+//                 }
+//             }, 1000);
 
-            setTimeout(() => {
-                clearInterval(interval)
-                reject(false);
-            }, 30000)
-        });
+//             setTimeout(() => {
+//                 clearInterval(interval)
+//                 reject(false);
+//             }, 30000)
+//         });
        
-    }
+//     }
 
-    async scrollIntoView(){
-        await this.__checkAndGetNativeElement();
-        await this.page.evaluate((el) => el.scrollIntoView(), this.nativeElement)
+//     async scrollIntoView(){
+//         await this.__checkAndGetNativeElement();
+//         await this.page.evaluate((el) => el.scrollIntoView(), this.nativeElement)
 
-    }
+//     }
 
-    async isSelected() {
-        await this.__checkAndGetNativeElement();
-        return await this.getAttribute('checked')
-    }
-}
+//     async isSelected() {
+//         await this.__checkAndGetNativeElement();
+//         return await this.getAttribute('checked')
+//     }
+// }
 
 
 class ElementCollection {
@@ -260,7 +259,7 @@ class ElementCollection {
         // const nativeLement = new PuppeteerNativeElement(index, this);
         // return nativeLement;
         const locatorAtIndex = locate(this.selector).at(index + 1)
-        return new Element({ xpath: locatorAtIndex })
+        return new Element(locatorAtIndex)
     }
 
     async wait(){
@@ -381,8 +380,8 @@ class Element {
         await getActor().fillField(this.selector, keys) 
     }
 
-    clear(){
-        // getActor().clearField(this.selector)  
+    async clear(){
+        await getActor().clearField(this.selector)  
     }
 
     async click(){
@@ -412,12 +411,8 @@ class Element {
     }
 
     async isDisplayed(){
-        try{
-            await getActor().seeElement(this.selector)
-            return true;
-        }catch(err){
-            return false;
-        } 
+        const count = await getActor().grabNumberOfVisibleElements(this.selector)
+        return count > 0;
     }
 
 
@@ -431,6 +426,7 @@ class Element {
     }
 
     async getAttribute(attr){
+        reportLogger.AddMessage(`getAttribute "${attr}" from ${JSON.stringify(this.selector)}`)
         const attributeValue = await getActor().grabAttributeFrom(this.selector, attr)
         if (attributeValue instanceof Object){
             const values = Object.values(attributeValue)
@@ -448,8 +444,16 @@ class Element {
     }
 
     async getTagName(){
-        const el = new PuppeteerNativeElement(this.selector, null)
-        return (await el.getTagName()).toLowerCase()
+        const locatorType = Object.keys(this.selector);
+        if (locatorType.includes('css')){
+            return await getActor().executeScript(function () {
+                return $(this.selector.css).getTagName()
+            }, this.selector)
+        }else{
+            return await getActor().executeScript(function () {
+                return $(document).evaluate(this.selector.xpath).getTagName()
+            }, this.selector)
+        }
     }
 
     async uploadFile(file){

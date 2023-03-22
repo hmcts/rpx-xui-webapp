@@ -132,6 +132,7 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate task list table columns displayed', async function (datatable) {
+        reportLogger.reportDatatable(datatable)
         const columnHeadersHash = datatable.parse().hashes();
         const expectdColHeaders = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader );  
         const actualHeadeColumns = await taskListTable.getColumnHeaderNames();
@@ -141,6 +142,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate task list table columns displayed for user {string}', async function (userType, datatable) {
+        reportLogger.reportDatatable(datatable)
+
         const columnHeadersHash = datatable.parse().hashes();
         
         let actualHeadeColumns = await taskListTable.getColumnHeaderNames();
@@ -158,6 +161,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate check your changes table columns displayed for user {string}', async function (userType, datatable) {
+        reportLogger.reportDatatable(datatable)
+
         const columnHeadersHash = datatable.parse().hashes();
 
         const actualHeadeColumns = await taskCheckYourChangesPage.checkYourChangesTable.getHeaders();
@@ -174,6 +179,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate task list columns are links', async function(datatable){
+        reportLogger.reportDatatable(datatable)
+
         const columnHeadersHash = datatable.parse().hashes();
         const expectdLinkCols = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader);
 
@@ -217,6 +224,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate manage link actions for tasks', async function (tasksDatatable) {
+        reportLogger.reportDatatable(tasksDatatable)
+
         const softAssert = new SoftAssert();
         const taskHashes = tasksDatatable.parse().hashes();
 
@@ -246,6 +255,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate manage link actions for cases', async function (tasksDatatable) {
+        reportLogger.reportDatatable(tasksDatatable)
+
         const softAssert = new SoftAssert();
         const taskHashes = tasksDatatable.parse().hashes();
 
@@ -329,6 +340,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate notification banner messages displayed in {string} page', async function (page,messagesDatatable) {
+        reportLogger.reportDatatable(messagesDatatable)
+
         await BrowserWaits.retryWithActionCallback(async () => {
             const messages = messagesDatatable.parse().hashes();
             let actualmessages = [];
@@ -355,6 +368,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('If user type {string} is {string}, I validate task details displayed in task action page', async function (currentUserType,stepForUserType,taskDetailsDatatable){
+        reportLogger.reportDatatable(taskDetailsDatatable)
+
         if (currentUserType === stepForUserType){
             const taskDetails = taskDetailsDatatable.parse().hashes()[0];
 
@@ -365,6 +380,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate task details displayed in task action page', async function (taskDetailsDatatable) {
+        reportLogger.reportDatatable(taskDetailsDatatable)
+
         const taskDetails = taskDetailsDatatable.parse().hashes()[0];
 
         validateTaskDetailsDisplayed(taskDetails,taskActionPage);
@@ -377,6 +394,8 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate task details displayed in check your changes page', async function (taskDetailsDatatable) {
+        reportLogger.reportDatatable(taskDetailsDatatable)
+
         const taskDetails = taskDetailsDatatable.parse().hashes()[0];
         
         validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);

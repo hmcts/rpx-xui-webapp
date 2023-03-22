@@ -1,10 +1,10 @@
-@ng @wa2 @wa  @codecept_enabled
+@ng @wa2 @wa  @codecept_enabled 
 Feature: WA Release 2: My work - My tasks - Task actions
 
     Background: Mock and browser setup
         # Given I navigate to home page
 
-
+@codecept_test
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 

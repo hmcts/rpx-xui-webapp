@@ -99,14 +99,6 @@ class CustomHelper extends Helper {
 
 
 
-
-
-    executeScript(...args){
-
-        const puppeteerPage = this._getHelper().page;
-        return puppeteerPage.evaluate(...args);
-    }
-
    
 
 }

@@ -41,6 +41,7 @@ const { DataTableArgument } = require('codeceptjs');
     });
 
     Then('I validate Review specific access page radio options for actions', async function (datatable) {
+        reportLogger.reportDatatable(datatable)
         const radioOptions = datatable.parse().hashes();
         const expectedOptions = radioOptions.map(hashOption => hashOption.option) 
 

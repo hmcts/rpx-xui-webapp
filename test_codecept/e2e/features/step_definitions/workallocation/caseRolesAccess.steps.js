@@ -163,6 +163,7 @@ const { DataTableArgument } = require('codeceptjs');
    });
 
     Then('I validate actions row for role category {string} has action links in Roles and access page', async function (roleCategory, actionLinksdatatable){
+        reportLogger.reportDatatable(actionLinksdatatable)
         const caseRolesTable = caseRolesAndAccessPage.getTableForRoleACcessType(roleCategory);
 
         for (const tableHash of actionLinksdatatable.parse().hashes()){

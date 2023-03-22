@@ -239,6 +239,7 @@ const { DataTableArgument } = require('codeceptjs');
 
     Then('I validate global search results values', async function(datatable){
         const datatableHashes = datatable.parse().hashes();
+        CucumberReportLogger.reportDatatable(datatable)
         for (const tableHash of datatableHashes){
             const columns = Object.keys(tableHash);
             const rowNum = tableHash.Row_Num;
@@ -260,6 +261,8 @@ const { DataTableArgument } = require('codeceptjs');
 
     Then('I validate global search results values displayed', async function (datatable) {
         const datatableHashes = datatable.parse().hashes();
+        CucumberReportLogger.reportDatatable(datatable)
+
         for (const tableHash of datatableHashes) {
             const column = tableHash.name; 
 
@@ -330,6 +333,8 @@ const { DataTableArgument } = require('codeceptjs');
     Then('I validate field services has following values in global search page', async function(datatable){
         const optionValues = await globalSearchPage.getServicesFieldsOptions();
         const datatableHashes = datatable.parse().hashes();
+        CucumberReportLogger.reportDatatable(datatable)
+
 
         for (const hash of datatableHashes){
             expect(optionValues).to.includes(hash.value);
@@ -339,6 +344,8 @@ const { DataTableArgument } = require('codeceptjs');
 
     Then('I validate valid global search case reference searches', async function(datatable){
         const scenarios = datatable.parse().hashes();
+        CucumberReportLogger.reportDatatable(datatable)
+
         const softAssert = new SoftAssert();
         for (const scenario of scenarios){
             await headerPage.clickPrimaryNavigationWithLabel('Search');
@@ -358,6 +365,8 @@ const { DataTableArgument } = require('codeceptjs');
 
     Then('I validate invalid global search case reference searches', async function (datatable) {
         const scenarios = datatable.parse().hashes();
+        CucumberReportLogger.reportDatatable(datatable)
+
         const softAssert = new SoftAssert();
         for (const scenario of scenarios) {
             await headerPage.clickPrimaryNavigationWithLabel('Search');

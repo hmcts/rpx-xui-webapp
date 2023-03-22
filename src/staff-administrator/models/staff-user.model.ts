@@ -155,9 +155,6 @@ export class StaffUser {
     })();
 
     this.region_id = fieldsData[3].value[0];
-    this.region = (() => {
-      const region = STAFF_REGIONS.find(item => item.key === String(this.region_id));
-      return region ? region.label : '';
-    })();
+    this.region = fieldsData[3].value[1];
   }
 }

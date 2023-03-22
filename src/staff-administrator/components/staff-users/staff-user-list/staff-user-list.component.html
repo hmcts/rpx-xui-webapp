@@ -1,4 +1,4 @@
-<ng-container *ngIf="!((staffDataFilterService.tableData$ | async)?.results); else showTable">
+<ng-container *ngIf="!(staffDataFilterService.tableData$ | async); else showTable">
   <p>Please select filters and click Search</p>
 </ng-container>
 
@@ -47,8 +47,8 @@
           <ng-container cdkColumnDef="jobTitle">
             <th cdk-header-cell *cdkHeaderCellDef>Job title</th>
             <td cdk-cell *cdkCellDef="let element">
-              <div *ngFor="let obj of element.jobTitle">
-                {{ obj }}
+              <div *ngFor="let role of element.roles">
+                {{ role.role }}
               </div>
             </td>
           </ng-container>

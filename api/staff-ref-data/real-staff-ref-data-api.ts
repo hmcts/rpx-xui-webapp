@@ -18,7 +18,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${queryStrings}`;
 
     try {
-      const { status, data, headers }: { status: number, data: StaffDataUser[], headers: any }
+      const { status, data, headers }: { status: number, data: StaffUser[], headers: any }
         = await sendGet(apiPath, req, {
         'page-number': pageNumber,
         'page-size': pageSize,
@@ -121,7 +121,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search-by-name?search=${searchParam}`;
 
     try {
-      const { status, data, headers }: { status: number, data: StaffDataUser[], headers: any } =
+      const { status, data, headers }: { status: number, data: StaffUser[], headers: any } =
         await sendGet(apiPath, req, {
           'page-number': pageNumber,
           'page-size': pageSize,
@@ -136,14 +136,6 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     } catch (error) {
       next(error);
     }
-  }
-
-  setJobTitles(roles: any): string[] {
-    const jobTitles = [];
-    roles.forEach(role => {
-      jobTitles.push(role.role);
-    })
-    return jobTitles;
   }
 
   sortArray(array: StaffFilterOption[]) {

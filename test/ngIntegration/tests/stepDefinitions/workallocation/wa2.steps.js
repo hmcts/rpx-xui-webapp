@@ -2,7 +2,7 @@
 var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../../nodeMock/app');
-const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
+const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
 const BrowserWaits = require('../../../../e2e/support/customWaits');

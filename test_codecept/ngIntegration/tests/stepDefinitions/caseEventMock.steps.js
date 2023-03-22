@@ -1,14 +1,15 @@
 
 
-const CucumberReportLogger = require('../../../e2e/support/reportLogger');
+const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 var { defineSupportCode } = require('cucumber');
 const jsonpath = require('jsonpath');
 
 const BrowserWaits = require('../../../e2e/support/customWaits');
-const MockApp = require('../../../nodeMock/app');
-const CCDCaseConfig = require('../../../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
+// const MockApp = require('../../../nodeMock/app');
+const CCDCaseConfig = require('../../mockData/ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -19,7 +20,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
     });
 
     Given('I add page to event {string}', function (moduleRef,datatable) {
-        const pageConfig = datatable.hashes()[0];
+        const pageConfig = datatable.parse().hashes()[0];
         const mockCaseEvent = global.scenarioData[moduleRef];
 
         mockCaseEvent.addWizardPage(pageConfig.id, pageConfig.label);
@@ -27,7 +28,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
     });
 
     Given('I add fields to page {string} in event {string}',function (pageRef,moduleRef, datatable) {
-        const fieldConfigs = datatable.hashes();
+        const fieldConfigs = datatable.parse().hashes();
         for (let i = 0; i < fieldConfigs.length; i++){
             const fieldConfig = fieldConfigs[i];
             const mockCaseEvent = global.scenarioData[moduleRef];
@@ -76,7 +77,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
     Given('I set field properties for field with id {string} in event {string}', function (fieldId, moduleRef, datatable){
         const mockCaseEvent = global.scenarioData[moduleRef];
-        const fieldProps = datatable.hashes();
+        const fieldProps = datatable.parse().hashes();
         const fieldpropsObj = {};
         for (let i = 0; i < fieldProps.length; i++){
             fieldpropsObj[fieldProps[i].key] = fieldProps[i].value;
@@ -88,7 +89,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
     Given('I set fixed list ietms to field {string} in event {string}', async function(fieldId,eventRef,fixedListDatatable){
         const mockCaseEvent = global.scenarioData[eventRef];
-        mockCaseEvent.setFixedListItems(fieldId, fixedListDatatable.hashes());
+        mockCaseEvent.setFixedListItems(fieldId, fixedListdatatable.parse().hashes());
     });
 
     Given('I set case event {string} in mock', function(eventRef){
@@ -116,7 +117,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
     Given('I set complex field overrides for case field {string} in event {string}', async function (fieldId, eventRef, overrides){
         const mockCaseEvent = global.scenarioData[eventRef];
-        const overridesHashes = overrides.hashes();
+        const overridesHashes = overrides.parse().hashes();
         mockCaseEvent.addComplexFieldOverridesToCaseField(fieldId, overridesHashes)
 
 
@@ -124,7 +125,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
     Given('I set caseField values in event config {string}', async function (eventRef, fields){
         const mockCaseEvent = global.scenarioData[eventRef];
-        const fieldHashes = fields.hashes();
+        const fieldHashes = fields.parse().hashes();
        
         for (let i = 0; i < fieldHashes.length; i++){
             mockCaseEvent.setCaseFieldValue(fieldHashes[i].id, fieldHashes[i].value);
@@ -154,7 +155,7 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
         await BrowserWaits.waitForCondition(() =>  global.scenarioData[requestBodyReference] !== null );
         const reqBody = global.scenarioData[requestBodyReference];
         const softAsseert = new SoftAssert();
-        const dataTableHashes = datatable.hashes();
+        const dataTableHashes = datatable.parse().hashes();
         CucumberReportLogger.AddMessage("Request body in validation");
         CucumberReportLogger.AddJson(reqBody);
         for(let i = 0; i < dataTableHashes.length; i++){
@@ -174,4 +175,3 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
     });
 
 
-});

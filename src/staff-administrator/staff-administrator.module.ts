@@ -4,8 +4,8 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { SharedModule } from '../app/shared/shared.module';
+import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffStatusComponent } from './components/staff-status/staff-status.component';
@@ -30,6 +30,7 @@ import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-op
 import { StaffUserDetailsResolverService } from './resolvers/staff-user-details-resolver.service';
 import { StaffDataAccessService } from './services/staff-data-access/staff-data-access.service';
 import { staffAdministratorRouting } from './staff-administrator.routes';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,8 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffAddUserComponent,
     StaffUserCheckAnswersComponent,
     StaffUserDetailsComponent,
+    PluckAndJoinPipe,
+    StaffEditUserContainerComponent,
     StaffStatusComponent,
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,
@@ -55,7 +58,8 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     ExuiCommonLibModule,
     ReactiveFormsModule,
     staffAdministratorRouting,
-    NgxPaginationModule
+    NgxPaginationModule,
+    MatTooltipModule,
   ],
   providers: [
     StaffDataAccessService,

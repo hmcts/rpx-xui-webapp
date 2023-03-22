@@ -1,14 +1,15 @@
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../nodeMock/app');
+// const MockApp = require('../../../nodeMock/app');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const browserUtil = require('../../util/browserUtil');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
-const CucumberReporter = require('../../../e2e/support/reportLogger');
+// const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
+const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
-const globalSearchMockData = require('../../../nodeMock/globalSearch/mockData');
+const globalSearchMockData = require('../../mockData/globalSearch/mockData');
 const globalSearchDataModel = require('../../../dataModels/globalSearch'); 
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -28,7 +29,7 @@ const globalSearchDataModel = require('../../../dataModels/globalSearch');
 
 
     Given('I set set global search mock results response and resultInfo', async function (datatable){
-        const datatableHashes = datatable.hashes();
+        const datatableHashes = datatable.parse().hashes();
        
         globalSearchMockData.searchResponse.resultInfo.caseStartRecord = parseInt(datatableHashes[0].caseStartRecord);
         globalSearchMockData.searchResponse.resultInfo.casesReturned = parseInt(datatableHashes[0].casesReturned);
@@ -46,7 +47,7 @@ const globalSearchDataModel = require('../../../dataModels/globalSearch');
 
     Given('I set global search mock results with values', async function (datatable) {
         
-        const datatableHashes = datatable.hashes();
+        const datatableHashes = datatable.parse().hashes();
 
         for (const datatableHash of datatableHashes){
             const caseInResult = globalSearchMockData.searchResponse.results[parseInt(datatableHash.index)];
@@ -66,6 +67,3 @@ const globalSearchDataModel = require('../../../dataModels/globalSearch');
 
 
     });
-
-
-});

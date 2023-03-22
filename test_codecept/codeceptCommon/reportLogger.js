@@ -1,5 +1,7 @@
 const browser = require('./browser')
 
+// const I = getActor();
+
 class CodeceptMochawesomeLog{
     getDate(){
         const d = new Date();
@@ -41,6 +43,7 @@ class CodeceptMochawesomeLog{
 
         try{
             browser.get_I().addMochawesomeContext(this.getDate() + message);
+            // browser.get_I().say( message)
         }
         catch(err){
             console.log("Error occured adding message to report. "+err.stack);
@@ -52,6 +55,8 @@ class CodeceptMochawesomeLog{
         // if (!this._isLevelEnabled(logLevel)) return;
 
         browser.get_I().addMochawesomeContext(this.getDate() + message);
+        // browser.get_I().say(this.getDate() + message)
+
     }
 
     AddJson(json, logLevel){
@@ -59,6 +64,8 @@ class CodeceptMochawesomeLog{
 
         try {
             browser.get_I().addMochawesomeContext(JSON.stringify(json, null, 2));
+            // browser.get_I().say(JSON.stringify(json, null, 2))
+
         }
         catch(err) {
              console.log("Error occured adding message to report. " + err.stack);
@@ -75,8 +82,9 @@ class CodeceptMochawesomeLog{
         // if (!this._isLevelEnabled(logLevel)) return;
 
         // const decodedImage = await this.getScreenshot(onbrowser);
-        await browser.get_I().addMochawesomeContext(decodedImage, 'image/png');
-       
+        // await browser.get_I().addMochawesomeContext(decodedImage, 'image/png');
+        this.AddMessage(`!!! Add screenshot not implemented !!!`)
+        
     }
 
     async getScreenshot(onbrowser){
@@ -84,6 +92,36 @@ class CodeceptMochawesomeLog{
         const stream = await scrrenshotBrowser.takeScreenshot();
         const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
         return decodedImage; 
+    }
+
+
+    reportDatatable(datatable){
+
+        const rows =  datatable.parse().raw();
+        const topRow = rows[0]
+        const rowsCount = rows.length;
+        const columnsCount = topRow.length;
+        
+        const columnSizes = [];
+
+        for (let i = 0; i < columnsCount; i++){
+            const columnValues = rows.map(row => row[i])
+            
+            let columnSize = columnValues.sort((a,b) => a.length < b.length ? 1:-1)[0].length
+            columnSize = columnSize + 3;
+            columnSizes[i] = columnSize;
+
+        }
+        for (let row = 0; row < rowsCount; row++){
+            let tableRow = ""
+            for (let col = 0; col < columnsCount ; col++){
+                tableRow += rows[row][col].padEnd(columnSizes[col], ' ')
+            }
+            this.AddMessage('=======> BDD DATATABLE:    '+tableRow)
+           
+        }
+
+
     }
 
     // _isLevelEnabled(msgLoglevel){

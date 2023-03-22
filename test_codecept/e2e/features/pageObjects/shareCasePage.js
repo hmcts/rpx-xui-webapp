@@ -35,7 +35,7 @@ class ShareCasePage {
         await BrowserWaits.waitForCondition(async () => {
             return await this.selectedCases.count() > 0; 
         });
-        await browser.sleep(2000);
+        await browser.sleep(2);
 
     }
     async amOnPage() {
@@ -175,7 +175,7 @@ class ShareCasePage {
         let selectedCase = await this.selectedCases.get(caseNum - 1);
         let button = await selectedCase.$('.govuk-accordion__section-button');
         await BrowserWaits.waitForElement(button, "Expand/collapse icon not present");
-        await browser.sleep(1000);
+        await browser.sleep(1);
         await browser.executeScript('arguments[0].scrollIntoView()',
             button);
         await button.click();

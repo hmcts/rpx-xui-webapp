@@ -14,7 +14,7 @@ export class StaffUserDetailsComponent {
   public userDetails: StaffUser;
   public showAction: boolean = false;
   public loading = false;
-  public suspendedStatus: 'suspended' | 'restored' | 'error';
+  public suspendedStatus: 'suspended' | 'error';
 
   constructor(
     private route: ActivatedRoute,
@@ -31,11 +31,11 @@ export class StaffUserDetailsComponent {
   }
 
   public updateUserStatus(): void {
-    if (!this.loading) {
+    if (!this.loading && !this.userDetails.suspended) {
       this.loading = true;
       const staffUser = new StaffUser();
       Object.assign(staffUser, this.userDetails);
-      staffUser.suspended = !this.userDetails.suspended;
+      staffUser.suspended = true;
       this.staffDataAccessService.updateUser(staffUser).pipe(
         finalize(() => {
           this.loading = false;
@@ -44,7 +44,7 @@ export class StaffUserDetailsComponent {
       )
         .subscribe(
           () => {
-            this.suspendedStatus = staffUser.suspended ? 'suspended' : 'restored';
+            this.suspendedStatus = 'suspended';
             this.userDetails.suspended = staffUser.suspended;
           },
           (err) => {

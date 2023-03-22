@@ -1,21 +1,28 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
-import { StaffStatusComponent } from '../../staff-status/staff-status.component';
+import { of } from 'rxjs';
+import { StaffUsersFilterResult } from '../../../models/staff-users-filter-result.model';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffUserListComponent } from './staff-user-list.component';
 
 describe('StaffUserListComponent', () => {
   let component: StaffUserListComponent;
   let fixture: ComponentFixture<StaffUserListComponent>;
+  let mockStaffDataFilterService: Partial<StaffDataFilterService>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
+    mockStaffDataFilterService = {
+      tableData$: of(null)
+    };
+
     TestBed.configureTestingModule({
-      declarations: [ StaffUserListComponent, StaffStatusComponent ],
+      declarations: [ StaffUserListComponent ],
       imports: [
         HttpClientTestingModule,
         CdkTableModule,
@@ -24,9 +31,9 @@ describe('StaffUserListComponent', () => {
         ExuiCommonLibModule
       ],
       providers: [
-        StaffDataFilterService,
-        StaffDataAccessService
-      ]
+        { provide: StaffDataFilterService, useValue: mockStaffDataFilterService }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));
@@ -39,5 +46,29 @@ describe('StaffUserListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should not display data if tableData$ returns null', () => {
+    mockStaffDataFilterService.tableData$ = of(null);
+    fixture.detectChanges();
+    const element = fixture.debugElement.query(By.css('table'));
+    expect(element).toBeFalsy();
+  });
+
+  it('should display data if tableData$ returns { results: StaffUser[] }' +
+    ' and length of results is greater than 0', () => {
+    mockStaffDataFilterService.tableData$ = of({ results: [ {} as StaffUsersFilterResult ] });
+    fixture.detectChanges();
+    const element = fixture.debugElement.query(By.css('table'));
+    expect(element).toBeTruthy();
+  });
+
+  it('should display "No results found" when tableData$ returns { results: [] }' +
+    ' and length of results is equal to 0', () => {
+    mockStaffDataFilterService.tableData$ = of({ results: [] });
+    fixture.detectChanges();
+    const element = fixture.debugElement.query(By.css('#user-list-no-results'));
+    expect(element).toBeTruthy();
+    expect(element.nativeElement.textContent).toContain(component.noResultsFoundText);
   });
 });

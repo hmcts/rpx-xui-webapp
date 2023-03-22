@@ -28,7 +28,7 @@
         </div>
         <br>
         <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">Services</dt>
+          <dt class="govuk-summary-list__key">Service</dt>
           <dd class="govuk-summary-list__value">
             {{ userDetails.services | pluckAndJoin: 'service':', ' }}
           </dd>
@@ -72,7 +72,6 @@
           </div>
         </ng-container>
 
-
         <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">User type</dt>
@@ -81,9 +80,19 @@
         </div>
         <br>
         <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">Roles</dt>
+          <dt class="govuk-summary-list__key">Role</dt>
           <dd class="govuk-summary-list__value">
             {{ userDetails.roles | pluckAndJoin: 'role':', '  }}
+          </dd>
+          <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+        </div>
+        <br>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Job title</dt>
+          <dd class="govuk-summary-list__value">
+            <div *ngIf="userDetails.case_allocator === 'Y'">Case allocator</div>
+            <div *ngIf="userDetails.task_supervisor === 'Y'">Task supervisor</div>
+            <div *ngIf="userDetails.staff_admin === 'Y'">Staff administrator</div>
           </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
@@ -113,10 +122,17 @@
         <button id="updateUserButton" class="govuk-button" data-module="govuk-button" (click)="onUpdateUser()">
           Update
         </button>
-        <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
-                (click)="updateUserStatus()">
-          {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
-        </button>
+        <div [matTooltip]="userDetails.suspended ? 'If you want to unsuspend a user raise a support request' : ''">
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
+                  id="user-suspended-restore-button"
+                  [disabled]="userDetails.suspended"
+                  [attr.aria-disabled]="userDetails.suspended"
+                  [class.govuk-button--disabled]="userDetails.suspended"
+                  (click)="updateUserStatus()">
+            {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
+          </button>
+        </div>
+
         <button id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="onCopyUser()">
           Copy
         </button>

@@ -19,10 +19,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I start MockApp', async function () {
         try{
-            await MockApp.stopServer();
+            // await MockApp.stopServer();
+            await browser.get('http://localhost:3000')
         }
         catch(err){}
-       await MockApp.startServer();
+    //    await MockApp.startServer();
     });
 
     Given('I stop MockApp', async function () {

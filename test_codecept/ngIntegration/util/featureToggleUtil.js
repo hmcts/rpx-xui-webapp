@@ -1,6 +1,6 @@
 
 
-const CucumberReporter = require("../../e2e/support/reportLogger");
+const CucumberReporter = require("../../codeceptCommon/reportLogger");
 class FeatureToggleUtil{
 
     getFeatureToggleValue(featureToggleName){

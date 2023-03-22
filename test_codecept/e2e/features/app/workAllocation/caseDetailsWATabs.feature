@@ -1,4 +1,4 @@
-@fullfunctional @demo
+@fullfunctional @demo @codecept_enabled
 Feature: WA Release 2: : Case details WA tabs tabs
 
        Scenario: Case details WA Tabs
@@ -82,7 +82,7 @@ Feature: WA Release 2: : Case details WA tabs tabs
 
     Scenario: Add and delete Role
         When I navigate to Expert UI Url
-        Given I am logged into Expert UI with test user identified as "IAC_Judge_WA_R2"
+        Given I am logged into Expert UI with test user identified as "IAC_CaseOfficer_R2"
         Then I validate I am on My work page
         When I click on primary navigation header tab "All work", I see selected tab page displayed
 

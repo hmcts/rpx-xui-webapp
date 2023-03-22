@@ -165,8 +165,8 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
 
           this.staffDataFilterService.search({
             advancedSearchFilters,
-            pageSize: 1,
-            pageNumber: StaffDataFilterService.PAGE_SIZE,
+            pageNumber: 1,
+            pageSize: StaffDataFilterService.PAGE_SIZE,
           });
 
           window.scrollTo(0, 0);

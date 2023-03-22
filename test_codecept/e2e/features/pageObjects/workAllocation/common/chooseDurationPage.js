@@ -3,7 +3,7 @@ const BrowserWaits = require('../../../../support/customWaits');
 class ChooseDuration{
 
     constructor(parent){
-        this.container = parent.$('exui-choose-duration');
+        this.container = $('exui-choose-duration');
         this.header = this.container.$('h1');
         this.headerCaption = this.container.$('h1 span');
 

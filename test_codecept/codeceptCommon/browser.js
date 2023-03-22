@@ -12,7 +12,15 @@ class DriverManager{
     }
 
     async getCookies(){
-        return await getActor().getCookies();
+        const cookiesString = await getActor().executeScript(function () {
+            return document.cookie;
+        })
+
+        const cookies = cookiesString.split(';').map(cookie => {
+            const nameValue = cookie.split("=")
+            return { name: nameValue[0].trim(), value: nameValue[1].trim() }
+        })
+        return cookies
     }
 
     async getCookie(name) {

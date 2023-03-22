@@ -101,8 +101,7 @@ async function waitForElement(el) {
 
   When('I navigate to Expert UI Url', async function () {
     await BrowserWaits.retryWithActionCallback(async function(){
-      await browser.driver.manage()
-        .deleteAllCookies();
+    
       CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl, LOG_LEVELS.Info);
       await browser.get(config.config.baseUrl);
       await BrowserWaits.waitForElement(loginPage.signinTitle);

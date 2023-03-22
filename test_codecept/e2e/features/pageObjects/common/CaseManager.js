@@ -228,7 +228,7 @@ class CaseManager {
             var readWriteField = await field.getTagName();
 
             if (readWriteField.toLowerCase() === "ccd-field-write") {
-                var ccdField = await field.element(by.xpath("./div/*"));
+                var ccdField = await field.element(by.xpath("./div//*"));
                 await this._writeToField(ccdField);
             }
         }
@@ -279,7 +279,12 @@ class CaseManager {
                 console.log("collection field name is" + fieldName);
 
             }else{
-                fieldName = await (await ccdField.$('.form-label')).getText();
+                const ele = ccdField.$('.form-label')
+                if (!(await ele.isDisplayed())){
+
+                    return;
+                }
+                fieldName = await ele.getText();
             }
         }
         catch (err) {
@@ -299,7 +304,7 @@ class CaseManager {
                 let e = await ccdField.$('input.form-control');
                 let textvalue = this._fieldValue(fieldName);
                 if (textvalue != "test Enter a UK postcode.Postcode/Zipcode")
-                await e.sendKeys(textvalue);
+                    await e.sendKeys(textvalue !== '' ? textvalue : 'test');
                 cucumberReporter.AddMessage(fieldName + " : " + textvalue, LOG_LEVELS.Debug);
                 this._appendFormPageValues(fieldName1, textvalue);
                 break;
@@ -393,7 +398,7 @@ class CaseManager {
 
             case "ccd-write-document-field":
                 await BrowserWaits.retryWithActionCallback(async () => {
-                    var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
+                    var fileToUpload ="dummy.pdf";
                     await (await ccdField.$('input.form-control')).uploadFile(fileToUpload);
                     const statusMessageELement = await ccdField.$("span.error-message")
                     let statusMessage = "";

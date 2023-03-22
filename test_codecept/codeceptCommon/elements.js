@@ -3,6 +3,7 @@ function getActor() {
     return actor().retry({ retries: 3, minTimeout:  5});
 }
 
+
 const reportLogger = require('./reportLogger')
 
 // class PuppeteerNativeElement {
@@ -259,7 +260,8 @@ class ElementCollection {
         // const nativeLement = new PuppeteerNativeElement(index, this);
         // return nativeLement;
         const locatorAtIndex = locate(this.selector).at(index + 1)
-        return new Element(locatorAtIndex)
+        const selector = locatorAtIndex.locator
+        return new Element(selector)
     }
 
     async wait(){
@@ -335,20 +337,22 @@ class Element {
 
     _childElement(locator){
         let newSelector = '';
-        const locatorType = Object.keys(this.selector)[0]
-        if (this.selector[locatorType].includes(',')) {
-            for (let l of this.selector[locatorType].split(',')) {
+        // const locatorType = Object.keys(this.selector)[0]
+        // if (this.selector[locatorType].includes(',')) {
+        //     for (let l of this.selector[locatorType].split(',')) {
 
-                if (newSelector !== '') {
-                    newSelector += locatorType === 'css' ? ',' : 'or';
-                }
-                let thisSelector = {}
-                thisSelector[locatorType] = l.trim()
-                newSelector += locate(thisSelector).find(locator)[locatorType]
-            }
-        } else {
-            newSelector = locate(this.selector).find(locator)
-        }
+        //         if (newSelector !== '') {
+        //             newSelector += locatorType === 'css' ? ',' : 'or';
+        //         }
+        //         let thisSelector = {}
+        //         thisSelector[locatorType] = l.trim()
+        //         newSelector += locate(thisSelector).find(locator)[locatorType]
+        //     }
+        // } else {
+        //     newSelector = locate(this.selector).find(locator)
+        // }
+
+        newSelector = locate(this.selector).find(locator).locator
         return new Element(newSelector)
     }
 
@@ -388,12 +392,24 @@ class Element {
         await getActor().click(this.selector)  
     }
 
+    async getSelectOptions() {
+        const options = await this._childElement('option')
+        const labels = await getActor().grabTextFromAll(options.selector)
+        return labels;
+    }
+
+
     async selectOptionWithLabel(label){
         await getActor().selectOption(this.selector, label)
     }
 
     async select(option){
         await getActor().selectOption(this.selector,option)
+    }
+
+    async selectOptionAtIndex(index){
+        const options = await this.getSelectOptions();
+        await this.select(options[index])
     }
 
     async isPresent(){
@@ -411,8 +427,20 @@ class Element {
     }
 
     async isDisplayed(){
-        const count = await getActor().grabNumberOfVisibleElements(this.selector)
-        return count > 0;
+        let count = 0;
+        const locatorType = Object.keys(this.selector)[0]
+
+        if (locatorType.includes('css')) {
+            count = await getActor().executeScript(function (selector) {
+                return document.querySelectorAll(selector.css).length
+            }, this.selector)
+        } else {
+            count = await getActor().executeScript(function (selector) {
+                const snapshots = document.evaluate(selector.xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null)
+                return snapshots.snapshotLength
+            }, this.selector)
+        }
+        return count > 0
     }
 
 
@@ -445,19 +473,30 @@ class Element {
 
     async getTagName(){
         const locatorType = Object.keys(this.selector);
+        let tagName = null;
+
         if (locatorType.includes('css')){
-            return await getActor().executeScript(function () {
-                return $(this.selector.css).getTagName()
+            tagName =  await getActor().executeScript(function (selector) {
+                return document.querySelector(selector.css).tagName.toLowerCase()
             }, this.selector)
         }else{
-            return await getActor().executeScript(function () {
-                return $(document).evaluate(this.selector.xpath).getTagName()
+            tagName =  await getActor().executeScript(function (selector) {
+                const snapshots =  document.evaluate(selector.xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null)
+                if (snapshots.snapshotLength === 0){
+                    return null
+                }
+                return snapshots.snapshotItem(0).tagName.toLowerCase();
             }, this.selector)
         }
+        if (tagName === null){
+            reportLogger.AddMessage(`ELEMENT_NOT_FOUND: ${JSON.stringify(this.selector)}`)
+
+        }
+        return tagName;
     }
 
     async uploadFile(file){
-        await getActor().attachFile(this.selector, file);
+        await getActor().attachFile(this.selector, '../e2e/documents/'+file);
     }
 
     static all(locator) {

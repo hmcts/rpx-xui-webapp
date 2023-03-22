@@ -5,6 +5,45 @@
     </div>
     <div>
       <ng-content select="[pageHeader]"></ng-content>
+      <form [formGroup]="form" >
+        <div class="govuk-label govuk-label--m govuk-!-margin-bottom-4">
+          Personal Information
+        </div>
+        <ng-container id="first_name_group">
+          <h3 class="govuk-label">
+            First name
+          </h3>
+          <div class="govuk-body">
+            <input class="govuk-input" type="text"
+                 formControlName="first_name"
+                 id="first_name"
+              />
+          </div>
+        </ng-container>
+        <ng-container id="last_name_group">
+          <h3 class="govuk-label">
+            Last name
+          </h3>
+          <div class="govuk-body">
+            <input class="govuk-input" type="text"
+                 formControlName="last_name"
+                 id="last_name"
+              />
+          </div>
+        </ng-container>
+        <ng-container id="email_id_group">
+          <h3 class="govuk-label">
+            Email
+          </h3>
+          <div class="govuk-body">
+            <input class="govuk-input" type="text"
+                 formControlName="email_id"
+                 id="email_id"
+              />
+          </div>
+        </ng-container>
+        <hr />
+      </form>
       <xuilib-generic-filter [config]="filterConfig"
       ></xuilib-generic-filter>
     </div>

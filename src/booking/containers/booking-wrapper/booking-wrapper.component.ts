@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { bookingBackButtonVisibilityStates, bookingCheckVisibilityStates, bookingDateVisibilityStates, bookingHomeVisibilityStates, bookingLocationVisibilityStates } from '../../constants/pageVisibilityStates';
 import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState } from '../../models';
+import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
-import { UserInfo } from 'src/app/models';
 @Component({
   selector: 'exui-booking-wrapper',
   templateUrl: './booking-wrapper.component.html',

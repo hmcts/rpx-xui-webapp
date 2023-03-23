@@ -3,40 +3,41 @@ var { defineSupportCode } = require('cucumber');
 const MockApp = require('../../../nodeMock/app');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const browserUtil = require('../../util/browserUtil');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
-const CucumberReporter = require('../../../e2e/support/reportLogger');
+const nodeAppMockData = require('../../mockData/nodeApp/mockData');
+const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAllocationDataModel = require("../../../dataModels/workAllocation");
-const reportLogger = require('../../../e2e/support/reportLogger');
-const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
+const reportLogger = require('../../../codeceptCommon/reportLogger');
+const workAllocationMockData = require('../../mockData/workAllocation/mockData');
+const { DataTableArgument } = require('codeceptjs');
 
+const idamlogin = require('../../util/idamLogin')
 
 
     Given('I init MockApp', async function () {
-        MockApp.init();
+        // MockApp.init();
     });
 
     Given('I start MockApp', async function () {
-        try{
-            await MockApp.stopServer();
-        }
-        catch(err){}
-       await MockApp.startServer();
+        const userDetails = await idamlogin.getUserDetails();
+        reportLogger.AddJson(userDetails)
+        // await workAllocationMockData.applyToSession();
+  
     });
 
     Given('I stop MockApp', async function () {
-       await MockApp.stopServer();
+    //    await MockApp.stopServer();
     });
 
     Given('I restart MockApp', async function () {
-        await MockApp.stopServer();
-        await MockApp.startServer();
+        // await MockApp.stopServer();
+        // await MockApp.startServer();
     });
 
     When('I set MOCK with user roles', async function(rolesTable){
         const roles = [];
-        const rolesTablerows = rolesTable.rows();
+        const rolesTablerows = rolesTable.parse().rows();
         for (const row of rolesTablerows){
             roles.push(row[0]);
         }
@@ -46,46 +47,46 @@ const workAllocationMockData = require('../../../nodeMock/workAllocation/mockDat
      });
 
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
-        global.scenarioData[reference] = null;
-        MockApp.addIntercept(url,(req,res,next) => {
-            CucumberReporter.AddMessage(`Intercepted: ${url}`)
-            CucumberReporter.AddJson(req.body) 
-            global.scenarioData[reference] = req.body;
-            next();
-        })
+        // global.scenarioData[reference] = null;
+        // MockApp.addIntercept(url,(req,res,next) => {
+        //     CucumberReporter.AddMessage(`Intercepted: ${url}`)
+        //     CucumberReporter.AddJson(req.body) 
+        //     global.scenarioData[reference] = req.body;
+        //     next();
+        // })
      });
 
     Given('I set MOCK request {string} response log to report', async function (url) {
-        MockApp.addIntercept(url, (req, res, next) => { 
-            let send = res.send;
-            res.send = function (body) {
-                CucumberReporter.AddMessage(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort }" ---------------------------`);
-                CucumberReporter.AddMessage('Intercept response on MOCK api ' + url);
-                CucumberReporter.AddMessage('response code ' + res.statusCode);
-                try{
-                    CucumberReporter.AddJson(body)
-                }catch(err){
-                    CucumberReporter.AddMessage(body)
-                }
-                CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
-                send.call(this, body);
-            }
-            next();
-        })
+        // MockApp.addIntercept(url, (req, res, next) => { 
+        //     let send = res.send;
+        //     res.send = function (body) {
+        //         CucumberReporter.AddMessage(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort }" ---------------------------`);
+        //         CucumberReporter.AddMessage('Intercept response on MOCK api ' + url);
+        //         CucumberReporter.AddMessage('response code ' + res.statusCode);
+        //         try{
+        //             CucumberReporter.AddJson(body)
+        //         }catch(err){
+        //             CucumberReporter.AddMessage(body)
+        //         }
+        //         CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
+        //         send.call(this, body);
+        //     }
+        //     next();
+        // })
     });
 
     Given('I set MOCK request {string} intercept, hold response with reference {string}', async function (url,reference) {
-        MockApp.addIntercept(url, (req, res, next) => {
-            CucumberReporter.AddJson(req.body)
-            let send = res.send;
-            res.send = function (body) {
-                CucumberReporter.AddMessage('Intercept response or api ' + url);
-                CucumberReporter.AddJson(body)
-                global.scenarioData[reference] = body;
-                send.call(this, body);
-            }
-            next();
-        })
+        // MockApp.addIntercept(url, (req, res, next) => {
+        //     CucumberReporter.AddJson(req.body)
+        //     let send = res.send;
+        //     res.send = function (body) {
+        //         CucumberReporter.AddMessage('Intercept response or api ' + url);
+        //         CucumberReporter.AddJson(body)
+        //         global.scenarioData[reference] = body;
+        //         send.call(this, body);
+        //     }
+        //     next();
+        // })
     });
 
      Given('I reset reference {string} value to null', async function(reference){
@@ -97,15 +98,15 @@ const workAllocationMockData = require('../../../nodeMock/workAllocation/mockDat
      });
 
      When('I wait for reference {string} value not null', async function(reference){
-         await BrowserWaits.retryWithActionCallback(async () => {
-             expect(global.scenarioData[reference] !== null, `reference ${reference} is null`).to.be.true;
-             try{
-                 reportLogger.AddJson(global.scenarioData[reference]);
-             }catch(err){
-                 reportLogger.AddMessage(global.scenarioData[reference]);
-             }
+        //  await BrowserWaits.retryWithActionCallback(async () => {
+        //      expect(global.scenarioData[reference] !== null, `reference ${reference} is null`).to.be.true;
+        //      try{
+        //          reportLogger.AddJson(global.scenarioData[reference]);
+        //      }catch(err){
+        //          reportLogger.AddMessage(global.scenarioData[reference]);
+        //      }
  
-         });
+        //  });
      });
 
      Given('I set MOCK api method {string} endpoint {string} with error response code {int}', async function(apiMethod, apiEndpoint, responseCode){
@@ -145,7 +146,7 @@ const workAllocationMockData = require('../../../nodeMock/workAllocation/mockDat
 
 
     Given('I set MOCK find person response for jurisdictions', async function(datatable){
-        const personsConfigHashes = datatable.hashes();
+        const personsConfigHashes = datatable.parse().hashes();
 
         for (const person of personsConfigHashes) {
 
@@ -174,6 +175,3 @@ const workAllocationMockData = require('../../../nodeMock/workAllocation/mockDat
 
 
      });
-
-
-});

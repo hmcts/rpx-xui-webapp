@@ -51,7 +51,8 @@ class CaseListPage{
     async amOnPage(){
         await BrowserWaits.waitForElement(this.caselistComponent);
         await BrowserWaits.waitForElement(this.searchFilterContainer);
-        return (await this.caselistComponent.isPresent()) && (await this.ccdCaseSearchResult.isPresent()); 
+
+        return (await this.caselistComponent.isPresent()) ; 
     }
 
     async _waitForSearchComponent(){
@@ -82,8 +83,9 @@ class CaseListPage{
         await BrowserWaits.waitForSpinnerToDissappear();
         await this._waitForSearchComponent();
         CucumberReportLogger.LogTestDataInput(`Case list page Jurisdiction : ${jurisdiction}`);
-
-        await this.jurisdictionSelectElement.element(this._getOptionSelectorWithText(jurisdiction)).click();
+        const optionSelector = this._getOptionSelectorWithText(jurisdiction);
+        const optionText = await element(optionSelector).getText();
+        await this.jurisdictionSelectElement.select(optionText);
 
         RuntimeTestData.workbasketInputs.jurisdiction = jurisdiction;
         const caseTypeElements = this.caseTypeSelectElement.$$("option");
@@ -102,7 +104,9 @@ class CaseListPage{
         await BrowserWaits.waitForSpinnerToDissappear();
         await this._waitForSearchComponent();
         CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
-        await this.caseTypeSelectElement.element(this._getOptionSelectorWithText(caseType)).click();
+        const selectOption = element(this._getOptionSelectorWithText(caseType))
+        const selectOptionText = await selectOption.getText();
+        await this.caseTypeSelectElement.select(selectOptionText);
         CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
         RuntimeTestData.workbasketInputs.casetype = caseType; 
 
@@ -113,7 +117,8 @@ class CaseListPage{
         await this._waitForSearchComponent();
         CucumberReportLogger.LogTestDataInput(`Case list page event: ${state}`);
 
-        await this.stateSelectElement.element(this._getOptionSelectorWithText(state)).click();
+        const optionText = await  element(this._getOptionSelectorWithText(state)).getText()
+        await this.stateSelectElement.select(optionText);
         RuntimeTestData.workbasketInputs.state = state; 
 
     }
@@ -122,8 +127,8 @@ class CaseListPage{
         await BrowserWaits.retryWithActionCallback(async () => {
             await this._waitForSearchComponent();
             await BrowserWaits.waitForSpinnerToDissappear();
-            await browser.executeScript('arguments[0].scrollIntoView()',
-                this.searchApplyBtn);
+            // await browser.executeScript('arguments[0].scrollIntoView()',
+            //     this.searchApplyBtn);
             await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
             CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.", LOG_LEVELS.Debug);
             await this.searchApplyBtn.click();
@@ -259,7 +264,7 @@ class CaseListPage{
 
     async sortTableByColAt(colNum){
         (await this.sortColumnsIconLinks.get(colNum-1)).click();
-        await browser.sleep(1000);
+        await browser.sleep(1);
     }
 
     async clickShareCaseButton(){

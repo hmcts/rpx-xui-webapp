@@ -116,6 +116,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         {
           key: PersonRole.ADMIN,
           label: PersonRole.ADMIN,
+        },
+        {
+          key: PersonRole.CTSC,
+          label: PersonRole.CTSC,
         }
       ],
       minSelected: 1,

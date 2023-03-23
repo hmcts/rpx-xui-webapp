@@ -14,6 +14,7 @@ const checkYourAnswersPage = require("../../pageObjects/workAllocation/common/ch
 
 const workAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');
 
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -53,7 +54,7 @@ const workAllocationDateUtil = require('../../pageObjects/workAllocation/common/
 
 
     async function CheckYourAnswersValidation(datatable,isChangeLinkPresent){
-        const questionAnswersTable = datatable.hashes();
+        const questionAnswersTable = datatable.parse().hashes();
         for (let i = 0; i < questionAnswersTable.length; i++) {
             const question = questionAnswersTable[i]['Question'];
             let expectedAnswer = questionAnswersTable[i]['Answer'];

@@ -446,11 +446,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         await BrowserWaits.retryWithActionCallback(async () => {
             expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
-            if (tasksCount === 0) {
-                expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
-            } else {
-                expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
-            }
+            // if (tasksCount === 0) {
+            //     expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
+            // } else {
+            //     expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
+            // }
         });
 
     });

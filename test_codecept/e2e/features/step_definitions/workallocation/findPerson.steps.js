@@ -11,6 +11,7 @@ const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
 const exclusionWorkFlow = require("../../pageObjects/workAllocation/exclusionRolesWorkFlow");
 const findPersonPage = require('../../pageObjects/workAllocation/common/findPersonComponent');
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -37,7 +38,7 @@ const findPersonPage = require('../../pageObjects/workAllocation/common/findPers
 
         await workFlowPage.findPersonPage.isSearchResultSelectionContainerDisplayed()
 
-        const resultHashes = findPersonResultsDatatable.hashes();
+        const resultHashes = findPersonResultsDatatable.parse().hashes();
         const softAssert = new SoftAssert();
         for (let i = 0; i < resultHashes.length; i++) {
             softAssert.setScenario(`Is result "${resultHashes[i].value}" displayed`);

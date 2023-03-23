@@ -1,5 +1,9 @@
-<ng-container *ngIf="(staffDataFilterService.tableData$ | async) as tableData">
-  <ng-container *ngIf="tableData.results.length; else noResultsFound">
+<ng-container *ngIf="!((staffDataFilterService.tableData$ | async)?.results); else showTable">
+  <p>Please select filters and click Search</p>
+</ng-container>
+<ng-template #showTable>
+  <ng-container *ngIf="(staffDataFilterService.tableData$ | async) as tableData">
+  <ng-container *ngIf="tableData?.results?.length; else noResultsFound">
     <div class="govuk-!-margin-bottom-4">
       <p class="hmcts-pagination__results">
         Showing <b>{{(this.currentPageNumber * pagination.itemsPerPage) - pagination.itemsPerPage + 1}}</b>
@@ -39,13 +43,10 @@
 
         <ng-container cdkColumnDef="jobTitle">
           <th cdk-header-cell *cdkHeaderCellDef>Job title</th>
-          <td cdk-cell *cdkCellDef="let element"> {{element.jobTitle}} </td>
-        </ng-container>
-
-        <ng-container cdkColumnDef="status">
-          <th cdk-header-cell *cdkHeaderCellDef>Status</th>
           <td cdk-cell *cdkCellDef="let element">
-            <exui-staff-status [status]="element.suspended" ></exui-staff-status>
+            <div *ngFor="let obj of element.jobTitle">
+              {{ obj }}
+            </div>
           </td>
         </ng-container>
 
@@ -61,4 +62,5 @@
       <h3 class="govuk-heading-s">{{ noResultsFoundText }}</h3>
     </div>
   </ng-template>
-</ng-container>
+  </ng-container>
+</ng-template>

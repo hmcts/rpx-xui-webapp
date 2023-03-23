@@ -11,8 +11,8 @@ var BrowserWaits = require('../../support/customWaits');
 var CaseManager = require('../pageObjects/common/CaseManager');
 
 var { defineSupportCode } = require('cucumber');
-const CCDCaseDetails = require("../../../nodeMock/ccd/ccdCaseConfig/caseDetailsConfigGenerator");
-const caseDetailsPage = require("../pageObjects/caseDetailsPage");
+// const CCDCaseDetails = require("../../../nodeMock/ccd/ccdCaseConfig/caseDetailsConfigGenerator");
+// const caseDetailsPage = require("../pageObjects/caseDetailsPage");
 
 const creatCaseStepTimeout = 600*1000;
 

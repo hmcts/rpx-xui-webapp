@@ -2,8 +2,14 @@
 const { v4 } = require('uuid');
 const userApiData = require('../userApiData')
 
+
 class TaskManagementApi{
-  
+    
+
+    constructor(){
+       
+    }
+
 
     setOnSearchTasks(token, response){
         userApiData.setUserData(token, "onSearchTasks", response)
@@ -17,7 +23,79 @@ class TaskManagementApi{
         return { tasks:tasks , 'total_records' : count};
     }
 
+    getTask(){
+        return { task: this.getTaskTemplate() }
+    }
 
+    getWorkTypes(){
+        return {
+            'work_types':[
+                        {
+                            "key": "hearing_work",
+                            "label": "Hearing work"
+                        },
+                        {
+                            "key": "decision_making_work",
+                            "label": "Decision-making work"
+                        },
+                        {
+                            "key": "applications",
+                            "label": "Applications"
+                        },
+                        {
+                            "key": "access_requests",
+                            "label": "Access requests"
+                        }
+                    ]
+        }
+    }
+    
+    getTaskRoles(){
+        return {
+            roles: [
+                {
+                    "role_category": "JUDICIAL",
+                    "role_name": "lead-judge",
+                    "permissions": [
+                        "OWN",
+                        "EXECUTE",
+                        "READ",
+                        "MANAGE",
+                        "CANCEL"
+                    ],
+                    "authorisations": [
+                        "IAC",
+                        "SSCS"
+                    ]
+                },
+                {
+                    "role_category": "LEGAL_OPERATIONS",
+                    "role_name": "case-manager",
+                    "permissions": [
+                        "EXECUTE",
+                        "READ",
+                        "MANAGE",
+                        "CANCEL"
+                    ],
+                    "authorisations": [
+                        "IAC",
+                        "SSCS"
+                    ]
+                },
+                {
+                    "role_category": "JUDICIAL",
+                    "role_name": "hearing-judge",
+                    "permissions": [
+                        "EXECUTE",
+                        "READ"
+                    ],
+                    "authorisations": [
+                        "IAC"
+                    ]
+                }
+            ]
+        }
+    }
 
     getTaskTemplate(){
         return {

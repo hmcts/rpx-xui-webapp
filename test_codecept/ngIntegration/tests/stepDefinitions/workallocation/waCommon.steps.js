@@ -1,59 +1,141 @@
 var { defineSupportCode } = require('cucumber');
 
+const mockClient = require('../../../../backendMock/client/index');
+const roleAssignmentMock = require('../../../../backendMock/services/roleAssignments/index');
+
 const MockApp = require('../../../../nodeMock/app');
-const nodeAppMock = require('../../../../nodeMock/nodeApp/mockData');
-const waMockData = require('../../../../nodeMock/workAllocation/mockData');
+const nodeAppMock = require('../../../mockData/nodeApp/mockData');
+
+const waMockData = require('../../../mockData/workAllocation/mockData');
 ;
 const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
 const SoftAssert = require('../../../util/softAssert');
-const CucumberReporter = require('../../../../e2e/support/reportLogger');
+const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
 const BrowserUtil = require('../../../util/browserUtil');
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 
-const workallocationMockData = require('../../../../nodeMock/workAllocation/mockData');
+const workallocationMockData = require('../../../mockData/workAllocation/mockData');
 
 const userRolesConfig = require('../../../../e2e/config/userRolesConfig');
 
 const userUtil = require('../../../util/userRole');
+const { DataTableArgument } = require('codeceptjs');
 
+const loginPage = require('../../../../e2e/features/pageObjects/loginLogoutObjects');
 
     const taskListTable = new TaskListTable();
 
-   const testData = require('../../../../e2e/config/appTestConfig');
-    Given('I set MOCK with {string} release user and roles', async function (releaseUer,datatableroles ) {
-        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.release === releaseUer)[0];
-        if (!testUserIdamId) {
-            throw new Error("Provided release user is not configured in test data. " + releaseUer);
+const testData = require('../../../../e2e/config/appTestConfig');
+
+const idamLogin = require('../../../util/idamLogin');
+const browser = require('../../../../codeceptCommon/browser');
+
+let invalidCredentialsCounter = 0;
+let testCounter = 0;
+let firstAttemptFailedLogins = 0;
+
+async function loginattemptCheckAndRelogin(username, password, world) {
+    testCounter++;
+    let loginAttemptRetryCounter = 1;
+    const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+
+    await browser.get(baseUrl);
+    await BrowserWaits.waitForElement(loginPage.emailAddress);
+    
+    let preLoginUrl = await browser.getCurrentUrl();
+    await BrowserWaits.retryWithActionCallback(async () => {
+        await loginPage.loginWithCredentials(username, password);
+
+    })
+    while (loginAttemptRetryCounter < 5) {
+        let emailFieldValue = "";
+
+        try {
+            // await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
+            await BrowserWaits.waitForConditionAsync(async () => {
+                const currentUrl = await browser.getCurrentUrl();
+                return preLoginUrl !== currentUrl
+            });
+            await browser.sleep(2)
+            const  currentUrl = await browser.getCurrentUrl();
+            if (currentUrl.includes('idam')){
+                preLoginUrl = await browser.getCurrentUrl();
+                throw new Error('Login failed')
+            }
+
+            break;
+        } catch (err) {
+            if (!emailFieldValue.includes(username)) {
+                // if (loginAttemptRetryCounter === 1) {
+                //     firstAttemptFailedLogins++;
+                // }
+                // if (loginAttemptRetryCounter === 2) {
+                //     secondAttemptFailedLogins++;
+                // }
+
+
+                console.log(err + " : Login re attempt " + loginAttemptRetryCounter);
+                console.log(err);
+                // await browser.driver.manage()
+                //     .deleteAllCookies();
+                // const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+
+                // await browser.get(baseUrl);
+                await BrowserWaits.waitForElement(loginPage.emailAddress);
+                await loginPage.loginWithCredentials(username, password);
+                loginAttemptRetryCounter++;
+            }
         }
+    }
+    // console.log("ONE ATTEMPT:  EUI-1856 issue occured / total logins => " + firstAttemptFailedLogins + " / ");
 
-        const userIdamID = testUserIdamId.idamId;
-        await CucumberReporter.AddMessage(`${releaseUer} id ${testUserIdamId.idamId}`);
+    // console.log("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " );
 
+}
+
+
+    async function mockLoginWithRoles(roles){
+        idamLogin.withCredentials('lukesuperuserxui@mailnesia.com','Monday01')
+
+
+        await browser.get('http://localhost:3000/get-help');
+
+        await idamLogin.do();
+        const userDetails = await idamLogin.userDetailsResponse;
+
+        await browser.sleep(10)
+
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await browser.driver.manage().setCookies(idamLogin.xuiCallbackResponse.details.setCookies)
+            await browser.get('http://localhost:3000/');
+
+        })
+
+        const authCookies = await browser.driver.manage().getCookies()
+        const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
+        await mockClient.updateAuthSessionWithRoles(authCookie.value, roles)
+
+        await browser.get('http://localhost:3000/');
+    }
+
+    Given('I set MOCK with {string} release user and roles', async function (releaseUer,datatableroles ) {
+      
         const datatablehashes = datatableroles.hashes();
         const roles = datatablehashes.map(roleHash => roleHash.ROLE);
-        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        }
+      
+        await mockLoginWithRoles(roles)
 
     });
 
     Given('I set MOCK with {string} release user and roles {string}', async function (releaseUer, roles) {
-        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.release === releaseUer)[0];
-        if (!testUserIdamId) {
-            throw new Error("Provided release user is not configured in test data. " + releaseUer);
-        }
-
-        const userIdamID = testUserIdamId.idamId;
-        await CucumberReporter.AddMessage(`${releaseUer} id ${testUserIdamId.idamId}`);
-        
+   
         roles = roles.split(",");
-        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-        } 
-        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
+      
+        await  mockLoginWithRoles(roles)
+
 
     });
     
@@ -90,7 +172,7 @@ const userUtil = require('../../../util/userRole');
             apiUrl = apiUrl + "/judge";
         }
         const persons = waMockData.getPersonList(80);
-        const locationInputDetails = locationDetailsDataTable.hashes()[0];
+        const locationInputDetails = locationDetailsdatatable.parse().hashes()[0];
 
         persons[0].idamId = testUser.idamId;
         persons[0].location.id = locationInputDetails.id;
@@ -102,11 +184,19 @@ const userUtil = require('../../../util/userRole');
     });
 
 
+    When('I set MOCK with user roles', async function (rolesTable) {
+        const roles = [];
+        const rolesTablerows = rolesTable.parse().rows();
+        for (const row of rolesTablerows) {
+            roles.push(row[0]);
+        }
+        await mockLoginWithRoles(roles)
+
+    });
+
     Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) { 
-        nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles(useridentifier,roles);
-        CucumberReporter.AddJson(nodeAppMock.userDetails);
-        global.scenarioData[mockUserRef] = nodeAppMock.userDetails;
-       
+        await mockLoginWithRoles(roles.split(','))
+
     });
 
     Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function(userDetailsRef, roleAssignments){
@@ -128,36 +218,41 @@ const userUtil = require('../../../util/userRole');
     });
 
     Given('I set Mock user with ref {string}, reset role assignments', async function (userDetailsRef){
-        const userDetails = global.scenarioData[userDetailsRef];
-        userDetails.roleAssignmentInfo =[];
+        // const userDetails = global.scenarioData[userDetailsRef];
+        // userDetails.roleAssignmentInfo =[];
  
     });
 
-    function addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable){
-        const userDetails = global.scenarioData[userDetailsRef];
+    async function addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable){
+        // const userDetails = global.scenarioData[userDetailsRef];
         const roleAssignmentArr = [];
-        const roleAttributes = roleAttributesDataTable.rowsHash()
+        const roleAttributes = roleAttributesDataTable.parse().rowsHash()
 
         for (const service of services.split(",")) {
-            const role = {
-                "substantive": "N",
-                "primaryLocation": "455174",
-                "jurisdiction": service,
-                "isCaseAllocator": false,
-                "roleType": "ORGANISATION"
-            };
+            const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
+            const roleKeys = Object.keys(roleAssignmentTemplate);
 
-            for (const attr of Object.keys(roleAttributes)) {
-                if (roleAttributes[attr] === '') {
-                    delete role[attr];
+            const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation']
+
+            for (const attr of roleKeys) {
+                const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAssignment[attr];
+                if (attributeProperties.includes(attr)) {
+                    roleAssignmentTemplate.attributes[attr] = value;
                 } else {
-                    role[attr] = roleAttributes[attr];
+                    roleAssignmentTemplate[attr] = value;
+
                 }
             }
-            roleAssignmentArr.push(role);
+
+            roleAssignmentArr.push(roleAssignmentTemplate);
+
+            const authCookies = await browser.driver.manage().getCookies()
+            const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
+            await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value,roleAssignmentArr);
+            await browser.get('http://locaalhost:3000')
         }
-        userDetails.roleAssignmentInfo.push(...roleAssignmentArr);
     }
+                             
 
     Given('I set Mock user with ref {string}, ORGANISATION roles for services {string}', async function (userDetailsRef, services, roleAttributesDataTable){
         if (services === ''){
@@ -173,32 +268,34 @@ const userUtil = require('../../../util/userRole');
 
     Given('I set MOCK user with reference {string} roleAssignmentInfo', async function (userDetailsRef, roleAssignments) {
         const boolAttributes = ['isCaseAllocator'];
-        const userDetails = global.scenarioData[userDetailsRef];
         const roleAssignmentArr = [];
-        for (let roleAssignment of roleAssignments.hashes()) {
+        for (let roleAssignment of roleAssignments.parse().hashes()) {
+            const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
             const roleKeys = Object.keys(roleAssignment);
 
-            boolAttributes.forEach(attr => {
-                if (roleKeys.includes(attr)) {
-                    roleAssignment[attr] = roleAssignment[attr] === "true";
-                }
-            })
-            if (roleKeys.includes('bookable')){
-                const valueTypeAndValue = roleAssignment['bookable'].split(",");
-                if (valueTypeAndValue.length > 0 && valueTypeAndValue[1] && valueTypeAndValue[1].includes('string')){
-                    roleAssignment['bookable'] = valueTypeAndValue[0]
-                }else{
-                    roleAssignment['bookable'] = roleAssignment['bookable'] === "true" 
+            const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId','baseLocation', 'primaryLocation']
 
-                } 
+            for(const attr of roleKeys){
+                const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAssignment[attr];
+                if (attributeProperties.includes(attr)){
+                    roleAssignmentTemplate.attributes[attr] = value;
+                }else{
+                    roleAssignmentTemplate[attr] = value;
+
+                }
             }
-            if (roleKeys.includes('roleType') ){
-                roleAssignment.isCaseAllocator = roleAssignment.roleType === 'ORGANISATION'
-            }
-            roleAssignment.substantive = "Y"
-            roleAssignmentArr.push(roleAssignment);
+            
+            roleAssignmentArr.push(roleAssignmentTemplate);
         }
-        userDetails.roleAssignmentInfo = roleAssignmentArr;
+
+        const cookies = await browser.driver.manage().getCookies();
+        const authCookie = cookies.find(cookie => cookie.name === '__auth__')
+        CucumberReporter.AddJson(nodeAppMock.userDetails);
+        await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+        await browser.get(await browser.getCurrentUrl());
+
+        const userSession = await mockClient.getSessionRolesAndRoleAssignments(authCookie.value);
+        console.log(userSession)
     });
 
     Given('I set MOCK with user identifer {string} role type {string} and role identifiers {string}', async function (useridentifier,roleType ,roleIdentifiers) {
@@ -328,7 +425,7 @@ const userUtil = require('../../../util/userRole');
     })
 
     Given('I set MOCK locations with names in service {string}', async function(service, locationNamesDatatable){
-        const locationNamesHashes = locationNamesDatatable.hashes();
+        const locationNamesHashes = locationNamesDatatable.parse().hashes();
         const locationNames = [];
         for (const locationNameHash of locationNamesHashes){
             locationNames.push({ locationName: locationNameHash.locationName, id: locationNameHash.id}); 
@@ -346,7 +443,7 @@ const userUtil = require('../../../util/userRole');
         const rolesArr = roles.split(",");
         const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === userIdentifier)[0];
 
-        const datatablehashes = datatable.hashes();
+        const datatablehashes = datatable.parse().hashes();
         const locationId = datatablehashes[0].locationId 
         const locationName = datatablehashes[0].locationName 
 
@@ -368,5 +465,4 @@ const userUtil = require('../../../util/userRole');
         CucumberReporter.AddMessage(`For roles "${roles}" Person of type "${roleCategory} is added"`);
         CucumberReporter.AddJson(person);
     });
-});
 

@@ -1,30 +1,31 @@
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../nodeMock/app');
+// const MockApp = require('../../../nodeMock/app');
 
 const caseEditPage = require('../pageObjects/ccdCaseEditPages');
 
 const browserUtil = require('../../util/browserUtil');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
-const CucumberReporter = require('../../../e2e/support/reportLogger');
-const dummyCaseDetails = require('../../../nodeMock/ccd/caseDetails_data');
-const ccdMockData = require('../../../nodeMock/ccd/ccdApi');
+// const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
+const CucumberReporter = require('../../../codeceptCommon/reportLogger');
+const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
+const ccdMockData = require('../../mockData/ccd/ccdApi');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
-const workAlloctionMockData = require('../../../nodeMock/workAllocation/mockData');
+const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
 
 const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
+const { DataTableArgument } = require('codeceptjs');
 
 
 
     Given('I set mock case create config {string}', async function (configReference) {
-        const caseConfig = getTestJurisdiction();
-        global.scenarioData[configReference] = caseConfig;
-        MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => { 
-            res.send(caseConfig.getCase());
-        });
+        // const caseConfig = getTestJurisdiction();
+        // global.scenarioData[configReference] = caseConfig;
+        // MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => { 
+        //     res.send(caseConfig.getCase());
+        // });
       
     });
 
@@ -44,11 +45,11 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
     });
 
     Given('I set mock case searchinput config {string}', async function(searchInputRef){
-        const searchInputConfigurator = getMockJurisdictionSearchInputConfig();
-        global.scenarioData[searchInputRef] = searchInputConfigurator;
-        MockApp.onGet('/data/internal/case-types/:jurisdiction/search-inputs', (req, res) => {
-            res.send(searchInputConfigurator.getConfig());
-        });
+        // const searchInputConfigurator = getMockJurisdictionSearchInputConfig();
+        // global.scenarioData[searchInputRef] = searchInputConfigurator;
+        // MockApp.onGet('/data/internal/case-types/:jurisdiction/search-inputs', (req, res) => {
+        //     res.send(searchInputConfigurator.getConfig());
+        // });
 
     });
 
@@ -67,8 +68,8 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
     });
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
-        const caseDetails = ccdMockData.caseDetailsResponse;
-        global.scenarioData[caseDetailsReference] = caseDetails;
+        // const caseDetails = ccdMockData.caseDetailsResponse;
+        // global.scenarioData[caseDetailsReference] = caseDetails;
         // MockApp.onGet('/data/internal/cases/:caseid', (req, res) => {
         //     res.send(caseDetails);
         // });
@@ -191,7 +192,7 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
     });
 
     Given('I set MOCK case roles', async function(caseRolesDatatable){
-        const dateTableHashes = caseRolesDatatable.hashes();
+        const dateTableHashes = caseRolesdatatable.parse().hashes();
         for (const hash of dateTableHashes){
             for(const key of Object.keys(hash)){
                 if ((key === 'start' || key === 'end') && hash[key] !== ''){
@@ -210,7 +211,7 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
     }); 
 
     Given('I set MOCK case role exclusions', async function (caseRoleExclusionsDatatable) {
-        const dateTableHashes = caseRoleExclusionsDatatable.hashes();
+        const dateTableHashes = caseRoleExclusionsdatatable.parse().hashes();
         for (const hash of dateTableHashes) {
             for (const key of Object.keys(hash)) {
                 if (key === 'added' ) {
@@ -226,36 +227,36 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
     Given('I set MOCK case tasks with userDetails from reference {string}', async function (userDetailsRef, caseTasksDatatable) {
         const userDetails = global.scenarioData[userDetailsRef];
 
-        const dateTableHashes = caseTasksDatatable.hashes();
+        const dateTableHashes = caseTasksdatatable.parse().hashes();
         workAlloctionMockData.caseTasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
         
     });
 
     Given('I set MOCK case list values', async function(caseListAttributesDatatable){
-        const cases = ccdMockData.caseList.results;
-        const inputDatatableHashes = caseListAttributesDatatable.hashes();
+        // const cases = ccdMockData.caseList.results;
+        // const inputDatatableHashes = caseListAttributesdatatable.parse().hashes();
         
-        for (let i = 0; i < inputDatatableHashes.length; i++){
-            const caseItem = cases[i];
-            const inputHash = inputDatatableHashes[i];
+        // for (let i = 0; i < inputDatatableHashes.length; i++){
+        //     const caseItem = cases[i];
+        //     const inputHash = inputDatatableHashes[i];
             
-            const keys = Object.keys(inputHash);
-            for(const caseAttrib of keys){
-                if (caseAttrib.startsWith('case_fields.')){
-                    const caseFieldAttrib = caseAttrib.replace('case_fields.',''); 
-                    caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];  
-                } else if (caseAttrib.startsWith('case_fields_formatted.')){
-                    const caseFieldAttrib = caseAttrib.replace('case_fields_formatted.', '');
-                    caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];  
-                }else{
-                    caseItem[caseAttrib] = inputHash[caseAttrib]; 
-                }
-            } 
+        //     const keys = Object.keys(inputHash);
+        //     for(const caseAttrib of keys){
+        //         if (caseAttrib.startsWith('case_fields.')){
+        //             const caseFieldAttrib = caseAttrib.replace('case_fields.',''); 
+        //             caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];  
+        //         } else if (caseAttrib.startsWith('case_fields_formatted.')){
+        //             const caseFieldAttrib = caseAttrib.replace('case_fields_formatted.', '');
+        //             caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];  
+        //         }else{
+        //             caseItem[caseAttrib] = inputHash[caseAttrib]; 
+        //         }
+        //     } 
 
-        }
+        // }
         
     });
-});
+
 
 function getCaseDetailsMetadataField(caseDetails, metadatFieldId){
     const fields = caseDetails.metadataFields;

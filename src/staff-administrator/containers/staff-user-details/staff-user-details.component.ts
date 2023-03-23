@@ -36,7 +36,7 @@ export class StaffUserDetailsComponent {
   }
 
   public updateUserStatus(): void {
-    if (!this.loading && this.userDetails.suspended !== true) {
+    if (!this.loading && !this.userDetails.suspended) {
       this.loading = true;
       const staffUser = new StaffUser();
       Object.assign(staffUser, this.userDetails);

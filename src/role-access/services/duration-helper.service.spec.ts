@@ -147,7 +147,7 @@ describe('DurationHelperService', () => {
     it('should return a Date object representing date a week from todays date', () => {
       // get todays date
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      today.setUTCHours(0, 0, 0, 0);
 
       // get date a week from todays date
       const weekFromToday = new Date();
@@ -162,7 +162,7 @@ describe('DurationHelperService', () => {
 
     it('should throw an error if daysToAdd value is less than zero', () => {
       expect(() => {
-        durationHelperService.getDateInFuture(-1)
+        durationHelperService.getDateInFuture(-1);
       }).toThrow(new Error('Invalid value for daysToAdd param'));
     });
 

@@ -24,11 +24,15 @@ export async function handleGet(path: string, req: EnhancedRequest, next: NextFu
   }
 }
 
-export async function sendGet<T>(path: string, req: EnhancedRequest): Promise<AxiosResponse> {
+export async function sendGet<T>(path: string, req: EnhancedRequest, customHeaders: { [x: string]: string } = {})
+  : Promise<AxiosResponse> {
   try {
     logger.info('send get request to:', path);
-    const headers = setHeaders(req);
-    return await http.get(path, {headers});
+    const headers = {
+      ...setHeaders(req),
+      ...customHeaders,
+    };
+    return await http.get(path, { headers });
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;
@@ -56,7 +60,7 @@ export async function sendPost<T>(path: string, body: T, req: EnhancedRequest): 
   try {
     logger.info('send post request to:', path);
     const headers = setHeaders(req);
-    return await http.post(path, body, {headers});
+    return await http.post(path, body, { headers});
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;

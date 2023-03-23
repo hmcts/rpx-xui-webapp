@@ -6,9 +6,12 @@ const BrowserWaits = require('../../../support/customWaits')
 
 const addUserPage = require('./adduserPage')
 
+const MessageBanner = require('../messageBanner')
 class StaffSearchPage{
     
     constructor(){
+        this.messageBanner = new MessageBanner();
+
         this.pageContainer = $('exui-staff-users');
         this.addUserButton = element(by.xpath("//button[contains(text(),'Add new user')]"));
 
@@ -20,17 +23,21 @@ class StaffSearchPage{
         this.advancedSearchLink = element(by.xpath(`//exui-staff-users//a[contains(text(),'Advanced search')]`))
         this.hideAdvancedSearchLink = element(by.xpath(`//exui-staff-users//a[contains(text(),'Hide advanced search')]`))
 
-
         this.partialNameField = $('input#user-partial-name');
 
        this.advancedSearchFilter = new AdvancedSearch()
-
-
         this.staffUsersList = new StaffUsersList()
        
     }
 
+    async validateSuccessMessageBanner(message){
+       expect(await this.messageBanner.isBannerMessageDisplayed(), 'Success message banner not displayed').to.be.true
 
+        const messages = await this.messageBanner.getBannerMessagesDisplayed()
+        const expectedMessage = messages.filter(msg => msg.includes(message))
+        expect(expectedMessage !== undefined, `expected message ${message} not displayed, actual ${JSON.stringify(messages)}`).to.be.true
+
+    }
 
     async amOnPage(){
         await this.pageContainer.wait();

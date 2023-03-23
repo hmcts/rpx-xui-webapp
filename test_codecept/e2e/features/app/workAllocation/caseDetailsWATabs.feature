@@ -1,4 +1,4 @@
-@fullfunctional @demo @codecept_enabled
+@fullfunctional @demo @codecept_test
 Feature: WA Release 2: : Case details WA tabs tabs
 
        Scenario: Case details WA Tabs

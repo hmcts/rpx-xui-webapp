@@ -1,19 +1,9 @@
-@ng
+@ng @codecept_enabled
 Feature: WA Release 2: My work to  Available tasks to pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK locations with names in service "IA"
-            | id    | locationName           |
-            | 20001 | IA Court Aldgate Tower |
-            | 20002 | IA Court Birmingham    |
-            | 2003  | IA Court Bradford      |
-            | 20004 | IA Court Glasgow       |
-            | 20005 | IA Court Hatton Cross  |
-            | 20006 | IA Court Newcastle     |
-            | 20007 | IA Court Newport       |
-            | 20008 | IA Court North Shields |
-            | 20009 | IA Court Center 1  |
+       
 
 
     Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
@@ -23,15 +13,11 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | IA           | Y           | ORGANISATION | 20001        |
             | SSCS         | Y           | ORGANISATION | 20001        |
 
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
-        Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
+      Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
-        Given I start MockApp
+           Given I start MockApp
 
         Given I navigate to home page
         Then I see primary navigation tabs "My work" in main header
@@ -98,7 +84,6 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | Permissions | Count |
             | Manage      | 10   |
             | Read        | 10    |
-        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -126,7 +111,6 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | Permissions | Count |
             | Manage      | 0     |
             | Read        | 0     |
-        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page

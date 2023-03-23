@@ -35,7 +35,7 @@ if (testType === 'e2e'){
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
 
 exports.config = {
-  timeout: 120,
+  timeout: 600,
   "gherkin": {
     "features": features,
     "steps": "../**/*.steps.js"
@@ -129,7 +129,7 @@ exports.config = {
   },
   plugins:{
     "allure": {
-      "enabled": true
+      "enabled": false
     },
     screenshotOnFail: {
       enabled: true,

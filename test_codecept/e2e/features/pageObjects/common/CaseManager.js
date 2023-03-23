@@ -280,11 +280,12 @@ class CaseManager {
 
             }else{
                 const ele = ccdField.$('.form-label')
-                if (!(await ele.isDisplayed())){
-
-                    return;
+                if (await ele.isDisplayed()){
+                    fieldName = await ele.getText();
+                }else{
+                    fieldName = "nolabel"
                 }
-                fieldName = await ele.getText();
+                
             }
         }
         catch (err) {

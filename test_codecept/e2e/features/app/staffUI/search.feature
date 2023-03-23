@@ -1,4 +1,4 @@
-@fullfunctional @ignore @codecept_enabled
+@fullfunctional @ignore @codecept_enabled @staffUI
 Feature: Staff UI Search
 
 
@@ -39,4 +39,15 @@ Feature: Staff UI Search
         When I click Advanced search link in Staff UI
         Then I validate advanced search in Staff UI
         Then I validate staff UI search results displayed
-      
+
+
+    Scenario: Simplified search results
+        When I navigate to Expert UI Url
+        Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
+
+        Then I click on primary navigation header tab "Staff", I see selected tab page displayed
+        Then I see basic search displayed in staff UI
+        Then I validate basic search in Staff UI
+
+        Then I validate staff UI search results isDisplayed
+

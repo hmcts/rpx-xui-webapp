@@ -1,6 +1,5 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { StaffAddEditUserFormId } from './components/staff-add-edit-user-form-id.enum';
 import {
   StaffUserCheckAnswersComponent
 } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
@@ -11,6 +10,7 @@ import {
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
 import { StaffUserDetailsComponent } from './containers/staff-user-details/staff-user-details.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
+import { StaffAddEditUserFormId } from './models/staff-add-edit-user-form-id.enum';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
 import { StaffFilterOptionsLocationsResolver } from './resolvers/staff-filter-options-locations.resolver';
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';

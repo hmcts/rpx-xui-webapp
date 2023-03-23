@@ -1554,10 +1554,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-fee-paid-filter-change":
-  version "1.8.10-fee-paid-filter-change"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-fee-paid-filter-change.tgz#25d59d817b5969033a25a9e201bf415ef624d3f9"
-  integrity sha512-WFrmIuWuJR9a5pZPP/2DrvISGPGFKs9eJ4E06+Q6PT2kLWYaiTOkmWGiLzAqlSRgno0k5ZdDjp2kJf8poH9YHA==
+"@hmcts/rpx-xui-common-lib@1.8.10-find-service-input-5":
+  version "1.8.10-find-service-input-5"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-find-service-input-5.tgz#1d2730fc5162023d2d7c8c189ce405b12a0ac363"
+  integrity sha512-iCBWEwTrL6FLw+mH7ObIM6mPmdZQJ6O75hpSdRTLqm6N8hFrhPtuVy+NtcnFpNRt0MPbzcyfaILxA91HY6PlmA==
   dependencies:
     tslib "^2.0.0"
 

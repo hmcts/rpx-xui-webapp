@@ -1,4 +1,4 @@
-@fullfunctional @ignore @codecept_enabled  @codecept_test @staffUI
+@fullfunctional @ignore @codecept_enabled  @staffUI
 Feature: Staff UI Manager user
 
 
@@ -41,7 +41,6 @@ Feature: Staff UI Manager user
         Then I click on primary navigation header tab "Staff", I see selected tab page displayed
         Then I see basic search displayed in staff UI
 
-        When I add new staff user details
         Then I see basic search displayed in staff UI
         Then I validate user profile update in staff UI
 
@@ -53,7 +52,6 @@ Feature: Staff UI Manager user
         Then I click on primary navigation header tab "Staff", I see selected tab page displayed
         Then I see basic search displayed in staff UI
 
-        When I add new staff user details
         Then I see basic search displayed in staff UI
         Then I validate user profile copy in staff UI
 

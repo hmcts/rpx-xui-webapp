@@ -115,7 +115,7 @@ async function waitForElement(el) {
   });
 
   Then(/^I should see failure error summary$/, async function () {
-    await element('.heading-large').wait();
+    await $('.heading-large').wait(20);
     await expect(loginPage.failure_error_heading.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.failure_error_heading.getText())
       .to

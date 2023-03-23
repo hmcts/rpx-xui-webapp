@@ -1,4 +1,8 @@
 import { HttpClient } from '@angular/common/http';
+import {
+  StaffDataFilterService
+} from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
+
 import { StaffDataAccessService } from './staff-data-access.service';
 
 describe('StaffDataAccessService', () => {
@@ -16,18 +20,22 @@ describe('StaffDataAccessService', () => {
 
   it('getFilteredUsers should make a GET API call', () => {
     service.getFilteredUsers({
-      services: ['AAA7'],
-      locations: [],
-      userType: '',
-      jobTitle: '',
-      skills: [],
-      roles: []
+      advancedSearchFilters: {
+        serviceCode: ['AAA7'],
+        location: ['Location 1'],
+        userType: '',
+        jobTitle: '',
+        skill: ['Skill 1'],
+        role: ['Role 1']
+      },
+      pageSize: StaffDataFilterService.PAGE_SIZE,
+      pageNumber: 1,
     });
     expect(mockHttpClient.get).toHaveBeenCalledTimes(1);
   });
 
   it('getUsersByPartialName should make a GET API call', () => {
-    service.getUsersByPartialName('Kevin');
+    service.getUsersByPartialName({ partialName: 'Kevin', pageSize: 1, pageNumber: 1 });
     expect(mockHttpClient.get).toHaveBeenCalledTimes(1);
   });
 

@@ -10,7 +10,6 @@ import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffStatusComponent } from './components/staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from './components/staff-suspended-banner/staff-suspended-banner.component';
-import { StaffDataFilterService } from './components/staff-users/services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from './components/staff-users/staff-search/staff-search.component';
 import { StaffUserListComponent } from './components/staff-users/staff-user-list/staff-user-list.component';
@@ -63,14 +62,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   ],
   providers: [
     StaffDataAccessService,
-    StaffDataFilterService,
     StaffFilterOptionsServicesResolver,
     StaffFilterOptionsSkillsResolver,
     StaffFilterOptionsJobTitlesResolver,
     StaffFilterOptionsUserTypesResolver,
     StaffUserDetailsResolverService,
     StaffFilterOptionsLocationsResolver,
-    StaffDataAccessService,
     WASupportedJurisdictionsService
   ],
   exports: []

@@ -49,6 +49,7 @@ describe('StaffUserListComponent', () => {
   });
 
   it('should not display data if tableData$ returns null', () => {
+    // @ts-expect-error - tableData$ is readonly
     mockStaffDataFilterService.tableData$ = of(null);
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('table'));
@@ -57,7 +58,8 @@ describe('StaffUserListComponent', () => {
 
   it('should display data if tableData$ returns { results: StaffUser[] }' +
     ' and length of results is greater than 0', () => {
-    mockStaffDataFilterService.tableData$ = of({ results: [ {} as StaffUsersFilterResult ] });
+    // @ts-expect-error - tableData$ is readonly
+    mockStaffDataFilterService.tableData$ = of({ items: [ {} as StaffUsersFilterResult ] });
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('table'));
     expect(element).toBeTruthy();
@@ -65,7 +67,8 @@ describe('StaffUserListComponent', () => {
 
   it('should display "No results found" when tableData$ returns { results: [] }' +
     ' and length of results is equal to 0', () => {
-    mockStaffDataFilterService.tableData$ = of({ results: [] });
+    // @ts-expect-error - tableData$ is readonly
+    mockStaffDataFilterService.tableData$ = of({ items: [] });
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('#user-list-no-results'));
     expect(element).toBeTruthy();

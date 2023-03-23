@@ -132,7 +132,7 @@ export function getMockTasks(): Task[] {
         values: [
           {
             code: '125',
-            text: 'this is a warning message 3'
+            warningText: 'this is a warning message 3'
           }
       ]},
       actions: [

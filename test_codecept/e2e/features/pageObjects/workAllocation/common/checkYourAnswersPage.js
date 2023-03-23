@@ -42,7 +42,7 @@ class CheckYourAnswersPage{
     }
 
     async isDisplayed(){
-        return this.container.isDisplayed();
+        return await this.container.isDisplayed();
     }
 
     async getHeaderText(){

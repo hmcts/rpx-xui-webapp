@@ -218,7 +218,6 @@ describe('StaffUserDetailsComponent', () => {
       .toHaveBeenCalledWith(StaffAddEditUserFormId.CopyUser, `/staff/user-details/${caseWorkerId}/copy`);
   }));
 
-<<
   describe('resendInvite', () => {
     it('Should show success message on sending activation email', () => {
       mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
@@ -247,7 +246,7 @@ describe('StaffUserDetailsComponent', () => {
         type: InfoMessageType.WARNING
       } as InformationMessage);
     });
-    
+
   it('should have a disabled button if suspended is true', () => {
     const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));
     expect(component.userDetails.suspended).toBe(false);

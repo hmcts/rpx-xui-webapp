@@ -4,8 +4,6 @@ import { UserInfo, UserRole } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
-import { ServiceRefData } from '../models/common';
-import { Service, ServiceCode } from '../models/common/service.enum';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { TaskPermission, TaskRole } from '../models/tasks';
 
@@ -272,11 +270,6 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;
-}
-
-export function getServiceFromServiceCode(serviceCode: string, serviceRefData: ServiceRefData[]): string {
-  const desiredServiceData = serviceRefData.find(serviceData => serviceData.serviceCodes.includes(serviceCode));
-  return desiredServiceData.service;
 }
 
 export function locationWithinRegion(regionLocations: LocationsByRegion[], region: string, location: string): boolean {

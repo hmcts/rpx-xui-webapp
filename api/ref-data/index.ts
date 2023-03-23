@@ -3,8 +3,8 @@ import { sendGet } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_REF_API_URL, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
 import { Service } from '../staff-ref-data/models/staff-filter-option.model';
+import { RefDataHMCTSService } from './models/ref-data-hmcts-service.model';
 import { RefDataRegion } from './models/ref-data-region.model';
-import { RefDataHMCTSService } from './models/ref-data-service.model';
 
 const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
 

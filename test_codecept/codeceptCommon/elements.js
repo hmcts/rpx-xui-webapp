@@ -408,25 +408,12 @@ class Element {
     }
 
     async selectOptionAtIndex(index){
-        const options = await this.getSelectOptions();
+        let options = await this.getSelectOptions();
+        options = options.map(option => option.trim())
         await this.select(options[index])
     }
 
     async isPresent(){
-        try {
-            const count = await getActor().grabNumberOfVisibleElements(this.selector)
-            return count > 0;
-        } catch (err) {
-            return false;
-        } 
-    }
-
-    async isEnabled(){
-        const isDisabled = await getActor().grabAttributeFrom(this.selector, 'disabled');
-        return !isDisabled
-    }
-
-    async isDisplayed(){
         let count = 0;
         const locatorType = Object.keys(this.selector)[0]
 
@@ -441,6 +428,21 @@ class Element {
             }, this.selector)
         }
         return count > 0
+      
+    }
+
+    async isEnabled(){
+        const isDisabled = await getActor().grabAttributeFrom(this.selector, 'disabled');
+        return !isDisabled
+    }
+
+    async isDisplayed(){
+        const isPresent = await this.isPresent()
+        if (!isPresent){
+            return false;
+        }
+        const count = await getActor().grabNumberOfVisibleElements(this.selector)
+        return count > 0;
     }
 
 

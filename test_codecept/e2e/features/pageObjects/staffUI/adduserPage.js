@@ -8,23 +8,23 @@ class AddUserPage{
     constructor(){
         this.container = $('exui-staff-add-edit-user-form')
 
-        this.firstName = $('#firstName input')
-        this.lastName = $('#lastName input')
-        this.email = $('#email input')
+        this.firstName = $('#first_name input')
+        this.lastName = $('#last_name input')
+        this.email = $('#email_id input')
 
-        this.region = $('#select_region')
+        this.region = $('#select_region_id')
 
-        this.services = $('#checkbox_user-services')
+        this.services = $('#user-services')
 
         this.primaryLocation = $('#primaryLocation #inputLocationSearch')
         this.additionalLocations = $('#additionalLocations #inputLocationSearch')
 
-        this.userType = $('#select_userType')
+        this.userType = $('#select_user_type')
 
 
-        this.roles = $('#checkbox_roles')
+        this.roles = $('#roles')
 
-        this.jobTitles = $('#checkbox_jobTitle')
+        this.jobTitles = $('#jobTitle')
 
         this.continue = element(by.xpath('//button[contains(text(),"Continue")]'))
         this.cancel = element(by.xpath('//button[contains(text(),"Cancel")]'))
@@ -63,7 +63,7 @@ class AddUserPage{
                     await this.email.sendKeys(inputVal)
                     break;
                 case "Region":
-                    await this.region.selectOptionWithLabel(inputVal)
+                    await this.region.selectOptionAtIndex(1)
                     break;
                 case "Services":
                     const checkBoxElements = await checkBoxes(this.services)

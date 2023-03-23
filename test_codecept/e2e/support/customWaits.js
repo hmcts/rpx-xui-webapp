@@ -40,7 +40,7 @@ class BrowserWaits{
 
     async waitForElement(element, message, waitForSeconds) {
         const startTime = Date.now();
-        CucumberReporter.AddMessage("ELEMENT_WAITING: for " + this.waitTime / 1000 + " : " + JSON.stringify(element.selector));
+        CucumberReporter.AddMessage("ELEMENT_WAIT: " + JSON.stringify(element.selector));
         await element.wait(this.waitTime / 1000)
         // CucumberReporter.AddMessage("ELEMENT_FOUND: in sec " + (Date.now() - startTime) / 1000 + " "+ JSON.stringify(element.selector) );
 

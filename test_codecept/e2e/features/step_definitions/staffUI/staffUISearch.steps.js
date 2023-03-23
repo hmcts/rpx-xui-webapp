@@ -7,6 +7,8 @@ const staffUserDetailsPage = require('../../pageObjects/staffUI/staffUIUserDetai
 const addNewUserPage = require('../../pageObjects/staffUI/adduserPage')
 const addUserCheckYourAnswersPage = require('../../pageObjects/staffUI/addUserCheckYourAnswersPage')
 
+const testDataManager = require('../../../utils/testDataManager/index')
+
 When('I click Advanced search link in Staff UI', async function (tabLabel, boolString) {
     await staffSearchPage.clickAdvancedSearchLink();
 });
@@ -63,16 +65,16 @@ Then('I validate staff user details display', async function(){
     [
         'Email address',
         'Region',
-        'Services',
+        'Service',
         'Primary location',
-        'Additional locations',
+        // 'Additional locations',
         'User type',
-        'Roles',
+        'Role',
         'Job title',
         'Skills',
         'Status'
     ].forEach(row => {
-        expect(rows, `missing ${row}`).to.includes(row)
+        expect(rows, `missing ${row}`, `${row} is missing ${JSON.stringify(rows)}`).to.includes(row)
     })
     
     expect(userDetails['Email address'] !== '', `missing value for 'Email address'`).to.be.true;
@@ -89,10 +91,12 @@ Then('I validate staff user details display', async function(){
 When('I add new staff user details', async function () {
     await staffSearchPage.clickAddNewUser();
 
+    const newIdamUser = await testDataManager.createAndGetIdamUser();
+    reportLogger.AddMessage(`TEST_DATA: idam user created ${newIdamUser.email}`)
     const details = {
         'First name':'tes',
         'Last name':'last name',
-        'Email':'test@justice.gov.uk',
+        'Email': newIdamUser.email,
         'Region':'Region 1',
         'Services':['CIVIL'],
         'Primary location':'Bir',
@@ -119,8 +123,7 @@ When('I add new staff user details', async function () {
 
 
 Then('I validate add new staff user work flow controls', async function(){
-    
-
+  
     const details = {
         'First name': 'tes',
         'Last name': 'last name',

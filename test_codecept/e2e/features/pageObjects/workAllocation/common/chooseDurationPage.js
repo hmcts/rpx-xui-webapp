@@ -8,6 +8,8 @@ class ChooseDuration{
         this.headerCaption = this.container.$('h1 span');
 
         this.errorMessage = $('#error-message');
+
+        this.radioConditional = element(by.xpath("//div[contains(@class,'govuk-radios__conditional')]//"))
         this.radioOptions = this.container.$$(".govuk-radios");
 
         this.anotherPeriodValidationIndicator = $('exui-choose-duration #conditional-contact-3.form-group-error');
@@ -82,6 +84,7 @@ class ChooseDuration{
 
 
     async isDateInputWithLabelDisplayed(label){
+
             const dateInput = this.getDateInputFieldWithLabel(label);
             return await dateInput.isPresent() && await dateInput.isDisplayed();
     }
@@ -105,6 +108,10 @@ class ChooseDuration{
     }
 
     async isDateInputWithLabelDisplayed(label){
+        const containerDisplayed =  this.radioConditional.isDisplayed();
+        if (!containerDisplayed){
+            return false;
+        }
         const dateInput = this.getDateInputFieldWithLabel(label);
         return await dateInput.isPresent() && dateInput.isDisplayed();
     }

@@ -1,4 +1,4 @@
-export interface RefDataService {
+export interface RefDataHMCTSService {
   jurisdiction: string;
   service_id: number;
   org_unit: string;

@@ -157,7 +157,7 @@ class AdvancedSearch{
 
         this.searchLocation = {
             serchInput: this.locator.$('exui-search-location input'),
-            addButton: this.locator.$('.search-location a'),
+            addButton: this.locator.$('.location-picker-custom a'),
             searchResults: $$('.mat-option-text'),
             selectedValues: this.locator.$('.selection-container a')
         }

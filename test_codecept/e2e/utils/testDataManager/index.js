@@ -2,6 +2,7 @@
 const axios = require('axios')
 
 const appTestConfig = require('../../config/appTestConfig')
+const reportLogger = require('../../../codeceptCommon/reportLogger')
 
 class TestDataManager{
 
@@ -49,19 +50,23 @@ class TestDataManager{
     }
 
     async cleanupAutoStaffUsers(){
+        try{
+            const authToken = await browser.driver.manage().getCookie('__auth__')
+            const s2s = await this.getS2SToken();
+            await axios.delete(`https://idam-api.${appTestConfig.testEnv}.platform.hmcts.net/testing-support/test-data?testDataPrefix=xui_auto&async=true`)
 
-        const authToken = await browser.driver.manage().getCookie('__auth__')
-        const s2s = await this.getS2SToken();
-        await axios.delete(`https://idam-api.${appTestConfig.testEnv}.platform.hmcts.net/testing-support/test-data?testDataPrefix=xui_auto&async=true`)
-        
-        await axios.delete(`http://rd-caseworker-ref-api-${appTestConfig.testEnv}.service.core-compute-${appTestConfig.testEnv}.internal/refdata/case-worker/users?emailPattern=xui_auto`,
-        {
-            headers:{
-                accept: 'application/json',
-                ServiceAuthorization:s2s,
-                Authorization: `Bearer ${authToken}`
-            }
-        })
+            await axios.delete(`http://rd-caseworker-ref-api-${appTestConfig.testEnv}.service.core-compute-${appTestConfig.testEnv}.internal/refdata/case-worker/users?emailPattern=xui_auto`,
+                {
+                    headers: {
+                        accept: 'application/json',
+                        ServiceAuthorization: s2s,
+                        Authorization: `Bearer ${authToken}`
+                    }
+                })
+        }catch(err){
+            reportLogger.AddMessage(`ERROR: cleanupAutoStaffUsers, ${err}`)
+        }
+       
     }
 }
 

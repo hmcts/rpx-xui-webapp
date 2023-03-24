@@ -13,6 +13,7 @@ import { InfoMessageType } from '../../../role-access/models/enums';
 import { StaffAddEditUserFormId } from '../../components/staff-add-edit-user-form-id.enum';
 import { StaffStatusComponent } from '../../components/staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from '../../components/staff-suspended-banner/staff-suspended-banner.component';
+import { StaffAddEditUserFormId } from '../../models/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { PluckAndJoinPipe } from '../../pipes/pluckAndJoin.pipe';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';

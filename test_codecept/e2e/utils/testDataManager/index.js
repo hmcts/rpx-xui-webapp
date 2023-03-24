@@ -28,8 +28,8 @@ class TestDataManager{
     }
 
     async createAndGetIdamUser(){
-        const res = await axios.post('https://idam-api.${appTestConfig.testEnv}.platform.hmcts.net/testing-support/accounts', {
-                "email": `xui_auto_test_user_${Date.now()}@test.com`,
+        const res = await axios.post(`https://idam-api.${appTestConfig.testEnv}.platform.hmcts.net/testing-support/accounts`, {
+                "email": `xui_auto_test_user_${Date.now()}@justice.gov.uk`,
                 "forename": "xui_auto",
                 "surname": "test user",
                 "password": "Welcome01",

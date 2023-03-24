@@ -74,6 +74,7 @@ class ChooseRadioOptionComponent{
 
     async selectRadioOption(radioLabel){
         const radioInput = await this.getRadioOptionInputElement(radioLabel);
+        await radioInput.wait();
         await radioInput.click();
     }
 

@@ -40,7 +40,7 @@ class BrowserWaits{
 
     async waitForElement(element, message, waitForSeconds) {
         const startTime = Date.now();
-        CucumberReporter.AddMessage("ELEMENT_WAIT: " + JSON.stringify(element.selector));
+        CucumberReporter.AddMessage("ELEMENT_WAIT: at " + this.__getCallingFunctionName()+ " " + JSON.stringify(element.selector)+" at ");
         await element.wait(this.waitTime / 1000)
         // CucumberReporter.AddMessage("ELEMENT_FOUND: in sec " + (Date.now() - startTime) / 1000 + " "+ JSON.stringify(element.selector) );
 
@@ -159,15 +159,7 @@ class BrowserWaits{
 
     async retryWithActionCallback(callback, actionMessage, retryTryAttempts) {
         
-        let e = new Error();
-        let frame = e.stack.split("\n")[2]; // change to 3 for grandparent func
-        let lineNumber = frame.split(":").reverse()[1];
-        let functionName = frame.split(" ")[5];
-       
-        if (functionName.includes('/')){
-            functionName = functionName.split('/').reverse()[0]
-        }
-        functionName + ":" + lineNumber  ;
+        const functionName = this.__getCallingFunctionName()
 
         let retryCounter = 0;
         let isSuccess = false;
@@ -220,6 +212,19 @@ class BrowserWaits{
         //     CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
         //     return !isSpinnerPresent;
         // }, 'Spinner is still displayed after waiting ');
+    }
+
+    __getCallingFunctionName(){
+        let e = new Error();
+        let frame = e.stack.split("\n")[3]; // change to 3 for grandparent func
+        let lineNumber = frame.split(":").reverse()[1];
+        let functionName = frame.split(" ")[5];
+
+        if (functionName.includes('/')) {
+            functionName = functionName.split('/').reverse()[0]
+        }
+        functionName + ":" + lineNumber;
+        return functionName;
     }
 }
 

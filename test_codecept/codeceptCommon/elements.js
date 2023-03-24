@@ -436,13 +436,23 @@ class Element {
         return !isDisabled
     }
 
-    async isDisplayed(){
-        const isPresent = await this.isPresent()
-        if (!isPresent){
-            return false;
+    async isDisplayed(expected){
+        let computedStyle = null;
+        const locatorType = Object.keys(this.selector)[0]
+
+        if (locatorType.includes('css')) {
+            computedStyle = await getActor().executeScript(function (selector) {
+                const e =  document.querySelector(selector.css);
+                return getComputedStyle(e).display
+            }, this.selector)
+        } else {
+            computedStyle = await getActor().executeScript(function (selector) {
+                const snapshots = document.evaluate(selector.xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null)
+                let e = snapshots.snapshotItem(0)
+                return getComputedStyle(e).display
+            }, this.selector)
         }
-        const count = await getActor().grabNumberOfVisibleElements(this.selector)
-        return count > 0;
+        return computedStyle.display !== 'none';
     }
 
 
@@ -506,7 +516,10 @@ class Element {
     }
 
     async wait(waitInSec){
-        await getActor().waitForElement(this.selector, waitInSec)
+        reportLogger.AddMessage("ELEMENT_WAIT: " + JSON.stringify(this.selector) +" at "+this.__getCallingFunctionName());
+        await getActor().waitForElement(this.selector, waitInSec ? waitInSec : 10)
+        const isPresent = await this.isDisplayed();
+        expect(isPresent,`ELEMENT_WAIT_FAILED: not present ${this.selector}`).to.be.true;
     }
 
     async scrollIntoView(){
@@ -521,6 +534,20 @@ class Element {
         const options = await this._childElement('option')
         const labels = await getActor().grabTextFromAll(options.selector)
         return labels;
+    }
+
+
+    __getCallingFunctionName(){
+        let e = new Error();
+        let frame = e.stack.split("\n")[3]; // change to 3 for grandparent func
+        let lineNumber = frame.split(":").reverse()[1];
+        let functionName = frame.split(" ")[5];
+
+        if (functionName.includes('/')) {
+            functionName = functionName.split('/').reverse()[0]
+        }
+        functionName + ":" + lineNumber;
+        return functionName;
     }
     
 }

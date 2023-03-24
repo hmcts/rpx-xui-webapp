@@ -7,20 +7,24 @@ class TaskManagementApi{
     
 
     constructor(){
-       
-    }
 
+        this.method = {
+            searchTasks: "ON_SEARCH_TASKS"
+        }
+
+        this.searchTasksResponse = this.getSearchTasks(25, 140)
+    }
 
     setOnSearchTasks(token, response){
-        userApiData.setUserData(token, "onSearchTasks", response)
+        userApiData.setUserData(token, this.method.searchTasks, response)
     }
 
-    getSearchTasks(count){
+    getSearchTasks(count, totalRecordsCount){
         const tasks = []
         for(let i = 0; i< count; i++){
             tasks.push(this.getTaskTemplate());
         }
-        return { tasks:tasks , 'total_records' : count};
+        return { tasks: tasks, 'total_records': totalRecordsCount };
     }
 
     getTask(){

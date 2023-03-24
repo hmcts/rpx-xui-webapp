@@ -2,6 +2,7 @@
   <a class="govuk-back-link" [routerLink]="'/staff'">Back</a>
 </div>
 <ng-container *ngIf="userDetails">
+  <exui-info-message-container></exui-info-message-container>
   <div *ngIf="suspendedStatus">
     <exui-staff-suspended-banner [messageType]="suspendedStatus"></exui-staff-suspended-banner>
   </div>
@@ -112,6 +113,10 @@
           <dt class="govuk-summary-list__key">Status</dt>
           <dd class="govuk-summary-list__value">
             <exui-staff-status [status]="userDetails.status"></exui-staff-status>
+            <button *ngIf="userDetails.status==='PENDING'" class="govuk-button govuk-button--secondary ml5" data-module="govuk-button"
+              (click)="resendInvite()">
+              Resend activation email
+            </button>
           </dd>
           <dd class="govuk-summary-list__actions">
           </dd>

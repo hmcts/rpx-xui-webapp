@@ -24,6 +24,8 @@ nodejs:
     NODE_ENV: production
     NODE_CONFIG_ENV: production
     NODE_OPTIONS: --max-old-space-size=8192
+    NODE_DEBUG: *
+    DEBUG=xuiNode:*,-xuiNode:auth:s2s
     UV_THREADPOOL_SIZE: 64
     XUI_ENV: preview
     LOGGING: debug

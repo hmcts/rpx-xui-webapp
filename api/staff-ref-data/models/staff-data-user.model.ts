@@ -5,7 +5,6 @@ export interface StaffUser {
   suspended: boolean;
   user_type: string;
   jobTitle?: string[];
-
   task_supervisor: boolean;
   case_allocator: boolean;
   staff_admin: boolean;

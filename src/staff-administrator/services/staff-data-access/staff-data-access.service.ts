@@ -62,10 +62,6 @@ export class StaffDataAccessService {
     } );
   }
 
-  public getServices() {
-    return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getServices`);
-  }
-
   public addNewUser(staffUser: StaffUser): Observable<StaffUser> {
     return this.http.post<StaffUser>(`${this.API_PATH}/addNewUser`, staffUser);
   }

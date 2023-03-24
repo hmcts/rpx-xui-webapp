@@ -31,6 +31,7 @@ const testData = require('../../../../e2e/config/appTestConfig');
 
 const idamLogin = require('../../../util/idamLogin');
 const browser = require('../../../../codeceptCommon/browser');
+const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
 let invalidCredentialsCounter = 0;
 let testCounter = 0;
@@ -267,6 +268,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
 
     Given('I set MOCK user with reference {string} roleAssignmentInfo', async function (userDetailsRef, roleAssignments) {
+        reportLogger.reportDatatable(roleAssignments)
         const boolAttributes = ['isCaseAllocator'];
         const roleAssignmentArr = [];
         for (let roleAssignment of roleAssignments.parse().hashes()) {

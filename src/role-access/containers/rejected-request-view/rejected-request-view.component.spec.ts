@@ -64,7 +64,7 @@ describe('RejectedRequestViewComponent', () => {
     component.roleCategory = RoleCategory.JUDICIAL;
     mockCaseworkerDataService.getCaseworkersForServices.and.returnValue(of([]));
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
-    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']))
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     fixture.detectChanges();
   });
 
@@ -108,5 +108,4 @@ describe('RejectedRequestViewComponent', () => {
     component = null;
     fixture.destroy();
   });
-
 });

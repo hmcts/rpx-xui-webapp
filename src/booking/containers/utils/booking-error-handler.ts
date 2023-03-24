@@ -1,5 +1,5 @@
-import { NavigationExtras } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NavigationExtras } from '@angular/router';
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
 }

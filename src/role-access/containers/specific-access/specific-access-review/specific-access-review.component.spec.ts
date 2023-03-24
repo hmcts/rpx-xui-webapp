@@ -55,7 +55,7 @@ describe('SpecificAccessReviewComponent', () => {
       period: {startDate: new Date('01-01-2001'), endDate: null},
       person: null,
       requestId: 'requestId'
-    }
+    };
     spyOnPipeToStore = spyOn(mockStore, 'pipe').and.returnValue(
       of(mockSpecificAccessStateData)
     );
@@ -76,7 +76,6 @@ describe('SpecificAccessReviewComponent', () => {
   });
 
   describe('navigation', () => {
-
     it('should create component and show the "review access" info message banner', () => {
       const headingElement = fixture.debugElement.nativeElement.querySelector(
         '.govuk-fieldset__heading'
@@ -128,7 +127,6 @@ describe('SpecificAccessReviewComponent', () => {
       expect(mockStore.dispatch).toHaveBeenCalledWith(
         new DecideSpecificAccessAndGo( { accessReason: AccessReason.REQUEST_MORE_INFORMATION, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_INFORMATION } ));
     });
-
   });
 
   describe('onDestroy()', () => {

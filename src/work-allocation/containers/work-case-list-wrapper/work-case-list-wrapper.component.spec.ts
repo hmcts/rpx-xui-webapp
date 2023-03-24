@@ -11,6 +11,7 @@ import { JurisdictionsService } from 'src/work-allocation/services/juridictions.
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { reducers } from '../../../app/store';
+import * as fromActions from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -22,7 +23,6 @@ import { MyAccessComponent } from '../my-access/my-access.component';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
-import * as fromActions from '../../../app/store';
 
 const USER_DETAILS = {
   canShareCases: true,

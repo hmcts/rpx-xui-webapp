@@ -15,7 +15,6 @@ class WrapperComponent {
 }
 
 describe('WorkAllocation', () => {
-
   describe('AccessViewFieldComponent', () => {
     const REJECTED_REQUEST_URL: string = `/role-access/rejected-request`;
 
@@ -86,7 +85,7 @@ describe('WorkAllocation', () => {
         specificAccessReason: 'I want to test',
         reviewerRoleCategory: 'Judicial',
         infoRequiredComment: 'Need more Infomation'
-      }
+      };
       fixture.detectChanges();
       wrapper.appComponentRef.viewRejection();
 
@@ -104,6 +103,5 @@ describe('WorkAllocation', () => {
         infoRequiredComment: 'Need more Infomation'
       }});
     });
-
   });
 });

@@ -1,11 +1,11 @@
-import MockAdapter from 'axios-mock-adapter'
-import * as faker from 'faker/locale/en_GB'
-import { httpMock } from './httpMock'
-import { NoCQuestion } from './models/noCQuestion.interface'
+import MockAdapter from 'axios-mock-adapter';
+import * as faker from 'faker/locale/en_GB';
+import { httpMock } from './httpMock';
+import { NoCQuestion } from './models/noCQuestion.interface';
 
 // random generator
 export const generator = (schema, min = 1, max) => {
-  max = max || min
+  max = max || min;
   return Array.from({
     length: faker.random.number({
       min,
@@ -15,23 +15,23 @@ export const generator = (schema, min = 1, max) => {
   }).map(() => {
     const innerGen = anySchema => Object.keys(anySchema).reduce((entity, key) => {
       if (anySchema[key] instanceof Array || anySchema[key] === null) {
-        entity[key] = anySchema[key]
-        return entity
+        entity[key] = anySchema[key];
+        return entity;
       }
       if (Object.prototype.toString.call(anySchema[key]) === '[object Object]') {
-        entity[key] = innerGen(anySchema[key])
-        return entity
+        entity[key] = innerGen(anySchema[key]);
+        return entity;
       }
-      entity[key] = faker.fake(anySchema[key])
-      return entity
-    }, {})
+      entity[key] = faker.fake(anySchema[key]);
+      return entity;
+    }, {});
 
-    return innerGen(schema)
-  })
-}
+    return innerGen(schema);
+  });
+};
 
 export const init = () => {
-  const mock = new MockAdapter(httpMock)
+  const mock = new MockAdapter(httpMock);
 
   // schema
   // tslint:disable:object-literal-sort-keys
@@ -234,13 +234,13 @@ export const init = () => {
       answer_field: null,
       question_id: 'QuestionId{{random.number}}',
     },
-  ]
+  ];
   // tslint:enable:object-literal-sort-keys
   // tslint:enable:max-line-length
 
-  const getNoCQuestionsUrl = /\/api\/noc\/nocQuestions\?caseId/
-  const validateNoCQuestionsUrl = /\/api\/noc\/validateNoCQuestions/
-  const postNoCEventsUrl = /\/api\/noc\/submitNoCEvents/
+  const getNoCQuestionsUrl = /\/api\/noc\/nocQuestions\?caseId/;
+  const validateNoCQuestionsUrl = /\/api\/noc\/validateNoCQuestions/;
+  const postNoCEventsUrl = /\/api\/noc\/submitNoCEvents/;
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
@@ -248,19 +248,19 @@ export const init = () => {
 
   mock.onGet(getNoCQuestionsUrl).reply(() => {
 
-    let questions = []
+    let questions = [];
 
     questionsSchema.map(schema => {
-      questions = [...questions, ...generator(schema, 1, 1)]
-    })
+      questions = [...questions, ...generator(schema, 1, 1)];
+    });
 
-    questions.sort((a, b) => a.order > b.order ? 1 : -1)
+    questions.sort((a, b) => a.order > b.order ? 1 : -1);
 
     // return an array in the form of [status, data, headers]
     return [
       200,
       questions,
-    ]
+    ];
   })
   // success
   .onPost(validateNoCQuestionsUrl).reply(200, {
@@ -321,7 +321,7 @@ export const init = () => {
     case_role: 'Claimant',
     code: '',
     status_message: 'success',
-  })
+  });
   // EUI-2323
   // Scenario 1
 /*  .onPost(postNoCEventsUrl).reply(500, {
@@ -367,4 +367,4 @@ export const init = () => {
     code: 'noc-in-progress',
     message: 'Another NOC request has been actioned',
   }) */
-}
+};

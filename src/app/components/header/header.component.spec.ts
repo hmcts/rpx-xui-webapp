@@ -4,9 +4,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
-
-import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
 import { HmctsGlobalHeaderComponent } from '..';
+import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
 import { HeaderComponent } from './header.component';
 
 describe('Header Component', () => {
@@ -25,10 +24,10 @@ describe('Header Component', () => {
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(HeaderComponent);
-      mockStore = jasmine.createSpyObj('store', ['pipe']);
-      mockService = jasmine.createSpyObj('service', ['get']);
-      component = new HeaderComponent(mockStore);
+    fixture = TestBed.createComponent(HeaderComponent);
+    mockStore = jasmine.createSpyObj('store', ['pipe']);
+    mockService = jasmine.createSpyObj('service', ['get']);
+    component = new HeaderComponent(mockStore);
   });
 
   it('should render the skip to content link', () => {
@@ -37,7 +36,6 @@ describe('Header Component', () => {
   });
 
   it('should call emitNavigate with event and this.navigate', () => {
-
     const event = {};
     spyOn(component, 'emitNavigate');
 
@@ -46,10 +44,9 @@ describe('Header Component', () => {
   });
 
   it('should emitNavigate', () => {
-
-      const event = {};
-      const emitter = jasmine.createSpyObj('emitter', ['emit']);
-      component.emitNavigate(event, emitter);
-      expect(emitter.emit).toHaveBeenCalled();
+    const event = {};
+    const emitter = jasmine.createSpyObj('emitter', ['emit']);
+    component.emitNavigate(event, emitter);
+    expect(emitter.emit).toHaveBeenCalled();
   });
 });

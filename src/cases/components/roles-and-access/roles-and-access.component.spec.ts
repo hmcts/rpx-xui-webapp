@@ -4,6 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig, AlertService, AuthService, CaseNotifier, CasesService, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import 'mocha';
 import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '..';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
@@ -12,7 +13,6 @@ import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/mode
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessComponent } from './roles-and-access.component';
-import 'mocha';
 
 describe('RolesAndAccessComponent', () => {
   let component: RolesAndAccessComponent;

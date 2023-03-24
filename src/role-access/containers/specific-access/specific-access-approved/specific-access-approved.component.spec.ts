@@ -4,13 +4,13 @@ import { SpecificAccessApprovedComponent } from './specific-access-approved.comp
 describe('SpecificAccessApprovedComponent', () => {
   let component: SpecificAccessApprovedComponent;
   let mockStore: any;
+
   beforeEach((() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
     component = new SpecificAccessApprovedComponent(mockStore);
   }));
 
   describe('navigationHandler', () => {
-
     it('should correctly navigate on click of return to my tasks button when dispatching the event', () => {
       const navEvent = SpecificAccessNavigationEvent.RETURNTOMYTASKS;
       component.navigationHandler(navEvent);
@@ -21,8 +21,6 @@ describe('SpecificAccessApprovedComponent', () => {
       expect(() => {
         component.navigationHandler(null);
       }).toThrow(new Error('Invalid case'));
-    })
-
+    });
   });
-
 });

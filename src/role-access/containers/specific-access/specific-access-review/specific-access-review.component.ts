@@ -19,7 +19,6 @@ import * as fromFeature from '../../../store';
   selector: 'exui-specific-access-review',
   templateUrl: './specific-access-review.component.html'
 })
-
 export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
 
   public ERROR_MESSAGE = ERROR_MESSAGE;
@@ -78,7 +77,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
           (caseworkers) => {
             const caseworker = caseworkers.find(thisCaseworker => thisCaseworker.idamId === this.specificAccessStateData.actorId);
             if (caseworker) {
-              this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`
+              this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`;
             }
           });
       });
@@ -145,7 +144,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
                   requestCreated: specificAccess.requestCreated,
                   roleCategory: specificAccess.roleCategory,
                   person: { id: specificAccess.actorId, name: null, domain: null },
-                }
+                };
               }
             });
             this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessBody));

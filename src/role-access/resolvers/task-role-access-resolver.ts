@@ -27,7 +27,7 @@ export class TaskRoleAccessResolver implements Resolve<{ task: Task; role: any }
     const role$ = task$.pipe(mergeMap((task) => {
       const thisTask: Task = task.task;
       return this.allocateRoleService.getCaseAccessRoles(thisTask.case_id, thisTask.jurisdiction, thisTask.case_type_id, assignmentId);
-    }))
+    }));
     return forkJoin({task: task$, role: role$});
   }
 }

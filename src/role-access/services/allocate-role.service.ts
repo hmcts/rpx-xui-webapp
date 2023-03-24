@@ -30,7 +30,7 @@ export class AllocateRoleService {
     const period = {
       startDate : this.durationService.setUTCTimezone(dtperiod.startDate),
       endDate: this.durationService.setUTCTimezone(dtperiod.endDate)
-    }
+    };
     return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, {specificAccessStateData, period});
   }
 

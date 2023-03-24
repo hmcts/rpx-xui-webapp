@@ -24,7 +24,8 @@ class TestDataManager{
     async cleanupForTags(tags){
 
         if(tags.includes('@staffUI')){
-            await this.cleanupAutoStaffUsers();
+            reportLogger.AddMessage('post test clean up start:  cleanupForTags')
+            // await this.cleanupAutoStaffUsers();
         }
     }
 

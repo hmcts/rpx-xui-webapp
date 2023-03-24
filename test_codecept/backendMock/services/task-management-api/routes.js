@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
     if (caseFilter){
         userApiData.sendResponse(req, res, "OnTasksByCase", () => service.getSearchTasks(25))
     }else{
-        userApiData.sendResponse(req, res, "OnSearchTasks", () => service.getSearchTasks(25))
+        userApiData.sendResponse(req, res, service.method.searchTasks, () => service.searchTasksResponse)
     }
 });
 

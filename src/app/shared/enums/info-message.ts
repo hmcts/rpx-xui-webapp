@@ -9,5 +9,7 @@ export enum InfoMessage {
   TASK_NO_LONGER_AVAILABLE = 'The task is no longer available.',
   UNASSIGNED_TASK = 'You\'ve unassigned a task.',
   UNASSIGNED_TASK_NOW_IN_AVAILABLE_TASKS = 'You\'ve unassigned a task. It\'s now in Available tasks.',
-  ADD_NEW_USER = 'You have added a new user.'
+  ADD_NEW_USER = 'You have added a new user.',
+  ACTIVATION_EMAIL_SENT = 'Activation email has been re-sent.',
+  ACTIVATION_EMAIL_ERROR = 'There was a problem resending the invitation. Please try again later.'
 }

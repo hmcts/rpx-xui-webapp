@@ -2,6 +2,7 @@ import { SessionStorageService } from './session-storage.service';
 
 describe('Session storage service', () => {
   let mockStore = {};
+
   beforeEach(() => {
     spyOn(sessionStorage, 'getItem').and.callFake((key) => {
       return mockStore[key];

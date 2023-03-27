@@ -29,7 +29,7 @@ describe('SpecificAccessHomeComponent', () => {
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRolesUserDetails']);
   const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getCaseworkersForServices']);
   const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
-  let mockStore: MockStore<fromFeature.State>;
+  let mockStore: any;
   let mockFormBuilder: FormBuilder;
   let storeDispatchMock: any;
   const specificAccessStateData = {

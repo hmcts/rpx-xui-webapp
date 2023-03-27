@@ -16,7 +16,7 @@ import { SpecificAccessReviewComponent } from './specific-access-review.componen
 describe('SpecificAccessReviewComponent', () => {
   let component: SpecificAccessReviewComponent;
   let fixture: ComponentFixture<SpecificAccessReviewComponent>;
-  let mockStore: MockStore<State>;
+  let mockStore: any;
   const FORM_GROUP: FormGroup = new FormGroup({});
 
   let spyOnPipeToStore = jasmine.createSpy();

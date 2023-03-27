@@ -190,7 +190,7 @@ describe('TaskListFilterComponent', () => {
   });
 
   it('should set booking locations', () => {
-    mockRouter = TestBed.get(Router);
+    mockRouter = TestBed.inject(Router);
     spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({ extras: { state: { location: { ids: ['231596', '231596'] } } } });
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

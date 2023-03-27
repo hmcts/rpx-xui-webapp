@@ -50,7 +50,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public endDateYearCtrl: FormControl;
 
   constructor(
-    private durationHelper: DurationHelperService,
+    private readonly durationHelper: DurationHelperService,
     private readonly fb: FormBuilder,
     private readonly store: Store<fromFeature.State>
   ) {

@@ -6,7 +6,6 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { TaskList } from '../../work-allocation/models/dtos';
-
 import { CaseTasksResolverService } from './case-tasks-resolver.service';
 
 describe('CaseTasksResolverService', () => {
@@ -49,12 +48,12 @@ describe('CaseTasksResolverService', () => {
         ]
       }
     );
-    httpClient = TestBed.get(HttpClient) as HttpClient;
+    httpClient = TestBed.inject(HttpClient) as HttpClient;
   });
 
   it('should return a list of tasks', (done) => {
     spyOn(httpClient, 'get').and.returnValue(of(TASKS));
-    const service: CaseTasksResolverService = TestBed.get(CaseTasksResolverService);
+    const service: CaseTasksResolverService = TestBed.inject(CaseTasksResolverService);
     const activatedRoute = new ActivatedRouteSnapshot();
     activatedRoute.params = {
       cid: '1620409659381330'

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ErrorMessageComponent } from '@hmcts/ccd-case-ui-toolkit';
@@ -28,7 +28,7 @@ describe('DescribeExclusionComponent', () => {
   component.formGroup = formGroup;
   let fixture: ComponentFixture<SpecificAccessInformationComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FormsModule, RouterModule, StoreModule.forRoot({})],
       declarations: [SpecificAccessInformationComponent, ErrorMessageComponent],

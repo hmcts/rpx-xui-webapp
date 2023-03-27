@@ -25,7 +25,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public bookingTypeForm: FormGroup;
   public existingBookings: Booking[];
-  private bookings$: Observable<any[]> | any;
   private combineResult$: Observable<any[]> | any;
   private existingBookingsSubscription: Subscription;
   private refreshAssignmentsSubscription: Subscription;

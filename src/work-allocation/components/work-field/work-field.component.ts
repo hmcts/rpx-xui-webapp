@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angu
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { FieldType } from '../../enums';
-import { FieldConfig } from '../../models/common';
 import { Case } from '../../models/cases';
+import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 
 @Component({

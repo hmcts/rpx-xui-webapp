@@ -103,7 +103,25 @@ class IdamLogin{
     }
 
     async onXuiLogin(){
-        const response = await axiosInstance.get(this.conf.xuiBaseUrl + '/auth/login')
+        const response = await new Promise(async (resolve,reject) => {
+            const starTime = Date.now();
+
+            const interval = setInterval(async () => {
+                const response = await axiosInstance.get(this.conf.xuiBaseUrl + '/auth/login')
+                const elapsedTime = (Date.now() - starTime)/1000
+                if (response.headers.location !== undefined) {
+                    clearInterval(interval)
+                    resolve(response)
+                } else if (elapsedTime > 30){
+                    clearInterval(interval)
+                    reject('API: onXuiLogin error, no idam redirect url returned');
+                }else{
+                    reportLogger.AddMessage('API: XUI login waiting for IDAM redirect url')
+                }
+            }, 1000)
+           
+        });
+        // const response = await axiosInstance.get(this.conf.xuiBaseUrl + '/auth/login')
         this.xuiLoginResponse.status = this.getResponseStatus(response)
         
         this.xuiLoginResponse.details =  {
@@ -118,6 +136,9 @@ class IdamLogin{
 
     async onIdamAuthorize() {
         if (this.xuiLoginResponse === null) { throw new Error('xuiLogin required') }
+
+        reportLogger.AddMessage('API: IDAM Authorize url ' + this.xuiLoginResponse.details.idamAuthorizeUrl)
+
         const response = await axiosInstance.get(this.xuiLoginResponse.details.idamAuthorizeUrl)
 
         const redirectlocation = response.headers.location;

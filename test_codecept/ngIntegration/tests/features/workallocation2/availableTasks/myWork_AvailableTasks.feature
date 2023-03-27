@@ -1,5 +1,5 @@
 
-@ng @codecept_enabled @codecept_test
+@ng @codecept_enabled 
 Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
@@ -126,7 +126,7 @@ Feature: WA Release 2: My work -  Available tasks
             | Manage      | 10    |
             | Read        | 10    |
            Given I set MOCK tasks with attributes for view "Available tasks"
-            | index | permissions                | assignee            | case_name                                                                                  | location_name   | task_title                                                                                                                                                       | dueDate | created_date | case_category        |
+            | index | permissions                | assignee            | case_name                                                                                  | location_name   | task_title                                                                                                                                                       | due_date | created_date | case_category        |
             | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1                                                                                     | test location 1 | test auto task 1                                                                                                                                                 | -1      | -10          | auto test category 1 |
             | 1     | Manage                     | 1234-1234-1234-1231 | case 2                                                                                     | test location 2 | test auto task 2                                                                                                                                                 | 0       | -10          | auto test category 2 |
             | 2     | Read                       | 1234-1234-1234-1231 | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30     | -40          | auto test category 3 |

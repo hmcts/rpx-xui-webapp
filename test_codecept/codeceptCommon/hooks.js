@@ -31,6 +31,7 @@ module.exports = async function () {
         // const logs = await browser.getBrowserLogs();
         // await attachBrowserLogs();
         // codeceptMochawesomeLog.AddJson(logs)
+        await browser.sleep(600)
         codeceptMochawesomeLog.AddMessage(`************ Test failed : `)
         
 

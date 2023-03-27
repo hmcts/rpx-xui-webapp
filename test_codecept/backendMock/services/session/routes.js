@@ -27,8 +27,8 @@ router.post('/session/user/roles',async (req,res) => {
 
 
 router.post('/session/user/roleAssignments', async (req, res) => {
-    await sessionService.updateAuthSessionWithRoleAssignments(req.body.auth, req.body.roleAssignments)
-    res.send({ status: 'success' })
+    const newRoleAssignmentsInSession = await sessionService.updateAuthSessionWithRoleAssignments(req.body.auth, req.body.roleAssignments)
+    res.send(newRoleAssignmentsInSession)
 })
 
 

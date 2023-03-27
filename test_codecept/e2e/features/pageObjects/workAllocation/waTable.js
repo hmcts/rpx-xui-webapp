@@ -27,7 +27,7 @@ class WAListTable {
 
         this.displayedActionRow = $('tr.actions-row[aria-hidden=false]');
 
-        this.paginationContainer = $('ccd-pagination');
+        this.paginationContainer = $('ccd-pagination .ngx-pagination');
         this.paginationResultText = $(`${this.baseCssLocator} .task-list-header div, ${this.baseCssLocator} .pagination-top`);
         this.pagePreviousLink = $(`${this.baseCssLocator} pagination-template .pagination-previous a`);
         this.pageNextLink = $(`${this.baseCssLocator} pagination-template .pagination-next a`);
@@ -88,6 +88,10 @@ class WAListTable {
         return element(by.xpath(`//${ this.baseCssLocator }//table//thead//th//button[contains(text(),'${headerName}')]`));
     }
 
+    getHeaderSortElementWithName(headerName) {
+        return element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).withChild(by.xpath(`//button[contains(text(),'${headerName}')]`));
+    }
+
     getNonClickableHeaderElementWithName(headerName) {
         return element(by.xpath(`//${this.baseCssLocator}//table//thead//th[contains(text(),'${headerName}')]`));
     }
@@ -133,8 +137,8 @@ class WAListTable {
     }
 
     async getColumnSortState(headerName) {
-        const headerElement = await this.getHeaderElementWithName(headerName);
-        return await headerElement.element(by.xpath("..")).getAttribute("aria-sort");
+        const headerElement = await this.getHeaderSortElementWithName(headerName);
+        return await headerElement.getAttribute("aria-sort");
 
     }
 
@@ -221,9 +225,7 @@ class WAListTable {
         const waRows = element.all(by.xpath(`//tr[(contains(@class,'actions-row'))]`));
         const row = await waRows.get(position - 1);
         try {
-            await BrowserWaits.waitForConditionAsync(async () => {
-                return await row.isDisplayed();
-            }, 2000,'Wait for manage link row to display');
+            return await row.isDisplayed();
             return true;
         } catch (err) {
             return false;

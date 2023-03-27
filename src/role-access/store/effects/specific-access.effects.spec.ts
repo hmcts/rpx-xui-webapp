@@ -27,7 +27,7 @@ describe('Specific Access Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(SpecificAccessEffects);
+    effects = TestBed.inject(SpecificAccessEffects);
   });
 
   describe('confirmAllocation$', () => {

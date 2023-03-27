@@ -90,8 +90,8 @@ describe('SpecificAccessHomeComponent', () => {
       ]
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
-    mockFormBuilder = TestBed.get(FormBuilder);
+    mockStore = TestBed.inject(Store);
+    mockFormBuilder = TestBed.inject(FormBuilder);
     storeDispatchMock = spyOn(mockStore, 'dispatch').and.callThrough();
     fixture = TestBed.createComponent(SpecificAccessHomeComponent);
     component = fixture.componentInstance;

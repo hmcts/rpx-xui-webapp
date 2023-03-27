@@ -11,7 +11,6 @@ import { TaskListComponent } from '..';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import * as fromActions from '../../../app/store';
-import { reducers } from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskContext } from '../../../work-allocation/enums';
@@ -80,6 +79,7 @@ xdescribe('AllWorkTaskComponent', () => {
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   let store: Store<fromActions.State>;
+
   beforeEach(waitForAsync(() => {
     storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     storeMock.pipe.and.returnValue(of(USER_DETAILS));
@@ -90,7 +90,7 @@ xdescribe('AllWorkTaskComponent', () => {
         RouterTestingModule,
         WorkAllocationComponentsModule,
         PaginationModule,
-        StoreModule.forRoot({ ...reducers }),
+        StoreModule.forRoot({ ...fromActions.reducers }),
       ],
       declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent],
       providers: [
@@ -127,27 +127,27 @@ xdescribe('AllWorkTaskComponent', () => {
         return of({
           configurations: [
             {
-                caseTypes: [
-                    'Asylum'
-                ],
-                releaseVersion: '3.5',
-                serviceName: 'IA'
+              caseTypes: [
+                'Asylum'
+              ],
+              releaseVersion: '3.5',
+              serviceName: 'IA'
             },
             {
-                caseTypes: [
-                    'PRIVATELAW',
-                    'PRLAPPS'
-                ],
-                releaseVersion: '2.1',
-                serviceName: 'PRIVATELAW'
+              caseTypes: [
+                'PRIVATELAW',
+                'PRLAPPS'
+              ],
+              releaseVersion: '2.1',
+              serviceName: 'PRIVATELAW'
             },
             {
-                caseTypes: [
-                    'CIVIL',
-                    'GENERALAPPLICATION'
-                ],
-                releaseVersion: '2.1',
-                serviceName: 'CIVIL'
+              caseTypes: [
+                'CIVIL',
+                'GENERALAPPLICATION'
+              ],
+              releaseVersion: '2.1',
+              serviceName: 'CIVIL'
             }
         ]
         });
@@ -268,27 +268,27 @@ xdescribe('AllWorkTaskComponent', () => {
           return of({
             configurations: [
               {
-                  caseTypes: [
-                      'Asylum'
-                  ],
-                  releaseVersion: '3.5',
-                  serviceName: 'IA'
+                caseTypes: [
+                  'Asylum'
+                ],
+                releaseVersion: '3.5',
+                serviceName: 'IA'
               },
               {
-                  caseTypes: [
-                      'PRIVATELAW',
-                      'PRLAPPS'
-                  ],
-                  releaseVersion: '2.1',
-                  serviceName: 'PRIVATELAW'
+                caseTypes: [
+                  'PRIVATELAW',
+                  'PRLAPPS'
+                ],
+                releaseVersion: '2.1',
+                serviceName: 'PRIVATELAW'
               },
               {
-                  caseTypes: [
-                      'CIVIL',
-                      'GENERALAPPLICATION'
-                  ],
-                  releaseVersion: '2.1',
-                  serviceName: 'CIVIL'
+                caseTypes: [
+                  'CIVIL',
+                  'GENERALAPPLICATION'
+                ],
+                releaseVersion: '2.1',
+                serviceName: 'CIVIL'
               }
           ]
           });
@@ -304,7 +304,7 @@ xdescribe('AllWorkTaskComponent', () => {
           RouterTestingModule,
           WorkAllocationComponentsModule,
           PaginationModule,
-          StoreModule.forRoot({ ...reducers }),
+          StoreModule.forRoot({ ...fromActions.reducers }),
           RouterTestingModule.withRoutes(
             [
               { path: 'service-down', component: NothingComponent },
@@ -339,11 +339,8 @@ xdescribe('AllWorkTaskComponent', () => {
     it(`onPaginationEvent with error response code ${scr.statusCode}`, () => {
       const navigateSpy = spyOn(router, 'navigate');
       component.getSearchTaskRequestPagination();
-      const searchRequest = component.onPaginationEvent(1);
-      const payload = { searchRequest, view: component.view, refined: false, currentUser: undefined };
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
-
     });
 
     afterEach(() => {

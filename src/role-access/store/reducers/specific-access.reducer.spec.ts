@@ -1,7 +1,6 @@
-import { Action, RoleCategory, SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
+import { RoleCategory, SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { AccessReason, DurationType } from '../../models/enums';
 import * as fromActions from '../actions/specific-access.action';
-import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions/specific-access.action';
 import * as fromReducer from './specific-access.reducer';
 
 describe('Specific Access Reducer', () => {
@@ -98,7 +97,7 @@ describe('Specific Access Reducer', () => {
           roleCategory: RoleCategory.LEGAL_OPERATIONS,
           requestedRole: 'specific-access-legal-ops'
         };
-        const action: SpecificAccessAction = {type: SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA, payload: specificAccessStateData};
+        const action: fromActions.SpecificAccessAction = {type: fromActions.SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA, payload: specificAccessStateData};
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
         expect(specificAccessState.state).toEqual(SpecificAccessState.SPECIFIC_ACCESS_REVIEW);
       });

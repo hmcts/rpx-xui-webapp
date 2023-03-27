@@ -29,10 +29,10 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   public controlName = 'infoCtrl';
   public submitted: boolean = true;
   public specificAccessBody: SpecificAccessStateData;
-  private  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
+  private readonly rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
 
-  constructor(public readonly store: Store<fromFeature.State>, private readonly fb: FormBuilder) {
-  }
+  constructor(public readonly store: Store<fromFeature.State>,
+              private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
     this.submitted = false;

@@ -1,13 +1,12 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { WASupportedJurisdictionsService } from 'src/work-allocation/services';
-
 import { State } from '../../../../app/store';
 import { RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessText } from '../../../models/enums';
@@ -25,7 +24,7 @@ describe('SpecificAccessReviewComponent', () => {
 
   const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [SpecificAccessReviewComponent],
@@ -40,7 +39,7 @@ describe('SpecificAccessReviewComponent', () => {
   }));
 
   beforeEach(() => {
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     const mockSpecificAccessStateData: SpecificAccessStateData = {
       state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
       caseId: 'caseId',

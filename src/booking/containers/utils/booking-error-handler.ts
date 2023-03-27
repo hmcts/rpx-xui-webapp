@@ -36,12 +36,11 @@ export const RefreshBookingHandleError = ( error: any, navigator: Navigator ): v
   }
 };
 
-
 export declare class HttpError {
   private static readonly DEFAULT_ERROR;
   private static readonly DEFAULT_MESSAGE;
   private static readonly DEFAULT_STATUS;
-  status: number;
-  static from(response: HttpErrorResponse): HttpError;
+  public status: number;
+  public static from(response: HttpErrorResponse): HttpError;
   constructor();
 }

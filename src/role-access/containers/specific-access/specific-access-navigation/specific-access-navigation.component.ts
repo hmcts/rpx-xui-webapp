@@ -29,7 +29,7 @@ export class SpecificAccessNavigationComponent implements OnInit {
   public specificAccessNavigationEvent = SpecificAccessNavigationEvent;
 
   constructor(
-    private store: Store<fromFeature.State>,
+    private readonly store: Store<fromFeature.State>,
   ) {}
 
   public ngOnInit() {

@@ -1,4 +1,4 @@
-@fullfunctional @demo
+@fullfunctional @demo 
 Feature: Judicial Booking UI
 
     Scenario: View and create booking

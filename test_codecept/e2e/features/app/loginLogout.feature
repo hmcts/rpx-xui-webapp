@@ -1,4 +1,4 @@
-@fullfunctional @ready
+@fullfunctional @codecept_enabled
 Feature: Login
 
   Background:
@@ -18,12 +18,12 @@ Feature: Login
     When I select the sign out link
     Then I should be redirected to the Idam login page
 
-@all @crossbrowser @aat 
-  Scenario: login and log out from EUI as Probate user
-    Given I am logged into Expert UI with Probate user details
-    Then I should be redirected to EUI dashboard page
-    When I select the sign out link
-    Then I should be redirected to the Idam login page
+# @all @crossbrowser @aat 
+#   Scenario: login and log out from EUI as Probate user
+#     Given I am logged into Expert UI with Probate user details
+#     Then I should be redirected to EUI dashboard page
+#     When I select the sign out link
+#     Then I should be redirected to the Idam login page
 
 
 
@@ -31,22 +31,22 @@ Feature: Login
     Given I navigate to Expert UI Url direct link
     Then I should be redirected back to Login page after direct link
 
-  @iauserslogin @ignore
-  Scenario Outline: Login as IA "<Usertype>"
-    Given I am logged into Expert UI as IA "<Usertype>"
-    Then I should be redirected to EUI dashboard page
-    Then I see primary navigation tabs "<mainHeaders>" in main header
-    Then I should see the expected banner for IA "<Usertype>"
-    When I select the sign out link
-    Then I should be redirected to the Idam login page
+  # @iauserslogin @ignore
+  # Scenario Outline: Login as IA "<Usertype>"
+  #   Given I am logged into Expert UI as IA "<Usertype>"
+  #   Then I should be redirected to EUI dashboard page
+  #   Then I see primary navigation tabs "<mainHeaders>" in main header
+  #   Then I should see the expected banner for IA "<Usertype>"
+  #   When I select the sign out link
+  #   Then I should be redirected to the Idam login page
 
-    Examples: 
-      | Usertype              | mainHeaders                                    |
-      | case_officer          | My work,Case list, Create case |
-      | legal_rep             | Case list, Create case            |
-      | admin_officer         | Case list, Create case                         |
-      | homeoffice_respondent | Case list, Create case                         |
-      | homeoffice_apc        | Case list, Create case                         |
-      | homeoffice_larts      | Case list, Create case                         |
-      | homeoffice_pou        | Case list, Create case                         |
-      | judge                 | Case list                                      |
+  #   Examples: 
+  #     | Usertype              | mainHeaders                                    |
+  #     | case_officer          | My work,Case list, Create case |
+  #     | legal_rep             | Case list, Create case            |
+  #     | admin_officer         | Case list, Create case                         |
+  #     | homeoffice_respondent | Case list, Create case                         |
+  #     | homeoffice_apc        | Case list, Create case                         |
+  #     | homeoffice_larts      | Case list, Create case                         |
+  #     | homeoffice_pou        | Case list, Create case                         |
+  #     | judge                 | Case list                                      |

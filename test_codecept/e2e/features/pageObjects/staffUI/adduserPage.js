@@ -7,6 +7,7 @@ class AddUserPage{
 
     constructor(){
         this.container = $('exui-staff-add-edit-user-form')
+        this.headerTitle = $('exui-staff-add-edit-user-form .govuk-heading-xl')
 
         this.firstName = $('#first_name input')
         this.lastName = $('#last_name input')
@@ -27,10 +28,15 @@ class AddUserPage{
         this.jobTitles = $('#jobTitle')
 
         this.continue = element(by.xpath('//button[contains(text(),"Continue")]'))
+        this.saveChanges = element(by.xpath('//button[contains(text(),"Save changes")]'))
         this.cancel = element(by.xpath('//button[contains(text(),"Cancel")]'))
 
 
 
+    }
+
+    async getPageTitle(){
+        return this.headerTitle.getText();
     }
 
     async isDisplayed(){
@@ -40,6 +46,10 @@ class AddUserPage{
 
     async clickContinue(){
         await this.continue.click();
+    }
+
+    async clickSaveChanges() {
+        await this.saveChanges.click();
     }
 
     async clickCancel() {

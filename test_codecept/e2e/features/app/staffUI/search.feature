@@ -1,4 +1,4 @@
-@fullfunctional @ignore @codecept_enabled @staffUI
+@fullfunctional @ignore @codecept_enabled @staffUI 
 Feature: Staff UI Search
 
 
@@ -49,5 +49,5 @@ Feature: Staff UI Search
         Then I see basic search displayed in staff UI
         Then I validate basic search in Staff UI
 
-        Then I validate staff UI search results isDisplayed
+        Then I validate staff UI search results displayed
 

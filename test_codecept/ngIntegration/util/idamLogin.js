@@ -1,7 +1,6 @@
 
 
 const axios = require('axios')
-const FormData = require('form-data')
 
 var {parse} = require('node-html-parser');
 const reportLogger = require('../../codeceptCommon/reportLogger');
@@ -54,17 +53,19 @@ class IdamLogin{
 
         }catch(err){
             reportLogger.AddMessage('************* Login error *************')
-            reportLogger.AddMessage(
-                {
-                    xuiLoginResponse: this.xuiLoginResponse,
-                    idamLoginGetResponse: this.idamLoginGetResponse,
-                    idamAuthorizeResponse: this.idamAuthorizeResponse,
-                    idamLoginresponse: this.idamLoginresponse,
-                    userDetailsResponse: this.userDetailsResponse
-                }
-            );
+            // reportLogger.AddMessage(
+            //     JSON.stringify({
+            //         xuiLoginResponse: this.xuiLoginResponse,
+            //         idamLoginGetResponse: this.idamLoginGetResponse,
+            //         idamAuthorizeResponse: this.idamAuthorizeResponse,
+            //         idamLoginresponse: this.idamLoginresponse,
+            //         userDetailsResponse: this.userDetailsResponse
+            //     }, null,2)
+            // );
             throw err
         }
+
+
        
 
 
@@ -110,6 +111,8 @@ class IdamLogin{
             idamAuthorizeUrl:`${response.headers.location}`,
             setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
         }
+        reportLogger.AddMessage('API: XUI login call success')
+
     }
 
 
@@ -136,6 +139,8 @@ class IdamLogin{
             state: redirectQueryParams.find(param => param.name === 'state').value,
             nonce: redirectQueryParams.find(param => param.name === 'nonce').value
         }
+        reportLogger.AddMessage('API: IDAM authorize call success')
+
     }
 
     async onIdamLoginGet() {
@@ -156,6 +161,8 @@ class IdamLogin{
             csrf:csrfElement.attributes.value,
 
         }
+        reportLogger.AddMessage('API: IDAM get call success')
+
     }
 
 
@@ -193,6 +200,8 @@ class IdamLogin{
             setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
 
         }
+        reportLogger.AddMessage('API: IDAM login post call success')
+
     }
 
     async onXuiCallback(){
@@ -205,6 +214,8 @@ class IdamLogin{
         this.xuiCallbackResponse.details = {
             setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
         }
+        reportLogger.AddMessage('API: XUI callback call success')
+
     }
 
 

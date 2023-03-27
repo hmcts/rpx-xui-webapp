@@ -21,6 +21,7 @@ const { DataTableArgument } = require('codeceptjs');
             try{
                 await headerPage.clickPrimaryNavigationWithLabel('My work');
                 await BrowserWaits.waitForSpinnerToDissappear();
+                await browser.sleep(1)
                 await myWorkPage.clickSubNavigationTab(secondaryNavTab);
             }catch(err){
                 await headerPage.refreshBrowser();

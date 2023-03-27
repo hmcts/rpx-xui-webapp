@@ -436,7 +436,12 @@ class Element {
         return !isDisabled
     }
 
-    async isDisplayed(expected){
+    async isDisplayed(){
+        const isPresent = await this.isPresent();
+        if(!isPresent){
+            return false;
+        }
+
         let computedStyle = null;
         const locatorType = Object.keys(this.selector)[0]
 

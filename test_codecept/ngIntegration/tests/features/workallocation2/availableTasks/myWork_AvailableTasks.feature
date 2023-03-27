@@ -1,9 +1,10 @@
 
-@ng @codecept_enabled
+@ng @codecept_enabled @codecept_test
 Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
       
+
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
         
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
@@ -19,8 +20,8 @@ Feature: WA Release 2: My work -  Available tasks
             | Manage      | 10    |
             | Read        | 10    |
          Given I set MOCK tasks with attributes for view "Available tasks"
-            | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | created_date | hearing_date | case_category        |
-            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1      | -10          | 20           | auto test category 1 |
+            | index | permissions                | assignee            | case_name | location_name   | task_title       | due_date | created_date | hearing_date | case_category        |
+            | 0     | Manage,Read,Execute,Cancel,claim | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1      | -10          | 20           | auto test category 1 |
             | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0       | -10          | 21           | auto test category 2 |
             | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1       | -10          | 22           | auto test category 3 |
             | 3     | Manage,Read                | 1234-1234-1234-1231 | case 4    | test location 4 | test auto task 4 | -10     | -20          | 23           | auto test category 4 |

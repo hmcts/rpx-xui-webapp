@@ -1,8 +1,12 @@
-@ng
+@ng @codecept_test
 Feature: WA Release 2: All work - Task action work flows
 
     Background: Mock and browser setup
         Given I init MockApp
+    
+
+    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"
             | Permissions | Count |
             | Manage      | 100   |
@@ -18,10 +22,7 @@ Feature: WA Release 2: All work - Task action work flows
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
-
-    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-
+            
         Given I start MockApp
         Given I navigate to home page
 

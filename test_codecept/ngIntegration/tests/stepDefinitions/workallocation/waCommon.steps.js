@@ -104,11 +104,18 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         await browser.get('http://localhost:3000/get-help');
 
         await idamLogin.do();
-        const userDetails = await idamLogin.userDetailsResponse;
+      
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const userDetails = idamLogin.userDetailsResponse.details.data;
+            const sessionUserName = userDetails.userInfo ? userDetails.userInfo.sub : '';
+            if (sessionUserName !== 'lukesuperuserxui@mailnesia.com' ){
+                await idamLogin.do();
+                await browser.sleep(2)
+                throw new Error('session not updated with user, retrying');
+            }
 
-        await browser.sleep(10)
-
-
+        })
+       
         await BrowserWaits.retryWithActionCallback(async () => {
             await browser.driver.manage().setCookies(idamLogin.xuiCallbackResponse.details.setCookies)
             await browser.get('http://localhost:3000/');
@@ -117,6 +124,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         const authCookies = await browser.driver.manage().getCookies()
         const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
+        await browser.sleep(10)
         await mockClient.updateAuthSessionWithRoles(authCookie.value, roles)
 
         await browser.get('http://localhost:3000/');
@@ -293,7 +301,10 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         const cookies = await browser.driver.manage().getCookies();
         const authCookie = cookies.find(cookie => cookie.name === '__auth__')
         CucumberReporter.AddJson(nodeAppMock.userDetails);
-        await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+        const newRoleAssignmentsInSession = await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+        CucumberReporter.AddJson(newRoleAssignmentsInSession.data);
+
+
         await browser.get(await browser.getCurrentUrl());
 
         const userSession = await mockClient.getSessionRolesAndRoleAssignments(authCookie.value);

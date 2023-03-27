@@ -1,5 +1,8 @@
 
 const report = require("multiple-cucumber-html-reporter");
+const { merge } = require('mochawesome-merge')
+const marge = require('mochawesome-report-generator')
+
 const global = require('./globals')
 import applicationServer from '../localServer'
 
@@ -11,6 +14,7 @@ const backendMockApp = require('../backendMock/app');
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
 const parallel = process.env.PARALLEL
+const head = process.env.HEAD
 
 if (process.env.TEST_URL.includes('pr-2807') || 
     process.env.TEST_URL.includes('pr-2421') ||
@@ -65,7 +69,7 @@ exports.config = {
           height: 960
         },
         args: [
-          '--headless',
+          `${head ? '' : '--headless'}`,
           '—disable-notifications',
           '--smartwait',
           '--disable-gpu',
@@ -95,13 +99,14 @@ exports.config = {
     // }
   },
   "mocha": {
-    reporter: 'cucumberJsonReporter',
+    reporter: 'mochawesome',
    
     "reporterOptions": {
       "reportDir": functional_output_dir,
       reportName:'XUI_MC',
+      "overwrite": false,
       // inlineAssets: true
-    }
+    },
     // "reporterOptions":{
     //   "codeceptjs-cli-reporter": {
     //     "stdout": "-",
@@ -110,13 +115,16 @@ exports.config = {
     //       "steps": true,
     //     }
     //   },
-    //   "mochawesome": {
-    //     "stdout": `${functional_output_dir}/`,
-    //     "options": {
-    //       "reportDir": `${functional_output_dir}/output`,
-    //       "reportFilename": `${functional_output_dir}/output/report`
-    //     }
-    //   },
+      "mochawesome": {
+        "stdout": `${functional_output_dir}/`,
+        "options": {
+          "reportDir": `${functional_output_dir}/output`,
+          "reportFilename": `${functional_output_dir}/output/report`,
+          "overwrite": false,
+          "html":false,
+          "json":true
+        }
+      },
     //   "mocha-junit-reporter": {
     //     "stdout": "./output/console.log",
     //     "options": {
@@ -193,6 +201,12 @@ async function setup(){
 }
 
 async function teardown(){
+  merge({
+    files: [`${functional_output_dir}/*.json`]
+  }).then(report => marge.create(report, {
+    "reportDir": `${functional_output_dir}/`,
+    "reportFilename": `${functional_output_dir}/report`,
+}))
   await backendMockApp.stopServer();
   await applicationServer.stop()
 }

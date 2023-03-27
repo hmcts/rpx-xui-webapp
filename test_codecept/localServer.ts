@@ -51,10 +51,11 @@ class ApplicationServer{
     server:any
     async start(){
 
-        this.server = app.listen(3000);
+        this.server = await app.listen(3000);
 
         const res = await axios.get('http://localhost:3000/auth/isAuthenticated')
 
+        console.log(res.data)
 
     }
 

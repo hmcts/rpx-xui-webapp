@@ -337,23 +337,14 @@ class Element {
 
     _childElement(locator){
         let newSelector = '';
-        // const locatorType = Object.keys(this.selector)[0]
-        // if (this.selector[locatorType].includes(',')) {
-        //     for (let l of this.selector[locatorType].split(',')) {
-
-        //         if (newSelector !== '') {
-        //             newSelector += locatorType === 'css' ? ',' : 'or';
-        //         }
-        //         let thisSelector = {}
-        //         thisSelector[locatorType] = l.trim()
-        //         newSelector += locate(thisSelector).find(locator)[locatorType]
-        //     }
-        // } else {
-        //     newSelector = locate(this.selector).find(locator)
-        // }
-
+     
         newSelector = locate(this.selector).find(locator).locator
         return new Element(newSelector)
+    }
+
+    withChild(childSelector){
+        const selector = locate(this.selector).withChild(childSelector)
+        return new Element(selector.locator)
     }
 
     element(locator) {
@@ -367,9 +358,7 @@ class Element {
         const child = this._childElement(locator)
         return new ElementCollection(child.selector, null)
     }
-    wait() {
-        getActor().waitForElement(this.selector, 20)
-    }
+   
 
     locator() {
         return this.selector
@@ -457,7 +446,7 @@ class Element {
                 return getComputedStyle(e).display
             }, this.selector)
         }
-        return computedStyle.display !== 'none';
+        return computedStyle !== 'none';
     }
 
 
@@ -522,9 +511,23 @@ class Element {
 
     async wait(waitInSec){
         reportLogger.AddMessage("ELEMENT_WAIT: " + JSON.stringify(this.selector) +" at "+this.__getCallingFunctionName());
-        await getActor().waitForElement(this.selector, waitInSec ? waitInSec : 10)
-        const isPresent = await this.isDisplayed();
-        expect(isPresent,`ELEMENT_WAIT_FAILED: not present ${this.selector}`).to.be.true;
+
+        return new Promise((resolve, reject) => {
+            const startTime = Date.now();
+            const interval = setInterval(async () => {
+                const elapsedTime = (Date.now() - startTime)/1000;
+                const isPresent = await this.isPresent()
+                if (isPresent) {
+                    clearInterval(interval)
+                    resolve(true)
+                } else if (elapsedTime > 30){
+                    clearInterval(interval);
+                    reportLogger.AddMessage(`ELEMENT_WAIT_FAILED: not present ${JSON.stringify(this.selector)} at ${this.__getCallingFunctionName()} `);
+                    reject(false);
+                }
+            }, 500);
+         
+        });
     }
 
     async scrollIntoView(){

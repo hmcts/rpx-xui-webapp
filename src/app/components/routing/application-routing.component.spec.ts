@@ -7,7 +7,7 @@ describe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;
   let router;
   let waFeatureService;
-  let mockStore;
+  let mockStore: any;
   const featureToggleMock = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValueOnce', 'getValue']);
   beforeEach(() => {
     TestBed.configureTestingModule({

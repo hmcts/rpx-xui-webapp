@@ -130,7 +130,7 @@ describe('TaskListFilterComponent', () => {
       unsubscribe: () => null
     }
   };
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter: any;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
 
   beforeEach(() => {

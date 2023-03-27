@@ -10,7 +10,7 @@ import { NoResultsComponent } from './no-results.component';
 describe('NoResultsComponent', () => {
   let component: NoResultsComponent;
   let fixture: ComponentFixture<NoResultsComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter: any;
   let store: Store<fromActions.State>;
   const storeMock = jasmine.createSpyObj('Store', [
     'dispatch'

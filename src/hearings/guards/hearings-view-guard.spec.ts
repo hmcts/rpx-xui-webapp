@@ -3,6 +3,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
+import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { UserDetails, UserRole } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import { RoleCategoryMappingService } from '../../app/services/role-category-mapping/role-category-mapping.service';
@@ -10,7 +11,7 @@ import * as fromAppStore from '../../app/store';
 import { HearingsViewGuard } from './hearings-view-guard';
 
 describe('HearingsViewGuard', () => {
-  const USER_1: UserDetails = {
+  const USER: UserDetails = {
     canShareCases: true,
     sessionTimeout: {
       idleModalDisplayTime: 10,
@@ -28,51 +29,12 @@ describe('HearingsViewGuard', () => {
       ],
     }
   };
-  const USER_2: UserDetails = {
-    canShareCases: true,
-    sessionTimeout: {
-      idleModalDisplayTime: 10,
-      totalIdleTime: 50
-    },
-    userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
-      forename: 'Luke',
-      surname: 'Wilson',
-      email: 'lukesuperuserxui@mailnesia.com',
-      active: true,
-      roles: [
-        'caseworker',
-        'caseworker-sscs-judge',
-      ],
-    }
-  };
-  const USER_3: UserDetails = {
-    canShareCases: true,
-    sessionTimeout: {
-      idleModalDisplayTime: 10,
-      totalIdleTime: 50
-    },
-    userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
-      forename: 'Luke',
-      surname: 'Wilson',
-      email: 'lukesuperuserxui@mailnesia.com',
-      active: true,
-      roles: [
-        'caseworker',
-        'caseworker-sscs',
-        'caseworker-sscs-dwpresponsewriter',
-      ],
-    }
-  };
-  const FEATURE_FLAG = [
+  
+  const FEATURE_FLAG: FeatureVariation[] = [
     {
       jurisdiction: 'SSCS',
-      caseType: 'Benefit',
-      roles: [
-        'caseworker-sscs',
-        'caseworker-sscs-judge',
-        'caseworker-sscs-dwpresponsewriter',
+      includeCaseTypes: [
+        'Benefit'
       ]
     }
   ];
@@ -94,48 +56,47 @@ describe('HearingsViewGuard', () => {
     roleCategoryMappingServiceMock = jasmine.createSpyObj<RoleCategoryMappingService>('roleCategoryMappingService', ['getUserRoleCategory']);
   });
 
-  it('case worker should be able to access the hearings view link', () => {
-    storeMock.pipe.and.returnValue(of(USER_1));
+  it('should view hearings be enabled for user with hearing manager role', () => {
+    storeMock.pipe.and.returnValue(of(USER));
+    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.HearingManager));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
+    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
+    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    const result$ = hearingsViewGuard.canActivate();
+    const canActive = true;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should view hearings be enabled for user with hearing viewer role', () => {
+    storeMock.pipe.and.returnValue(of(USER));
+    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.HearingViewer));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
+    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
+    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    const result$ = hearingsViewGuard.canActivate();
+    const canActive = true;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should view hearings be enabled for user with listed hearing viewer role', () => {
+    storeMock.pipe.and.returnValue(of(USER));
+    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.ListedHearingViewer));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
+    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
+    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    const result$ = hearingsViewGuard.canActivate();
+    const canActive = true;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should view hearings be disabled for user with no hearing related roles', () => {
+    storeMock.pipe.and.returnValue(of(USER));
     roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
-    const result$ = hearingsViewGuard.canActivate();
-    const canActive = true;
-    const expected = cold('(b|)', {b: canActive});
-    expect(result$).toBeObservable(expected);
-  });
-
-  it('judicial user should be able to access the hearings view link', () => {
-    storeMock.pipe.and.returnValue(of(USER_2));
-    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));
-    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
-    const result$ = hearingsViewGuard.canActivate();
-    const canActive = true;
-    const expected = cold('(b|)', {b: canActive});
-    expect(result$).toBeObservable(expected);
-  });
-
-  it('ogd user should be able to access the hearings view link', () => {
-    storeMock.pipe.and.returnValue(of(USER_3));
-    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.Ogd));
-    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
-    const result$ = hearingsViewGuard.canActivate();
-    const canActive = true;
-    const expected = cold('(b|)', {b: canActive});
-    expect(result$).toBeObservable(expected);
-  });
-
-  it('user should not be able to access the hearings view link', () => {
-    storeMock.pipe.and.returnValue(of(USER_1));
-    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
-    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    const caseInfo = {cid: '1546518523959179', caseType: 'PRLAPPS', jurisdiction: 'PRL'};
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify(caseInfo));
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = false;

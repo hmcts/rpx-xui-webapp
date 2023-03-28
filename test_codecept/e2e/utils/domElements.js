@@ -21,14 +21,7 @@ class Select{
     }
 
     async selectOption(optiontext){
-        const count = await this.selectElementOptions.count();
-        for (let i = 0; i < count; i++) {
-            const optionelement = await this.selectElementOptions.get(i);
-            const optionVal = await optionelement.getText();
-            if (optionVal.includes(optiontext)){
-                await optionelement.click();
-            }
-        }
+        await this.selectElement.selectOptionWithLabel(optiontext)
     }
 }
 

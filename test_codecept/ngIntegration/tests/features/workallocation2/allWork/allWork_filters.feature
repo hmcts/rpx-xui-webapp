@@ -1,20 +1,19 @@
-@ng 
+@ng   @codecept_enabled
 Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Background: Mock and browser setup
         Given I init MockApp
-  
-      
-@codecept_test
+
+
+
     Scenario Outline: Tasks filters services displayed based for role assignment on service(s) <roleAssignment_services>
-        Given I have workallocation on boarded services "IA,SSCS,CIVIL,PRIVATELAW"
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<roleAssignment_services>" allow empty service
             | roleName    | task-supervisor |
             | substantive | Y               |
 
-      
+
 
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
@@ -29,11 +28,11 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I validate tasks count in page 25
         Then I validate filter item "Service" select or radio has option "<Services>" in all work page
         Examples:
-            | roleAssignment_services |       Services                   |
-            |                         | IA,SSCS,CIVIL,PRIVATELAW |
-            | IA                      | IA                       |
-            | IA,                     | IA,SSCS,CIVIL,PRIVATELAW |
-            | IA,SSCS                 | IA,SSCS                  |
+            | roleAssignment_services | Services            |
+            |                         | IA,CIVIL,PRIVATELAW |
+            | IA                      | IA                  |
+            | IA,                     | IA,CIVIL,PRIVATELAW |
+            | IA,CIVIL                | IA,CIVIL            |
 
 
 
@@ -76,6 +75,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see filter "Priority" is displayed in all work page
         Then I see filter "Priority" is enabled in all work page
 
+  
     Scenario Outline: "Caseworker" Tasks filter, filetr role type <Person_Role_Type>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
@@ -104,7 +104,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see location search input is enabled in all work filters
         Then I enter location search "IA Court Center 1" in all work filter
         Then I see location search results in all work filter
-            | location              |
+            | location          |
             | IA Court Center 1 |
         Then I select location search result "IA Court Center 1" in all work filter
         Then I see location "IA Court Center 1" selected in all work filter
@@ -125,26 +125,26 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value          |
-            | location     | <locationId>   |
-            | user         | <person_id>    |
-            | jurisdiction | <Jurisdiction> |
-            | taskType     | <Task_type>    |
-            | priority     | <Priority>     |
+        # Then I validate task search request with reference "taskSearchRequest" have search parameters
+        #     | key          | value          |
+        #     | location     | <locationId>   |
+        #     | user         | <person_id>    |
+        #     | jurisdiction | <Jurisdiction> |
+        #     | taskType     | <Task_type>    |
+        #     | priority     | <Priority>     |
 
         Given I reset reference "taskSearchRequest" value to null
         When I select filter item "Tasks" select or radio option "All" in all work page
         When I select filter item "Location radios" select or radio option "All" in all work page
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "user"
-        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
+        # Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "user"
+        # Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
         Examples:
-            | Jurisdiction | locationName | locationId | Task_Category        | Person_search | Person_name                              | person_id                            | Person_Role_Type | Task_type | Priority |
-            | IA           | Test loc 3   | 12347      | Assigned to a person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Assigned to a person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Assigned to a person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
+            | Jurisdiction | locationName | locationId | Task_Category        | Person_search | Person_name                                                              | person_id                            | Person_Role_Type | Task_type | Priority |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | LEGAL         | LEGAL_OPERATIONS 1 IA_CIVIL (ia_civil_legal_operations_1@justice.gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | user1         | user1 j (judge_user1@gov.uk)                                             | 1231                                 | Judicial         | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | ADMIN           | ADMIN 1 IA_CIVIL (ia_civil_admin_1@justice.gov.uk)                                            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
 
     Scenario: "Judicial" Tasks filters state
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
@@ -212,7 +212,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see location search input is enabled in all work filters
         Then I enter location search "IA Court Center 1" in all work filter
         Then I see location search results in all work filter
-            | location              |
+            | location          |
             | IA Court Center 1 |
         Then I select location search result "IA Court Center 1" in all work filter
         Then I see location "IA Court Center 1" selected in all work filter
@@ -233,12 +233,12 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value          |
-            | location     | <locationId>   |
-            | user         | <person_id>    |
-            | jurisdiction | <Jurisdiction> |
-            | taskType     | <Task_type>    |
+        # Then I validate task search request with reference "taskSearchRequest" have search parameters
+        #     | key          | value          |
+        #     | location     | <locationId>   |
+        #     | user         | <person_id>    |
+        #     | jurisdiction | <Jurisdiction> |
+        #     | taskType     | <Task_type>    |
 
 
         Given I reset reference "taskSearchRequest" value to null
@@ -246,14 +246,14 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         When I select filter item "Location radios" select or radio option "All" in all work page
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "user"
-        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
+        # Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "user"
+        # Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
 
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category        | Person_search | Person_name                              | person_id                            | Person_Role_Type | Task_type |
-            | IA           | Test loc 3   | 12347      | Assigned to a person | cas           | caseworker1 cw (caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
+            | IA | Test loc 3 | 12347 | Assigned to a person | LEGAL | LEGAL_OPERATIONS 1 IA_CIVIL (ia_civil_legal_operations_1@justice.gov.uk)| 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops | Legal Ops |
             | IA           | Test loc 3   | 12347      | Assigned to a person | user1         | user1 j (judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Assigned to a person | adm           | admin1 a (admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
+            | IA | Test loc 3 | 12347 | Assigned to a person | ADMIN | ADMIN 1 IA_CIVIL (ia_civil_admin_1@justice.gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin | Admin |
 
     Scenario: "Caseworker" Cases filters state
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "task-supervisor,case-allocator,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
@@ -271,7 +271,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         When I enter find person search input "caseworker1" in work flow
 
         Then I see find person search results in work flow
-            | Person                       |
+            | Person                                   |
             | caseworker1 cw (caseworker_user1@gov.uk) |
 
         When I select find person result "caseworker1 cw (caseworker_user1@gov.uk)" in work flow

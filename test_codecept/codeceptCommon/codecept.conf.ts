@@ -138,9 +138,6 @@ exports.config = {
    
   },
   plugins:{
-    "allure": {
-      "enabled": false
-    },
     screenshotOnFail: {
       enabled: true,
       fullPageScreenshots: 'true'
@@ -152,7 +149,8 @@ exports.config = {
     },
     retryFailedStep: {
       enabled: true
-    }
+    },
+    // pauseOnFail: {},
     // cucumberJsonReporter: {
     //   require: 'codeceptjs-cucumber-json-reporter',
     //   enabled: true,               // if false, pass --plugins cucumberJsonReporter
@@ -177,6 +175,7 @@ exports.config = {
     }
   },
   teardown: async () => {
+    await mochawesomeGenerateReport()
     if (testType === "ngIntegration" && !parallel){
       teardown()
     }
@@ -189,6 +188,7 @@ exports.config = {
     }
   },
   teardownAll: async () => {  
+   await  mochawesomeGenerateReport()
     if (testType === "ngIntegration" && parallel) {
       teardown()
     }
@@ -203,6 +203,11 @@ async function setup(){
 }
 
 async function teardown(){
+  await backendMockApp.stopServer();
+  await applicationServer.stop()
+}
+
+async function mochawesomeGenerateReport(){
   const report = await merge({
     files: [`${functional_output_dir}/*.json`]
   })
@@ -210,11 +215,7 @@ async function teardown(){
     "reportDir": `${functional_output_dir}/`,
     "reportFilename": `${functional_output_dir}/report`,
   });
-  await backendMockApp.stopServer();
-  await applicationServer.stop()
 }
-
-
 
 function generateCucumberReport(){
    report.generate({

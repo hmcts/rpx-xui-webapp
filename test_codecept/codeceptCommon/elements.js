@@ -517,7 +517,7 @@ class Element {
             const interval = setInterval(async () => {
                 const elapsedTime = (Date.now() - startTime)/1000;
                 const isPresent = await this.isPresent()
-                reportLogger.AddMessage(`WAIT elapsed time : ${elapsedTime}`)
+                // reportLogger.AddMessage(`WAIT elapsed time : ${elapsedTime}`)
                 if (isPresent) {
                     clearInterval(interval)
                     resolve(true)

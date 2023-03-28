@@ -15,12 +15,8 @@ class Select{
     }
 
     async getOptions(){
-        const count = await this.selectElementOptions.count();
-        const options = [];
-        for(let i = 0; i < count;  i++){
-            const optionVal = await this.selectElementOptions.get(i).getText();
-            options.push(optionVal);
-        }
+        const options = await this.selectElement.getSelectOptions();
+     
         return options;
     }
 

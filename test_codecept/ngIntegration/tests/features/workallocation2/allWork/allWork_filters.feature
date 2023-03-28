@@ -3,64 +3,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK tasks with permissions for view "All work" and assigned state ""
-            | Permissions | Count |
-            | Manage      | 140   |
-            | Read        | 10    |
-        Given I set MOCK locations with names in service "IA"
-            | id    | locationName           |
-            | 20001 | IA Court Aldgate Tower |
-            | 20002 | IA Court Birmingham    |
-            | 2003  | IA Court Bradford      |
-            | 20004 | IA Court Glasgow       |
-            | 20005 | IA Court Hatton Cross  |
-            | 20006 | IA Court Newcastle     |
-            | 20007 | IA Court Newport       |
-            | 20008 | IA Court North Shields |
-            | 12347 | IA Court Center 1  |
-
-        Given I set MOCK locations with names in service "SSCS"
-            | id    | locationName             |
-            | 20010 | SSCS Court Aldgate Tower |
-            | 20011 | SSCS Court Birmingham    |
-            | 20012 | SSCS Court Bradford      |
-            | 20013 | SSCS Court Glasgow       |
-            | 20014 | SSCS Court Hatton Cross  |
-            | 20015 | SSCS Court Newcastle     |
-            | 20016 | SSCS Court Newport       |
-            | 20017 | SSCS Court North Shields |
-            | 20018 | SSCS Court Taylor House  |
-
-        Given I set MOCK find person response for jurisdictions
-            | domain   | id   | email                   | name           | knownAs       |
-            | Judicial | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |
-            | Judicial | 1232 | judge_user2@gov.uk      | user2 j        | Hearing judge |
-            | legalOps | 1233 | caseworker_user1@gov.uk | caseworker1 cw | Case worker   |
-            | legalOps | 1234 | caseworker_user1@gov.uk | caseworker2 cw | Case worker   |
-            | Admin    | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
-            | Admin    | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
-
-        Given I set MOCK request "/workallocation/findPerson" response log to report
-        Given I set MOCK request "/workallocation/findPerson" intercept with reference "findpersonRequest"
-
-
-
-        Given I set MOCK caseworkers for service "IA"
-            | idamId                               | firstName   | lastName | email                   | roleCategory     |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | caseworker1 | cw       | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | caseworker2 | cw       | caseworker_user2@gov.uk | LEGAL_OPERATIONS |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | caseworker3 | cw       | caseworker_user3@gov.uk | LEGAL_OPERATIONS |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be86 | caseworker4 | cw       | caseworker_user4@gov.uk | LEGAL_OPERATIONS |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be85 | caseworker5 | cw       | caseworker_user5@gov.uk | LEGAL_OPERATIONS |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be84 | caseworker6 | cw       | caseworker_user6@gov.uk | LEGAL_OPERATIONS |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | caseworker7 | cw       | caseworker_user7@gov.uk | LEGAL_OPERATIONS |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | caseworker8 | cw       | caseworker_user8@gov.uk | LEGAL_OPERATIONS |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      | ADMIN            |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | ADMIN            |
-
-        Given I set MOCK request "/workallocation/task" intercept with reference "taskSearchRequest"
-        Given I set MOCK request "/workallocation/all-work/cases" intercept with reference "caseSearchRequest"
-
+  
+      
+@codecept_test
     Scenario Outline: Tasks filters services displayed based for role assignment on service(s) <roleAssignment_services>
         Given I have workallocation on boarded services "IA,SSCS,CIVIL,PRIVATELAW"
 
@@ -68,6 +13,14 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<roleAssignment_services>" allow empty service
             | roleName    | task-supervisor |
             | substantive | Y               |
+
+      
+
+        Given I set MOCK tasks with permissions for view "All work" and assigned state ""
+            | Permissions | Count |
+            | Manage      | 140   |
+            | Read        | 10    |
+
 
         Given I start MockApp
 

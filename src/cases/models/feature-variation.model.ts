@@ -1,5 +1,5 @@
 export class FeatureVariation {
   public jurisdiction: string;
-  public caseType: string;
+  public includeCaseTypes?: string[];
   public roles: string[];
 }

@@ -2,6 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from '../app/shared/shared.module';
@@ -9,7 +10,6 @@ import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffStatusComponent } from './components/staff-status/staff-status.component';
-import { StaffSuspendedBannerComponent } from './components/staff-suspended-banner/staff-suspended-banner.component';
 import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from './components/staff-users/staff-search/staff-search.component';
 import { StaffUserListComponent } from './components/staff-users/staff-user-list/staff-user-list.component';
@@ -29,7 +29,6 @@ import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-op
 import { StaffUserDetailsResolverService } from './resolvers/staff-user-details-resolver.service';
 import { StaffDataAccessService } from './services/staff-data-access/staff-data-access.service';
 import { staffAdministratorRouting } from './staff-administrator.routes';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -47,8 +46,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     StaffStatusComponent,
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,
-    StaffStatusComponent,
-    StaffSuspendedBannerComponent
+    StaffStatusComponent
   ],
   imports: [
     CommonModule,

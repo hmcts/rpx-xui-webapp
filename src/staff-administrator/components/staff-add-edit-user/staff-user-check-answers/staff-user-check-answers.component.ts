@@ -44,7 +44,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private staffDataAccessService: StaffDataAccessService,
     private readonly messageService: InfoMessageCommService,
-  ) {}
+  ) { }
 
 
   public ngOnInit() {
@@ -66,11 +66,11 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     this.filterService.getStream(this.formId)
       .pipe(take(1))
       .subscribe(data => {
-      if (data.fields) {
-        this.staffUser = new StaffUser();
-        this.staffUser.fromGenericFilter(data, this.staffFilterOptions);
-      }
-    });
+        if (data.fields) {
+          this.staffUser = new StaffUser();
+          this.staffUser.fromGenericFilter(data, this.staffFilterOptions);
+        }
+      });
   }
 
   public onSubmit() {
@@ -103,7 +103,11 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         this.filterService.clearSessionAndLocalPersistance(this.formId);
       }))
       .subscribe((response) => {
-        this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`);
+        this.messageService.nextMessage({
+          message: InfoMessage.UPDATED_USER,
+          type: InfoMessageType.SUCCESS
+        } as InformationMessage);
+        this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`,  { state: { retainMessages: true } });
       }, (error) => {
         window.scrollTo(0, 0);
         this.router.navigateByUrl('/service-down');

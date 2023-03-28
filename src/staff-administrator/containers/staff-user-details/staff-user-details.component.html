@@ -2,9 +2,11 @@
   <a class="govuk-back-link" [routerLink]="'/staff'">Back</a>
 </div>
 <ng-container *ngIf="userDetails">
+  <xuilib-loading-spinner *ngIf="loading"></xuilib-loading-spinner>
   <exui-info-message-container></exui-info-message-container>
-  <div *ngIf="suspendedStatus">
-    <exui-staff-suspended-banner [messageType]="suspendedStatus"></exui-staff-suspended-banner>
+  <div *ngIf="status">
+    <xuilib-hmcts-banner [type]="status" [title]="title" [message]="message" [messageBoldText]="true">
+    </xuilib-hmcts-banner>
   </div>
 
   <div class="govuk-grid-row">
@@ -69,7 +71,8 @@
               </div>
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
+              <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
+            </dd>
           </div>
         </ng-container>
 
@@ -83,7 +86,7 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Role</dt>
           <dd class="govuk-summary-list__value">
-            {{ userDetails.roles | pluckAndJoin: 'role':', '  }}
+            {{ userDetails.roles | pluckAndJoin: 'role':', ' }}
           </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
@@ -103,7 +106,7 @@
           <dd class="govuk-summary-list__value">
             <span *ngFor="let skill of userDetails.skills; let isLast=last">
               {{skill.description}}
-              <span *ngIf="!isLast"><br/></span>
+              <span *ngIf="!isLast"><br /></span>
             </span>
           </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
@@ -113,8 +116,8 @@
           <dt class="govuk-summary-list__key">Status</dt>
           <dd class="govuk-summary-list__value">
             <exui-staff-status [status]="userDetails.status"></exui-staff-status>
-            <button *ngIf="userDetails.status==='PENDING'" class="govuk-button govuk-button--secondary ml5" data-module="govuk-button"
-              (click)="resendInvite()">
+            <button *ngIf="userDetails.status==='PENDING'" class="govuk-button govuk-button--secondary ml5"
+              data-module="govuk-button" (click)="resendInvite()">
               Resend activation email
             </button>
           </dd>
@@ -129,16 +132,15 @@
         </button>
         <div [matTooltip]="userDetails.suspended ? 'If you want to unsuspend a user raise a support request' : ''">
           <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
-                  id="user-suspended-restore-button"
-                  [disabled]="userDetails.suspended"
-                  [attr.aria-disabled]="userDetails.suspended"
-                  [class.govuk-button--disabled]="userDetails.suspended"
-                  (click)="updateUserStatus()">
+            id="user-suspended-restore-button" [disabled]="userDetails.suspended"
+            [attr.aria-disabled]="userDetails.suspended" [class.govuk-button--disabled]="userDetails.suspended"
+            (click)="updateUserStatus()">
             {{ userDetails.suspended ? 'Restore' : 'Suspend' }}
           </button>
         </div>
 
-        <button id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="onCopyUser()">
+        <button id="copyUserButton" class="govuk-button govuk-button--secondary" data-module="govuk-button"
+          (click)="onCopyUser()">
           Copy
         </button>
       </div>

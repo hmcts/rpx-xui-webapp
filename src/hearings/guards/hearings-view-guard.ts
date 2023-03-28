@@ -26,9 +26,9 @@ export class HearingsViewGuard extends HearingsGuard implements CanActivate {
       switchMap(hasMatchedPermissions => {
         if (hasMatchedPermissions) {
           return this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(
-            map(userRole => 
-              userRole === UserRole.HearingViewer || 
-              userRole === UserRole.ListedHearingViewer || 
+            map(userRole =>
+              userRole === UserRole.HearingViewer ||
+              userRole === UserRole.ListedHearingViewer ||
               userRole === UserRole.HearingManager
             )
           );

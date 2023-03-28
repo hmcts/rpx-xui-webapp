@@ -64,7 +64,7 @@ export class Utils {
         return false;
       }
       return true;
-    } 
+    }
     return false;
   }
 }

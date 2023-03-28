@@ -119,6 +119,11 @@ class IdamLogin{
                     reportLogger.AddMessage('API: XUI login waiting for IDAM redirect url')
                 }
             }, 1000)
+            setTimeout(() => {
+                clearInterval(interval)
+            }, 35 * 1000)
+
+          
            
         });
         // const response = await axiosInstance.get(this.conf.xuiBaseUrl + '/auth/login')

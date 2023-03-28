@@ -3,11 +3,11 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { UserDetails, UserRole } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import { RoleCategoryMappingService } from '../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../app/store';
+import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { HearingsViewGuard } from './hearings-view-guard';
 
 describe('HearingsViewGuard', () => {
@@ -29,7 +29,7 @@ describe('HearingsViewGuard', () => {
       ],
     }
   };
-  
+
   const FEATURE_FLAG: FeatureVariation[] = [
     {
       jurisdiction: 'SSCS',

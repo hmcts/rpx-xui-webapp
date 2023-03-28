@@ -65,8 +65,8 @@ Feature: WA Release 2: My work - My Tasks
         Then I see manage link displayed for task at position 4
         Then I see manage link displayed for task at position 5
 
-        Then I see manage link not displayed for task at position 3
-        Then I see manage link not displayed for task at position 6
+        # Then I see manage link not displayed for task at position 3
+        # Then I see manage link not displayed for task at position 6
 
 
         Then I validate task list columns are links

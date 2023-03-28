@@ -5,7 +5,7 @@
     </div>
     <div>
       <ng-content select="[pageHeader]"></ng-content>
-      <form [formGroup]="form" >
+      <form [formGroup]="form" (ngSubmit)="applyForm(form)">
         <div class="govuk-label govuk-label--m govuk-!-margin-bottom-4">
           Personal Information
         </div>
@@ -43,9 +43,159 @@
           </div>
         </ng-container>
         <hr />
+        <ng-container id="region_group">
+          <h3 class="govuk-label govuk-label--m">
+            Region
+          </h3>
+          <div class="govuk-body">
+            <select class="govuk-select" name="select_region_id" id="select_region_id" formControlName="select_region_id">
+              <option class="govuk-radios__item" *ngFor="let item of newRegions" [value]="item.region_id">{{item.description}}</option>
+            </select>
+          </div>
+        </ng-container>
+        <hr />
+        <ng-container id="service_group">
+          <h3 class="govuk-label govuk-label--m">
+            Services
+          </h3>
+          <div class="govuk-body">
+            <div class="govuk-checkboxes govuk-checkboxes--small" formGroupName="service" attr.field="service" id="checkbox_service">
+              <div *ngFor="let item of staffFilterOptions.services; let i = index" class="govuk-checkboxes__item">
+                <input type="checkbox" class="govuk-checkboxes__input"
+                     [formControlName]="i"
+                     (change)="toggleSelectServices($event, form, item)"
+                     [value]="item.key" [id]="'checkbox_service' + item.key"
+                     [name]="'checkbox_service' + item.key"
+                />
+                <label
+                [for]="'checkbox_service' + item.key"
+                class="govuk-label govuk-checkboxes__label"
+                  >{{item.label}}</label>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <hr />
+        <div class="govuk-label govuk-label--m govuk-!-margin-bottom-4">
+          Locations
+        </div>
+        <ng-container id="primary_location_group">
+          <xuilib-find-location (locationFieldChanged)="inputChanged()"
+                                [form]="form"
+                                [fields]="newFilterConfig"
+                                [locationTitle]="'Primary Location'"
+                                [enableAddLocationButton]="true"
+                                [selectedLocations]=""
+                                [field]="locationField"
+                                [services]="['CIVIL']"
+                                [formSubmissionEvent$]="formSubmissionEvent$"
+            ></xuilib-find-location>
+        </ng-container>
+        <ng-container id="additional_location_group">
+          <xuilib-find-location (locationFieldChanged)="inputChanged()"
+                                [form]="form"
+                                [fields]="newFilterConfig"
+                                [locationTitle]="'Additional Locations'"
+                                [enableAddLocationButton]="true"
+                                [selectedLocations]=""
+                                [field]="additionalLocationField"
+                                [services]="['CIVIL']"
+                                [formSubmissionEvent$]="formSubmissionEvent$"
+            ></xuilib-find-location>
+        </ng-container>
+        <hr />
+        <ng-container id="user_type_group">
+          <h3 class="govuk-label govuk-label--m">
+            User type
+          </h3>
+          <div class="govuk-body">
+            <select class="govuk-select" name="select_user_type_id" id="select_user_type_id" formControlName="select_user_type_id">
+              <option class="govuk-radios__item" *ngFor="let item of staffFilterOptions.userTypes" [value]="item.label">{{item.label}}</option>
+            </select>
+          </div>
+        </ng-container>
+        <hr />
+        <ng-container id="roles_group">
+          <h3 class="govuk-label govuk-label--m">
+            Roles
+          </h3>
+          <div class="govuk-body">
+            <div class="govuk-checkboxes govuk-checkboxes--small" formGroupName="roles" attr.field="roles" id="checkbox_roles">
+              <div *ngFor="let item of roles; let i = index" class="govuk-checkboxes__item">
+                <input type="checkbox" class="govuk-checkboxes__input"
+                     [formControlName]="i"
+                     (change)="toggleSelectAll($event, form, item)"
+                     [value]="item.key" [id]="'checkbox_roles' + item.key"
+                     [name]="'checkbox_roles' + item.key"
+                />
+                <label
+                [for]="'checkbox_roles' + item.key"
+                class="govuk-label govuk-checkboxes__label"
+                  >{{item.label}}</label>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <hr />
+        <ng-container id="job_title_group">
+          <h3 class="govuk-label govuk-label--m">
+            Job title
+          </h3>
+          <div class="govuk-body">
+            <div class="govuk-checkboxes govuk-checkboxes--small" formGroupName="jobTitle" attr.field="jobTitle" id="checkbox_job_title">
+              <div *ngFor="let item of staffFilterOptions.jobTitles; let i = index" class="govuk-checkboxes__item">
+                <input type="checkbox" class="govuk-checkboxes__input"
+                     [formControlName]="i"
+                     (change)="toggleSelectAll($event, form, item)"
+                     [value]="item.key" [id]="'checkbox_job_title' + item.key"
+                     [name]="'checkbox_job_title' + item.key"
+                />
+                <label
+                [for]="'checkbox_job_title' + item.key"
+                class="govuk-label govuk-checkboxes__label"
+                  >{{item.label}}</label>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container id="skills_group">
+          <h3 class="govuk-label govuk-label--m">
+            Skills
+          </h3>
+          <div class="govuk-checkboxes govuk-checkboxes--small" formGroupName="skills" attr.field="skills" id="checkbox_skills">
+            <div *ngFor="let item of filteredSkillsByServicesCheckbox; let i = index" class="govuk-checkboxes__item">
+              <input type="checkbox" class="govuk-checkboxes__input"
+                     [formControlName]="i"
+                     (change)="toggleSelectSkills($event, form, item)"
+                     [value]="item.key" [id]="'checkbox_skills' + item.key"
+                     [name]="'checkbox_skills' + item.key"
+              />
+              <label
+                [for]="'checkbox_skills' + item.key"
+                class="govuk-label govuk-checkboxes__label"
+                [ngClass]="{'govuk-!-font-weight-bold': item.selectAll}"
+              >{{item.label}}</label>
+            </div>
+          </div>
+        </ng-container>
+        <hr />
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-full">
+            <button
+              class="govuk-button govuk-!-margin-right-1 govuk-!-margin-bottom-0"
+              type="submit"
+              id="applyForm"
+            >Continue</button>
+            <button
+              class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
+              type="button"
+              id="cancelForm"
+              (click)="cancelForm()">Cancel</button>
+          </div>
+        </div>
       </form>
-      <xuilib-generic-filter [config]="filterConfig"
-      ></xuilib-generic-filter>
+      <!-- <xuilib-generic-filter [config]="filterConfig"
+      ></xuilib-generic-filter> -->
     </div>
   </div>
 </exui-page-wrapper>

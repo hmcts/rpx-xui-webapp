@@ -1,5 +1,5 @@
-import {CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion} from '../../role-access/models';
-import {FeatureVariation} from '../models/feature-variation.model';
+import { CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion } from '../../role-access/models';
+import { FeatureVariation } from '../models/feature-variation.model';
 
 export class Utils {
 
@@ -58,12 +58,12 @@ export class Utils {
     });
   }
 
-  public static hasMatchedPermissions(featureVariation: FeatureVariation, jurisdictionId: string, caseType: string, userRoles: string[]): boolean {
-    if (featureVariation.jurisdiction === jurisdictionId && featureVariation.caseType === caseType) {
-      if (userRoles) {
-        return featureVariation.roles ? userRoles.some(userRole =>
-          featureVariation.roles.some(role => role === userRole)) : false;
+  public static hasMatchedPermissions(featureVariation: FeatureVariation, jurisdictionId: string, caseType: string): boolean {
+    if (featureVariation.jurisdiction === jurisdictionId) {
+      if (featureVariation.includeCaseTypes?.length > 0 && !featureVariation.includeCaseTypes.includes(caseType)) {
+        return false;
       }
+      return true;
     }
     return false;
   }

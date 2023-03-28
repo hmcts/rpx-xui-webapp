@@ -46,3 +46,19 @@
 .govuk-input {
   max-width: 480px;
 }
+
+.govuk-select {
+  width: 100%;
+  max-width: 480px;
+}
+
+.govuk-checkboxes {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+
+  > div {
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+}

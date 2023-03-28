@@ -517,15 +517,22 @@ class Element {
             const interval = setInterval(async () => {
                 const elapsedTime = (Date.now() - startTime)/1000;
                 const isPresent = await this.isPresent()
+                reportLogger.AddMessage(`WAIT elapsed time : ${elapsedTime}`)
                 if (isPresent) {
                     clearInterval(interval)
                     resolve(true)
-                } else if (elapsedTime > 30){
-                    clearInterval(interval);
-                    reportLogger.AddMessage(`ELEMENT_WAIT_FAILED: not present ${JSON.stringify(this.selector)} at ${this.__getCallingFunctionName()} `);
-                    reject(false);
-                }
+                } 
+                // else if (elapsedTime > 30){
+                //     clearInterval(interval);
+                //     reportLogger.AddMessage(`ELEMENT_WAIT_FAILED: not present ${JSON.stringify(this.selector)} at ${this.__getCallingFunctionName()} `);
+                //     reject(false);
+                // }
             }, 500);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                reject(false);
+            }, 30*1000)
          
         });
     }

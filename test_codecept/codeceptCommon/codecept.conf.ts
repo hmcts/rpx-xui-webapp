@@ -105,6 +105,8 @@ exports.config = {
       "reportDir": functional_output_dir,
       reportName:'XUI_MC',
       "overwrite": false,
+      "html": false,
+      "json": true
       // inlineAssets: true
     },
     // "reporterOptions":{
@@ -176,7 +178,7 @@ exports.config = {
   },
   teardown: async () => {
     if (testType === "ngIntegration" && !parallel){
-      await teardown()
+      teardown()
     }
     return true
   },
@@ -188,7 +190,7 @@ exports.config = {
   },
   teardownAll: async () => {  
     if (testType === "ngIntegration" && parallel) {
-      await teardown()
+      teardown()
     }
     return true
   }
@@ -201,12 +203,13 @@ async function setup(){
 }
 
 async function teardown(){
-  merge({
+  const report = await merge({
     files: [`${functional_output_dir}/*.json`]
-  }).then(report => marge.create(report, {
+  })
+  await marge.create(report, {
     "reportDir": `${functional_output_dir}/`,
     "reportFilename": `${functional_output_dir}/report`,
-}))
+  });
   await backendMockApp.stopServer();
   await applicationServer.stop()
 }

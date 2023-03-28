@@ -76,10 +76,8 @@ const { DataTableArgument } = require('codeceptjs');
         const dataTableRowHashes = datatable.parse().hashes();
 
         for (const row of dataTableRowHashes){
-            const defaultSortColumnForUserType = dataTableRowHash[userType];
-            if (dataTableRowHash[userType]){
-
-            }
+            const defaultSortColumnForUserType = row[userType];
+          
             const expectedSortState = sortState.toLowerCase();
             await BrowserWaits.retryWithActionCallback(async () => {
                 expect(await table.getColumnSortState(defaultSortColumnForUserType)).to.include(expectedSortState);

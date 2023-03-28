@@ -12,7 +12,6 @@ import { StaffUserDetailsComponent } from './containers/staff-user-details/staff
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
 import { StaffAddEditUserFormId } from './models/staff-add-edit-user-form-id.enum';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
-import { StaffFilterOptionsLocationsResolver } from './resolvers/staff-filter-options-locations.resolver';
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
@@ -27,7 +26,6 @@ export const ROUTES: Routes = [
       services: StaffFilterOptionsServicesResolver,
       skills: StaffFilterOptionsSkillsResolver,
       userTypes: StaffFilterOptionsUserTypesResolver,
-      locations: StaffFilterOptionsLocationsResolver,
     },
     children: [
       { path: '', component: StaffUsersComponent },

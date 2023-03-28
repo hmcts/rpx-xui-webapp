@@ -7,7 +7,6 @@ import {
   GenericFilterComponent,
   GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
@@ -27,7 +26,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
     jobTitles: StaffFilterOption[],
     skills: GroupOptions[],
     services: StaffFilterOption[],
-    locations: LocationByEPIMMSModel[];
   };
   public roles: StaffFilterOption[] = [
     { key: 'case-allocator', label: 'Case allocator' },
@@ -53,7 +51,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services,
-      locations: this.activatedRoute.snapshot.data.locations
     };
 
     this.initFormConfig();

@@ -8,7 +8,7 @@
       <div class="govuk-!-margin-bottom-4">
         <p class="hmcts-pagination__results">
           Showing <b>{{(tableData.pageNumber * tableData.pageSize) - tableData.pageSize + 1}}</b> to
-          <b>{{ (tableData.pageNumber * tableData.pageSize) > tableData?.totalItems ? tableData?.items.length : tableData.pageNumber * tableData.pageSize }}</b>
+          <b>{{ (tableData.pageNumber * tableData.pageSize) > tableData?.totalItems ? tableData?.totalItems : tableData.pageNumber * tableData.pageSize }}</b>
           of <b>{{ tableData.totalItems }}</b> results
         </p>
       </div>

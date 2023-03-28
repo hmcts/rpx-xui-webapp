@@ -15,11 +15,6 @@ export class StaffUsersComponent  {
     public staffDataFilterService: StaffDataFilterService,
     private infoMessageCommService: InfoMessageCommService
   ) {
-    // this.staffDataFilterService.tableData$.pipe(
-    //   take(1)
-    // ).subscribe((data) => {
-    //   this.advancedSearchEnabled = data.is
-    // })
   }
 
   public advancedSearchClicked(): void {

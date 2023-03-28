@@ -103,7 +103,7 @@ export class CaseViewerContainerComponent implements OnInit {
         const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
         const caseTypeId = this.caseDetails.case_type.id;
         const hasMatchedPermissions = featureVariations.some(featureVariation =>
-          Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId, userRoles));
+          Utils.hasMatchedPermissions(featureVariation, jurisdictionId, caseTypeId));
         return hasMatchedPermissions ? this.appendedTabs : [];
       })
     );

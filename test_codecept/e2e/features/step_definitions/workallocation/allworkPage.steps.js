@@ -64,7 +64,7 @@ const { DataTableArgument } = require('codeceptjs');
         const actualOption = await allWorkPage.getFilterSelectOrRadioOptions(filterItem);
         reportLogger.AddMessage(`${filterItem} options displayed : ${JSON.stringify(actualOption)}`);
  
-        for (const option of filterOptions.split(",")) {
+        for (const option of filterOptions) {
             expect(actualOption).to.includes(option)
         }
 

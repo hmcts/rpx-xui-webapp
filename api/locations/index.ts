@@ -64,11 +64,11 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
         location.epimms_id === locationInfo.epimms_id
       ))
     );
+
     res.status(response.status).send(response.data.results);
   } catch (error) {
     next(error);
   }
-
 }
 
 export function filterOutResults(locations: LocationModel[], locationIds: string[],

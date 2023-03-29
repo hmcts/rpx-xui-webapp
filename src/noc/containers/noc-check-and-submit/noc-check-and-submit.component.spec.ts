@@ -1,12 +1,19 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { AFFIRMATION_DEFAULT_DISAGREE_ERROR, AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR } from '../../constants/nocErrorMap.enum';
 import { NocAnswer, NocEvent, NocNavigationEvent, NocQuestion } from '../../models';
 import * as fromFeature from '../../store';
 import { NocCheckAndSubmitComponent } from './noc-check-and-submit.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocCheckAndSubmitComponent', () => {
   let component: NocCheckAndSubmitComponent;
@@ -63,9 +70,9 @@ describe('NocCheckAndSubmitComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocCheckAndSubmitComponent ],
+      declarations: [ NocCheckAndSubmitComponent, RpxTranslateMockPipe ],
       providers: [
-        provideMockStore()
+        provideMockStore(),
       ]
     })
     .compileComponents();

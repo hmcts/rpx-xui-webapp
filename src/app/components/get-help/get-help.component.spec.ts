@@ -1,8 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ContactDetailsComponent } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { RpxTranslatePipe } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { GetHelpComponent } from '..';
 
@@ -13,7 +14,7 @@ describe('GetHelpComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [GetHelpComponent, ContactDetailsComponent],
+      declarations: [GetHelpComponent, ContactDetailsComponent, RpxTranslatePipe],
       providers: [
       {
         provide: Store,

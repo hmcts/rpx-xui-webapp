@@ -1,9 +1,15 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { State } from '../../../app/store/reducers';
+import { provideMockStore } from '@ngrx/store/testing';
 import { CaseShareConfirmComponent } from './case-share-confirm.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('CaseShareConfirmComponent', () => {
   let component: CaseShareConfirmComponent;
@@ -13,8 +19,8 @@ describe('CaseShareConfirmComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ CaseShareConfirmComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [ CaseShareConfirmComponent, RpxTranslateMockPipe ],
       providers: [
         provideMockStore(),
       ]

@@ -21,6 +21,8 @@ import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
+import { UserRole } from 'src/app/models';
+import { AppUtils } from 'src/app/app-utils';
 
 @Component({
   template: `
@@ -332,6 +334,13 @@ xdescribe('AllWorkTaskComponent', () => {
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
 
+      const userInfo = { roles: [UserRole.Judicial] };
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+      spyOn(AppUtils, 'getUserRole').and.returnValue(UserRole.Judicial);
+
+      const actual = component.getSearchTaskRequestPagination();
+
+      expect(actual.search_by).toEqual('judge');
     });
     afterEach(() => {
       fixture.destroy();

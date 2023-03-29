@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs/internal/observable/of';
 import { ErrorMessageComponent } from '../../../app/components';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
@@ -44,7 +45,14 @@ describe('AllWorkHomeComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        ExuiCommonLibModule
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1
+          },
+          testMode: true
+        })
       ],
       declarations: [AllWorkHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
       providers: [

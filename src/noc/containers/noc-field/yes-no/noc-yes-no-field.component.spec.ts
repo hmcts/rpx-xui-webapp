@@ -1,5 +1,5 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -7,6 +7,12 @@ import { UtilsModule } from '../utils/utils.module';
 import { NocYesNoFieldComponent } from './noc-yes-no-field.component';
 import { YesNoService } from './yes-no.service';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocYesNoFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -42,6 +48,7 @@ describe('NocYesNoFieldComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         NocYesNoFieldComponent,
+        RpxTranslateMockPipe
       ],
       imports: [
         ReactiveFormsModule,

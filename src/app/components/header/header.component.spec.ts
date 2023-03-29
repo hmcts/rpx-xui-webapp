@@ -1,26 +1,41 @@
 import { HttpClientModule } from '@angular/common/http';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 
-import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { HmctsGlobalHeaderComponent } from '..';
+import { PhaseBannerComponent } from '../../components/phase-banner/phase-banner.component';
 import { HeaderComponent } from './header.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('Header Component', () => {
   let mockStore: any;
   let mockService: any;
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent],
+      declarations: [HeaderComponent, HmctsGlobalHeaderComponent, PhaseBannerComponent, RpxTranslateMockPipe],
       imports: [HttpClientModule, RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: Store, useValue: mockStore }]
+      providers: [
+        { provide: Store, useValue: mockStore },
+        {
+          provide: RpxTranslationService,
+          useFactory: rpxTranslationServiceStub
+        },
+      ]
     }).compileComponents();
   }));
 

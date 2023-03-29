@@ -20,7 +20,7 @@ var { defineSupportCode } = require('cucumber');
         await caseEditPage.validateWorkbasketInputsComplexValues(reqPath);
     })
 
-    Then('validating the case list header against the api response', { timeout: 120 * 1000 }, async function () {
+    Then('validating the case list header against the api response', async function () {
         let reqPath = `data/internal/searchCases?ctid=xuiTestCaseType&use_case=WORKBASKET&view=WORKBASKET&state=caseAdded&page=1`
         let expectedList = await caseEditPage.caseResultsThTitleApiRes(reqPath);
         if (expectedList) {
@@ -37,7 +37,7 @@ var { defineSupportCode } = require('cucumber');
         await caseEditPage.validateSearchInputs(reqPath);
     })
 
-    Then('Validating the search inputs case list headers against api response', { timeout: 120 * 1000 }, async function () {
+    Then('Validating the search inputs case list headers against api response', async function () {
         let reqPath = `data/internal/searchCases?ctid=xuiTestCaseType&use_case=SEARCH&view=SEARCH&page=1`
         let expectedList = await caseEditPage.caseResultsThTitleApiRes(reqPath);
         if (expectedList) {

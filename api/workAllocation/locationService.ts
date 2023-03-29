@@ -4,7 +4,7 @@ import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { getServiceRefDataMappingList } from '../serviceRefData';
+import { getServiceRefDataMappingList } from '../ref-data/ref-data-utils';
 import { prepareGetLocationsUrl } from './util';
 
 export async function handleLocationGet(fullPath: string, req: EnhancedRequest): Promise<AxiosResponse<any>> {
@@ -81,12 +81,12 @@ export async function getRegionLocationsForServices(req: EnhancedRequest) {
     response.data.court_venues.forEach(courtVenue => {
       if (!regions.includes(courtVenue.region_id)) {
         regions.push(courtVenue.region_id);
-        regionLocations.push({regionId: courtVenue.region_id, locations: [courtVenue.epimms_id]})
+        regionLocations.push({regionId: courtVenue.region_id, locations: [courtVenue.epimms_id]});
       } else {
         regionLocations.find(locationList =>
            locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
       }
-    })
+    });
   }
   return regionLocations;
 }

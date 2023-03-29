@@ -68,11 +68,17 @@ function loginLogoutObjects() {
   };
 
   this.loginWithCredentials = async function (username, password) {
+    await browser.sleep(5)
     await BrowserWaits.waitForElement(this.emailAddress);
-    CucumberReportLogger.AddMessage("IDAM URL :" + await browser.getCurrentUrl(), LOG_LEVELS.Debug);
+    // CucumberReportLogger.AddMessage("IDAM URL :" + await browser.getCurrentUrl(), LOG_LEVELS.Debug);
     await this.enterUrEmail(username);
+    console.log('username done')
     await this.enterPassword(password);
+    console.log('password done')
+
     await this.clickSignIn();
+    console.log('sign in done')
+
   };
 
 }

@@ -1,20 +1,20 @@
 <ng-container [ngSwitch]="messageType">
   <ng-container *ngSwitchCase="'suspended'">
-    <!-- TODO - UnDo this as commented it due to common-lib tag version ([messageBoldText]="true"  ) -->
     <xuilib-hmcts-banner
       [type]="'success'"
       [title]="'User suspended'"
       [message]="'To make this user active again, select \'Restore\'.'"
+      [messageBoldText]="true"
     >
     </xuilib-hmcts-banner>
   </ng-container>
   <ng-container *ngSwitchCase="'error'">
-    <!-- TODO - UnDo this as commented it due to common-lib tag version ([messageBoldText]="true"  ) -->
     <xuilib-hmcts-banner
       [type]="'warning'"
       [message]="
         'There is a problem. There was a system error and your request could not be processed.'
       "
+      [messageBoldText]="true"
     >
     </xuilib-hmcts-banner>
   </ng-container>

@@ -1,12 +1,16 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
-import { StaffAddEditUserFormId } from '../../components/staff-add-edit-user-form-id.enum';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { InfoMessageType } from '../../../role-access/models/enums';
+import { StaffAddEditUserFormId } from '../../../staff-administrator/models/staff-add-edit-user-form-id.enum';
 import { StaffStatusComponent } from '../../components/staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from '../../components/staff-suspended-banner/staff-suspended-banner.component';
 import { StaffUser } from '../../models/staff-user.model';
@@ -24,28 +28,32 @@ describe('StaffUserDetailsComponent', () => {
   let fixture: ComponentFixture<StaffUserDetailsComponent>;
   let route: ActivatedRoute;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
+  let mockMessageService: jasmine.SpyObj<InfoMessageCommService>
   let location: Location;
   let router: jasmine.SpyObj<Router>;
-  let testStaffUser: StaffUser;
+  let testStaffUserData: Partial<StaffUser>;
   const caseWorkerId = '123456';
 
   beforeEach(waitForAsync(() => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
       'mockStaffDataAccessService', ['updateUser']
     );
-    const testStaffUserData = {
+    mockMessageService = jasmine.createSpyObj<InfoMessageCommService>(
+      'mockMessageService', ['nextMessage']
+    );
+
+    testStaffUserData = {
       email_id: 'email@test.hmcts',
       first_name: 'Kevin',
       last_name: 'Silver',
-      suspended: 'false',
+      suspended: false,
       user_type: 'userType',
-      task_supervisor: 'Y',
-      case_allocator: 'Y',
-      staff_admin: 'N',
-      userCategory: 'userCategory',
-      role: [
+      task_supervisor: true,
+      case_allocator: true,
+      staff_admin: false,
+      roles: [
         {
-          role_id: 1,
+          role_id: '1',
           role: 'Role',
           is_primary: true,
         }
@@ -53,17 +61,16 @@ describe('StaffUserDetailsComponent', () => {
       skills: [
         {
           skill_id: 1,
-          description: 'SKILLDESCRIPTION',
-          skill_code: 'SKILLCODE',
+          description: 'SKILLCODE',
         }
       ],
-      work_area: [
+      services: [
         {
-          area_of_work: 'service',
+          service: 'service',
           service_code: 'SERVICE_CODE'
         }
       ],
-      base_location: [
+      base_locations: [
         {
           location_id: 333,
           location: 'Location',
@@ -73,7 +80,6 @@ describe('StaffUserDetailsComponent', () => {
       region: 'West Midlands',
       region_id: 12,
     };
-    testStaffUser = StaffUser.from(testStaffUserData);
 
     TestBed.configureTestingModule({
       declarations: [
@@ -93,6 +99,7 @@ describe('StaffUserDetailsComponent', () => {
       ],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
+        { provide: InfoMessageCommService, useValue: mockMessageService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -102,8 +109,8 @@ describe('StaffUserDetailsComponent', () => {
               },
               data: {
                 staffUserDetails: {
-                  userDetails: testStaffUser
-                },
+                  userDetails: testStaffUserData
+                }
               }
             },
           },
@@ -155,26 +162,27 @@ describe('StaffUserDetailsComponent', () => {
   });
 
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
+    expect(component.userDetails.suspended).toBe(false);
     mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
     component.updateUserStatus();
-    fixture.detectChanges();
 
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
+    expect(component.userDetails.suspended).toBe(true);
     expect(component.suspendedStatus).toBe('suspended');
   });
 
   it('should set suspendedStatus to "restored" to show the banner when calling updateUserStatus with isSuspended true', () => {
     mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
-    testStaffUser.suspended = 'true';
+    component.userDetails.suspended = true;
     component.updateUserStatus();
     fixture.detectChanges();
 
-    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(component.suspendedStatus).toBe('restored');
+    expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
   });
 
   it('should userDetails property if it exists in routers extra state', () => {
-    expect(component.userDetails).toEqual(testStaffUser);
+    const testStaffUserObject = StaffUser.from(testStaffUserData);
+    expect(component.userDetails).toEqual(testStaffUserObject);
   });
 
   it('should set filterSettings on sessionStorage on FILTER_ID as key and navigate' +
@@ -209,4 +217,50 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.setDataForGenericFilterAndNavigate)
       .toHaveBeenCalledWith(StaffAddEditUserFormId.CopyUser, `/staff/user-details/${caseWorkerId}/copy`);
   }));
+
+  it('should have a disabled button if suspended is true', () => {
+    const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));
+    expect(component.userDetails.suspended).toBe(false);
+    expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toBeNull();
+    component.userDetails.suspended = true;
+    fixture.detectChanges();
+    expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toEqual('');
+  });
+
+  it('should not make a api call if user is suspended when calling updateUserStatus', () => {
+    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
+    component.userDetails.suspended = true;
+    component.updateUserStatus();
+    expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
+  });
+
+  describe('resendInvite', () => {
+    it('Should show success message on sending activation email', () => {
+      mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
+      component.resendInvite();
+      fixture.detectChanges();
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, testStaffUserData);
+      staffUser.is_resend_invite = true;
+      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
+      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
+        message: InfoMessage.ACTIVATION_EMAIL_SENT,
+        type: InfoMessageType.SUCCESS
+      } as InformationMessage);
+    });
+
+    it('should show error messge on failure in sending activation emails', () => {
+      mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 500 }));
+      component.resendInvite();
+      fixture.detectChanges();
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, testStaffUserData);
+      staffUser.is_resend_invite = true;
+      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
+      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
+        message: InfoMessage.ACTIVATION_EMAIL_ERROR,
+        type: InfoMessageType.WARNING
+      } as InformationMessage);
+    });
+  });
 });

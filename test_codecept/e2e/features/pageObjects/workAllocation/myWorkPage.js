@@ -142,6 +142,7 @@ class MyWorkPage extends TaskList {
     async amOnPage() {
         try{
             await BrowserWaits.waitForSpinnerToDissappear();
+            await this.pageHeader.wait(20);
             await BrowserWaits.waitForConditionAsync(async () => {
                 const pageHeaderTitle = await this.pageHeader.getText();
                 return pageHeaderTitle.includes('My work');

@@ -4,7 +4,6 @@ const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 
 var { defineSupportCode } = require('cucumber');
-const { browser } = require("protractor");
 const BrowserWaits = require("../../support/customWaits");
 const headerPage = require("../pageObjects/headerPage");
 const browserUtil = require("../../../ngIntegration/util/browserUtil");
@@ -69,7 +68,7 @@ const { LOG_LEVELS } = require("../../support/constants");
         await BrowserWaits.waitForSpinnerToDissappear();
     });
 
-    Then('I wait to see case results displayed', {timeout : 180*1000} ,async function(){
+    Then('I wait to see case results displayed' ,async function(){
         await BrowserWaits.retryWithActionCallback(async () => {
             try{
                 await CucumberReportLogger.AddMessage("Step started", LOG_LEVELS.Debug);

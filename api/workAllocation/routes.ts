@@ -65,6 +65,6 @@ router.use('/all-work/cases', getCases);
 
 router.use('/getJudicialUsers', getJudicialUsers);
 router.use('/my-work/myaccess', getMyAccess);
-router.get('/taskNames', getTaskNames)
+router.use('/taskNames', getTaskNames)
 
 export default router;

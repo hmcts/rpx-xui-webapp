@@ -1,5 +1,5 @@
 const addContext = require('mochawesome/addContext');
-const reportLogger = require('../../e2e/support/reportLogger');
+const reportLogger = require('../../codeceptCommon/reportLogger');
 
 class SoftAssert {
 

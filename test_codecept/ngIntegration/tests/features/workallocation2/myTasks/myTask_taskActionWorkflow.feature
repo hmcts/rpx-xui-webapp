@@ -1,48 +1,41 @@
-@ng @wa2 @wa  
+@ng @wa2 @wa  @codecept_enabled 
 Feature: WA Release 2: My work - My tasks - Task actions
 
     Background: Mock and browser setup
+        # Given I navigate to home page
+
+
+    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
+
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | baseLocation |
+            | IA           | Y           | ORGANISATION | 20001        |
+            | SSCS         | Y           | ORGANISATION | 20001        |
+
         Given I init MockApp
         Given I set MOCK tasks with permissions for view "My tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK locations with names in service "IA"
-            | id    | locationName           |
-            | 20001 | IA Court Aldgate Tower |
-            | 20002 | IA Court Birmingham    |
-            | 2003  | IA Court Bradford      |
-            | 20004 | IA Court Glasgow       |
-            | 20005 | IA Court Hatton Cross  |
-            | 20006 | IA Court Newcastle     |
-            | 20007 | IA Court Newport       |
-            | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
-            
+
+
         Given I set MOCK tasks with attributes for view "My tasks"
             | index | permissions                | assignee            | case_name |
             | 0     | Manage,Read,Execute,Cancel |                     | case 1    |
             | 1     | Manage                     |                     | case 2    |
             | 2     | Read                       |                     | case 3    |
             | 3     | Manage,Read                | 1234-1234-1234-1234 | case 4    |
-            | 4     | Manage                     | 1234-1234-1234-1234 | case 5    |
+            | 4     | Manage,unassign                    | 1234-1234-1234-1234 | case 5    |
             | 5     | Read                       | 1234-1234-1234-1234 | case 6    |
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
 
-        Given I set MOCK request "/workallocation/task/:taskId" intercept with reference "taskDetails"
-        Given I set MOCK request "/workallocation/task/:taskId" response log to report
-
-    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -78,13 +71,39 @@ Feature: WA Release 2: My work - My tasks - Task actions
 
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>" cancel workflow
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
+
+
+
+
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
             | IA           | Y           | ORGANISATION | 20001        |
             | SSCS         | Y           | ORGANISATION | 20001        |
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
+
+
+
+        Given I set MOCK tasks with permissions for view "My tasks" and assigned state ""
+            | Permissions | Count |
+            | Manage      | 100   |
+            | Read        | 40    |
+
+
+        Given I set MOCK tasks with attributes for view "My tasks"
+            | index | permissions                | assignee            | case_name |
+            | 0     | Manage,Read,Execute,Cancel |                     | case 1    |
+            | 1     | Manage                     |                     | case 2    |
+            | 2     | Read                       |                     | case 3    |
+            | 3     | Manage,Read                | 1234-1234-1234-1234 | case 4    |
+            | 4     | Manage                     | 1234-1234-1234-1234 | case 5    |
+            | 5     | Read                       | 1234-1234-1234-1234 | case 6    |
+        Given I set MOCK task details for WA release2
+            | case_name        | case_category      | location_name |
+            | Allwork test scr | auto test category | London QA lab |
+  
         Given I start MockApp
         Given I navigate to home page
 

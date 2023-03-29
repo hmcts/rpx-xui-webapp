@@ -38,6 +38,7 @@ const workFlowPage = require("../../pageObjects/workAllocation/workFlow");
     });
 
     Then('I see find person search results in work flow', async function(resulEmails){
+        reportLogger.reportDatatable(resulEmails);
         let counter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
             if (counter > 0){
@@ -45,7 +46,7 @@ const workFlowPage = require("../../pageObjects/workAllocation/workFlow");
             }
             counter++;
             const actualSearcResults = await workFlowPage.findPersonPage.getPersonsReturned();
-            const expectedResultsHashes = resulEmails.hashes();
+            const expectedResultsHashes = resulEmails.parse().hashes();
            
             const expectedResultsArr = [];
             for (const expectedHash of expectedResultsHashes) {

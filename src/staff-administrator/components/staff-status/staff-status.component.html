@@ -1,11 +1,19 @@
-<ng-container *ngIf="!status; else userSuspended">
-  <strong class="hmcts-badge hmcts-badge--green">
-    ACTIVE
-  </strong>
-</ng-container>
+<ng-container [ngSwitch]="status">
+  <div *ngSwitchCase="'ACTIVE'">
+    <strong class="hmcts-badge hmcts-badge--green">
+      ACTIVE
+    </strong>
+  </div>
 
-<ng-template #userSuspended>
-  <strong class="hmcts-badge hmcts-badge--red">
-    SUSPENDED
-  </strong>
-</ng-template>
+  <div *ngSwitchCase="'SUSPENDED'">
+    <strong class="hmcts-badge hmcts-badge--red">
+      SUSPENDED
+    </strong>
+  </div>
+
+  <span *ngSwitchCase="'PENDING'">
+    <strong class="hmcts-badge hmcts-badge--yellow">
+      PENDING
+    </strong>
+  </span>
+</ng-container>

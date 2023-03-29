@@ -4,17 +4,17 @@ import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { AppUtils } from 'src/app/app-utils';
-import { UserRole } from 'src/app/models';
-import { InfoMessageCommService } from './../../../app/shared/services/info-message-comms.service';
-import { AllocateRoleService } from 'src/role-access/services';
-import { ConfigConstants, ListConstants, SortConstants } from 'src/work-allocation/components/constants';
-import { SortOrder } from 'src/work-allocation/enums';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
-import { JurisdictionsService } from '../../services/juridictions.service';
+import { AppUtils } from '../../../app/app-utils';
+import { UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import * as fromActions from '../../../app/store';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { AllocateRoleService } from '../../../role-access/services';
+import { ConfigConstants, ListConstants, SortConstants } from '../../../work-allocation/components/constants';
+import { SortOrder } from '../../../work-allocation/enums';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
+import { CheckReleaseVersionService } from '../../services/check-release-version.service';
+import { JurisdictionsService } from '../../services/juridictions.service';
+import { InfoMessageCommService } from './../../../app/shared/services/info-message-comms.service';
 import { MyCasesComponent } from './my-cases.component';
 
 describe('MyCasesComponent', () => {

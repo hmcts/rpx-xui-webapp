@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { StaffAddEditUserFormId } from '../../components/staff-add-edit-user-form-id.enum';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { InfoMessageType } from '../../../role-access/models/enums';
+import { StaffAddEditUserFormId } from '../../../staff-administrator/models/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
@@ -14,25 +18,29 @@ export class StaffUserDetailsComponent {
   public userDetails: StaffUser;
   public showAction: boolean = false;
   public loading = false;
-  public suspendedStatus: 'suspended' | 'restored' | 'error';
+  public suspendedStatus: 'suspended' | 'error';
 
   constructor(
     private route: ActivatedRoute,
     private readonly router: Router,
-    private staffDataAccessService: StaffDataAccessService
+    private staffDataAccessService: StaffDataAccessService,
+    private readonly messageService: InfoMessageCommService,
   ) {
-    this.userDetails = this.route.snapshot.data.staffUserDetails.userDetails;
-    if (!this.userDetails) {
+    const userDetailsFromSnapshot = this.route.snapshot.data.staffUserDetails.userDetails;
+
+    if (!userDetailsFromSnapshot) {
       this.router.navigateByUrl('/staff');
+    } else {
+      this.userDetails = StaffUser.from(userDetailsFromSnapshot);
     }
   }
 
   public updateUserStatus(): void {
-    if (!this.loading) {
+    if (!this.loading && !this.userDetails.suspended) {
       this.loading = true;
       const staffUser = new StaffUser();
       Object.assign(staffUser, this.userDetails);
-      staffUser.suspended = this.userDetails.suspended === 'true' ? 'false' : 'true';
+      staffUser.suspended = true;
       this.staffDataAccessService.updateUser(staffUser).pipe(
         finalize(() => {
           this.loading = false;
@@ -41,7 +49,7 @@ export class StaffUserDetailsComponent {
       )
         .subscribe(
           () => {
-            this.suspendedStatus = staffUser.suspended === 'true' ? 'suspended' : 'restored';
+            this.suspendedStatus = 'suspended';
             this.userDetails.suspended = staffUser.suspended;
           },
           (err) => {
@@ -52,6 +60,34 @@ export class StaffUserDetailsComponent {
             }
           }
         );
+    }
+  }
+
+  public resendInvite(): void {
+    if (!this.loading) {
+      this.loading = true;
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, this.userDetails);
+      staffUser.is_resend_invite = true;
+      this.staffDataAccessService.updateUser(staffUser).pipe(
+        finalize(() => {
+          this.loading = false;
+          window.scrollTo(0, 0);
+        })
+      )
+      .subscribe((success) => {
+        this.messageService.nextMessage({
+          message: InfoMessage.ACTIVATION_EMAIL_SENT,
+          type: InfoMessageType.SUCCESS
+        } as InformationMessage);
+        },
+        (err) => {
+          this.messageService.nextMessage({
+            message: InfoMessage.ACTIVATION_EMAIL_ERROR,
+            type: InfoMessageType.WARNING
+          } as InformationMessage);
+        }
+      );
     }
   }
 
@@ -70,7 +106,7 @@ export class StaffUserDetailsComponent {
   }
 
   public setDataForGenericFilterAndNavigate(filterId: string, destination: string) {
-    const primaryLocation = this.userDetails.base_location.find(item => item.is_primary);
+    const primaryLocation = this.userDetails.base_locations.find(item => item.is_primary);
     const formValues = {
       id: filterId,
       fields: [
@@ -88,7 +124,7 @@ export class StaffUserDetailsComponent {
         },
         {
           name: 'user-services',
-          value: this.userDetails.work_area.map(item => item.service_code)
+          value: this.userDetails.services.map(item => item.service_code)
         },
         {
           name: 'region_id',
@@ -100,7 +136,7 @@ export class StaffUserDetailsComponent {
         },
         {
           name: 'additionalLocations',
-          value: this.userDetails.base_location.filter(item => !item.is_primary).map(location => {
+          value: this.userDetails.base_locations.filter(item => !item.is_primary).map(location => {
             return { epimms_id: location.location_id, site_name: location.location };
           })
         },
@@ -118,7 +154,7 @@ export class StaffUserDetailsComponent {
         },
         {
           name: 'jobTitle',
-          value: this.userDetails.role.map(item => Number(item.role_id))
+          value: this.userDetails.roles.map(item => Number(item.role_id))
         },
         {
           name: 'user-skills',

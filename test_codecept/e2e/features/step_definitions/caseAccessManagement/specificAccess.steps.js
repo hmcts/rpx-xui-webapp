@@ -9,6 +9,7 @@ const caseRolesAndAccessPage = require("../../pageObjects/workAllocation/caseRol
 const ArrayUtil = require('../../../utils/ArrayUtil');
 
 const workFlowPage = require("../../pageObjects/caseAccessManagement/SARWorkflow");
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -40,7 +41,8 @@ const workFlowPage = require("../../pageObjects/caseAccessManagement/SARWorkflow
     });
 
     Then('I validate Review specific access page radio options for actions', async function (datatable) {
-        const radioOptions = datatable.hashes();
+        reportLogger.reportDatatable(datatable)
+        const radioOptions = datatable.parse().hashes();
         const expectedOptions = radioOptions.map(hashOption => hashOption.option) 
 
         await BrowserWaits.retryWithActionCallback(async () => {

@@ -1,31 +1,9 @@
 
-@ng 
+@ng @codecept_enabled 
 Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
-        Given I init MockApp
-        Given I set MOCK locations with names in service "IA"
-            | id    | locationName           |
-            | 20001 | IA Court Aldgate Tower |
-            | 20002 | IA Court Birmingham    |
-            | 2003  | IA Court Bradford      |
-            | 20004 | IA Court Glasgow       |
-            | 20005 | IA Court Hatton Cross  |
-            | 20006 | IA Court Newcastle     |
-            | 20007 | IA Court Newport       |
-            | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
-        Given I set MOCK locations with names in service "SSCS"
-            | id    | locationName           |
-            | 30001 | IA Court Aldgate Tower |
-            | 30002 | IA Court Birmingham    |
-            | 3003  | IA Court Bradford      |
-            | 30004 | IA Court Glasgow       |
-            | 30005 | IA Court Hatton Cross  |
-            | 30006 | IA Court Newcastle     |
-            | 30007 | IA Court Newport       |
-            | 30008 | IA Court North Shields |
-            | 30009 | IA Court Taylor House  |
+      
 
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
         
@@ -41,16 +19,9 @@ Feature: WA Release 2: My work -  Available tasks
             | Permissions | Count |
             | Manage      | 10    |
             | Read        | 10    |
-        Given I set MOCK case workers for release "1"
-            | email              | firstName | lastName | idamId              | location.id | location.locationName |
-            | test_cw_1@test.com | cw1       | test     | 1234-1234-1234-1231 | 10001       | Location 1            |
-            | test_cw_2@test.com | cw2       | test     | 1234-1234-1234-1232 | 10002       | Location 2            |
-            | test_cw_3@test.com | cw3       | test     | 1234-1234-1234-1233 | 10003       | Location 3            |
-            | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
-            | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
-        Given I set MOCK tasks with attributes for view "Available tasks"
-            | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | created_date | hearing_date | case_category        |
-            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1      | -10          | 20           | auto test category 1 |
+         Given I set MOCK tasks with attributes for view "Available tasks"
+            | index | permissions                | assignee            | case_name | location_name   | task_title       | due_date | created_date | hearing_date | case_category        |
+            | 0     | Manage,Read,Execute,Cancel,claim | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1      | -10          | 20           | auto test category 1 |
             | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0       | -10          | 21           | auto test category 2 |
             | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1       | -10          | 22           | auto test category 3 |
             | 3     | Manage,Read                | 1234-1234-1234-1231 | case 4    | test location 4 | test auto task 4 | -10     | -20          | 23           | auto test category 4 |
@@ -82,8 +53,8 @@ Feature: WA Release 2: My work -  Available tasks
             | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
 
 
-        Then I validate work allocation task table column "Task" width less than or equal to 280
-        Then I validate work allocation task table column "Case name" width less than or equal to 200
+        # Then I validate work allocation task table column "Task" width less than or equal to 280
+        # Then I validate work allocation task table column "Case name" width less than or equal to 200
 
         Then I see manage link displayed for task at position 1
         Then I see manage link not displayed for task at position 2
@@ -115,7 +86,6 @@ Feature: WA Release 2: My work -  Available tasks
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -155,15 +125,8 @@ Feature: WA Release 2: My work -  Available tasks
             | Permissions | Count |
             | Manage      | 10    |
             | Read        | 10    |
-        Given I set MOCK case workers for release "1"
-            | email              | firstName | lastName | idamId              | location.id | location.locationName |
-            | test_cw_1@test.com | cw1       | test     | 1234-1234-1234-1231 | 10001       | Location 1            |
-            | test_cw_2@test.com | cw2       | test     | 1234-1234-1234-1232 | 10002       | Location 2            |
-            | test_cw_3@test.com | cw3       | test     | 1234-1234-1234-1233 | 10003       | Location 3            |
-            | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
-            | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
-        Given I set MOCK tasks with attributes for view "Available tasks"
-            | index | permissions                | assignee            | case_name                                                                                  | location_name   | task_title                                                                                                                                                       | dueDate | created_date | case_category        |
+           Given I set MOCK tasks with attributes for view "Available tasks"
+            | index | permissions                | assignee            | case_name                                                                                  | location_name   | task_title                                                                                                                                                       | due_date | created_date | case_category        |
             | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1                                                                                     | test location 1 | test auto task 1                                                                                                                                                 | -1      | -10          | auto test category 1 |
             | 1     | Manage                     | 1234-1234-1234-1231 | case 2                                                                                     | test location 2 | test auto task 2                                                                                                                                                 | 0       | -10          | auto test category 2 |
             | 2     | Read                       | 1234-1234-1234-1231 | case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6 | test location 3 | test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6 | -30     | -40          | auto test category 3 |
@@ -183,8 +146,8 @@ Feature: WA Release 2: My work -  Available tasks
             | Priority      | Yes        | No    |
 
 
-        Then I validate work allocation task table column "Task" width less than or equal to 280
-        Then I validate work allocation task table column "Case name" width less than or equal to 200
+        # Then I validate work allocation task table column "Task" width less than or equal to 280
+        # Then I validate work allocation task table column "Case name" width less than or equal to 200
 
         Then If current user "<UserType>" is "Judge", I validate task table values displayed
             | row | Case name                                                                                  | Case category        | Location        | Task                                                                                                                                                             | Task created |

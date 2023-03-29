@@ -3,20 +3,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   FilterService, GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
-import { UserDetails } from '../../../../app/models/user-details.model';
+import { UserDetails } from '../../../../app/models';
 import { InfoMessage } from '../../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../../app/shared/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 import * as fromAppStore from '../../../../app/store';
 import { InfoMessageType } from '../../../../role-access/models/enums';
+import { StaffAddEditUserFormId } from '../../../../staff-administrator/models/staff-add-edit-user-form-id.enum';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffUser } from '../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
-import { StaffAddEditUserFormId } from '../../staff-add-edit-user-form-id.enum';
-
 
 @Component({
   selector: 'exui-staff-user-check-answers',
@@ -51,8 +50,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public ngOnInit() {
     this.formId = this.activatedRoute.snapshot.data.formId;
     this.isUpdateMode = this.formId === StaffAddEditUserFormId.UpdateUser;
-    console.log(this.formId);
-    console.log(this.isUpdateMode);
 
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,

@@ -28,7 +28,6 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   let serviceIds = req.body.serviceIds;
   const locationType = req.body.locationType;
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
-  const bookingLocations = req.body.bookingLocations;
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
     res.status(200).send([]);
@@ -55,11 +54,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
       const regionIds = getRegionIdsFromLocationList(userLocation.locations);
       // when we are trying to filter out locations when booking location is present - my work
-      if (userLocation.bookable && bookingLocations) {
-        results = filterOutResults(results, bookingLocations, [], courtTypes);
-      } else {
-        results = filterOutResults(results, locationIds, regionIds, courtTypes);
-      }
+      results = filterOutResults(results, locationIds, regionIds, courtTypes);
     });
     // added line below to ensure any locations from non-used services are removes
     // (API occasionally sending irrelevant location previously)
@@ -69,11 +64,11 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
         location.epimms_id === locationInfo.epimms_id
       ))
     );
+
     res.status(response.status).send(response.data.results);
   } catch (error) {
     next(error);
   }
-
 }
 
 export function filterOutResults(locations: LocationModel[], locationIds: string[],

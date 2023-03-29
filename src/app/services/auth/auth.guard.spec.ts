@@ -13,6 +13,25 @@ class HttpClientMock {
   }
 }
 
+class SessionStorageMock implements SessionStorageService {
+  public removeItem(key: string): void { }
+  public clear(): void { }
+  public getItem(key: string, removeAfterRead?: boolean) {
+    switch(key) {
+      case 'userDetails': {
+        return JSON.stringify({roles: ['someRoles']});
+      }
+      case 'redirectUrl': {
+        return '/cheesecakes/1';
+      }
+      default: {
+        return null
+      }
+    }
+  }
+  public setItem(key: string, value: string) { }
+}
+
 describe('AuthGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -105,9 +124,10 @@ describe('AuthGuard', () => {
       authService.isAuthenticated.and.returnValue(of(true));
       authService.setWindowLocationHref.and.callThrough();
       windowLocationService.getPathName.and.returnValue('/');
-      sessionStorageService.getItem.and.returnValue('/cheesecakes/1');
 
-      const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
+      const sessionStorageServiceStub = new SessionStorageMock()
+
+      const guard = new AuthGuard(authService, sessionStorageServiceStub, windowLocationService);
 
       const canActivate = guard.canActivate();
       canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
@@ -127,6 +147,11 @@ describe('AuthGuard', () => {
       canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
 
       expect(authService.setWindowLocationHref).not.toHaveBeenCalledWith('/cheesecakes/1');
+    });
+    it('Get JSON object Handles errors', () => {
+      const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
+      const result = guard.getJSONObject('someobject');
+      expect(result).toBeNull()
     });
   });
 });

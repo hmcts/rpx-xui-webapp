@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   BookingCheckType,
@@ -7,7 +7,6 @@ import {
   GenericFilterComponent,
   GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
@@ -19,7 +18,7 @@ import { STAFF_REGIONS } from '../../../models/staff-regions';
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
+export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public editMode = false;
   public formId: string = '';
   public staffFilterOptions: {
@@ -27,12 +26,11 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
     jobTitles: StaffFilterOption[],
     skills: GroupOptions[],
     services: StaffFilterOption[],
-    locations: LocationByEPIMMSModel[];
   };
   public roles: StaffFilterOption[] = [
-    { key: 'case-allocator', label: 'Case Allocator' },
-    { key: 'task-supervisor', label: 'Task Supervisor' },
-    { key: 'staff-administrator', label: 'Staff Administrator' },
+    { key: 'case-allocator', label: 'Case allocator' },
+    { key: 'task-supervisor', label: 'Task supervisor' },
+    { key: 'staff-administrator', label: 'Staff administrator' },
   ];
   public filterConfig: FilterConfig;
   public errors$: Observable<ErrorMessage | undefined>;
@@ -53,7 +51,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services,
-      locations: this.activatedRoute.snapshot.data.locations
     };
 
     this.initFormConfig();
@@ -94,13 +91,26 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy {
     this.filterStreamSubscription?.unsubscribe();
   }
 
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+  }
+
+  public fragmentFocus(): void {
+    this.activatedRoute.fragment.subscribe(frag => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
+        element.focus();
+      }
+    });
+  }
+
   public resetForm() {
     this.filterService.clearSessionAndLocalPersistance(this.formId);
     this.filterService.givenErrors.next(null);
   }
 
   public initFormConfig() {
-    console.log(...this.staffFilterOptions.services);
     this.filterConfig = {
       id: this.formId,
       fields: [

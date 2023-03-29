@@ -8,18 +8,20 @@ class MessageBanner{
 
 
     constructor(parentCssLocator) {
-        this.parentCssLocator = parentCssLocator;
-        this.bannerMessageContainer = $(`exui-info-message .hmcts-banner, exui-alert .hmcts-banner `)
-        this.infoMessages = $$(`exui-info-message .hmcts-banner__message , exui-alert .hmcts-banner__message `);
+        this.parentCssLocator = null;
+        this.bannerMessageContainer = $(`.hmcts-banner`)
+
+        this.sucessBanner = $('.hmcts-banner.hmcts-banner--success');
+        this.errorBanner = $('.hmcts-banner.hmcts-banner--success');
+
+
+        this.infoMessages = $$(`.hmcts-banner__message`);
     }
 
     async isBannerMessageDisplayed() {
        
         try {
-            if (this.parentCssLocator) {
-                await BrowserWaits.waitForElement($(this.parentCssLocator));
-            }
-            await BrowserWaits.waitForElement(this.bannerMessageContainer,5000);
+            await this.bannerMessageContainer.wait()
             return true;
         } catch (err) {
             cucumberReporter.AddMessage("message banner not displayed: " + err, LOG_LEVELS.Error);
@@ -28,8 +30,9 @@ class MessageBanner{
     }
 
     async getBannerMessagesDisplayed() {
-       
         expect(await this.isBannerMessageDisplayed(), "Message banner not displayed").to.be.true;
+        await this.bannerMessageContainer.isDisplayed()
+
         const messagescount = await this.infoMessages.count();
         const messages = [];
         for (let i = 0; i < messagescount; i++) {

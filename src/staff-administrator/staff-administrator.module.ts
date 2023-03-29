@@ -2,15 +2,15 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { SharedModule } from '../app/shared/shared.module';
+import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffStatusComponent } from './components/staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from './components/staff-suspended-banner/staff-suspended-banner.component';
-import { StaffDataFilterService } from './components/staff-users/services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from './components/staff-users/staff-search/staff-search.component';
 import { StaffUserListComponent } from './components/staff-users/staff-user-list/staff-user-list.component';
@@ -23,7 +23,6 @@ import { StaffUserDetailsComponent } from './containers/staff-user-details/staff
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
 import { PluckAndJoinPipe } from './pipes/pluckAndJoin.pipe';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
-import { StaffFilterOptionsLocationsResolver } from './resolvers/staff-filter-options-locations.resolver';
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
 import { StaffFilterOptionsUserTypesResolver } from './resolvers/staff-filter-options-userTypes.resolver';
@@ -42,6 +41,8 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffAddUserComponent,
     StaffUserCheckAnswersComponent,
     StaffUserDetailsComponent,
+    PluckAndJoinPipe,
+    StaffEditUserContainerComponent,
     StaffStatusComponent,
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,
@@ -55,18 +56,16 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     ExuiCommonLibModule,
     ReactiveFormsModule,
     staffAdministratorRouting,
-    NgxPaginationModule
+    NgxPaginationModule,
+    MatTooltipModule,
   ],
   providers: [
     StaffDataAccessService,
-    StaffDataFilterService,
     StaffFilterOptionsServicesResolver,
     StaffFilterOptionsSkillsResolver,
     StaffFilterOptionsJobTitlesResolver,
     StaffFilterOptionsUserTypesResolver,
     StaffUserDetailsResolverService,
-    StaffFilterOptionsLocationsResolver,
-    StaffDataAccessService,
     WASupportedJurisdictionsService
   ],
   exports: []

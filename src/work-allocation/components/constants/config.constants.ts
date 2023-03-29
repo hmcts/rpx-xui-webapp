@@ -78,10 +78,10 @@ const CASE_CATEGORY_DISABLE_SORT: FieldConfig = {
 };
 
 const NEXT_HEARING_DATE: FieldConfig = {
-  name: 'hearing_date',
+  name: 'next_hearing_date',
   type: FieldType.FORMATTED_DATE,
   columnLabel: 'Hearing date',
-  sortName: 'hearing_date',
+  sortName: 'next_hearing_date',
   views: TaskView.ALL_VIEWS
 };
 
@@ -316,13 +316,13 @@ export const CONFIG_CONSTANTS = {
 
 // Hearing date will not be shown except release 4
 export const CONFIG_CONSTANTS_NOT_RELEASE4 = {
-  AvailableTasksForJudicial: AVAILABLE_TASKS_FOR_JUDICIAL.filter(task => task.name !== 'hearing_date'),
-  AvailableTasksForLegalOps: AVAILABLE_TASKS_FOR_LEGAL_OPS.filter(task => task.name !== 'hearing_date'),
-  MyCases: MY_CASES.filter(task => task.name !== 'hearing_date'),
-  MyTasks: MY_TASKS.filter(task => task.name !== 'hearing_date'),
-  MyWorkTasksForJudicial: MY_WORK_TASKS_FOR_JUDICIAL.filter(task => task.name !== 'hearing_date'),
-  MyWorkTasksForLegalOps: MY_WORK_TASKS_FOR_LEGAL_OPS.filter(task => task.name !== 'hearing_date'),
-  AllWorkTasksForJudicial: ALL_WORK_TASKS_FOR_JUDICIAL.filter(task => task.name !== 'hearing_date'),
-  AllWorkTasksForLegalOps: ALL_WORK_TASKS_FOR_LEGAL_OPS.filter(task => task.name !== 'hearing_date'),
-  AllWorkCases: ALL_WORK_CASES.filter(task => task.name !== 'hearing_date'),
+  AvailableTasksForJudicial: AVAILABLE_TASKS_FOR_JUDICIAL.filter(task => task.name !== 'next_hearing_date'),
+  AvailableTasksForLegalOps: AVAILABLE_TASKS_FOR_LEGAL_OPS.filter(task => task.name !== 'next_hearing_date'),
+  MyCases: MY_CASES.filter(task => task.name !== 'next_hearing_date'),
+  MyTasks: MY_TASKS.filter(task => task.name !== 'next_hearing_date'),
+  MyWorkTasksForJudicial: MY_WORK_TASKS_FOR_JUDICIAL.filter(task => task.name !== 'next_hearing_date'),
+  MyWorkTasksForLegalOps: MY_WORK_TASKS_FOR_LEGAL_OPS.filter(task => task.name !== 'next_hearing_date'),
+  AllWorkTasksForJudicial: ALL_WORK_TASKS_FOR_JUDICIAL.filter(task => task.name !== 'next_hearing_date'),
+  AllWorkTasksForLegalOps: ALL_WORK_TASKS_FOR_LEGAL_OPS.filter(task => task.name !== 'next_hearing_date'),
+  AllWorkCases: ALL_WORK_CASES.filter(task => task.name !== 'next_hearing_date'),
 };

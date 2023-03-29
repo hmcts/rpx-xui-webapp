@@ -1,19 +1,15 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
-  <div class="govuk-grid-row">
-    <div [formGroup]="form"
-         class="govuk-form-group">
-      <exui-choose-radio-option
-        [formGroup]="form"
-        [radioControlName]="'role'"
-        [title]="title"
-        [description]="description"
-        [caption]="caption"
-        [optionsList]="roles"
-        [submitted]="submitted"
-      >
-      </exui-choose-radio-option>
-    </div>
-    <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="submit(form.value, form.valid)">Continue</button>
-    <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>
+  <div [formGroup]="form" class="govuk-form-group">
+    <exui-choose-radio-option
+      [formGroup]="form"
+      [radioControlName]="'role'"
+      [title]="title"
+      [description]="description"
+      [caption]="caption"
+      [optionsList]="roles"
+      [submitted]="submitted"
+    ></exui-choose-radio-option>
   </div>
+  <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="submit(form.value, form.valid)">Continue</button>
+  <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>
 </main>

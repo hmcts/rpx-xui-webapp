@@ -1,19 +1,9 @@
-@ng 
+@ng @codecept_enabled 
 Feature: WA Release 2: My work - Available tasks - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK locations with names in service "IA"
-            | id    | locationName           |
-            | 20001 | IA Court Aldgate Tower |
-            | 20002 | IA Court Birmingham    |
-            | 2003  | IA Court Bradford      |
-            | 20004 | IA Court Glasgow       |
-            | 20005 | IA Court Hatton Cross  |
-            | 20006 | IA Court Newcastle     |
-            | 20007 | IA Court Newport       |
-            | 20008 | IA Court North Shields |
-            | 20009 | IA Court Taylor House  |
+       
             
     Scenario Outline:  Available Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
@@ -28,11 +18,11 @@ Feature: WA Release 2: My work - Available tasks - Manage links
             | Read        | 40    |
         Given I set MOCK tasks with attributes for view "Available tasks"
             | index | permissions     | assignee            | case_name |
-            | 0     | Manage,Read,Own |                     | case 1    |
-            | 1     | Manage,Own      |                     | case 2    |
+            | 0     | Manage,Read,Own,claim |                     | case 1    |
+            | 1     | Manage,Own,claim      |                     | case 2    |
             | 2     | Read            |                     | case 3    |
-            | 3     | Manage,Read,Own | 1234-1234-1234-1234 | case 4    |
-            | 4     | Manage,Own      | 1234-1234-1234-1234 | case 5    |
+            | 3     | Manage,Read,Own,claim | 1234-1234-1234-1234 | case 4    |
+            | 4     | Manage,Own,claim      | 1234-1234-1234-1234 | case 5    |
             | 5     | Read            | 1234-1234-1234-1234 | case 6    |
 
 

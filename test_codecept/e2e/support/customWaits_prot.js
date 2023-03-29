@@ -24,7 +24,7 @@ class BrowserWaits{
     }
 
     async waitForSeconds(waitInSec){
-        await browser.sleep(waitInSec*1000);
+        await browser.sleep(waitInSec);
     }
    
     async waitForElementTime(element,waitTime) {

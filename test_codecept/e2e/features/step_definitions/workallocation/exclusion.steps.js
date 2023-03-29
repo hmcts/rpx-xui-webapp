@@ -9,6 +9,7 @@ const caseRolesAndAccessPage = require("../../pageObjects/workAllocation/caseRol
 const ArrayUtil = require('../../../utils/ArrayUtil');
 
 const exclusionWorkFlow = require("../../pageObjects/workAllocation/exclusionRolesWorkFlow");
+const { DataTableArgument } = require('codeceptjs');
 
 
 
@@ -56,7 +57,7 @@ const exclusionWorkFlow = require("../../pageObjects/workAllocation/exclusionRol
     });
 
     Then('I see following options returned to Select in Find person search result of exclusions work flow', async function (resultsDatatable) {
-        const dataTablehashes = resultsDatatable.hashes();
+        const dataTablehashes = resultsDatatable.parse().hashes();
         let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
             await BrowserWaits.waitForSeconds(0.5);

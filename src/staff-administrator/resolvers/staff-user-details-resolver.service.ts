@@ -12,11 +12,8 @@ export class StaffUserDetailsResolverService implements Resolve<{ userDetails: S
   }
 
   public resolve(route?: ActivatedRouteSnapshot) {
-    return this.staffDataAccessService.fetchUsersById([ route.params.id ]).pipe(
-      map(res => {
-        return {
-          userDetails: res[0]
-        };
-    }));
+    return this.staffDataAccessService.fetchSingleUserById(route.params.id).pipe(
+      map(res => ({ userDetails: res }))
+    );
   }
 }

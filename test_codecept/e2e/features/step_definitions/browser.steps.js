@@ -7,6 +7,7 @@ const argv = minimist(process.argv.slice(2));
 const browserutil = require('../../../ngIntegration/util/browserUtil');
 const headerPage = require('../../../e2e/features/pageObjects/headerPage');
 
+const loginlogout = require('../pageObjects/loginLogoutObjects')
 
 
 
@@ -45,7 +46,7 @@ Given('I navigate to home page', async function () {
 });
 
 Given('I navigate page route {string}', async function (routeUrl) {
-    await browser.get(routeUrl);
+    await browser.get(process.env.TEST_URL+routeUrl);
     await BrowserWaits.retryWithActionCallback(async () => {
         await headerPage.waitForPrimaryNavDisplay();
         await browserutil.waitForLD();

@@ -36,8 +36,11 @@ global.by =  {
     css:(locator) => {
         return {'css':locator}
     },
-    linkText: () => {
-        return new Element();
+    linkText: (text) => {
+        const linkLocator = locate('//')
+            .find('a')
+            .withText(text)
+        return linkLocator.locator
     }
 }
 

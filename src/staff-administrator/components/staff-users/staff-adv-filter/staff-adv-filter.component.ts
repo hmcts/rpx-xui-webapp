@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterConfig, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
-import { StaffSearchFilters } from '../../../../staff-administrator/models/staff-search-filters.model';
+import { StaffAdvancedSearchFilters } from '../../../models/staff-search-filters.model';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
@@ -13,8 +13,8 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
 export class StaffAdvFilterComponent implements OnInit, OnDestroy {
   public filterConfig: FilterConfig;
   private readonly FILTER_NAME = 'staff-advanced-filters';
-  private filterSub: Subscription;
-  private filterErrorsSub: Subscription;
+  private readonly filterSub: Subscription;
+  private readonly filterErrorsSub: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,7 +26,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       skills: this.route.snapshot.data.skills,
       services: this.route.snapshot.data.services,
     };
-    const defaultOption = { key: 'All', label: 'All' };
+    const defaultOption = { key: 'All', label: 'All', selectAll: true };
 
     this.filterConfig = {
       id: this.FILTER_NAME,
@@ -38,6 +38,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           defaultOption,
           ...staffFilters.services
         ],
+        defaultOption,
         minSelected: 1,
         maxSelected: 0,
         type: 'find-service',
@@ -92,7 +93,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
         name: 'user-role',
         title: 'Role',
         options: [
-          { label: 'Case Allocator', key: 'case allocator' },
+          { label: 'Case allocator', key: 'case allocator' },
           { label: 'Task supervisor', key: 'task supervisor' },
           { label: 'Staff administrator', key: 'staff administrator' }
         ],
@@ -129,7 +130,8 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
     this.filterSub = this.filterService.getStream(this.FILTER_NAME)
       .subscribe(filterConfig => {
         if (filterConfig) {
-          const searchFilters: StaffSearchFilters = {};
+          const advancedSearchFilters = {} as StaffAdvancedSearchFilters;
+
           const jobTitle = filterConfig.fields.find(item => item.name === 'user-job-title').value[0];
           const userType = filterConfig.fields.find(item => item.name === 'user-type').value[0];
           const services = (filterConfig.fields.find(item => item.name === 'user-services').value).map(s => s.key);
@@ -138,29 +140,34 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           const skills = filterConfig.fields.find(item => item.name === 'user-skills').value;
 
           if (services && services.length > 0) {
-            searchFilters.serviceCode = services.toString();
-          }
-          if (locations && locations.length > 0) {
-            searchFilters.location = locations.toString();
-          }
-          if (roles && roles.length > 0) {
-            searchFilters.role = roles.toString();
-          }
-          if (skills && skills.some(s => s !== 'All')) {
-            searchFilters.skill = skills.toString();
-          }
-          if (userType && userType !== 'All') {
-            searchFilters.userType = userType;
-          }
-          if (jobTitle && jobTitle !== 'All') {
-            searchFilters.jobTitle = jobTitle;
+            advancedSearchFilters.serviceCode = services;
           }
 
-          if (Object.keys(searchFilters).length !== 0) {
-            this.staffDataFilterService.filterByAdvancedSearch(searchFilters).subscribe();
-          } else {
-            this.staffDataFilterService.resetSearch();
+          if (locations && locations.length > 0) {
+            advancedSearchFilters.location = locations;
           }
+
+          if (roles && roles.length > 0) {
+            advancedSearchFilters.role = roles;
+          }
+
+          if (skills && skills.some(s => s !== 'All')) {
+            advancedSearchFilters.skill = skills;
+          }
+
+          if (userType && userType !== 'All') {
+            advancedSearchFilters.userType = userType;
+          }
+
+          if (jobTitle && jobTitle !== 'All') {
+            advancedSearchFilters.jobTitle = jobTitle;
+          }
+
+          this.staffDataFilterService.search({
+            advancedSearchFilters,
+            pageNumber: 1,
+            pageSize: StaffDataFilterService.PAGE_SIZE,
+          });
 
           window.scrollTo(0, 0);
         }
@@ -181,5 +188,4 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       this.filterSub.unsubscribe();
     }
   }
-
 }

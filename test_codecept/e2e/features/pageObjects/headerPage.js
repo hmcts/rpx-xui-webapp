@@ -14,7 +14,9 @@ const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
 const allWorkPage = require("../../features/pageObjects/workAllocation/allWorkPage");
 const globalSearchPage = require('./globalSearchCases');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
-const { ExceptionData } = require('applicationinsights/out/Declarations/Contracts');
+
+
+const staffSearchPage = require('./staffUI/staffUISearchPage')
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
@@ -160,9 +162,9 @@ function HeaderPage() {
       await BrowserWaits.retryWithActionCallback(async () => {
         try {
           const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
-          await BrowserWaits.waitForSpinnerToDissappear();
-          await BrowserWaits.waitForElement(ele);
-          await BrowserWaits.waitForElementClickable(ele);
+          // await BrowserWaits.waitForSpinnerToDissappear();
+          await ele.wait()
+          // await BrowserWaits.waitForElementClickable(ele);
           await ele.click();
           await CucumberReporter.AddMessage(`Primary nav tab clicked successfully. "${label}"`, LOG_LEVELS.Debug);
         } catch (err) {
@@ -274,7 +276,7 @@ function HeaderPage() {
   this.clickSignOut = async function () {
     await BrowserWaits.waitForElement(this.signOut);
     this.signOut.click();
-    browser.sleep(SHORT_DELAY);
+    // browser.sleep(SHORT_DELAY);
   };
 
   this.isTabPresent = async function (tabDisplatText) {
@@ -374,6 +376,9 @@ function HeaderPage() {
         break;
       case 'All work':
         retValue = await allWorkPage.amOnPage();
+        break;
+      case 'Staff':
+        retValue = await staffSearchPage.amOnPage();
         break;
       default:
         throw new Error(`Tab "${primaryTab}" is not recognised or not implemeted in test to handle.`);

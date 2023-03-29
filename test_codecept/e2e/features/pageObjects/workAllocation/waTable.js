@@ -1,6 +1,6 @@
 const c = require('config');
 const { constants } = require('karma');
-const { browser } = require('protractor');
+
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 const ArrayUtil = require('../../../utils/ArrayUtil');
@@ -27,7 +27,7 @@ class WAListTable {
 
         this.displayedActionRow = $('tr.actions-row[aria-hidden=false]');
 
-        this.paginationContainer = $('ccd-pagination');
+        this.paginationContainer = $('ccd-pagination .ngx-pagination');
         this.paginationResultText = $(`${this.baseCssLocator} .task-list-header div, ${this.baseCssLocator} .pagination-top`);
         this.pagePreviousLink = $(`${this.baseCssLocator} pagination-template .pagination-previous a`);
         this.pageNextLink = $(`${this.baseCssLocator} pagination-template .pagination-next a`);
@@ -88,6 +88,10 @@ class WAListTable {
         return element(by.xpath(`//${ this.baseCssLocator }//table//thead//th//button[contains(text(),'${headerName}')]`));
     }
 
+    getHeaderSortElementWithName(headerName) {
+        return element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).withChild(by.xpath(`//button[contains(text(),'${headerName}')]`));
+    }
+
     getNonClickableHeaderElementWithName(headerName) {
         return element(by.xpath(`//${this.baseCssLocator}//table//thead//th[contains(text(),'${headerName}')]`));
     }
@@ -133,8 +137,8 @@ class WAListTable {
     }
 
     async getColumnSortState(headerName) {
-        const headerElement = await this.getHeaderElementWithName(headerName);
-        return await headerElement.element(by.xpath("..")).getAttribute("aria-sort");
+        const headerElement = await this.getHeaderSortElementWithName(headerName);
+        return await headerElement.getAttribute("aria-sort");
 
     }
 
@@ -209,8 +213,7 @@ class WAListTable {
         await BrowserWaits.retryWithActionCallback(async () => {
             const row = await this.getTableRowAt(position);
             let rowManageLink = row.$('button[id^="manage_"]');
-            await browser.executeScript('arguments[0].scrollIntoView()',
-                rowManageLink.getWebElement())
+            await browser.scrollToElement(rowManageLink)
             await rowManageLink.click();
             if (!(await this.isManageLinkOpenAtPos(position))) {
                 throw new Error('Manage link not open. retying action');
@@ -222,9 +225,7 @@ class WAListTable {
         const waRows = element.all(by.xpath(`//tr[(contains(@class,'actions-row'))]`));
         const row = await waRows.get(position - 1);
         try {
-            await BrowserWaits.waitForConditionAsync(async () => {
-                return await row.isDisplayed();
-            }, 2000,'Wait for manage link row to display');
+            return await row.isDisplayed();
             return true;
         } catch (err) {
             return false;
@@ -243,8 +244,7 @@ class WAListTable {
         expect(await this.isRowActionPresent(action), 'action row not displayed').to.be.true;
         await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`, LOG_LEVELS.Debug)
         const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`))
-        await browser.executeScript('arguments[0].scrollIntoView()',
-            actionLink.getWebElement());
+        await browser.scrollToElement(actionLink);
         await actionLink.click();
     }
 
@@ -364,7 +364,10 @@ class WAListTable {
         const isClickableElementPresent = await headerElementClickable.isPresent();
         const isNonClickableElementPresent = await headerElementNonClickable.isPresent();
 
-        return isClickableElementPresent && !isNonClickableElementPresent
+
+        const isDisplayed = await headerElementClickable.isDisplayed();
+
+        return isDisplayed
     }
 
 

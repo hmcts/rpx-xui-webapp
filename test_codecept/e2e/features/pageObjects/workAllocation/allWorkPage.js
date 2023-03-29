@@ -28,12 +28,12 @@ class AllWork extends TaskList {
         this.casesContainer = $('exui-all-work-cases exui-work-case-list');
         this.allworkCasesMessage = $('exui-all-work-cases .hmcts-filter-layout__content p')
         this.FILTER_ITEMS = {
-            'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/..//select'),
+            'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/../..//select'),
             'Location':  $('.all-work-filter #selectLocation'),
             'Location radios': new GovUKRadios('css', '.all-work-filter #selectLocation .govuk-radios'),
             'Location search': $('.all-work-filter  #location xuilib-find-location .search-location exui-search-location input') ,
             'Person': new GovUKRadios('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//div[contains(@class,"govuk-radios")]'),
-            'Tasks': new GovUKRadios('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Tasks")]/..//div[contains(@class,"govuk-radios")]'),
+            'Tasks': new GovUKRadios('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Tasks")]/../..//div[contains(@class,"govuk-radios")]'),
             'Tasks by role type': new Select('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//select[contains(@id,"select_role")]'),
             'Person input': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
             'Task type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select'),
@@ -128,6 +128,7 @@ class AllWork extends TaskList {
     async amOnPage() {
         try {
             await BrowserWaits.waitForSpinnerToDissappear();
+            await this.pageHeader.wait()
             await BrowserWaits.waitForConditionAsync(async () => {
                 const pageHeaderTitle = await this.pageHeader.getText();
                 return pageHeaderTitle.includes('All work');

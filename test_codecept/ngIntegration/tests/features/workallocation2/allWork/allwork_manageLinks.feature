@@ -1,27 +1,29 @@
-@ng
+@ng @codecept_test
 Feature: WA Release 2: All work - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
+
+    Scenario Outline:  Task Manage links for "<UserType>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        # Given I set MOCK request "/workallocation/taskWithPagination" response log to report
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
         Given I set MOCK tasks with attributes for view "AllWork"
-            | index | permissions                | assignee            | case_name |
-            | 0     | Manage,Read,Execute,Cancel |                     | case 1    |
-            | 1     | Manage                     |                     | case 2    |
-            | 2     | Read                       |                     | case 3    |
-            | 3     | Manage,Read                | 1234-1234-1234-1234 | case 4    |
-            | 4     | Manage                     | 1234-1234-1234-1234 | case 5    |
-            | 5     | Read                       | 1234-1234-1234-1234 | case 6    |
+            | index | permissions                       | assignee            | case_name |
+            | 0     | Manage,Read,Execute,Cancel,assign |                     | case 1    |
+            | 1     | Manage,assign                     |                     | case 2    |
+            # | 2     | Read,assign                       |                     | case 3    |
+            | 3     | unassign,assign                   | 1234-1234-1234-1234 | case 4    |
+            | 4     | Manage,unassign,assign            | 1234-1234-1234-1234 | case 5    |
+            # | 5     |                                   | 1234-1234-1234-1234 | case 6    |
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
 
-    Scenario Outline:  Task Manage links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        # Given I set MOCK request "/workallocation/taskWithPagination" response log to report
+
         Given I start MockApp
         Given I navigate to home page
 
@@ -40,6 +42,5 @@ Feature: WA Release 2: All work - Manage links
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+# | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-   

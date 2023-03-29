@@ -7,12 +7,12 @@ const exuiErrorMessage = require("../../common/exuiErrorMessage");
 class FindPersonComponent{
     constructor(parentlocator){
 
-        this.findPersonContainer = parentlocator.$("xuilib-find-person");
-        this.header = parentlocator.$("xuilib-find-person h1");
-        this.headerCaption = parentlocator.$("xuilib-find-person h1 span");
+        this.findPersonContainer = $("xuilib-find-person");
+        this.header = $("xuilib-find-person h1");
+        this.headerCaption = $("xuilib-find-person h1 span");
 
-        this.searchInput = parentlocator.$("xuilib-find-person #inputSelectPerson");
-        this.searchInputHintText = parentlocator.$("xuilib-find-person .govuk-hint");
+        this.searchInput = $("xuilib-find-person #inputSelectPerson");
+        this.searchInputHintText = $("xuilib-find-person .govuk-hint");
         this.searchResultsContainer = $(".cdk-overlay-container .mat-autocomplete-visible");
 
     }
@@ -82,6 +82,7 @@ class FindPersonComponent{
 
     async getResultElementWithText(resulttext){
         const elementWithResulst = element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]`));
+        await elementWithResulst.wait()
         CucumberReporter.AddMessage(await elementWithResulst.getText(), LOG_LEVELS.Debug)
         return element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]//mat-option//*[contains(@class,'mat-option-text') and contains(text(),'${resulttext}')]`));
     }
@@ -95,10 +96,11 @@ class FindPersonComponent{
     }
 
     async selectPerson(result){
+        const resultElement = await this.getResultElementWithText(result);
         CucumberReporter.AddMessage(` Select person "${result}"`, LOG_LEVELS.Debug)
-
+        await resultElement.wait();
         expect(await this.isPersonReturned(result), `Result is not found "${result}"`).to.be.true;
-        await (await this.getResultElementWithText(result)).click();
+        await resultElement.click();
     }
 
     async isPersonSelected(personText){

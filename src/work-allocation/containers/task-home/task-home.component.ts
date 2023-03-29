@@ -3,11 +3,10 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from 
 import { FeatureToggleService, FilterPersistence, SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
-import { AppConstants } from 'src/app/app.constants';
 
+import { AppConstants } from '../../../app/app.constants';
 import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
-import { SessionStorageService } from '../../../app/services';
 import { AllocateRoleService } from '../../../role-access/services';
 import { SortField } from '../../models/common';
 

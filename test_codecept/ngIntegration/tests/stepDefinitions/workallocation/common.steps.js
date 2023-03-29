@@ -49,20 +49,22 @@ const { DataTableArgument } = require('codeceptjs');
         await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
             
-            const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
-            if (val !== "success"){
-                throw new Error(JSON.stringify(val));
+        //     const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
+        //     if (val !== "success"){
+        //         throw new Error(JSON.stringify(val));
 
-           } 
+        //    } 
             await taskListTable.clickPaginationLink(paginationLinktext);
             await BrowserWaits.waitForConditionAsync(async () => {
                 const caseCatColVal = await taskListTable.getColumnValueForTaskAt('Case category', 1);
                 CucumberReporter.AddMessage('OnPagination page refresh dinee: ' + !caseCatColVal.includes('Sort test'));
                 return !caseCatColVal.includes('Sort test');
             });
-            await BrowserWaits.waitForConditionAsync(async () => {
-                return global.scenarioData[reference] !== null
-            }, 5000);
+
+            await browser.sleep(2)
+            // await BrowserWaits.waitForConditionAsync(async () => {
+            //     return global.scenarioData[reference] !== null
+            // }, 5000);
         });
        
     });

@@ -106,11 +106,6 @@ class MockSessionService{
 
         sessionJson = JSON.parse(sessionJson)
 
-
-        // console.log(sessionFile)
-        // console.log(JSON.stringify(sessionJson.passport.user), null, 2)
-
-
         sessionJson.passport.user.userinfo.roles = roles;
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
     }
@@ -123,6 +118,9 @@ class MockSessionService{
         sessionJson = JSON.parse(sessionJson)
         sessionJson.roleAssignmentResponse = roleAssignments;
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
+
+        sessionJson = await fs.readFileSync(sessionFile);
+        return sessionJson.roleAssignmentResponse;
     }
 
     async getSessionRolesAndRoleAssignments(auth){

@@ -7,6 +7,8 @@ const roleAssignment = require('./roleAssignments/index');
 
 const caseworkersConf = [
     { services: ['IA','CIVIL'], role: 'LEGAL_OPERATIONS', roleCategory: 'ORGANISATION', roleType: 'case-allocator', substantive:'Y',count: 10 },
+    { services: ['IA', 'CIVIL'], role: 'ADMIN', roleCategory: 'ORGANISATION', roleType: 'case-allocator', substantive: 'Y', count: 10 },
+    { services: ['IA', 'CIVIL'], role: 'CTSC', roleCategory: 'ORGANISATION', roleType: 'case-allocator', substantive: 'Y', count: 10 },
 
 ]
 

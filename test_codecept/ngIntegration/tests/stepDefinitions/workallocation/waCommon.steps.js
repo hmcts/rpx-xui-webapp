@@ -104,11 +104,18 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         await browser.get('http://localhost:3000/get-help');
 
         await idamLogin.do();
-        const userDetails = await idamLogin.userDetailsResponse;
+      
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const userDetails = idamLogin.userDetailsResponse.details.data;
+            const sessionUserName = userDetails.userInfo ? userDetails.userInfo.sub : '';
+            if (sessionUserName !== 'lukesuperuserxui@mailnesia.com' ){
+                await idamLogin.do();
+                await browser.sleep(2)
+                throw new Error('session not updated with user, retrying');
+            }
 
-        await browser.sleep(10)
-
-
+        })
+       
         await BrowserWaits.retryWithActionCallback(async () => {
             await browser.driver.manage().setCookies(idamLogin.xuiCallbackResponse.details.setCookies)
             await browser.get('http://localhost:3000/');
@@ -117,6 +124,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         const authCookies = await browser.driver.manage().getCookies()
         const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
+        await browser.sleep(10)
         await mockClient.updateAuthSessionWithRoles(authCookie.value, roles)
 
         await browser.get('http://localhost:3000/');
@@ -228,15 +236,16 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         // const userDetails = global.scenarioData[userDetailsRef];
         const roleAssignmentArr = [];
         const roleAttributes = roleAttributesDataTable.parse().rowsHash()
-
+        const boolAttributes = []
         for (const service of services.split(",")) {
             const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
-            const roleKeys = Object.keys(roleAssignmentTemplate);
+            roleAssignmentTemplate.attributes['jurisdiction'] = service;
+            const roleKeys = Object.keys(roleAttributes);
 
             const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation']
 
             for (const attr of roleKeys) {
-                const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAssignment[attr];
+                const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('Y') : roleAttributes[attr];
                 if (attributeProperties.includes(attr)) {
                     roleAssignmentTemplate.attributes[attr] = value;
                 } else {
@@ -247,11 +256,12 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
             roleAssignmentArr.push(roleAssignmentTemplate);
 
-            const authCookies = await browser.driver.manage().getCookies()
-            const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
-            await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value,roleAssignmentArr);
-            await browser.get('http://locaalhost:3000')
         }
+
+        const authCookies = await browser.driver.manage().getCookies()
+        const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
+        await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr);
+        await browser.get('http://localhost:3000')
     }
                              
 
@@ -259,11 +269,11 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         if (services === ''){
             return;
         }
-        addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable) 
+        await addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable) 
     });
     
     Given('I set Mock user with ref {string}, ORGANISATION roles for services {string} allow empty service', async function (userDetailsRef, services, roleAttributesDataTable) {
-        addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable)
+        await addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable)
     });
 
 
@@ -293,7 +303,10 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         const cookies = await browser.driver.manage().getCookies();
         const authCookie = cookies.find(cookie => cookie.name === '__auth__')
         CucumberReporter.AddJson(nodeAppMock.userDetails);
-        await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+        const newRoleAssignmentsInSession = await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
+        CucumberReporter.AddJson(newRoleAssignmentsInSession.data);
+
+
         await browser.get(await browser.getCurrentUrl());
 
         const userSession = await mockClient.getSessionRolesAndRoleAssignments(authCookie.value);

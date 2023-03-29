@@ -1554,10 +1554,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-find-location-by-service-code-2":
-  version "1.8.10-find-location-by-service-code-2"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-find-location-by-service-code-2.tgz#974d94add5018d59d1c6c69777fb7d5fe4b39010"
-  integrity sha512-azVkruh4sjmTJYpcdpWsTdAQAtFcRxQ6JWAFMOv6vDLoiN/ZEpuB5mCPcxwCTEqqn6IBNI8zFlD10PcM6WRnvg==
+"@hmcts/rpx-xui-common-lib@1.8.10-find-location-by-service-code-3":
+  version "1.8.10-find-location-by-service-code-3"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-find-location-by-service-code-3.tgz#b8234029add5607b49bea48e21c1b2124ac1f466"
+  integrity sha512-CuR/qioE1A7rCY+sUERatBYfUpqLoJZJmXvdIXjib0y58fc1IfhGxNDfmpk6k4LBX8pDsSznjW6jbvW1s27iAw==
   dependencies:
     tslib "^2.0.0"
 

@@ -1,8 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import {
+  GovUkErrorMessageComponent,
+  GovUkFieldsetComponent,
+  GovUkLabelComponent
+} from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
@@ -11,19 +16,25 @@ import { SpecificAccessDurationComponent } from './specific-access-duration.comp
 describe('SpecificAccessDurationComponent', () => {
   let component: SpecificAccessDurationComponent;
   let fixture: ComponentFixture<SpecificAccessDurationComponent>;
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ExuiCommonLibModule,
         FormsModule,
         ReactiveFormsModule,
         StoreModule.forRoot({})
       ],
-      declarations: [SpecificAccessDurationComponent],
+      declarations: [
+        SpecificAccessDurationComponent,
+        GovUkFieldsetComponent,
+        GovUkErrorMessageComponent,
+        GovUkLabelComponent
+      ],
       providers: [
         FormBuilder,
-        { provide: DurationHelperService, useClass: DurationHelperService }
+        { provide: DurationHelperService, useClass: DurationHelperService },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     });
   }));

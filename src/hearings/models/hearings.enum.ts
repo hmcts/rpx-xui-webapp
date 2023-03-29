@@ -107,6 +107,11 @@ export enum RadioOptions {
   CHOOSE_DATE_RANGE = 'Choose a date range'
 }
 
+export enum RadioOptionType {
+  YES = 'yes',
+  NO = 'no',
+}
+
 export enum DOW {
   Monday = 'Monday',
   Tuesday = 'Tuesday',
@@ -322,6 +327,7 @@ export enum IsHiddenSource {
   JUDGE_TYPES,
   JUDGE_NAME,
   LISTED,
+  LISTED_HEARING_VIEWER,
   NOT_LISTED
 }
 

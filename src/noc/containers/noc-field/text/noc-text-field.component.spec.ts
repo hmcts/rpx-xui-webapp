@@ -1,11 +1,17 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocTextFieldComponent } from './noc-text-field.component';
 
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocTextFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -41,13 +47,14 @@ describe('NocTextFieldComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         NocTextFieldComponent,
+        RpxTranslateMockPipe
       ],
       imports: [
         ReactiveFormsModule,
-        UtilsModule
+        UtilsModule,
       ],
       providers: [
-        provideMockStore()
+        provideMockStore(),
       ]
     }).compileComponents();
   }));

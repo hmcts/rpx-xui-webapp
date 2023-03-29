@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
+import { SessionStorageService } from 'src/app/services';
 
 @Component({
   selector: 'exui-phase-banner',
@@ -6,10 +8,31 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class PhaseBannerComponent implements OnInit {
   @Input() public type: string;
+  public noBanner: boolean;
+  private readonly noBannerSessionKey = 'noBanner';
 
-  constructor() { }
+  public get currentLang() {
+    return this.langService.language;
+  }
 
-  public ngOnInit() {
+  constructor(private readonly langService: RpxTranslationService,
+              private readonly sessionStorageService: SessionStorageService) { }
+
+  public ngOnInit(): void {
+    this.noBanner = (this.currentLang === 'cy' ? true : false);
+    if (!this.noBanner) {
+      this.noBanner = JSON.parse(this.sessionStorageService.getItem(this.noBannerSessionKey));
+    }
+  }
+
+  public toggleLanguage(lang: RpxLanguage): void {
+    this.noBanner = (lang === 'cy');
+    this.langService.language = lang;
+  }
+
+  public closeBanner() {
+    this.noBanner = false;
+    this.sessionStorageService.setItem(this.noBannerSessionKey, 'false');
   }
 
 }

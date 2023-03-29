@@ -1,16 +1,23 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import * as fromContainers from '../../containers';
 import { NocNavigationEvent, NocState } from '../../models';
 import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocHomeComponent } from './noc-home.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocHomeComponent', () => {
   let fixture: ComponentFixture<NocHomeComponent>;
@@ -28,13 +35,14 @@ describe('NocHomeComponent', () => {
       imports: [
         ReactiveFormsModule,
         UtilsModule,
-        RouterTestingModule
+        RouterTestingModule,
       ],
       schemas: [
         NO_ERRORS_SCHEMA
       ],
       declarations: [
-        ...fromContainers.containers
+        ...fromContainers.containers,
+        RpxTranslateMockPipe
       ],
       providers: [
         provideMockStore(),

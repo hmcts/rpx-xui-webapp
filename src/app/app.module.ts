@@ -38,6 +38,7 @@ import {
   NgxLoggerLevel,
   NGXMapperService
 } from 'ngx-logger';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { environment } from '../environments/environment';
 import {
   EnvironmentConfig,
@@ -100,6 +101,14 @@ export function launchDarklyClientIdFactory(
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
+    RpxTranslationModule.forRoot({
+      baseUrl: '',
+      debounceTimeMs: 300,
+      validity: {
+        days: 1
+      },
+      testMode: true,
+    })
   ],
   providers: [
     NGXLogger,

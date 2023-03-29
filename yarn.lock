@@ -1554,10 +1554,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.10-ref-data-service-3":
-  version "1.8.10-ref-data-service-3"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-ref-data-service-3.tgz#70275c2954a6ab1733ecd5373e17f6fcdcbcda01"
-  integrity sha512-+bkmw5+OobiCdjpP1+gUaL87/a1MfCK4SmcgJxhXM2sBKGj3c7lQhzKaZAqjs97BOYezvTie7xImfOnNPOu4WQ==
+"@hmcts/rpx-xui-common-lib@1.8.10-find-location-by-service-code-3":
+  version "1.8.10-find-location-by-service-code-3"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.10-find-location-by-service-code-3.tgz#b8234029add5607b49bea48e21c1b2124ac1f466"
+  integrity sha512-CuR/qioE1A7rCY+sUERatBYfUpqLoJZJmXvdIXjib0y58fc1IfhGxNDfmpk6k4LBX8pDsSznjW6jbvW1s27iAw==
   dependencies:
     tslib "^2.0.0"
 

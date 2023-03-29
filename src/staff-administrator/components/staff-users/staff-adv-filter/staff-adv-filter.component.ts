@@ -51,6 +51,8 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
         title: 'Search by location',
         subTitle: 'Enter a location name',
         options: [],
+        servicesField: 'user-services',
+        propertyNameFilter: 'venue_name',
         minSelected: 1,
         maxSelected: 0,
         type: 'find-location',

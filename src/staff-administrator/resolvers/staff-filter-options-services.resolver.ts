@@ -8,7 +8,6 @@ import { StaffFilterOption } from '../models/staff-filter-option.model';
   providedIn: 'root'
 })
 export class StaffFilterOptionsServicesResolver implements Resolve<StaffFilterOption[]> {
-
   constructor(private refDataService: RefDataService) {}
 
   public resolve(route?: ActivatedRouteSnapshot) {

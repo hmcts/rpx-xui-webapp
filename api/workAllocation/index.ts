@@ -187,55 +187,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   }
 }
 
-// mocks permissions to test fine-grained task permissions
-function mockTaskPermissions(data) {
-  if (data.tasks) {
-    for (let i = 0; i < data.tasks.length; i++) {
-      let permissions = [];
-      if (i === 7) {
-        break;
-      }
-      switch (i) {
-        case 0: {
-          permissions = ['assign', 'own'];
-          break;
-        }
-        case 1: {
-          permissions = ['Unassign'];
-          break;
-        }
-        case 2: {
-          permissions = [];
-          break;
-        }
-        case 3: {
-          permissions = ['Execute', 'Assign'];
-          break;
-        }
-        case 4: {
-          permissions = ['Own', 'Claim'];
-          break;
-        }
-        case 5: {
-          permissions = ['UnassignAssign'];
-          break;
-        }
-        case 6: {
-          permissions = ['UnassignClaim'];
-          break;
-        }
-        case 7: {
-          permissions = ['UnclaimAssign'];
-          break;
-        }
-      }
-      if (data.tasks[i].permissions) {
-        data.tasks[i].permissions.values = permissions;
-      }
-    }
-  }
-  return data;
-}
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
@@ -266,10 +217,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     ],
   };
   try {
-    let { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
-    if (data && req.body.refined) {
-      data = mockTaskPermissions(data);
-    }
+    const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const actionedTasks = assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);

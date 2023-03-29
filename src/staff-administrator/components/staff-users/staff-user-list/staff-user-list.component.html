@@ -56,7 +56,7 @@
           <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
           <tr cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <xuilib-hmcts-pagination (pageChange)="emitPageClickEvent($event)" [pageSize]="tableData.pageSize"></xuilib-hmcts-pagination>
+        <xuilib-hmcts-pagination (pageChange)="emitPageClickEvent($event)" [pageSize]="tableData.pageSize" [showResultCount]="false"></xuilib-hmcts-pagination>
       </div>
     </ng-container>
 

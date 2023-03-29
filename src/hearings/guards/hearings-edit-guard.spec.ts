@@ -3,15 +3,14 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { UserDetails, UserRole } from '../../app/models';
+import { UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
-import { RoleCategoryMappingService } from '../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../app/store';
 import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { HearingsEditGuard } from './hearings-edit-guard';
 
 describe('HearingsEditGuard', () => {
-  const USER: UserDetails = {
+  const USER_1: UserDetails = {
     canShareCases: true,
     sessionTimeout: {
       idleModalDisplayTime: 10,
@@ -26,6 +25,26 @@ describe('HearingsEditGuard', () => {
       roles: [
         'caseworker',
         'caseworker-sscs',
+        'hearing-manager'
+      ],
+    }
+  };
+
+  const USER_2: UserDetails = {
+    canShareCases: true,
+    sessionTimeout: {
+      idleModalDisplayTime: 10,
+      totalIdleTime: 50
+    },
+    userInfo: {
+      id: '***REMOVED***',
+      forename: 'Luke',
+      surname: 'Wilson',
+      email: 'lukesuperuserxui@mailnesia.com',
+      active: true,
+      roles: [
+        'caseworker',
+        'caseworker-sscs'
       ],
     }
   };
@@ -46,22 +65,19 @@ describe('HearingsEditGuard', () => {
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
   let sessionStorageMock: jasmine.SpyObj<SessionStorageService>;
   let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
-  let roleCategoryMappingServiceMock: jasmine.SpyObj<RoleCategoryMappingService>;
 
   beforeEach(() => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     sessionStorageMock = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['getValueOnce']);
-    roleCategoryMappingServiceMock = jasmine.createSpyObj<RoleCategoryMappingService>('roleCategoryMappingService', ['getUserRoleCategory']);
   });
 
   it('should edit hearings be enabled for user with hearing manager role', () => {
-    storeMock.pipe.and.returnValue(of(USER));
-    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.HearingManager));
+    storeMock.pipe.and.returnValue(of(USER_1));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, routerMock);
     const result$ = hearingsEditGuard.canActivate();
     const canActive = true;
     const expected = cold('(b|)', {b: canActive});
@@ -69,11 +85,10 @@ describe('HearingsEditGuard', () => {
   });
 
   it('should edit hearings be disabled for user without hearing manager role', () => {
-    storeMock.pipe.and.returnValue(of(USER));
-    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.HearingViewer));
+    storeMock.pipe.and.returnValue(of(USER_2));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, routerMock);
     const result$ = hearingsEditGuard.canActivate();
     const canActive = false;
     const expected = cold('(b|)', {b: canActive});

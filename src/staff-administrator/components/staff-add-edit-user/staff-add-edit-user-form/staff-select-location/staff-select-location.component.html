@@ -1,0 +1,51 @@
+<div>
+  <div>
+    <div>
+      <ul class="hmcts-filter-tags selection-container">
+        <li class="location-selection"  *ngFor="let location of locationControl.value">
+          <a class="hmcts-filter__tag" (click)="removeLocation(location)" href="javascript:void(0)">
+            {{ location.venue_name }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="search-location">
+      <h3 class="govuk-label"> Primary location </h3>
+      <div class="search-location__input">
+        <label class="govuk-body" for="location-primary">
+          Enter a location name
+        </label>
+        <input id="location-primary"
+          class="govuk-input"
+          [formControl]="searchTermFormControl"
+          [matAutocomplete]="autoSearchLocation"
+        >
+      </div>
+
+      <div class="auto-complete-container">
+
+        <!--        [attr.disabled]="disabled">-->
+        <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLocation="matAutocomplete">
+          <ng-container *ngIf="filteredList$ | async as filteredList">
+            <ng-container *ngIf="filteredList && filteredList.length >= 0">
+              <mat-option *ngFor="let location of filteredList">
+                <!--                        (onSelectionChange)="onSelectedLocation(location)">-->
+                {{ location.venue_name }}
+              </mat-option>
+              <mat-option *ngIf="filteredList.length === 0">No results found</mat-option>
+            </ng-container>
+          </ng-container>
+        </mat-autocomplete>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <a class="search-location__button govuk-button govuk-button--secondary"
+       href="javascript:void(0)" (click)="addLocation()" data-module="govuk-button">
+      Add primary location
+    </a>
+  </div>
+</div>

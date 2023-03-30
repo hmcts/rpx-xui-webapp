@@ -15,6 +15,7 @@ export class StaffUser {
   public staff_admin: boolean;
   public idam_roles: string[];
   public up_idam_status: 'ACTIVE' | 'SUSPENDED' | 'PENDING';
+  public is_resend_invite: boolean;
 
   public roles: {
     role_id: string,
@@ -154,9 +155,5 @@ export class StaffUser {
 
     this.region_id = fieldsData[3].value[0];
     this.region = fieldsData[3].value[1];
-    /* this.region = (() => {
-      const region = STAFF_REGIONS.find(item => item.key === String(this.region_id));
-      return region ? region.label : '';
-    })(); */
   }
 }

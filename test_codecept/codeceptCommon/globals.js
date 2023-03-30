@@ -40,7 +40,7 @@ global.by =  {
         const linkLocator = locate('//')
             .find('a')
             .withText(text)
-        return { xpath: linkLocator };
+        return linkLocator.locator
     }
 }
 

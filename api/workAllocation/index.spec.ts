@@ -6,7 +6,6 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask, getTypesOfWork } from '.';
 import { http } from '../lib/http';
-import { RE_ALLOCATE, REMOVE_ALLOCATE } from './constants/actions';
 import { mockTasks } from './taskTestData.spec';
 
 

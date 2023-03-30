@@ -1,71 +1,14 @@
 const { v4 } = require('uuid');
 
+const taskManagementApiMock = require('../backendMock/services/task-management-api/index')
 class WorkAllocationModels {
     getRelease1Task() {
-        return {
-            "id": v4(),
-            "name": "task name ",
-            "assignee": v4(),
-            "type": "wa-task-configuration-api-task",
-            "task_state": "assigned",
-            "task_system": "SELF",
-            "security_classification": "PUBLIC",
-            "task_title": "task name",
-            "created_date": "2021-02-16T18:58:48.987+0000",
-            "due_date": "2021-02-16T18:58:48.987+0000",
-            "location_name": "Taylor House ",
-            "location": "765320",
-            "execution_type": "Case Management Task",
-            "jurisdiction": "IA",
-            "region": "1",
-            "case_type_id": "Asylum",
-            "case_id": "161350192272981",
-            "case_category": "protection",
-            "case_name": "Bob Smith",
-            "auto_assigned": false,
-            "warnings": false,
-            "actions": [],
-            "dueDate": "2021-02-16T18:58:48.987+0000",
-            "taskName": "task name ",
-            "caseName": "Bob Smith",
-            "caseCategory": "protection",
-            "assigneeName": null
-        }
+
+        return taskManagementApiMock.getTaskTemplate()
     }
 
     getRelease2Task() {
-        return {
-            "id": v4(),
-            "assignee":'',
-            "auto_assigned":false,
-            "case_management_category":"test",
-            "case_type_id":"",
-            "created_date":"2021-05-12T16:00:00.000+0000",
-            "due_date":'2021-07-12T16:00:00.000+0000',
-            "execution_type":'',
-            "jurisdiction":"",
-            "task_title": "Review application decision",
-            "name":'',
-            "region":'',
-            "security_classification":'',
-            "task_state":'',
-            "task_system":'',
-            "dueDate": "2021-05-12T16:00:00.000+0000",
-            "hearing_date": '2021-05-12T16:00:00.000+0000',
-            "location_name": "Glasgow",
-            "location": "765320",
-            "case_id": "1620409659381330",
-            "case_category": "Protection",
-            "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
-            "major_priority": Math.floor((Math.random() * 5000) + 1000),
-            "minor_priority": Math.floor((Math.random() * 5000) + 1000),
-            "permissions": { values : []},
-            "actions": [],
-            "type":"",
-            "warning_list":[],
-            "warnings":'',
-            "work_type_id":''
-        };
+        return taskManagementApiMock.getTaskTemplate();
     }
 
     getRelease2Case() {

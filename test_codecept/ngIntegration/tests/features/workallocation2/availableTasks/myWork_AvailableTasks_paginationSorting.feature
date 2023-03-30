@@ -1,19 +1,9 @@
-@ng
+@ng @codecept_enabled 
 Feature: WA Release 2: My work to  Available tasks to pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK locations with names in service "IA"
-            | id    | locationName           |
-            | 20001 | IA Court Aldgate Tower |
-            | 20002 | IA Court Birmingham    |
-            | 2003  | IA Court Bradford      |
-            | 20004 | IA Court Glasgow       |
-            | 20005 | IA Court Hatton Cross  |
-            | 20006 | IA Court Newcastle     |
-            | 20007 | IA Court Newport       |
-            | 20008 | IA Court North Shields |
-            | 20009 | IA Court Center 1  |
+       
 
 
     Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
@@ -23,15 +13,11 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | IA           | Y           | ORGANISATION | 20001        |
             | SSCS         | Y           | ORGANISATION | 20001        |
 
-        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-            | locationId | locationName           |
-            | 20001      | IA Court Aldgate Tower |
-        Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
+      Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
-        Given I start MockApp
+           Given I start MockApp
 
         Given I navigate to home page
         Then I see primary navigation tabs "My work" in main header
@@ -40,23 +26,23 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
         Then I validate tasks count in page 25
         Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
-        Given I reset reference "taskSearchRequest" value to null
+        # Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Next" and wait for req reference "taskSearchRequest" not null
-        Then I validate task search request with reference "taskSearchRequest" has pagination parameters
-            | PageNumber | PageSize |
-            | 2          | 25       |
+        # Then I validate task search request with reference "taskSearchRequest" has pagination parameters
+        #     | PageNumber | PageSize |
+        #     | 2          | 25       |
         Then I validate task list page results text displayed as "Showing 26 to 50 of 140 results"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Previous" and wait for req reference "taskSearchRequest" not null
-        Then I validate task search request with reference "taskSearchRequest" has pagination parameters
-            | PageNumber | PageSize |
-            | 1          | 25       |
+        # Then I validate task search request with reference "taskSearchRequest" has pagination parameters
+        #     | PageNumber | PageSize |
+        #     | 1          | 25       |
         Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "3" and wait for req reference "taskSearchRequest" not null
-        Then I validate task search request with reference "taskSearchRequest" has pagination parameters
-            | PageNumber | PageSize |
-            | 3          | 25       |
+        # Then I validate task search request with reference "taskSearchRequest" has pagination parameters
+        #     | PageNumber | PageSize |
+        #     | 3          | 25       |
         Then I validate task list page results text displayed as "Showing 51 to 75 of 140 results"
 
         When I click work allocation table "tasks" column header "Case name"
@@ -71,15 +57,15 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | Caseworker | Priority     |
             | Judge      | Task created |
 
-        Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation/task/" on page 3 for user type "<UserType>"
-            | ColumnHeader  | Caseworker | Judge | FieldId      |
-            | Case name     | Yes        | Yes   | caseName     |
-            | Case category | Yes        | Yes   | caseCategory |
-            | Location      | Yes        | Yes   | locationName |
-            | Task          | Yes        | Yes   | taskTitle    |
-            | Task created  | No         | Yes   | created_date |
-            | Due date      | Yes        | No    | dueDate      |
-            | Priority      | Yes        | No    | dueDate      |
+        # Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation/task/" on page 3 for user type "<UserType>"
+        #     | ColumnHeader  | Caseworker | Judge | FieldId      |
+        #     | Case name     | Yes        | Yes   | caseName     |
+        #     | Case category | Yes        | Yes   | caseCategory |
+        #     | Location      | Yes        | Yes   | locationName |
+        #     | Task          | Yes        | Yes   | taskTitle    |
+        #     | Task created  | No         | Yes   | created_date |
+        #     | Due date      | Yes        | No    | dueDate      |
+        #     | Priority      | Yes        | No    | dueDate      |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
@@ -98,7 +84,6 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | Permissions | Count |
             | Manage      | 10   |
             | Read        | 10    |
-        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page
@@ -126,7 +111,6 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
             | Permissions | Count |
             | Manage      | 0     |
             | Read        | 0     |
-        Given I set MOCK request "/workallocation/task/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page

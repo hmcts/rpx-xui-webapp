@@ -4,7 +4,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
     Background: Mock and browser setup
         # Given I navigate to home page
 
-@codecept_test
+
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
@@ -30,7 +30,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | 1     | Manage                     |                     | case 2    |
             | 2     | Read                       |                     | case 3    |
             | 3     | Manage,Read                | 1234-1234-1234-1234 | case 4    |
-            | 4     | Manage                     | 1234-1234-1234-1234 | case 5    |
+            | 4     | Manage,unassign                    | 1234-1234-1234-1234 | case 5    |
             | 5     | Read                       | 1234-1234-1234-1234 | case 6    |
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |

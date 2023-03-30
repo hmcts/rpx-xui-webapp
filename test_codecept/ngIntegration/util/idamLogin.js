@@ -1,7 +1,6 @@
 
 
 const axios = require('axios')
-const FormData = require('form-data')
 
 var {parse} = require('node-html-parser');
 const reportLogger = require('../../codeceptCommon/reportLogger');
@@ -54,17 +53,19 @@ class IdamLogin{
 
         }catch(err){
             reportLogger.AddMessage('************* Login error *************')
-            reportLogger.AddMessage(
-                {
-                    xuiLoginResponse: this.xuiLoginResponse,
-                    idamLoginGetResponse: this.idamLoginGetResponse,
-                    idamAuthorizeResponse: this.idamAuthorizeResponse,
-                    idamLoginresponse: this.idamLoginresponse,
-                    userDetailsResponse: this.userDetailsResponse
-                }
-            );
+            // reportLogger.AddMessage(
+            //     JSON.stringify({
+            //         xuiLoginResponse: this.xuiLoginResponse,
+            //         idamLoginGetResponse: this.idamLoginGetResponse,
+            //         idamAuthorizeResponse: this.idamAuthorizeResponse,
+            //         idamLoginresponse: this.idamLoginresponse,
+            //         userDetailsResponse: this.userDetailsResponse
+            //     }, null,2)
+            // );
             throw err
         }
+
+
        
 
 
@@ -102,7 +103,30 @@ class IdamLogin{
     }
 
     async onXuiLogin(){
-        const response = await axiosInstance.get(this.conf.xuiBaseUrl + '/auth/login')
+        const response = await new Promise(async (resolve,reject) => {
+            const starTime = Date.now();
+
+            const interval = setInterval(async () => {
+                const response = await axiosInstance.get(this.conf.xuiBaseUrl + '/auth/login')
+                const elapsedTime = (Date.now() - starTime)/1000
+                if (response.headers.location !== undefined) {
+                    clearInterval(interval)
+                    resolve(response)
+                } else if (elapsedTime > 30){
+                    clearInterval(interval)
+                    reject('API: onXuiLogin error, no idam redirect url returned');
+                }else{
+                    reportLogger.AddMessage('API: XUI login waiting for IDAM redirect url')
+                }
+            }, 1000)
+            setTimeout(() => {
+                clearInterval(interval)
+            }, 35 * 1000)
+
+          
+           
+        });
+        // const response = await axiosInstance.get(this.conf.xuiBaseUrl + '/auth/login')
         this.xuiLoginResponse.status = this.getResponseStatus(response)
         
         this.xuiLoginResponse.details =  {
@@ -110,11 +134,16 @@ class IdamLogin{
             idamAuthorizeUrl:`${response.headers.location}`,
             setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
         }
+        reportLogger.AddMessage('API: XUI login call success')
+
     }
 
 
     async onIdamAuthorize() {
         if (this.xuiLoginResponse === null) { throw new Error('xuiLogin required') }
+
+        reportLogger.AddMessage('API: IDAM Authorize url ' + this.xuiLoginResponse.details.idamAuthorizeUrl)
+
         const response = await axiosInstance.get(this.xuiLoginResponse.details.idamAuthorizeUrl)
 
         const redirectlocation = response.headers.location;
@@ -136,6 +165,8 @@ class IdamLogin{
             state: redirectQueryParams.find(param => param.name === 'state').value,
             nonce: redirectQueryParams.find(param => param.name === 'nonce').value
         }
+        reportLogger.AddMessage('API: IDAM authorize call success')
+
     }
 
     async onIdamLoginGet() {
@@ -156,6 +187,8 @@ class IdamLogin{
             csrf:csrfElement.attributes.value,
 
         }
+        reportLogger.AddMessage('API: IDAM get call success')
+
     }
 
 
@@ -193,6 +226,8 @@ class IdamLogin{
             setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
 
         }
+        reportLogger.AddMessage('API: IDAM login post call success')
+
     }
 
     async onXuiCallback(){
@@ -205,6 +240,8 @@ class IdamLogin{
         this.xuiCallbackResponse.details = {
             setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
         }
+        reportLogger.AddMessage('API: XUI callback call success')
+
     }
 
 

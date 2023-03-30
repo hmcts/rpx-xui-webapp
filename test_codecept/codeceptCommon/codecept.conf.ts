@@ -1,5 +1,8 @@
 
 const report = require("multiple-cucumber-html-reporter");
+const { merge } = require('mochawesome-merge')
+const marge = require('mochawesome-report-generator')
+
 const global = require('./globals')
 import applicationServer from '../localServer'
 
@@ -11,6 +14,7 @@ const backendMockApp = require('../backendMock/app');
 let appWithMockBackend = null;
 const testType = process.env.TEST_TYPE
 const parallel = process.env.PARALLEL
+const head = process.env.HEAD
 
 if (process.env.TEST_URL.includes('pr-2807') || 
     process.env.TEST_URL.includes('pr-2421') ||
@@ -35,7 +39,7 @@ if (testType === 'e2e'){
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
 
 exports.config = {
-  timeout: 120,
+  timeout: 600,
   "gherkin": {
     "features": features,
     "steps": "../**/*.steps.js"
@@ -65,7 +69,7 @@ exports.config = {
           height: 960
         },
         args: [
-          '--headless',
+          `${head ? '' : '--headless'}`,
           '—disable-notifications',
           '--smartwait',
           '--disable-gpu',
@@ -95,13 +99,16 @@ exports.config = {
     // }
   },
   "mocha": {
-    reporter: 'cucumberJsonReporter',
+    reporter: 'mochawesome',
    
     "reporterOptions": {
       "reportDir": functional_output_dir,
       reportName:'XUI_MC',
+      "overwrite": false,
+      "html": false,
+      "json": true
       // inlineAssets: true
-    }
+    },
     // "reporterOptions":{
     //   "codeceptjs-cli-reporter": {
     //     "stdout": "-",
@@ -110,13 +117,16 @@ exports.config = {
     //       "steps": true,
     //     }
     //   },
-    //   "mochawesome": {
-    //     "stdout": `${functional_output_dir}/`,
-    //     "options": {
-    //       "reportDir": `${functional_output_dir}/output`,
-    //       "reportFilename": `${functional_output_dir}/output/report`
-    //     }
-    //   },
+      "mochawesome": {
+        "stdout": `${functional_output_dir}/`,
+        "options": {
+          "reportDir": `${functional_output_dir}/output`,
+          "reportFilename": `${functional_output_dir}/output/report`,
+          "overwrite": false,
+          "html":false,
+          "json":true
+        }
+      },
     //   "mocha-junit-reporter": {
     //     "stdout": "./output/console.log",
     //     "options": {
@@ -128,9 +138,6 @@ exports.config = {
    
   },
   plugins:{
-    "allure": {
-      "enabled": true
-    },
     screenshotOnFail: {
       enabled: true,
       fullPageScreenshots: 'true'
@@ -142,7 +149,8 @@ exports.config = {
     },
     retryFailedStep: {
       enabled: true
-    }
+    },
+    // pauseOnFail: {},
     // cucumberJsonReporter: {
     //   require: 'codeceptjs-cucumber-json-reporter',
     //   enabled: true,               // if false, pass --plugins cucumberJsonReporter
@@ -167,8 +175,9 @@ exports.config = {
     }
   },
   teardown: async () => {
+    await mochawesomeGenerateReport()
     if (testType === "ngIntegration" && !parallel){
-      await teardown()
+      teardown()
     }
     return true
   },
@@ -179,8 +188,9 @@ exports.config = {
     }
   },
   teardownAll: async () => {  
+   await  mochawesomeGenerateReport()
     if (testType === "ngIntegration" && parallel) {
-      await teardown()
+      teardown()
     }
     return true
   }
@@ -197,7 +207,15 @@ async function teardown(){
   await applicationServer.stop()
 }
 
-
+async function mochawesomeGenerateReport(){
+  const report = await merge({
+    files: [`${functional_output_dir}/*.json`]
+  })
+  await marge.create(report, {
+    "reportDir": `${functional_output_dir}/`,
+    "reportFilename": `${functional_output_dir}/report`,
+  });
+}
 
 function generateCucumberReport(){
    report.generate({

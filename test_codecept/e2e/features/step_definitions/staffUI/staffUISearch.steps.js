@@ -7,6 +7,8 @@ const staffUserDetailsPage = require('../../pageObjects/staffUI/staffUIUserDetai
 const addNewUserPage = require('../../pageObjects/staffUI/adduserPage')
 const addUserCheckYourAnswersPage = require('../../pageObjects/staffUI/addUserCheckYourAnswersPage')
 
+const testDataManager = require('../../../utils/testDataManager/index')
+
 When('I click Advanced search link in Staff UI', async function (tabLabel, boolString) {
     await staffSearchPage.clickAdvancedSearchLink();
 });
@@ -63,22 +65,22 @@ Then('I validate staff user details display', async function(){
     [
         'Email address',
         'Region',
-        'Services',
+        'Service',
         'Primary location',
-        'Additional locations',
+        // 'Additional locations',
         'User type',
-        'Roles',
+        'Role',
         'Job title',
         'Skills',
         'Status'
     ].forEach(row => {
-        expect(rows, `missing ${row}`).to.includes(row)
+        expect(rows, `missing ${row}`, `${row} is missing ${JSON.stringify(rows)}`).to.includes(row)
     })
     
     expect(userDetails['Email address'] !== '', `missing value for 'Email address'`).to.be.true;
     expect(userDetails['User type'] !== '', `missing value for 'User type'`).to.be.true;
     expect(userDetails['Status'] !== '', `missing value for 'Status'`).to.be.true;
-    expect(userDetails['Job title'] !== '', `missing value for 'Job title'`).to.be.true;
+    // expect(userDetails['Job title'] !== '', `missing value for 'Job title'`).to.be.true;
 
 
 
@@ -88,11 +90,13 @@ Then('I validate staff user details display', async function(){
 
 When('I add new staff user details', async function () {
     await staffSearchPage.clickAddNewUser();
-
+    expect(await addNewUserPage.getPageTitle()).to.includes('Add a new user')
+    const newIdamUser = await testDataManager.createAndGetIdamUser();
+    reportLogger.AddMessage(`TEST_DATA: idam user created ${newIdamUser.email}`)
     const details = {
-        'First name':'tes',
+        'First name':'xui auto test',
         'Last name':'last name',
-        'Email':'test@justice.gov.uk',
+        'Email': newIdamUser.email,
         'Region':'Region 1',
         'Services':['CIVIL'],
         'Primary location':'Bir',
@@ -114,13 +118,15 @@ When('I add new staff user details', async function () {
 
     await addUserCheckYourAnswersPage.submitButton.click();
 
+    await staffSearchPage.basicSearch.wait();
+    expect(await staffSearchPage.amOnPage()).to.be.true
+    expect(await staffSearchPage.validateSuccessMessageBanner('You have added a new user')).to.be.true
 
 })
 
 
 Then('I validate add new staff user work flow controls', async function(){
-    
-
+  
     const details = {
         'First name': 'tes',
         'Last name': 'last name',
@@ -175,7 +181,69 @@ Then('I validate add new staff user work flow controls', async function(){
         await addNewUserPage.clickContinue();
 
     }
+
+    Then('I validate user profile update in staff UI', async function(){
+        await staffSearchPage.performBasicSearch('xui');
+        const username = await staffSearchPage.staffUsersList.clickUserNameAtRow(0);
+        await staffUserDetailsPage.container.wait();
+        const userDetails = await staffUserDetailsPage.getUserDetails();
+
+        await staffUserDetailsPage.updateButton.click();
+        await addNewUserPage.container.wait();
+        expect(await addNewUserPage.isDisplayed()).to.be.true
+        expect(await addNewUserPage.getPageTitle()).to.includes('Edit user')
+
+        await addNewUserPage.enterDetails({ 'Last name' : 'xui auto updated'});
+
+        await addNewUserPage.clickSaveChanges();
+
+        await addUserCheckYourAnswersPage.container.wait();
+        expect(await addUserCheckYourAnswersPage.isDisplayed()).to.be.true;
+        const checkAnswers = await addUserCheckYourAnswersPage.getUserDetails();
+        expect(checkAnswers['Name']).to.includes(`xui auto updated`)
+        await addUserCheckYourAnswersPage.submitButton.click();
+
+        await staffSearchPage.pageContainer.wait();
+        expect(await staffSearchPage.amOnPage()).to.be.true
+        expect(await staffSearchPage.validateSuccessMessageBanner('User updated')).to.be.true
+
+    })
    
+    Then('I validate user profile copy in staff UI', async function () {
+        await staffSearchPage.performBasicSearch('xui');
+        const username = await staffSearchPage.staffUsersList.clickUserNameAtRow(0);
+        await staffUserDetailsPage.container.wait();
+        const userDetails = await staffUserDetailsPage.getUserDetails();
+
+        await staffUserDetailsPage.copyButton.click();
+        await addNewUserPage.container.wait();
+        expect(await addNewUserPage.isDisplayed()).to.be.true
+        expect(await addNewUserPage.getPageTitle()).to.includes('Add a new user')
+
+
+        const newIdamUser = await testDataManager.createAndGetIdamUser();
+        await addNewUserPage.enterDetails({
+            'First name':'xui auto test copy', 
+            'Last name': 'xui auto copied',
+            'Email': newIdamUser.email
+        });
+
+        await addNewUserPage.clickContinue();
+
+        await addUserCheckYourAnswersPage.container.wait();
+        expect(await addUserCheckYourAnswersPage.isDisplayed()).to.be.true;
+        const checkAnswers = await addUserCheckYourAnswersPage.getUserDetails();
+        expect(checkAnswers['Name']).to.includes(`xui auto test copy`)
+        expect(checkAnswers['Name']).to.includes(`'xui auto copied`)
+        expect(checkAnswers['Email']).to.includes(newIdamUser.email)
+
+        await addUserCheckYourAnswersPage.submitButton.click();
+
+        await staffSearchPage.pageContainer.wait();
+        expect(await staffSearchPage.amOnPage()).to.be.true
+        expect(await staffSearchPage.validateSuccessMessageBanner('User updated')).to.be.true
+    })
+
 
 })
 

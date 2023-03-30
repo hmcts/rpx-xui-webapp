@@ -18,6 +18,7 @@ class UserApiData{
 
 
     setUserData(token, apiMethod, response) {
+        apiMethod = apiMethod.toUpperCase();
         let userSession = this.sessionUsers.find(sess => sess.token === token)
         if (!userSession) {
             userSession = {

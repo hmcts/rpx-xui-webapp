@@ -1,4 +1,4 @@
-@fullfunctional @ignore @codecept_enabled
+@fullfunctional @ignore @codecept_enabled  @staffUI 
 Feature: Staff UI Manager user
 
 
@@ -33,4 +33,27 @@ Feature: Staff UI Manager user
         
         When I add new staff user details
         Then I see basic search displayed in staff UI
+
+    Scenario: Update user
+        When I navigate to Expert UI Url
+        Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
+
+        Then I click on primary navigation header tab "Staff", I see selected tab page displayed
+        Then I see basic search displayed in staff UI
+
+        Then I see basic search displayed in staff UI
+        Then I validate user profile update in staff UI
+
+
+    Scenario: Copy user
+        When I navigate to Expert UI Url
+        Given I am logged into Expert UI with test user identified as "STAFF_ADMIN"
+
+        Then I click on primary navigation header tab "Staff", I see selected tab page displayed
+        Then I see basic search displayed in staff UI
+
+        Then I see basic search displayed in staff UI
+        Then I validate user profile copy in staff UI
+
+
 

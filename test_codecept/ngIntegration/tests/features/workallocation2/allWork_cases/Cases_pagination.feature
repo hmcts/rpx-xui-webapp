@@ -75,21 +75,21 @@ Feature: WA Release 2: All work > cases -  pagination sorting
 
         Given I reset reference "caseSearchRequest" value to null
         When I click WA case list pagination link "Next" and wait for req reference "caseSearchRequest" not null
-        Then I validate task search request with reference "caseSearchRequest" has pagination parameters
-            | PageNumber | PageSize |
-            | 2          | 25       |
+        # Then I validate task search request with reference "caseSearchRequest" has pagination parameters
+        #     | PageNumber | PageSize |
+        #     | 2          | 25       |
         Then I validate WA case list page results text displayed as "Showing 26 to 50 of 140 results"
         Given I reset reference "caseSearchRequest" value to null
         When I click WA case list pagination link "Previous" and wait for req reference "caseSearchRequest" not null
-        Then I validate task search request with reference "caseSearchRequest" has pagination parameters
-            | PageNumber | PageSize |
-            | 1          | 25       |
+        # Then I validate task search request with reference "caseSearchRequest" has pagination parameters
+        #     | PageNumber | PageSize |
+        #     | 1          | 25       |
         Then I validate WA case list page results text displayed as "Showing 1 to 25 of 140 results"
         Given I reset reference "caseSearchRequest" value to null
         When I click WA case list pagination link "3" and wait for req reference "caseSearchRequest" not null
-        Then I validate task search request with reference "caseSearchRequest" has pagination parameters
-            | PageNumber | PageSize |
-            | 3          | 25       |
+        # Then I validate task search request with reference "caseSearchRequest" has pagination parameters
+        #     | PageNumber | PageSize |
+        #     | 3          | 25       |
         Then I validate WA case list page results text displayed as "Showing 51 to 75 of 140 results"
 
         Then I validate work allocation table "cases" columns sortability

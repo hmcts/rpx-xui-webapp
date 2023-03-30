@@ -10,7 +10,6 @@ import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffStatusComponent } from './components/staff-status/staff-status.component';
-import { StaffSuspendedBannerComponent } from './components/staff-suspended-banner/staff-suspended-banner.component';
 import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from './components/staff-users/staff-search/staff-search.component';
 import { StaffUserListComponent } from './components/staff-users/staff-user-list/staff-user-list.component';
@@ -46,8 +45,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffStatusComponent,
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,
-    StaffStatusComponent,
-    StaffSuspendedBannerComponent
+    StaffStatusComponent
   ],
   imports: [
     CommonModule,

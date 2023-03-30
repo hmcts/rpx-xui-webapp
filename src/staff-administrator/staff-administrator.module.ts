@@ -9,17 +9,19 @@ import { SharedModule } from '../app/shared/shared.module';
 import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
+import { StaffAddUserComponent } from './components/staff-add-user/staff-add-user.component';
 import { StaffStatusComponent } from './components/staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from './components/staff-suspended-banner/staff-suspended-banner.component';
+import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
 import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from './components/staff-users/staff-search/staff-search.component';
 import { StaffUserListComponent } from './components/staff-users/staff-user-list/staff-user-list.component';
-import { StaffAddUserComponent } from './containers/staff-add-user/staff-add-user.component';
+import { StaffAddUserContainerComponent } from './containers/staff-add-user-container/staff-add-user-container.component';
 import {
   StaffEditUserContainerComponent
 } from './containers/staff-edit-user-container/staff-edit-user-container.component';
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
-import { StaffUserDetailsComponent } from './containers/staff-user-details/staff-user-details.component';
+import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
 import { PluckAndJoinPipe } from './pipes/pluckAndJoin.pipe';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
@@ -47,7 +49,9 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     PluckAndJoinPipe,
     StaffEditUserContainerComponent,
     StaffStatusComponent,
-    StaffSuspendedBannerComponent
+    StaffSuspendedBannerComponent,
+    StaffUserDetailsContainerComponent,
+    StaffAddUserContainerComponent
   ],
   imports: [
     CommonModule,

@@ -5,8 +5,8 @@ import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
-import { StaffAddEditUserFormId } from '../../../staff-administrator/models/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../models/staff-user.model';
+import { StaffAddEditFormService } from '../../services/staff-add-edit-form.service/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
 @Component({
@@ -25,8 +25,9 @@ export class StaffUserDetailsComponent {
     private readonly router: Router,
     private staffDataAccessService: StaffDataAccessService,
     private readonly messageService: InfoMessageCommService,
+    private readonly staffAddEditFormService: StaffAddEditFormService
   ) {
-    const userDetailsFromSnapshot = this.route.snapshot.data.staffUserDetails.userDetails;
+    const userDetailsFromSnapshot = this.route.snapshot.data.staffUserDetails;
 
     if (!userDetailsFromSnapshot) {
       this.router.navigateByUrl('/staff');
@@ -92,78 +93,19 @@ export class StaffUserDetailsComponent {
   }
 
   public onUpdateUser() {
-    this.setDataForGenericFilterAndNavigate(StaffAddEditUserFormId.UpdateUser,
-      `/staff/user-details/${this.route.snapshot.params.id}/update`);
+    this.staffAddEditFormService.formGroup.patchValue({
+      ...this.userDetails
+    });
+    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/update`);
   }
 
   public onCopyUser() {
-    this.userDetails.first_name = '';
-    this.userDetails.last_name = '';
-    this.userDetails.email_id = '';
-
-    this.setDataForGenericFilterAndNavigate(StaffAddEditUserFormId.CopyUser,
-      `/staff/user-details/${this.route.snapshot.params.id}/copy`);
-  }
-
-  public setDataForGenericFilterAndNavigate(filterId: string, destination: string) {
-    const primaryLocation = this.userDetails.base_locations.find(item => item.is_primary);
-    const formValues = {
-      id: filterId,
-      fields: [
-        {
-          name: 'first_name',
-          value: [this.userDetails.first_name]
-        },
-        {
-          name: 'last_name',
-          value: [this.userDetails.last_name]
-        },
-        {
-          name: 'email_id',
-          value: [this.userDetails.email_id]
-        },
-        {
-          name: 'user-services',
-          value: this.userDetails.services.map(item => item.service_code)
-        },
-        {
-          name: 'region_id',
-          value: [this.userDetails.region_id]
-        },
-        {
-          name: 'primaryLocation',
-          value: [{ epimms_id: primaryLocation.location_id, site_name: primaryLocation.location }]
-        },
-        {
-          name: 'additionalLocations',
-          value: this.userDetails.base_locations.filter(item => !item.is_primary).map(location => {
-            return { epimms_id: location.location_id, site_name: location.location };
-          })
-        },
-        {
-          name: 'user_type',
-          value: [this.userDetails.user_type]
-        },
-        {
-          name: 'roles',
-          value: [
-            this.userDetails.case_allocator ? 'case_allocator' : false,
-            this.userDetails.task_supervisor ? 'task_supervisor' : false,
-            this.userDetails.staff_admin ? 'staff_admin' : false
-          ].filter(item => item)
-        },
-        {
-          name: 'jobTitle',
-          value: this.userDetails.roles.map(item => Number(item.role_id))
-        },
-        {
-          name: 'user-skills',
-          value: this.userDetails.skills.map(item => item.skill_id)
-        }
-      ]
-    };
-
-    sessionStorage.setItem(filterId, JSON.stringify(formValues));
-    this.router.navigateByUrl(destination);
+    this.staffAddEditFormService.formGroup.patchValue({
+      ...this.userDetails,
+      first_name: '',
+      last_name: '',
+      email_id: ''
+    });
+    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/copy`);
   }
 }

@@ -3,18 +3,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   FilterService, GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { finalize, map, take } from 'rxjs/operators';
-import { UserDetails } from '../../../../app/models';
+import { Store } from '@ngrx/store';
+import { finalize } from 'rxjs/operators';
 import { InfoMessage } from '../../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../../app/shared/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
 import * as fromAppStore from '../../../../app/store';
 import { InfoMessageType } from '../../../../role-access/models/enums';
-import { StaffAddEditUserFormId } from '../../../../staff-administrator/models/staff-add-edit-user-form-id.enum';
+import { StaffAddEditUserFormId } from '../../../models/staff-add-edit-user-form-id.enum';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffUser } from '../../../models/staff-user.model';
+import { StaffAddEditFormService } from '../../../services/staff-add-edit-form.service/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 
 @Component({
@@ -32,8 +31,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     skills: GroupOptions[],
     services: StaffFilterOption[]
   };
-  public userDetails$: Observable<UserDetails>;
-  public idamRoles = [];
   public isLoading = false;
   public isUpdateMode = false;
 
@@ -44,33 +41,23 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private staffDataAccessService: StaffDataAccessService,
     private readonly messageService: InfoMessageCommService,
-  ) {}
+    private readonly staffAddEditFormService: StaffAddEditFormService
+  ) {
+    this.staffUser = staffAddEditFormService.valuesAsStaffUser;
+  }
 
 
   public ngOnInit() {
-    this.formId = this.activatedRoute.snapshot.data.formId;
-    this.isUpdateMode = this.formId === StaffAddEditUserFormId.UpdateUser;
-
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services
     };
+    this.isUpdateMode = this.formId === StaffAddEditUserFormId.UpdateUser;
 
-    this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
-    this.userDetails$.pipe(
-      map(details => {
-        this.idamRoles = details.userInfo.roles;
-      }));
-    this.filterService.getStream(this.formId)
-      .pipe(take(1))
-      .subscribe(data => {
-      if (data.fields) {
-        this.staffUser = new StaffUser();
-        this.staffUser.fromGenericFilter(data, this.staffFilterOptions);
-      }
-    });
+
+    this.formId = this.activatedRoute.snapshot.data.formId;
   }
 
   public onSubmit() {
@@ -100,7 +87,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     this.staffDataAccessService.updateUser(this.staffUser)
       .pipe(finalize(() => {
         this.isLoading = false;
-        this.filterService.clearSessionAndLocalPersistance(this.formId);
       }))
       .subscribe((response) => {
         this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`);

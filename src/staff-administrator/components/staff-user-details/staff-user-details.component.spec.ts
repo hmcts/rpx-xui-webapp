@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,12 +10,12 @@ import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
-import { StaffAddEditUserFormId } from '../../../staff-administrator/models/staff-add-edit-user-form-id.enum';
-import { StaffStatusComponent } from '../../components/staff-status/staff-status.component';
-import { StaffSuspendedBannerComponent } from '../../components/staff-suspended-banner/staff-suspended-banner.component';
+import { StaffAddEditUserFormId } from '../../models/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { PluckAndJoinPipe } from '../../pipes/pluckAndJoin.pipe';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
+import { StaffStatusComponent } from '../staff-status/staff-status.component';
+import { StaffSuspendedBannerComponent } from '../staff-suspended-banner/staff-suspended-banner.component';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
 
 @Component({

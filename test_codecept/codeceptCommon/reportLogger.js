@@ -112,19 +112,25 @@ class CodeceptMochawesomeLog{
             columnSizes[i] = columnSize;
 
         }
+
+        let totalTableLength  = 0;
+
+        
+        columnSizes.forEach(colLength => totalTableLength += colLength )
+        this.AddMessage('=== BDD)    ' + ''.padEnd(totalTableLength+1,'-') )
         for (let row = 0; row < rowsCount; row++){
             let tableRow = ""
             for (let col = 0; col < columnsCount ; col++){
                 tableRow += rows[row][col].padEnd(columnSizes[col], ' ')
             }
-            this.AddMessage('=======> BDD DATATABLE:    '+tableRow)
+            this.AddMessage('=== BDD)    |'+tableRow+'|')
            
         }
-
+        this.AddMessage('=== BDD)    ' + ''.padEnd(totalTableLength+1, '-'))
 
     }
 
-    // _isLevelEnabled(msgLoglevel){
+    // _isLevelEnabled(msgLoglevel)`=== BDD)
     //     msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;  
     //     return msgLoglevel >= this.logLevel; 
     // }

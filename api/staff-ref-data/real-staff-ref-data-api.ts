@@ -11,11 +11,25 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
   public baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 
   async getFilteredUsers(req: any, res: Response, next: NextFunction) {
-    const parsed = querystring.stringify(req.query);
+    const queryStrings = querystring.stringify(req.query);
+    const pageSize = req.headers['page-size'] || 20;
+    const pageNumber = req.headers['page-number'] || 1;
+
+    const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${queryStrings}`;
+
     try {
-      const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search?${parsed}`;
-      const { status, data }: { status: number, data: StaffUser[] } = await sendGet(apiPath, req);
-      res.status(status).send(data);
+      const { status, data, headers }: { status: number, data: StaffUser[], headers: any }
+        = await sendGet(apiPath, req, {
+        'page-number': pageNumber,
+        'page-size': pageSize,
+      });
+
+      res.status(status).send({
+        items: data,
+        pageSize: parseInt(pageSize, 10),
+        pageNumber: parseInt(pageNumber, 10),
+        totalItems: parseInt(headers['total-records'], 10),
+      });
     } catch (error) {
       next(error);
     }
@@ -101,11 +115,24 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
 
   async getUsersByPartialName(req, res: Response, next: NextFunction) {
     const searchParam = req.query.search ? req.query.search : '';
+    const pageSize = req.headers['page-size'] || 20;
+    const pageNumber = req.headers['page-number'] || 1;
+
     const apiPath = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/profile/search-by-name?search=${searchParam}`;
+
     try {
-      const { status, data }: { status: number, data: StaffUser[] } =
-        await sendGet(apiPath, req);
-      res.status(status).send(data);
+      const { status, data, headers }: { status: number, data: StaffUser[], headers: any } =
+        await sendGet(apiPath, req, {
+          'page-number': pageNumber,
+          'page-size': pageSize,
+        });
+
+      res.status(status).send({
+        items: data,
+        pageSize: parseInt(pageSize, 10),
+        pageNumber: parseInt(pageNumber, 10),
+        totalItems: parseInt(headers['total-records'], 10),
+      });
     } catch (error) {
       next(error);
     }

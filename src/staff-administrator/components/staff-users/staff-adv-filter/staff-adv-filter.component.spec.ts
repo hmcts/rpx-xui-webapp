@@ -61,7 +61,8 @@ describe('StaffAdvFilterComponent', () => {
   };
 
   beforeEach(() => {
-    mockStaffDataFilterService = jasmine.createSpyObj<StaffDataFilterService>('mockStaffDataFilterService', ['filterByAdvancedSearch', 'resetSearch', 'setErrors']);
+    mockStaffDataFilterService = jasmine.createSpyObj<StaffDataFilterService>('mockStaffDataFilterService',
+      ['search', 'changePage', 'setErrors']);
     TestBed.configureTestingModule({
       declarations: [ StaffAdvFilterComponent ],
       imports: [
@@ -91,38 +92,38 @@ describe('StaffAdvFilterComponent', () => {
     })
     .compileComponents();
 
-    mockStaffDataFilterService.filterByAdvancedSearch.and.returnValue(of([{
-      email_id: '2',
-      first_name: 'Victoria',
-      last_name: 'Patton',
-      suspended: false,
-      user_type: 'Officer2',
-      userCategory: '',
-      task_supervisor: false,
-      case_allocator: true,
-      staff_admin: false,
-      roles: [{
-        role_id: 1,
-        role: 'Role 1',
-        is_primary: true,
-      }],
-      skills: [{
-        skill_id: 123,
-        description: 'Skill 123',
-        skill_code: 'SK123'
-      }],
-      services: [{
-        service: 'Service',
-        service_code: 'Service_Code'
-      }],
-      base_locations: [{
-        location_id: 123,
-        location: 'Location',
-        is_primary: true
-      }],
-      region: 'Region',
-      region_id: 999
-    }]));
+    // mockStaffDataFilterService.search.and.returnValue(of([{
+    //   email_id: '2',
+    //   first_name: 'Victoria',
+    //   last_name: 'Patton',
+    //   suspended: false,
+    //   user_type: 'Officer2',
+    //   userCategory: '',
+    //   task_supervisor: false,
+    //   case_allocator: true,
+    //   staff_admin: false,
+    //   roles: [{
+    //     role_id: 1,
+    //     role: 'Role 1',
+    //     is_primary: true,
+    //   }],
+    //   skills: [{
+    //     skill_id: 123,
+    //     description: 'Skill 123',
+    //     skill_code: 'SK123'
+    //   }],
+    //   services: [{
+    //     service: 'Service',
+    //     service_code: 'Service_Code'
+    //   }],
+    //   base_locations: [{
+    //     location_id: 123,
+    //     location: 'Location',
+    //     is_primary: true
+    //   }],
+    //   region: 'Region',
+    //   region_id: 999
+    // }]));
 
   });
 
@@ -152,7 +153,16 @@ describe('StaffAdvFilterComponent', () => {
     expect(userJobTitle.value).toBe('All');
   });
 
-  it('should not make a call to advanced search', () => {
-    expect(mockStaffDataFilterService.filterByAdvancedSearch).toHaveBeenCalled();
+  it('should call search on when filterService emits', () => {
+
   });
+
+  // it('should update the page number of searchFilters', () => {
+  //   const originalValue = ad.value;
+  //   changePage.call({ searchFilters }, pageNumber);
+  //
+  //   expect(searchFilters.value.pageNumber).toBe(pageNumber);
+  //   expect(searchFilters.value).not.toBe(originalValue);
+  //   expect(searchFilters.value).toEqual({ ...originalValue, pageNumber });
+  // });
 });

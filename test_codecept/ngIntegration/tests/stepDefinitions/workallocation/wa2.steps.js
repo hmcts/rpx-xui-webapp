@@ -36,6 +36,9 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
 
 const taskApiMock = require('../../../../backendMock/services/task-management-api/index')
 const mockClient = require('../../../../backendMock/client/index');
+const reportLogger = require('../../../../codeceptCommon/reportLogger');
+
+const taskManagementApiMock = require('../../../../backendMock/services/task-management-api/index')
 
     const caseListPage = new CaseListPage();
 
@@ -105,6 +108,7 @@ const mockClient = require('../../../../backendMock/client/index');
     });
 
     Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (inputView,assignedState ,taskPermissionsTable) {
+        reportLogger.reportDatatable(taskPermissionsTable)
         const taskPermissionHashes = taskPermissionsTable.parse().hashes(); 
         const tasks = [];
         let view = inputView.split(" ").join("");
@@ -127,16 +131,16 @@ const mockClient = require('../../../../backendMock/client/index');
         switch (view){
             case 'mytasks':
                 workAllocationMockData.myWorkMyTasks = { tasks: tasks.slice(0, 25), total_records: tasks.length };
-                await mockClient.setUserApiData(auth.value, 'OnSearchTasks', workAllocationMockData.myWorkMyTasks);
+                await mockClient.setUserApiData(auth.value, taskManagementApiMock.method.searchTasks, workAllocationMockData.myWorkMyTasks);
                 break;
             case 'availabletasks':
                 workAllocationMockData.myWorkAvailableTasks = { tasks: tasks.slice(0,25), total_records: tasks.length };
-                await mockClient.setUserApiData(auth.value, 'OnSearchTasks', workAllocationMockData.myWorkAvailableTasks);
+                await mockClient.setUserApiData(auth.value, taskManagementApiMock.method.searchTasks, workAllocationMockData.myWorkAvailableTasks);
 
                 break;
             case 'allwork':
                 workAllocationMockData.allWorkTasks = { tasks: tasks.slice(0, 25), total_records: tasks.length };
-                await mockClient.setUserApiData(auth.value, 'OnSearchTasks', workAllocationMockData.allWorkTasks);
+                await mockClient.setUserApiData(auth.value, taskManagementApiMock.method.searchTasks, workAllocationMockData.allWorkTasks);
 
                 break;
 
@@ -156,39 +160,56 @@ const mockClient = require('../../../../backendMock/client/index');
         CucumberReporter.reportDatatable(attributesDatatable)
         const tasksHashes = attributesDatatable.parse().hashes();
         
-        const response = { 
-            tasks:[],
-            total_records: tasksHashes.length
+        let view = forView.split(" ").join("");
+        view = view.toLowerCase();
+        let tasksResponse = null;
+        switch (view) {
+            case 'mytasks':
+                tasksResponse = workAllocationMockData.myWorkMyTasks 
+                break;
+            case 'availabletasks':
+                tasksResponse = workAllocationMockData.myWorkAvailableTasks 
+
+                break;
+            case 'allwork':
+                tasksResponse = workAllocationMockData.allWorkTasks 
+
+                break;
+
+            default:
+                throw new Error(`Unrecognised input view from step def "${view}"`);
         }
-        await ArrayUtil.forEach(tasksHashes, async  (taskHash) => {
-            let task = taskManagementMock.getTaskTemplate();
+
+        for (let i = 0; i < tasksHashes.length ; i++ ){
+            const taskHash = tasksHashes[i]
+            let task = tasksResponse.tasks[i]
+
 
             let taskHashKeys = Object.keys(taskHash);
-            await ArrayUtil.forEach(taskHashKeys, key => {
-                if(key.toLowerCase() === "index"){
+            for (const key of taskHashKeys ) {
+                if (key.toLowerCase() === "index") {
                     //ignore index;
-                } else if (key.toLowerCase() === "permissions"){
-                    task.permissions = taskHash[key].split(",");
+                } else if (key.toLowerCase() === "permissions") {
+                    task.permissions.values = taskHash[key].split(",");
                     // task.actions = workAllocationDataModel.getRelease2TaskActions(task.permissions, view, taskHash.assignee ? "assigned": "unassigned")
                 } else if (key.toLowerCase() === "assignee") {
-                    if (taskHash[key] === ""){
+                    if (taskHash[key] === "") {
                         delete task[key];
-                    } else{
+                    } else {
                         task[key] = taskHash[key];
                     }
-                    
+
                 } else if (key.toLowerCase().includes("date")) {
                     task[key] = getDateValueForDays(taskHash[key]);
-                }else{
+                } else {
                     task[key] = taskHash[key];
                 }
-                
-            });
-            response.tasks.push(task)
-        })
+            }
+              
+        }
 
         const auth = await browser.driver.manage().getCookie('__auth__')
-        await backendMockClient.setUserApiData(auth.value, "onSearchTasks", response)
+        await backendMockClient.setUserApiData(auth.value, taskManagementApiMock.method.searchTasks, tasksResponse)
     });
 
 

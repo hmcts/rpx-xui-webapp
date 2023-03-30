@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { RefDataService } from '@hmcts/rpx-xui-common-lib';
+import { map } from 'rxjs/operators';
 import { StaffFilterOption } from '../models/staff-filter-option.model';
-import { StaffDataAccessService } from '../services/staff-data-access/staff-data-access.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StaffFilterOptionsServicesResolver implements Resolve<StaffFilterOption[]> {
-
-  constructor(private staffDataAccessService: StaffDataAccessService) {}
+  constructor(private refDataService: RefDataService) {}
 
   public resolve(route?: ActivatedRouteSnapshot) {
-    return this.staffDataAccessService.getServices();
+    return this.refDataService.services$.pipe(
+      map((services) => services.map(service => ({
+          key: service.service_code,
+          label: service.service_description
+        }))
+      ));
   }
 }

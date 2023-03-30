@@ -55,17 +55,6 @@ export class MockStaffRefDataAPI implements StaffRefDataAPI {
     }
   }
 
-  async getServices(req, res: Response, next: NextFunction) {
-    const apiPath: string = `/refdata/case-worker/services`;
-
-    try {
-      const {status, data}: { status: number, data: StaffFilterOption[] } = await handleGet(apiPath, req);
-      res.status(status).send(data);
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async getUsersByPartialName(req, res: Response, next: NextFunction) {
     const searchParam = req.query.search ? req.query.search : '';
     const apiPath: string = `/refdata/case-worker/profile/search?search=${searchParam}`;

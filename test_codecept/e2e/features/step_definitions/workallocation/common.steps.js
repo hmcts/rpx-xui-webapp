@@ -238,7 +238,9 @@ const { DataTableArgument } = require('codeceptjs');
                 await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex)).to.be.false);
                 continue;
             }
-            if (!(await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex))){
+
+            const isManagelinkOpen = await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex);
+            if (!isManagelinkOpen){
                 await taskListTable.clickManageLinkForTaskAt(taskIndex);
             }
 

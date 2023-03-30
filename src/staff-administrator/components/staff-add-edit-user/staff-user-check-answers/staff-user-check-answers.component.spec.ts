@@ -9,9 +9,9 @@ import { Store } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
 import { UserDetails } from '../../../../app/models';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
+import { StaffAddEditUserFormId } from '../../../models/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../../models/staff-user.model';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
-import { StaffAddEditUserFormId } from '../../staff-add-edit-user-form-id.enum';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
 
 describe('StaffUserCheckAnswersComponent', () => {

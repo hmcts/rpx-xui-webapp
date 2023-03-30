@@ -10,14 +10,13 @@ import {
   GenericFilterComponent,
   GroupOptions
 } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SessionStorageService } from 'src/app/services';
 import { ErrorMessage } from '../../../../app/models';
 import { Region } from '../../../../work-allocation/models/dtos';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
-import { getValues, maxSelectedValidator, minSelectedValidator } from '../../../utiils/staff.utils';
+import { maxSelectedValidator, minSelectedValidator } from '../../../utiils/staff.utils';
 
 @Component({
   selector: 'exui-staff-add-edit-user-form',
@@ -33,7 +32,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
     jobTitles: StaffFilterOption[],
     skills: GroupOptions[],
     services: StaffFilterOption[],
-    locations: LocationByEPIMMSModel[];
   };
   public regions: FilterConfigOption[] = [];
   public newRegions: Region[] = [];
@@ -79,7 +77,7 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
     bookingCheckType: BookingCheckType.NO_CHECK,
     maxWidth480px: true,
     findLocationField: 'user-services'
-  }
+  };
   public newFilterConfig : FilterFieldConfig[] = [
       {
         name: 'email_id',
@@ -209,7 +207,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services,
-      locations: this.activatedRoute.snapshot.data.locations
     };
     this.newRegions = this.activatedRoute.snapshot.data.regions;
     console.log(this.newRegions, 'are regions');
@@ -227,7 +224,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
     const skillsFormArray = this.buildCheckboxArray('skills', this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b)), 0, 10);
     this.form.addControl('skills', skillsFormArray);
     this.initFormConfig();
-    console.log(this.staffFilterOptions.services.map(service => service.label))
     this.filterSkillsByServices(this.staffFilterOptions.services.map(service => service.label));
     this.startFilterSkillsByServices(this.form);
     this.filterStreamSubscription = this.filterService.getStream(this.formId).subscribe(data => {
@@ -324,10 +320,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
   public resetForm() {
     this.filterService.clearSessionAndLocalPersistance(this.formId);
     this.filterService.givenErrors.next(null);
-  }
-
-  public inputChanged() {
-    console.log('input changed');
   }
 
   public filterSkillsByServices(services: string[]) {
@@ -496,7 +488,6 @@ export class StaffAddEditUserFormComponent implements OnInit, OnDestroy, AfterVi
   }
 
   public initFormConfig() {
-    console.log(...this.staffFilterOptions.services);
     this.filterConfig = {
       id: this.formId,
       fields: [

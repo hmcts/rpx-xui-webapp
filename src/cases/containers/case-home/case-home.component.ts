@@ -78,7 +78,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
           path: ['cases'],
           callback: () => {
             this.alertService.setPreserveAlerts(true);
-            this.alertService.success(CaseHomeComponent.DRAFT_DELETED_MSG);
+            this.alertService.success({ phrase: CaseHomeComponent.DRAFT_DELETED_MSG });
           }
         };
         break;
@@ -113,7 +113,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         params = {
           path: ['cases'],
           callback: () => {
-            this.alertService.success(CaseHomeComponent.CASE_CREATED_MSG);
+            this.alertService.success({ phrase: CaseHomeComponent.CASE_CREATED_MSG });
           }
         };
         break;
@@ -136,7 +136,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       console.log('error during triggering event:', triggerId);
       console.log(error);
       this.errorNotifierService.announceError(error);
-      this.alertService.error(error.message);
+      this.alertService.error({ phrase: error.message });
     }
   }
 }

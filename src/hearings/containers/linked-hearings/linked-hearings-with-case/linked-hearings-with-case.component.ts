@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import {
   HearingLinkedSelectionEnum,
   HearingSummaryEnum,
@@ -11,12 +11,12 @@ import {
 import {
   HearingDetailModel,
   LinkedHearingGroupMainModel,
+  ServiceLinkedCasesModel,
   ServiceLinkedCasesWithHearingsModel
 } from '../../../models/linkHearings.model';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-linked-hearings-with-case',
@@ -33,6 +33,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public linkedHearingSelectionError: string;
   public errors: { id: string, message: string }[] = [];
   public linkedCases: ServiceLinkedCasesWithHearingsModel[] = [];
+  public linkedCasesWithNoAccessToLoggedInUser: ServiceLinkedCasesModel[];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public sub: Subscription;
   public linkHearingForm: FormGroup;
@@ -45,7 +46,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public hearingStageOptions: LovRefDataModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly hearingsService: HearingsService,
               private readonly validators: ValidatorsUtils,
               private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -65,6 +65,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         if (state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings) {
           this.isHearingsSelected(state.hearingLinks.serviceLinkedCasesWithHearings);
           this.linkedCases = state.hearingLinks.serviceLinkedCasesWithHearings;
+          this.linkedCasesWithNoAccessToLoggedInUser = this.linkedCases &&
+            state.hearingLinks.serviceLinkedCases?.filter(linkedCase => !this.linkedCases.map(x => x.caseRef).includes(linkedCase.caseReference));
           this.linkedHearingGroup = state.hearingLinks.linkedHearingGroup;
           if (state.hearingLinks.lastError) {
             this.errors.push({id: 'httpError', message: HearingSummaryEnum.BackendError});

@@ -9,7 +9,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
 import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
-
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
@@ -115,6 +115,7 @@ describe('TasksContainerComponent', () => {
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
   const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getCaseworkersForServices']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled'])
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
 
@@ -129,6 +130,7 @@ describe('TasksContainerComponent', () => {
         {provide: WorkAllocationCaseService, useValue: mockWACaseService},
         {provide: CaseworkerDataService, useValue: mockCaseworkerService},
         {provide: AllocateRoleService, useValue: mockRoleService},
+        {provide: FeatureToggleService, useValue: mockFeatureToggleService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -151,6 +153,7 @@ describe('TasksContainerComponent', () => {
   }));
 
   beforeEach(() => {
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture = TestBed.createComponent(TasksContainerComponent);
     component = fixture.componentInstance;
     mockWACaseService.getTasksByCaseId.and.returnValue(of(getMockTasks()));

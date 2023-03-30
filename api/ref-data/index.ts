@@ -28,10 +28,12 @@ export async function getServices(req, res, next: NextFunction) {
 
 export async function getRegions(req, res, next: NextFunction) {
   const apiPath: string = `${baseLocationRefUrl}/refdata/location/regions`;
+  const urlSearchParams = new URLSearchParams();
+  urlSearchParams.append('regionId', 'ALL');
 
   try {
     const {status, data}: { status: number; data: RefDataRegion[] } =
-      await http.get(`${apiPath}`, { headers: setHeaders(req) });
+      await http.get(`${apiPath}?${urlSearchParams}`, { headers: setHeaders(req) });
 
     res.status(status).send(data);
   } catch (error) {

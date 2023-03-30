@@ -1,7 +1,6 @@
 import { FilterSetting, GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { Roles } from './roles.enum';
 import { StaffFilterOption } from './staff-filter-option.model';
-import { STAFF_REGIONS } from './staff-regions';
 import { StaffUserStatus } from './staff-user-status.enum';
 
 export class StaffUser {

@@ -8,8 +8,8 @@ import {
 import { take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
-import { StaffAddEditFormService } from '../../../services/staff-add-edit-form.service/staff-add-edit-form.service';
-import { getInvalidControlNames } from '../../../utiils/staff.utils';
+import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/staff-add-edit-form.service';
+import { getInvalidControlNames } from '../../../utils/staff.utils';
 
 @Component({
   selector: 'exui-staff-add-edit-user-form',
@@ -39,6 +39,10 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     public readonly staffAddEditFormService: StaffAddEditFormService,
   ) {
     this.form = staffAddEditFormService.formGroup;
+  }
+
+  public typeof(input: any) {
+    return typeof(input);
   }
 
   public ngOnInit() {
@@ -169,6 +173,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
         multiple: true,
         errors: invalidFormControls.map(controlName => ({ error: controlName, name: controlName }))
       };
+      window.scrollTo(0, 0);
     }
   }
 

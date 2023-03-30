@@ -16,6 +16,7 @@ export class StaffFilterOptionsServicesResolver implements Resolve<StaffFilterOp
           key: service.service_code,
           label: service.service_description
         }))
-      ));
+      )
+    );
   }
 }

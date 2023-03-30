@@ -83,18 +83,21 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Role</dt>
           <dd class="govuk-summary-list__value">
-            {{ userDetails.roles | pluckAndJoin: 'role':', '  }}
+            <div *ngIf="userDetails.case_allocator">Case allocator</div>
+            <div *ngIf="userDetails.task_supervisor">Task supervisor</div>
+            <div *ngIf="userDetails.staff_admin">Staff administrator</div>
           </dd>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
         <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Job title</dt>
-          <dd class="govuk-summary-list__value">
-            <div *ngIf="userDetails.case_allocator === 'Y'">Case allocator</div>
-            <div *ngIf="userDetails.task_supervisor === 'Y'">Task supervisor</div>
-            <div *ngIf="userDetails.staff_admin === 'Y'">Staff administrator</div>
-          </dd>
+          <div class="govuk-summary-list__value">
+              <span *ngFor="let jobTitle of userDetails.roles; let isLast=last">
+                {{jobTitle.role}}
+                <span *ngIf="!isLast"><br/></span>
+              </span>
+          </div>
           <dd class="govuk-summary-list__actions"><a *ngIf="showAction" class="govuk-link" href="#">Change</a></dd>
         </div>
         <br>

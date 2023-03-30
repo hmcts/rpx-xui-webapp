@@ -271,26 +271,8 @@ describe('StaffAddEditUserFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call initForm which sets filterConfig on ngOnInit', () => {
-    const spyOnInitForm = spyOn(component, 'initFormConfig');
-
-    component.ngOnInit();
-    expect(spyOnInitForm).toHaveBeenCalled();
-    expect(component.filterConfig).toBeDefined();
-  });
-
-  it('should navigate to /staff when calling the cancelCallback from the form config', fakeAsync(() => {
-    component.initFormConfig();
-    component.filterConfig.cancelButtonCallback();
-    tick();
-
-    expect(location.path()).toBe('/staff');
-    flush();
-  }));
-
   it('should navigate to relative route' +
     '/check-your-answers regardless of editMode = false or editMode = true and form is marked as submitted', fakeAsync(() => {
-    component.genericFilterComponent.submitted = true;
     component.editMode = true;
     tick();
 

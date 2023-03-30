@@ -1,4 +1,4 @@
-@ng @codecept_test
+@ng @codecept_enabled
 Feature: WA Release 2: All work - Manage links
 
     Background: Mock and browser setup

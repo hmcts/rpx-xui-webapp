@@ -120,6 +120,7 @@ class MockSessionService{
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
 
         sessionJson = await fs.readFileSync(sessionFile);
+        sessionJson = JSON.parse(sessionJson)
         return sessionJson.roleAssignmentResponse;
     }
 

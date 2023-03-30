@@ -1,4 +1,4 @@
-@ng @codecept_enabled
+@ng @codecept_enabled 
 Feature: WA Release 2: All work - Task action work flows
 
     Background: Mock and browser setup
@@ -53,4 +53,4 @@ Feature: WA Release 2: All work - Task action work flows
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink    | actionHeader          | submitBtnLabel | actionDescription                                                                             | bannermessage |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Unassign task | Unassign task         | Unassign       | Unassign this task. This will send it back to the available task list for someone to pick up. |               |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Cancel task   | Cancel a task         | Cancel task    | Cancel a task that has not been completed, but is no longer needed.                           |               |
-            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task done if it has already been completed                                             |               |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task done if it has already been completed                                             |               |

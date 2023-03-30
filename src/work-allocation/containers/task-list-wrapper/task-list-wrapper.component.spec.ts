@@ -3,9 +3,10 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
@@ -30,7 +31,7 @@ describe('TaskListWrapperComponent', () => {
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
@@ -45,6 +46,8 @@ describe('TaskListWrapperComponent', () => {
       unsubscribe: () => null
     }
   };
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {  }, getTranslation: (phrase: string) => phrase });
+
   beforeEach((() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
@@ -53,7 +56,6 @@ describe('TaskListWrapperComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         CdkTableModule,
-        PaginationModule
       ],
       declarations: [TaskListComponent, TaskListWrapperComponent],
       providers: [
@@ -70,6 +72,7 @@ describe('TaskListWrapperComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: Store, useValue: storeMock },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
@@ -78,10 +81,11 @@ describe('TaskListWrapperComponent', () => {
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue('1');
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     fixture.detectChanges();
   }));
 

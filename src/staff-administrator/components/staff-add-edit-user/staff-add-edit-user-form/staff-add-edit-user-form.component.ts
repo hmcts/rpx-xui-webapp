@@ -2,11 +2,9 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/cor
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  FilterConfig,
   FilterConfigOption,
   GroupOptions, RefDataRegion
 } from '@hmcts/rpx-xui-common-lib';
-import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
@@ -18,7 +16,7 @@ import { getInvalidControlNames } from '../../../utiils/staff.utils';
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
-export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit, OnDestroy {
+export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   @Input() public editMode = false;
   public form: FormGroup;
   public staffFilterOptions: {
@@ -32,10 +30,8 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit, OnD
   public filteredSkillsByServices: GroupOptions[];
   public filteredSkillsByServicesCheckbox: FilterConfigOption[];
   public previousSelectedNestedCheckbox: string[] = [];
-  public filterConfig: FilterConfig;
   public errors: ErrorMessage | false;
   public submitted = false;
-  private regionControlSubscription: Subscription;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -67,13 +63,12 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit, OnD
     this.fragmentFocus();
   }
 
-  public toggleSelectServices(event: any, form: FormGroup, item: { key: string; label: string; selectAll?: true }): void {
+  public toggleSelectServices(event: any, form: FormGroup): void {
     this.startFilterSkillsByServices(form);
   }
 
-  public toggleSelectSkills(event: any, form: FormGroup, item: { key: string; label: string; selectAll?: true }): void {
+  public toggleSelectSkills(event: any): void {
     const isChecked = event.target.checked;
-    const formArray: FormArray = form.get('skills') as FormArray;
     if (isChecked) {
       const selectedIndex = this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b)).findIndex(option => Number(option.key) === Number(event.target.value));
       const selectedCheckbox = this.form.get('skills').value;
@@ -86,18 +81,6 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit, OnD
         this.previousSelectedNestedCheckbox.splice(index, 1);
       }
     }
-  }
-
-  public fragmentFocus(): void {
-    this.activatedRoute.fragment
-      .pipe(take(1))
-      .subscribe(frag => {
-      const element = document.getElementById(frag);
-      if (element) {
-        element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
-        element.focus();
-      }
-    });
   }
 
   public filterSkillsByServices(services: string[]) {
@@ -119,9 +102,9 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit, OnD
         return a.concat(b);
       }, []);
 
+      const preSelectedSkills: boolean[] = [...this.form.get('skills').value];
       this.form.setControl('skills', new FormArray([]));
 
-      const preSelectedSkills: boolean[] = [];
 
       if(preSelectedSkills.length > 0) {
         preSelectedSkills.forEach((h) => {
@@ -189,7 +172,15 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit, OnD
     }
   }
 
-  public ngOnDestroy() {
-    this.regionControlSubscription?.unsubscribe();
+  private fragmentFocus(): void {
+    this.activatedRoute.fragment
+      .pipe(take(1))
+      .subscribe(frag => {
+        const element = document.getElementById(frag);
+        if (element) {
+          element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
+          element.focus();
+        }
+      });
   }
 }

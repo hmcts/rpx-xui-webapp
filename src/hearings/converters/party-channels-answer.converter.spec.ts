@@ -5,7 +5,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState, partyChannelsRefData } from '../hearing.test.data';
+import { initialState, partyChannelsRefData, partySubChannelsRefData } from '../hearing.test.data';
 import { PartyType } from '../models/hearings.enum';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { State } from '../store';
@@ -53,6 +53,7 @@ describe('PartyChannelsAnswerConverter', () => {
             snapshot: {
               data: {
                 partyChannels: partyChannelsRefData,
+                partySubChannels: partySubChannelsRefData
               },
             },
           },

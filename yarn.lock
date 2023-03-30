@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-welsh-language-support":
-  version "6.10.7-case-flags-welsh-language-support"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-welsh-language-support.tgz#6356cfd724bf87c624166d147ba2c75692bfac62"
-  integrity sha512-/WN3nmEa5f1o4OHzteKO4s0eqGBX3z8fvdJ4Zn66Bh8lnddKvUjM+ayt9NFpAq5F8b/L91kVcxlLYunA9A6a4w==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-case-flags-legal-rep-comments-page-v2":
+  version "6.10.7-case-flags-legal-rep-comments-page-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-case-flags-legal-rep-comments-page-v2.tgz#a29b6f08082faff124350c003bd1bcf1da1c42bf"
+  integrity sha512-xTQGD/61B2cFZcqttm8L0XWwOR4BH1vKf2/gpOX0kJvgAL4MKKdogkmJpbMDKhBxhxdLi/AJQ+4ExaJtacQZfA==
   dependencies:
     tslib "^2.0.0"
 

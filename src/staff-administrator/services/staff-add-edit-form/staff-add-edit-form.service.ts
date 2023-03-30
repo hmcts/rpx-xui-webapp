@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GroupOptions, RefDataRegion } from '@hmcts/rpx-xui-common-lib';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
 import { StaffUser } from '../../models/staff-user.model';
-import { buildCheckboxArray, filterItemsByBoolean } from '../../utiils/staff.utils';
+import { buildCheckboxArray, filterItemsByBoolean } from '../../utils/staff.utils';
 
 @Injectable()
 export class StaffAddEditFormService {
@@ -59,17 +59,16 @@ export class StaffAddEditFormService {
     const formValues = this.formGroup.value;
     const staffUser = new StaffUser();
     Object.assign(staffUser, formValues);
-
-    staffUser.region = this.staffFilterOptions.regions.find(item => item.region_id === formValues.region_id)?.description;
+    staffUser.region_id = Number(staffUser.region_id);
+    staffUser.region = this.staffFilterOptions.regions.find(item => Number(item.region_id) === staffUser.region_id)?.description;
     staffUser.roles = filterItemsByBoolean<StaffFilterOption>(this.staffFilterOptions.jobTitles, formValues.roles)
-      .map(item => ({ role_id: item.key, role: item.label, is_primary: false }));
+      .map(item => ({ role_id: item.key, role: item.label, is_primary: true }));
     staffUser.skills = filterItemsByBoolean<StaffFilterOption>(
       this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b)),
       formValues.skills
     ).map((item) => ({ skill_id: Number(item.key), description: item.label }));
     staffUser.services = filterItemsByBoolean<StaffFilterOption>(this.staffFilterOptions.services, formValues.services)
       .map(item => ({ service: item.label, service_code: item.key }));
-
     return staffUser;
   }
 
@@ -95,5 +94,7 @@ export class StaffAddEditFormService {
       this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b)),
       0, 10);
     this.formGroup.setControl('skills', skillsFormArray);
+    console.log(staffUserDetails);
+    console.log(this.formGroup.value);
   }
 }

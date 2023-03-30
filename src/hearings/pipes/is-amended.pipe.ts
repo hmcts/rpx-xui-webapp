@@ -23,6 +23,7 @@ import { NeedWelshAmendedConverter } from '../converters/need-welsh.amended.conv
 import { PanelExclusionAmendedConverter } from '../converters/panel-exclusion.amended.converter';
 import { PanelInclusionAmendedConverter } from '../converters/panel-inclusion.amended.converter';
 import { PanelRolesAmendedConverter } from '../converters/panel-roles.amended.converter';
+import { ParticipantChannelAttendenceAmendedConverter } from '../converters/participant-channel-attendence.amended.converter';
 import { StageAmendedConverter } from '../converters/stage.amended.converter';
 import { VenueAmendedConverter } from '../converters/venue.amended.converter';
 import { AnswerSource } from '../models/hearings.enum';
@@ -53,6 +54,9 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.HOW_ATTENDANT:
         converter = new HowPartyAttendAmendedConverter();
+        break;
+      case AnswerSource.HOW_PARTICIPANTS_ATTEND:
+        converter = new ParticipantChannelAttendenceAmendedConverter();
         break;
       case AnswerSource.IS_PAPER_HEARING:
         converter = new IsPaperHearingAmendedConverter();

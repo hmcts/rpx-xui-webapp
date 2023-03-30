@@ -5,12 +5,9 @@ import { of } from 'rxjs/internal/observable/of';
 import { map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
 import { UserInfo, UserRole } from '../../app/models';
-
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
-import { Task } from '../models/tasks';
+import { Task, TaskRole } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
-import { TaskRole } from '../models/tasks';
-
 
 const BASE_URL: string = '/workallocation/task';
 
@@ -19,7 +16,8 @@ export enum ACTION {
   CANCEL = 'cancel',
   CLAIM = 'claim',
   COMPLETE = 'complete',
-  UNCLAIM = 'unclaim'
+  UNCLAIM = 'unclaim',
+  UNASSIGN = 'unassign'
 }
 
 @Injectable({ providedIn: 'root' })
@@ -54,7 +52,7 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
-  public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<TaskResponse> {
+  public searchTask(body: { searchRequest: SearchTaskRequest, view: string, currentUser: string, refined: boolean }): Observable<TaskResponse> {
     return this.http.post<any>(`${BASE_URL}`, body).pipe(
       tap(response => this.currentTasks$.next(response.tasks)),
     );
@@ -92,7 +90,7 @@ export class WorkAllocationTaskService {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [
         { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] }

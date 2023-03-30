@@ -260,7 +260,8 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         const authCookies = await browser.driver.manage().getCookies()
         const authCookie = authCookies.find(cookie => cookie.name === '__auth__')
-        await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr);
+        const sessionRoleAssignments = await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr);
+        reportLogger.AddJson(sessionRoleAssignments.data);
         await browser.get('http://localhost:3000')
     }
                              

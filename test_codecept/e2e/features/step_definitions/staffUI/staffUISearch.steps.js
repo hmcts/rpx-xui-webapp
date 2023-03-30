@@ -36,7 +36,7 @@ Then('I validate basic search in Staff UI', async function (tabLabel, boolString
 
 Then('I validate advanced search in Staff UI', async function (tabLabel, boolString) {
     const inputs = {
-        "Services":['CIVIL'],
+        "Services":['Damages'],
         "Locations":['Bir'],
         "User type":'Legal',
         "Job title": 'Legal',
@@ -132,7 +132,7 @@ Then('I validate add new staff user work flow controls', async function(){
         'Last name': 'last name',
         'Email': 'test@justice.gov.uk',
         'Region': 'Region 1',
-        'Services': ['CIVIL'],
+        'Services': ['Damages'],
         'Primary location': 'Bir',
         'User type': 'Legal office',
         'Roles': ['Case Allocator'],

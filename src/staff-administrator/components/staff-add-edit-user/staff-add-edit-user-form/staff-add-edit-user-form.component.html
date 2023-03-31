@@ -79,9 +79,38 @@
           </div>
         </ng-container>
         <hr />
-        <div class="govuk-label govuk-label--m govuk-!-margin-bottom-4">
-          Locations
+
+        <div>
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h2 class="govuk-heading-m">
+              Locations
+            </h2>
+          </legend>
+
+          <div>
+            <h3 class="govuk-heading-s">Primary location</h3>
+            <p>A user can only have one primary location.</p>
+
+            <div class="govuk-form-group">
+              <exui-staff-select-location [formGroup]="form"
+                                          [mode]="'primary'" [controlName]="'base_locations'">
+              </exui-staff-select-location>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="govuk-heading-s">
+              Additional locations <span class="govuk-label govuk-checkboxes__label">(optional)</span>
+            </h3>
+
+            <div class="govuk-form-group">
+              <exui-staff-select-location [formGroup]="form"
+                                          [mode]="'secondary'" [controlName]="'base_locations'">
+              </exui-staff-select-location>
+            </div>
+          </div>
         </div>
+
         <hr />
         <ng-container id="user_type_group">
           <h3 class="govuk-label govuk-label--m">

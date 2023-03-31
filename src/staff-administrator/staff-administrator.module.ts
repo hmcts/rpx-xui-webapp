@@ -2,11 +2,15 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from '../app/shared/shared.module';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
+import {
+  StaffSelectLocationComponent
+} from './components/staff-add-edit-user/staff-add-edit-user-form/staff-select-location/staff-select-location.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffAddUserComponent } from './components/staff-add-user/staff-add-user.component';
 import { StaffStatusComponent } from './components/staff-status/staff-status.component';
@@ -46,6 +50,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffUserDetailsComponent,
     StaffStatusComponent,
     StaffSuspendedBannerComponent,
+    StaffSelectLocationComponent
   ],
   imports: [
     CommonModule,
@@ -56,6 +61,7 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     staffAdministratorRouting,
     NgxPaginationModule,
     MatTooltipModule,
+    MatAutocompleteModule,
   ],
   providers: [
     StaffDataAccessService,

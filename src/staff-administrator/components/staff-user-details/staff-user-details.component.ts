@@ -6,7 +6,7 @@ import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { StaffUser } from '../../models/staff-user.model';
-import { StaffAddEditFormService } from '../../services/staff-add-edit-form.service/staff-add-edit-form.service';
+import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
 @Component({
@@ -92,10 +92,8 @@ export class StaffUserDetailsComponent {
     }
   }
 
-  public onUpdateUser() {   
-    this.staffAddEditFormService.patchFormValues({
-      ...this.userDetails
-    } as StaffUser);
+  public onUpdateUser() {
+    this.staffAddEditFormService.patchFormValues(this.userDetails);
     this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/update`);
   }
 

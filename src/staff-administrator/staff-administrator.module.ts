@@ -6,7 +6,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from '../app/shared/shared.module';
-import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffAddUserComponent } from './components/staff-add-user/staff-add-user.component';
@@ -23,7 +22,6 @@ import {
 import { StaffMainContainerComponent } from './containers/staff-main-container/staff-main-container.component';
 import { StaffUserDetailsContainerComponent } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
-import { PluckAndJoinPipe } from './pipes/pluckAndJoin.pipe';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
 import { StaffFilterOptionsSkillsResolver } from './resolvers/staff-filter-options-skills.resolver';
@@ -35,6 +33,9 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
 @NgModule({
   declarations: [
     StaffMainContainerComponent,
+    StaffAddUserContainerComponent,
+    StaffEditUserContainerComponent,
+    StaffUserDetailsContainerComponent,
     StaffUsersComponent,
     StaffSearchComponent,
     StaffUserListComponent,
@@ -43,15 +44,8 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffAddUserComponent,
     StaffUserCheckAnswersComponent,
     StaffUserDetailsComponent,
-    PluckAndJoinPipe,
-    StaffEditUserContainerComponent,
-    StaffStatusComponent,
-    PluckAndJoinPipe,
-    StaffEditUserContainerComponent,
     StaffStatusComponent,
     StaffSuspendedBannerComponent,
-    StaffUserDetailsContainerComponent,
-    StaffAddUserContainerComponent
   ],
   imports: [
     CommonModule,
@@ -70,7 +64,6 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffFilterOptionsJobTitlesResolver,
     StaffFilterOptionsUserTypesResolver,
     StaffUserDetailsResolverService,
-    WASupportedJurisdictionsService
   ],
   exports: []
 })

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { StaffAddEditFormService } from '../../services/staff-add-edit-form.service/staff-add-edit-form.service';
+import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 
 @Component({
   selector: 'exui-staff-user-details-container',

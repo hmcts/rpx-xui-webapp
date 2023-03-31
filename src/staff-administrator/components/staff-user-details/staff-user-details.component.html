@@ -30,9 +30,12 @@
         <br>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Service</dt>
-          <dd class="govuk-summary-list__value">
-            {{ userDetails.services | pluckAndJoin: 'service':', ' }}
-          </dd>
+          <div class="govuk-summary-list__value">
+              <span *ngFor="let service of userDetails.services; let isLast=last">
+                {{service.service}}
+                <span *ngIf="!isLast"><br/></span>
+              </span>
+          </div>
           <dd class="govuk-summary-list__actions">
             <a *ngIf="showAction" class="govuk-link" href="#">Change</a>
           </dd>

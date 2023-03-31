@@ -50,9 +50,8 @@
           </h3>
           <div class="govuk-body">
             <select class="govuk-select" name="region_id" id="region_id" formControlName="region_id">
-              <option class="govuk-radios__item"
-                      *ngFor="let item of staffFilterOptions.regions" [value]="item.region_id">
-                {{ item.description }}
+              <option *ngFor="let item of staffFilterOptions.regions" [value]="item.region_id">
+                {{ item.description }} {{ typeof(item.region_id) }}
               </option>
             </select>
           </div>
@@ -67,7 +66,7 @@
               <div *ngFor="let item of staffFilterOptions.services; let i = index" class="govuk-checkboxes__item">
                 <input type="checkbox" class="govuk-checkboxes__input"
                      [formControlName]="i"
-                     (change)="toggleSelectServices($event, form, item)"
+                     (change)="toggleSelectServices($event, form)"
                      [value]="item.key" [id]="'checkbox_service' + item.key"
                      [name]="'checkbox_service' + item.key"
                 />

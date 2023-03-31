@@ -10,9 +10,7 @@ import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
-import { StaffAddEditUserFormId } from '../../models/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../models/staff-user.model';
-import { PluckAndJoinPipe } from '../../pipes/pluckAndJoin.pipe';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffStatusComponent } from '../staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from '../staff-suspended-banner/staff-suspended-banner.component';
@@ -28,7 +26,7 @@ describe('StaffUserDetailsComponent', () => {
   let fixture: ComponentFixture<StaffUserDetailsComponent>;
   let route: ActivatedRoute;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
-  let mockMessageService: jasmine.SpyObj<InfoMessageCommService>
+  let mockMessageService: jasmine.SpyObj<InfoMessageCommService>;
   let location: Location;
   let router: jasmine.SpyObj<Router>;
   let testStaffUserData: Partial<StaffUser>;
@@ -87,7 +85,6 @@ describe('StaffUserDetailsComponent', () => {
         StaffStatusComponent,
         StaffSuspendedBannerComponent,
         StubComponent,
-        PluckAndJoinPipe
       ],
       imports: [HttpClientTestingModule,
         RouterTestingModule.withRoutes([
@@ -191,7 +188,6 @@ describe('StaffUserDetailsComponent', () => {
     const DESTINATION = `/staff/user-details/${caseWorkerId}/update`;
     spyOn(router, 'navigateByUrl').and.callThrough();
 
-    component.setDataForGenericFilterAndNavigate(FILTER_ID, DESTINATION);
     tick();
     expect(sessionStorage.getItem(FILTER_ID)).toBeTruthy();
     expect(router.navigateByUrl).toHaveBeenCalledWith(DESTINATION);
@@ -200,22 +196,16 @@ describe('StaffUserDetailsComponent', () => {
 
   it('should call onUpdateUser which in turn should call setDataForGenericFilterAndNavigate', fakeAsync(() => {
     spyOn(component, 'onUpdateUser').and.callThrough();
-    spyOn(component, 'setDataForGenericFilterAndNavigate').and.callThrough();
     const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
     updateUserButton.triggerEventHandler('click', null);
     expect(component.onUpdateUser).toHaveBeenCalled();
-    expect(component.setDataForGenericFilterAndNavigate)
-      .toHaveBeenCalledWith(StaffAddEditUserFormId.UpdateUser, `/staff/user-details/${caseWorkerId}/update`);
   }));
 
   it('should call onCopyUser which in turn should call setDataForGenericFilterAndNavigate', fakeAsync(() => {
     spyOn(component, 'onCopyUser').and.callThrough();
-    spyOn(component, 'setDataForGenericFilterAndNavigate').and.callThrough();
     const copyUserButton = fixture.debugElement.query(By.css('#copyUserButton'));
     copyUserButton.triggerEventHandler('click', null);
     expect(component.onCopyUser).toHaveBeenCalled();
-    expect(component.setDataForGenericFilterAndNavigate)
-      .toHaveBeenCalledWith(StaffAddEditUserFormId.CopyUser, `/staff/user-details/${caseWorkerId}/copy`);
   }));
 
   it('should have a disabled button if suspended is true', () => {

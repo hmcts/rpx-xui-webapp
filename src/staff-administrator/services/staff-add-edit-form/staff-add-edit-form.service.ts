@@ -36,7 +36,7 @@ export class StaffAddEditFormService {
       roles: new FormArray([], Validators.required), // Job Titles
       skills: new FormArray([], Validators.required),
       services: new FormArray([], Validators.required),
-      base_locations: new FormArray([]),
+      base_locations: new FormControl([], Validators.required),
       region_id: new FormControl(null, Validators.required),
     });
 

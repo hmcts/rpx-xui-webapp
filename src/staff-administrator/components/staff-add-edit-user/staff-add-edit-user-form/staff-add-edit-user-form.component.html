@@ -51,7 +51,7 @@
           <div class="govuk-body">
             <select class="govuk-select" name="region_id" id="region_id" formControlName="region_id">
               <option *ngFor="let item of staffFilterOptions.regions" [value]="item.region_id">
-                {{ item.description }} {{ typeof(item.region_id) }}
+                {{ item.description }}
               </option>
             </select>
           </div>

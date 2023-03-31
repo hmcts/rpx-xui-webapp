@@ -59,8 +59,8 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
       ]
     };
 
-    this.filterSkillsByServices(this.staffFilterOptions.services.map(service => service.label));
-    this.startFilterSkillsByServices(this.form);
+    // this.filterSkillsByServices(this.staffFilterOptions.services.map(service => service.label));
+    // this.startFilterSkillsByServices(this.form);
   }
 
   public ngAfterViewInit(): void {

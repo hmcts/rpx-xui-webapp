@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -59,8 +59,8 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
       ]
     };
 
-    // this.filterSkillsByServices(this.staffFilterOptions.services.map(service => service.label));
-    // this.startFilterSkillsByServices(this.form);
+    this.filterSkillsByServices(this.staffFilterOptions.services.map(service => service.label));
+    this.startFilterSkillsByServices(this.form);
   }
 
   public ngAfterViewInit(): void {

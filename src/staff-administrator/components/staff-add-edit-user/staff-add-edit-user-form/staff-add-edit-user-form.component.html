@@ -92,8 +92,13 @@
             <p>A user can only have one primary location.</p>
 
             <div class="govuk-form-group">
-              <exui-staff-select-location [formGroup]="form"
-                                          [mode]="'primary'" [controlName]="'base_locations'">
+              <exui-staff-select-location
+                [formGroup]="form"
+                [controlName]="'base_locations'"
+                [isPrimaryMode]="true"
+                [addButtonTitle]="'Add primary location'"
+                [serviceCodes$]="staffAddEditFormService.serviceCodes$"
+              >
               </exui-staff-select-location>
             </div>
           </div>
@@ -104,8 +109,12 @@
             </h3>
 
             <div class="govuk-form-group">
-              <exui-staff-select-location [formGroup]="form"
-                                          [mode]="'secondary'" [controlName]="'base_locations'">
+              <exui-staff-select-location
+                [formGroup]="form"
+                [controlName]="'base_locations'"
+                [addButtonTitle]="'Add additional locations'"
+                [serviceCodes$]="staffAddEditFormService.serviceCodes$"
+              >
               </exui-staff-select-location>
             </div>
           </div>

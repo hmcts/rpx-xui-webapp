@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { iif, Observable, of } from 'rxjs';
+import { combineLatest, iif, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
 interface StaffUserLocation {
@@ -17,9 +17,11 @@ interface StaffUserLocation {
   styleUrls: ['./staff-select-location.component.scss']
 })
 export class StaffSelectLocationComponent implements OnInit {
-  @Input() public mode: 'primary' | 'secondary';
+  @Input() public isPrimaryMode = false;
   @Input() public formGroup: FormGroup;
   @Input() public controlName: string;
+  @Input() public addButtonTitle: string = 'Add location';
+  @Input() public serviceCodes$: Observable<string[]> = of([]);
   public locationControl: FormControl;
   public filteredList$: Observable<LocationByEPIMMSModel[] | boolean>;
   public searchTermFormControl: FormControl = new FormControl('');
@@ -33,17 +35,19 @@ export class StaffSelectLocationComponent implements OnInit {
 
   public ngOnInit() {
     this.locationControl = this.formGroup.get(this.controlName) as FormControl;
-
-    this.filteredList$ = this.searchTermFormControl.valueChanges.pipe(
-      tap((term) => {
+    this.filteredList$ = combineLatest([
+        this.searchTermFormControl.valueChanges,
+        this.serviceCodes$
+      ]).pipe(
+      tap(([term, serviceCodes]: [string, string[]]) => {
         if (this.autocompleteSelectedLocation && term !== this.autocompleteSelectedLocation?.venue_name) {
           this.autocompleteSelectedLocation = false;
         }
       }),
-      switchMap((term: string) => iif(
+      switchMap(([term, serviceCodes]: [string, string[]]) => iif(
           () => (!!term && term.length >= 0),
           this.refDataService.getLocationsByServiceCodes(
-            ['AAA7', 'BFA1']
+            serviceCodes
           ).pipe(
             // Filter locations by the search input term and the chosen property name
             map((locations) => locations
@@ -71,10 +75,18 @@ export class StaffSelectLocationComponent implements OnInit {
       const locationToBeAdded = {
         location_id: this.autocompleteSelectedLocation.epimms_id,
         location: this.autocompleteSelectedLocation.venue_name,
-        is_primary: this.mode === 'primary'
+        is_primary: this.isPrimaryMode
       };
 
-      this.locationControl.setValue([...this.selectedLocations, locationToBeAdded]);
+      // If Primary, we need to remove the other primary location first
+      let currentSelectedLocations = this.selectedLocations;
+      if (this.isPrimaryMode) {
+        currentSelectedLocations = this.selectedLocations.filter(
+          (selectedLocation) => !selectedLocation.is_primary
+        );
+      }
+
+      this.locationControl.setValue([...currentSelectedLocations, locationToBeAdded]);
 
       this.searchTermFormControl.setValue('', { emitEvent: false });
       this.autocompleteSelectedLocation = false;

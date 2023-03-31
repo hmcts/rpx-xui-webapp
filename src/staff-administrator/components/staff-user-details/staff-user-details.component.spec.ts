@@ -11,6 +11,7 @@ import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { StaffUser } from '../../models/staff-user.model';
+import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffStatusComponent } from '../staff-status/staff-status.component';
 import { StaffSuspendedBannerComponent } from '../staff-suspended-banner/staff-suspended-banner.component';
@@ -27,6 +28,7 @@ describe('StaffUserDetailsComponent', () => {
   let route: ActivatedRoute;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
   let mockMessageService: jasmine.SpyObj<InfoMessageCommService>;
+  let mockStaffAddEditFormService: jasmine.SpyObj<StaffAddEditFormService>;
   let location: Location;
   let router: jasmine.SpyObj<Router>;
   let testStaffUserData: Partial<StaffUser>;
@@ -36,8 +38,13 @@ describe('StaffUserDetailsComponent', () => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
       'mockStaffDataAccessService', ['updateUser']
     );
+
     mockMessageService = jasmine.createSpyObj<InfoMessageCommService>(
       'mockMessageService', ['nextMessage']
+    );
+
+    mockStaffAddEditFormService = jasmine.createSpyObj<StaffAddEditFormService>(
+      'staffAddEditFormService', ['patchFormValues']
     );
 
     testStaffUserData = {
@@ -105,13 +112,12 @@ describe('StaffUserDetailsComponent', () => {
                 id: caseWorkerId
               },
               data: {
-                staffUserDetails: {
-                  userDetails: testStaffUserData
-                }
+                staffUserDetails: testStaffUserData
               }
             },
           },
-        }
+        },
+        { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -182,26 +188,14 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.userDetails).toEqual(testStaffUserObject);
   });
 
-  it('should set filterSettings on sessionStorage on FILTER_ID as key and navigate' +
-    'to DESTINATION on setDataForGenericFilterAndNavigate', fakeAsync(() => {
-    const FILTER_ID = 'FILTER_ID';
-    const DESTINATION = `/staff/user-details/${caseWorkerId}/update`;
-    spyOn(router, 'navigateByUrl').and.callThrough();
-
-    tick();
-    expect(sessionStorage.getItem(FILTER_ID)).toBeTruthy();
-    expect(router.navigateByUrl).toHaveBeenCalledWith(DESTINATION);
-    expect(location.path()).toBe(DESTINATION);
-  }));
-
-  it('should call onUpdateUser which in turn should call setDataForGenericFilterAndNavigate', fakeAsync(() => {
+  it('should call onUpdateUser when clicking update button', fakeAsync(() => {
     spyOn(component, 'onUpdateUser').and.callThrough();
     const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
     updateUserButton.triggerEventHandler('click', null);
     expect(component.onUpdateUser).toHaveBeenCalled();
   }));
 
-  it('should call onCopyUser which in turn should call setDataForGenericFilterAndNavigate', fakeAsync(() => {
+  it('should call onCopyUser when clicking copy button', fakeAsync(() => {
     spyOn(component, 'onCopyUser').and.callThrough();
     const copyUserButton = fixture.debugElement.query(By.css('#copyUserButton'));
     copyUserButton.triggerEventHandler('click', null);

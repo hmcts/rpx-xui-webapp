@@ -38,7 +38,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     this.staffUser = staffAddEditFormService.valuesAsStaffUser;
   }
 
-
   public ngOnInit() {
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,

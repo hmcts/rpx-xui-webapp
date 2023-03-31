@@ -16,7 +16,6 @@ import {
   StaffUserDetailsContainerComponent
 } from './containers/staff-user-details-container/staff-user-details-container.component';
 import { StaffUsersComponent } from './containers/staff-users/staff-users.component';
-import { StaffAddEditUserFormId } from './models/staff-add-edit-user-form-id.enum';
 import { StaffFilterOptionsJobTitlesResolver } from './resolvers/staff-filter-options-job-titles.resolver';
 import { StaffFilterOptionsRegionsResolver } from './resolvers/staff-filter-options-regions.resolver';
 import { StaffFilterOptionsServicesResolver } from './resolvers/staff-filter-options-services.resolver';
@@ -48,7 +47,6 @@ export const ROUTES: Routes = [
           { path: '', component: StaffUserDetailsComponent },
           {
             path: 'update',
-            data: { formId: StaffAddEditUserFormId.UpdateUser },
             children: [
               { path: '', component: StaffEditUserContainerComponent },
               { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
@@ -56,7 +54,6 @@ export const ROUTES: Routes = [
           },
           {
             path: 'copy',
-            data: { formId: StaffAddEditUserFormId.CopyUser },
             children: [
               { path: '', component: StaffAddUserComponent },
               { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }
@@ -67,7 +64,6 @@ export const ROUTES: Routes = [
       {
         path: 'add-user',
         component: StaffAddUserContainerComponent,
-        data: { formId: StaffAddEditUserFormId.AddUser },
         children: [
           { path: '', component: StaffAddUserComponent },
           { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }

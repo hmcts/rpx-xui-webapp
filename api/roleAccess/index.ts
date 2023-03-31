@@ -128,7 +128,7 @@ export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: 
     const challengedAccessRequest = currentUserAssignments.find(roleAssignment => roleAssignment.attributes
       && roleAssignment.attributes.caseId ===  req.params.caseId
       && roleAssignment.attributes.isNew);
-    
+
     if (!challengedAccessRequest) {
       return resp.status(204).send();
     }

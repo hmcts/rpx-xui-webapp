@@ -22,11 +22,11 @@ Feature: WA Release 2: My work - My tasks - Manage links
             | Read        | 40    |
         Given I set MOCK tasks with attributes for view "My tasks"
             | index | permissions                | assignee            | case_name |
-            | 0     | Manage,Read,Execute,Cancel |                     | case 1    |
-            | 1     | Manage                     |                     | case 2    |
+            | 0     | Manage,Read,Execute,Cancel,assign,unassign |                     | case 1    |
+            | 1     | Manage,assign,unassign                    |                     | case 2    |
             | 2     | Read                       |                     | case 3    |
-            | 3     | Manage,Read                | 1234-1234-1234-1234 | case 4    |
-            | 4     | Manage                     | 1234-1234-1234-1234 | case 5    |
+            | 3     | Manage,Read,unassign,assign              | 1234-1234-1234-1234 | case 4    |
+            | 4     | Manage,unassign,assign                    | 1234-1234-1234-1234 | case 5    |
             | 5     | Read                       | 1234-1234-1234-1234 | case 6    |
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |

@@ -151,7 +151,8 @@ const taskManagementApiMock = require('../../../../backendMock/services/task-man
     });
 
     Given('I set MOCK workallocation cases with permissions for view {string}', async function (viewInTest, casePermissionsTable) {
-        workAllocationMockData.setCasesWithPermissionsForView(viewInTest, casePermissionsTable.hashes()) 
+        reportLogger.reportDatatable(casePermissionsTable)
+        workAllocationMockData.setCasesWithPermissionsForView(viewInTest, casePermissionsTable.parse().hashes()) 
     });
 
 

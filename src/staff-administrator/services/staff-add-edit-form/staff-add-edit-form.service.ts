@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GroupOptions, RefDataRegion } from '@hmcts/rpx-xui-common-lib';
+import { map } from 'rxjs/operators';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
 import { StaffUser } from '../../models/staff-user.model';
 import { buildCheckboxArray, filterItemsByBoolean } from '../../utils/staff.utils';
@@ -53,6 +54,15 @@ export class StaffAddEditFormService {
       this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b)),
       0, 10);
     this.formGroup.setControl('skills', skillsFormArray);
+  }
+
+  public get serviceCodes$() {
+    return this.formGroup.get('services').valueChanges.pipe(
+      map((value) => {
+        console.log(value);
+        return filterItemsByBoolean<StaffFilterOption>(this.staffFilterOptions.services, value).map(item => item.key);
+      })
+    );
   }
 
   public get valuesAsStaffUser() {

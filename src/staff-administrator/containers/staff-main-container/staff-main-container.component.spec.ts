@@ -13,8 +13,8 @@ import { StaffAdvFilterComponent } from '../../components/staff-users/staff-adv-
 import { StaffSearchComponent } from '../../components/staff-users/staff-search/staff-search.component';
 import { StaffUserListComponent } from '../../components/staff-users/staff-user-list/staff-user-list.component';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
-import { staffFilterOptionsTestData } from '../../test-data/staff-filter-options.test.data';
 import { StaffMainContainerComponent } from './staff-main-container.component';
+import { staffFilterOptionsTestData } from '../../test-data/staff-filter-options.test.data';
 
 describe('StaffMainContainerComponent', () => {
   let component: StaffMainContainerComponent;

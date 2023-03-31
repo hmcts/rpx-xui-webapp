@@ -94,7 +94,5 @@ export class StaffAddEditFormService {
       this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b)),
       0, 10);
     this.formGroup.setControl('skills', skillsFormArray);
-    console.log(staffUserDetails);
-    console.log(this.formGroup.value);
   }
 }

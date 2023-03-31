@@ -54,10 +54,8 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services
     };
-    this.isUpdateMode = this.formId === StaffAddEditUserFormId.UpdateUser;
-
-
     this.formId = this.activatedRoute.snapshot.data.formId;
+    this.isUpdateMode = this.formId === StaffAddEditUserFormId.UpdateUser;
   }
 
   public onSubmit() {

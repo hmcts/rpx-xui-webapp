@@ -29,7 +29,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | 0     | Manage,Read,Execute,Cancel |                     | case 1    |
             | 1     | Manage                     |                     | case 2    |
             | 2     | Read                       |                     | case 3    |
-            | 3     | Manage,Read                | 1234-1234-1234-1234 | case 4    |
+            | 3     | Manage,Read,unassign                | 1234-1234-1234-1234 | case 4    |
             | 4     | Manage,unassign                    | 1234-1234-1234-1234 | case 5    |
             | 5     | Read                       | 1234-1234-1234-1234 | case 6    |
         Given I set MOCK task details for WA release2
@@ -97,7 +97,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | 0     | Manage,Read,Execute,Cancel |                     | case 1    |
             | 1     | Manage                     |                     | case 2    |
             | 2     | Read                       |                     | case 3    |
-            | 3     | Manage,Read                | 1234-1234-1234-1234 | case 4    |
+            | 3     | Manage,Read,unassign              | 1234-1234-1234-1234 | case 4    |
             | 4     | Manage                     | 1234-1234-1234-1234 | case 5    |
             | 5     | Read                       | 1234-1234-1234-1234 | case 6    |
         Given I set MOCK task details for WA release2

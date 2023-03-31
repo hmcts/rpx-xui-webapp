@@ -306,8 +306,6 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         CucumberReporter.AddJson(nodeAppMock.userDetails);
         const newRoleAssignmentsInSession = await mockClient.updateAuthSessionWithRoleAssignments(authCookie.value, roleAssignmentArr)
         CucumberReporter.AddJson(newRoleAssignmentsInSession.data);
-
-
         await browser.get(await browser.getCurrentUrl());
 
         const userSession = await mockClient.getSessionRolesAndRoleAssignments(authCookie.value);

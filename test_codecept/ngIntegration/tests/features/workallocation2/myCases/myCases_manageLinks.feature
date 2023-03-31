@@ -1,20 +1,22 @@
-@ng @wa2 @wa 
+@ng @wa2 @wa @codecept_enabled
 Feature: WA Release 2: My cases - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK workallocation cases with permissions for view "My cases"
-            | Roles          | Count |
-            | case-allocator | 10    |
-            | case-allocator | 90    |
-
+       
 
     Scenario Outline:  My cases, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
+            | jurisdiction | substantive | roleType     | roleName|baseLocation |
+            | IA           | Y           | ORGANISATION |case-allocator |20001        |
+            | SSCS | Y | ORGANISATION | case-allocator | 20001 |
+
+ 
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | caseType | substantive | roleType | caseId           |
+            | IA           | Asylum   | Y           | CASE     | 1234567812345670 |
+            | SSCS         | Asylum   | Y           | CASE     | 1234567812345671 |
 
 
         Given I start MockApp
@@ -23,12 +25,12 @@ Feature: WA Release 2: My cases - Manage links
         When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I navigate to My work sub navigation tab "My cases"
 
-        Then I validate work allocation cases count in page 100
+        Then I validate work allocation cases count in page 2
 
         Then I validate manage link actions for cases
             | index | actions           |
             | 1     | Reallocate,Remove |
-            | 12    | Reallocate,Remove |
+            | 2    | Reallocate,Remove |
 
         Examples:
             | UserIdentifier  | UserType | Roles                                           |

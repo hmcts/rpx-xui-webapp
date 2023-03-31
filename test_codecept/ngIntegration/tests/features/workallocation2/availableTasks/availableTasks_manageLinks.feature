@@ -35,11 +35,11 @@ Feature: WA Release 2: My work - Available tasks - Manage links
 
         Then I validate manage link actions for tasks
             | index | actions                                  |
-            | 1     | Assign to me,Assign to me and go to case |
-            | 2     | Assign to me,Assign to me and go to case |
+            | 1     | Assign to me,Assign to me and go to task |
+            | 2     | Assign to me,Assign to me and go to task |
             | 3     |                                          |
-            | 4     | Assign to me,Assign to me and go to case |
-            | 5     | Assign to me,Assign to me and go to case |
+            | 4     | Assign to me,Assign to me and go to task |
+            | 5     | Assign to me,Assign to me and go to task |
             | 6     |                                          |
 
         Examples:

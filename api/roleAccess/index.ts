@@ -122,15 +122,15 @@ export async function getMyAccessNewCount(req, resp, next) {
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {
   try {
     if (!req.session || !req.session.roleAssignmentResponse) {
-      return resp.status(401);
+      return resp.status(500).send();
     }
     const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
     const challengedAccessRequest = currentUserAssignments.find(roleAssignment => roleAssignment.attributes
       && roleAssignment.attributes.caseId ===  req.params.caseId
       && roleAssignment.attributes.isNew);
-
+    
     if (!challengedAccessRequest) {
-      return resp.status(204);
+      return resp.status(204).send();
     }
     challengedAccessRequest.attributes.isNew = false;
     return resp.status(200).send({ id: challengedAccessRequest.id });

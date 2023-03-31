@@ -98,12 +98,12 @@ export class StaffUserDetailsComponent {
   }
 
   public onCopyUser() {
-    this.staffAddEditFormService.formGroup.patchValue({
+    this.staffAddEditFormService.patchFormValues({
       ...this.userDetails,
       first_name: '',
       last_name: '',
       email_id: ''
-    });
+    } as StaffUser);
     this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/copy`);
   }
 }

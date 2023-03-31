@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.8-case-flags-welsh-language-reasonable-adjust":
-  version "6.10.8-case-flags-welsh-language-reasonable-adjust"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.8-case-flags-welsh-language-reasonable-adjust.tgz#a02f24e5d0ca1f617047cbc07a8bc26f97a89487"
-  integrity sha512-or116+uejqdOwoOLoAM5k1rZ1MGuCAiFpmvyXDU2kkjMgkxyd4L4xyg77CNY3oQIBdDNBnO7hxrNPeaQURUGtQ==
+"@hmcts/ccd-case-ui-toolkit@6.10.8-case-flags-welsh-language-reasonable-adjustment":
+  version "6.10.8-case-flags-welsh-language-reasonable-adjustment"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.8-case-flags-welsh-language-reasonable-adjustment.tgz#f079e8766a69f6e395ad31b012475b97f7d6615a"
+  integrity sha512-3DXOr12MygDprbOgnUZt8tfuve2avylB4x6e5kJn1+hu7Rc+YhGEyMOkklB/hCNHJXz+eZfVn9OKblqw8Sm2hg==
   dependencies:
     tslib "^2.0.0"
 

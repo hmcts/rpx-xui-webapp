@@ -45,8 +45,6 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services
     };
-    this.formId = this.activatedRoute.snapshot.data.formId;
-    this.isUpdateMode = this.formId === StaffAddEditUserFormId.UpdateUser;
   }
 
   public onSubmit() {
@@ -78,7 +76,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       }))
       .subscribe((response) => {
         this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`);
-      }, (error) => {
+      }, () => {
         window.scrollTo(0, 0);
         this.router.navigateByUrl('/service-down');
       });

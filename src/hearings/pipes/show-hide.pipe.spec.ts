@@ -1,10 +1,17 @@
+import { TestBed } from '@angular/core/testing';
+import { Store, StoreModule } from '@ngrx/store';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
+import { UserService } from 'src/app/services/user/user.service';
 import { initialState } from '../hearing.test.data';
 import { IsHiddenSource } from '../models/hearings.enum';
 import { LocationByEPIMMSModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { ShowHidePipe } from './show-hide.pipe';
+
+const storeMock = jasmine.createSpyObj('Store', [
+  'dispatch', 'pipe'
+]);
 
 describe('ShowHidePipe', () => {
   const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
@@ -34,7 +41,25 @@ describe('ShowHidePipe', () => {
   const locationsDataService = jasmine.createSpyObj('LocationsDataService', ['getLocationById']);
 
   beforeEach(() => {
-    showHidePipe = new ShowHidePipe(locationsDataService);
+    TestBed.configureTestingModule({
+      imports: [
+        StoreModule.forRoot({})
+      ],
+      providers: [
+        { provide: Store, useValue: storeMock },
+        {
+          provide: UserService,
+          useValue: {
+            getUserDetails: () => of({
+              userInfo: {
+                roles: ['roleA', 'roleB']
+              }
+            })
+          }
+        },
+      ]
+    });
+    showHidePipe = new ShowHidePipe(locationsDataService, storeMock);
     locationsDataService.getLocationById.and.returnValue(of(FOUND_LOCATIONS));
   });
 
@@ -42,7 +67,7 @@ describe('ShowHidePipe', () => {
     const STATE: State = initialState.hearings;
     const result$ = showHidePipe.transform(IsHiddenSource.WELSH_LOCATION, of(STATE));
     const isHidden = false;
-    const expected = cold('(b|)', {b: isHidden});
+    const expected = cold('(b|)', { b: isHidden });
     expect(result$).toBeObservable(expected);
   });
 });

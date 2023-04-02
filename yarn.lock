@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-cfv-move-document-handle-error-v3":
-  version "6.10.7-cfv-move-document-handle-error-v3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-cfv-move-document-handle-error-v3.tgz#7f22a5729117d51d88198dae55fc98990e4f208b"
-  integrity sha512-hcl7xCve0PIqBunbtB2MLjvuOy/7OI7SGk6Vk44pBiCQw9njQbYFvQiSm5PSdkYennIdGQSR25u8ixzyT++jaw==
+"@hmcts/ccd-case-ui-toolkit@6.10.7-cfv-move-document-handle-error-v4":
+  version "6.10.7-cfv-move-document-handle-error-v4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-cfv-move-document-handle-error-v4.tgz#ee0c98dfbf8c4d5b54561db0d79cbf61a42db399"
+  integrity sha512-OBi4nlfIOYMcIqsl+lqg+mIcCv1EQbcnOVIGXEXupNFjXSvkFp7CKeRBbjoG7yRmaHSa+SGnQfv3cGH+7oCh/Q==
   dependencies:
     tslib "^2.0.0"
 

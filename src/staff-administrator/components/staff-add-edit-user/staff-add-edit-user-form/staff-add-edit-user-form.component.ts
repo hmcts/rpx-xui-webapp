@@ -95,6 +95,10 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public getServiceLabelFromKey(key: string): string {
+    return this.staffFilterOptions.services.find(service => service.key === key)?.label;
+  }
+
   private fragmentFocus(): void {
     this.activatedRoute.fragment
       .pipe(take(1))

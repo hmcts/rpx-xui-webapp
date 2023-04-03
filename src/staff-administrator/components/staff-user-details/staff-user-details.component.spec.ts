@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -115,6 +115,7 @@ describe('StaffUserDetailsComponent', () => {
           },
         },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
+        { provide : InfoMessageCommService, useValue: mockMessageService },
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -204,5 +205,35 @@ describe('StaffUserDetailsComponent', () => {
     component.userDetails.suspended = true;
     component.updateUserStatus();
     expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
+  });
+
+  describe('resendInvite', () => {
+    it('Should show success message on sending activation email', () => {
+      mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
+      component.resendInvite();
+      fixture.detectChanges();
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, testStaffUserData);
+      staffUser.is_resend_invite = true;
+      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
+      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
+        message: InfoMessage.ACTIVATION_EMAIL_SENT,
+        type: InfoMessageType.SUCCESS
+      } as InformationMessage);
+    });
+
+    it('should show error message on failure in sending activation emails', () => {
+      mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 500 }));
+      component.resendInvite();
+      fixture.detectChanges();
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, testStaffUserData);
+      staffUser.is_resend_invite = true;
+      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
+      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
+        message: InfoMessage.ACTIVATION_EMAIL_ERROR,
+        type: InfoMessageType.WARNING
+      } as InformationMessage);
+    });
   });
 });

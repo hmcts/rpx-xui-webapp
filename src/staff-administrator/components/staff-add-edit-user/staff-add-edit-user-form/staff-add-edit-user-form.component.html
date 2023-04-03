@@ -1,4 +1,4 @@
-<div *ngIf="(errors$ | async) as errors">
+<div *ngIf="errors">
   <exui-error-message [error]="errors"></exui-error-message>
 </div>
 
@@ -246,8 +246,7 @@
         <ng-container *ngIf="(skillOptionGroups$ | async) as skillOptionGroups">
           <ng-container *ngFor="let skillGroup of skillOptionGroups">
             <ng-container [formGroupName]="skillGroup.group">
-              <h3>{{ skillGroup.group }}</h3>
-
+              <h3 class="govuk-heading-s">{{ getServiceLabelFromKey(skillGroup.group) }}</h3>
               <div *ngFor="let item of skillGroup.options; let i = index" class="govuk-checkboxes__item">
                 <input type="checkbox" class="govuk-checkboxes__input"
                        [formControlName]="i"
@@ -259,7 +258,7 @@
                 <label class="govuk-label govuk-checkboxes__label"
                        [for]="'checkbox_skills_' + i + '_' + item.key"
                        [ngClass]="{'govuk-!-font-weight-bold': item.selectAll}">
-                  {{item.label}} i: {{ i }} {{ item.key }}
+                  {{item.label}}
                 </label>
               </div>
             </ng-container>

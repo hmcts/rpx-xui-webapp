@@ -1,13 +1,13 @@
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 
+import { FormControl } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { of } from 'rxjs';
 import { StaffSelectLocationComponent } from './staff-select-location.component';
-import { FormControl } from '@angular/forms';
 
-fdescribe('StaffSelectLocationComponent', () => {
+describe('StaffSelectLocationComponent', () => {
   let component: StaffSelectLocationComponent;
   let fixture: ComponentFixture<StaffSelectLocationComponent>;
   let refDataServiceMock: jasmine.SpyObj<RefDataService>;

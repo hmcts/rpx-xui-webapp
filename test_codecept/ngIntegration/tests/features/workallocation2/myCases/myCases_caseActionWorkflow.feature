@@ -1,22 +1,25 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng @wa2 @wa @ignore 
+@ng @wa2 @wa @ignore @codecept_enabled @codecept_test
 Feature: WA Release 2: My cases - Manage links - Action work flow
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK workallocation cases with permissions for view "My cases"
-            | Roles          | Count |
-            | case-allocator | 10 |
-            | case-allocator | 90 |
+       
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | SSCS         | Y           | ORGANISATION | 20001        |
+            | jurisdiction | substantive | roleType     | roleName       | baseLocation |
+            | IA           | Y           | ORGANISATION | case-allocator | 20001        |
+            | SSCS         | Y           | ORGANISATION | case-allocator | 20001        |
+
+
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | caseType | substantive | roleType | caseId           |
+            | IA           | Asylum   | Y           | CASE     | 1234567812345670 |
+            | SSCS         | Asylum   | Y           | CASE     | 1234567812345671 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -24,7 +27,7 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
         When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I navigate to My work sub navigation tab "My cases"
 
-        Then I validate work allocation cases count in page 25
+        Then I validate work allocation cases count in page 2
 
         When I open Manage link for wa cases at row <taskAtRow>
         Then I see action link "<action>" is present for case with Manage link open
@@ -59,18 +62,28 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | action     | submitBtnLabel | bannermessage                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reallocate | Reallocate     | You've reassigned a task to somebody else. |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 1         | Reallocate | Reallocate     | You've reassigned a task to somebody else. |
 
     Scenario Outline:  Case Manage links for "<UserType>" action "<action>" cancel in check your changes page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-       
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | substantive | roleType     | roleName       | baseLocation |
+            | IA           | Y           | ORGANISATION | case-allocator | 20001        |
+            | SSCS         | Y           | ORGANISATION | case-allocator | 20001        |
+
+
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | jurisdiction | caseType | substantive | roleType | caseId           |
+            | IA           | Asylum   | Y           | CASE     | 1234567812345670 |
+            | SSCS         | Asylum   | Y           | CASE     | 1234567812345671 |
+
         Given I start MockApp
         Given I navigate to home page
 
         When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I navigate to My work sub navigation tab "My cases"
 
-        Then I validate work allocation cases count in page 25
+        Then I validate work allocation cases count in page 2
 
         When I open Manage link for wa cases at row <taskAtRow>
         Then I see action link "<action>" is present for case with Manage link open
@@ -102,5 +115,5 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | action | submitBtnLabel | bannermessage                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Remove | Reassign       | You've reassigned a task to somebody else. |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 1         | Remove | Reassign       | You've reassigned a task to somebody else. |
 

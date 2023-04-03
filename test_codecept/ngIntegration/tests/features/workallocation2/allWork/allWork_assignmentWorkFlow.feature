@@ -67,7 +67,7 @@ Feature: WA Release 2: All work - Task assignment work flows
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator | 4         | Reassign task | Reassign       | You've reassigned a task to somebody else.                            |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator    | 1         | Assign task   | Assign         | You've assigned a task. It will be in the selected person's My tasks. |
 
-# @codecept_test
+# 
 #     Scenario Outline:  Task assign to unauthorised user "<UserType>" action "<action>"
 #         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
 #         Given I init MockApp

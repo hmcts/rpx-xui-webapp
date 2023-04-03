@@ -1,12 +1,10 @@
 import { NextFunction, Response } from 'express';
-import { http } from '../lib/http';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICES_LOCATION_API_PATH, SERVICES_PRD_LOCATION_API } from '../configuration/references';
+import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import { CourtVenue, Location } from './interfaces/location';
 import { commonGetFullLocation, getRegionLocationsForServices, handleLocationGet } from './locationService';
 import { prepareGetLocationByIdUrl, prepareGetLocationsUrl } from './util';
-import { sendGet } from '../common/crudService';
 
 export const baseUrl: string = 'http://localhost:8080';
 

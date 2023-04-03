@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GroupOptions, RefDataRegion } from '@hmcts/rpx-xui-common-lib';
+import { map, startWith } from 'rxjs/operators';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
 import { StaffUser } from '../../models/staff-user.model';
-import { buildCheckboxArray, filterItemsByBoolean } from '../../utils/staff.utils';
+import { buildCheckboxArray, filterItemsByBoolean } from '../../utils/staff-form.utils';
 
 @Injectable()
 export class StaffAddEditFormService {
@@ -25,19 +26,19 @@ export class StaffAddEditFormService {
     };
 
     this.formGroup = new FormGroup({
-      email_id: new FormControl(null, Validators.required),
       first_name: new FormControl(null, Validators.required),
       last_name: new FormControl(null, Validators.required),
-      suspended: new FormControl(false),
-      user_type: new FormControl(null, Validators.required),
-      task_supervisor: new FormControl(false),
-      case_allocator: new FormControl(false),
-      staff_admin: new FormControl(false),
-      roles: new FormArray([], Validators.required), // Job Titles
-      skills: new FormArray([], Validators.required),
-      services: new FormArray([], Validators.required),
-      base_locations: new FormArray([]),
+      email_id: new FormControl(null, [Validators.required, Validators.email]),
       region_id: new FormControl(null, Validators.required),
+      services: new FormArray([], Validators.required),
+      base_locations: new FormControl([], Validators.required),
+      user_type: new FormControl(null, Validators.required),
+      task_supervisor: new FormControl(false), // Roles heading
+      case_allocator: new FormControl(false), // Roles
+      staff_admin: new FormControl(false), // Roles heading
+      roles: new FormArray([], Validators.required), // Job title heading
+      skills: new FormArray([], Validators.required),
+      suspended: new FormControl(false),
     });
 
     // Services
@@ -55,6 +56,16 @@ export class StaffAddEditFormService {
     this.formGroup.setControl('skills', skillsFormArray);
   }
 
+  public get serviceCodes$() {
+    const servicesFormControl = this.formGroup.get('services') as FormArray;
+    return servicesFormControl.valueChanges.pipe(
+      startWith([...servicesFormControl.value]),
+      map((value) => {
+        return filterItemsByBoolean<StaffFilterOption>(this.staffFilterOptions.services, value).map(item => item.key);
+      })
+    );
+  }
+
   public get valuesAsStaffUser() {
     const formValues = this.formGroup.value;
     const staffUser = new StaffUser();
@@ -69,6 +80,7 @@ export class StaffAddEditFormService {
     ).map((item) => ({ skill_id: Number(item.key), description: item.label }));
     staffUser.services = filterItemsByBoolean<StaffFilterOption>(this.staffFilterOptions.services, formValues.services)
       .map(item => ({ service: item.label, service_code: item.key }));
+
     return staffUser;
   }
 
@@ -92,7 +104,7 @@ export class StaffAddEditFormService {
     // Skills
     const skillsFormArray = buildCheckboxArray(
       this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b)),
-      0, 10);
+      0, 10, staffUserDetails ? staffUserDetails.skills.map(skill => skill.skill_id) : []);
     this.formGroup.setControl('skills', skillsFormArray);
   }
 }

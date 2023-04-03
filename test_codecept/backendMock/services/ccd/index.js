@@ -21,7 +21,7 @@ const CCDWorkBasketInputGenerator = require('./ccdCaseConfig/workBasketInputGene
 const CCDSearchInputGenerator = require('./ccdCaseConfig/searchInputGenerator');
 
 const caseDetailsData = require('./caseDetails_data');
-
+const elasticSearchCases = require('./elasticSearchCases');
 class CCDApi {
 
     constructor() {
@@ -31,6 +31,18 @@ class CCDApi {
     setDefaultData() {
         this.caseDetailsResponse = JSON.parse(JSON.stringify(caseDetailsData));
         this.caseList = this.getWorkbasketCases();
+    }
+
+    getSearchCases(req,res){
+        const ctid = req.params.ctid;
+        const caseIds = req.body['native_es_query'].query.terms.reference;
+        const cases = {cases:[]};
+        for (const caseId of caseIds){
+            const caseData = elasticSearchCases.getCAseeTemplate();
+            caseData.id = parseInt(caseId)  
+            cases.cases.push(caseData)
+        }
+        return cases;
     }
 
     getCaseDetailsWithID(caseId) {

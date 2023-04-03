@@ -101,7 +101,6 @@ describe('StaffUserDetailsComponent', () => {
       ],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
-        { provide: InfoMessageCommService, useValue: mockMessageService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -159,7 +158,7 @@ describe('StaffUserDetailsComponent', () => {
 
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
     expect(component.userDetails.suspended).toBe(userSuspendedStatusBefore);
-    expect(component.suspendedStatus).toBe('error');
+    expect(component.status).toBe('warning');
   });
 
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
@@ -169,19 +168,10 @@ describe('StaffUserDetailsComponent', () => {
 
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
     expect(component.userDetails.suspended).toBe(true);
-    expect(component.suspendedStatus).toBe('suspended');
+    expect(component.status).toBe('success');
   });
 
-  it('should set suspendedStatus to "restored" to show the banner when calling updateUserStatus with isSuspended true', () => {
-    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
-    component.userDetails.suspended = true;
-    component.updateUserStatus();
-    fixture.detectChanges();
-
-    expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
-  });
-
-  it('should userDetails property if it exists in routers extra state', () => {
+  it('should set userDetails property from resolver', () => {
     const testStaffUserObject = StaffUser.from(testStaffUserData);
     expect(component.userDetails).toEqual(testStaffUserObject);
   });
@@ -214,35 +204,5 @@ describe('StaffUserDetailsComponent', () => {
     component.userDetails.suspended = true;
     component.updateUserStatus();
     expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
-  });
-
-  describe('resendInvite', () => {
-    it('Should show success message on sending activation email', () => {
-      mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
-      component.resendInvite();
-      fixture.detectChanges();
-      const staffUser = new StaffUser();
-      Object.assign(staffUser, testStaffUserData);
-      staffUser.is_resend_invite = true;
-      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
-      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
-        message: InfoMessage.ACTIVATION_EMAIL_SENT,
-        type: InfoMessageType.SUCCESS
-      } as InformationMessage);
-    });
-
-    it('should show error messge on failure in sending activation emails', () => {
-      mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 500 }));
-      component.resendInvite();
-      fixture.detectChanges();
-      const staffUser = new StaffUser();
-      Object.assign(staffUser, testStaffUserData);
-      staffUser.is_resend_invite = true;
-      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
-      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
-        message: InfoMessage.ACTIVATION_EMAIL_ERROR,
-        type: InfoMessageType.WARNING
-      } as InformationMessage);
-    });
   });
 });

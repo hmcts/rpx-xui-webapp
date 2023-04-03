@@ -262,7 +262,7 @@ describe('StaffUserCheckAnswersComponent', () => {
     component.onSubmitUpdateUser();
     tick();
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/staff/user-details/${caseworkerId}`);
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/staff/user-details/${caseworkerId}`, { state: { retainMessages: true } });
     flush();
   }));
 

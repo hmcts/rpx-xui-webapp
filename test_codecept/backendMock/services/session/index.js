@@ -116,10 +116,16 @@ class MockSessionService{
         const sessionFile = await this.getSessionFileAuth(auth);
         let sessionJson = await fs.readFileSync(sessionFile);
         sessionJson = JSON.parse(sessionJson)
-        sessionJson.roleAssignmentResponse = roleAssignments;
+        if (sessionJson.roleAssignmentResponse){
+            sessionJson.roleAssignmentResponse.push(...roleAssignments)
+        }else{
+            sessionJson.roleAssignmentResponse = roleAssignments;
+        }
+        
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
 
         sessionJson = await fs.readFileSync(sessionFile);
+        sessionJson = JSON.parse(sessionJson)
         return sessionJson.roleAssignmentResponse;
     }
 

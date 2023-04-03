@@ -76,8 +76,12 @@ export class StaffUserCheckAnswersComponent implements OnInit {
         this.isLoading = false;
       }))
       .subscribe((response) => {
-        this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`);
-      }, () => {
+        this.messageService.nextMessage({
+          message: InfoMessage.UPDATED_USER,
+          type: InfoMessageType.SUCCESS
+        } as InformationMessage);
+        this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`,  { state: { retainMessages: true } });
+      }, (error) => {
         window.scrollTo(0, 0);
         this.router.navigateByUrl('/service-down');
       });

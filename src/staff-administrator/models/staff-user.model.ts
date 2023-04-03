@@ -13,7 +13,6 @@ export class StaffUser {
   public staff_admin: boolean;
   public idam_roles: string[];
   public up_idam_status: 'ACTIVE' | 'SUSPENDED' | 'PENDING';
-  public is_resend_invite: boolean;
 
   public roles: {
     role_id: string,

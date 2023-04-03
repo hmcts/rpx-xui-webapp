@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
-import { InformationMessage } from '../../../app/shared/models';
-import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { StaffAddEditUserFormId } from '../../models/staff-add-edit-user-form-id.enum';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
@@ -18,7 +18,9 @@ export class StaffUserDetailsComponent {
   public userDetails: StaffUser;
   public showAction: boolean = false;
   public loading = false;
-  public suspendedStatus: 'suspended' | 'error';
+  public status: 'success' | 'warning';
+  public title: string = '';
+  public message: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -50,45 +52,20 @@ export class StaffUserDetailsComponent {
       )
         .subscribe(
           () => {
-            this.suspendedStatus = 'suspended';
+            this.status = InfoMessageType.SUCCESS;
+            this.title = 'User suspended';
+            this.message = InfoMessage.SUSPEND_USER_SUCCESS;
             this.userDetails.suspended = staffUser.suspended;
           },
           (err) => {
             if (err.status === 401 || err.status.toString().startsWith('5')) {
               this.router.navigateByUrl('/service-down');
             } else {
-              this.suspendedStatus = 'error';
+              this.status = 'warning';
+              this.message = InfoMessage.SUSPEND_USER_ERROR;
             }
           }
         );
-    }
-  }
-
-  public resendInvite(): void {
-    if (!this.loading) {
-      this.loading = true;
-      const staffUser = new StaffUser();
-      Object.assign(staffUser, this.userDetails);
-      staffUser.is_resend_invite = true;
-      this.staffDataAccessService.updateUser(staffUser).pipe(
-        finalize(() => {
-          this.loading = false;
-          window.scrollTo(0, 0);
-        })
-      )
-      .subscribe((success) => {
-        this.messageService.nextMessage({
-          message: InfoMessage.ACTIVATION_EMAIL_SENT,
-          type: InfoMessageType.SUCCESS
-        } as InformationMessage);
-        },
-        (err) => {
-          this.messageService.nextMessage({
-            message: InfoMessage.ACTIVATION_EMAIL_ERROR,
-            type: InfoMessageType.WARNING
-          } as InformationMessage);
-        }
-      );
     }
   }
 

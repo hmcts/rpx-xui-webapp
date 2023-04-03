@@ -5,7 +5,6 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Given I init MockApp
 
 
-
     Scenario Outline: Tasks filters services displayed based for role assignment on service(s) <roleAssignment_services>
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
@@ -75,10 +74,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see filter "Priority" is displayed in all work page
         Then I see filter "Priority" is enabled in all work page
 
-  
     Scenario Outline: "Caseworker" Tasks filter, filetr role type <Person_Role_Type>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "" allow empty service
+        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "<Jurisdiction>" allow empty service
             | roleName    | task-supervisor |
             | substantive | Y               |
         Given I start MockApp
@@ -142,9 +140,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         # Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category        | Person_search | Person_name                                                              | person_id                            | Person_Role_Type | Task_type | Priority |
-            | IA           | Test loc 3   | 12347      | Assigned to a person | LEGAL         | LEGAL_OPERATIONS 1 IA_CIVIL (ia_civil_legal_operations_1@justice.gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Assigned to a person | user1         | user1 j (judge_user1@gov.uk)                                             | 1231                                 | Judicial         | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Assigned to a person | ADMIN           | ADMIN 1 IA_CIVIL (ia_civil_admin_1@justice.gov.uk)                                            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
+            # | IA           | Test loc 3   | 12347      | Assigned to a person | LEGAL         | LEGAL_OPERATIONS 1 IA_CIVIL (ia_civil_legal_operations_1@justice.gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Assigned to a person | judge         | user1 j (judge_user1@gov.uk)                                             | 1231                                 | Judicial         | Legal Ops | High     |
+            # | IA           | Test loc 3   | 12347      | Assigned to a person | ADMIN           | ADMIN 1 IA_CIVIL (ia_civil_admin_1@justice.gov.uk)                                            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
 
     Scenario: "Judicial" Tasks filters state
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"

@@ -11,5 +11,8 @@ export enum InfoMessage {
   UNASSIGNED_TASK_NOW_IN_AVAILABLE_TASKS = 'You\'ve unassigned a task. It\'s now in Available tasks.',
   ADD_NEW_USER = 'You have added a new user.',
   ACTIVATION_EMAIL_SENT = 'Activation email has been re-sent.',
-  ACTIVATION_EMAIL_ERROR = 'There was a problem resending the invitation. Please try again later.'
+  ACTIVATION_EMAIL_ERROR = 'There was a problem resending the invitation. Please try again later.',
+  UPDATED_USER = 'User has been updated.',
+  SUSPEND_USER_SUCCESS = 'To make this user active again, select \'Restore\'.',
+  SUSPEND_USER_ERROR = 'There is a problem. There was a system error and your request could not be processed.',
 }

@@ -10,9 +10,10 @@ const userApiData = require('../userApiData')
 
 
 router.post('/users/search', (req, res) => {
-    throw new Error('judicial ref data  /refdata/judicial/users/search not implemented')
-    res.send(locations)
-    // userApiData.sendResponse(req, res, "onSearchLocations", () => service.searchLocations(searchTerm, serviceIds ))
+    // throw new Error('judicial ref data  /refdata/judicial/users/search not implemented')
+    // res.send(locations)
+    console.log('')
+    userApiData.sendResponse(req, res, service.methods.OnFindperson, () => service.findPerson(req.body))
 
 });
 

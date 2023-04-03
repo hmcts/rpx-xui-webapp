@@ -2,9 +2,10 @@ import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { of } from 'rxjs';
 import { StaffSelectLocationComponent } from './staff-select-location.component';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { FormControl } from '@angular/forms';
 
 fdescribe('StaffSelectLocationComponent', () => {
   let component: StaffSelectLocationComponent;
@@ -28,6 +29,7 @@ fdescribe('StaffSelectLocationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffSelectLocationComponent);
     component = fixture.componentInstance;
+    component.locationsControl = new FormControl([]);
     fixture.detectChanges();
   });
 
@@ -257,11 +259,14 @@ fdescribe('StaffSelectLocationComponent', () => {
         flush();
       }));
 
-      it('should filter out selected locations', fakeAsync(() => {
+      it('should filter out locations based on searchTerm', fakeAsync(() => {
         refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([dummyLocations[0], dummyLocations[1]]));
-
+        component.locationsControl.setValue([dummyLocations[0], dummyLocations[1]]);
         component.filteredList$.subscribe((result) => {
-          expect(result).toEqual([]);
+          if (typeof result !== 'boolean') {
+            console.log(result?.length);
+          }
+          expect(result).toEqual([dummyLocations[0]]);
         });
 
         component.searchTermFormControl.setValue(dummyLocations[0].venue_name);

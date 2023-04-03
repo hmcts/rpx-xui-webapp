@@ -263,9 +263,6 @@ describe('StaffSelectLocationComponent', () => {
         refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([dummyLocations[0], dummyLocations[1]]));
         component.locationsControl.setValue([dummyLocations[0], dummyLocations[1]]);
         component.filteredList$.subscribe((result) => {
-          if (typeof result !== 'boolean') {
-            console.log(result?.length);
-          }
           expect(result).toEqual([dummyLocations[0]]);
         });
 

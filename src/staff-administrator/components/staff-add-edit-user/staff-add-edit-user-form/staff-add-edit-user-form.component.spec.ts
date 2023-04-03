@@ -22,32 +22,34 @@ describe('StaffAddEditUserFormComponent', () => {
   let location: Location;
   let router: Router;
   let activatedRoute: ActivatedRoute;
-  let mockStaffAddEditFormService: jasmine.SpyObj<StaffAddEditFormService>;
+  let mockStaffAddEditFormService: Partial<StaffAddEditFormService>;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
 
   beforeEach(async () => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
       'mockStaffDataAccessService', ['updateUser']
     );
-    mockStaffAddEditFormService = jasmine.createSpyObj<StaffAddEditFormService>(
-'staffAddEditFormService', ['valuesAsStaffUser']
-    );
-
-    mockStaffAddEditFormService.formGroup = new FormGroup({
-      email_id: new FormControl(null),
-      first_name: new FormControl(null),
-      last_name: new FormControl(null),
-      suspended: new FormControl(false),
-      user_type: new FormControl(null),
-      task_supervisor: new FormControl(false),
-      case_allocator: new FormControl(false),
-      staff_admin: new FormControl(false),
-      roles: new FormArray([...staffFilterOptionsTestData.jobTitles.map(() => new FormControl())]), // Job Titles
-      skills: new FormArray([...staffFilterOptionsTestData.skills.map(() => new FormControl())]),
-      services: new FormArray([...staffFilterOptionsTestData.services.map(() => new FormControl())]),
-      base_locations: new FormArray([new FormControl()]),
-      region_id: new FormControl(null),
-    });
+    mockStaffAddEditFormService = {
+      selectedServiceCodes$: of(['code1', 'code2']),
+      formGroup: new FormGroup({
+        email_id: new FormControl(null),
+        first_name: new FormControl(null),
+        last_name: new FormControl(null),
+        suspended: new FormControl(false),
+        user_type: new FormControl(null),
+        task_supervisor: new FormControl(false),
+        case_allocator: new FormControl(false),
+        staff_admin: new FormControl(false),
+        roles: new FormArray([...staffFilterOptionsTestData.jobTitles.map(() => new FormControl())]), // Job Titles
+        skills: new FormGroup({
+          [staffFilterOptionsTestData.skills[0].group]: new FormArray(
+            [...staffFilterOptionsTestData.skills[0].options.map(() => new FormControl())])
+        }),
+        services: new FormArray([...staffFilterOptionsTestData.services.map(() => new FormControl())]),
+        base_locations: new FormArray([new FormControl()]),
+        region_id: new FormControl(null),
+      })
+    };
 
     await TestBed.configureTestingModule({
       declarations: [StaffAddEditUserFormComponent],
@@ -88,7 +90,6 @@ describe('StaffAddEditUserFormComponent', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     fixture = TestBed.createComponent(StaffAddEditUserFormComponent);
     component = fixture.componentInstance;
-    router.initialNavigation();
     fixture.detectChanges();
   });
 

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -18,7 +18,7 @@ import { StaffAddEditUserFormValidationMessages } from './staff-add-edit-user-fo
   styleUrls: ['./staff-add-edit-user-form.component.scss']
 })
 export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
-  @Input() public editMode = false;
+  public updateMode = false;
   public form: FormGroup;
   public staffFilterOptions: {
     userTypes: StaffFilterOption[],
@@ -39,15 +39,15 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     public readonly staffAddEditFormService: StaffAddEditFormService,
-  ) {
-    this.form = staffAddEditFormService.formGroup;
-  }
+  ) {}
 
   public get baseLocationsFormControl() {
     return this.form?.get('base_locations') as FormControl;
   }
 
   public ngOnInit() {
+    this.form = this.staffAddEditFormService.formGroup;
+    this.updateMode = this.activatedRoute.snapshot.data.isUpdateMode;
     this.staffFilterOptions = {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,

@@ -13,8 +13,7 @@ import {
 } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-select-location/staff-select-location.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffAddUserComponent } from './components/staff-add-user/staff-add-user.component';
-import { StaffStatusComponent } from './components/staff-status/staff-status.component';
-import { StaffSuspendedBannerComponent } from './components/staff-suspended-banner/staff-suspended-banner.component';
+import { StaffStatusComponent } from './components/staff-user-details/staff-status/staff-status.component';
 import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
 import { StaffAdvFilterComponent } from './components/staff-users/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from './components/staff-users/staff-search/staff-search.component';
@@ -49,7 +48,6 @@ import { staffAdministratorRouting } from './staff-administrator.routes';
     StaffUserCheckAnswersComponent,
     StaffUserDetailsComponent,
     StaffStatusComponent,
-    StaffSuspendedBannerComponent,
     StaffSelectLocationComponent
   ],
   imports: [

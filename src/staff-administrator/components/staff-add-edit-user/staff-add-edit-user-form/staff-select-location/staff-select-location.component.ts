@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { combineLatest, iif, Observable, of } from 'rxjs';
@@ -18,23 +18,21 @@ interface StaffUserLocation {
 })
 export class StaffSelectLocationComponent implements OnInit {
   @Input() public isPrimaryMode = false;
-  @Input() public formGroup: FormGroup;
-  @Input() public controlName: string;
+  @Input() public formControl: FormControl;
   @Input() public addButtonTitle: string = 'Add location';
   @Input() public serviceCodes$: Observable<string[]> = of([]);
-  public locationControl: FormControl;
+
   public filteredList$: Observable<LocationByEPIMMSModel[] | boolean>;
   public searchTermFormControl: FormControl = new FormControl('');
   public autocompleteSelectedLocation: LocationByEPIMMSModel | false;
 
   public get selectedLocations(): StaffUserLocation[] {
-    return this.locationControl?.value;
+    return this.formControl?.value;
   }
 
   constructor(private readonly refDataService: RefDataService) {}
 
   public ngOnInit() {
-    this.locationControl = this.formGroup.get(this.controlName) as FormControl;
     this.filteredList$ = combineLatest([
         this.searchTermFormControl.valueChanges,
         this.serviceCodes$
@@ -86,7 +84,7 @@ export class StaffSelectLocationComponent implements OnInit {
         );
       }
 
-      this.locationControl.setValue([...currentSelectedLocations, locationToBeAdded]);
+      this.formControl.setValue([...currentSelectedLocations, locationToBeAdded]);
 
       this.searchTermFormControl.setValue('', { emitEvent: false });
       this.autocompleteSelectedLocation = false;
@@ -97,7 +95,7 @@ export class StaffSelectLocationComponent implements OnInit {
     const updatedLocations = this.selectedLocations.filter(
       (selectedLocation) => selectedLocation.location_id !== location.location_id
     );
-    this.locationControl.setValue(updatedLocations);
+    this.formControl.setValue(updatedLocations);
   }
 
   private filterUnselectedLocations(

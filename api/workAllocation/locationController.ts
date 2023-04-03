@@ -52,22 +52,6 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
  * Get locations
  *
  */
- export async function getRegions(req: EnhancedRequest, res: Response, next: NextFunction) {
-
-  try {
-    const baseCaseWorkerRefUrl = getConfigValue(SERVICES_PRD_LOCATION_API)
-    const response = await sendGet(`${baseCaseWorkerRefUrl}/refdata/location/regions`, req);
-    console.log(response, 'is the response')
-    res.send(response.data).status(response.status);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Get locations
- *
- */
 export async function getFullLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {

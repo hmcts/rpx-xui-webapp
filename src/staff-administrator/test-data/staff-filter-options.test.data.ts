@@ -100,4 +100,14 @@ export const staffFilterOptionsTestData = {
       label: 'Financial Remedy'
     }
   ],
+  regions: [
+    {
+      region_id: '1',
+      description: 'Region 1'
+    },
+    {
+      region_id: '2',
+      description: 'Region 2',
+    }
+  ]
 };

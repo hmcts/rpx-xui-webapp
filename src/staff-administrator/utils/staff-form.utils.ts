@@ -47,6 +47,7 @@ export const filterItemsByBoolean = <T>(items: T[], bools: boolean[]): T[] => {
 export const buildCheckboxArray = (options: StaffFilterOption[], min: number, max: number, preselectedValues?: any[]): FormArray => {
   const validators = addFormValidators(min, max);
   const formArray = new FormArray([], validators);
+
   for (const option of options) {
     let checked = false;
     if (preselectedValues?.length > 0) {

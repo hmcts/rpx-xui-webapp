@@ -97,7 +97,6 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
 
     try {
       const { status, data }: { status: number, data } = await sendGet(apiPath, req);
-
       const groupOptions: GroupOption[] = [];
       data.service_skill.forEach(services => {
         const options: StaffFilterOption[] = [];

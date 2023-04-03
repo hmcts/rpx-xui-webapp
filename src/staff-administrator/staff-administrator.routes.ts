@@ -39,12 +39,14 @@ export const ROUTES: Routes = [
       {
         path: 'user-details/:id',
         component: StaffUserDetailsContainerComponent,
-        resolve: {
-          staffUserDetails: StaffUserDetailsResolverService,
-        },
-        runGuardsAndResolvers: 'always',
         children: [
-          { path: '', component: StaffUserDetailsComponent },
+          { path: '',
+            component: StaffUserDetailsComponent,
+            resolve: {
+              staffUserDetails: StaffUserDetailsResolverService,
+            },
+            runGuardsAndResolvers: 'always',
+          },
           {
             path: 'update',
             data: { isUpdateMode: true },

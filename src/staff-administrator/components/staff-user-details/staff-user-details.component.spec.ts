@@ -76,7 +76,7 @@ describe('StaffUserDetailsComponent', () => {
       ],
       base_locations: [
         {
-          location_id: 333,
+          location_id: '333',
           location: 'Location',
           is_primary: true
         }

@@ -4,12 +4,7 @@ import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { combineLatest, iif, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-
-interface StaffUserLocation {
-  location_id: string;
-  location: string;
-  is_primary: boolean;
-}
+import { StaffUserLocation } from '../../../../models/staff-user-location.model';
 
 @Component({
   selector: 'exui-staff-select-location',

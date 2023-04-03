@@ -1,4 +1,5 @@
 import { StaffUserStatus } from './staff-user-status.enum';
+import { StaffUserLocation } from './staff-user-location.model';
 
 export class StaffUser {
   public email_id: string;
@@ -32,13 +33,7 @@ export class StaffUser {
     service_code: string;
   }[];
 
-  public base_locations: {
-    created_time?: Date,
-    last_updated_time?: Date,
-    location_id: number,
-    location: string,
-    is_primary: boolean
-  }[];
+  public base_locations: StaffUserLocation[];
 
   public region: string;
   public region_id: number;

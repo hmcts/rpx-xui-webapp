@@ -47,6 +47,7 @@ export const ROUTES: Routes = [
           { path: '', component: StaffUserDetailsComponent },
           {
             path: 'update',
+            data: { isUpdateMode: true },
             children: [
               { path: '', component: StaffEditUserContainerComponent },
               { path: 'check-your-answers', component: StaffUserCheckAnswersComponent }

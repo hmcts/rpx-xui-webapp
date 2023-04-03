@@ -7,7 +7,10 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import { FilterConfigOption } from '@hmcts/rpx-xui-common-lib';
+import { MultipleErrorMessage } from '../../app/models';
+import {
+  StaffAddEditUserFormValidationMessages
+} from '../components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form-validation-messages.enum';
 import { StaffFilterOption } from '../models/staff-filter-option.model';
 
 export function minSelectedValidator<T>(min: number): ValidatorFn {
@@ -37,15 +40,6 @@ export const addFormValidators = (min: number, max: number): Validators => {
   return validators;
 };
 
-export function getValues(options: FilterConfigOption[], values: any[]): any[] {
-  return options.reduce((acc: string[], option: { key: string, label: string }, index: number) => {
-    if (values[index]) {
-      return [...acc, option.key];
-    }
-    return acc;
-  }, []);
-}
-
 export const filterItemsByBoolean = <T>(items: T[], bools: boolean[]): T[] => {
   return items.filter((item, index) => bools[index]);
 };
@@ -64,9 +58,21 @@ export const buildCheckboxArray = (options: StaffFilterOption[], min: number, ma
   return formArray;
 };
 
-export const getInvalidControlNames = (form: FormGroup): string[] => {
-  return Object.keys(form.controls).filter(controlName => {
-    const control = form.get(controlName);
-    return control.invalid;
+export const getFormValidationErrorMessages = (formGroup: FormGroup): MultipleErrorMessage[] => {
+  const errors: MultipleErrorMessage[] = [];
+  Object.keys(formGroup.controls).forEach((controlName) => {
+    const control = formGroup.controls[controlName];
+    const controlErrors = control.errors;
+
+    if (controlErrors) {
+      Object.keys(controlErrors).forEach((errorKey) => {
+        const errorMessage = StaffAddEditUserFormValidationMessages[`${controlName}.${errorKey}`];
+
+        if (errorMessage) {
+          errors.push({ name: controlName, error: errorMessage });
+        }
+      });
+    }
   });
+  return errors;
 };

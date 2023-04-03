@@ -6,7 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { StaffStatusComponent } from 'src/staff-administrator/components/staff-status/staff-status.component';
+import { StaffStatusComponent } from 'src/staff-administrator/components/staff-user-details/staff-status/staff-status.component';
 import { ErrorMessageComponent } from '../../../app/components';
 import { StaffDataFilterService } from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from '../../components/staff-users/staff-adv-filter/staff-adv-filter.component';

@@ -35,6 +35,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private readonly messageService: InfoMessageCommService,
     private readonly staffAddEditFormService: StaffAddEditFormService
   ) {
+    this.isUpdateMode = this.activatedRoute.snapshot.data.isUpdateMode;
     this.staffUser = staffAddEditFormService.valuesAsStaffUser;
   }
 
@@ -76,7 +77,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       }))
       .subscribe((response) => {
         this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`);
-      }, (error) => {
+      }, () => {
         window.scrollTo(0, 0);
         this.router.navigateByUrl('/service-down');
       });

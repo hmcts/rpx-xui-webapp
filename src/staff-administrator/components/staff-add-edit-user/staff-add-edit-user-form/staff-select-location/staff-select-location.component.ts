@@ -18,7 +18,7 @@ interface StaffUserLocation {
 })
 export class StaffSelectLocationComponent implements OnInit {
   @Input() public isPrimaryMode = false;
-  @Input() public formControl: FormControl;
+  @Input() public locationsControl: FormControl;
   @Input() public addButtonTitle: string = 'Add location';
   @Input() public serviceCodes$: Observable<string[]> = of([]);
 
@@ -27,7 +27,7 @@ export class StaffSelectLocationComponent implements OnInit {
   public autocompleteSelectedLocation: LocationByEPIMMSModel | false;
 
   public get selectedLocations(): StaffUserLocation[] {
-    return this.formControl?.value;
+    return this.locationsControl?.value;
   }
 
   constructor(private readonly refDataService: RefDataService) {}
@@ -84,7 +84,7 @@ export class StaffSelectLocationComponent implements OnInit {
         );
       }
 
-      this.formControl.setValue([...currentSelectedLocations, locationToBeAdded]);
+      this.locationsControl.setValue([...currentSelectedLocations, locationToBeAdded]);
 
       this.searchTermFormControl.setValue('', { emitEvent: false });
       this.autocompleteSelectedLocation = false;
@@ -95,7 +95,7 @@ export class StaffSelectLocationComponent implements OnInit {
     const updatedLocations = this.selectedLocations.filter(
       (selectedLocation) => selectedLocation.location_id !== location.location_id
     );
-    this.formControl.setValue(updatedLocations);
+    this.locationsControl.setValue(updatedLocations);
   }
 
   private filterUnselectedLocations(

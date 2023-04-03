@@ -45,18 +45,27 @@
           <h3 class="govuk-label">
             Email
           </h3>
-          <p *ngIf="submitted && form.get('email_id')?.errors?.required" id="email_id-required-error" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.required'] }}
-          </p>
-          <p *ngIf="submitted && form.get('email_id')?.errors?.email" id="email_id-email-error" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.email'] }}
-          </p>
-          <div class="govuk-body">
-            <input type="text" class="govuk-input" [class.govuk-input--error]="submitted && form.get('email_id')?.invalid"
-                   formControlName="email_id"
-                   id="email_id"
-            />
-          </div>
+          <ng-container *ngIf="!updateMode; else readOnlyEmail">
+            <p *ngIf="submitted && form.get('email_id')?.errors?.required" id="email_id-required-error" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.required'] }}
+            </p>
+            <p *ngIf="submitted && form.get('email_id')?.errors?.email" id="email_id-email-error" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.email'] }}
+            </p>
+            <div class="govuk-body">
+              <input type="text" class="govuk-input" [class.govuk-input--error]="submitted && form.get('email_id')?.invalid"
+                     formControlName="email_id"
+                     id="email_id"
+              />
+            </div>
+          </ng-container>
+
+          <ng-template #readOnlyEmail>
+            <div class="govuk-body">
+              <input type="text" class="govuk-input" [value]="form.get('email_id')?.value" disabled />
+            </div>
+          </ng-template>
+
         </div>
         <hr />
 
@@ -121,7 +130,7 @@
 
             <div>
               <exui-staff-select-location
-                [formControl]="baseLocationsFormControl"
+                [locationsControl]="baseLocationsFormControl"
                 [isPrimaryMode]="true"
                 [addButtonTitle]="'Add primary location'"
                 [serviceCodes$]="staffAddEditFormService.serviceCodes$"
@@ -137,7 +146,7 @@
 
             <div>
               <exui-staff-select-location
-                [formControl]="baseLocationsFormControl"
+                [locationsControl]="baseLocationsFormControl"
                 [addButtonTitle]="'Add additional locations'"
                 [serviceCodes$]="staffAddEditFormService.serviceCodes$"
               >

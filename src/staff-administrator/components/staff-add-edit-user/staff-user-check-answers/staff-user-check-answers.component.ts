@@ -35,6 +35,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
     private readonly messageService: InfoMessageCommService,
     private readonly staffAddEditFormService: StaffAddEditFormService
   ) {
+    this.isUpdateMode = this.activatedRoute.snapshot.data.isUpdateMode;
     this.staffUser = staffAddEditFormService.valuesAsStaffUser;
   }
 

@@ -104,7 +104,7 @@ export class StaffAddEditFormService {
     // Skills
     const skillsFormArray = buildCheckboxArray(
       this.staffFilterOptions.skills.map(a => a.options).reduce((a, b) => a.concat(b)),
-      0, 10);
+      0, 10, staffUserDetails ? staffUserDetails.skills.map(skill => skill.skill_id) : []);
     this.formGroup.setControl('skills', skillsFormArray);
   }
 }

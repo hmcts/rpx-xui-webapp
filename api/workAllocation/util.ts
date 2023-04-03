@@ -765,6 +765,8 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     specificAccessReason: roleAssignment.attributes.specificAccessReason,
     requestDate: roleAssignment.attributes.requestDate,
     reviewerRoleCategory: roleAssignment.attributes.reviewerRoleCategory,
+    next_hearing_date: caseDetail.nextHearingDetails &&
+      caseDetail.nextHearingDetails.hearingDateTime ? caseDetail.nextHearingDetails.hearingDateTime : null,
   };
 }
 

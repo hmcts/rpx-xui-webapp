@@ -13,8 +13,7 @@ import { InfoMessageType } from '../../../role-access/models/enums';
 import { StaffUser } from '../../models/staff-user.model';
 import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
-import { StaffStatusComponent } from '../staff-status/staff-status.component';
-import { StaffSuspendedBannerComponent } from '../staff-suspended-banner/staff-suspended-banner.component';
+import { StaffStatusComponent } from './staff-status/staff-status.component';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
 
 @Component({
@@ -90,7 +89,6 @@ describe('StaffUserDetailsComponent', () => {
       declarations: [
         StaffUserDetailsComponent,
         StaffStatusComponent,
-        StaffSuspendedBannerComponent,
         StubComponent,
       ],
       imports: [HttpClientTestingModule,

@@ -9,7 +9,8 @@ import { take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/staff-add-edit-form.service';
-import { getInvalidControlNames } from '../../../utils/staff.utils';
+import { getFormValidationErrorMessages } from '../../../utils/staff-form.utils';
+import { StaffAddEditUserFormValidationMessages } from './staff-add-edit-user-form-validation-messages.enum';
 
 @Component({
   selector: 'exui-staff-add-edit-user-form',
@@ -32,6 +33,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   public previousSelectedNestedCheckbox: string[] = [];
   public errors: ErrorMessage | false;
   public submitted = false;
+  public VALIDATION_ERROR_MESSAGES = StaffAddEditUserFormValidationMessages;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -41,8 +43,8 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     this.form = staffAddEditFormService.formGroup;
   }
 
-  public typeof(input: any) {
-    return typeof(input);
+  public get baseLocationsFormControl() {
+    return this.form?.get('base_locations') as FormControl;
   }
 
   public ngOnInit() {
@@ -127,6 +129,35 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     return this.filteredSkillsByServices;
   }
 
+  public submitForm(form: FormGroup): void {
+    this.errors = false;
+    this.submitted = true;
+    form.markAllAsTouched();
+    if (form.valid) {
+      this.router.navigate(['check-your-answers'], {relativeTo: this.activatedRoute});
+    } else {
+      this.errors = {
+        title: 'There is a problem',
+        description: 'Check the form for errors and try again.',
+        multiple: true,
+        errors: getFormValidationErrorMessages(form)
+      };
+      window.scrollTo(0, 0);
+    }
+  }
+
+  private fragmentFocus(): void {
+    this.activatedRoute.fragment
+      .pipe(take(1))
+      .subscribe(frag => {
+        const element = document.getElementById(frag);
+        if (element) {
+          element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
+          element.focus();
+        }
+      });
+  }
+
   private sortGroupOptions(groupOptions: GroupOptions[]): GroupOptions[] {
     const sortedResults: GroupOptions[] = [];
     const groups = groupOptions.map(go => go.group);
@@ -146,46 +177,11 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
 
   private startFilterSkillsByServices(form: FormGroup) {
     const servicesArray: string[] = [];
-    console.log(this.form, 'is form');
     form.value['services'].map((service: boolean, index: number) => {
       if (service) {
-        console.log(index, 'is service');
         servicesArray.push(this.staffFilterOptions.services[index].key);
       }
     });
     this.filterSkillsByServices(servicesArray);
-  }
-
-  public submitForm(form: FormGroup): void {
-    this.errors = false;
-    this.submitted = true;
-    form.markAllAsTouched();
-    console.log(this.form);
-    console.log('Form Is Valid', this.form.valid);
-    console.log('Form Value', this.form.value);
-    if (form.valid) {
-      this.router.navigate(['check-your-answers'], {relativeTo: this.activatedRoute});
-    } else {
-      const invalidFormControls = getInvalidControlNames(form);
-      this.errors = {
-        title: 'There is a problem',
-        description: 'Check the form for errors and try again.',
-        multiple: true,
-        errors: invalidFormControls.map(controlName => ({ error: controlName, name: controlName }))
-      };
-      window.scrollTo(0, 0);
-    }
-  }
-
-  private fragmentFocus(): void {
-    this.activatedRoute.fragment
-      .pipe(take(1))
-      .subscribe(frag => {
-        const element = document.getElementById(frag);
-        if (element) {
-          element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
-          element.focus();
-        }
-      });
   }
 }

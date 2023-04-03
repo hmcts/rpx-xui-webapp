@@ -10,57 +10,81 @@
         <div class="govuk-label govuk-label--m govuk-!-margin-bottom-4">
           Personal Information
         </div>
-        <ng-container id="first_name_group">
+
+        <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('first_name')?.invalid">
           <h3 class="govuk-label">
             First name
           </h3>
+          <p *ngIf="submitted && form.get('first_name')?.errors?.required" id="first_name-required-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['first_name.required'] }}
+          </p>
           <div class="govuk-body">
-            <input class="govuk-input" type="text"
-                 formControlName="first_name"
-                 id="first_name"
-              />
+            <input type="text" class="govuk-input" [class.govuk-input--error]="submitted && form.get('first_name')?.invalid"
+                   formControlName="first_name"
+                   id="first_name"
+            />
           </div>
-        </ng-container>
-        <ng-container id="last_name_group">
+        </div>
+
+        <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('last_name')?.invalid">
           <h3 class="govuk-label">
             Last name
           </h3>
+          <p *ngIf="submitted && form.get('last_name')?.errors?.required" id="last_name-required-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['last_name.required'] }}
+          </p>
           <div class="govuk-body">
-            <input class="govuk-input" type="text"
-                 formControlName="last_name"
-                 id="last_name"
-              />
+            <input type="text" class="govuk-input" [class.govuk-input--error]="submitted && form.get('last_name')?.invalid"
+                   formControlName="last_name"
+                   id="last_name"
+            />
           </div>
-        </ng-container>
-        <ng-container id="email_id_group">
+        </div>
+
+        <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('email_id')?.invalid">
           <h3 class="govuk-label">
             Email
           </h3>
+          <p *ngIf="submitted && form.get('email_id')?.errors?.required" id="email_id-required-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.required'] }}
+          </p>
+          <p *ngIf="submitted && form.get('email_id')?.errors?.email" id="email_id-email-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.email'] }}
+          </p>
           <div class="govuk-body">
-            <input class="govuk-input" type="text"
-                 formControlName="email_id"
-                 id="email_id"
-              />
+            <input type="text" class="govuk-input" [class.govuk-input--error]="submitted && form.get('email_id')?.invalid"
+                   formControlName="email_id"
+                   id="email_id"
+            />
           </div>
-        </ng-container>
+        </div>
         <hr />
-        <ng-container id="region_group">
+
+        <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('region_id')?.invalid">
           <h3 class="govuk-label govuk-label--m">
             Region
           </h3>
+          <p *ngIf="submitted && form.get('region_id')?.errors?.required" id="region_id-required-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['region_id.required'] }}
+          </p>
           <div class="govuk-body">
-            <select class="govuk-select" name="region_id" id="region_id" formControlName="region_id">
+            <select class="govuk-select" [class.govuk-select--error]="submitted && form.get('first_name')?.invalid"
+                    name="region_id" id="region_id" formControlName="region_id">
               <option *ngFor="let item of staffFilterOptions.regions" [value]="item.region_id">
                 {{ item.description }}
               </option>
             </select>
           </div>
-        </ng-container>
+        </div>
         <hr />
-        <ng-container id="service_group">
+
+        <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('services')?.invalid" id="services">
           <h3 class="govuk-label govuk-label--m">
             Services
           </h3>
+          <p *ngIf="submitted && form.get('services')?.errors?.minlength" id="services-required-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['services.minlength'] }}
+          </p>
           <div class="govuk-body">
             <div class="govuk-checkboxes govuk-checkboxes--small" formGroupName="services" attr.field="service" id="checkbox_service">
               <div *ngFor="let item of staffFilterOptions.services; let i = index" class="govuk-checkboxes__item">
@@ -77,24 +101,27 @@
               </div>
             </div>
           </div>
-        </ng-container>
+        </div>
         <hr />
 
-        <div>
+        <div id="base_locations" class="govuk-form-group"
+             [class.govuk-form-group--error]="submitted && form.get('base_locations')?.invalid">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
             <h2 class="govuk-heading-m">
               Locations
             </h2>
+            <p *ngIf="submitted && form.get('base_locations')?.errors?.required" id="location-required-error" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['base_locations.required'] }}
+            </p>
           </legend>
 
-          <div>
+          <div id="base_locations_primary" class="govuk-form-group">
             <h3 class="govuk-heading-s">Primary location</h3>
             <p>A user can only have one primary location.</p>
 
-            <div class="govuk-form-group">
+            <div>
               <exui-staff-select-location
-                [formGroup]="form"
-                [controlName]="'base_locations'"
+                [formControl]="baseLocationsFormControl"
                 [isPrimaryMode]="true"
                 [addButtonTitle]="'Add primary location'"
                 [serviceCodes$]="staffAddEditFormService.serviceCodes$"
@@ -103,15 +130,14 @@
             </div>
           </div>
 
-          <div>
+          <div id="base_locations_additional" class="govuk-form-group">
             <h3 class="govuk-heading-s">
               Additional locations <span class="govuk-label govuk-checkboxes__label">(optional)</span>
             </h3>
 
-            <div class="govuk-form-group">
+            <div>
               <exui-staff-select-location
-                [formGroup]="form"
-                [controlName]="'base_locations'"
+                [formControl]="baseLocationsFormControl"
                 [addButtonTitle]="'Add additional locations'"
                 [serviceCodes$]="staffAddEditFormService.serviceCodes$"
               >
@@ -121,20 +147,25 @@
         </div>
 
         <hr />
-        <ng-container id="user_type_group">
+        <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('user_type')?.invalid">
           <h3 class="govuk-label govuk-label--m">
             User type
           </h3>
+          <p *ngIf="submitted && form.get('user_type')?.errors?.required" id="user_type-required-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['user_type.required'] }}
+          </p>
           <div class="govuk-body">
-            <select class="govuk-select" name="user_type" id="user_type" formControlName="user_type">
+            <select class="govuk-select" [class.govuk-select--error]="submitted && form.get('user_type')?.invalid"
+                    name="user_type" id="user_type" formControlName="user_type">
               <option class="govuk-radios__item" *ngFor="let item of staffFilterOptions.userTypes" [value]="item.label">{{item.label}}</option>
             </select>
           </div>
-        </ng-container>
+        </div>
         <hr />
-        <ng-container id="roles_group">
+
+        <div id="userRoles" class="govuk-form-group">
           <h3 class="govuk-label govuk-label--m">
-            Roles
+            Role
           </h3>
           <div class="govuk-body">
             <div class="govuk-checkboxes govuk-checkboxes--small">
@@ -150,12 +181,17 @@
               </div>
             </div>
           </div>
-        </ng-container>
+        </div>
         <hr />
-        <ng-container id="job_title_group">
+
+        <div id="roles" class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('roles')?.invalid">
           <h3 class="govuk-label govuk-label--m">
             Job title
           </h3>
+
+          <p *ngIf="submitted && form.get('roles')?.errors?.minlength" id="roles-required-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['roles.minlength'] }}
+          </p>
           <div class="govuk-body">
             <div class="govuk-checkboxes govuk-checkboxes--small" formGroupName="roles" id="checkbox_job_title">
               <div *ngFor="let item of staffFilterOptions.jobTitles; let i = index" class="govuk-checkboxes__item">
@@ -171,8 +207,9 @@
               </div>
             </div>
           </div>
-        </ng-container>
-        <ng-container id="skills_group">
+        </div>
+
+        <div id="skills" class="govuk-form-group">
           <h3 class="govuk-label govuk-label--m">
             Skills
           </h3>
@@ -180,7 +217,7 @@
             <div *ngFor="let item of filteredSkillsByServicesCheckbox; let i = index" class="govuk-checkboxes__item">
               <input type="checkbox" class="govuk-checkboxes__input"
                      [formControlName]="i"
-                     (change)="toggleSelectSkills($event, form, item)"
+                     (change)="toggleSelectSkills($event)"
                      [value]="item.key"
                      [name]="'checkbox_skills_' + i + '_' + item.key"
                      [id]="'checkbox_skills_' + i + '_' + item.key"
@@ -193,7 +230,7 @@
               </label>
             </div>
           </div>
-        </ng-container>
+        </div>
         <hr />
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-full">

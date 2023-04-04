@@ -60,7 +60,7 @@ class ApplicationServer{
     }
 
     async stop(){
-        this.server.close()
+        return await this.server.close()
     }
 
 

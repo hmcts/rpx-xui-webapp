@@ -149,7 +149,8 @@ class AllWork extends TaskList {
 
 //Cases container methods
     async isCasesContainerDisplayed() {
-        return await this.casesContainer.isPresent() && await this.casesContainer.isDisplayed();
+
+        return await this.casesContainer.isDisplayed()
     }
 
 

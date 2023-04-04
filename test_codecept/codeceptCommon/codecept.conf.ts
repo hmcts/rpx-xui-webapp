@@ -175,11 +175,12 @@ exports.config = {
     }
   },
   teardown: async () => {
-    await mochawesomeGenerateReport()
-    if (testType === "ngIntegration" && !parallel){
-      teardown()
-    }
-    return true
+    const status = await mochawesomeGenerateReport()
+      if (testType === "ngIntegration" && !parallel){
+        await teardown()
+      }
+    process.exit(status === 'PASS' ? 0 : 1)
+    
   },
   bootstrapAll: async () => {
     if (testType === "ngIntegration" && parallel) {
@@ -188,11 +189,13 @@ exports.config = {
     }
   },
   teardownAll: async () => {  
-   await  mochawesomeGenerateReport()
+    const status = await  mochawesomeGenerateReport()
     if (testType === "ngIntegration" && parallel) {
-      teardown()
+     await teardown()
     }
-    return true
+
+    process.exit(status === 'PASS' ? 0 : 1)
+    // return status === 'PASS' ? 0 : 1  
   }
 }
 
@@ -205,6 +208,7 @@ async function setup(){
 async function teardown(){
   await backendMockApp.stopServer();
   await applicationServer.stop()
+  // process.exit(1);
 }
 
 async function mochawesomeGenerateReport(){
@@ -215,6 +219,7 @@ async function mochawesomeGenerateReport(){
     "reportDir": `${functional_output_dir}/`,
     "reportFilename": `${functional_output_dir}/report`,
   });
+  return report.stats.failures > 0 ? 'FAIL' : 'PASS';
 }
 
 function generateCucumberReport(){

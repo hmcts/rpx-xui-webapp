@@ -96,6 +96,19 @@ class CustomHelper extends Helper {
         return this._getHelper().page;
     }
 
+    async isVisible(selector) {
+        const helper = this._getHelper();
+        try {
+            const numVisible = await helper.grabNumberOfVisibleElements(selector);
+
+            if (numVisible !== undefined) {
+                return numVisible > 0
+            }
+        } catch (err) {
+            return false
+        }
+    }
+
 
 
    

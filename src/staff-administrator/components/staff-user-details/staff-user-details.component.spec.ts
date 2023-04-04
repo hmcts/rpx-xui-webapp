@@ -1,16 +1,19 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
-import { StaffAddEditUserFormId } from '../../../staff-administrator/models/staff-add-edit-user-form-id.enum';
-import { StaffStatusComponent } from '../../components/staff-status/staff-status.component';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { StaffUser } from '../../models/staff-user.model';
-import { PluckAndJoinPipe } from '../../pipes/pluckAndJoin.pipe';
+import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
+import { StaffStatusComponent } from './staff-status/staff-status.component';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
 
 @Component({
@@ -23,6 +26,8 @@ describe('StaffUserDetailsComponent', () => {
   let fixture: ComponentFixture<StaffUserDetailsComponent>;
   let route: ActivatedRoute;
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
+  let mockMessageService: jasmine.SpyObj<InfoMessageCommService>;
+  let mockStaffAddEditFormService: jasmine.SpyObj<StaffAddEditFormService>;
   let location: Location;
   let router: jasmine.SpyObj<Router>;
   let testStaffUserData: Partial<StaffUser>;
@@ -32,6 +37,15 @@ describe('StaffUserDetailsComponent', () => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
       'mockStaffDataAccessService', ['updateUser']
     );
+
+    mockMessageService = jasmine.createSpyObj<InfoMessageCommService>(
+      'mockMessageService', ['nextMessage']
+    );
+
+    mockStaffAddEditFormService = jasmine.createSpyObj<StaffAddEditFormService>(
+      'staffAddEditFormService', ['patchFormValues']
+    );
+
     testStaffUserData = {
       email_id: 'email@test.hmcts',
       first_name: 'Kevin',
@@ -62,7 +76,7 @@ describe('StaffUserDetailsComponent', () => {
       ],
       base_locations: [
         {
-          location_id: 333,
+          location_id: '333',
           location: 'Location',
           is_primary: true
         }
@@ -76,7 +90,6 @@ describe('StaffUserDetailsComponent', () => {
         StaffUserDetailsComponent,
         StaffStatusComponent,
         StubComponent,
-        PluckAndJoinPipe
       ],
       imports: [HttpClientTestingModule,
         RouterTestingModule.withRoutes([
@@ -96,13 +109,68 @@ describe('StaffUserDetailsComponent', () => {
                 id: caseWorkerId
               },
               data: {
-                staffUserDetails: {
-                  userDetails: testStaffUserData
-                }
+                staffUserDetails: testStaffUserData,
+                services: [
+                  {
+                    key: 'ABC1',
+                    label: 'Service A'
+                  },
+                  {
+                    key: 'BCD2',
+                    label: 'Service B'
+                  },
+                  {
+                    key: 'CDE3',
+                    label: 'Service C'
+                  },
+                  {
+                    key: 'DEF4',
+                    label: 'Service D'
+                  }
+                ],
+                skills: [
+                  {
+                    group: 'ABC1',
+                    options: [
+                      {
+                        key: '1',
+                        label: 'Underwriter',
+                      },
+                      {
+                        key: '2',
+                        label: 'Caseworker',
+                      }
+                    ]
+                  },
+                  {
+                    group: 'BCD2',
+                    options: [
+                      {
+                        key: '3',
+                        label: 'Caseworker',
+                      },
+                      {
+                        key: '4',
+                        label: 'Case manager',
+                      }
+                    ]
+                  },
+                  {
+                    group: 'CDE3',
+                    options: [
+                      {
+                        key: '5',
+                        label: 'Underwriter',
+                      }
+                    ]
+                  }
+                ],
               }
             },
           },
-        }
+        },
+        { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
+        { provide : InfoMessageCommService, useValue: mockMessageService },
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -164,37 +232,18 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.userDetails).toEqual(testStaffUserObject);
   });
 
-  it('should set filterSettings on sessionStorage on FILTER_ID as key and navigate' +
-    'to DESTINATION on setDataForGenericFilterAndNavigate', fakeAsync(() => {
-    const FILTER_ID = 'FILTER_ID';
-    const DESTINATION = `/staff/user-details/${caseWorkerId}/update`;
-    spyOn(router, 'navigateByUrl').and.callThrough();
-
-    component.setDataForGenericFilterAndNavigate(FILTER_ID, DESTINATION);
-    tick();
-    expect(sessionStorage.getItem(FILTER_ID)).toBeTruthy();
-    expect(router.navigateByUrl).toHaveBeenCalledWith(DESTINATION);
-    expect(location.path()).toBe(DESTINATION);
-  }));
-
-  it('should call onUpdateUser which in turn should call setDataForGenericFilterAndNavigate', fakeAsync(() => {
+  it('should call onUpdateUser when clicking update button', fakeAsync(() => {
     spyOn(component, 'onUpdateUser').and.callThrough();
-    spyOn(component, 'setDataForGenericFilterAndNavigate').and.callThrough();
     const updateUserButton = fixture.debugElement.query(By.css('#updateUserButton'));
     updateUserButton.triggerEventHandler('click', null);
     expect(component.onUpdateUser).toHaveBeenCalled();
-    expect(component.setDataForGenericFilterAndNavigate)
-      .toHaveBeenCalledWith(StaffAddEditUserFormId.UpdateUser, `/staff/user-details/${caseWorkerId}/update`);
   }));
 
-  it('should call onCopyUser which in turn should call setDataForGenericFilterAndNavigate', fakeAsync(() => {
+  it('should call onCopyUser when clicking copy button', fakeAsync(() => {
     spyOn(component, 'onCopyUser').and.callThrough();
-    spyOn(component, 'setDataForGenericFilterAndNavigate').and.callThrough();
     const copyUserButton = fixture.debugElement.query(By.css('#copyUserButton'));
     copyUserButton.triggerEventHandler('click', null);
     expect(component.onCopyUser).toHaveBeenCalled();
-    expect(component.setDataForGenericFilterAndNavigate)
-      .toHaveBeenCalledWith(StaffAddEditUserFormId.CopyUser, `/staff/user-details/${caseWorkerId}/copy`);
   }));
 
   it('should have a disabled button if suspended is true', () => {
@@ -211,5 +260,42 @@ describe('StaffUserDetailsComponent', () => {
     component.userDetails.suspended = true;
     component.updateUserStatus();
     expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
+  });
+
+  describe('resendInvite', () => {
+    it('Should show success message on sending activation email', () => {
+      mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: '123'}));
+      component.resendInvite();
+      fixture.detectChanges();
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, testStaffUserData);
+      staffUser.is_resend_invite = true;
+      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
+      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
+        message: InfoMessage.ACTIVATION_EMAIL_SENT,
+        type: InfoMessageType.SUCCESS
+      } as InformationMessage);
+    });
+
+    it('should show error message on failure in sending activation emails', () => {
+      mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 500 }));
+      component.resendInvite();
+      fixture.detectChanges();
+      const staffUser = new StaffUser();
+      Object.assign(staffUser, testStaffUserData);
+      staffUser.is_resend_invite = true;
+      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
+      expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
+        message: InfoMessage.ACTIVATION_EMAIL_ERROR,
+        type: InfoMessageType.WARNING
+      } as InformationMessage);
+    });
+  });
+
+  describe('getServiceNameFromSkillId', () => {
+    it('should get service name from skill id', () => {
+      const service = component.getServiceNameFromSkillId(3);
+      expect(service).toBe('Service B');
+    });
   });
 });

@@ -8,8 +8,7 @@ import { StaffDataAccessService } from '../services/staff-data-access/staff-data
 })
 export class StaffFilterOptionsJobTitlesResolver implements Resolve<StaffFilterOption[]> {
 
-  constructor(private staffDataAccessService: StaffDataAccessService) {
-  }
+  constructor(private staffDataAccessService: StaffDataAccessService) {}
 
   public resolve(route?: ActivatedRouteSnapshot) {
     return this.staffDataAccessService.getJobTitles();

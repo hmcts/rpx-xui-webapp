@@ -16,7 +16,7 @@ class RDJudicialService{
         personTemplate.idamId = v4();
           personTemplate.fullName = `auto test ${i} judge ${i}`
           personTemplate.surname = `judge ${i}`
-          personTemplate.email = `auto_test_judge_${i}@justice.gov.uk`
+          personTemplate.emailId = `auto_test_judge_${i}@justice.gov.uk`
           personTemplate.knownAs = `auto testjudge ${i} judicial`
           personTemplate.title = `mockjudge`
 

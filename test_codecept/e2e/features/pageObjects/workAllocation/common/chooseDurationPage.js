@@ -112,7 +112,7 @@ class ChooseDuration{
         if (!containerDisplayed){
             return false;
         }
-        const dateInput = this.getDateInputFieldWithLabel(label);
+        const dateInput = this.getStartDateField();
         return await dateInput.isPresent() && dateInput.isDisplayed();
     }
 
@@ -136,7 +136,12 @@ class ChooseDuration{
     }
 
     getDateInputFieldWithLabel(label){
-        return this.container.element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${label}')]/parent::fieldset`));
+        return this.container.element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//*[contains(text(),'${label}')]/parent::fieldset`));
+    }
+
+    getStartDateField(){
+        return this.container.element(by.xpath(`//div[@id,'date-start']`));
+
     }
 
 

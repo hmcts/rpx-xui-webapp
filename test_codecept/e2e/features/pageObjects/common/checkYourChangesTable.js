@@ -5,9 +5,9 @@ class CheckYourChangesAnswersTable {
 
     constructor(parentlocator) {
 
-        this.changesTable = parentlocator.$("table");
-        this.tableHeaders = parentlocator.$$('table tr th');
-        this.tableRows = parentlocator.$$('table tbody tr');
+        this.changesTable = $("table");
+        this.tableHeaders = $$('table tr th');
+        this.tableRows = $$('table tbody tr');
 
     }
 

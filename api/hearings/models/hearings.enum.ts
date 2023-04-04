@@ -119,7 +119,7 @@ export enum DOW {
 export enum DOWUnavailabilityType {
   AM = 'AM',
   PM = 'PM',
-  ALL_DAY = 'All Day'
+  ALL_DAY = 'All Day',
 }
 
 export enum HearingResult {

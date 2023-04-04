@@ -7,7 +7,7 @@ const allWorkPage = require("../../pageObjects/workAllocation/allWorkPage");
 
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskCheckYourChangesPage');
-
+const caseAllocateCheckYourAnswersPage = require('../../pageObjects/workAllocation/caseAllocationCheckYourAnswersPage')
 const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
 
@@ -81,14 +81,26 @@ const { DataTableArgument } = require('codeceptjs');
 
     });
 
+    Then('I see case allocation check your changes page for action {string} displayed', async function (taskAction) {
+        await caseAllocateCheckYourAnswersPage.validatePage();
+        expect(await caseAllocateCheckYourAnswersPage.getHeaderCaption()).to.contains(taskAction);
+
+    });
+
     Then('I validate column {string} value is set to {string} in task check your changes page', async function(headerName, val){
         let actualVal = await taskCheckYourChangesPage.getColumnValue(headerName);
         expect(actualVal).to.contains(val)
     });
 
+    Then('I validate column {string} value is set to {string} in case allocation check your changes page', async function (headerName, val) {
+        let actualVal = await caseAllocateCheckYourAnswersPage.getColumnValue(headerName);
+        expect(actualVal).to.contains(val)
+    });
+
+
     When('I click submit button {string} in task check your changes page', async function(buttonLabel){
-        expect(await taskCheckYourChangesPage.submitButton.getText()).to.contains(buttonLabel);
-        await taskCheckYourChangesPage.submitButton.click();
+        expect(await caseAllocateCheckYourAnswersPage.submitButton.getText()).to.contains(buttonLabel);
+        await caseAllocateCheckYourAnswersPage.submitButton.click();
     });
 
     Then('I see All work cases page displayed', async function(){
@@ -100,7 +112,9 @@ const { DataTableArgument } = require('codeceptjs');
 
     Then('I see all work cases not loaded and message displayed as {string}', async (message) => {
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await allWorkPage.isCasesContainerDisplayed()).to.be.false
+            const isDisplayed = await allWorkPage.isCasesContainerDisplayed()
+            expect(isDisplayed).to.be.false
+            await await allWorkPage.allworkCasesMessage.wait()
             expect(await allWorkPage.allworkCasesMessage.getText()).to.contains(message)
         });
         

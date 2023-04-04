@@ -405,18 +405,7 @@ class Element {
     async isPresent(){
         let count = 0;
         const locatorType = Object.keys(this.selector)[0]
-
-        if (locatorType.includes('css')) {
-            count = await getActor().executeScript(function (selector) {
-                return document.querySelectorAll(selector.css).length
-            }, this.selector)
-        } else {
-            count = await getActor().executeScript(function (selector) {
-                const snapshots = document.evaluate(selector.xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null)
-                return snapshots.snapshotLength
-            }, this.selector)
-        }
-        return count > 0
+        return await getActor().isVisible(this.selector)
       
     }
 
@@ -426,27 +415,8 @@ class Element {
     }
 
     async isDisplayed(){
-        const isPresent = await this.isPresent();
-        if(!isPresent){
-            return false;
-        }
+        return await getActor().isVisible(this.selector)
 
-        let computedStyle = null;
-        const locatorType = Object.keys(this.selector)[0]
-
-        if (locatorType.includes('css')) {
-            computedStyle = await getActor().executeScript(function (selector) {
-                const e =  document.querySelector(selector.css);
-                return getComputedStyle(e).display
-            }, this.selector)
-        } else {
-            computedStyle = await getActor().executeScript(function (selector) {
-                const snapshots = document.evaluate(selector.xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null)
-                let e = snapshots.snapshotItem(0)
-                return getComputedStyle(e).display
-            }, this.selector)
-        }
-        return computedStyle !== 'none';
     }
 
 

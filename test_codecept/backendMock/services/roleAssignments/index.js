@@ -5,6 +5,8 @@ class RoleAssignments{
 
     constructor(){
        this.serviceUsersRoleAssignments = []
+
+
     }   
 
     getActorRoles(actorID){
@@ -14,10 +16,36 @@ class RoleAssignments{
             roleAssignmentResponse : [role]}
     }
 
-    getServiceUsersRoleAssignments(reqBody){
+    getServiceUsersRolesAssignments(reqBody){
         return this.serviceUsersRoleAssignments.filter(roleAssignment => {
             return reqBody.attributes.jurisdiction.includes(roleAssignment.attributes.jurisdiction)
         })
+    }
+
+    getQueryResults(queryRequests){
+        const roleAssignments = []
+        const query = queryRequests[0];
+        const roleType = query.roleType ? query.roleType[0] : null;
+        const roleCategory = query.roleCategory ? query.roleCategory[0]: null;
+        const actorId = query.actorId ? query.actorId[0] : null;
+        const jurisdiction = query.attributes.jurisdiction ? query.attributes.jurisdiction[0] : null
+
+        for(let i = 0 ; i< 150; i++){
+            const roleAssignmentTemplate = this.getRoleAssignmentTemplate();
+            roleAssignmentTemplate.roleType = roleType;
+            roleAssignmentTemplate.roleCategory = roleCategory ? roleCategory : roleAssignmentTemplate.roleCategory;
+            roleAssignmentTemplate.actorId = actorId ? actorId : roleAssignmentTemplate.actorId;
+            roleAssignmentTemplate.attributes.jurisdiction = jurisdiction;
+
+            if (roleType === 'CASE'){
+                roleAssignmentTemplate.attributes.caseType = 'Asylum'
+                roleAssignmentTemplate.attributes.caseId = '12345678123456' + (i > 9 ? i : '0'+i)
+            }
+            roleAssignments.push(roleAssignmentTemplate)
+
+        }
+
+        return roleAssignments;
     }
 
     getRoleAssignmentsRoles(){

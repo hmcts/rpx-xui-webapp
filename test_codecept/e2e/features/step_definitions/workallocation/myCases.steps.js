@@ -46,8 +46,9 @@ const { DataTableArgument } = require('codeceptjs');
 
 
     Then('I validate work allocation cases count in page {int}', async function (casesCount) {
-
-        expect(parseInt(await casesListTable.getCaseListCountInTable()), 'Cases count does not match expected ').to.equal(casesCount);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(parseInt(await casesListTable.getCaseListCountInTable()), 'Cases count does not match expected ').to.equal(casesCount);
+        })
         // if (casesCount === 0) {
         //     expect(await casesListTable.isTableFooterDisplayed(), "Cases list table footer is not displayed").to.be.true;
         //     expect(await casesListTable.getTableFooterMessage(), "Cases list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");

@@ -60,9 +60,10 @@ class MockApp {
         const app = express();
         app.disable('etag');
         app.use(bodyParser.urlencoded({ extended: false }));
+
         app.use(bodyParser.json());
         app.use(cookieParser());
-        app.use(express.json());
+        app.use(express.json({ type: '*/*' })); 
 
         app.use((req,res,next) => {
             // console.log(`${req.method} : ${req.url}`);

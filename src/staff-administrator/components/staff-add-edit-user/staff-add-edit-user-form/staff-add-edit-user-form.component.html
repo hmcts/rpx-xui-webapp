@@ -232,11 +232,11 @@
       </p>
       <div class="govuk-body">
         <div class="govuk-checkboxes govuk-checkboxes--multi-column govuk-checkboxes--small" formGroupName="roles" id="checkbox_job_title">
-          <div *ngFor="let group of jobTitleGroups; let i = index"
+          <div *ngFor="let group of groupItemsByGroupSize(this.staffFilterOptions.jobTitles, 8); let i = index"
                class="govuk-form-group govuk-form-group--limited-width">
             <div *ngFor="let item of group; let j = index" class="govuk-checkboxes__item">
               <input type="checkbox" class="govuk-checkboxes__input"
-                     [formControlName]="i * j"
+                     [formControlName]="j + (8 * i)"
                      [value]="item" [id]="'checkbox_job_title' + item.key"
                      [name]="'checkbox_job_title' + item.key"
               />

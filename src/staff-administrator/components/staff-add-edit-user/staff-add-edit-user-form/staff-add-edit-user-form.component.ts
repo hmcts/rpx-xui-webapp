@@ -30,7 +30,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   public submitted = false;
   public VALIDATION_ERROR_MESSAGES = StaffAddEditUserFormValidationMessages;
   public skillOptionGroups$: Observable<GroupOptions[]>;
-  public jobTitleGroups: StaffFilterOption[][] = [];
+  public groupItemsByGroupSize = groupItemsByGroupSize;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -57,7 +57,6 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
         { key: 'staff_admin', label: 'Staff administrator' },
       ]
     };
-    this.jobTitleGroups = groupItemsByGroupSize(this.staffFilterOptions.jobTitles, 8);
     this.skillOptionGroups$ = this.staffAddEditFormService.selectedServiceCodes$.pipe(
       tap((selectedServiceCodes) => {
         const skillsControl = this.form.get('skills') as FormGroup;

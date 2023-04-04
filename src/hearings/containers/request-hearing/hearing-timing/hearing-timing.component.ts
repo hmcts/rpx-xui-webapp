@@ -36,6 +36,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public hearingLengthErrorValue: string;
   public hearingPriorityError: string;
   public hearingPriorityDateError: string;
+  public dateRangeWeekendError: string;
   public firstDateOfHearingError: ErrorMessagesModel;
   public earliestDateOfHearingError: ErrorMessagesModel;
   public latestDateOfHearingError: ErrorMessagesModel;
@@ -184,7 +185,9 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   public checkUnavailableDatesList(dateList: UnavailabilityRangeModel[]): void {
     dateList.forEach(dateRange => {
-      this.setUnavailableDates(dateRange);
+      if (dateRange) {
+        this.setUnavailableDates(dateRange);
+      }
     });
     this.partiesNotAvailableDates.sort((currentDate, previousDate) => new Date(currentDate).getTime() - new Date(previousDate).getTime());
   }
@@ -283,12 +286,9 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         message: HearingDatePriorityEnum.EarliestHearingDateError
       });
       this.earliestDateOfHearingError = {isInvalid: true, messages: [HearingDatePriorityEnum.EarliestHearingDateError]};
-    } else if (isEarliestDateWeekendDate) {
+    } else if ((isEarliestDateWeekendDate || isLatestDateWeekendDate) && numberOfBusinessDays === 0) {
       this.validationErrors.push({id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.WeekDayError});
-      this.earliestDateOfHearingError = {isInvalid: true, messages: [HearingDatePriorityEnum.WeekDayError]};
-    } else if (isLatestDateWeekendDate) {
-      this.validationErrors.push({id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.WeekDayError});
-      this.latestDateOfHearingError = {isInvalid: true, messages: [HearingDatePriorityEnum.WeekDayError]};
+      this.dateRangeWeekendError = HearingDatePriorityEnum.WeekDayError;
     } else if (isEarliestDateValid && isLatestHearingDate && (numberOfBusinessDays * 6 * 60) < this.calculateDuration()) {
       this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.NotEnoughDaysInDateRangeError });
       this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.NotEnoughDaysInDateRangeError] };
@@ -322,6 +322,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.firstDateOfHearingError = null;
     this.hearingPriorityError = null;
     this.hearingPriorityDateError = null;
+    this.dateRangeWeekendError = null;
     if (!this.priorityForm.valid) {
       this.showHearingLengthError();
       this.showHearingDateError();

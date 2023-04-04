@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -109,7 +109,62 @@ describe('StaffUserDetailsComponent', () => {
                 id: caseWorkerId
               },
               data: {
-                staffUserDetails: testStaffUserData
+                staffUserDetails: testStaffUserData,
+                services: [
+                  {
+                    key: 'ABC1',
+                    label: 'Service A'
+                  },
+                  {
+                    key: 'BCD2',
+                    label: 'Service B'
+                  },
+                  {
+                    key: 'CDE3',
+                    label: 'Service C'
+                  },
+                  {
+                    key: 'DEF4',
+                    label: 'Service D'
+                  }
+                ],
+                skills: [
+                  {
+                    group: 'ABC1',
+                    options: [
+                      {
+                        key: '1',
+                        label: 'Underwriter',
+                      },
+                      {
+                        key: '2',
+                        label: 'Caseworker',
+                      }
+                    ]
+                  },
+                  {
+                    group: 'BCD2',
+                    options: [
+                      {
+                        key: '3',
+                        label: 'Caseworker',
+                      },
+                      {
+                        key: '4',
+                        label: 'Case manager',
+                      }
+                    ]
+                  },
+                  {
+                    group: 'CDE3',
+                    options: [
+                      {
+                        key: '5',
+                        label: 'Underwriter',
+                      }
+                    ]
+                  }
+                ],
               }
             },
           },
@@ -234,6 +289,13 @@ describe('StaffUserDetailsComponent', () => {
         message: InfoMessage.ACTIVATION_EMAIL_ERROR,
         type: InfoMessageType.WARNING
       } as InformationMessage);
+    });
+  });
+
+  describe('getServiceNameFromSkillId', () => {
+    it('should get service name from skill id', () => {
+      const service = component.getServiceNameFromSkillId(3);
+      expect(service).toBe('Service B');
     });
   });
 });

@@ -31,73 +31,59 @@ export const staffFilterOptionsTestData = {
       label: 'Court Clerk'
     }
   ],
-  skills: [
-    {
-      group: 'adoption',
-      options: [
-        {
-          key: 'adoption-underwriter',
-          label: 'Underwriter',
-          service: 'adoption',
-          id: '1'
-        },
-        {
-          key: 'adoption-caseworker',
-          label: 'Caseworker',
-          service: 'adoption',
-          id: '2'
-        }
-      ]
-    },
-    {
-      group: 'family-private-law',
-      options: [
-        {
-          key: 'family-private-law-caseworker',
-          label: 'Caseworker',
-          service: 'family-private-law',
-          id: '3'
-        },
-        {
-          key: 'family-private-law-casemanager',
-          label: 'Casemanager',
-          service: 'family-private-law',
-          id: '4'
-        }
-      ]
-    },
-    {
-      group: 'family-public-law',
-      options: [
-        {
-          key: 'family-public-law-underwriter',
-          label: 'Underwriter',
-          service: 'family-public-law',
-          id: '5'
-        }
-      ]
-    }
-  ],
   services: [
     {
-      key: 'family-public-law',
-      label: 'Family Public Law'
+      key: 'ABC1',
+      label: 'Service A'
     },
     {
-      key: 'family-private-law',
-      label: 'Family Private Law'
+      key: 'BCD2',
+      label: 'Service B'
     },
     {
-      key: 'adoption',
-      label: 'Adoption'
+      key: 'CDE3',
+      label: 'Service C'
     },
     {
-      key: 'employment-tribunals',
-      label: 'Employment Tribunals'
+      key: 'DEF4',
+      label: 'Service D'
+    }
+  ],
+  skills: [
+    {
+      group: 'ABC1',
+      options: [
+        {
+          key: '1',
+          label: 'Underwriter',
+        },
+        {
+          key: '2',
+          label: 'Caseworker',
+        }
+      ]
     },
     {
-      key: 'financial-remedy',
-      label: 'Financial Remedy'
+      group: 'BCD2',
+      options: [
+        {
+          key: '3',
+          label: 'Caseworker',
+        },
+        {
+          key: '4',
+          label: 'Case manager',
+        }
+      ]
+    },
+    {
+      group: 'CDE3',
+      options: [
+        {
+          key: '5',
+          label: 'Underwriter',
+        }
+      ]
     }
   ],
   regions: [

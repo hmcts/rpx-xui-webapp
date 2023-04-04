@@ -73,13 +73,13 @@ describe('StaffUserCheckAnswersComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
+      imports: [HttpClientTestingModule],
       declarations: [StaffUserCheckAnswersComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
-        { provide: Router, useValue: mockRouter},
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        {provide: StaffDataAccessService, useValue: mockStaffDataAccessService},
+        {provide: Router, useValue: mockRouter},
+        {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -95,102 +95,88 @@ describe('StaffUserCheckAnswersComponent', () => {
                     label: 'CTSC'
                   }
                 ],
-                  jobTitles: [
-                    {
-                      key: 'senior-legal-caseworker',
-                      label: 'Senior Legal Caseworker'
-                    },
-                    {
-                      key: 'legal-caseworker',
-                      label: 'Legal Caseworker'
-                    },
-                    {
-                      key: 'hearing-centre-team-leader',
-                      label: 'Hearing Centre Team Leader'
-                    },
-                    {
-                      key: 'hearing-centre-administrator',
-                      label: 'Hearing Centre Administrator'
-                    },
-                    {
-                      key: 'court-clerk',
-                      label: 'Court Clerk'
-                    }
-                  ],
-                  skills: [
-                    {
-                      group: 'adoption',
-                      options: [
-                        {
-                          key: 'adoption-underwriter',
-                          label: 'Underwriter',
-                          service: 'adoption',
-                          id: '1'
-                        },
-                        {
-                          key: 'adoption-caseworker',
-                          label: 'Caseworker',
-                          service: 'adoption',
-                          id: '2'
-                        }
-                      ]
-                    },
-                    {
-                      group: 'family-private-law',
-                      options: [
-                        {
-                          key: 'family-private-law-caseworker',
-                          label: 'Caseworker',
-                          service: 'family-private-law',
-                          id: '3'
-                        },
-                        {
-                          key: 'family-private-law-casemanager',
-                          label: 'Casemanager',
-                          service: 'family-private-law',
-                          id: '4'
-                        }
-                      ]
-                    },
-                    {
-                      group: 'family-public-law',
-                      options: [
-                        {
-                          key: 'family-public-law-underwriter',
-                          label: 'Underwriter',
-                          service: 'family-public-law',
-                          id: '5'
-                        }
-                      ]
-                    }
-                  ],
-                  services: [
-                    {
-                      key: 'family-public-law',
-                      label: 'Family Public Law'
-                    },
-                    {
-                      key: 'family-private-law',
-                      label: 'Family Private Law'
-                    },
-                    {
-                      key: 'adoption',
-                      label: 'Adoption'
-                    },
-                    {
-                      key: 'employment-tribunals',
-                      label: 'Employment Tribunals'
-                    },
-                    {
-                      key: 'financial-remedy',
-                      label: 'Financial Remedy'
-                    }
-                  ]
+                jobTitles: [
+                  {
+                    key: 'senior-legal-caseworker',
+                    label: 'Senior Legal Caseworker'
+                  },
+                  {
+                    key: 'legal-caseworker',
+                    label: 'Legal Caseworker'
+                  },
+                  {
+                    key: 'hearing-centre-team-leader',
+                    label: 'Hearing Centre Team Leader'
+                  },
+                  {
+                    key: 'hearing-centre-administrator',
+                    label: 'Hearing Centre Administrator'
+                  },
+                  {
+                    key: 'court-clerk',
+                    label: 'Court Clerk'
+                  }
+                ],
+                services: [
+                  {
+                    key: 'ABC1',
+                    label: 'Service A'
+                  },
+                  {
+                    key: 'BCD2',
+                    label: 'Service B'
+                  },
+                  {
+                    key: 'CDE3',
+                    label: 'Service C'
+                  },
+                  {
+                    key: 'DEF4',
+                    label: 'Service D'
+                  }
+                ],
+                skills: [
+                  {
+                    group: 'ABC1',
+                    options: [
+                      {
+                        key: '1',
+                        label: 'Underwriter',
+                      },
+                      {
+                        key: '2',
+                        label: 'Caseworker',
+                      }
+                    ]
+                  },
+                  {
+                    group: 'BCD2',
+                    options: [
+                      {
+                        key: '3',
+                        label: 'Caseworker',
+                      },
+                      {
+                        key: '4',
+                        label: 'Case manager',
+                      }
+                    ]
+                  },
+                  {
+                    group: 'CDE3',
+                    options: [
+                      {
+                        key: '5',
+                        label: 'Underwriter',
+                      }
+                    ]
+                  }
+                ],
               }
             }
           }
         },
-        { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
+        {provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService},
       ],
     }).compileComponents();
   }));
@@ -206,22 +192,16 @@ describe('StaffUserCheckAnswersComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('should set is updateMode', () => {
-  //   component.ngOnInit();
-  //   expect(component.isUpdateMode).toBe(false);
-  //
-  //   component.ngOnInit();
-  //   expect(component.isUpdateMode).toBe(true);
-  // });
-
   it('should call the right method based on isEditMode on calling the onSubmit method', () => {
     component.isUpdateMode = false;
-    spyOn(component, 'onSubmitAddUser').and.callFake(() => {});
+    spyOn(component, 'onSubmitAddUser').and.callFake(() => {
+    });
     component.onSubmit();
     expect(component.onSubmitAddUser).toHaveBeenCalled();
 
     component.isUpdateMode = true;
-    spyOn(component, 'onSubmitUpdateUser').and.callFake(() => {});
+    spyOn(component, 'onSubmitUpdateUser').and.callFake(() => {
+    });
     component.onSubmit();
     expect(component.onSubmitUpdateUser).toHaveBeenCalled();
   });
@@ -258,17 +238,18 @@ describe('StaffUserCheckAnswersComponent', () => {
 
   it('should call updateUser and then redirect to staff on successful call when calling onSubmitEditMode', fakeAsync(() => {
     const caseworkerId = '123';
-    mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: caseworkerId }));
+    mockStaffDataAccessService.updateUser.and.returnValue(of({case_worker_id: caseworkerId}));
     component.onSubmitUpdateUser();
     tick();
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/staff/user-details/${caseworkerId}`, { state: { retainMessages: true } });
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/staff/user-details/${caseworkerId}`, {state: {retainMessages: true}});
     flush();
   }));
 
   it('should call updateUser and then redirect to service down on error call when calling onSubmitEditMode', fakeAsync(() => {
     mockStaffDataAccessService.updateUser.and.returnValue(throwError('error'));
-    spyOn(window, 'scrollTo').and.callFake(() => {});
+    spyOn(window, 'scrollTo').and.callFake(() => {
+    });
     component.onSubmitUpdateUser();
     tick();
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/service-down');
@@ -276,4 +257,11 @@ describe('StaffUserCheckAnswersComponent', () => {
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
     flush();
   }));
+
+  describe('getServiceNameFromSkillId', () => {
+    it('should get service name from skill id', () => {
+      const service = component.getServiceNameFromSkillId(3);
+      expect(service).toBe('Service B');
+    });
+  });
 });

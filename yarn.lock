@@ -137,12 +137,12 @@
     ora "5.3.0"
     rxjs "6.6.3"
 
-"@angular-material-components/datetime-picker@2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@angular-material-components/datetime-picker/-/datetime-picker-2.0.4.tgz#3a298eb29fc4a8adbbb70fe09bab0ae916d0c186"
-  integrity sha512-3nXGFz7GXbFYeBI2/72rcmPFTWtcC1ERlgdkaY+65dFHXPIc8hKGv6o+JbtCoYPg7xmVCCy4xhmOgfd/CFGyOw==
+"@angular-material-components/datetime-picker@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/datetime-picker/-/datetime-picker-5.1.1.tgz#c47b8ccbe11a0f5533340939fc8ee5fb65fe1b0c"
+  integrity sha512-hiVDhdyBDFGWTFclOiLTLjxOWIu1gVhn2cx1bJfk/a02zRVXs0Zsd0tSBxtsf6iUx1NuPJiPIZNW/BluUOSBJQ==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 "@angular-material-components/moment-adapter@^5.0.0":
   version "5.0.0"
@@ -1467,10 +1467,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@6.10.7-rollback-case-link":
-  version "6.10.7-rollback-case-link"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.10.7-rollback-case-link.tgz#dead034ae21ee78379804ce689cf66f1e346e003"
-  integrity sha512-BQcMRjk/aQsePLrJFb6cnWDtHHt2EF1yHRxuUJS3G5VplY4h62r9DEGeHJwmrd8LUZRs/O37Dnqmy2UCcHYpAw==
+"@hmcts/ccd-case-ui-toolkit@6.13.10-f":
+  version "6.13.10-f"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-6.13.10-f.tgz#db1ff3bac9a1066a6e911fef5b6b80cc4efea138"
+  integrity sha512-6G4NZ3Twb5+7YN8KHPLgr0KOcABkVeFYXPNSaBD0IKRJArQZvHTPbczPkfE+d8fPQha9Q7+Mr5RQi4XxSFCtYQ==
   dependencies:
     tslib "^2.0.0"
 
@@ -1536,12 +1536,12 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.8.7-fix-supported-services":
-  version "1.8.7-fix-supported-services"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.7-fix-supported-services.tgz#bed559a11d269aa3be6ac4e7bead75dc5cf504ed"
-  integrity sha512-JbbZ0UvCRwj5Vo1VBSBd3ArgTLd+YIAxXNf6zEok80KhPg0tVJvCVRjyl0Yalhy4x6AaxqKD67Uw1/ORMxMELA==
+"@hmcts/rpx-xui-common-lib@1.8.7-find-persn-by-service":
+  version "1.8.7-find-persn-by-service"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.7-find-persn-by-service.tgz#e37935312117384f32f6be44419fcc3d23628fa7"
+  integrity sha512-UcpX3qn0jaqEELLcXqPMUdbrFVAfUWmdDfhbf9AdfOXZ7+UDq5zeOxZNlgWwK9zMknjLfRA8TeihwQYaWkhUvQ==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 "@hmcts/rpx-xui-node-lib@2.26.3":
   version "2.26.3"
@@ -10162,6 +10162,11 @@ matcher@^3.0.0:
   dependencies:
     escape-string-regexp "^4.0.0"
 
+material-design-icons@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/material-design-icons/-/material-design-icons-3.0.1.tgz#9a71c48747218ebca51e51a66da682038cdcb7bf"
+  integrity sha512-t19Z+QZBwSZulxptEu05kIm+UyfIdJY1JDwI+nx02j269m6W414whiQz9qfvQIiLrdx71RQv+T48nHhuQXOCIQ==
+
 md5.js@^1.3.4:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/md5.js/-/md5.js-1.3.5.tgz#b5d07b8e3216e3e27cd728d72f70d1e6a342005f"
@@ -11857,6 +11862,11 @@ pdfjs-dist@2.5.207:
   version "2.5.207"
   resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.5.207.tgz#b5e8c19627be64269cd3fb6df3eaaf45ddffe7b6"
   integrity sha512-xGDUhnCYPfHy+unMXCLCJtlpZaaZ17Ew3WIL0tnSgKFUZXHAPD49GO9xScyszSsQMoutNDgRb+rfBXIaX/lJbw==
+
+pegjs@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/pegjs/-/pegjs-0.10.0.tgz#cf8bafae6eddff4b5a7efb185269eaaf4610ddbd"
+  integrity sha512-qI5+oFNEGi3L5HAxDwN2LA4Gg7irF70Zs25edhjld9QemOgp0CbvMtbFcMvFtEo1OityPrcCzkQFB8JP/hxgow==
 
 pend@~1.2.0:
   version "1.2.0"

@@ -2,16 +2,22 @@
 .govuk-select,
 .govuk-form-group {
   width: 100%;
-  max-width: 480px;
+
+
+  &--limited-width {
+    max-width: 480px;
+  }
 }
 
 .govuk-checkboxes {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
 
-  > div {
-    flex-grow: 1;
-    flex-shrink: 0;
+  &--multi-column {
+    display: flex;
+    flex-wrap: wrap;
+
+    > div {
+      flex-grow: 1;
+      flex-shrink: 0;
+    }
   }
 }

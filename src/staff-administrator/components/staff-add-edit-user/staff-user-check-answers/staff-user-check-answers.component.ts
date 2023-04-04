@@ -90,4 +90,13 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   public cancel() {
     this.router.navigateByUrl('/staff');
   }
+
+  public getServiceNameFromSkillId(skillId: number) {
+    const serviceCode = this.staffFilterOptions.skills
+      .find((group) => group.options.find((option) =>
+        Number(option.key) === skillId))?.group;
+
+    return this.staffFilterOptions.services
+      .find((service) => service.key === serviceCode)?.label;
+  }
 }

@@ -7,7 +7,7 @@ import { map, take, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/staff-add-edit-form.service';
-import { getFormValidationErrorMessages } from '../../../utils/staff-form.utils';
+import { getFormValidationErrorMessages, groupItemsByGroupSize } from '../../../utils/staff-form.utils';
 import { StaffAddEditUserFormValidationMessages } from './staff-add-edit-user-form-validation-messages.enum';
 
 @Component({
@@ -30,6 +30,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   public submitted = false;
   public VALIDATION_ERROR_MESSAGES = StaffAddEditUserFormValidationMessages;
   public skillOptionGroups$: Observable<GroupOptions[]>;
+  public jobTitleGroups: StaffFilterOption[][] = [];
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -56,7 +57,8 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
         { key: 'staff_admin', label: 'Staff administrator' },
       ]
     };
-
+    this.jobTitleGroups = groupItemsByGroupSize(this.staffFilterOptions.jobTitles, 8);
+    console.log(this.jobTitleGroups);
     this.skillOptionGroups$ = this.staffAddEditFormService.selectedServiceCodes$.pipe(
       tap((selectedServiceCodes) => {
         const skillsControl = this.form.get('skills') as FormGroup;

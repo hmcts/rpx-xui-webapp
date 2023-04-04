@@ -111,7 +111,7 @@
           <dt class="govuk-summary-list__key">Skills</dt>
           <dd class="govuk-summary-list__value">
             <span *ngFor="let skill of userDetails.skills; let isLast=last">
-              {{skill.description}}
+              <span class="govuk-!-font-weight-bold">{{ getServiceNameFromSkillId(skill.skill_id) }}:</span> {{skill.description}}
               <span *ngIf="!isLast"><br /></span>
             </span>
           </dd>

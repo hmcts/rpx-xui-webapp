@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { finalize } from 'rxjs/operators';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
@@ -110,5 +111,15 @@ export class StaffUserDetailsComponent {
           }
         );
     }
+  }
+
+  public getServiceNameFromSkillId(skillId: number) {
+    const skillGroupOptions = this.route.snapshot.data.skills as GroupOptions[];
+    const serviceCode = skillGroupOptions.find((group) => group.options.find((option) => {
+      return Number(option.key) === skillId;
+    }))?.group;
+
+    return this.route.snapshot.data.services
+      .find((service) => service.key === serviceCode)?.label;
   }
 }

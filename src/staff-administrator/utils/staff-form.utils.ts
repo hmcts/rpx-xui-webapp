@@ -12,6 +12,7 @@ import {
   StaffAddEditUserFormValidationMessages
 } from '../components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form-validation-messages.enum';
 import { StaffFilterOption } from '../models/staff-filter-option.model';
+import { GroupOptions } from '@hmcts/rpx-xui-common-lib';
 
 export function minSelectedValidator<T>(min: number): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -76,4 +77,17 @@ export const getFormValidationErrorMessages = (formGroup: FormGroup): MultipleEr
     }
   });
   return errors;
+};
+
+export const groupItemsByGroupSize = <T>(items: T[], groupSize: number): T[][] => {
+  const groups = [];
+  for (let i = 0; i < items.length; i += groupSize) {
+    const group = items.slice(i, i + groupSize);
+    groups.push(group);
+  }
+  return groups;
+};
+
+export const getServiceNameFromSkillId = (skillId: string, skillGroupOptions: GroupOptions[]): string => {
+  return skillGroupOptions.find((group) => group.options.find((option) => option.key === skillId))?.group;
 };

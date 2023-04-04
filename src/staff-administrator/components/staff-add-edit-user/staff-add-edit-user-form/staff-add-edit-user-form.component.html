@@ -11,7 +11,7 @@
       Personal Information
     </div>
 
-    <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('first_name')?.invalid">
+    <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('first_name')?.invalid">
       <h3 class="govuk-label">
         First name
       </h3>
@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('last_name')?.invalid">
+    <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('last_name')?.invalid">
       <h3 class="govuk-label">
         Last name
       </h3>
@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('email_id')?.invalid">
+    <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('email_id')?.invalid">
       <h3 class="govuk-label">
         Email
       </h3>
@@ -76,7 +76,7 @@
     </div>
     <hr/>
 
-    <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('region_id')?.invalid">
+    <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('region_id')?.invalid">
       <h3 class="govuk-label govuk-label--m">
         Region
       </h3>
@@ -95,7 +95,7 @@
     </div>
     <hr/>
 
-    <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('services')?.invalid"
+    <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('services')?.invalid"
          id="services">
       <h3 class="govuk-label govuk-label--m">
         Services
@@ -123,7 +123,7 @@
     </div>
     <hr/>
 
-    <div id="base_locations" class="govuk-form-group"
+    <div id="base_locations" class="govuk-form-group govuk-form-group--limited-width"
          [class.govuk-form-group--error]="submitted && form.get('base_locations')?.invalid">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h2 class="govuk-heading-m">
@@ -136,7 +136,7 @@
         </p>
       </legend>
 
-      <div id="base_locations_primary" class="govuk-form-group">
+      <div id="base_locations_primary" class="govuk-form-group govuk-form-group--limited-width">
         <h3 class="govuk-heading-s">Primary location</h3>
         <p>A user can only have one primary location.</p>
 
@@ -151,7 +151,7 @@
         </div>
       </div>
 
-      <div id="base_locations_additional" class="govuk-form-group">
+      <div id="base_locations_additional" class="govuk-form-group govuk-form-group--limited-width">
         <h3 class="govuk-heading-s">
           Additional locations <span class="govuk-label govuk-checkboxes__label">(optional)</span>
         </h3>
@@ -168,7 +168,7 @@
     </div>
 
     <hr/>
-    <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && form.get('user_type')?.invalid">
+    <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('user_type')?.invalid">
       <h3 class="govuk-label govuk-label--m">
         User type
       </h3>
@@ -186,7 +186,7 @@
     </div>
     <hr/>
 
-    <div id="userRoles" class="govuk-form-group">
+    <div id="userRoles" class="govuk-form-group govuk-form-group--limited-width">
       <h3 class="govuk-label govuk-label--m">
         Role
 
@@ -220,17 +220,20 @@
         <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['roles.minlength'] }}
       </p>
       <div class="govuk-body">
-        <div class="govuk-checkboxes govuk-checkboxes--small" formGroupName="roles" id="checkbox_job_title">
-          <div *ngFor="let item of staffFilterOptions.jobTitles; let i = index" class="govuk-checkboxes__item">
-            <input type="checkbox" class="govuk-checkboxes__input"
-                   [formControlName]="i"
-                   [value]="item" [id]="'checkbox_job_title' + item.key"
-                   [name]="'checkbox_job_title' + item.key"
-            />
-            <label
-              [for]="'checkbox_job_title' + item.key"
-              class="govuk-label govuk-checkboxes__label"
-            >{{item.label}}</label>
+        <div class="govuk-checkboxes govuk-checkboxes--multi-column govuk-checkboxes--small" formGroupName="roles" id="checkbox_job_title">
+          <div *ngFor="let group of jobTitleGroups; let i = index"
+               class="govuk-form-group govuk-form-group--limited-width">
+            <div *ngFor="let item of group; let j = index" class="govuk-checkboxes__item">
+              <input type="checkbox" class="govuk-checkboxes__input"
+                     [formControlName]="i * j"
+                     [value]="item" [id]="'checkbox_job_title' + item.key"
+                     [name]="'checkbox_job_title' + item.key"
+              />
+              <label
+                [for]="'checkbox_job_title' + item.key"
+                class="govuk-label govuk-checkboxes__label"
+              >{{item.label}}</label>
+            </div>
           </div>
         </div>
       </div>
@@ -241,11 +244,11 @@
         Skills
         <span class="govuk-label govuk-checkboxes__label">(optional)</span>
       </h3>
-      <div class="govuk-checkboxes govuk-checkboxes--small" formGroupName="skills" attr.field="skills"
+      <div class="govuk-checkboxes govuk-checkboxes--multi-column govuk-checkboxes--small" formGroupName="skills" attr.field="skills"
            id="checkbox_skills">
         <ng-container *ngIf="(skillOptionGroups$ | async) as skillOptionGroups">
           <ng-container *ngFor="let skillGroup of skillOptionGroups">
-            <ng-container [formGroupName]="skillGroup.group">
+            <div class="govuk-form-group govuk-form-group--limited-width" [formGroupName]="skillGroup.group">
               <h3 class="govuk-heading-s">{{ getServiceLabelFromKey(skillGroup.group) }}</h3>
               <div *ngFor="let item of skillGroup.options; let i = index" class="govuk-checkboxes__item">
                 <input type="checkbox" class="govuk-checkboxes__input"
@@ -261,7 +264,7 @@
                   {{item.label}}
                 </label>
               </div>
-            </ng-container>
+            </div>
           </ng-container>
         </ng-container>
       </div>

@@ -6,15 +6,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { StaffStatusComponent } from 'src/staff-administrator/components/staff-status/staff-status.component';
+import { StaffStatusComponent } from 'src/staff-administrator/components/staff-user-details/staff-status/staff-status.component';
 import { ErrorMessageComponent } from '../../../app/components';
 import { StaffDataFilterService } from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from '../../components/staff-users/staff-adv-filter/staff-adv-filter.component';
 import { StaffSearchComponent } from '../../components/staff-users/staff-search/staff-search.component';
 import { StaffUserListComponent } from '../../components/staff-users/staff-user-list/staff-user-list.component';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
-import { staffFilterOptionsTestData } from '../../test-data/staff-filter-options.test.data';
 import { StaffMainContainerComponent } from './staff-main-container.component';
+import { staffFilterOptionsTestData } from '../../test-data/staff-filter-options.test.data';
 
 describe('StaffMainContainerComponent', () => {
   let component: StaffMainContainerComponent;

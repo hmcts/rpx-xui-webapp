@@ -3,13 +3,14 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
-    <exui-page-wrapper [title]="'Check your answers before ' + (!isUpdateMode ? 'adding a new user' : 'updating the user')" [backLink]="'../'">
+    <exui-page-wrapper [title]="'Check your answers before ' + (!isUpdateMode ? 'adding a new user' : 'updating the user')"
+                       [backLink]="'../'">
         <dl class="govuk-summary-list govuk-!-margin-bottom-5" *ngIf="staffUser.first_name">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Name</dt>
             <dd class="govuk-summary-list__value">{{ staffUser.first_name }} {{ staffUser.last_name }}</dd>
             <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="firstName">
+              <a class="govuk-link" [routerLink]="['../']" fragment="first_name">
                 Change<span class="govuk-visually-hidden"> name </span>
               </a>
             </dd>
@@ -21,7 +22,7 @@
             <div class="govuk-summary-list__key">Email address</div>
             <div class="govuk-summary-list__value">{{ staffUser.email_id }}</div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="email_id">
+              <a class="govuk-link" [routerLink]="['../']" fragment="email_id">
                 Change<span class="govuk-visually-hidden"> email </span>
               </a>
             </div>
@@ -30,7 +31,7 @@
 
         <dl class="govuk-summary-list govuk-!-margin-bottom-5">
           <div class="govuk-summary-list__row">
-            <div class="govuk-summary-list__key">Services</div>
+            <div class="govuk-summary-list__key">Service</div>
             <div class="govuk-summary-list__value">
               <span *ngFor="let service of staffUser.services; let isLast=last">
                 {{service.service}}
@@ -38,11 +39,9 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <div routerLink="/staff/add-user">
-                <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="user-services">
-                  Change<span class="govuk-visually-hidden"> services </span>
-                </a>
-              </div>
+              <a class="govuk-link" [routerLink]="['../']" fragment="services">
+                Change<span class="govuk-visually-hidden"> services </span>
+              </a>
             </div>
           </div>
         </dl>
@@ -54,7 +53,7 @@
               {{ staffUser.region }}
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="region_id">
+              <a class="govuk-link" [routerLink]="['../']" fragment="region_id">
                 Change<span class="govuk-visually-hidden"> region</span>
               </a>
             </div>
@@ -72,7 +71,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="primaryLocation">
+              <a class="govuk-link" [routerLink]="['../']" fragment="base_locations_primary">
                 Change<span class="govuk-visually-hidden"> primary location</span>
               </a>
             </div>
@@ -91,7 +90,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="additionalLocations">
+              <a class="govuk-link" [routerLink]="['../']" fragment="base_locations_additional">
                 Change<span class="govuk-visually-hidden"> additional locations</span>
               </a>
             </div>
@@ -105,7 +104,7 @@
               {{ staffUser.user_type }}
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="user_type">
+              <a class="govuk-link" [routerLink]="['../']" fragment="user_type">
                 Change<span class="govuk-visually-hidden"> user type</span>
               </a>
             </div>
@@ -114,14 +113,14 @@
 
         <dl class="govuk-summary-list govuk-!-margin-bottom-5">
           <div class="govuk-summary-list__row">
-            <div class="govuk-summary-list__key">Roles</div>
+            <div class="govuk-summary-list__key">Role</div>
             <div class="govuk-summary-list__value">
               <div *ngIf="staffUser.case_allocator">Case Allocator</div>
               <div *ngIf="staffUser.task_supervisor">Task Supervisor</div>
               <div *ngIf="staffUser.staff_admin">Staff Administrator</div>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="roles">
+              <a class="govuk-link" [routerLink]="['../']" fragment="userRoles">
                 Change<span class="govuk-visually-hidden"> roles</span>
               </a>
             </div>
@@ -138,7 +137,7 @@
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="jobTitle">
+              <a class="govuk-link" [routerLink]="['../']" fragment="roles">
                 Change<span class="govuk-visually-hidden"> job title</span>
               </a>
             </div>
@@ -150,12 +149,12 @@
             <div class="govuk-summary-list__key">Skills</div>
             <div class="govuk-summary-list__value">
               <span *ngFor="let skill of staffUser.skills; let isLast=last">
-                {{skill.description}}
+                <span class="govuk-!-font-weight-bold">{{getServiceNameFromSkillId(skill.skill_id) }}:</span> {{skill.description}}
                 <span *ngIf="!isLast"><br/></span>
               </span>
             </div>
             <div class="govuk-summary-list__actions">
-              <a class="govuk-link" [routerLink]="['/staff/add-user']" fragment="user-skills">
+              <a class="govuk-link" [routerLink]="['../']" fragment="skills">
                 Change<span class="govuk-visually-hidden"> skills</span>
               </a>
             </div>
@@ -175,12 +174,12 @@
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
           <button id="user-staff-check-answers-submit" class="govuk-button govuk-!-margin-right-1 govuk-!-margin-bottom-0"
-            (click)="onSubmit()"
-          >
+            (click)="onSubmit()">
             Submit
           </button>
 
-          <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" (click)="cancel()">
+          <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
+                  (click)="cancel()">
             Cancel
           </button>
         </div>

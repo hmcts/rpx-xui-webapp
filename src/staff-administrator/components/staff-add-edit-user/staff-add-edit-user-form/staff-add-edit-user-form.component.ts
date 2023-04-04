@@ -58,7 +58,6 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
       ]
     };
     this.jobTitleGroups = groupItemsByGroupSize(this.staffFilterOptions.jobTitles, 8);
-    console.log(this.jobTitleGroups);
     this.skillOptionGroups$ = this.staffAddEditFormService.selectedServiceCodes$.pipe(
       tap((selectedServiceCodes) => {
         const skillsControl = this.form.get('skills') as FormGroup;

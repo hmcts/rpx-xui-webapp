@@ -7,9 +7,11 @@
 
   <ng-content select="[pageHeader]"></ng-content>
   <form [formGroup]="form" (ngSubmit)="submitForm(form)">
-    <div class="govuk-label govuk-label--m govuk-!-margin-bottom-4">
-      Personal Information
-    </div>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h2 class="govuk-heading-m">
+        Personal Information
+      </h2>
+    </legend>
 
     <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('first_name')?.invalid">
       <h3 class="govuk-label">
@@ -72,14 +74,15 @@
           <input type="text" class="govuk-input" [value]="form.get('email_id')?.value" disabled/>
         </div>
       </ng-template>
-
     </div>
     <hr/>
 
     <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('region_id')?.invalid">
-      <h3 class="govuk-label govuk-label--m">
-        Region
-      </h3>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h2 class="govuk-heading-m">
+          Region
+        </h2>
+      </legend>
       <p *ngIf="submitted && form.get('region_id')?.errors?.required" id="region_id-required-error"
          class="govuk-error-message">
         <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['region_id.required'] }}
@@ -97,9 +100,11 @@
 
     <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('services')?.invalid"
          id="services">
-      <h3 class="govuk-label govuk-label--m">
-        Services
-      </h3>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h2 class="govuk-heading-m">
+          Services
+        </h2>
+      </legend>
       <p *ngIf="submitted && form.get('services')?.errors?.minlength" id="services-required-error"
          class="govuk-error-message">
         <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['services.minlength'] }}
@@ -126,9 +131,11 @@
     <div id="base_locations" class="govuk-form-group govuk-form-group--limited-width"
          [class.govuk-form-group--error]="submitted && form.get('base_locations')?.invalid">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <h2 class="govuk-heading-m">
-          Locations
-        </h2>
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h2 class="govuk-heading-m">
+            Locations
+          </h2>
+        </legend>
         <p *ngIf="submitted && form.get('base_locations')?.errors?.required" id="location-required-error"
            class="govuk-error-message">
               <span
@@ -153,7 +160,7 @@
 
       <div id="base_locations_additional" class="govuk-form-group govuk-form-group--limited-width">
         <h3 class="govuk-heading-s">
-          Additional locations <span class="govuk-label govuk-checkboxes__label">(optional)</span>
+          Additional locations <span class="govuk-label govuk-label-optional">(optional)</span>
         </h3>
 
         <div>
@@ -169,9 +176,11 @@
 
     <hr/>
     <div class="govuk-form-group govuk-form-group--limited-width" [class.govuk-form-group--error]="submitted && form.get('user_type')?.invalid">
-      <h3 class="govuk-label govuk-label--m">
-        User type
-      </h3>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h2 class="govuk-heading-m">
+          User type
+        </h2>
+      </legend>
       <p *ngIf="submitted && form.get('user_type')?.errors?.required" id="user_type-required-error"
          class="govuk-error-message">
         <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['user_type.required'] }}
@@ -187,11 +196,11 @@
     <hr/>
 
     <div id="userRoles" class="govuk-form-group govuk-form-group--limited-width">
-      <h3 class="govuk-label govuk-label--m">
-        Role
-
-        <span class="govuk-label govuk-checkboxes__label">(optional)</span>
-      </h3>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h2 class="govuk-heading-m">
+          Role <span class="govuk-label govuk-label-optional">(optional)</span>
+        </h2>
+      </legend>
       <div class="govuk-body">
         <div class="govuk-checkboxes govuk-checkboxes--small">
           <div *ngFor="let item of staffFilterOptions.userRoles; let i = index" class="govuk-checkboxes__item">
@@ -211,9 +220,11 @@
 
     <div id="roles" class="govuk-form-group"
          [class.govuk-form-group--error]="submitted && form.get('roles')?.invalid">
-      <h3 class="govuk-label govuk-label--m">
-        Job title
-      </h3>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h2 class="govuk-heading-m">
+          Role
+        </h2>
+      </legend>
 
       <p *ngIf="submitted && form.get('roles')?.errors?.minlength" id="roles-required-error"
          class="govuk-error-message">
@@ -240,10 +251,11 @@
     </div>
 
     <div id="skills" class="govuk-form-group">
-      <h3 class="govuk-label govuk-label--m">
-        Skills
-        <span class="govuk-label govuk-checkboxes__label">(optional)</span>
-      </h3>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h2 class="govuk-heading-m">
+          Skills <span class="govuk-label govuk-label-optional">(optional)</span>
+        </h2>
+      </legend>
       <div class="govuk-checkboxes govuk-checkboxes--multi-column govuk-checkboxes--small" formGroupName="skills" attr.field="skills"
            id="checkbox_skills">
         <ng-container *ngIf="(skillOptionGroups$ | async) as skillOptionGroups">

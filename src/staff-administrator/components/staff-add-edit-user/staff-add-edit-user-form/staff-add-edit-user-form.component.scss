@@ -10,7 +10,6 @@
 }
 
 .govuk-checkboxes {
-
   &--multi-column {
     display: flex;
     flex-wrap: wrap;
@@ -20,4 +19,9 @@
       flex-shrink: 0;
     }
   }
+}
+
+.govuk-label-optional {
+  display: inline;
+  padding: 8px 15px 5px;
 }

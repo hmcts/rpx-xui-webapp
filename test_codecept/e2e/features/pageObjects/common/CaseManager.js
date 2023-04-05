@@ -198,10 +198,7 @@ class CaseManager {
         });
     }
 
-    async AmOnCCDCaseEditPage() {
         await BrowserWaits.retryWithActionCallback(async () => {
-            try{
-                await BrowserWaits.waitForElement(this.ccdCaseEdit);
                 expect(await this.ccdCaseEdit.isPresent()).to.be.true;
             }catch(err){
 

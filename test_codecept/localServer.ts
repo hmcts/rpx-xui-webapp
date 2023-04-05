@@ -6,7 +6,7 @@ import { applicationConfiguration } from '../api/configuration/appConfig'
 import { appInsights } from '../api/lib/appInsights'
 import errorHandler from '../api/lib/error.handler'
 
-import axios from 'axios'
+const axios = require('axios')
 
 
 import * as ejs from 'ejs';
@@ -52,16 +52,10 @@ class ApplicationServer{
     async start(){
 
         this.server = await app.listen(3000);
-        try{
-            const res = await axios.get('http://localhost:3000/auth/isAuthenticated')
-            console.log(res.data)
 
+        const res = await axios.get('http://localhost:3000/auth/isAuthenticated')
 
-        }catch(err){
-            console.log(err)
-
-        }
-
+        console.log(res.data)
 
     }
 

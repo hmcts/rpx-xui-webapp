@@ -15,10 +15,8 @@ const appTestData = require('../../config/appTestConfig')
 const caseDetailsPage = require('../pageObjects/caseDetailsPage')
 const CaseManager = require('../pageObjects/common/CaseManager')
 
-const { DataTableArgument } = require('codeceptjs');
 const browser = require('../../../codeceptCommon/browser');
-const { error } = require('console');
-const { $ } = require('protractor');
+
 
 
 const caseManager = new CaseManager()

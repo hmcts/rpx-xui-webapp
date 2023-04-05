@@ -15,29 +15,27 @@ export class PriorityFieldComponent {
   @Input() public majorPriority?: number;
 
   public get priority(): TaskPriority {
-
-    const dCount = this.daysBetween(this.date, new Date());
-    if (this.majorPriority <= PriorityLimits.Urgent) {
-      return TaskPriority.URGENT;
-    } else if (this.majorPriority < PriorityLimits.High) {
-      return TaskPriority.HIGH;
-    } else if (this.majorPriority === PriorityLimits.High) {
-      if (dCount < 0) {
-        return TaskPriority.HIGH;
-      } else if (dCount === 0) {
-        return TaskPriority.MEDIUM;
-      }
-    }
-    return TaskPriority.LOW;
+    const date = this.date ? this.date : new Date()
+    return this.getPriorityLabel(this.majorPriority, date);
   }
 
-  // returns the number of days that d1 is after d2
-  private daysBetween(d1: Date, d2: Date): number {
-    if (!(d1 && d2)) {
-      return 0;
+  private getInterval(d1:Date, d2:Date): number {
+    return (d2.getTime() - d1.getTime()) / 1000 * 60 * 60 * 24;
+  }
+
+  private getPriorityLabel(majorPriority: number, priorityDate: Date): TaskPriority {
+    const interval = this.getInterval(new Date(), priorityDate);
+    if (majorPriority <= PriorityLimits.Urgent) {
+      return TaskPriority.URGENT;
+    } else if (majorPriority < PriorityLimits.High) {
+      return TaskPriority.HIGH;
     }
-    const utc1 = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate());
-    const utc2 = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate());
-    return Math.floor((utc1 - utc2) / (1000 * 60 * 60 * 24));
+    else if ( majorPriority === PriorityLimits.High) {
+      if (interval < 0) {
+        return TaskPriority.HIGH}
+      } else if ((interval >= 0) && (interval < 1)) {
+        return TaskPriority.MEDIUM;
+      }
+    return TaskPriority.LOW;
   }
 }

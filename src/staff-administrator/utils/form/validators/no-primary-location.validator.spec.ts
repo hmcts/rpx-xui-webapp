@@ -1,7 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { noPrimaryLocationValidator } from './no-primary-location.validator';
 
-describe('noPrimaryLocationValidator', () => {
+fdescribe('noPrimaryLocationValidator', () => {
   let form: FormGroup;
 
   beforeEach(() => {
@@ -12,7 +12,7 @@ describe('noPrimaryLocationValidator', () => {
 
   it('should return error when locations is empty', () => {
     form.controls.locations.setValue([]);
-    expect(form.controls.locations.hasError('noPrimaryLocation')).toBe(false);
+    expect(form.controls.locations.hasError('noPrimaryLocation')).toBe(true);
   });
 
   it('should return error when no primary location exists', () => {

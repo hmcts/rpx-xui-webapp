@@ -11,12 +11,14 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   styleUrls: ['./staff-adv-filter.component.scss']
 })
 export class StaffAdvFilterComponent implements OnInit, OnDestroy {
-  public filterConfig: FilterConfig;
   public readonly FILTER_NAME = 'staff-advanced-filters';
+  private readonly ERROR_MESSAGE_MIN_ONE_CRITERIA = 'Provide at least one search criteria';
+
+  public filterConfig: FilterConfig;
   private filterSub: Subscription;
   private filterErrorsSub: Subscription;
 
-  @ViewChild(GenericFilterComponent, {static: true}) public genericFilterComponent: GenericFilterComponent;
+  @ViewChild('genericFilterComponent', {static: true}) public genericFilterComponent: GenericFilterComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -166,7 +168,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           if (jobTitle && jobTitle !== 'All') {
             advancedSearchFilters.jobTitle = jobTitle;
           }
-          console.log(advancedSearchFilters);
+
           if (Object.keys(advancedSearchFilters)?.length > 0) {
             this.staffDataFilterService.search({
               advancedSearchFilters,
@@ -176,7 +178,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
             // This makes sure that the error are set only on pressing the search button
           } else if (this.genericFilterComponent.submitted) {
             this.staffDataFilterService.setErrors(
-              [{ name: 'staff-advanced-filter', error: 'Provide at least one search criteria' }]
+              [{ name: this.FILTER_NAME, error: this.ERROR_MESSAGE_MIN_ONE_CRITERIA }]
             );
           }
 

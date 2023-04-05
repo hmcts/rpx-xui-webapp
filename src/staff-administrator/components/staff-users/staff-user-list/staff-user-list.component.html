@@ -27,7 +27,7 @@
           </ng-container>
 
           <ng-container cdkColumnDef="services">
-            <th cdk-header-cell *cdkHeaderCellDef>Services</th>
+            <th cdk-header-cell *cdkHeaderCellDef>Service</th>
             <td cdk-cell *cdkCellDef="let element">
               <div *ngFor="let obj of element.services">
                 {{ obj.service }}
@@ -36,7 +36,7 @@
           </ng-container>
 
           <ng-container cdkColumnDef="locations">
-            <th cdk-header-cell *cdkHeaderCellDef>Locations</th>
+            <th cdk-header-cell *cdkHeaderCellDef>Location</th>
             <td cdk-cell *cdkCellDef="let element">
               <div *ngFor="let obj of element.base_locations">
                 {{ obj.location }}

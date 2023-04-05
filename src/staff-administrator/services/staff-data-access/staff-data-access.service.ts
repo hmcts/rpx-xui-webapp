@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { GroupOption } from '../../../../api/staff-ref-data/models/staff-filter-option.model';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
 import { StaffSearchFilters } from '../../models/staff-search-filters.model';
 import { StaffUserListData } from '../../models/staff-user-list-data.model';
@@ -49,7 +50,7 @@ export class StaffDataAccessService {
   }
 
   public getSkills() {
-    return this.http.get<StaffFilterOption[]>(`${this.API_PATH}/getSkills`);
+    return this.http.get<GroupOption[]>(`${this.API_PATH}/getSkills`);
   }
 
   public fetchUsersById(userIds: string[]) {

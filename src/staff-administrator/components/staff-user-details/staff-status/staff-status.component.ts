@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { StaffUserStatus } from '../../models/staff-user-status.enum';
+import { StaffUserStatus } from '../../../models/staff-user-status.enum';
 
 @Component({
   selector: 'exui-staff-status',

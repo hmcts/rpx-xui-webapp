@@ -125,7 +125,7 @@ export enum DOW {
 export enum DOWUnavailabilityType {
   AM = 'AM',
   PM = 'PM',
-  ALL = 'ALL',
+  ALL_DAY = 'All Day'
 }
 
 export enum HearingCategory {

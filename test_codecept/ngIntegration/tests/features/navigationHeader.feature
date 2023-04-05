@@ -16,7 +16,6 @@ Feature: Navigation header tabs
       
         # Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         # Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA" allow empty service
-        #     | roleName    | task-supervisor |
         #     | substantive | Y               |
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -25,9 +24,6 @@ Feature: Navigation header tabs
             | SSCS         | Asylum   | Y           | CASE     | 1234567812345671 |
 
         Given I start MockApp
-        Given I navigate to home page
-        Then I log LD feature toggle values
-            | name          |
             | mc-menu-items |
             | mc-menu-theme |
         Then I validate header displayed for user type "<roleType>"

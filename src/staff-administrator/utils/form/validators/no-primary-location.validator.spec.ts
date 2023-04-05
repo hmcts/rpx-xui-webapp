@@ -1,7 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { noPrimaryLocationValidator } from './no-primary-location.validator';
 
-fdescribe('noPrimaryLocationValidator', () => {
+describe('noPrimaryLocationValidator', () => {
   let form: FormGroup;
 
   beforeEach(() => {

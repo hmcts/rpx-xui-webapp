@@ -1798,6 +1798,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@circlon/angular-tree-component@npm:^11.0.0":
+  version: 11.0.4
+  resolution: "@circlon/angular-tree-component@npm:11.0.4"
+  dependencies:
+    mobx: ~4.14.1
+    tslib: ^2.0.0
+  peerDependencies:
+    "@angular/common": ">=11.0.0"
+    "@angular/core": ">=11.0.0"
+  checksum: bbadb1231b7422fa829da9afb10f0fa31a770c4c860e9aafec697260e47705d5b6c0e46dee3913fe0d1a8308ac0f19c4c0aaa9c27a956ecf1e37bee62723d2aa
+  languageName: node
+  linkType: hard
+
 "@colors/colors@npm:1.5.0":
   version: 1.5.0
   resolution: "@colors/colors@npm:1.5.0"
@@ -2045,6 +2058,33 @@ __metadata:
     "@ngrx/store": ^7.4.0
     "@ngrx/store-devtools": ^7.4.0
   checksum: 4328daa91b86ee7e54c4af3d1a58c2f599bb93f93a2ccb7f72bf1548ae5407328f7165d35b74411e2bc22c4eaadb4cd35090d7cef3f1b5e11b3115423351af43
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:2.9.3":
+  version: 2.9.3
+  resolution: "@hmcts/media-viewer@npm:2.9.3"
+  dependencies:
+    "@circlon/angular-tree-component": ^11.0.0
+    "@swimlane/ngx-datatable": ^19.0.0
+    hammerjs: ^2.0.8
+    mutable-div: 0.0.11
+    pdfjs-dist: 2.5.207
+    socket.io-client: ^3.1.1
+    tslib: ^2.0.0
+    uuid: ^3.4.0
+  peerDependencies:
+    "@angular/animations": ^11.2.14
+    "@angular/common": ^11.2.14
+    "@angular/core": ^11.2.14
+    "@angular/forms": ^11.2.14
+    "@angular/material": ^11.2.14
+    "@angular/platform-browser": ^11.2.14
+    "@ngrx/effects": ^11.0.0
+    "@ngrx/router-store": ^11.0.0
+    "@ngrx/store": ^11.0.0
+    "@ngrx/store-devtools": ^11.0.0
+  checksum: d6702c0141da24cd7ebaecb5764f5f6eae825cdcd4633c06cfb5d613b314dac4ba899292be9543a8b359f48091f78d36e5ea58bfc050afc5f0947bdedc06a628
   languageName: node
   linkType: hard
 
@@ -3004,6 +3044,20 @@ __metadata:
     "@angular/platform-browser": <9.0.0
     rxjs: ^6.5.2
   checksum: 4299a289174fb7d1a82131cb13f6efe073fc67a8d1cd76bb3ef2df95d6885a9c12dee3582cd346e329890245f5a588c02a43fe50a95a52c46f8e7cba8c4250bc
+  languageName: node
+  linkType: hard
+
+"@swimlane/ngx-datatable@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@swimlane/ngx-datatable@npm:19.0.0"
+  dependencies:
+    tslib: ^2.0.0
+  peerDependencies:
+    "@angular/common": ^11.0.2
+    "@angular/core": ^11.0.2
+    "@angular/platform-browser": ^11.0.2
+    rxjs: ^6.6.3
+  checksum: 34a3a7568b0c82caed1fd226ba37344c4cf6897244bf03dfcb9e94cd08e3838977fdba48464fdc89e0336d94d6ec4d5c3f281eb192dffde468f935df187ae858
   languageName: node
   linkType: hard
 
@@ -14685,6 +14739,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mobx@npm:~4.14.1":
+  version: 4.14.1
+  resolution: "mobx@npm:4.14.1"
+  checksum: 0acf79c55fc77310e52b67a8ac9c8a00276c616cff0919bcc7ce7c9494ce97e2bbbc20abd5f75944f2a66a398e1e96b46d06b195f712069eb15305298c1717c1
+  languageName: node
+  linkType: hard
+
 "mocha@npm:^8.1.1":
   version: 8.4.0
   resolution: "mocha@npm:8.4.0"
@@ -18523,7 +18584,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": 6.13.12-duplicate-tabs-2
     "@hmcts/ccpay-web-component": 5.0.10-beta14
     "@hmcts/frontend": 0.0.39-alpha
-    "@hmcts/media-viewer": 2.7.18-RC.3
+    "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 1.8.7-find-persn-by-service

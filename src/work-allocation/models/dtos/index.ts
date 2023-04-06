@@ -172,5 +172,5 @@ export interface TaskSearchParameters {
 
 export interface TaskNamesResponse {
   taskName: string;
-  taskId: number
+  taskId: number;
 }

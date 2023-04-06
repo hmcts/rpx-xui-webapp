@@ -143,7 +143,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // determines whether should use release 3 or release 4 permission logic
     searchRequest.sorting_parameters.find((sort, index) => {
       if (sort.sort_by === 'priority') {
-        searchRequest.sorting_parameters.splice(index, 1)
+        searchRequest.sorting_parameters.splice(index, 1);
       }
     });
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
@@ -163,14 +163,14 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       // TEMPORARY CODE: for next_hearing_date until it is enabled in Task API
       data.tasks.forEach(task => {
         task.hearing_date =
-          new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString()
+          new Date(+new Date() + Math.random() * (new Date(2022, 6, 10) as any - (new Date() as any) )).toString();
       });
       const payload = req.body;
       const sortingParameters = payload.searchRequest.sorting_parameters;
       if (sortingParameters && sortingParameters.length > 0) {
         sortingParameters.forEach( sortParameter => {
           if (sortParameter.sort_by === 'hearing_date') {
-            sortParameter.sort_by = 'caseName'
+            sortParameter.sort_by = 'caseName';
           }
         });
       }

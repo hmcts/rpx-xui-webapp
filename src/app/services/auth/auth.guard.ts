@@ -39,7 +39,7 @@ export class AuthGuard implements CanActivate {
     try {
       return JSON.parse(value);
     } catch (error) {
-      return null
+      return null;
     }
   }
 

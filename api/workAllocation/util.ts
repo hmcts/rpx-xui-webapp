@@ -109,10 +109,10 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
 
 function getLoweredStringList(values: string[]): string[] {
   if (values && values.length > 0) {
-    const newValues = values.map(value  => value.toLocaleLowerCase())
-    return newValues
+    const newValues = values.map(value  => value.toLocaleLowerCase());
+    return newValues;
   }
-  return []
+  return [];
 }
 
 /**
@@ -128,9 +128,9 @@ export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser
   const tasksWithActions: any[] = [];
   tasks.forEach(task => {
     if (task && task.permissions && task.permissions.values) {
-      task.permissions.values = getLoweredStringList(task.permissions.values)
+      task.permissions.values = getLoweredStringList(task.permissions.values);
     }
-  })
+  });
 
   if (tasks) {
     for (const task of tasks) {
@@ -540,7 +540,7 @@ export async function getMyAccessMappedCaseList(roleAssignmentList: RoleAssignme
 }
 
 export function getAccessGrantedRoleAssignments(roleAssignmentList: RoleAssignment[]): RoleAssignment[] {
-  return roleAssignmentList.filter(role => role.roleName === 'specific-access-granted')
+  return roleAssignmentList.filter(role => role.roleName === 'specific-access-granted');
 }
 
 export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery[] {

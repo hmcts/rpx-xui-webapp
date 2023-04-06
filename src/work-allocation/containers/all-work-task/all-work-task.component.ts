@@ -105,11 +105,11 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       }
       if (taskTypeParameter) {
         searchParameters.push(taskTypeParameter);
-      };
+      }
 
       if (taskNameParameter) {
         searchParameters.push(taskNameParameter);
-      };
+      }
 
       const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,

@@ -11,7 +11,7 @@ export class LocationDataService {
   public static locationUrl: string = '/workallocation/location';
   public static fullLocationUrl: string = '/workallocation/full-location';
   public static regionLocationUrl: string = '/workallocation/region-location';
-  public static regionUrl: string = '/workallocation/region'
+  public static regionUrl: string = '/workallocation/region';
   public static allLocationsKey: string = 'allLocations';
   public static regionLocationsKey: string = 'regionLocations';
   public static regionsKey: string = 'regions';

@@ -266,7 +266,7 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
   } else {
     const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
-    locationsByService = {service, locations: locationsByService.locations.concat([location])}
+    locationsByService = {service, locations: locationsByService.locations.concat([location])};
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;

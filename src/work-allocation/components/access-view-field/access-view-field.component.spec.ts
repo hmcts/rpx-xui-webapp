@@ -86,7 +86,7 @@ describe('WorkAllocation', () => {
         reviewerRoleCategory: 'Judicial',
         infoRequiredComment: 'Need more Infomation',
         endDate: '15-01-2022'
-      }
+      };
       fixture.detectChanges();
       wrapper.appComponentRef.viewRejection();
 

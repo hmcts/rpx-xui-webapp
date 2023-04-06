@@ -58,7 +58,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   ) {}
 
   public ngOnInit(): void {
-    this.appStore.dispatch(new fromAppStore.LoadUserDetails());
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     this.isUserCaseManager$ = this.userDetails$.pipe(
       skipWhile(details => !('userInfo' in details)),
@@ -116,9 +115,11 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    return this.userService.getUserDetails().pipe(
-      skipWhile(details => !('userInfo' in details)),
-      map(details => details.userInfo.roles),
+    if(!this.userDetails$){
+      return of(items);
+    }
+    return this.userDetails$.pipe(
+      map(details => details && details.userInfo && details.userInfo.roles),
       map(roles => {
         const i = items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true));
         return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true));

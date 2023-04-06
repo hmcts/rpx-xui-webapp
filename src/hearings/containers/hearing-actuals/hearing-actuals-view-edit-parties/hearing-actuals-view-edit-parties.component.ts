@@ -1,22 +1,21 @@
-import {Component, NgZone, OnDestroy, OnInit, Renderer2} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ValidationErrors} from '@angular/forms';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import { Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import {combineLatest, Subscription} from 'rxjs';
-import {filter, first} from 'rxjs/operators';
+import { combineLatest, Subscription } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
 import {
   ActualDayPartyModel,
   ActualHearingDayModel,
   HearingActualsMainModel,
   PlannedDayPartyModel
 } from '../../../models/hearingActualsMainModel';
-import {HearingActualsStateData} from '../../../models/hearingActualsStateData.model';
-import {HearingChannelEnum} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
+import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
+import { HearingChannelEnum } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
-import {ActualHearingsUtils} from '../../../utils/actual-hearings.utils';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
+import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-actuals-view-edit-parties',
@@ -24,7 +23,6 @@ import {ValidatorsUtils} from '../../../utils/validators.utils';
   templateUrl: './hearing-actuals-view-edit-parties.component.html',
 })
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {
-
   public partyChannels: LovRefDataModel[];
   public hearingRoles: LovRefDataModel[] = [];
   public immutablePartyRoles: LovRefDataModel[] = [];

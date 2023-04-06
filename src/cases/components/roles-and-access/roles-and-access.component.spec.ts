@@ -1,9 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig, AlertService, AuthService, CaseNotifier, CasesService, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import 'mocha';
 import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '..';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
@@ -12,7 +13,6 @@ import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/mode
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessComponent } from './roles-and-access.component';
-import 'mocha';
 
 describe('RolesAndAccessComponent', () => {
   let component: RolesAndAccessComponent;
@@ -21,7 +21,7 @@ describe('RolesAndAccessComponent', () => {
   mockNotifierService.cachedCaseView = {};
   component = new RolesAndAccessComponent(mockNotifierService);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule],
       declarations: [
@@ -303,7 +303,4 @@ describe('RolesAndAccessComponent', () => {
     expect(component.namedExclusions[3].name).toBe('D Test');
   });
 });
-function waitForAsync(arg0: () => void): Mocha.Func {
-  throw new Error('Function not implemented.');
-}
 

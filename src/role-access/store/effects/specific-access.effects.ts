@@ -42,8 +42,7 @@ export class SpecificAccessEffects {
       )
     );
   constructor(
-    private actions$: Actions,
-    private allocateRoleService: AllocateRoleService
-  ) {
-  }
+    private readonly actions$: Actions,
+    private readonly allocateRoleService: AllocateRoleService
+  ) {}
 }

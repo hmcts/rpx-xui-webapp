@@ -1,7 +1,7 @@
-import { Matchers } from '@pact-foundation/pact'
+import { Matchers } from '@pact-foundation/pact';
 
 // tslint:disable-next-line:variable-name
-const { term, string, boolean, eachLike } = Matchers
+const { term, string, boolean, eachLike } = Matchers;
 
 /* tslint:disable:object-literal-sort-keys */
 export default {
@@ -51,5 +51,5 @@ export default {
   "request_object_signing_alg_values_supported": eachLike('ES384'),
   "request_object_encryption_alg_values_supported": eachLike('RSA-OAEP'),
   "rcs_response_signing_alg_values_supported": eachLike('PS384'),
-}
+};
 /* tslint:enable:object-literal-sort-keys */

@@ -2082,12 +2082,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.14.4":
-  version: 6.14.4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.4"
+"@hmcts/ccd-case-ui-toolkit@npm:6.14.4-yarn-3-wa-4":
+  version: 6.14.4-yarn-3-wa-4
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.4-yarn-3-wa-4"
   dependencies:
     tslib: ^2.0.0
-  checksum: 532321a196e6354f0c5f73e9be03736cab05a2d5f7ea0c96749b4c254ab360b4f6d598cd4ad273fc2845f9518b1e214da058ca99b46ba7fe890164ca3c93994f
+  checksum: b038177b194fb8e2464b61ebc6ca0ca485190987681b837107e7a2a6ccdd2176e52b95a1f8d878fbc70b9a04d9aa12f78b882f194a503de6a5a79fdc11897900
   languageName: node
   linkType: hard
 
@@ -2181,15 +2181,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.10-find-location-by-service-code-4":
-  version: 1.8.10-find-location-by-service-code-4
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.10-find-location-by-service-code-4"
+"@hmcts/rpx-xui-common-lib@npm:1.8.7-release-4-yarn-3":
+  version: 1.8.7-release-4-yarn-3
+  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-release-4-yarn-3"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: b74b4af1f83b504153573f5c71bbad6ccf4298ad301c729d11e09a93fd5c081ff4e508038e75bcb879fa541333b40cc5f04bfdfc521830d17a894aa2f183e029
+  checksum: 16d794d53bf25499509c00314d53c0784edcbab7c9eb9335fcdf5b64c25fbb668385a4b03cdb0cb85ba1c354a70c5a447c79e5bc6b89c5a6cfeaa6d489c3971f
   languageName: node
   linkType: hard
 
@@ -18691,13 +18691,13 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.14.4
+    "@hmcts/ccd-case-ui-toolkit": 6.14.4-yarn-3-wa-4
     "@hmcts/ccpay-web-component": 5.0.10-beta14
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 1.8.10-find-location-by-service-code-4
+    "@hmcts/rpx-xui-common-lib": 1.8.7-release-4-yarn-3
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^8.0.0-beta.4
     "@ng-idle/keepalive": ^8.0.0-beta.4

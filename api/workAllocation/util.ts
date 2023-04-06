@@ -16,9 +16,9 @@ import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { exists, reflect } from '../lib/util';
 import {
   TaskPermission,
+  ViewType,
   VIEW_PERMISSIONS_ACTIONS_MATRIX,
-  VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED,
-  ViewType
+  VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED
 } from './constants/actions';
 import { getCaseListPromises } from "./index";
 import { Case, CaseList } from './interfaces/case';

@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -36,7 +36,7 @@ xdescribe('MyAccessComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -65,7 +65,7 @@ xdescribe('MyAccessComponent', () => {
     component = wrapper.appComponentRef;
     // TODO: CAM_BOOKING 0 not neeed
     // component.isPaginationEnabled$ = of(false);
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     const cases: Case[] = getMockCases();
     mockCaseService.searchCase.and.returnValue(of({ cases }));
     mockCaseService.getMyAccess.and.returnValue(of({ cases }));

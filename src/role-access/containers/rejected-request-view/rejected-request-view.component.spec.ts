@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
@@ -23,7 +23,7 @@ describe('RejectedRequestViewComponent', () => {
   const mockAllocateRoleService = jasmine.createSpyObj('allocateRoleService', ['getCaseRolesUserDetails']);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getCaseworkersForServices']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [RejectedRequestViewComponent],
@@ -64,7 +64,7 @@ describe('RejectedRequestViewComponent', () => {
     component.roleCategory = RoleCategory.JUDICIAL;
     mockCaseworkerDataService.getCaseworkersForServices.and.returnValue(of([]));
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
-    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']))
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     fixture.detectChanges();
   });
 
@@ -108,5 +108,4 @@ describe('RejectedRequestViewComponent', () => {
     component = null;
     fixture.destroy();
   });
-
 });

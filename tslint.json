@@ -15,6 +15,11 @@
       true,
       "rxjs/Rx"
     ],
+    "indent": [
+      true,
+      "spaces",
+      2
+    ],
     "interface-name": false,
     "max-classes-per-file": false,
     "max-line-length": [
@@ -94,6 +99,8 @@
     "class-name": { "severity": "warning" },
     "prefer-method-signature": { "severity": "warning" },
     "prefer-template": { "severity": "warning" },
-    "semicolon": { "severity": "warning" }
+    "semicolon": {
+      "severity": "error"
+    }
   }
 }

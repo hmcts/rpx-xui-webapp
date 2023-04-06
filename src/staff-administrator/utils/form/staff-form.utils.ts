@@ -7,12 +7,12 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import { MultipleErrorMessage } from '../../app/models';
+import { GroupOptions } from '@hmcts/rpx-xui-common-lib';
+import { MultipleErrorMessage } from '../../../app/models';
 import {
   StaffAddEditUserFormValidationMessages
-} from '../components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form-validation-messages.enum';
-import { StaffFilterOption } from '../models/staff-filter-option.model';
-import { GroupOptions } from '@hmcts/rpx-xui-common-lib';
+} from '../../components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form-validation-messages.enum';
+import { StaffFilterOption } from '../../models/staff-filter-option.model';
 
 export function minSelectedValidator<T>(min: number): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {

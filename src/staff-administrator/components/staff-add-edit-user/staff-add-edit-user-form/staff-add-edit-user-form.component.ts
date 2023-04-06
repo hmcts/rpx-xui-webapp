@@ -7,7 +7,7 @@ import { map, take, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/staff-add-edit-form.service';
-import { getFormValidationErrorMessages, groupItemsByGroupSize } from '../../../utils/staff-form.utils';
+import { getFormValidationErrorMessages, groupItemsByGroupSize } from '../../../utils/form/staff-form.utils';
 import { StaffAddEditUserFormValidationMessages } from './staff-add-edit-user-form-validation-messages.enum';
 
 @Component({

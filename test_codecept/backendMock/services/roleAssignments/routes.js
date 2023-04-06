@@ -38,7 +38,7 @@ router.delete('/:id', (req,res) => {
 
 
 router.post('/', (req, res) => {
-    res.send(req.body)
+    res.status(201).send(service.addRoleAssignmentResponse(req))
 })
 
 module.exports = router;

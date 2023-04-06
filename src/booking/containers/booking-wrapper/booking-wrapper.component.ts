@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserInfo } from 'src/app/models';
+import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { bookingBackButtonVisibilityStates, bookingCheckVisibilityStates, bookingDateVisibilityStates, bookingHomeVisibilityStates, bookingLocationVisibilityStates } from '../../constants/pageVisibilityStates';
 import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState } from '../../models';
-import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
-import { UserInfo } from 'src/app/models';
+
 @Component({
   selector: 'exui-booking-wrapper',
   templateUrl: './booking-wrapper.component.html',
   styleUrls: ['./booking-wrapper.component.scss']
 })
 export class BookingWrapperComponent implements OnInit {
-
   public backVisibilityStates = bookingBackButtonVisibilityStates;
   public bookingNavigationCurrentState: BookingState;
   public bookingNavigationEvent = BookingNavigationEvent;
@@ -25,7 +25,7 @@ export class BookingWrapperComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService
-  ) { }
+  ) {}
 
   public ngOnInit() {
     this.bookingNavigationCurrentState = BookingState.HOME;

@@ -1,11 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { TaskNameFieldComponent } from './task-name-field.component';
-
 
 @Component({
   template: `<exui-task-name-field [taskName]="taskName" [caseId]='caseId'></exui-task-name-field>`
@@ -17,7 +15,6 @@ class WrapperComponent {
 }
 
 describe('WorkAllocation', () => {
-
   describe('TaskNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const TASK_NAME: string = 'Taskname';
@@ -98,6 +95,5 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });
-
   });
 });

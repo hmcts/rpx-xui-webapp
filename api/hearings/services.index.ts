@@ -1,7 +1,7 @@
-import {HEARINGS_SUPPORTED_JURISDICTIONS} from '../configuration/references';
 import {NextFunction, Response} from 'express';
 import {sendGet, sendPost} from '../common/crudService';
 import {getConfigValue} from '../configuration';
+import {HEARINGS_SUPPORTED_JURISDICTIONS} from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import {EnhancedRequest, JUILogger} from '../lib/models';
 import {DEFAULT_SCREEN_FLOW} from './data/defaultScreenFlow.data';

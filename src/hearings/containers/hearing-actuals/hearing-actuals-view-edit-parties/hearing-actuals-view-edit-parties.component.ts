@@ -25,7 +25,6 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   templateUrl: './hearing-actuals-view-edit-parties.component.html',
 })
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {
-
   public partyChannels: LovRefDataModel[];
   public hearingRoles: LovRefDataModel[] = [];
   public immutablePartyRoles: LovRefDataModel[] = [];

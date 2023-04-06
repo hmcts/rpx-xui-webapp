@@ -32,7 +32,7 @@ export class LocationDataService {
     }
     return this.http.post<LocationsByRegion[]>(`${LocationDataService.regionLocationUrl}`, {serviceIds}).pipe(
       tap(regionLocations => this.sessionStorageService.setItem(LocationDataService.regionLocationsKey, JSON.stringify(regionLocations)))
-    )
+    );
   }
 
   public getSpecificLocations(locationIds: string[], locationServices: string[]): Observable<LocationByEPIMMSModel[]> {

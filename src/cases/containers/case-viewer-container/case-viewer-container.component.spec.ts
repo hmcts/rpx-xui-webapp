@@ -2,6 +2,7 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
@@ -10,11 +11,9 @@ import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { reducers, State } from '../../../app/store';
-import { CaseViewerContainerComponent } from './case-viewer-container.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
+import { CaseViewerContainerComponent } from './case-viewer-container.component';
 
 @Component({
   // tslint:disable-next-line:component-selector

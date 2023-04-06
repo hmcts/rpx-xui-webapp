@@ -6,7 +6,6 @@ import { CaseRole, RoleCategory } from '../models';
 import { TaskRoleAccessResolver } from './task-role-access-resolver';
 
 describe('Task Role Access Resolver', () => {
-
   it('resolves on success', () => {
     const mockCaseRole: CaseRole = {
       name: 'Example case name',
@@ -18,11 +17,11 @@ describe('Task Role Access Resolver', () => {
       actorId: 'actorId',
       actions: null,
       email: null
-    }
+    };
     const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);
     const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseAccessRoles']);
     mockService.getTask.and.returnValue(of({task: getMockTasks()[0]}));
-    mockAllocateRoleService.getCaseAccessRoles.and.returnValue(of([mockCaseRole]))
+    mockAllocateRoleService.getCaseAccessRoles.and.returnValue(of([mockCaseRole]));
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     const taskRoleAccessResolver = new TaskRoleAccessResolver(mockService, mockRouter, mockAllocateRoleService);
     const route = jasmine.createSpyObj('Route', ['']);

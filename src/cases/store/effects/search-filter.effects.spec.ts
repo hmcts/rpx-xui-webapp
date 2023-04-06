@@ -6,11 +6,10 @@ import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
 import { SearchFilterService } from '../../../cases/services';
 import { ApplySearchFilter, ApplySearchFilterFail, ApplySearchFilterForES, ApplySearchFilterSuccess } from '../actions';
 import * as fromSearchFilterEffects from './search-filter.effects';
-import { SearchFilterEffects } from './search-filter.effects';
 
 describe('Pending Organisation Effects', () => {
   let actions$;
-  let effects: SearchFilterEffects;
+  let effects: fromSearchFilterEffects.SearchFilterEffects;
   const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
     'search'
   ]);
@@ -29,7 +28,7 @@ describe('Pending Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.inject(SearchFilterEffects);
+    effects = TestBed.inject(fromSearchFilterEffects.SearchFilterEffects);
 
   });
 

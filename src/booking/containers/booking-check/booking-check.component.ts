@@ -14,8 +14,7 @@ import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/bo
   templateUrl: './booking-check.component.html',
   styleUrls: ['./booking-check.component.scss']
 })
-export class BookingCheckComponent implements OnInit {
-
+export class BookingCheckComponent {
   @Input() public selectedBookingOption: number;
   @Input() public bookingProcess: BookingProcess;
   @Input() public userId: string;
@@ -30,10 +29,7 @@ export class BookingCheckComponent implements OnInit {
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService,
     private readonly windowService: WindowService
-  ) { }
-
-  public ngOnInit() {
-  }
+  ) {}
 
   public onEventTrigger(navEvent: BookingNavigationEvent): void {
     if (navEvent === BookingNavigationEvent.CONFIRM) {
@@ -98,9 +94,9 @@ export class BookingCheckComponent implements OnInit {
     },
     err => {
       if ( err.case === 'createBooking') {
-        CreateBookingHandleError(err, this.router)
+        CreateBookingHandleError(err, this.router);
       } else {
-        RefreshBookingHandleError(err, this.router)
+        RefreshBookingHandleError(err, this.router);
       }
     });
   }

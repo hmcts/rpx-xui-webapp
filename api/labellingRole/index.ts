@@ -1,8 +1,8 @@
-import { setHeaders } from '../lib/proxy';
+import { getConfigValue } from '../configuration';
+import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
-import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
-import { getConfigValue } from '../configuration';
+import { setHeaders } from '../lib/proxy';
 
 export async function createLabellingRole(req: EnhancedRequest,
                                           roleName: string,

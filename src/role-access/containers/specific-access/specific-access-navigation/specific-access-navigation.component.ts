@@ -3,10 +3,10 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
   specificAccessBackButtonVisibilityStates,
-  specicAccessCancelButtonVisibilityStates,
+  specificAccessCancelButtonVisibilityStates,
   specificAccessContinueButtonVisibilityStates,
-  specicAccessReturnToMyTasksButtonVisibilityStates,
-  specicAccessReturnToTasksTabVisibilityStates
+  specificAccessReturnToMyTasksButtonVisibilityStates,
+  specificAccessReturnToTasksTabVisibilityStates
 } from '../../../constants';
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import * as fromFeature from '../../../store';
@@ -16,23 +16,21 @@ import * as fromFeature from '../../../store';
   templateUrl: 'specific-access-navigation.component.html'
 })
 export class SpecificAccessNavigationComponent implements OnInit {
-
   @Output() public eventTrigger = new EventEmitter();
 
   public navigationCurrentState$: Observable<SpecificAccessState>;
 
   public backVisibilityStates = specificAccessBackButtonVisibilityStates;
   public continueButtonVisibilityStates = specificAccessContinueButtonVisibilityStates;
-  public cancelButtonVisibilityStates = specicAccessCancelButtonVisibilityStates;
-  public returnToMyTasksButtonVisibilityStates = specicAccessReturnToMyTasksButtonVisibilityStates;
-  public returnToTasksTabVisibilityStates = specicAccessReturnToTasksTabVisibilityStates;
+  public cancelButtonVisibilityStates = specificAccessCancelButtonVisibilityStates;
+  public returnToMyTasksButtonVisibilityStates = specificAccessReturnToMyTasksButtonVisibilityStates;
+  public returnToTasksTabVisibilityStates = specificAccessReturnToTasksTabVisibilityStates;
 
   public specificAccessNavigationEvent = SpecificAccessNavigationEvent;
 
   constructor(
-    private store: Store<fromFeature.State>,
-  ) {
-  }
+    private readonly store: Store<fromFeature.State>,
+  ) {}
 
   public ngOnInit() {
     this.navigationCurrentState$ = this.store.pipe(select(fromFeature.currentSpecificAccessNavigation));

@@ -13,7 +13,6 @@ import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
-
 @Component({
   selector: 'exui-all-work-tasks',
   templateUrl: 'all-work-task.component.html',
@@ -97,7 +96,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       }
       if (taskTypeParameter) {
         searchParameters.push(taskTypeParameter);
-      };
+      }
       const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [...this.getSortParameter()],

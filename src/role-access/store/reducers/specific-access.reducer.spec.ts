@@ -1,13 +1,10 @@
+import { RoleCategory, SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { AccessReason, DurationType } from '../../models/enums';
-import { Action, RoleCategory, SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
 import * as fromActions from '../actions/specific-access.action';
 import * as fromReducer from './specific-access.reducer';
-import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions/specific-access.action';
 
 describe('Specific Access Reducer', () => {
-
   describe('Actions', () => {
-
     describe('Change Navigation action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.specificAccessInitialState;
@@ -43,7 +40,7 @@ describe('Specific Access Reducer', () => {
         const period = {
           startDate: new Date(),
           endDate: new Date()
-        }
+        };
         const specificAccessStateData: SpecificAccessStateData = {
           state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
           accessReason: AccessReason.APPROVE_REQUEST,
@@ -76,7 +73,7 @@ describe('Specific Access Reducer', () => {
               }
             }
           }
-        }
+        };
         const action = new fromActions.ApproveSpecificAccessRequest({specificAccessStateData, period});
         const specificAccessState = fromReducer.specificAccessReducer(specificAccessStateData, action);
         expect(specificAccessState).toEqual(specificAccessStateData);
@@ -99,8 +96,8 @@ describe('Specific Access Reducer', () => {
           jurisdiction: 'IA',
           roleCategory: RoleCategory.LEGAL_OPERATIONS,
           requestedRole: 'specific-access-legal-ops'
-        }
-        const action: SpecificAccessAction = {type: SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA, payload: specificAccessStateData};
+        };
+        const action: fromActions.SpecificAccessAction = {type: fromActions.SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA, payload: specificAccessStateData};
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
         expect(specificAccessState.state).toEqual(SpecificAccessState.SPECIFIC_ACCESS_REVIEW);
       });
@@ -117,12 +114,11 @@ describe('Specific Access Reducer', () => {
           roleCategory: 'LEGAL_OPERATIONS',
           requestedRole: 'specific-access-legal-operations',
           person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
-          }
+          };
         const action = new fromActions.RequestMoreInfoSpecificAccessRequest(specificAccessData);
         const specificAccessState = fromReducer.specificAccessReducer(specificAccessData, action);
         expect(specificAccessState).toEqual(specificAccessData);
       });
     });
   });
-
 });

@@ -1,3 +1,4 @@
+import { supportsScrollBehavior as cdkSupportsScrollBehavior} from '@angular/cdk/platform';
 import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -8,11 +9,10 @@ import { BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 import * as HandleError from '../utils/booking-error-handler';
 import { BookingCheckComponent } from './booking-check.component';
-import { supportsScrollBehavior as cdkSupportsScrollBehavior} from '@angular/cdk/platform';
 
 export class CdkWrapper {
   public static RefreshBookingHandleError(...args) {
-      return cdkSupportsScrollBehavior.apply(null, args);
+    return cdkSupportsScrollBehavior.apply(null, args);
   }
 }
 describe('BookingCheckComponent', () => {

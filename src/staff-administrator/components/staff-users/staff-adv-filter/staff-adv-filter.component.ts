@@ -32,7 +32,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       id: this.FILTER_NAME,
       fields: [{
         name: 'user-services',
-        title: 'Services',
+        title: 'Service',
         subTitle: 'Search for a service by name',
         options: [
           defaultOption,

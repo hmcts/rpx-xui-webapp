@@ -1,6 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { getMockTasks } from '../../../../work-allocation/tests/utils.spec';
 import { SpecificAccessDuplicateRecordComponent } from './specific-access-duplicate-record.component';
@@ -9,7 +8,7 @@ describe('SpecificAccessDuplicateRecordComponent', () => {
   let component: SpecificAccessDuplicateRecordComponent;
   let fixture: ComponentFixture<SpecificAccessDuplicateRecordComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SpecificAccessDuplicateRecordComponent ],
       imports: [ HttpClientTestingModule ],

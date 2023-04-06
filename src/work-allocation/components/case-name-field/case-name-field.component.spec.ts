@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppConstants } from '../../../app/app.constants';
@@ -17,7 +17,6 @@ class WrapperComponent {
 }
 
 describe('WorkAllocation', () => {
-
   describe('CaseNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_NAME: string = 'Casename';
@@ -118,7 +117,6 @@ describe('WorkAllocation', () => {
       const label: HTMLElement = fixture.debugElement.nativeElement.querySelector('label');
       expect(fixture.debugElement.nativeElement.querySelector('label')).not.toBeNull();
     });
-
   });
 });
 
@@ -133,7 +131,6 @@ class Wrapper1Component {
 }
 
 describe('WorkAllocation', () => {
-
   describe('CaseNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_NAME: string = 'Casename';

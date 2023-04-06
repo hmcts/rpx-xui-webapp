@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { getOptions, getRoleCategoryFromUserRole } from '../../../work-allocation/utils';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
 import { OptionsModel } from '../../../role-access/models/options-model';
+import { getOptions, getRoleCategoryFromUserRole } from '../../../work-allocation/utils';
 import { TaskPermission, TaskRole } from '../../models/tasks';
 
 @Component({
@@ -116,7 +116,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
       if (!roleList.includes(possibleRole.role_category)) {
         roleList.push(possibleRole.role_category.toUpperCase());
       }
-    })
+    });
     return roleList;
   }
 }

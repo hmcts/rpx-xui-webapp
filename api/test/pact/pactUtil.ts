@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from 'axios'
+import axios, {AxiosResponse} from 'axios';
 
 export async function getUsers(path: string) {
   const axiosConfig = {
@@ -7,8 +7,8 @@ export async function getUsers(path: string) {
       'Content-Type': 'application/json',
       'ServiceAuthorization': 'serviceAuthToken',
     },
-  }
-  return  axios.get(path, axiosConfig)
+  };
+  return  axios.get(path, axiosConfig);
 }
 
 export async function getOrganisationDetails(path: string) {
@@ -18,9 +18,8 @@ export async function getOrganisationDetails(path: string) {
       'Content-Type': 'application/json',
       'ServiceAuthorization': 'serviceAuthToken',
     },
-  }
-  const response =  axios.get(path, axiosConfig)
-  return response
+  };
+  return axios.get(path, axiosConfig);
 }
 
 export async function getCaseAssignments(taskUrl: string) {
@@ -31,11 +30,11 @@ export async function getCaseAssignments(taskUrl: string) {
       'Content-Type': 'application/json',
       'ServiceAuthorization': 'ServiceAuthToken',
     },
-  }
+  };
 
-  let response: AxiosResponse
-  response = await axios.get(taskUrl, axiosConfig)
-  return response
+  let response: AxiosResponse;
+  response = await axios.get(taskUrl, axiosConfig);
+  return response;
 
 }
 
@@ -47,11 +46,11 @@ export async function postAssignCasesToUsers(taskUrl: string, payload: any) {
       'Content-Type': 'application/json',
       'ServiceAuthorization': 'ServiceAuthToken',
     },
-  }
+  };
 
-  let response: AxiosResponse
-  response = await axios.post(taskUrl, payload, axiosConfig)
-  return response
+  let response: AxiosResponse;
+  response = await axios.post(taskUrl, payload, axiosConfig);
+  return response;
 
 }
 
@@ -62,27 +61,26 @@ export async function getIdamUsersByEmail(taskUrl: string) {
       'Authorization': 'Bearer some-access-token',
       'Content-Type': 'application/json',
     },
-  }
+  };
 
-  let response: AxiosResponse
-  response = await axios.get(taskUrl, axiosConfig)
-  return response
+  let response: AxiosResponse;
+  response = await axios.get(taskUrl, axiosConfig);
+  return response;
 
 }
 
 export async function getTaskById(taskUrl: string) {
-
   const axiosConfig = {
     headers: {
       Authorization: "Bearer someAuthorizationToken",
       "Content-Type": "application/json",
       ServiceAuthorization: "Bearer someServiceAuthorizationToken",
     },
-  }
+  };
 
-  let response: AxiosResponse
-  response = await axios.get(taskUrl, axiosConfig)
-  return response
+  let response: AxiosResponse;
+  response = await axios.get(taskUrl, axiosConfig);
+  return response;
 }
 
 export async function searchTasks(taskUrl: string, payload: any) {
@@ -92,11 +90,11 @@ export async function searchTasks(taskUrl: string, payload: any) {
       'Content-Type': 'application/json',
       ServiceAuthorization: "Bearer someServiceAuthorizationToken",
     },
-  }
+  };
 
-  let response: AxiosResponse
-  response = await axios.post(taskUrl, payload, axiosConfig)
-  return response
+  let response: AxiosResponse;
+  response = await axios.post(taskUrl, payload, axiosConfig);
+  return response;
 }
 
 export async function markTaskAs(taskUrl: string, taskActionState: string) {
@@ -107,11 +105,11 @@ export async function markTaskAs(taskUrl: string, taskActionState: string) {
       'Content-Type': 'application/json',
       ServiceAuthorization: "Bearer someServiceAuthorizationToken",
     },
-  }
+  };
 
-  let response: AxiosResponse
-  response = await axios.post(taskUrl, null, axiosConfig)
-  return response
+  let response: AxiosResponse;
+  response = await axios.post(taskUrl, null, axiosConfig);
+  return response;
 
 }
 
@@ -121,9 +119,9 @@ export async function assignTaskToUser(taskUrl: string, payLoad: any) {
       Authorization: "Bearer someAuthorizationToken",
       ServiceAuthorization: "Bearer someServiceAuthorizationToken",
     },
-  }
+  };
 
-  let response: AxiosResponse
-  response = await axios.post(taskUrl, payLoad, axiosConfig)
-  return response
+  let response: AxiosResponse;
+  response = await axios.post(taskUrl, payLoad, axiosConfig);
+  return response;
 }

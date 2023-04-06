@@ -11,13 +11,13 @@ import { SessionStorageService } from '../../../app/services/session-storage/ses
 import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
+
 @Component({
   selector: 'exui-booking-home',
   templateUrl: './booking-home.component.html',
   styleUrls: ['./booking-home.component.scss']
 })
 export class BookingHomeComponent implements OnInit, OnDestroy {
-
   @Input() public bookingProcess: BookingProcess;
   @Input() public userId: string;
   @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
@@ -25,7 +25,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public bookingTypeForm: FormGroup;
   public existingBookings: Booking[];
-  private bookings$: Observable<any[]> | any;
   private combineResult$: Observable<any[]> | any;
   private existingBookingsSubscription: Subscription;
   private refreshAssignmentsSubscription: Subscription;
@@ -59,7 +58,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
         }
       },
         err => {
-          this.NavigationErrorHandler(err, this.router)
+          this.NavigationErrorHandler(err, this.router);
         });
     }
   }
@@ -139,6 +138,5 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
         }
       }
     }
-  };
-
+  }
 }

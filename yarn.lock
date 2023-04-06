@@ -2056,12 +2056,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.14.4":
-  version: 6.14.4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.14.4"
+"@hmcts/ccd-case-ui-toolkit@npm:6.13.10-linked-cases-continue-button-validation-v6":
+  version: 6.13.10-linked-cases-continue-button-validation-v6
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.10-linked-cases-continue-button-validation-v6"
   dependencies:
     tslib: ^2.0.0
-  checksum: 532321a196e6354f0c5f73e9be03736cab05a2d5f7ea0c96749b4c254ab360b4f6d598cd4ad273fc2845f9518b1e214da058ca99b46ba7fe890164ca3c93994f
+  checksum: d011f6b3171b284e406687b1e15fb94533904fe4a7979166630ee7be8e23d51e4ee6dd915838ce73b35218338e8a8afe0c2cd4692b3e3027a939c37d957b2ca2
   languageName: node
   linkType: hard
 
@@ -17719,7 +17719,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.14.4
+    "@hmcts/ccd-case-ui-toolkit": 6.13.10-linked-cases-continue-button-validation-v6
     "@hmcts/ccpay-web-component": 5.0.10-beta14
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

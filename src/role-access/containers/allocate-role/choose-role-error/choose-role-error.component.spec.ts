@@ -1,15 +1,14 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ChooseRoleErrorComponent } from './choose-role-error.component';
 
 describe('ChooseRoleErrorComponent', () => {
-
   let component: ChooseRoleErrorComponent;
   let fixture: ComponentFixture<ChooseRoleErrorComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRoleErrorComponent],

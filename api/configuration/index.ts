@@ -1,6 +1,5 @@
 import * as propertiesVolume from '@hmcts/properties-volume';
 import * as config from 'config';
-
 import { proxiedReferences } from './references';
 
 /**

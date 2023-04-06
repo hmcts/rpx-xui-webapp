@@ -109,14 +109,13 @@ export function reducer(
       return {
         ...state,
         decorate16digitCaseReferenceSearchBoxInHeader: action.payload
-      }
+      };
     default:
       return {
         ...state
       };
   }
 }
-
 
 export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;

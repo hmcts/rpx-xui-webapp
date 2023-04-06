@@ -29,6 +29,7 @@ import {
   HttpErrorService,
   HttpService,
   IsCompoundPipe,
+  JurisdictionService,
   LoadingModule,
   NavigationNotifierService,
   OrganisationConverter,
@@ -41,8 +42,7 @@ import {
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule,
-  JurisdictionService
+  WorkbasketFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';

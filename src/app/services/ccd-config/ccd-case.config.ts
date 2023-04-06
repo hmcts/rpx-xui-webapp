@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-
 import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import { AppConfigService } from '../config/configuration.services';

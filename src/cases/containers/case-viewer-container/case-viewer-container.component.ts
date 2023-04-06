@@ -6,14 +6,14 @@ import {select, Store} from '@ngrx/store';
 import {combineLatest, of} from 'rxjs';
 import {Observable} from 'rxjs/Observable';
 import {catchError, map} from 'rxjs/operators';
-import { AllocateRoleService } from '../../../role-access/services';
+import { WAFeatureConfig } from 'src/work-allocation/models/common/service-config.model';
 import {AppUtils} from '../../../app/app-utils';
 import {AppConstants} from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
+import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import {FeatureVariation} from '../../models/feature-variation.model';
 import {Utils} from '../../utils/utils';
-import { WAFeatureConfig } from 'src/work-allocation/models/common/service-config.model';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -69,9 +69,9 @@ export class CaseViewerContainerComponent implements OnInit {
     let requiredFeature = false;
     features.configurations.forEach(serviceConfig => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
-          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2 ? true : false ;
+          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
-    })
+    });
     return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
   }
 

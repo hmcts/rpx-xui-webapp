@@ -1,8 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
-
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
@@ -12,7 +11,7 @@ describe('SpecificAccessDurationComponent', () => {
   let component: SpecificAccessDurationComponent;
   let fixture: ComponentFixture<SpecificAccessDurationComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ExuiCommonLibModule,
@@ -35,7 +34,6 @@ describe('SpecificAccessDurationComponent', () => {
   });
 
   describe('setFormControlRefs', () => {
-
     it('should assign form control objects to component properties as expected', () => {
       const expectedType = 'object';
       expect(typeof component.startDateDayCtrl).toEqual(expectedType);
@@ -45,11 +43,9 @@ describe('SpecificAccessDurationComponent', () => {
       expect(typeof component.endDateMonthCtrl).toEqual(expectedType);
       expect(typeof component.endDateYearCtrl).toEqual(expectedType);
     });
-
   });
 
   describe('resetPreviousErrors', () => {
-
     it('should reset the component properties as expected', () => {
       component.startDateErrorMessage = { isInvalid: true, messages: ['Start date error message'] };
       component.endDateErrorMessage = { isInvalid: true, messages: ['End date error message'] };
@@ -57,11 +53,9 @@ describe('SpecificAccessDurationComponent', () => {
       expect(component.startDateErrorMessage).toEqual({ isInvalid: false, messages: [] });
       expect(component.endDateErrorMessage).toEqual({ isInvalid: false, messages: [] });
     });
-
   });
 
   describe('onDurationChange', () => {
-
     it('should set component properties as expected for duration: 7 Days', () => {
       const duration = DurationType.SEVEN_DAYS;
       component.onDurationChange(duration);
@@ -82,11 +76,9 @@ describe('SpecificAccessDurationComponent', () => {
       expect(component.selectedDuration).toEqual(duration);
       expect(component.anotherPeriod).toEqual(true);
     });
-
   });
 
   describe('selectSpecificAccessDuration', () => {
-
     it('should set the value of selected duration', () => {
       const period = component.getPeriod(DurationType.INDEFINITE);
       const specificAccessState: SpecificAccessStateData = {
@@ -121,15 +113,13 @@ describe('SpecificAccessDurationComponent', () => {
             }
           }
         }
-      }
+      };
       component.selectSpecificAccessDuration(specificAccessState);
       expect(component.selectedDuration).toEqual(DurationType.SEVEN_DAYS);
-    })
-
+    });
   });
 
   describe('selectSpecificAccessDuration with formdata', () => {
-
     it('should set the value of selected duration', () => {
       const period = component.getPeriod(DurationType.INDEFINITE);
       const specificAccessState: SpecificAccessStateData = {
@@ -158,7 +148,7 @@ describe('SpecificAccessDurationComponent', () => {
             }
           }
         }
-      }
+      };
       // fake form group and form control values
       component.startDateDayCtrl = new FormControl(7);
       component.startDateMonthCtrl = new FormControl(7);
@@ -170,12 +160,10 @@ describe('SpecificAccessDurationComponent', () => {
 
       component.selectSpecificAccessDuration(specificAccessState);
       expect(component.selectedDuration).toEqual(DurationType.ANOTHER_PERIOD);
-    })
-
+    });
   });
 
   describe('navigationHandler', () => {
-
     it('should dispatch the expected state', () => {
       // TODO: this will need to be updated when specific access is wired up correctly with state, added to increase code coverage for now
       component.selectedDuration = DurationType.SEVEN_DAYS;
@@ -199,11 +187,11 @@ describe('SpecificAccessDurationComponent', () => {
         component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       }).toThrow(new Error('Invalid period'));
     });
-
   });
 
   describe('getPeriod', () => {
     let date: Date;
+
     beforeEach(() => {
       date = new Date();
     });
@@ -331,12 +319,10 @@ describe('SpecificAccessDurationComponent', () => {
       component.getPeriod(DurationType.ANOTHER_PERIOD);
       expect(component.endDateErrorMessage).toEqual( { isInvalid: true, messages: ['The access end date must be after the access start date']});
     });
-
   });
 
   afterEach(() => {
     component = null;
     fixture.destroy();
   });
-
 });

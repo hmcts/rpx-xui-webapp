@@ -5,7 +5,8 @@ import { GroupOptions, RefDataRegion } from '@hmcts/rpx-xui-common-lib';
 import { map, startWith } from 'rxjs/operators';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
 import { StaffUser } from '../../models/staff-user.model';
-import { buildCheckboxArray, filterItemsByBoolean } from '../../utils/staff-form.utils';
+import { buildCheckboxArray, filterItemsByBoolean } from '../../utils/form/staff-form.utils';
+import { noPrimaryLocationValidator } from '../../utils/form/validators/no-primary-location.validator';
 
 @Injectable()
 export class StaffAddEditFormService {
@@ -31,7 +32,7 @@ export class StaffAddEditFormService {
       email_id: new FormControl(null, [Validators.required, Validators.email]),
       region_id: new FormControl(null, Validators.required),
       services: new FormArray([], Validators.required),
-      base_locations: new FormControl([], Validators.required),
+      base_locations: new FormControl([], [noPrimaryLocationValidator()]),
       user_type: new FormControl(null, Validators.required),
       task_supervisor: new FormControl(false), // Roles heading
       case_allocator: new FormControl(false), // Roles

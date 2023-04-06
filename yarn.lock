@@ -2056,12 +2056,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:6.13.11-linked-reasons-sorting":
-  version: 6.13.11-linked-reasons-sorting
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.11-linked-reasons-sorting"
+"@hmcts/ccd-case-ui-toolkit@npm:6.13.11-linked-reasons-sorting-fix":
+  version: 6.13.11-linked-reasons-sorting-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:6.13.11-linked-reasons-sorting-fix"
   dependencies:
     tslib: ^2.0.0
-  checksum: 307d19c5fcb17ff8c8f938c67ea2cd9d7f04119ac61d547dbc2ed7c357af445b3eb060b10ac5c382e828119d012703cd6b88832349eadcb14950ac7c68a9e0d0
+  checksum: c6d8b4ca4746a82f490f154dbee4dd839d45a2a57d238eac3e19554fbbb4915cf75e3be466bd2e305605b8a13fc2cdb1bbb00f5858b90f75c2d4b0f00c7d97d8
   languageName: node
   linkType: hard
 
@@ -17719,7 +17719,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.2.14
     "@angular/router": ^11.2.14
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 6.13.11-linked-reasons-sorting
+    "@hmcts/ccd-case-ui-toolkit": 6.13.11-linked-reasons-sorting-fix
     "@hmcts/ccpay-web-component": 5.0.10-beta14
     "@hmcts/frontend": 0.0.39-alpha
     "@hmcts/media-viewer": 2.9.3

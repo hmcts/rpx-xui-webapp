@@ -1,60 +1,59 @@
-
 const defaultConfig = {
-    log4JConfig : {
-        "appenders": {
-            "out": {
-                "layout": {
-                    "pattern": "%[%d | %p |%X{catFormatted}|%] %m%n",
-                    "type": "pattern",
-                },
-                "type": "stdout",
-            },
+  log4JConfig : {
+    "appenders": {
+      "out": {
+        "layout": {
+          "pattern": "%[%d | %p |%X{catFormatted}|%] %m%n",
+          "type": "pattern",
         },
-        "categories": {
-            "default": { "appenders": ["out"], "level": "info", },
-        },
+        "type": "stdout",
+      },
     },
-     "maxLogLine": 80,
+    "categories": {
+      "default": { "appenders": ["out"], "level": "info", },
+    },
+  },
+  "maxLogLine": 80,
 };
 export function getSearchTaskOverrides(waTaskAPiUrl) {
-    return {
-        "services.work_allocation.taskApi": waTaskAPiUrl,
-        "waSupportedJurisdictions": 'IA',
-        ...defaultConfig,
-    }
+  return {
+    "services.work_allocation.taskApi": waTaskAPiUrl,
+    "waSupportedJurisdictions": 'IA',
+    ...defaultConfig,
+  };
 }
 
 export function getWorkAllocationAPIOverrides(waTaskAPiUrl) {
-    return {
-        "services.work_allocation.taskApi": waTaskAPiUrl,
-        ...defaultConfig,
-    }
+  return {
+    "services.work_allocation.taskApi": waTaskAPiUrl,
+    ...defaultConfig,
+  };
 }
 
 export function getCaseworkerRefDataAPIOverrides(cwRefApiUrl) {
-    return {
-        "services.case.caseworkerApi": cwRefApiUrl,
-        ...defaultConfig,
-    }
+  return {
+    "services.case.caseworkerApi": cwRefApiUrl,
+    ...defaultConfig,
+  };
 }
 
 export function getLocationsRefDataAPIOverrides(locationRefApiUrl) {
-    return {
-        "services.location_api": locationRefApiUrl,
-        ...defaultConfig,
-    }
+  return {
+    "services.location_api": locationRefApiUrl,
+    ...defaultConfig,
+  };
 }
 
 export function getAccessManagementServiceAPIOverrides(accessManagementAPI) {
-    return {
-        "services.role_assignment.roleApi": accessManagementAPI,
-        ...defaultConfig,
-    }
+  return {
+    "services.role_assignment.roleApi": accessManagementAPI,
+    ...defaultConfig,
+  };
 }
 
 export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
-    return {
-        "services.case.judicialApi": judicialRefApiUrl,
-        ...defaultConfig,
-    }
+  return {
+    "services.case.judicialApi": judicialRefApiUrl,
+    ...defaultConfig,
+  };
 }

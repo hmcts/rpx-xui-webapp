@@ -6,5 +6,5 @@ export interface Booking {
     locationId: string;
     regionId: string;
     userId: string;
-    locationName?: string
+    locationName?: string;
 }

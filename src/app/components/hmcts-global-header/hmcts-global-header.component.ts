@@ -17,7 +17,6 @@ import { UserService } from '../../services/user/user.service';
   styleUrls: ['./hmcts-global-header.component.scss']
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
-
   private static readonly GLOBAL_SEARCH_FEATURE_CONFIG = 'feature-global-search';
 
   @Input() public set showNavItems(value: boolean) {
@@ -56,7 +55,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService,
     private readonly searchService: SearchService
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     this.appStore.dispatch(new fromAppStore.LoadUserDetails());
@@ -147,7 +146,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     if (obs.length === 0) {
       return of(items);
     }
-    return ((obs.length > 1 ? combineLatest(obs[0], combineLatest(obs.slice(1))) : obs[0]) as Observable<any>).pipe(
+    return ((obs.length > 1 ? combineLatest([obs[0], combineLatest(obs.slice(1))]) : obs[0]) as Observable<any>).pipe(
       map(_ => {
         let i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
         i = i || [];

@@ -1,5 +1,5 @@
-import * as express from 'express'
-import { getConfigValue, showFeature } from './index'
+import * as express from 'express';
+import { getConfigValue, showFeature } from './index';
 import {
   FEATURE_ACCESS_MANAGEMENT_ENABLED,
   FEATURE_OIDC_ENABLED,
@@ -17,9 +17,9 @@ import {
 } from './references'
 import { getFormattedSupportedServicesCaseTypes } from './waSupportedServicesCaseTypesHelper'
 
-export const router = express.Router({mergeParams: true})
+export const router = express.Router({mergeParams: true});
 
-router.get('/', uiConfigurationRouter)
+router.get('/', uiConfigurationRouter);
 
 /**
  * UI Configuration Route
@@ -47,4 +47,4 @@ async function uiConfigurationRouter(req, res) {
   })
 }
 
-export default router
+export default router;

@@ -15,7 +15,6 @@ import { WASupportedJurisdictionsService } from '../../../work-allocation/servic
 import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
 
-
 @Component({
   selector: 'exui-case-viewer-container',
   templateUrl: './case-viewer-container.component.html',
@@ -70,9 +69,9 @@ export class CaseViewerContainerComponent implements OnInit {
     let requiredFeature = false;
     features.configurations.forEach(serviceConfig => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
-          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2 ? true : false ;
+          requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
-    })
+    });
     return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
   }
 

@@ -22,7 +22,7 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
     }
     return res.send(rolesByService).status(200);
   } catch (error) {
-      next(error);
+    next(error);
   }
 }
 export async function getSubstantiveRoles(req: EnhancedRequest) {
@@ -58,16 +58,14 @@ export async function getAllRoles(req: EnhancedRequest): Promise<AxiosResponse<R
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/roles`;
   const headers = setHeaders(req);
-  const response: AxiosResponse<Role[]> = await http.get(fullPath, { headers });
-  return response;
+  return await http.get(fullPath, { headers });
 }
 
 export async function getRolesByCaseId(req: EnhancedRequest): Promise<AxiosResponse<Role[]>> {
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/roles`;
   const headers = setHeaders(req);
-  const response: AxiosResponse<Role[]> = await http.get(fullPath, { headers });
-  return response;
+  return await http.get(fullPath, { headers });
 }
 
 function filterRoleAssignments(): (value: Role, index: number, array: Role[]) => unknown {

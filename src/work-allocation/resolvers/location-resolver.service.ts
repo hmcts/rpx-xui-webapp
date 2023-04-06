@@ -78,7 +78,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       if (roleAssignment.jurisdiction && !possibleServices.includes(roleAssignment.jurisdiction)) {
         possibleServices.push(roleAssignment.jurisdiction);
       }
-    })
+    });
     return this.locationService.getLocationsByRegion(possibleServices);
   }
 

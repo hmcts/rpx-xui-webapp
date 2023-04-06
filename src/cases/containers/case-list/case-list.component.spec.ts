@@ -8,10 +8,8 @@ import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { State } from '../../../app/store/reducers';
 import * as converts from '../../converters/case-converter';
 import { CaseListComponent } from './case-list.component';
-
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -325,22 +323,19 @@ describe('CaseListComponent', () => {
   });
 
   describe('onPaginationSubscribeHandler()', () => {
-
     it('should update the components paginationMetadata property, on return of subscription.', async () => {
-
       const paginationMetadata = new PaginationMetadata();
-      paginationMetadata.total_pages_count = 33;
-      paginationMetadata.total_results_count = 811;
+      paginationMetadata.totalPagesCount = 33;
+      paginationMetadata.totalResultsCount = 811;
 
       component.onPaginationSubscribeHandler(paginationMetadata);
 
-      expect(component.paginationMetadata.total_pages_count).toEqual(paginationMetadata.total_pages_count);
-      expect(component.paginationMetadata.total_results_count).toEqual(paginationMetadata.total_results_count);
+      expect(component.paginationMetadata.totalPagesCount).toEqual(paginationMetadata.totalPagesCount);
+      expect(component.paginationMetadata.totalResultsCount).toEqual(paginationMetadata.totalResultsCount);
     });
   });
 
   describe('onToogleHandler()', () => {
-
     it('should update the components showFilter property, on return of toogle subscription.', async () => {
 
       const showFilter = true;
@@ -351,9 +346,7 @@ describe('CaseListComponent', () => {
   });
 
   describe('onFilterSubscriptionHandler()', () => {
-
     it('should update the components jurisdiction property, on return of the filter subscription.', async () => {
-
       const filterResult = [
         { id: 'PROBATE' },
         { id: 'GrantOfRepresentation' },
@@ -371,9 +364,7 @@ describe('CaseListComponent', () => {
   });
 
   describe('onResultsViewHandler()', () => {
-
     it('should set the components resultsArr property on return of subscription.', async () => {
-
       const resultView = {
         columns: [],
         results: [
@@ -390,7 +381,6 @@ describe('CaseListComponent', () => {
     });
 
     it('should set the components resultsArr hasDrafts property on return of subscription is false.', async () => {
-
       const resultView = {
         columns: [],
         results: [
@@ -406,7 +396,6 @@ describe('CaseListComponent', () => {
     });
 
     it('should set the components resultsArr property on return of subscription and then call hasResults.', async () => {
-
       const resultView = {
         columns: [],
         results: [
@@ -423,7 +412,6 @@ describe('CaseListComponent', () => {
   });
 
   describe('caseShareIsVisible', () => {
-
     it('should return true when case share available and jurisdiction is shareable', async () => {
       const result = [
         { canShareCases: true },
@@ -471,17 +459,14 @@ describe('CaseListComponent', () => {
   });
 
   describe('getShareableJurisdictions()', () => {
-
     it('should return shareable jurisdictions.', async () => {
       component.getShareableJurisdictions().subscribe(jurisdictions => {
         expect(jurisdictions).toEqual(['dummy']);
       });
     });
-
   });
 
   describe('setCaseListFilterDefaults()', () => {
-
     it('should set the defaults.', async () => {
       component.jurisdictionsBehaviourSubject$.next([{
         id: 'some id',
@@ -614,6 +599,7 @@ describe('CaseListComponent', () => {
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
       expect(event.selected.caseType).toEqual(data.caseTypeGroupFromLS);
     });
+
     it('form group matches createEvent formgroup.', () => {
       const data = { metadataFieldsGroupFromLS: undefined,
         jurisdictionFromLS: {id: 'PUBLICLAW'},
@@ -635,6 +621,7 @@ describe('CaseListComponent', () => {
 
   describe('Should show share case button', () => {
     let selectedCases: SearchResultViewItem[] = [];
+
     beforeEach(() => {
       selectedCases = [{
         case_id: '1',
@@ -648,10 +635,12 @@ describe('CaseListComponent', () => {
         }
       }];
     });
+
     it('Should receive selected cases', async () => {
       component.retrieveSelections(selectedCases);
       expect(component.selectedCases.length).toEqual(2);
     });
+
     it('Should see the \'Share case\' button greyed out', async () => {
       selectedCases = [];
       component.retrieveSelections(selectedCases);
@@ -667,14 +656,17 @@ describe('CaseListComponent', () => {
       expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share Case');
       expect(component.checkIfButtonDisabled()).toBeTruthy();
     });
+
     it('Share a case button is selectable when any case is selected', () => {
       component.retrieveSelections(selectedCases);
       expect(component.checkIfButtonDisabled()).toBeFalsy();
     });
+
     it('Should save share cases to store when selection is changed', () => {
       component.retrieveSelections(selectedCases);
       expect(spyOnDispatchToStore).toHaveBeenCalled();
     });
+
     it('Should save share cases to store', () => {
       component.retrieveSelections(selectedCases);
       const shareCases = {
@@ -684,6 +676,7 @@ describe('CaseListComponent', () => {
       expect(spyOnDispatchToStore).toHaveBeenCalled();
       expect(component.checkIfButtonDisabled()).toBeFalsy();
     });
+
     afterEach(() => {
       selectedCases = [];
     });
@@ -702,6 +695,7 @@ describe('CaseListComponent', () => {
         }]
       }]));
     });
+
     it('should see why are some cases unselectable', async () => {
       const resultView = {
         columns: [],
@@ -769,7 +763,6 @@ describe('CaseListComponent', () => {
   });
 
   describe('sort()', () => {
-
     it('should update sortParameters', () => {
       const sortParameters = {
         column: 'dummy',
@@ -782,5 +775,4 @@ describe('CaseListComponent', () => {
       expect(component.sortParameters).toEqual(sortParameters);
     });
   });
-
 });

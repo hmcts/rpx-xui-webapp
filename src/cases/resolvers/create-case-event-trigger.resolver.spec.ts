@@ -4,7 +4,6 @@ import { CreateCaseEventTriggerResolver } from './create-case-event-trigger.reso
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CreateCaseFieldsResolver', () => {
-
   const PARAM_JURISDICTION_ID = CreateCaseEventTriggerResolver.PARAM_JURISDICTION_ID;
   const PARAM_CASE_TYPE_ID = CreateCaseEventTriggerResolver.PARAM_CASE_TYPE_ID;
   const PARAM_EVENT_ID = CreateCaseEventTriggerResolver.PARAM_EVENT_ID;
@@ -57,6 +56,7 @@ describe('CreateCaseFieldsResolver', () => {
     });
 
     route.queryParamMap.get.and.callFake(key => {
+      // tslint:disable-next-line:switch-default
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;
@@ -128,6 +128,7 @@ describe('CreateCaseFieldsResolver', () => {
 
   it('should use draftId when resuming create event ', () => {
     route.queryParamMap.get.and.callFake(key => {
+      // tslint:disable-next-line:switch-default
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;

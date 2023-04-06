@@ -23,8 +23,6 @@ import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTas
 import { TaskTypesService } from '../../services/task-types.service';
 import { locationWithinRegion, servicesMap } from '../../utils';
 
-
-
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
   description: 'At least one location is required',
@@ -357,14 +355,14 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         if (!services.length) {
           return;
         }
-        if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some(p => p.jurisdiction != undefined)) {
+        if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some(p => p.jurisdiction !== undefined)) {
           return;
         }
         const filteredServices = _.intersection.apply(_, [
           userDetails.roleAssignmentInfo
             .filter(p => p.roleType && p.roleType === 'ORGANISATION')
             .map(item => item.jurisdiction)
-            .filter((value, index, self) => self.indexOf(value) === index && value != undefined),
+            .filter((value, index, self) => self.indexOf(value) === index && value !== undefined),
           services
         ]);
         const field: FilterFieldConfig = {

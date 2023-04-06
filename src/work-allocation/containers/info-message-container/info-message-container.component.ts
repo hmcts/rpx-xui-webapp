@@ -3,24 +3,21 @@ import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InformationMessage } from '../../models/comms';
 
-
 @Component({
   selector: 'exui-info-message-container',
   templateUrl: './info-message-container.component.html'
 })
 export class InfoMessageContainerComponent implements OnInit {
-
   public showInfoMessage: boolean = false;
   public infoMessages: InformationMessage[];
   public lastMessage: InformationMessage;
   private currentUrl: string;
-  private excludeUrls = ['#manage', 'role-access'];
+  private readonly excludeUrls = ['#manage', 'role-access'];
 
   constructor(
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService
-  ) {
-  }
+  ) {}
 
   /**
    * Flag to indicate whether or not messages should be retained at

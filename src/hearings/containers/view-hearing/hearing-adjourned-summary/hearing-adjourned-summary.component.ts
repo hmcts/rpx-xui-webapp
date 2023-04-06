@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
 
 @Component({

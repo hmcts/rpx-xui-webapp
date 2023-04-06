@@ -9,7 +9,6 @@ import { State } from '../store';
 import { IsPaperHearingAmendedConverter } from './is-paper-hearing.amended.converter';
 
 describe('IsPaperHearingAmendedConverter', () => {
-
   let converter: IsPaperHearingAmendedConverter;
   let store: Store<any>;
   let router: any;
@@ -30,8 +29,8 @@ describe('IsPaperHearingAmendedConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
-    router = TestBed.get(ActivatedRoute);
+    store = TestBed.inject(Store);
+    router = TestBed.inject(ActivatedRoute);
     converter = new IsPaperHearingAmendedConverter();
   });
 

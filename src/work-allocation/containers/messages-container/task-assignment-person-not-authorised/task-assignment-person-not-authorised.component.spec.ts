@@ -8,7 +8,7 @@ import { TaskAssignmentPersonNotAuthorisedComponent } from './task-assignment-pe
 describe('TaskAssignmentPersonNotAuthorised', () => {
   let component: TaskAssignmentPersonNotAuthorisedComponent;
   let fixture: ComponentFixture<TaskAssignmentPersonNotAuthorisedComponent>;
-  let mockRouter;
+  let mockRouter: any;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

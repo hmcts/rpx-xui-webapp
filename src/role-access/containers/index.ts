@@ -1,9 +1,9 @@
 import * as addExclusionContainers from './add-exclusion';
 import * as allocateRoleContainers from './allocate-role';
-import * as specificAccessContainers from './specific-access';
 import { DeleteExclusionComponent } from './delete-exclusion/delete-exclusion.component';
-import { RemoveRoleComponent } from './remove-role/remove-role.component';
 import { RejectedRequestViewComponent } from './rejected-request-view/rejected-request-view.component';
+import { RemoveRoleComponent } from './remove-role/remove-role.component';
+import * as specificAccessContainers from './specific-access';
 
 export const containers: any[] = [
   ...addExclusionContainers.containers,

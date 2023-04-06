@@ -13,7 +13,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './specific-access-information.component.html'
 })
 export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
-
   @Input() public navEvent: SpecificAccessNavigation;
   @Input() public title = 'Request more information';
   @Input() public caption = 'Reject specific access request';
@@ -30,10 +29,10 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   public controlName = 'infoCtrl';
   public submitted: boolean = true;
   public specificAccessBody: SpecificAccessStateData;
-  private  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
+  private readonly rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
 
-  constructor(public readonly store: Store<fromFeature.State>, private readonly fb: FormBuilder) {
-  }
+  constructor(public readonly store: Store<fromFeature.State>,
+              private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
     this.submitted = false;
@@ -60,7 +59,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
           roleCategory: specificAccessState.roleCategory,
           requestCreated: specificAccessState.requestCreated,
           person: {id: specificAccessState.actorId, name: null, domain: null},
-        }
+        };
       }
     });
   }

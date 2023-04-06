@@ -28,8 +28,8 @@ export class LocationResolver implements Resolve<LocationModel[]> {
   private userRole: string;
   private readonly bookableServices: string[] = [];
   private userId: string;
-  private locations: Location[] = [];
-  private locationServices = new Set<string>();
+  private readonly locations: Location[] = [];
+  private readonly locationServices = new Set<string>();
 
   constructor(
     private readonly store: Store<fromCaseList.State>,
@@ -75,7 +75,7 @@ export class LocationResolver implements Resolve<LocationModel[]> {
       if (roleAssignment.jurisdiction && !possibleServices.includes(roleAssignment.jurisdiction)) {
         possibleServices.push(roleAssignment.jurisdiction);
       }
-    })
+    });
     return this.locationService.getLocationsByRegion(possibleServices);
   }
 

@@ -93,13 +93,13 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         ...currentState,
         roles: action.payload.roles,
         state: AllocateRoleState.CHOOSE_ROLE
-      }
+      };
     }
     case AllocateRoleActionTypes.NO_ROLES_FOUND: {
       return {
         ...currentState,
         state: AllocateRoleState.NO_ROLES_FOUND
-      }
+      };
     }
     default: {
       return {

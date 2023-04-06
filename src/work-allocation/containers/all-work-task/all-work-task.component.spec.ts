@@ -7,11 +7,10 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
-import { AppConstants } from '../../../app/app.constants';
 import { TaskListComponent } from '..';
+import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import * as fromActions from '../../../app/store';
-import { reducers } from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { TaskContext } from '../../../work-allocation/enums';
@@ -29,10 +28,12 @@ import { AllWorkTaskComponent } from './all-work-task.component';
 class WrapperComponent {
   @ViewChild(AllWorkTaskComponent) public appComponentRef: AllWorkTaskComponent;
 }
+
 @Component({
   template: `<div>Nothing</div>`
 })
 class NothingComponent { }
+
 @Component({
   selector: 'exui-task-field',
   template: '<div class="xui-task-field">{{task.taskName}}</div>'
@@ -41,6 +42,7 @@ class TaskFieldComponent {
   @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
+
 const USER_DETAILS = {
   canShareCases: true,
   userInfo: {
@@ -59,6 +61,7 @@ const USER_DETAILS = {
     }
   ]
 };
+
 xdescribe('AllWorkTaskComponent', () => {
   let component: AllWorkTaskComponent;
   let wrapper: WrapperComponent;
@@ -76,6 +79,7 @@ xdescribe('AllWorkTaskComponent', () => {
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   let store: Store<fromActions.State>;
+
   beforeEach(waitForAsync(() => {
     storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     storeMock.pipe.and.returnValue(of(USER_DETAILS));
@@ -86,7 +90,7 @@ xdescribe('AllWorkTaskComponent', () => {
         RouterTestingModule,
         WorkAllocationComponentsModule,
         PaginationModule,
-        StoreModule.forRoot({ ...reducers }),
+        StoreModule.forRoot({ ...fromActions.reducers }),
       ],
       declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent],
       providers: [
@@ -104,6 +108,7 @@ xdescribe('AllWorkTaskComponent', () => {
       ]
     }).compileComponents();
   }));
+
   beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);
     store = TestBed.inject(Store);
@@ -122,27 +127,27 @@ xdescribe('AllWorkTaskComponent', () => {
         return of({
           configurations: [
             {
-                caseTypes: [
-                    'Asylum'
-                ],
-                releaseVersion: '3.5',
-                serviceName: 'IA'
+              caseTypes: [
+                'Asylum'
+              ],
+              releaseVersion: '3.5',
+              serviceName: 'IA'
             },
             {
-                caseTypes: [
-                    'PRIVATELAW',
-                    'PRLAPPS'
-                ],
-                releaseVersion: '2.1',
-                serviceName: 'PRIVATELAW'
+              caseTypes: [
+                'PRIVATELAW',
+                'PRLAPPS'
+              ],
+              releaseVersion: '2.1',
+              serviceName: 'PRIVATELAW'
             },
             {
-                caseTypes: [
-                    'CIVIL',
-                    'GENERALAPPLICATION'
-                ],
-                releaseVersion: '2.1',
-                serviceName: 'CIVIL'
+              caseTypes: [
+                'CIVIL',
+                'GENERALAPPLICATION'
+              ],
+              releaseVersion: '2.1',
+              serviceName: 'CIVIL'
             }
         ]
         });
@@ -155,6 +160,7 @@ xdescribe('AllWorkTaskComponent', () => {
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     fixture.detectChanges();
   });
+
   it('getSearchTaskRequestPagination caseworker', () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
       id: 'someId',
@@ -170,6 +176,7 @@ xdescribe('AllWorkTaskComponent', () => {
     expect(searchRequest.request_context).toEqual(TaskContext.ALL_WORK);
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
+
   it('getSearchTaskRequestPagination judge', () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
       id: 'someId',
@@ -185,6 +192,7 @@ xdescribe('AllWorkTaskComponent', () => {
     expect(searchRequest.request_context).toEqual(TaskContext.ALL_WORK);
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
+
   it('should correctly get filter selections', () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
       id: 'someId',
@@ -206,6 +214,7 @@ xdescribe('AllWorkTaskComponent', () => {
     expect(searchRequest.search_parameters).toContain({ key: 'role_category', operator: 'IN', values: ['JUDICIAL'] });
     // expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'IN', values: ['High']});
   });
+
   it('should show judicial names when available', () => {
     const firstMockTask = component.tasks[0];
     const secondMockTask = component.tasks[1];
@@ -214,10 +223,12 @@ xdescribe('AllWorkTaskComponent', () => {
     expect(secondMockTask.assignee).toBe(null);
     expect(secondMockTask.assigneeName).toBe('Sir Testing');
   });
+
   afterEach(() => {
     component.ngOnDestroy();
   });
 });
+
 [
   { statusCode: 403, routeUrl: '/not-authorised' },
   { statusCode: 401, routeUrl: '/not-authorised' },
@@ -241,6 +252,7 @@ xdescribe('AllWorkTaskComponent', () => {
     const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
     let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
     let store: Store<fromActions.State>;
+
     beforeEach(waitForAsync(() => {
       storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
       storeMock.pipe.and.returnValue(of(USER_DETAILS));
@@ -256,27 +268,27 @@ xdescribe('AllWorkTaskComponent', () => {
           return of({
             configurations: [
               {
-                  caseTypes: [
-                      'Asylum'
-                  ],
-                  releaseVersion: '3.5',
-                  serviceName: 'IA'
+                caseTypes: [
+                  'Asylum'
+                ],
+                releaseVersion: '3.5',
+                serviceName: 'IA'
               },
               {
-                  caseTypes: [
-                      'PRIVATELAW',
-                      'PRLAPPS'
-                  ],
-                  releaseVersion: '2.1',
-                  serviceName: 'PRIVATELAW'
+                caseTypes: [
+                  'PRIVATELAW',
+                  'PRLAPPS'
+                ],
+                releaseVersion: '2.1',
+                serviceName: 'PRIVATELAW'
               },
               {
-                  caseTypes: [
-                      'CIVIL',
-                      'GENERALAPPLICATION'
-                  ],
-                  releaseVersion: '2.1',
-                  serviceName: 'CIVIL'
+                caseTypes: [
+                  'CIVIL',
+                  'GENERALAPPLICATION'
+                ],
+                releaseVersion: '2.1',
+                serviceName: 'CIVIL'
               }
           ]
           });
@@ -292,7 +304,7 @@ xdescribe('AllWorkTaskComponent', () => {
           RouterTestingModule,
           WorkAllocationComponentsModule,
           PaginationModule,
-          StoreModule.forRoot({ ...reducers }),
+          StoreModule.forRoot({ ...fromActions.reducers }),
           RouterTestingModule.withRoutes(
             [
               { path: 'service-down', component: NothingComponent },
@@ -327,12 +339,10 @@ xdescribe('AllWorkTaskComponent', () => {
     it(`onPaginationEvent with error response code ${scr.statusCode}`, () => {
       const navigateSpy = spyOn(router, 'navigate');
       component.getSearchTaskRequestPagination();
-      const searchRequest = component.onPaginationEvent(1);
-      const payload = { searchRequest, view: component.view, refined: false, currentUser: undefined };
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
-
     });
+
     afterEach(() => {
       fixture.destroy();
     });

@@ -1,9 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-
 import { PERSON_ERROR_MESSAGE } from '../../../constants';
 import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
@@ -25,8 +24,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
   public services: string;
   public assignedUser: string;
 
-  constructor(private readonly store: Store<fromFeature.State>) {
-  }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
     this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setPerson(exclusion));

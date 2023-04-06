@@ -136,10 +136,10 @@
             Locations
           </h2>
         </legend>
-        <p *ngIf="submitted && form.get('base_locations')?.errors?.required" id="location-required-error"
+        <p *ngIf="submitted && form.get('base_locations')?.errors?.noPrimaryLocation" id="location-required-error"
            class="govuk-error-message">
               <span
-                class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['base_locations.required'] }}
+                class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['base_locations.noPrimaryLocation'] }}
         </p>
       </legend>
 

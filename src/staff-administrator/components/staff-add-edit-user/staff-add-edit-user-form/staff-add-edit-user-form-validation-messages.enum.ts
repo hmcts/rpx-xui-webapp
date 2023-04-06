@@ -5,7 +5,7 @@ export enum StaffAddEditUserFormValidationMessages {
   'email_id.email' = 'Enter an email address in the correct format, like name@example.com',
   'region_id.required' = 'Select a region',
   'services.minlength' = 'Select at least one service',
-  'base_locations.required' = 'Select at least one location',
+  'base_locations.noPrimaryLocation' = 'Select at least one primary location',
   'user_type.required' = 'Select a user type',
   'roles.minlength' = 'Select at least one job title'
 }

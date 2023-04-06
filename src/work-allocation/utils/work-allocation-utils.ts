@@ -105,11 +105,11 @@ export const getAllCaseworkersFromServices = (caseworkersByService: CaseworkersB
     allCaseworkers = allCaseworkers.concat(caseworkerListByService.caseworkers);
   });
   return allCaseworkers;
-}
+};
 
 export const getCaseworkerSessionStorageKeyForServiceId = (serviceId: string): string => {
   return `${serviceId}-caseworkers`;
-}
+};
 
 export const getCaseworkers = (serviceId: string, sessionStorageService: ISessionStorageService): Caseworker[] => {
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
@@ -117,12 +117,12 @@ export const getCaseworkers = (serviceId: string, sessionStorageService: ISessio
   if (value) {
     return JSON.parse(value) as Caseworker[];
   }
-}
+};
 
 export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], sessionStorageService: ISessionStorageService): void => {
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
-}
+};
 
 export const getAssigneeName = (caseworkers: any [], assignee: string): string => {
   if (assignee && caseworkers && caseworkers.some(cw => cw.idamId === assignee)) {
@@ -193,7 +193,7 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
     case RoleCategory.CTSC:
       return PersonRole.CTSC;
     default:
-      throw new Error('Invalid roleCategory ' + roleCategory);
+      throw new Error(`Invalid roleCategory ${roleCategory}`);
   }
 }
 
@@ -268,7 +268,7 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
   } else {
     const finalDataWithoutService = locationsByServices.filter(serviceLocations => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
-    locationsByService = {service, locations: locationsByService.locations.concat([location]), bookable}
+    locationsByService = {service, locations: locationsByService.locations.concat([location]), bookable};
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   }
   return locationsByServices;
@@ -288,6 +288,6 @@ export function locationWithinRegion(regionLocations: LocationsByRegion[], regio
         return withinRegion;
       }
     }
-  })
+  });
   return withinRegion;
 }

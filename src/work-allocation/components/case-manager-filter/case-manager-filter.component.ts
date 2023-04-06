@@ -138,6 +138,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelectedError: null,
       domainField: 'role',
       type: 'find-person',
+      userIncluded: true,
       title: 'Person',
       subTitle: 'Search for a person',
       lineBreakBefore: true,

@@ -4,7 +4,6 @@ import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
-
 import { metaReducers } from '../../app/app.module';
 import { UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
@@ -17,7 +16,6 @@ import { CaseworkerDataService, LocationDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
 
 describe('LocationResolver', () => {
-
   let caseworkerDataService: CaseworkerDataService;
   let judicialWorkerDataService: AllocateRoleService;
   let locationService: LocationDataService;
@@ -297,12 +295,11 @@ describe('LocationResolver', () => {
   });
 
   it('should get locations by region', () => {
-    const service: LocationResolver = TestBed.get(LocationResolver);
+    const service: LocationResolver = TestBed.inject(LocationResolver);
     spyOn(locationService, 'getLocationsByRegion').and.returnValue(of([]));
     service.getRegionLocations(CASE_WORKER);
     expect(locationService.getLocationsByRegion).toHaveBeenCalledWith(['IA']);
   });
-
 
   it('resolves caseworkers location', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(store, 'pipe').and.returnValue(of(CASE_WORKER));
@@ -380,5 +377,4 @@ describe('LocationResolver', () => {
     expect(service.getJudicialWorkersOrCaseWorkers(locationsByRegion, CASE_WORKER_SHOULD_HAVE_ALL_LOCATIONS)).toEqual(expectedLocation);
     expect(sessionStorageService.setItem).toHaveBeenCalledWith('userLocations', '[]');
   }));
-
 });

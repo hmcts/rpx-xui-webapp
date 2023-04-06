@@ -28,9 +28,8 @@ describe('Search Service', () => {
         SearchService
       ]
     });
-    // Note: TestBed.get() is deprecated in favour of TestBed.inject() (type-safe) from Angular 9
-    service = TestBed.get(SearchService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(SearchService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

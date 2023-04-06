@@ -11,7 +11,6 @@ import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { SharedModule } from '../../../app/shared/shared.module';
 import * as fromCaseCreate from '../../store/reducers';
-import { reducers } from '../../store/reducers';
 import * as fromCases from '../../store/reducers/';
 import { CaseFilterComponent } from './case-filter.component';
 
@@ -29,7 +28,7 @@ describe('Case Filter Component', () => {
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
+        StoreModule.forRoot({ ...fromCases.reducers, cases: combineReducers(fromCases.reducers) }),
         HttpClientTestingModule,
         SharedModule,
         SearchFiltersModule,

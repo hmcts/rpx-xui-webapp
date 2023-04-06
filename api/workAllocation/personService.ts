@@ -27,7 +27,7 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
   serviceRefDataMapping.forEach(serviceRef => {
     if (services.includes(serviceRef.service)) {
       serviceRef.serviceCodes.forEach(serviceRefserviceCodes => {
-        serviceCodes.push(serviceRefserviceCodes)
+        serviceCodes.push(serviceRefserviceCodes);
       });
     }
   });

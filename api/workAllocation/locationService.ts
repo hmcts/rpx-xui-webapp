@@ -9,8 +9,7 @@ import { prepareGetLocationsUrl } from './util';
 
 export async function handleLocationGet(fullPath: string, req: EnhancedRequest): Promise<AxiosResponse<any>> {
   const headers = setHeaders(req);
-  const response = await http.get<any>(fullPath, { headers });
-  return response;
+  return await http.get<any>(fullPath, { headers });
 }
 
 export async function commonGetFullLocation(req: EnhancedRequest) {
@@ -81,12 +80,12 @@ export async function getRegionLocationsForServices(req: EnhancedRequest) {
     response.data.court_venues.forEach(courtVenue => {
       if (!regions.includes(courtVenue.region_id)) {
         regions.push(courtVenue.region_id);
-        regionLocations.push({regionId: courtVenue.region_id, locations: [courtVenue.epimms_id]})
+        regionLocations.push({regionId: courtVenue.region_id, locations: [courtVenue.epimms_id]});
       } else {
         regionLocations.find(locationList =>
            locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
       }
-    })
+    });
   }
   return regionLocations;
 }

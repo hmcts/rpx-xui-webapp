@@ -52,7 +52,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
     this.hearingLinksSub = this.hearingsService.loadCaseLinkingReasonCodes().pipe(
       switchMap(reasons => {
         this.caseLinkingReasons = reasons;
-        return this.hearingStore.pipe(select(fromHearingStore.getHearingLinks))
+        return this.hearingStore.pipe(select(fromHearingStore.getHearingLinks));
       })
     ).subscribe({
       next: (hearingLinks: HearingLinksStateData) => {

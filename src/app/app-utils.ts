@@ -255,4 +255,18 @@ export class AppUtils {
       && roleAssignmentInfo.some(roleAssignment => 'bookable' in roleAssignment
         && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
   }
+
+  public static isPriorityDateTimePast(newDate: Date, currentDate: Date = new Date()): boolean {
+    return currentDate.getTime() - newDate.getTime() > 0;
+  }
+
+  public static isPriorityDateTimeInNext24Hours(dateTime: Date, currentDate: Date = new Date()): boolean {
+    if (AppUtils.isPriorityDateTimePast(dateTime, currentDate)) {
+      return false;
+    }
+    const msBetweenDates = Math.abs(dateTime.getTime() - currentDate.getTime());
+    const hoursBetweenDates = msBetweenDates / (60 * 60 * 1000);
+    console.log('hoursBetweenDates', hoursBetweenDates)
+    return hoursBetweenDates <= 24;
+  }
 }

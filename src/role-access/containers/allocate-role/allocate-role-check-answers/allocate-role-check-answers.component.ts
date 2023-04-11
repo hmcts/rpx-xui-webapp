@@ -2,8 +2,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { RoleCategory } from '../../../../booking/models';
 import { $enum as EnumUtil } from 'ts-enum-util';
+import { RoleCategory } from '../../../../booking/models';
 import {
   Actions,
   AllocateRoleNavigation,

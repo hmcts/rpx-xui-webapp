@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel } from '../../models/hearingActualsMainModel';
 import { AnswerSource, HearingChannelEnum, HearingDateEnum, HearingResult } from '../../models/hearings.enum';
+import { LovRefDataModel } from '../../models/lovRefData.model';
 import * as fromHearingStore from '../../store';
 
 @Component({

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ErrorMessageComponent } from '@hmcts/ccd-case-ui-toolkit';
@@ -27,7 +27,8 @@ describe('DescribeExclusionComponent', () => {
   component.error = {};
   component.formGroup = formGroup;
   let fixture: ComponentFixture<SpecificAccessInformationComponent>;
-  beforeEach(async(() => {
+
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FormsModule, RouterModule, StoreModule.forRoot({})],
       declarations: [SpecificAccessInformationComponent, ErrorMessageComponent],
@@ -61,7 +62,8 @@ describe('DescribeExclusionComponent', () => {
       roleCategory: 'LEGAL_OPERATIONS',
       requestedRole: 'specific-access-legal-operations',
       person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
-    }
+    };
+
     it('should correctly navigate on click of back link in the navigation handler', () => {
       component.specificAccessBody = specificAccessState ;
       component.infoCtrl = new FormControl('');

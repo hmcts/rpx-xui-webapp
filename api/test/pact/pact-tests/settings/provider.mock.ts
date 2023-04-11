@@ -1,15 +1,14 @@
-import { Pact } from '@pact-foundation/pact'
-import * as path from 'path'
+import { Pact } from '@pact-foundation/pact';
+import * as path from 'path';
 
 export interface PactTestSetupConfig {
-  provider: string
-  port: number
+  provider: string;
+  port: number;
 }
 
 export class PactTestSetup {
-
-  provider: Pact
-  port: number
+  provider: Pact;
+  port: number;
 
   constructor(config: PactTestSetupConfig) {
     this.provider = new Pact({
@@ -21,6 +20,6 @@ export class PactTestSetup {
       port: this.port,
       provider: config.provider,
       spec: 2,
-    })
+    });
   }
 }

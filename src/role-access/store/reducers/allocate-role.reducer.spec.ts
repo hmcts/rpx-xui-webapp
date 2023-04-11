@@ -3,7 +3,6 @@ import * as fromActions from '../actions/allocate-role.action';
 import * as fromReducer from './allocate-role.reducer';
 
 describe('Allocate Role Reducer', () => {
-
   describe('Actions', () => {
     const STATE_DATA = {
       caseId: '111111',
@@ -51,7 +50,7 @@ describe('Allocate Role Reducer', () => {
       });
 
       it('should go to choose role if there are roles', () => {
-        const mockRoles: Role[] = [{roleId: 'test-role', roleName: 'Test role'}]
+        const mockRoles: Role[] = [{roleId: 'test-role', roleName: 'Test role'}];
         const initialState = fromReducer.allocateRoleInitialState;
         const action = new fromActions.LoadRolesComplete({roles: mockRoles});
         const state = fromReducer.allocateRoleReducer(initialState, action);
@@ -108,5 +107,4 @@ describe('Allocate Role Reducer', () => {
       });
     });
   });
-
 });

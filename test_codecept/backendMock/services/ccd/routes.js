@@ -16,9 +16,9 @@ router.get('/data/internal/cases/:caseId', (req, res) => {
 
 });
 
-router.get('/data/internal/cases/:caseid', (req,res) => {
-    res.send(ccdMockData.getCaseDetailsWithID(req.params.caseid));
-})
+// router.get('/data/internal/cases/:caseid', (req,res) => {
+//     res.send(ccdMockData.getCaseDetailsWithID(req.params.caseid));
+// })
 
 router.get('/aggregated/caseworkers/:uid/jurisdictions', (req, res) => {
     res.send(ccdMockData.getJurisdictions());

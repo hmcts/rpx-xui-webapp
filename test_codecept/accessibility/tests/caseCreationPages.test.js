@@ -8,21 +8,21 @@ const { pa11ytest, getResults, initBrowser } = require('../helpers/pa11yUtil');
 const {conf} = require('../config/config');;
 
 const divorceCaseActions = require('../caseCreationActions/divorce'); 
-const MockApp = require('../../nodeMock/app');
+// const MockApp = require('../../nodeMock/app');
 
-const ccdApi = require('../../nodeMock/ccd/ccdApi');
+// const ccdApi = require('../../nodeMock/ccd/ccdApi');
 
 const { getTestJurisdiction} = require('../../ngIntegration/mockData/ccdCaseMock');
 
 describe('Pa11y Accessibility tests', function () {
     let fieldstested = []; 
     before(async function (done) {
-        MockApp.init()
-        await MockApp.startServer();
+        // MockApp.init()
+        // await MockApp.startServer();
         done();
     });
     after(async function (done) {
-        await MockApp.stopServer();
+        // await MockApp.stopServer();
         done();
     });
   

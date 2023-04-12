@@ -9,7 +9,7 @@ class UserApiData{
     sendResponse(req,res, apiMethod, defaultResponseCallback){
         const response = this.getUserData(req.headers.authorization, apiMethod)
         if (response) {
-            res.send(response)
+            res.status(response.status).send(response.data)
            
         } else {
             res.send(defaultResponseCallback())
@@ -18,7 +18,7 @@ class UserApiData{
 
 
     setUserData(token, apiMethod, response) {
-        apiMethod = apiMethod.toUpperCase();
+        // apiMethod = apiMethod.toUpperCase();
         let userSession = this.sessionUsers.find(sess => sess.token === token)
         if (!userSession) {
             userSession = {

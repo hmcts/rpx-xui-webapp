@@ -1,8 +1,8 @@
-import { Case } from '../models/cases';
-import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Case } from '../models/cases';
+import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
 import Task from '../models/tasks/task.model';
 
 const BASE_URL: string = '/workallocation/case';

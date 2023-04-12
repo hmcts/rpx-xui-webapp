@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { filter } from 'rxjs/operators';
-
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -22,7 +21,6 @@ import { getAssigneeName, handleFatalErrors } from '../../utils';
 import { InformationMessage } from './../../../app/shared/models';
 import { InfoMessageType } from './../../../role-access/models/enums';
 import { InfoMessage } from './../../../app/shared/enums/info-message';
-
 
 @Component({
   selector: 'exui-task-action-container',
@@ -55,7 +53,7 @@ export class TaskActionContainerComponent implements OnInit {
       const url = window.history.state.returnUrl;
       if (window.history.state.keepUrl) {
         return url;
-      };
+      }
       return url.split('/').splice(0, 3).join('/');
     }
     return '/work/my-work/list';
@@ -86,7 +84,7 @@ export class TaskActionContainerComponent implements OnInit {
       if (!this.tasks[0].assigneeName) {
         this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe(judicialDetails => {
           this.tasks[0].assigneeName = judicialDetails[0].known_as;
-        })
+        });
       }
     }
 
@@ -100,10 +98,9 @@ export class TaskActionContainerComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const isJudge = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
-      return isJudge;
+      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
     }
-    return false
+    return false;
   }
 
   public performAction(): void {

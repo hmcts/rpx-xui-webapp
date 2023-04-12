@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { of } from 'rxjs';
 import { hot } from 'jasmine-marbles';
-
+import { of } from 'rxjs';
 import { SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { AccessReason, DurationType } from '../../models/enums';
 import { AllocateRoleService } from '../../services';
@@ -10,7 +9,6 @@ import * as specificAccessAction from '../actions/specific-access.action';
 import { SpecificAccessEffects } from './specific-access.effects';
 
 describe('Specific Access Effects', () => {
-
   let effects: SpecificAccessEffects;
   let actions$;
 
@@ -29,8 +27,7 @@ describe('Specific Access Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(SpecificAccessEffects);
-
+    effects = TestBed.inject(SpecificAccessEffects);
   });
 
   describe('confirmAllocation$', () => {
@@ -38,7 +35,7 @@ describe('Specific Access Effects', () => {
       const period = {
         startDate: new Date(),
         endDate: new Date()
-      }
+      };
       const specificAccessStateData: SpecificAccessStateData = {
         state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
         accessReason: AccessReason.APPROVE_REQUEST,
@@ -71,7 +68,7 @@ describe('Specific Access Effects', () => {
             }
           }
         }
-      }
+      };
       allocateRoleServiceMock.specificAccessApproval.and.returnValue(of({
       }));
       const action = new specificAccessAction.ApproveSpecificAccessRequest({specificAccessStateData, period: {startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025')}}); actions$ = hot('-a', { a: action });
@@ -79,6 +76,7 @@ describe('Specific Access Effects', () => {
           expect(allocateRoleServiceMock.specificAccessApproval).toHaveBeenCalled();
       });
     });
+
     it('should call requestMoreInformation ', () => {
       const specificAccessState: SpecificAccessStateData = {
       state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
@@ -91,7 +89,7 @@ describe('Specific Access Effects', () => {
       roleCategory: 'LEGAL_OPERATIONS',
       requestedRole: 'specific-access-legal-operations',
       person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
-      }
+      };
       allocateRoleServiceMock.specificAccessApproval.and.returnValue(of({}));
       const action = new specificAccessAction.RequestMoreInfoSpecificAccessRequest(specificAccessState); actions$ = hot('-a', { a: action });
       effects.approveSpecificAccessRequest$.subscribe(() => {
@@ -99,5 +97,4 @@ describe('Specific Access Effects', () => {
       });
     });
   });
-
 });

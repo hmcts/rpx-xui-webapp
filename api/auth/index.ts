@@ -1,6 +1,5 @@
 import { AUTH, AuthOptions, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import { NextFunction, Response } from 'express';
-import { EnhancedRequest } from '../lib/models';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   COOKIES_TOKEN,
@@ -16,18 +15,19 @@ import {
   REDIS_KEY_PREFIX,
   REDIS_TTL,
   S2S_SECRET,
-  SERVICE_S2S_PATH,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_ISS_URL,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
+  SERVICE_S2S_PATH,
   SESSION_SECRET,
   SYSTEM_USER_NAME,
   SYSTEM_USER_PASSWORD,
 } from '../configuration/references';
-import * as log4jui from '../lib/log4jui';
 import { client } from '../lib/appInsights';
+import * as log4jui from '../lib/log4jui';
+import { EnhancedRequest } from '../lib/models';
 
 const logger = log4jui.getLogger('auth');
 
@@ -50,16 +50,16 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
 };
 
 export const failureCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
-    const errorMsg = `Auth Error: ${res.locals.message}`;
+  const errorMsg = `Auth Error: ${res.locals.message}`;
 
-    logger.warn(errorMsg);
+  logger.warn(errorMsg);
 
-    if (client) {
-        client.trackEvent({name: errorMsg});
-    }
-}
+  if (client) {
+    client.trackEvent({name: errorMsg});
+  }
+};
 
-xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
+xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback);
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_FAILURE, failureCallback);
 
 export const getXuiNodeMiddleware = () => {

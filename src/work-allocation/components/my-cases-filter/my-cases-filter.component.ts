@@ -115,11 +115,8 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
 
   public subscribeToSelectedLocations(): void {
     this.selectedLocationsSubscription = this.filterService.getStream(MyCasesFilterComponent.FILTER_NAME)
-      .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
-      )
       .subscribe((f: FilterSetting) => {
-        this.selectedLocations = f.fields.find((field) => field.name === MyCasesFilterComponent.FILTER_NAME).value;
+        this.selectedLocations = f?.fields.find((field) => field.name === MyCasesFilterComponent.FILTER_NAME).value;
         this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
         this.toggleFilter = false;
       });

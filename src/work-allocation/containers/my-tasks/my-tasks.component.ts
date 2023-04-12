@@ -48,10 +48,12 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       const searchParameters: SearchTaskParameter [] = [
         { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] },
-        { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }
       ];
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();
+      if (this.selectedServices?.length) {
+        searchParameters.push({ key: 'jurisdiction', operator: 'IN', values: this.selectedServices });
+      }
       if (locationParameter) {
         searchParameters.push(locationParameter);
       }

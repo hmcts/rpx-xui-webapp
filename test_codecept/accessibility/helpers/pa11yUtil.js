@@ -54,7 +54,7 @@ async function pa11ytest(test, actions, startUrl, roles) {
             isTestSuccess = true;
         } catch (err) {
             retryCounter++;
-            console.log("Error running pallt test " + err);
+            console.log("Error running pally test " + err);
             console.log("Retrying test again for " + retryCounter);
         }
     }

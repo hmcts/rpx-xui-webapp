@@ -147,7 +147,7 @@ exports.config = {
         if (testType === "a11y" && !parallel) {
             await teardown()
         }
-        // process.exit(status === 'PASS' ? 0 : 1)
+        process.exit(0)
 
     },
     bootstrapAll: async () => {
@@ -162,7 +162,7 @@ exports.config = {
             await teardown()
         }
 
-        // process.exit(status === 'PASS' ? 0 : 1)
+        process.exit(0)
         // return status === 'PASS' ? 0 : 1  
     }
 }

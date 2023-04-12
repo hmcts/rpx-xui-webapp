@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
 import { LocationModel } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import * as moment from 'moment';
 import { EMPTY } from 'rxjs';
-import { of } from 'rxjs/internal/observable/of';
 import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/internal/observable/of';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import { RoleAssignmentInfo, UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
@@ -16,7 +16,7 @@ import * as fromCaseList from '../../app/store/reducers';
 import { Booking } from '../../booking/models';
 import { Location, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { LocationDataService } from '../services';
-import { addLocationToLocationsByService, handleFatalErrors, locationWithinRegion, WILDCARD_SERVICE_DOWN } from '../utils';
+import { WILDCARD_SERVICE_DOWN, addLocationToLocationsByService, handleFatalErrors, locationWithinRegion } from '../utils';
 
 @Injectable({
   providedIn: 'root'

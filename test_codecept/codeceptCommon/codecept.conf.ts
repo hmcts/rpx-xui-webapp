@@ -30,7 +30,7 @@ if (testType === 'e2e'){
 } else if (testType === 'ngIntegration'){
   features = `../ngIntegration/tests/features/**/*.feature`
 
-}else{
+} else{
   throw new Error(`Unrecognized test type ${testType}`);
 }
 

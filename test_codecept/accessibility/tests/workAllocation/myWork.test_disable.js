@@ -15,18 +15,18 @@ const userDetailsMock = require('../../mockUtil/userDetails');
 
 const myWorkLocators = require('../../appLocators/myWork');
 
-xdescribe('Work Allocation: ', function () {
+describe('Work Allocation: ', function () {
 
-    before(async function (done) {
-        done();
-    });
-    after(async function (done) {
-        done();
-    });
+    // before(async function (done) {
+    //     done();
+    // });
+    // after(async function (done) {
+    //     done();
+    // });
 
 
     it('My work: My tasks', async function () {
-      
+        const actions = []
         actions.push(...PallyActions.clickElement(myWorkLocators.workFilterButton))
         actions.push(...PallyActions.waitForPageWithCssLocator(myWorkLocators.workFilters))
         actions.push(...PallyActions.waitForPageWithCssLocator(myWorkLocators.myTasks))
@@ -51,7 +51,7 @@ xdescribe('Work Allocation: ', function () {
 
     });
 
-    it('My work: My cases', async function () {
+    it.skip('My work: My cases', async function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(myWorkLocators.myTasks))
         actions.push(...PallyActions.clickElement(myWorkLocators.subNavihationLinks.myCases))

@@ -68,9 +68,9 @@ class WorkAllocationMockData {
 
     async applyToSession() {
         const authCookie = await browser.driver.manage().getCookie('__auth__');
-        mockClient.setUserApiData(authCookie.value, 'OnMyTasks', this.myWorkMyTasks)
-        mockClient.setUserApiData(authCookie.value, 'OnAvailableTasks', this.myWorkAvailableTasks)
-        mockClient.setUserApiData(authCookie.value, 'OnAllTasks', this.allWorkTasks)
+        mockClient.setUserApiData(authCookie.value, 'OnMyTasks', { status: 200, data: this.myWorkMyTasks })
+        mockClient.setUserApiData(authCookie.value, 'OnAvailableTasks', { status: 200, data: this.myWorkAvailableTasks })
+        mockClient.setUserApiData(authCookie.value, 'OnAllTasks', { status: 200, data: this.allWorkTasks })
 
     }
 

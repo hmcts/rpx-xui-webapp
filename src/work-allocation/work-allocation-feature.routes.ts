@@ -1,7 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TaskSupervisorGuard } from '../app/guards/task-supervisor.guard';
-
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { TaskActionConstants } from './components/constants';
 import {
@@ -16,14 +15,14 @@ import {
   TaskHomeComponent,
   WorkAllocationHomeComponent,
 } from './containers';
-import { MyAccessComponent } from './containers/my-access/my-access.component';
 import { TaskAssignmentPersonNotAuthorisedComponent } from './containers/messages-container/task-assignment-person-not-authorised/task-assignment-person-not-authorised.component';
+import { MyAccessComponent } from './containers/my-access/my-access.component';
 import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
+import { WorkAllocationAccessGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
 import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
-import { WorkAllocationAccessGuard } from './guards';
 
 export const ROUTES: Routes = [
   {

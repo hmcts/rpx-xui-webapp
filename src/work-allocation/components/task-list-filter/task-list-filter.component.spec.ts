@@ -15,7 +15,6 @@ import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTas
 import { TaskTypesService } from '../../services/task-types.service';
 import { TaskListFilterComponent } from './task-list-filter.component';
 
-
 @Component({
   template: `
     <exui-task-list-filter></exui-task-list-filter>`
@@ -131,8 +130,9 @@ describe('TaskListFilterComponent', () => {
       unsubscribe: () => null
     }
   };
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter: any;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
+
   beforeEach(() => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     storeMock.pipe.and.returnValue(of(roleAssignmentInfo));
@@ -172,7 +172,7 @@ describe('TaskListFilterComponent', () => {
     component = wrapper.appComponentRef;
     component.persistence = 'local';
     mockFilterService.get.and.returnValue(null);
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify([{regionId: '1', locations: ['219164']}, {regionId: '9', locations: ['123456']}]))
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify([{regionId: '1', locations: ['219164']}, {regionId: '9', locations: ['123456']}]));
     fixture.detectChanges();
   });
 
@@ -190,7 +190,7 @@ describe('TaskListFilterComponent', () => {
   });
 
   it('should set booking locations', () => {
-    mockRouter = TestBed.get(Router);
+    mockRouter = TestBed.inject(Router);
     spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({ extras: { state: { location: { ids: ['231596', '231596'] } } } });
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -256,5 +256,4 @@ describe('TaskListFilterComponent', () => {
   afterAll(() => {
     component.ngOnDestroy();
   });
-
 });

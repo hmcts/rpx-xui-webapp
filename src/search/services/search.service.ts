@@ -72,7 +72,7 @@ export class SearchService {
         emailAddress,
         partyName: fullName,
         postCode: postcode
-      }]
+      }];
     }
 
     return {

@@ -10,11 +10,10 @@ import { AppConfigService } from '../../services/config/configuration.services';
 import { Back, CreateCaseGo, Forward, Go } from '../actions/router.action';
 import { State } from '../reducers';
 import * as fromRouterEffects from './router.effect';
-import { RouterEffects } from './router.effect';
 
 describe('Router Effects', () => {
   let actions$;
-  let effects: RouterEffects;
+  let effects: fromRouterEffects.RouterEffects;
   let store;
 
   const LocationMock = jasmine.createSpyObj('Location', [
@@ -50,7 +49,7 @@ describe('Router Effects', () => {
     store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
 
-    effects = TestBed.inject(RouterEffects);
+    effects = TestBed.inject(fromRouterEffects.RouterEffects);
   });
 
   describe('navigate$', () => {

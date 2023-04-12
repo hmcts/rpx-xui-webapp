@@ -76,7 +76,7 @@ export class DurationHelperService {
     return {
       isStartDateValid,
       isEndDateValid
-    }
+    };
   }
 
   /**

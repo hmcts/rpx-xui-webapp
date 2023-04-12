@@ -6,7 +6,6 @@ import {Utils} from '../utils/utils';
 
 @Injectable()
 export class SearchFilterService {
-
   public metadataFields: string[];
 
   constructor(
@@ -14,15 +13,14 @@ export class SearchFilterService {
     private readonly appConfig: AbstractAppConfig,
     private readonly httpService: HttpService,
     private readonly requestOptionsBuilder: RequestOptionsBuilder,
-  ) { }
+  ) {}
 
   public search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {
-
     const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view, sortParameters } = this.getParams(payload);
 
     return isElasticSearchEnabled ?
-          this.ccdSearchService.searchCases(caseTypeId, metadataFilters, caseFilters, view, sortParameters) as any :
-          this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
+      this.ccdSearchService.searchCases(caseTypeId, metadataFilters, caseFilters, view, sortParameters) as any :
+      this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
   }
 
   private getParams(payload: any) {
@@ -67,7 +65,7 @@ export class SearchFilterService {
   private buildFormDetails(parentPrefix: string, target: object, formGroupValue: object): void {
     let prefix = parentPrefix;
     if (parentPrefix && parentPrefix.length > 0) {
-      prefix = parentPrefix + '.';
+      prefix = `${parentPrefix}.`;
     }
     for (let attributeName of Object.keys(formGroupValue)) {
       let value = formGroupValue[attributeName];
@@ -86,13 +84,9 @@ export class SearchFilterService {
 
   public findPaginationMetadata(payload): Observable<any> {
     const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view } = this.getParams(payload);
-    const url = this.appConfig.getCaseDataUrl() + `/caseworkers/:uid`
-      + `/jurisdictions/${jurisdictionId}`
-      + `/case-types/${caseTypeId}`
-      + `/cases/pagination_metadata`;
+    const url = `${this.appConfig.getCaseDataUrl()}/caseworkers/:uid/jurisdictions/${jurisdictionId}/case-types/${caseTypeId}/cases/pagination_metadata`;
     delete metadataFilters.page;
     const options = this.requestOptionsBuilder.buildOptions(metadataFilters, caseFilters);
     return this.httpService.get(url, options) as any;
   }
-
 }

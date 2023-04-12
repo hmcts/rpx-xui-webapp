@@ -15,7 +15,6 @@ class WrapperComponent {
 }
 
 describe('WorkAllocation', () => {
-
   describe('AccessViewFieldComponent', () => {
     const REJECTED_REQUEST_URL: string = `/role-access/rejected-request`;
 
@@ -39,7 +38,7 @@ describe('WorkAllocation', () => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
       spyOn(router, 'navigate');
       fixture.detectChanges();
     });
@@ -87,7 +86,7 @@ describe('WorkAllocation', () => {
         reviewerRoleCategory: 'Judicial',
         infoRequiredComment: 'Need more Infomation',
         endDate: '15-01-2022'
-      }
+      };
       fixture.detectChanges();
       wrapper.appComponentRef.viewRejection();
 
@@ -106,6 +105,5 @@ describe('WorkAllocation', () => {
         endDate: '15-01-2022'
       }});
     });
-
   });
 });

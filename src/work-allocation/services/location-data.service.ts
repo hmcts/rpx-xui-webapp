@@ -11,7 +11,7 @@ export class LocationDataService {
   public static locationUrl: string = '/workallocation/location';
   public static fullLocationUrl: string = '/workallocation/full-location';
   public static regionLocationUrl: string = '/workallocation/region-location';
-  public static regionUrl: string = '/workallocation/region'
+  public static regionUrl: string = '/workallocation/region';
   public static allLocationsKey: string = 'allLocations';
   public static regionLocationsKey: string = 'regionLocations';
   public static regionsKey: string = 'regions';
@@ -34,7 +34,7 @@ export class LocationDataService {
     }
     return this.http.post<LocationsByRegion[]>(`${LocationDataService.regionLocationUrl}`, {serviceIds}).pipe(
       tap(regionLocations => this.sessionStorageService.setItem(LocationDataService.regionLocationsKey, JSON.stringify(regionLocations)))
-    )
+    );
   }
 
   public getSpecificLocations(locationIds: string[], locationServices: string[]): Observable<LocationByEPIMMSModel[]> {

@@ -207,7 +207,7 @@ export function getMockTaskServiceConfig(): TaskServiceConfig {
 
 export class MockRouter {
   public navigateByUrl = jasmine.createSpy();
-  public events = {subscribe(): Observable<RouterEvent> { return of(null); }}
+  public events = {subscribe(): Observable<RouterEvent> { return of(null); }};
   private pUrl: string = 'bob';
   public get url(): string {
     return this.pUrl;

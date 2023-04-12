@@ -60,7 +60,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
 
       const options: StaffFilterOption[] = [];
       data.job_title.forEach(element => {
-        options.push({ key: element.role_id, label: element.role_description });
+        options.push({ key: String(element.role_id), label: element.role_description });
       });
 
       res.status(status).send(this.sortArray(options));
@@ -97,7 +97,6 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
 
     try {
       const { status, data }: { status: number, data } = await sendGet(apiPath, req);
-
       const groupOptions: GroupOption[] = [];
       data.service_skill.forEach(services => {
         const options: StaffFilterOption[] = [];

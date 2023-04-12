@@ -51,7 +51,7 @@ describe('RefDataEndpoint', () => {
       await getRegions(req, response, next);
 
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseLocationRefUrl}/refdata/location/regions`);
+      expect(args[0]).to.equal(`${baseLocationRefUrl}/refdata/location/regions?regionId=ALL`);
       expect(response.send).to.have.been.calledWith(sinon.match(spy));
     });
   });

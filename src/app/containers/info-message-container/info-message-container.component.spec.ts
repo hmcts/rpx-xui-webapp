@@ -30,7 +30,7 @@ describe('WorkAllocation', () => {
     const mockMessageService = {
     infoMessageChangeEmitted$: of([{type: InfoMessageType.SUCCESS, message: InfoMessage.ASSIGNED_TASK}] as InformationMessage[]),
     removeAllMessages: () => {}
-    }
+    };
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [ InfoMessageContainerComponent ],
@@ -50,6 +50,6 @@ describe('WorkAllocation', () => {
 
     it('should create', () => {
       expect(component).toBeDefined();
-    })
+    });
   });
 });

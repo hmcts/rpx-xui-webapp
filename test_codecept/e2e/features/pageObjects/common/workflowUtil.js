@@ -20,6 +20,9 @@ class workFlowUtil{
             case 'reallocate':
                 workflowPageObject = reallocateWorkflowPage;
                 break;
+            case 'remove':
+                workflowPageObject = reallocateWorkflowPage;
+                break;
             default:
                 throw new Error(`${workFlowPage} / ${workflow} is not recognised or implemented in test step definition`);
         }

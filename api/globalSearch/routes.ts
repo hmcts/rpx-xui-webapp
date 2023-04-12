@@ -1,7 +1,7 @@
-import * as express from 'express'
-import { getSearchResults, getServices } from './index'
+import * as express from 'express';
+import { getSearchResults, getServices } from './index';
 
-export const router = express.Router({ mergeParams: true })
+export const router = express.Router({ mergeParams: true });
 
-router.get('/services', getServices)
-router.post('/results', getSearchResults)
+router.get('/services', getServices);
+router.post('/results', getSearchResults);

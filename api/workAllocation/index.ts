@@ -143,7 +143,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // determines whether should use release 3 or release 4 permission logic
     searchRequest.sorting_parameters.find((sort, index) => {
       if (sort.sort_by === 'priority') {
-        searchRequest.sorting_parameters.splice(index, 1)
+        searchRequest.sorting_parameters.splice(index, 1);
       }
     });
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');

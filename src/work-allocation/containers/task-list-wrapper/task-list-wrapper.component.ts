@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
@@ -36,7 +36,6 @@ import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, h
   templateUrl: 'task-list-wrapper.component.html',
 })
 export class TaskListWrapperComponent implements OnDestroy, OnInit {
-
   public specificPage: string = '';
   public caseworkers: Caseworker[];
   public locations: Location[] = new Array<Location>();

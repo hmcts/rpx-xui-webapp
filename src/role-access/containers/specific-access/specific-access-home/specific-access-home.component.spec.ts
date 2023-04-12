@@ -1,7 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -30,7 +29,7 @@ describe('SpecificAccessHomeComponent', () => {
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRolesUserDetails']);
   const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getCaseworkersForServices']);
   const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
-  let mockStore: MockStore<fromFeature.State>;
+  let mockStore: any;
   let mockFormBuilder: FormBuilder;
   let storeDispatchMock: any;
   const specificAccessStateData = {
@@ -47,7 +46,7 @@ describe('SpecificAccessHomeComponent', () => {
     actorId: 'person',
     actions: null,
     email: 'N/A'
-  }
+  };
 
   beforeEach(() => {
     durationHelperService = new DurationHelperService();
@@ -91,8 +90,8 @@ describe('SpecificAccessHomeComponent', () => {
       ]
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
-    mockFormBuilder = TestBed.get(FormBuilder);
+    mockStore = TestBed.inject(Store);
+    mockFormBuilder = TestBed.inject(FormBuilder);
     storeDispatchMock = spyOn(mockStore, 'dispatch').and.callThrough();
     fixture = TestBed.createComponent(SpecificAccessHomeComponent);
     component = fixture.componentInstance;

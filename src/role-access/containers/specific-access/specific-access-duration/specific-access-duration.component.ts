@@ -18,7 +18,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './specific-access-duration.component.html',
   styleUrls: ['./specific-access-duration.component.scss']
 })
-
 export class SpecificAccessDurationComponent implements OnInit {
   // static properties
   public static anotherPeriodDesc = 'You’ll need to provide both a start and end date for access to the case.';
@@ -51,7 +50,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public endDateYearCtrl: FormControl;
 
   constructor(
-    private durationHelper: DurationHelperService,
+    private readonly durationHelper: DurationHelperService,
     private readonly fb: FormBuilder,
     private readonly store: Store<fromFeature.State>
   ) {
@@ -145,7 +144,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public getRawData(): any {
     const startDate = this.durationHelper.getRawFromControlsValues(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl);
     const endDate = this.durationHelper.getRawFromControlsValues(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
-    return {startDate, endDate}
+    return {startDate, endDate};
   }
 
   public getPeriod(duration: DurationType): Period {
@@ -218,5 +217,4 @@ export class SpecificAccessDurationComponent implements OnInit {
     this.anotherPeriod = item === DurationType.ANOTHER_PERIOD;
     this.selectedDuration = item;
   }
-
 }

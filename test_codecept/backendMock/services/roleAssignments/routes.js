@@ -20,13 +20,25 @@ router.get('/roles', (req,res) => {
 
 
 router.post('/query' , (req,res) => {
-
+    // console.log(`am query ${JSON.stringify(req.body)}`)
     const reqProps = Object.keys(req.body);
-    if (reqProps.includes('roleName') && reqProps.includes('roleType') && reqProps.includes('attributes')){
-        const serviceUsers = service.getServiceUsersRoleAssignments(req.body);
+    if (reqProps.includes('queryRequests')){
+        const serviceUsers = service.getQueryResults(req.body.queryRequests);
         res.send({ roleAssignmentResponse: serviceUsers });
+    } else if (reqProps.includes('roleName') && reqProps.includes('roleTy[pe')){
+        res.send(service.getServiceUsersRolesAssignments(req.body))
     }
 
+
+})
+
+router.delete('/:id', (req,res) => {
+    res.send(req.body)
+})
+
+
+router.post('/', (req, res) => {
+    res.status(201).send(service.addRoleAssignmentResponse(req))
 })
 
 module.exports = router;

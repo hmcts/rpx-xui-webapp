@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-
 import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import { AppConfigService } from '../config/configuration.services';
@@ -39,33 +38,13 @@ export class AppConfig extends AbstractAppConfig {
       }
     });
 
-    // Default value is passed to resolve EUI-7670.
-    // ToDo: Remove default value and get the latest not null value
-    const defaultConfig = {
-      configurations: [
-        {
-          caseTypes: [
-            'Asylum'
-          ],
-          releaseVersion: '3.5',
-          serviceName: 'IA'
-        },
-        {
-          caseTypes:[
-            'CIVIL',
-            'GENERALAPPLICATION'
-          ],
-          releaseVersion: '3.5',
-          serviceName: 'CIVIL'
+    this.environmentService.config$.subscribe(config => {
+      this.featureToggleService.getValue('wa-service-config', config.waSupportedServices).subscribe({
+        next: (val) => this.config = {
+          ...this.config,
+          wa_service_config: val
         }
-      ]
-    };
-
-    this.featureToggleService.getValue('wa-service-config', defaultConfig).subscribe({
-      next: (val) => this.config = {
-        ...this.config,
-        wa_service_config: val
-      }
+      });
     });
 
     this.featureToggleService.getValue('access-management-basic-view-mock', {}).subscribe({

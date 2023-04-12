@@ -18,7 +18,7 @@ export interface Caseworker {
   lastName: string;
   email: string;
   location: Location;
-  roleCategory: RoleCategory
+  roleCategory: RoleCategory;
 }
 
 export interface CaseworkersByService {
@@ -82,6 +82,12 @@ export interface LocationsByService {
 export interface LocationsByRegion {
   regionId: string;
   locations: string[];
+}
+
+// need to store from API, rather than local
+export interface Region {
+  region_id: string;
+  description: string;
 }
 
 export interface CaseSearchParameter {
@@ -166,5 +172,5 @@ export interface TaskSearchParameters {
 
 export interface TaskNamesResponse {
   taskName: string;
-  taskId: number
+  taskId: number;
 }

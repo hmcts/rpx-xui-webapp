@@ -266,7 +266,6 @@ export class AppUtils {
     }
     const msBetweenDates = Math.abs(dateTime.getTime() - currentDate.getTime());
     const hoursBetweenDates = msBetweenDates / (60 * 60 * 1000);
-    console.log('hoursBetweenDates', hoursBetweenDates)
     return hoursBetweenDates <= 24;
   }
 }

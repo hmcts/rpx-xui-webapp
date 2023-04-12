@@ -92,6 +92,11 @@ class CustomHelper extends Helper {
         return Puppeteer;
     }
 
+
+    getPuppeteer() {
+        return this._getHelper();
+    }
+
     getPuppeteerPage(){
         return this._getHelper().page;
     }

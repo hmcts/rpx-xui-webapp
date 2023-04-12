@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-
 import { SessionStorageService } from '../../../app/services';
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -16,7 +15,6 @@ import { Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
-
 
 @Component({
   template: `
@@ -189,7 +187,6 @@ describe('TaskListComponent', () => {
     // check the emitter had been called and that it gets called with the new field defined which is caseName
     expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('pageSessionKey', '1');
     expect(component.defaultSortElement.click).toHaveBeenCalled;
-
   }));
 
   it('should allow sorting for different columns.', fakeAsync(async () => {

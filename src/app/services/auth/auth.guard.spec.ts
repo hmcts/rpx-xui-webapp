@@ -25,7 +25,7 @@ class SessionStorageMock implements SessionStorageService {
         return '/cheesecakes/1';
       }
       default: {
-        return null
+        return null;
       }
     }
   }
@@ -125,7 +125,7 @@ describe('AuthGuard', () => {
       authService.setWindowLocationHref.and.callThrough();
       windowLocationService.getPathName.and.returnValue('/');
 
-      const sessionStorageServiceStub = new SessionStorageMock()
+      const sessionStorageServiceStub = new SessionStorageMock();
 
       const guard = new AuthGuard(authService, sessionStorageServiceStub, windowLocationService);
 
@@ -151,7 +151,7 @@ describe('AuthGuard', () => {
     it('Get JSON object Handles errors', () => {
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
       const result = guard.getJSONObject('someobject');
-      expect(result).toBeNull()
+      expect(result).toBeNull();
     });
   });
 });

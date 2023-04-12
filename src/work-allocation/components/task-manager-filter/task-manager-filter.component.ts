@@ -5,7 +5,6 @@ import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/loca
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserRole } from '../../../app/models';

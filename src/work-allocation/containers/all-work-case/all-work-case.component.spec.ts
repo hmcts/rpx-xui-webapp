@@ -13,8 +13,8 @@ import { InfoMessageCommService } from '../../../app/shared/services/info-messag
 import * as fromActions from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
 import { AllocateRoleService } from '../../../role-access/services';
-import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { Case } from '../../models/cases';
 import { Location } from '../../models/dtos';
 import {

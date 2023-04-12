@@ -1,16 +1,15 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { JurisdictionsService } from '../../../work-allocation/services/juridictions.service';
 import { SearchFormControl, SearchFormErrorMessage, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { SearchFormComponent } from './search-form.component';
-
 import createSpyObj = jasmine.createSpyObj;
 
 describe('SearchFormComponent', () => {
@@ -22,7 +21,7 @@ describe('SearchFormComponent', () => {
   let router: Router;
   let route: ActivatedRoute;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     searchService = createSpyObj<SearchService>('searchService', ['getServices', 'storeState', 'retrieveState']);
     searchService.getServices.and.returnValue(of([
       { serviceName: 'Test service', serviceId: 'TEST' },
@@ -54,9 +53,9 @@ describe('SearchFormComponent', () => {
     fixture = TestBed.createComponent(SearchFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    route = TestBed.get(ActivatedRoute);
+    route = TestBed.inject(ActivatedRoute);
   });
 
   it('should create component', () => {

@@ -9,8 +9,7 @@ import { prepareGetLocationsUrl } from './util';
 
 export async function handleLocationGet(fullPath: string, req: EnhancedRequest): Promise<AxiosResponse<any>> {
   const headers = setHeaders(req);
-  const response = await http.get<any>(fullPath, { headers });
-  return response;
+  return await http.get<any>(fullPath, { headers });
 }
 
 export async function commonGetFullLocation(req) {

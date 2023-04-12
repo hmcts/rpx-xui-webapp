@@ -1,14 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants } from 'src/app/app.constants';
+import { AppConstants } from '../../../app/app.constants';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
-import { Utils } from '../../../cases/utils/utils';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { Utils} from '../../../cases/utils/utils';
 import { PriorityLimits } from '../../../work-allocation/enums';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
@@ -43,12 +42,12 @@ export class CaseTaskComponent implements OnInit {
               private featureToggleService: FeatureToggleService ) {
   }
 
-  public get task(): Task {
-    return this.pTask;
-  }
-
   public get returnUrl(): string {
     return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
+  }
+
+  public get task(): Task {
+    return this.pTask;
   }
 
   @Input()
@@ -58,7 +57,8 @@ export class CaseTaskComponent implements OnInit {
     this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent ? true : false;
   }
 
-  @Input() public caseworkers: Caseworker[] = [];
+  @Input()
+  public caseworkers: Caseworker[] = [];
 
   /**
    * Emit an event to refresh tasks

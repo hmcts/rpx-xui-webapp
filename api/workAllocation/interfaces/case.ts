@@ -32,7 +32,6 @@ export interface Case {
   name: string;
   isNew?: boolean;
   hearing_date?: string;
-  nextHearingDetails?: {hearingDateTime: Date};
 }
 
 export interface CaseAction {
@@ -45,6 +44,7 @@ export interface CaseInternalData {
   hmctsCaseCategory?: string;
   caseManagementLocation?: CaseManagementLocation;
   hmctsCaseNameInternal?: string;
+  nextHearingDetails?: {hearingDateTime: Date};
   caseNameHmctsInternal?: string;
 }
 

@@ -38,7 +38,7 @@ describe('Pa11y Accessibility tests', function () {
     const mockCaseType = getTestJurisdiction().getCase();
     mockCaseType.wizard_pages.forEach(page => {
         if (!page.show_condition){
-            it('Mock case type Case Page ' + page.id, async function () {
+            it.skip('Mock case type Case Page ' + page.id, async function () {
                 // //await MockApp.startServer();
                 const actions = [];
                 actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))

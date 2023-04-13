@@ -133,6 +133,7 @@ describe('CaseSearchComponent', () => {
 
   describe('getElasticSearchResults', () => {
     it('should dispatch an action to get results from elastic search endpoint.', () => {
+      spyOn(component, 'getEvent').and.returnValue({});
       component.getElasticSearchResults();
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromCaseSearchStore.ApplySearchFilterForES({}));
     });

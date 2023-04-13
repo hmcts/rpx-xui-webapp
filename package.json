@@ -238,5 +238,8 @@
   "browser": {
     "crypto": false
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.0",
+  "resolutions": {
+    "@hmcts/rpx-xui-common-lib": "portal:/Users/mateibaciu/WebstormProjects/HMCTS/rpx-xui-common-lib/dist/exui-common-lib"
+  }
 }

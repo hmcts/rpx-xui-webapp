@@ -2181,17 +2181,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:1.8.7-release-4-yarn-3":
-  version: 1.8.7-release-4-yarn-3
-  resolution: "@hmcts/rpx-xui-common-lib@npm:1.8.7-release-4-yarn-3"
+"@hmcts/rpx-xui-common-lib@portal:/Users/mateibaciu/WebstormProjects/HMCTS/rpx-xui-common-lib/dist/exui-common-lib::locator=rpx-exui%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/rpx-xui-common-lib@portal:/Users/mateibaciu/WebstormProjects/HMCTS/rpx-xui-common-lib/dist/exui-common-lib::locator=rpx-exui%40workspace%3A."
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^2.15.2
     ngx-pagination: ^3.2.1
-  checksum: 16d794d53bf25499509c00314d53c0784edcbab7c9eb9335fcdf5b64c25fbb668385a4b03cdb0cb85ba1c354a70c5a447c79e5bc6b89c5a6cfeaa6d489c3971f
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@hmcts/rpx-xui-node-lib@npm:2.25.12":
   version: 2.25.12
